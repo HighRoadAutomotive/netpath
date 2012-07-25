@@ -1,0 +1,78 @@
+﻿<ResourceDictionary
+			xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			xmlns:System="clr-namespace:System;assembly=mscorlib"
+			xmlns:c1="clr-namespace:C1.WPF;assembly=C1.WPF.4"
+			xmlns:c1datetime="clr-namespace:C1.WPF.DateTimeEditors;assembly=C1.WPF.DateTimeEditors.4" >
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Colors.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
+	<Style TargetType="c1datetime:C1TimeEditor">
+		<Setter Property="Background" Value="{StaticResource NormalBackgroundColor}" />
+		<Setter Property="BorderBrush" Value="{StaticResource NormalBorderColor}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="Foreground" Value="{StaticResource NormalForegroundColor}" />
+		<Setter Property="SelectionBackground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+		<Setter Property="SelectionForeground" Value="{StaticResource NormalForegroundColor}" />
+		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="Padding" Value="1,2" />
+		<Setter Property="Interval" Value="33" />
+		<Setter Property="Delay" Value="500" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="c1datetime:C1TimeEditor">
+					<Grid x:Name="Root">
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="ValidationStates">
+								<VisualState x:Name="Valid" />
+								<VisualState x:Name="InvalidUnfocused">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ValidationDecorator" Storyboard.TargetProperty="ValidationState">
+											<DiscreteObjectKeyFrame KeyTime="0">
+												<DiscreteObjectKeyFrame.Value>
+													<c1:ValidationState>InvalidUnfocused</c1:ValidationState>
+												</DiscreteObjectKeyFrame.Value>
+											</DiscreteObjectKeyFrame>
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="InvalidFocused">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ValidationDecorator" Storyboard.TargetProperty="ValidationState">
+											<DiscreteObjectKeyFrame KeyTime="0">
+												<DiscreteObjectKeyFrame.Value>
+													<c1:ValidationState>InvalidFocused</c1:ValidationState>
+												</DiscreteObjectKeyFrame.Value>
+											</DiscreteObjectKeyFrame>
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+						<Border x:Name="BackgroundElement" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="0" BorderBrush="{TemplateBinding BorderBrush}" >
+							<c1:C1MaskedTextBox x:Name="TextBox" Grid.Column="0" BorderThickness="0" Foreground="{TemplateBinding Foreground}" Background="Transparent" SelectionForeground="{TemplateBinding SelectionForeground}" SelectionBackground="{TemplateBinding SelectionBackground}"  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Text="" FocusCuesVisibility="Collapsed" DisabledCuesVisibility="Collapsed" Margin="{TemplateBinding Padding}" />
+						</Border>
+						<c1:C1ValidationDecorator x:Name="ValidationDecorator" Target="{Binding RelativeSource={RelativeSource TemplatedParent}}" Style="{TemplateBinding ValidationDecoratorStyle}" />
+					</Grid>
+					<ControlTemplate.Triggers>
+						<Trigger SourceName="ValidationDecorator" Property="ValidationState" Value="InvalidFocused">
+							<Setter Property="BorderBrush" Value="{StaticResource ErrorBorderColor}" />
+						</Trigger>
+						<Trigger SourceName="ValidationDecorator" Property="ValidationState" Value="InvalidUnfocused">
+							<Setter Property="BorderBrush" Value="{StaticResource ErrorBorderColor}" />
+						</Trigger>
+						<Trigger Property="IsKeyboardFocusWithin" Value="True">
+							<Setter Property="BorderBrush" Value="{StaticResource FocusedBorderColor}" />
+						</Trigger>
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+</ResourceDictionary>

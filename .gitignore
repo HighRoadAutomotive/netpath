@@ -1,0 +1,11 @@
+*.vssscc
+*.vspscc
+*.suo
+*.user
+*.dll
+*.NET40.cs
+*.bak
+obj/
+bin/
+Build/
+packages/

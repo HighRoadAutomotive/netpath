@@ -1,0 +1,273 @@
+﻿<Grid x:Class="WCFArchitect.Interface.Service.Service" x:ClassModifier="internal"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:r="clr-namespace:Fluent;assembly=Fluent"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" 
+	xmlns:c1="http://schemas.componentone.com/wpf/Basic"
+	xmlns:c1ext="http://schemas.componentone.com/wpf/C1Extended"
+	xmlns:Service="clr-namespace:WCFArchitect.Interface.Service"
+	xmlns:InRoot="clr-namespace:WCFArchitect.Interface"
+	xmlns:pc="clr-namespace:Prospective.Controls;assembly=Prospective.Controls"
+	d:DesignHeight="800" d:DesignWidth="1000" DataContext="{Binding RelativeSource={RelativeSource Self}}" UseLayoutRounding="True" >
+	<Grid.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Colors.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Generic.xaml" />
+				<ResourceDictionary>
+					<Service:ProtectionLevelConverter x:Key="ProtectionLevelConverter" />
+					<Service:SessionModeConverter x:Key="SessionModeConverter" />
+					<Service:ServiceBindingTypeImageConverter x:Key="ServiceBindingTypeImageConverter" />
+					<Service:ServiceNameConverter x:Key="ServiceNameConverter" />
+					<Service:ServiceSelectConverter x:Key="ServiceSelectConverter" />
+					<Service:NullBoolConverter x:Key="NullBoolConverter" />
+					<InRoot:ProjectTypeVisibilityConverter x:Key="ProjectTypeVisibilityConverter" />
+					<InRoot:ProjectTypeEnabledConverter x:Key="ProjectTypeEnabledConverter" />
+					<InRoot:ProjectTypeReadOnlyConverter x:Key="ProjectTypeReadOnlyConverter" />
+				</ResourceDictionary>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Grid.Resources>
+	<Grid.RowDefinitions>
+		<RowDefinition Height="35" />
+		<RowDefinition Height="115" />
+		<RowDefinition Height="*" />
+	</Grid.RowDefinitions>
+	<Grid Grid.Row="0">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+		<Label Content="Display Name:" Height="Auto" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" />
+		<pc:TextBox Text="{Binding Path=Data.Name}" Name="DisplayName" Height="23" Margin="97,7,5,0" VerticalAlignment="Top" IsReadOnly="{Binding Path=Data, Converter={StaticResource ProjectTypeReadOnlyConverter}}" ToolTip="{Binding Path=Data.Name}"  />
+		<Label Content="Code Name:" Height="Auto" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" Grid.Column="1" />
+		<pc:TextBox Text="{Binding Path=Data.CodeName}" Name="CodeName" Height="23" Margin="86,7,5,0" VerticalAlignment="Top" Grid.Column="1" IsReadOnly="{Binding Path=Data, Converter={StaticResource ProjectTypeReadOnlyConverter}}" Validate="CodeName_Validate" ToolTip="{Binding Path=Data.CodeName}" />
+		<Label Content="Contract Name:" Height="Auto" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" Grid.Column="2" />
+		<pc:TextBox Text="{Binding Path=Data.ContractName}" Name="ContractName" Height="23" Margin="104,7,5,0" VerticalAlignment="Top" Grid.Column="2" IsReadOnly="{Binding Path=Data, Converter={StaticResource ProjectTypeReadOnlyConverter}}" Validate="ContractName_Validate" ToolTip="{Binding Path=Data.ContractName}" />
+	</Grid>
+	<Grid Grid.Row="1">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+		<GroupBox Grid.Column="0" Header="Settings" Margin="5,0,2,0">
+			<Grid>
+				<Label Content="Protection Level:" Height="28" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" />
+				<ComboBox Height="23" Margin="131,7,5,0" SelectedIndex="{Binding Path=Data.ProtectionLevel, Converter={StaticResource ProtectionLevelConverter}}" VerticalAlignment="Top" IsHitTestVisible="{Binding Path=Data, Converter={StaticResource ProjectTypeEnabledConverter}}">
+					<ComboBoxItem Content="None" />
+					<ComboBoxItem Content="Sign" />
+					<ComboBoxItem Content="Encrypt and Sign" />
+				</ComboBox>
+				<Label Content="Session Mode:" Height="28" HorizontalAlignment="Left" Margin="5,35,0,0" VerticalAlignment="Top" />
+				<ComboBox Height="23" Margin="131,36,5,0" SelectedIndex="{Binding Path=Data.SessionMode, Converter={StaticResource SessionModeConverter}}" VerticalAlignment="Top" IsHitTestVisible="{Binding Path=Data, Converter={StaticResource ProjectTypeEnabledConverter}}">
+					<ComboBoxItem Content="Allowed" />
+					<ComboBoxItem Content="Required" />
+					<ComboBoxItem Content="Not Allowed" />
+				</ComboBox>
+				<Label Content="Configuration Name:" Height="28" HorizontalAlignment="Left" Margin="5,63,0,0" VerticalAlignment="Top" />
+				<pc:TextBox Height="23" Margin="131,64,5,0" Text="{Binding Path=Data.ConfigurationName}" VerticalAlignment="Top" IsReadOnly="{Binding Path=Data, Converter={StaticResource ProjectTypeReadOnlyConverter}}" ToolTip="{Binding Path=Data.ConfigurationName}" />
+			</Grid>
+		</GroupBox>
+		<GroupBox Name="ServiceCallbackGroup" Grid.Column="1" Header="Callback" Margin="2,0,5,0">
+			<Grid>
+				<Label Content="Is Callback:" Height="Auto" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top" Width="Auto" />
+				<ToggleButton Content="No" Height="23" HorizontalAlignment="Right" IsChecked="{Binding Path=Data.IsCallback}" Margin="0,6,5,0" Name="SCIsCallback" VerticalAlignment="Top" Width="100" IsHitTestVisible="{Binding Path=Data, Converter={StaticResource ProjectTypeEnabledConverter}}" Checked="IsCallback_Checked" Unchecked="IsCallback_Unchecked" />
+				<Label Content="Callback:" Height="Auto" HorizontalAlignment="Left" Margin="5,33,0,0" VerticalAlignment="Top" Width="Auto" />
+				<Button Name="OpenCallback" IsEnabled="{Binding Path=Data.Callback, Converter={StaticResource NullBoolConverter}}" Height="Auto" Margin="100,35,111,0" VerticalAlignment="Top" IsHitTestVisible="{Binding Path=Data, Converter={StaticResource ProjectTypeEnabledConverter}}" Click="OpenService_Click" >
+					<TextBlock Name="Callback" Padding="1" Text="{Binding Path=Data.Callback, Converter={StaticResource ServiceNameConverter}, ConverterParameter=False}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+				</Button>
+				<Button Content="{Binding Path=Data.Callback, Converter={StaticResource ServiceSelectConverter}}" Height="23" HorizontalAlignment="Right" Margin="0,35,5,0" Name="SelectCallback" VerticalAlignment="Top" Width="100" IsHitTestVisible="{Binding Path=Data, Converter={StaticResource ProjectTypeEnabledConverter}}" Click="SelectCallback_Click" />
+			</Grid>
+		</GroupBox>
+		<GroupBox Name="CallbackServiceGroup" Grid.Column="1" Header="Callback" Margin="2,0,5,0">
+			<Grid>
+				<Label Content="Is Callback:" Height="Auto" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" Width="Auto" />
+				<ToggleButton Content="No" Height="23" HorizontalAlignment="Right" IsChecked="{Binding Path=Data.IsCallback}" Margin="0,7,5,0" Name="CSIsCallback" VerticalAlignment="Top" Width="100" IsHitTestVisible="{Binding Path=Data, Converter={StaticResource ProjectTypeEnabledConverter}}" Checked="IsCallback_Checked" Unchecked="IsCallback_Unchecked" />
+				<Label Content="Owner Service:" Height="Auto" HorizontalAlignment="Left" Margin="5,34,0,0" VerticalAlignment="Top" Width="Auto" />
+				<Button Name="OpenService" IsEnabled="{Binding Path=Data.Callback, Converter={StaticResource NullBoolConverter}}" Height="Auto" Margin="100,36,5,0" VerticalAlignment="Top" IsHitTestVisible="{Binding Path=Data, Converter={StaticResource ProjectTypeEnabledConverter}}" Click="OpenService_Click" >
+					<TextBlock Name="Owner" Padding="1" Text="{Binding Path=Data.Callback, Converter={StaticResource ServiceNameConverter}, ConverterParameter=True}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+				</Button>
+			</Grid>
+		</GroupBox>
+	</Grid>
+	<c1ext:C1Accordion Grid.Row="2" Margin="5" Fill="True" >
+		<c1ext:C1AccordionItem IsExpanded="True">
+			<c1ext:C1AccordionItem.Header>
+				<StackPanel Orientation="Horizontal">
+					<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/Operation.png" UseLayoutRounding="True" Height="32" Width="32" Stretch="Uniform"/>
+					<TextBlock FontSize="18" Padding="5,0,0,0" Text="Operations" Height="Auto" VerticalAlignment="Center" />
+				</StackPanel>
+			</c1ext:C1AccordionItem.Header>
+			<Grid Margin="0,5,0,2">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="250" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Border Margin="0,0,5,0" Grid.Column="0" >
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+						<Border BorderBrush="#CCCCCC" BorderThickness="0,0,0,1" Padding="0,0,0,5" Margin="0,0,0,5" Grid.Row="0">
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="30" />
+									<RowDefinition Height="24" />
+								</Grid.RowDefinitions>
+								<Button HorizontalAlignment="Stretch" Margin="0,0,0,5" Name="AddOperation" IsHitTestVisible="{Binding Path=Data, Converter={StaticResource ProjectTypeEnabledConverter}}" Click="AddOperation_Click" >
+									<StackPanel Orientation="Horizontal">
+										<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Add.png" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+										<TextBlock FontSize="12" Padding="3,0,0,0" Text="Add Operation" Height="Auto" VerticalAlignment="Center" />
+									</StackPanel>
+								</Button>
+								<TextBox Grid.Row="1" Name="OperationsSearch" Margin="0" Style="{StaticResource SearchTextBox}" TextChanged="OperationsSearch_TextChanged" />
+							</Grid>
+						</Border>
+						<ListBox x:Name="OperationsList" Grid.Row="1" SelectionMode="Single" ItemContainerStyle="{StaticResource SearchStretchedContainerStyle}" SelectionChanged="OperationsList_SelectionChanged" BorderThickness="0" AllowDrop="True" PreviewMouseLeftButtonDown="OperationsList_PreviewMouseLeftButtonDown" PreviewMouseMove="OperationsList_PreviewMouseMove" QueryContinueDrag="OperationsList_QueryContinueDrag" DragLeave="OperationsList_DragLeave" PreviewDragOver="OperationsList_PreviewDragOver" Drop="OperationsList_Drop" >
+							<ListBox.Resources>
+								<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+							</ListBox.Resources>
+							<ListBox.ItemTemplate>
+								<DataTemplate>
+									<Border Name="BG" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="0">
+										<Grid>
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="20" />
+												<ColumnDefinition Width="*" />
+												<ColumnDefinition Width="20" />
+											</Grid.ColumnDefinitions>
+											<Grid.RowDefinitions>
+												<RowDefinition Height="20" />
+											</Grid.RowDefinitions>
+											<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Operation.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform" Grid.Column="0"/>
+											<TextBlock Text="{Binding Path=Name}" Grid.Column="1" VerticalAlignment="Center" Foreground="Black" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
+											<Button Name="DeleteSelectedOperation" Visibility="Hidden" Grid.Column="2" Margin="0" Click="DeleteSelectedOperation_Click" Padding="0" Style="{StaticResource ListItemButtonStyle}" IsHitTestVisible="{Binding Path=., Converter={StaticResource ProjectTypeEnabledConverter}}">
+												<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+											</Button>
+										</Grid>
+									</Border>
+									<DataTemplate.Triggers>
+										<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
+											<Setter TargetName="BG" Property="Background" Value="{StaticResource ItemHoverBackground}" />
+											<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource ItemHoverBorder}" />
+											<Setter TargetName="DeleteSelectedOperation" Property="Visibility" Value="Visible" />
+										</DataTrigger>
+										<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
+											<Setter TargetName="BG" Property="Background" Value="{StaticResource ItemSelectedBackground}" />
+											<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource ItemHoverBorder}" />
+											<Setter TargetName="DeleteSelectedOperation" Property="Visibility" Value="Visible" />
+										</DataTrigger>
+										<MultiDataTrigger>
+											<MultiDataTrigger.Conditions>
+												<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="False" />
+												<Condition Binding="{Binding ElementName=DeleteSelectedOperation, Path=IsMouseOver}" Value="True" />
+											</MultiDataTrigger.Conditions>
+											<Setter TargetName="BG" Property="Background" Value="White" />
+										</MultiDataTrigger>
+									</DataTemplate.Triggers>
+								</DataTemplate>
+							</ListBox.ItemTemplate>
+						</ListBox>
+					</Grid>
+				</Border>
+				<Border Grid.Column="1" BorderBrush="#CCCCCC" BorderThickness="1,0,0,0" Margin="0" Padding="5,0,0,0">
+					<Grid>
+						<TextBlock Name="OperationContentEmpty" Text="Please select an operation from the list on the left, or create a new one." FontSize="16" FontStyle="Italic" Foreground="DarkGray" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" />
+						<ContentPresenter Name="OperationContent" />
+					</Grid>
+				</Border>
+			</Grid>
+		</c1ext:C1AccordionItem>
+		<c1ext:C1AccordionItem>
+			<c1ext:C1AccordionItem.Header>
+				<StackPanel Orientation="Horizontal">
+					<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/Property.png" UseLayoutRounding="True" Height="32" Width="32" Stretch="Uniform"/>
+					<TextBlock FontSize="18" Padding="5,0,0,0" Text="Properties" Height="Auto" VerticalAlignment="Center" />
+				</StackPanel>
+			</c1ext:C1AccordionItem.Header>
+			<Grid Margin="0,5,0,2">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="250" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Border Margin="0,0,5,0" Grid.Column="0" >
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+						<Border BorderBrush="#CCCCCC" BorderThickness="0,0,0,1" Padding="0,0,0,5" Margin="0,0,0,5" Grid.Row="0">
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="30" />
+									<RowDefinition Height="24" />
+								</Grid.RowDefinitions>
+								<Button HorizontalAlignment="Stretch" Margin="0,0,0,5" Name="AddProperty" IsHitTestVisible="{Binding Path=Data, Converter={StaticResource ProjectTypeEnabledConverter}}" Click="AddProperty_Click" >
+									<StackPanel Orientation="Horizontal">
+										<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Add.png" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+										<TextBlock FontSize="12" Padding="3,0,0,0" Text="Add Property" Height="Auto" VerticalAlignment="Center" />
+									</StackPanel>
+								</Button>
+								<TextBox Grid.Row="1" Name="PropertiesSearch" Margin="0" Style="{StaticResource SearchTextBox}" TextChanged="PropertiesSearch_TextChanged" />
+							</Grid>
+						</Border>
+						<ListBox x:Name="PropertiesList" Grid.Row="1" SelectionMode="Single" ItemContainerStyle="{StaticResource StretchedContainerStyle}" SelectionChanged="PropertiesList_SelectionChanged" BorderThickness="0" AllowDrop="True" PreviewMouseLeftButtonDown="PropertiesList_PreviewMouseLeftButtonDown" PreviewMouseMove="PropertiesList_PreviewMouseMove" QueryContinueDrag="PropertiesList_QueryContinueDrag" DragLeave="PropertiesList_DragLeave" PreviewDragOver="PropertiesList_PreviewDragOver" Drop="PropertiesList_Drop">
+							<ListBox.Resources>
+								<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+							</ListBox.Resources>
+							<ListBox.ItemTemplate>
+								<DataTemplate>
+									<Border Name="BG" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="0">
+										<Grid>
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="20" />
+												<ColumnDefinition Width="*" />
+												<ColumnDefinition Width="20" />
+											</Grid.ColumnDefinitions>
+											<Grid.RowDefinitions>
+												<RowDefinition Height="20" />
+											</Grid.RowDefinitions>
+											<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Property.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform" Grid.Column="0"/>
+											<TextBlock Text="{Binding Path=Name}" Grid.Column="1" VerticalAlignment="Center" Foreground="Black" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
+											<Button Name="DeleteSelectedProperty" Grid.Column="2" Margin="0" Click="DeleteSelectedProperty_Click" Padding="0" Style="{StaticResource ListItemButtonStyle}" Visibility="Hidden" IsHitTestVisible="{Binding Path=., Converter={StaticResource ProjectTypeEnabledConverter}}">
+												<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+											</Button>
+										</Grid>
+									</Border>
+									<DataTemplate.Triggers>
+										<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
+											<Setter TargetName="BG" Property="Background" Value="{StaticResource ItemHoverBackground}" />
+											<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource ItemHoverBorder}" />
+											<Setter TargetName="DeleteSelectedProperty" Property="Visibility" Value="Visible" />
+										</DataTrigger>
+										<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
+											<Setter TargetName="BG" Property="Background" Value="{StaticResource ItemSelectedBackground}" />
+											<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource ItemHoverBorder}" />
+											<Setter TargetName="DeleteSelectedProperty" Property="Visibility" Value="Visible" />
+										</DataTrigger>
+										<MultiDataTrigger>
+											<MultiDataTrigger.Conditions>
+												<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="False" />
+												<Condition Binding="{Binding ElementName=DeleteSelectedProperty, Path=IsMouseOver}" Value="True" />
+											</MultiDataTrigger.Conditions>
+											<Setter TargetName="BG" Property="Background" Value="White" />
+										</MultiDataTrigger>
+									</DataTemplate.Triggers>
+								</DataTemplate>
+							</ListBox.ItemTemplate>
+						</ListBox>
+					</Grid>
+				</Border>
+				<Border Grid.Column="1" BorderBrush="#CCCCCC" BorderThickness="1,0,0,0" Margin="0" Padding="5,0,0,0">
+					<Grid>
+						<TextBlock Name="PropertyContentEmpty" Text="Please select a property from the list on the left, or create a new one." FontSize="16" FontStyle="Italic" Foreground="DarkGray" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" />
+						<ContentPresenter Name="PropertyContent" />
+					</Grid>
+				</Border>
+			</Grid>
+		</c1ext:C1AccordionItem>
+	</c1ext:C1Accordion>
+</Grid>

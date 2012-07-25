@@ -1,0 +1,637 @@
+﻿<Grid x:Class="WCFArchitect.Interface.Project.Project" x:ClassModifier="internal"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:r="clr-namespace:Fluent;assembly=Fluent"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+	xmlns:sys="clr-namespace:System;assembly=mscorlib"
+	xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" 
+	xmlns:Project="clr-namespace:WCFArchitect.Interface.Project"
+	xmlns:InRoot="clr-namespace:WCFArchitect.Interface"
+	xmlns:pc="clr-namespace:Prospective.Controls;assembly=Prospective.Controls"
+	d:DesignHeight="800" d:DesignWidth="1115" DataContext="{Binding RelativeSource={RelativeSource Self}}" >
+	<Grid.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Colors.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Generic.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Backstage.xaml" />
+				<ResourceDictionary>
+					<Project:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+					<Project:ProjectCollectionTypeConverter x:Key="ProjectCollectionTypeConverter" />
+					<Project:ProjectServiceSerializerTypeConverter x:Key="ProjectServiceSerializerTypeConverter" />
+					<Project:ProjectOutputPathFrameworkConverter x:Key="ProjectOutputPathFrameworkConverter" />
+					<Project:ServiceBindingTypeImageConverter x:Key="ServiceBindingTypeImageConverter" />
+					<Project:ServiceBindingTypeNameConverter x:Key="ServiceBindingTypeNameConverter" />
+					<Project:BindingSecurityTypeImageConverter x:Key="BindingSecurityTypeImageConverter" />
+					<Project:BindingSecurityTypeNameConverter x:Key="BindingSecurityTypeNameConverter" />
+					<InRoot:ProjectTypeVisibilityConverter x:Key="ProjectTypeVisibilityConverter" />
+					<InRoot:ProjectTypeEnabledConverter x:Key="ProjectTypeEnabledConverter" />
+					<InRoot:ProjectTypeReadOnlyConverter x:Key="ProjectTypeReadOnlyConverter" />
+				</ResourceDictionary>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Grid.Resources>
+	<TabControl Background="{StaticResource NormalBackgroundColor}" FontSize="12" Name="ProjectTabControl" TabStripPlacement="Left" UseLayoutRounding="True" >
+		<TabItem Header="Project" Name="ProjectTab" IsSelected="True">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="100" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+				<Label Content="Project Name:" Height="Auto" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" />
+				<pc:TextBox Height="23" Margin="147,11,336,0" Name="ProjectName" Text="{Binding Path=Settings.Name}" VerticalAlignment="Top" IsReadOnly="{Binding Path=Settings, Converter={StaticResource ProjectTypeReadOnlyConverter}}" />
+				<Label Content="Project Namespace:" Height="Auto" HorizontalAlignment="Left" Margin="5,41,0,0" VerticalAlignment="Top" />
+				<pc:TextBox Height="23" Margin="147,42,10,0" Name="txtProjectNamespace" VerticalAlignment="Top" Text="{Binding Path=Settings.Namespace.Name}" IsReadOnly="{Binding Path=Settings, Converter={StaticResource ProjectTypeReadOnlyConverter}}" />
+				<Label Content="Project Namespace URI:" Height="Auto" HorizontalAlignment="Left" Margin="5,72,0,0" VerticalAlignment="Top" />
+				<pc:TextBox Height="23" Margin="147,73,10,0" Name="txtProjectNamespaceURI" VerticalAlignment="Top" Text="{Binding Path=Settings.Namespace.URI}" IsReadOnly="{Binding Path=Settings, Converter={StaticResource ProjectTypeReadOnlyConverter}}" />
+				<Label Content="Target Frameworks:" Height="Auto" HorizontalAlignment="Right" Margin="0,10,216,0" VerticalAlignment="Top" />
+				<Button Content="Select Frameworks..." Height="23" HorizontalAlignment="Right" Margin="0,11,10,0" Name="FrameworkSelect" VerticalAlignment="Top" Width="200" Click="FrameworkSelect_Click" MouseDown="FrameworkSelect_MouseDown">
+					<Button.ContextMenu>
+						<ContextMenu>
+							<MenuItem IsCheckable="True" Name="Framework30" Header=".NET Framework 3.0" IsChecked="{Binding Path=Settings.Framework30}" />
+							<MenuItem IsCheckable="True" Name="Framework35" Header=".NET Framework 3.5" IsChecked="{Binding Path=Settings.Framework35}" />
+							<MenuItem IsCheckable="True" Name="Framework35Client" Header=".NET Framework 3.5 Client Profile" IsChecked="{Binding Path=Settings.Framework35Client}" />
+							<MenuItem IsCheckable="True" Name="Framework40" Header=".NET Framework 4.0" IsChecked="{Binding Path=Settings.Framework40}" />
+							<MenuItem IsCheckable="True" Name="Framework40Client" Header=".NET Framework 4.0 Client Profile" IsChecked="{Binding Path=Settings.Framework40Client}" />
+						</ContextMenu>
+					</Button.ContextMenu>
+				</Button>
+				<GroupBox Name="AssemblyGroup" Header="Assembly" Background="White" Margin="10,5" Grid.Row="1" Height="150">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<Label Content="Title:" HorizontalAlignment="Left" Width="Auto" Height="Auto" VerticalAlignment="Top" Margin="10,7,0,0" />
+						<pc:TextBox Text="{Binding Path=Settings.AssemblyTitle}" Height="23" VerticalAlignment="Top" Margin="89,8,10,0" IsReadOnly="{Binding Path=Settings, Converter={StaticResource ProjectTypeReadOnlyConverter}}" ToolTip="{Binding Path=Settings.AssemblyTitle}" />
+						<Label Content="Description:" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Width="Auto" Margin="10,36,0,0" />
+						<pc:TextBox Text="{Binding Path=Settings.AssemblyDescription}" Height="23" VerticalAlignment="Top" Margin="89,37,10,0" IsReadOnly="{Binding Path=Settings, Converter={StaticResource ProjectTypeReadOnlyConverter}}" ToolTip="{Binding Path=Settings.AssemblyDescription}" />
+						<Label Content="Company:" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Width="Auto" Margin="10,65,0,0" />
+						<pc:TextBox Text="{Binding Path=Settings.AssemblyCompany}" Height="23" VerticalAlignment="Top" Margin="89,66,10,0" IsReadOnly="{Binding Path=Settings, Converter={StaticResource ProjectTypeReadOnlyConverter}}" ToolTip="{Binding Path=Settings.AssemblyCompany}" />
+						<Label Content="Product:" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Width="Auto" Margin="10,94,0,0" />
+						<pc:TextBox Text="{Binding Path=Settings.AssemblyProduct}" Height="23" VerticalAlignment="Top" Margin="89,95,10,0" IsReadOnly="{Binding Path=Settings, Converter={StaticResource ProjectTypeReadOnlyConverter}}" ToolTip="{Binding Path=Settings.AssemblyProduct}" />
+						<Label Content="Copyright:" HorizontalAlignment="Left" Width="Auto" Height="Auto" VerticalAlignment="Top" Margin="10,7,0,0" Grid.Column="1" />
+						<pc:TextBox Text="{Binding Path=Settings.AssemblyCopyright}" Height="23" VerticalAlignment="Top" Margin="89,8,10,0" Grid.Column="1" IsReadOnly="{Binding Path=Settings, Converter={StaticResource ProjectTypeReadOnlyConverter}}" ToolTip="{Binding Path=Settings.AssemblyCopyright}" />
+						<Label Content="Trademark:" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Width="Auto" Margin="10,36,0,0" Grid.Column="1" />
+						<pc:TextBox Text="{Binding Path=Settings.AssemblyTrademark}" Height="23" VerticalAlignment="Top" Margin="89,37,10,0" Grid.Column="1" IsReadOnly="{Binding Path=Settings, Converter={StaticResource ProjectTypeReadOnlyConverter}}" ToolTip="{Binding Path=Settings.AssemblyTrademark}" />
+						<Label Content="Version:" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Width="Auto" Margin="10,65,0,0" Grid.Column="1" />
+						<pc:TextBox Text="{Binding Path=Settings.AssemblyVersion.Major}" Height="23" HorizontalAlignment="Left" Margin="89,66,0,0" VerticalAlignment="Top" Width="30" Grid.Column="1" IsReadOnly="{Binding Path=Settings, Converter={StaticResource ProjectTypeReadOnlyConverter}}" />
+						<pc:TextBox Text="{Binding Path=Settings.AssemblyVersion.Minor}" Height="23" HorizontalAlignment="Left" Margin="125,66,0,0" VerticalAlignment="Top" Width="30" Grid.Column="1" IsReadOnly="{Binding Path=Settings, Converter={StaticResource ProjectTypeReadOnlyConverter}}" />
+						<pc:TextBox Text="{Binding Path=Settings.AssemblyVersion.Build}" Height="23" HorizontalAlignment="Left" Margin="161,66,0,0" VerticalAlignment="Top" Width="30" Grid.Column="1" IsReadOnly="{Binding Path=Settings, Converter={StaticResource ProjectTypeReadOnlyConverter}}" />
+						<pc:TextBox Text="{Binding Path=Settings.AssemblyVersion.Revision}" Height="23" HorizontalAlignment="Left" Margin="197,66,0,0" VerticalAlignment="Top" Width="30" Grid.Column="1" IsReadOnly="{Binding Path=Settings, Converter={StaticResource ProjectTypeReadOnlyConverter}}" />
+						<Label Content="File Version:" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Width="Auto" Margin="10,94,0,0" Grid.Column="1" />
+						<pc:TextBox Text="{Binding Path=Settings.AssemblyFileVersion.Major}" Height="23" HorizontalAlignment="Left" Margin="89,95,0,0" VerticalAlignment="Top" Width="30" Grid.Column="1" IsReadOnly="{Binding Path=Settings, Converter={StaticResource ProjectTypeReadOnlyConverter}}" />
+						<pc:TextBox Text="{Binding Path=Settings.AssemblyFileVersion.Minor}" Height="23" HorizontalAlignment="Left" Margin="125,95,0,0" VerticalAlignment="Top" Width="30" Grid.Column="1" IsReadOnly="{Binding Path=Settings, Converter={StaticResource ProjectTypeReadOnlyConverter}}" />
+						<pc:TextBox Text="{Binding Path=Settings.AssemblyFileVersion.Build}" Height="23" HorizontalAlignment="Left" Margin="161,95,0,0" VerticalAlignment="Top" Width="30" Grid.Column="1" IsReadOnly="{Binding Path=Settings, Converter={StaticResource ProjectTypeReadOnlyConverter}}" />
+						<pc:TextBox Text="{Binding Path=Settings.AssemblyFileVersion.Revision}" Height="23" HorizontalAlignment="Left" Margin="197,95,0,0" VerticalAlignment="Top" Width="30" Grid.Column="1" IsReadOnly="{Binding Path=Settings, Converter={StaticResource ProjectTypeReadOnlyConverter}}" />
+						<CheckBox Content="Make Assembly COM Visible:" Height="16" Margin="10,11,10,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" FlowDirection="RightToLeft" Padding="4,0" IsChecked="{Binding Path=Settings.AssemblyCOMVisible}" Grid.Column="2" IsHitTestVisible="{Binding Path=Settings, Converter={StaticResource ProjectTypeEnabledConverter}}" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" />
+						<Label Content="GUID:" Height="Auto" HorizontalAlignment="Left" Margin="9,36,0,0" VerticalAlignment="Top" Width="Auto" Grid.Column="2" />
+						<pc:TextBox Name="AssemblyCOMGuid" Height="23" Margin="55,37,10,0" VerticalAlignment="Top" Grid.Column="2" IsReadOnly="True" />
+					</Grid>
+				</GroupBox>
+				<GroupBox Header="Namespaces" Background="White" Margin="10,5" Grid.Row="2" Height="60">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<Label Content="Bindings:" HorizontalAlignment="Left" Width="Auto" Height="Auto" VerticalAlignment="Top" Margin="10,7,0,0" />
+						<pc:TextBox Name="BindingsNamespace" Text="{Binding Path=Settings.BindingsNamespace}" Height="23" VerticalAlignment="Top" Margin="74,8,10,0" IsReadOnly="{Binding Path=Settings, Converter={StaticResource ProjectTypeReadOnlyConverter}}" ToolTip="{Binding Path=Settings.BindingsNamespace}"  />
+						<Label Content="Security Class:" HorizontalAlignment="Left" Width="Auto" Height="Auto" VerticalAlignment="Top" Margin="10,7,0,0" Grid.Column="1" />
+						<pc:TextBox Name="SecurityClass" Text="{Binding Path=Settings.SecurityClass}" Height="23" VerticalAlignment="Top" Margin="100,8,10,0" Grid.Column="1" IsReadOnly="{Binding Path=Settings, Converter={StaticResource ProjectTypeReadOnlyConverter}}" ToolTip="{Binding Path=Settings.SecurityClass}" />
+						<Label Content="Hosts:" Height="Auto" HorizontalAlignment="Left" Margin="10,7,0,0" VerticalAlignment="Top" Width="Auto" Grid.Column="2" />
+						<pc:TextBox Name="HostsNamespace" Text="{Binding Path=Settings.HostsNamespace}" Height="23" Margin="58,8,10,0" VerticalAlignment="Top" Grid.Column="2" IsReadOnly="{Binding Path=Settings, Converter={StaticResource ProjectTypeReadOnlyConverter}}" ToolTip="{Binding Path=Settings.HostsNamespace}" />
+					</Grid>
+				</GroupBox>
+				<Grid Grid.Row="3">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<GroupBox Name="DependenciesGroup" Header="Dependency Projects" Background="White" Margin="10,5,5,10" IsEnabled="True" Grid.Column="0">
+						<Grid>
+							<Border BorderThickness="0,0,0,1" BorderBrush="{StaticResource NormalBorderColor}" Margin="0,0,0,35">
+								<ListView IsSynchronizedWithCurrentItem="False" HorizontalAlignment="Stretch" BorderThickness="0" VerticalAlignment="Stretch" x:Name="DependencyItems" SelectionMode="Single" AlternationCount="1" ItemContainerStyle="{StaticResource ListViewItemContainerStyle}" >
+									<ListView.View>
+										<GridView>
+											<GridViewColumn Header="ID" Width="0" DisplayMemberBinding="{Binding Path=ID}" />
+											<GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding Path=Name}"/>
+											<GridViewColumn Header="Namespace" Width="Auto" DisplayMemberBinding="{Binding Path=Namespace.Name}"/>
+											<GridViewColumn Header="Namespace URI" Width="Auto" DisplayMemberBinding="{Binding Path=Namespace.URI}"/>
+										</GridView>
+									</ListView.View>
+								</ListView>
+							</Border>
+							<Button Content="Add" Height="23" HorizontalAlignment="Right" Margin="0,0,93,6" Name="DependencyAdd" VerticalAlignment="Bottom" Width="75" IsEnabled="{Binding Path=Settings, Converter={StaticResource ProjectTypeEnabledConverter}}" Click="DependencyAdd_Click" />
+							<Button Content="Remove" Height="23" HorizontalAlignment="Right" Margin="0,0,10,6" Name="DependencyRemove" VerticalAlignment="Bottom" Width="75" IsEnabled="{Binding Path=Settings, Converter={StaticResource ProjectTypeEnabledConverter}}" Click="DependencyRemove_Click" />
+						</Grid>
+					</GroupBox>
+					<GroupBox Name="UsingGroup" Header="Using Namespaces" Background="White" Margin="5,5,10,10" IsEnabled="True" Grid.Column="1">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="*" />
+							</Grid.RowDefinitions>
+							<Label Content="Namespace:" Height="Auto" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="Auto" Grid.RowSpan="2" />
+							<pc:TextBox Name="UsingNamespace" Height="23" Margin="86,7,66,0" VerticalAlignment="Top" IsEnabled="{Binding Path=Settings, Converter={StaticResource ProjectTypeEnabledConverter}}" KeyUp="UsingNamespace_KeyUp" />
+							<Button Grid.Row="0" Content="Add" Height="23" Margin="0,7,10,0" Name="AddUsingNamespace" VerticalAlignment="Top" Grid.Column="2" HorizontalAlignment="Right" Width="50" IsEnabled="{Binding Path=Settings, Converter={StaticResource ProjectTypeEnabledConverter}}" Click="AddUsingNamespace_Click" />
+							<ListBox x:Name="UsingList" Grid.Row="1" Margin="0,5,0,0" SelectionMode="Single" ItemContainerStyle="{StaticResource StretchedContainerStyle}" BorderThickness="0,1,0,0" BorderBrush="{StaticResource NormalBorderColor}">
+								<ListBox.Resources>
+									<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+								</ListBox.Resources>
+								<ListBox.ItemTemplate>
+									<DataTemplate>
+										<Border Name="BG" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="0">
+											<Grid>
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="*" MinWidth="230" />
+													<ColumnDefinition Width="150" />
+													<ColumnDefinition Width="20" />
+												</Grid.ColumnDefinitions>
+												<Grid.RowDefinitions>
+													<RowDefinition Height="20" />
+												</Grid.RowDefinitions>
+												<TextBlock Text="{Binding Path=Namespace}" Grid.Column="0" Margin="3,0,0,0" VerticalAlignment="Center" Foreground="Black" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
+												<CheckBox Grid.Column="1" Margin="0" Content="Full Framework Only" VerticalAlignment="Center" IsChecked="{Binding Path=IsFullFrameworkOnly}" />
+												<Button Name="DeleteSelectedUsingItem" Grid.Column="2" Margin="0" Click="DeleteSelectedUsingItem_Click" Padding="0" Visibility="Hidden" Style="{StaticResource ListItemButtonStyle}">
+													<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+												</Button>
+											</Grid>
+										</Border>
+										<DataTemplate.Triggers>
+											<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
+												<Setter TargetName="BG" Property="Background" Value="{StaticResource ItemHoverBackground}" />
+												<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource ItemHoverBorder}" />
+												<Setter TargetName="DeleteSelectedUsingItem" Property="Visibility" Value="Visible" />
+											</DataTrigger>
+											<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
+												<Setter TargetName="BG" Property="Background" Value="{StaticResource ItemSelectedBackground}" />
+												<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource ItemHoverBorder}" />
+												<Setter TargetName="DeleteSelectedUsingItem" Property="Visibility" Value="Visible" />
+											</DataTrigger>
+											<MultiDataTrigger>
+												<MultiDataTrigger.Conditions>
+													<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="False" />
+													<Condition Binding="{Binding ElementName=DeleteSelectedUsingItem, Path=IsMouseOver}" Value="True" />
+												</MultiDataTrigger.Conditions>
+												<Setter TargetName="BG" Property="Background" Value="White" />
+											</MultiDataTrigger>
+										</DataTemplate.Triggers>
+									</DataTemplate>
+								</ListBox.ItemTemplate>
+							</ListBox>
+						</Grid>
+					</GroupBox>
+				</Grid>
+				<GroupBox Name="ReferencesGroup" Header="References" Background="White" Margin="10,5,10,10" IsEnabled="True" Grid.Row="4">
+					<Grid>
+						<Border BorderThickness="0,0,0,1" BorderBrush="{StaticResource NormalBorderColor}" Margin="0,0,0,35">
+							<ListView IsSynchronizedWithCurrentItem="False" HorizontalAlignment="Stretch" BorderThickness="0" VerticalAlignment="Stretch" x:Name="ReferenceItems" SelectionMode="Multiple" AlternationCount="1" ItemContainerStyle="{StaticResource ListViewItemContainerStyle}" >
+								<ListView.View>
+									<GridView>
+										<GridViewColumn Header="ID" Width="0" DisplayMemberBinding="{Binding Path=ID}" />
+										<GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding Path=Name}"/>
+										<GridViewColumn Header="Client Profile" Width="75" DisplayMemberBinding="{Binding Path=IsClientProfile}"/>
+										<GridViewColumn Header="Version" Width="Auto" DisplayMemberBinding="{Binding Path=Version}"/>
+										<GridViewColumn Header="Path" Width="Auto" DisplayMemberBinding="{Binding Path=Path}"/>
+									</GridView>
+								</ListView.View>
+							</ListView>
+						</Border>
+						<Button Content="Add" Height="23" HorizontalAlignment="Right" Margin="0,0,93,6" Name="ReferenceAdd" VerticalAlignment="Bottom" Width="75" Click="ReferenceAdd_Click" />
+						<Button Content="Remove" Height="23" HorizontalAlignment="Right" Margin="0,0,10,6" Name="ReferenceRemove" VerticalAlignment="Bottom" Width="75" Click="ReferenceRemove_Click" />
+					</Grid>
+				</GroupBox>
+			</Grid>
+		</TabItem>
+		<TabItem Header="Build" Name="BuildTab">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="500*" />
+					<ColumnDefinition Width="500*" />
+				</Grid.ColumnDefinitions>
+				<Border Grid.Column="0" Margin="0" Padding="10">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+						<Border BorderBrush="#CCCCCC" BorderThickness="0,0,0,1" Padding="0,0,0,5" Margin="0,0,0,10" Grid.Row="0">
+							<TextBlock Foreground="#333333" FontSize="18" Padding="5,0,0,0" Text="Server Build Options" />
+						</Border>
+						<GroupBox Header="General" Margin="0,0,0,5" Grid.Row="1">
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+								<RadioButton Content="Generate 'public' Classes" Margin="5" Name="ServerPublicClasses" Grid.Row="0" IsChecked="{Binding Path=Settings.ServerPublicClasses}" />
+								<RadioButton Content="Generate 'internal' Classes" Margin="5,0,5,5" Name="ServerInternalClasses" Grid.Row="1" IsChecked="{Binding Path=Settings.ServerInternalClasses}" />
+							</Grid>
+						</GroupBox>
+						<GroupBox Name="ServerServiceGenerationGroup" Header="Service Generation" Margin="0,5" Grid.Row="2">
+							<Grid>
+								<CheckBox Content="Generate Data Contracts Only" IsChecked="{Binding Path=Settings.ServiceGenerateDataContracts}" Height="16" HorizontalAlignment="Left" Margin="5,7,0,0" VerticalAlignment="Top" />
+								<Label Content="Excluded Type:" Height="Auto" HorizontalAlignment="Left" Margin="0,29,0,0" VerticalAlignment="Top" />
+								<pc:TextBox Height="23" Margin="95,30,86,0" Name="ServerServiceExcludedType" VerticalAlignment="Top" />
+								<Button Content="Add" Height="23" HorizontalAlignment="Right" Margin="0,30,5,0" Name="ServiceExcludedTypeAdd" VerticalAlignment="Top" Width="75" Click="ServiceExcludedTypeAdd_Click" />
+								<ListBox Name="ExcludedTypesList" Margin="0,60,0,0" BorderThickness="0,1,0,0" BorderBrush="{StaticResource NormalBorderColor}" ItemsSource="{Binding Path=Settings.ServiceExcludedTypes}" ItemContainerStyle="{StaticResource SearchStretchedContainerStyle}" >
+									<ListBox.Resources>
+										<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+									</ListBox.Resources>
+									<ListBox.ItemTemplate>
+										<DataTemplate>
+											<Border Name="BG" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="0" >
+												<Grid >
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="*" />
+														<ColumnDefinition Width="20" />
+													</Grid.ColumnDefinitions>
+													<Grid.RowDefinitions>
+														<RowDefinition Height="20" />
+													</Grid.RowDefinitions>
+													<TextBlock Grid.Column="0" Text="{Binding}" Foreground="Black" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+													<Button Name="DeleteSelectedExcludedType" Grid.Column="1" Margin="0" Click="DeleteSelectedExcludedType_Click" Padding="0" Visibility="Hidden" Style="{StaticResource ListItemButtonStyle}">
+														<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+													</Button>
+												</Grid>
+											</Border>
+											<DataTemplate.Triggers>
+												<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
+													<Setter TargetName="BG" Property="Background" Value="{StaticResource ItemHoverBackground}" />
+													<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource ItemHoverBorder}" />
+													<Setter TargetName="DeleteSelectedExcludedType" Property="Visibility" Value="Visible" />
+												</DataTrigger>
+												<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
+													<Setter TargetName="BG" Property="Background" Value="{StaticResource ItemSelectedBackground}" />
+													<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource ItemHoverBorder}" />
+													<Setter TargetName="DeleteSelectedExcludedType" Property="Visibility" Value="Visible" />
+												</DataTrigger>
+												<MultiDataTrigger>
+													<MultiDataTrigger.Conditions>
+														<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="False" />
+														<Condition Binding="{Binding ElementName=DeleteSelectedExcludedType, Path=IsMouseOver}" Value="True" />
+													</MultiDataTrigger.Conditions>
+													<Setter TargetName="BG" Property="Background" Value="White" />
+												</MultiDataTrigger>
+											</DataTemplate.Triggers>
+										</DataTemplate>
+									</ListBox.ItemTemplate>
+								</ListBox>
+							</Grid>
+						</GroupBox>
+						<GroupBox Name="ServerOuputPathsGroup" Header="Output Paths" Margin="0,5,0,0" Grid.Row="3">
+							<Grid>
+								<Label Content="Output Name:" Height="Auto" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" />
+								<pc:TextBox Height="23" Margin="96,7,5,0" Name="ServerAssemblyName" VerticalAlignment="Top" Text="{Binding Path=Settings.ServerAssemblyName}"/>
+								<Label Content="Output Path:" Height="Auto" HorizontalAlignment="Left" Margin="5,35,0,0" VerticalAlignment="Top" />
+								<pc:TextBox Height="23" Margin="96,36,167,0" Name="ServerOutputPath" VerticalAlignment="Top" ToolTip="{Binding ElementName=ServerOutputPath, Path=Text}"  />
+								<Button Content="Browse..." Height="23" HorizontalAlignment="Right" Margin="0,36,86,0" Name="ServerOutputBrowse" VerticalAlignment="Top" Width="75" Click="ServerOutputBrowse_Click"/>
+								<Button Content="Add" Height="23" HorizontalAlignment="Right" Margin="0,36,5,0" Name="ServerOutputAdd" VerticalAlignment="Top" Width="75" Click="ServerOutputAdd_Click"/>
+								<Border Margin="0,65,0,0" BorderThickness="0,1,0,0" BorderBrush="{StaticResource NormalBorderColor}" >
+									<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+										<StackPanel Name="ServerOutputPathsList" Orientation="Vertical" />
+									</ScrollViewer>
+								</Border>
+							</Grid>
+						</GroupBox>
+					</Grid>
+				</Border>
+				<Border Grid.Column="1" Margin="0" Padding="10" BorderBrush="#CCCCCC" BorderThickness="1,0,0,0">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+						<Border BorderBrush="#CCCCCC" BorderThickness="0,0,0,1" Padding="0,0,0,5" Margin="0,0,0,10" Grid.Row="0">
+							<TextBlock Foreground="#333333" FontSize="18" Padding="5,0,0,0" Text="Client Build Options" />
+						</Border>
+						<GroupBox Header="General" Margin="0,0,0,5" Grid.Row="1">
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+								<RadioButton Content="Generate 'public' Classes" Margin="5" Name="ClientPublicClasses" Grid.Row="0" IsChecked="{Binding Path=Settings.ClientPublicClasses}" />
+								<RadioButton Content="Generate 'internal' Classes" Margin="5,0,5,5" Name="ClientInternalClasses" Grid.Row="1" IsChecked="{Binding Path=Settings.ClientInternalClasses}" />
+							</Grid>
+						</GroupBox>
+						<GroupBox Name="ClientServiceGenerationGroup" Header="Service Generation" Margin="0,5" Grid.Row="2">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="*" />
+								</Grid.RowDefinitions>
+								<CheckBox Content="Generate Async Method Signatures" IsChecked="{Binding Path=Settings.ServiceAsyncMethods}" Height="16" Margin="5,7,0,0" VerticalAlignment="Top" Grid.Row="0" Grid.Column="0" />
+								<CheckBox Content="Enable WinForms Databinding" IsChecked="{Binding Path=Settings.ServiceEnableDataBinding}" Height="16" Margin="5,7,0,0" VerticalAlignment="Top" Grid.Row="1" Grid.Column="0" />
+								<CheckBox Content="Import XML Types" IsChecked="{Binding Path=Settings.ServiceImportXMLTypes}" Height="16" Margin="5,7,0,0" VerticalAlignment="Top" Grid.Row="2" Grid.Column="0" />
+								<CheckBox Content="Wrapped parameter special casing" IsChecked="{Binding Path=Settings.ServiceWrapped}" Height="16" Margin="5,7,0,0" VerticalAlignment="Top" Grid.Row="3" Grid.Column="0" />
+								<CheckBox Content="Do not generate config files" IsChecked="{Binding Path=Settings.ServiceNoConfig}" Height="16" Margin="5,7,0,0" VerticalAlignment="Top" Grid.Row="0" Grid.Column="1" />
+								<CheckBox Content="No Standard Library" IsChecked="{Binding Path=Settings.ServiceNoStandardLibrary}" Height="16" Margin="5,7,0,0" VerticalAlignment="Top" Grid.Row="1" Grid.Column="1" />
+								<CheckBox Content="Mark classes as serializable" IsChecked="{Binding Path=Settings.ServiceSerializable}" Height="16" Margin="5,7,0,0" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1" />
+								<Label Content="Serializer:" Height="Auto" HorizontalAlignment="Left" Margin="0,3,0,0" VerticalAlignment="Top" Grid.Row="3" Grid.Column="1" Grid.RowSpan="2" />
+								<ComboBox Grid.Row="3" Grid.Column="1" Height="23" Margin="66,4,5,0" VerticalAlignment="Top" SelectedIndex="{Binding Path=Settings.ServiceSerializer, Converter={StaticResource ProjectServiceSerializerTypeConverter}}" >
+									<ComboBox.Items>
+										<ComboBoxItem>Auto</ComboBoxItem>
+										<ComboBoxItem>Data Contract</ComboBoxItem>
+										<ComboBoxItem>XML</ComboBoxItem>
+									</ComboBox.Items>
+								</ComboBox>
+								<Label Content="Collection Type:" Height="Auto" HorizontalAlignment="Left" Margin="0,4,0,0" VerticalAlignment="Top" Grid.Row="4" Grid.RowSpan="2" />
+								<ComboBox Grid.Row="4" Grid.ColumnSpan="2" Height="23" Margin="100,5,5,0" VerticalAlignment="Top" SelectedIndex="{Binding Path=Settings.ServiceCollectionType, Converter={StaticResource ProjectCollectionTypeConverter}}" >
+									<ComboBox.Items>
+										<ComboBoxItem>System.Collections.Generic.List</ComboBoxItem>
+										<ComboBoxItem>System.Collections.Generic.SynchronizedCollection</ComboBoxItem>
+										<ComboBoxItem>System.Collections.ObjectModel.Collection</ComboBoxItem>
+										<ComboBoxItem>System.Collections.ObjectModel.ObservableCollection</ComboBoxItem>
+										<ComboBoxItem>System.ComponentModel.BindingList</ComboBoxItem>
+										<ComboBoxItem>System.Array</ComboBoxItem>
+									</ComboBox.Items>
+								</ComboBox>
+								<Grid Grid.Row="5" Grid.ColumnSpan="2">
+									<Label Content="Custom Collection Type:" Height="Auto" HorizontalAlignment="Left" Margin="0,6,0,0" VerticalAlignment="Top" />
+									<pc:TextBox Height="23" Margin="144,7,87,0" Name="ClientCollectionType" VerticalAlignment="Top" />
+									<Button Content="Add" Height="23" HorizontalAlignment="Right" Margin="0,7,5,0" Name="CollectionTypeAdd" VerticalAlignment="Top" Width="75" Click="CollectionTypeAdd_Click" />
+									<ListBox BorderBrush="{StaticResource NormalBorderColor}" BorderThickness="0,1,0,0" ItemContainerStyle="{StaticResource SearchStretchedContainerStyle}" ItemsSource="{Binding Path=Settings.ServiceCollectionTypes}" Margin="0,37,0,0" Name="CollectionTypesList">
+										<ListBox.ItemTemplate>
+											<DataTemplate>
+												<Border Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="0" Name="BG">
+													<Grid>
+														<Grid.ColumnDefinitions>
+															<ColumnDefinition Width="*" />
+															<ColumnDefinition Width="20" />
+														</Grid.ColumnDefinitions>
+														<Grid.RowDefinitions>
+															<RowDefinition Height="20" />
+														</Grid.RowDefinitions>
+														<TextBlock Foreground="Black" Grid.Column="0" Text="{Binding}" TextTrimming="CharacterEllipsis" TextWrapping="Wrap" VerticalAlignment="Center" />
+														<Button Name="DeleteSelectedCollectionType" Click="DeleteSelectedCollectionType_Click" Grid.Column="1" Margin="0" Padding="0" Visibility="Hidden" Style="{StaticResource ListItemButtonStyle}">
+															<Image Height="16" HorizontalAlignment="Center" UseLayoutRounding="True" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Delete.png" Stretch="Uniform" VerticalAlignment="Center" Width="16" />
+														</Button>
+													</Grid>
+												</Border>
+												<DataTemplate.Triggers>
+													<DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsMouseOver}" Value="True">
+														<Setter Property="Border.Background" TargetName="BG" Value="{StaticResource ItemHoverBackground}" />
+														<Setter Property="Border.BorderBrush" TargetName="BG" Value="{StaticResource ItemHoverBorder}" />
+														<Setter TargetName="DeleteSelectedCollectionType" Property="Visibility" Value="Visible" />
+													</DataTrigger>
+													<DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Value="True">
+														<Setter Property="Border.Background" TargetName="BG" Value="{StaticResource ItemSelectedBackground}" />
+														<Setter Property="Border.BorderBrush" TargetName="BG" Value="{StaticResource ItemHoverBorder}" />
+														<Setter TargetName="DeleteSelectedCollectionType" Property="Visibility" Value="Visible" />
+													</DataTrigger>
+													<MultiDataTrigger>
+														<MultiDataTrigger.Conditions>
+															<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="False" />
+															<Condition Binding="{Binding ElementName=DeleteSelectedCollectionType, Path=IsMouseOver}" Value="True" />
+														</MultiDataTrigger.Conditions>
+														<Setter TargetName="BG" Property="Background" Value="White" />
+													</MultiDataTrigger>
+												</DataTemplate.Triggers>
+											</DataTemplate>
+										</ListBox.ItemTemplate>
+										<ListBox.Resources>
+											<SolidColorBrush Color="#00FFFFFF" x:Key="{x:Static SystemColors.HighlightBrushKey}" />
+										</ListBox.Resources>
+									</ListBox>
+								</Grid>
+							</Grid>
+						</GroupBox>
+						<GroupBox Name="ClientOutputPathsGroup" Header="Output Paths" Margin="0,5,0,0" Grid.Row="3" Background="White">
+							<Grid>
+								<Label Content="Output Name:" Height="Auto" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" />
+								<pc:TextBox Height="23" Margin="96,7,5,0" Name="ClientAssemblyName" VerticalAlignment="Top" Text="{Binding Path=Settings.ClientAssemblyName}"/>
+								<Label Content="Output Path:" Height="Auto" HorizontalAlignment="Left" Margin="5,35,0,0" VerticalAlignment="Top" />
+								<pc:TextBox Height="23" Margin="96,36,167,0" Name="ClientOutputPath" VerticalAlignment="Top" ToolTip="{Binding ElementName=ClientOutputPath, Path=Text}"/>
+								<Button Content="Browse..." Height="23" HorizontalAlignment="Right" Margin="0,36,86,0" Name="ClientOutputBrowse" VerticalAlignment="Top" Width="75" Click="ClientOutputBrowse_Click"/>
+								<Button Content="Add" Height="23" HorizontalAlignment="Right" Margin="0,36,5,0" Name="ClientOutputAdd" VerticalAlignment="Top" Width="75" Click="ClientOutputAdd_Click"/>
+								<Border Margin="0,65,0,0" BorderThickness="0,1,0,0" BorderBrush="{StaticResource NormalBorderColor}" >
+									<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+										<StackPanel Name="ClientOutputPathsList" Orientation="Vertical" />
+									</ScrollViewer>
+								</Border>
+							</Grid>
+						</GroupBox>
+					</Grid>
+				</Border>
+			</Grid>
+		</TabItem>
+		<TabItem Header="Bindings" Name="BindingsTab">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="250" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+					<Border Background="#66FFFFFF" BorderBrush="#88FFFFFF" BorderThickness="1" Margin="10" Grid.Column="0" >
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+						<Border BorderBrush="#CCCCCC" BorderThickness="0,0,0,1" Padding="0,0,0,5" Margin="0,0,0,10" Grid.Row="0">
+							<StackPanel Orientation="Horizontal">
+								<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/Binding.png" UseLayoutRounding="True" Height="32" Width="32" Stretch="Uniform"/>
+								<TextBlock Foreground="#555555" FontSize="18" Padding="5,0,0,0" Text="Bindings" Height="Auto" VerticalAlignment="Center" />
+							</StackPanel>
+						</Border>
+						<ListBox x:Name="BindingsList" Grid.Row="1" SelectionMode="Single" BorderThickness="0" ItemContainerStyle="{StaticResource StretchedContainerStyle}" SelectionChanged="BindingsList_SelectionChanged" KeyUp="BindingsList_KeyUp" >
+							<ListBox.Resources>
+								<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+							</ListBox.Resources>
+							<ListBox.ItemTemplate>
+								<DataTemplate>
+									<Border Name="BG" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="0">
+										<Grid>
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="40" />
+												<ColumnDefinition Width="*" />
+											</Grid.ColumnDefinitions>
+											<Grid.RowDefinitions>
+												<RowDefinition Height="40" />
+											</Grid.RowDefinitions>
+											<Image Source="{Binding Converter={StaticResource ServiceBindingTypeImageConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="32" Width="32" Stretch="Uniform" Grid.Column="0"/>
+											<StackPanel Grid.Column="1" Margin="4">
+												<TextBlock Text="{Binding Path=Name}" Foreground="Black" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
+												<TextBlock Text="{Binding Converter={StaticResource ServiceBindingTypeNameConverter}}" Foreground="Gray" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
+											</StackPanel>
+										</Grid>
+									</Border>
+									<DataTemplate.Triggers>
+										<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
+											<Setter TargetName="BG" Property="Background" Value="{StaticResource ItemHoverBackground}" />
+											<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource ItemHoverBorder}" />
+										</DataTrigger>
+										<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
+											<Setter TargetName="BG" Property="Background" Value="{StaticResource ItemSelectedBackground}" />
+											<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource ItemHoverBorder}" />
+										</DataTrigger>
+									</DataTemplate.Triggers>
+								</DataTemplate>
+							</ListBox.ItemTemplate>							
+						</ListBox>
+					</Grid>
+				</Border>
+				<Border Grid.Column="1" Margin="0" BorderBrush="#CCCCCC" BorderThickness="1,0,0,0">
+					<Border Background="#66FFFFFF" BorderBrush="#88FFFFFF" BorderThickness="1" Grid.Column="1" Margin="10" >
+						<Grid>
+							<TextBlock Name="BindingContentEmpty" Text="Please select a binding from the list to the left, or create a new one from the menu above." FontSize="16" FontStyle="Italic" Foreground="DarkGray" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" />
+							<ContentPresenter Name="BindingContent" />
+						</Grid>
+					</Border>
+				</Border>
+			</Grid>
+		</TabItem>
+		<TabItem Header="Security" Name="SecurityTab">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="250" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Border Background="#66FFFFFF" BorderBrush="#88FFFFFF" BorderThickness="1" Margin="10" Grid.Column="0" >
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+						<Border BorderBrush="#CCCCCC" BorderThickness="0,0,0,1" Padding="0,0,0,5" Margin="0,0,0,10" Grid.Row="0">
+							<StackPanel Orientation="Horizontal">
+								<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/BindingSecurity.png" UseLayoutRounding="True" Height="32" Width="32" Stretch="Uniform"/>
+								<TextBlock Foreground="#555555" FontSize="18" Padding="5,0,0,0" Text="Security" Height="Auto" VerticalAlignment="Center" />
+							</StackPanel>
+						</Border>
+						<ListBox x:Name="SecurityList" Grid.Row="1" SelectionMode="Single" BorderThickness="0" ItemContainerStyle="{StaticResource StretchedContainerStyle}" SelectionChanged="SecurityList_SelectionChanged" KeyUp="SecurityList_KeyUp" >
+							<ListBox.Resources>
+								<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+							</ListBox.Resources>
+							<ListBox.ItemTemplate>
+								<DataTemplate>
+									<Border Name="BG" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="0">
+										<Grid>
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="40" />
+												<ColumnDefinition Width="*" />
+											</Grid.ColumnDefinitions>
+											<Grid.RowDefinitions>
+												<RowDefinition Height="40" />
+											</Grid.RowDefinitions>
+											<Image Source="{Binding Converter={StaticResource BindingSecurityTypeImageConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="32" Width="32" Stretch="Uniform" Grid.Column="0"/>
+											<StackPanel Grid.Column="1" Margin="4">
+												<TextBlock Text="{Binding Path=Name}" Foreground="Black" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
+												<TextBlock Text="{Binding Converter={StaticResource BindingSecurityTypeNameConverter}}" Foreground="Gray" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
+											</StackPanel>
+										</Grid>
+									</Border>
+									<DataTemplate.Triggers>
+										<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
+											<Setter TargetName="BG" Property="Background" Value="{StaticResource ItemHoverBackground}" />
+											<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource ItemHoverBorder}" />
+										</DataTrigger>
+										<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
+											<Setter TargetName="BG" Property="Background" Value="{StaticResource ItemSelectedBackground}" />
+											<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource ItemHoverBorder}" />
+										</DataTrigger>
+									</DataTemplate.Triggers>
+								</DataTemplate>
+							</ListBox.ItemTemplate>
+						</ListBox>
+					</Grid>
+				</Border>
+				<Border Grid.Column="1" Margin="0" BorderBrush="#CCCCCC" BorderThickness="1,0,0,0">
+					<Border Background="#66FFFFFF" BorderBrush="#88FFFFFF" BorderThickness="1" Grid.Column="1" Margin="10" >
+						<Grid>
+							<TextBlock Name="SecurityContentEmpty" Text="Please select a security element from the list to the left, or create a new one from the menu above." FontSize="16" FontStyle="Italic" Foreground="DarkGray" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" />
+							<ContentPresenter Name="SecurityContent" />
+						</Grid>
+					</Border>
+				</Border>
+			</Grid>
+		</TabItem>
+		<TabItem Header="Hosts" Name="HostsTab">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="250" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Border Background="#66FFFFFF" BorderBrush="#88FFFFFF" BorderThickness="1" Margin="10" Grid.Column="0" >
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+						<Border BorderBrush="#CCCCCC" BorderThickness="0,0,0,1" Padding="0,0,0,5" Margin="0,0,0,10" Grid.Row="0">
+							<StackPanel Orientation="Horizontal">
+								<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/Host.png" UseLayoutRounding="True" Height="32" Width="32" Stretch="Uniform"/>
+								<TextBlock Foreground="#555555" FontSize="18" Padding="5,0,0,0" Text="Hosts" Height="Auto" VerticalAlignment="Center" />
+							</StackPanel>
+						</Border>
+						<ListBox x:Name="HostsList" Grid.Row="1" SelectionMode="Single" BorderThickness="0" ItemContainerStyle="{StaticResource StretchedContainerStyle}" SelectionChanged="HostsList_SelectionChanged" KeyUp="HostsList_KeyUp" >
+							<ListBox.Resources>
+								<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+							</ListBox.Resources>
+							<ListBox.ItemTemplate>
+								<DataTemplate>
+									<Border Name="BG" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="0">
+										<Grid>
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="40" />
+												<ColumnDefinition Width="*" />
+											</Grid.ColumnDefinitions>
+											<Grid.RowDefinitions>
+												<RowDefinition Height="40" />
+											</Grid.RowDefinitions>
+											<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/Host.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="32" Width="32" Stretch="Uniform" Grid.Column="0"/>
+											<TextBlock Text="{Binding Path=Name}" Foreground="Black" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Grid.Column="1"/>
+										</Grid>
+									</Border>
+									<DataTemplate.Triggers>
+										<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
+											<Setter TargetName="BG" Property="Background" Value="{StaticResource ItemHoverBackground}" />
+											<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource ItemHoverBorder}" />
+										</DataTrigger>
+										<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
+											<Setter TargetName="BG" Property="Background" Value="{StaticResource ItemSelectedBackground}" />
+											<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource ItemHoverBorder}" />
+										</DataTrigger>
+									</DataTemplate.Triggers>
+								</DataTemplate>
+							</ListBox.ItemTemplate>
+						</ListBox>
+					</Grid>
+				</Border>
+				<Border Grid.Column="1" Margin="0" BorderBrush="#CCCCCC" BorderThickness="1,0,0,0">
+					<Border Background="#66FFFFFF" BorderBrush="#88FFFFFF" BorderThickness="1" Grid.Column="1" Margin="10" >
+						<Grid>
+							<TextBlock Name="HostContentEmpty" Text="Please select a host from the list to the left, or create a new one from the menu above." FontSize="16" FontStyle="Italic" Foreground="DarkGray" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" />
+							<ContentPresenter Name="HostContent" />
+						</Grid>
+					</Border>
+				</Border>
+			</Grid>
+		</TabItem>
+	</TabControl>
+</Grid>

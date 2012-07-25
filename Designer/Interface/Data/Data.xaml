@@ -1,0 +1,324 @@
+﻿<Grid x:Class="WCFArchitect.Interface.Data.Data" x:ClassModifier="internal"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:r="clr-namespace:Fluent;assembly=Fluent"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" 
+	xmlns:c1="http://schemas.componentone.com/winfx/2006/xaml"
+	xmlns:c1ext="http://schemas.componentone.com/wpf/C1Extended"
+	xmlns:Data="clr-namespace:WCFArchitect.Interface.Data"
+	xmlns:pc="clr-namespace:Prospective.Controls;assembly=Prospective.Controls"
+	xmlns:InRoot="clr-namespace:WCFArchitect.Interface"
+	d:DesignHeight="800" d:DesignWidth="1000" DataContext="{Binding RelativeSource={RelativeSource Self}}" >
+	<Grid.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Colors.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Generic.xaml" />
+				<ResourceDictionary>
+					<Data:DataScopeConverter x:Key="DataScopeConverter" />
+					<Data:DataScopeNameConverter x:Key="DataScopeNameConverter" />
+					<InRoot:ProjectTypeVisibilityConverter x:Key="ProjectTypeVisibilityConverter" />
+					<InRoot:ProjectTypeEnabledConverter x:Key="ProjectTypeEnabledConverter" />
+					<InRoot:ProjectTypeReadOnlyConverter x:Key="ProjectTypeReadOnlyConverter" />
+					<InRoot:ScrollbarWidthConverter x:Key="ScrollbarWidthConverter" />
+					<InRoot:ElementOrderConverter x:Key="ElementOrderConverter" />
+				</ResourceDictionary>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Grid.Resources>
+	<Grid.RowDefinitions>
+		<RowDefinition Height="37" />
+		<RowDefinition Height="Auto" />
+		<RowDefinition Height="*" />
+	</Grid.RowDefinitions>
+	<Grid Grid.Row="0">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="190"/>
+		</Grid.ColumnDefinitions>
+		<Label Content="Display:" Height="Auto" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" />
+		<pc:TextBox Text="{Binding Path=PData.Name}" Name="DisplayName" Height="23" Margin="62,7,5,0" VerticalAlignment="Top" IsReadOnly="{Binding Path=PData, Converter={StaticResource ProjectTypeReadOnlyConverter}}" ToolTip="{Binding Path=PData.Name}" />
+		<Label Content="Code:" Height="Auto" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" Grid.Column="1" />
+		<pc:TextBox Text="{Binding Path=PData.CodeName}" Name="CodeName" Height="23" Margin="52,7,5,0" VerticalAlignment="Top" Grid.Column="1" IsReadOnly="{Binding Path=PData, Converter={StaticResource ProjectTypeReadOnlyConverter}}" Validate="CodeName_Validate" ToolTip="{Binding Path=PData.CodeName}" />
+		<Label Content="Contract:" Height="Auto" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" Grid.Column="2" />
+		<pc:TextBox Text="{Binding Path=PData.ContractName}" Name="ContractName" Height="23" Margin="69,7,5,0" VerticalAlignment="Top" Grid.Column="2" IsReadOnly="{Binding Path=PData, Converter={StaticResource ProjectTypeReadOnlyConverter}}" Validate="ContractName_Validate" ToolTip="{Binding Path=PData.ContractName}" />
+		<Label Content="WPF:" Height="Auto" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" Grid.Column="3" />
+		<pc:TextBox Text="{Binding Path=PData.WPFName}" Name="WPFName" Height="23" Margin="48,7,5,0" VerticalAlignment="Top" Grid.Column="3" IsReadOnly="{Binding Path=PData, Converter={StaticResource ProjectTypeReadOnlyConverter}}" Validate="WPFName_Validate" ToolTip="{Binding Path=PData.WPFName}" />
+		<Label Content="Is Reference:" Height="Auto" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" Width="Auto" Grid.Column="4" />
+		<ToggleButton Content="No" Grid.Column="4" Height="23" HorizontalAlignment="Right" IsChecked="{Binding Path=PData.IsReference}" Margin="0,7,5,0" Name="IsReference" VerticalAlignment="Top" Width="100" IsHitTestVisible="{Binding Path=PData, Converter={StaticResource ProjectTypeEnabledConverter}}" Checked="IsReference_Checked" Unchecked="IsReference_Unchecked"/>
+	</Grid>
+	<Grid Grid.Row="1">
+		<GroupBox Grid.Column="0" Header="Documentation" Margin="2,0,5,0" Visibility="Collapsed" >
+			<Grid>
+			</Grid>
+		</GroupBox>
+	</Grid>
+	<Grid Grid.Row="2">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<GroupBox Header="Member List" Margin="5,0" BorderThickness="1,1,1,0" Visibility="{Binding Path=PData, Converter={StaticResource ProjectTypeVisibilityConverter}}" >
+			<Grid Height="33">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="0.75*" />
+					<ColumnDefinition Width="1.25*" />
+					<ColumnDefinition Width="2*" />
+					<ColumnDefinition MinWidth="{Binding Converter={StaticResource ScrollbarWidthConverter}, ConverterParameter='135'}" MaxWidth="{Binding Converter={StaticResource ScrollbarWidthConverter}, ConverterParameter='135'}" />
+				</Grid.ColumnDefinitions>
+				<Label Content="Scope:" Height="Auto" HorizontalAlignment="Left" Margin="0,4,0,0" VerticalAlignment="Top" />
+				<ComboBox Height="23" Margin="50,5,5,0" Name="AddDataElementScope" VerticalAlignment="Top" >
+					<ComboBox.Items>
+						<ComboBoxItem Content="Public" IsSelected="True" />
+						<ComboBoxItem Content="Protected" />
+						<ComboBoxItem Content="Private" />
+						<ComboBoxItem Content="Internal" />
+						<ComboBoxItem Content="Protected Internal" />
+					</ComboBox.Items>
+				</ComboBox>
+				<Label Content="Data Type:" Height="Auto" HorizontalAlignment="Left" Margin="0,4,0,0" VerticalAlignment="Top" Grid.Column="1" />
+				<pc:TextBox Height="23" Margin="72,5,5,0" Name="AddDataElementDataType" VerticalAlignment="Top" Grid.Column="1" KeyUp="AddDataElementDataType_KeyUp" TextChanged="AddDataElementDataType_TextChanged" Validate="AddDataElementDataType_Validate" />
+				<Label Content="Name:" Height="Auto" HorizontalAlignment="Left" Margin="0,4,0,0" VerticalAlignment="Top" Grid.Column="2" />
+				<pc:TextBox Height="23" Margin="49,5,5,0" Name="AddDataElementName" VerticalAlignment="Top" Grid.Column="2" KeyUp="AddDataElementName_KeyUp" TextChanged="AddDataElementName_TextChanged" Validate="AddDataElementName_Validate" />
+				<Button Grid.Column="3" Name="AddDataElement" Click="AddDataElement_Click" Height="23" Margin="0,0,3,0" IsEnabled="False" >
+					<StackPanel Orientation="Horizontal">
+						<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Add.png" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+						<TextBlock FontSize="12" Padding="3,0,0,0" Text="Add" Height="Auto" VerticalAlignment="Center" />
+					</StackPanel>
+				</Button>
+			</Grid>
+		</GroupBox>
+		<Border Grid.Row="1" Margin="5,0,5,5" BorderThickness="1" BorderBrush="{StaticResource NormalBorderColor}">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="27" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+				<Border BorderThickness="0,0,0,1" BorderBrush="{StaticResource GridLineBrush}" >
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Name="ItemsGridCD1" Width="0.75*" />
+							<ColumnDefinition Name="ItemsGridCD2" Width="1.25*" />
+							<ColumnDefinition Name="ItemsGridCD3" Width="2*" />
+							<ColumnDefinition MinWidth="55" MaxWidth="55" />
+							<ColumnDefinition MinWidth="55" MaxWidth="55" />
+							<ColumnDefinition MinWidth="75" MaxWidth="75" />
+							<ColumnDefinition MinWidth="30" MaxWidth="30" />
+							<ColumnDefinition MaxWidth="11" />
+						</Grid.ColumnDefinitions>
+						<Border Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="{StaticResource GridLineBrush}" >
+							<Button Padding="5,0" Style="{StaticResource GridHeaderButtonStyle}" HorizontalContentAlignment="Stretch" Name="FilterBarScope" Click="FilterBarScope_Click">
+								<Grid>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+									</Grid.RowDefinitions>
+									<TextBlock Grid.Row="0" Text="Scope" />
+									<TextBlock Name="FilteredScopes" Grid.Row="1" Text="Filtering:" TextTrimming="CharacterEllipsis" FontSize="10" Margin="5,0" Visibility="Collapsed" />
+								</Grid>
+								<Button.ContextMenu>
+									<ContextMenu>
+										<MenuItem IsCheckable="True" Header="Public" IsChecked="{Binding Path=FilterScopePublic}" Click="FilterBarScopeMenuItem_Click" />
+										<MenuItem IsCheckable="True" Header="Protected" IsChecked="{Binding Path=FilterScopeProtected}" Click="FilterBarScopeMenuItem_Click" />
+										<MenuItem IsCheckable="True" Header="Private" IsChecked="{Binding Path=FilterScopePrivate}" Click="FilterBarScopeMenuItem_Click" />
+										<MenuItem IsCheckable="True" Header="Internal" IsChecked="{Binding Path=FilterScopeInternal}" Click="FilterBarScopeMenuItem_Click" />
+										<MenuItem IsCheckable="True" Header="Protected Internal" IsChecked="{Binding Path=FilterScopeProtectedInternal}" Click="FilterBarScopeMenuItem_Click" />
+									</ContextMenu>
+								</Button.ContextMenu>
+							</Button>
+						</Border>
+						<Border Grid.Column="1" BorderThickness="0,0,1,0" BorderBrush="{StaticResource GridLineBrush}" >
+							<Grid>
+								<pc:SearchTextBox LabelText="Filter Data Type" LabelTextColor="Gray" Name="FilterDataTypeBox" Margin="0" BorderThickness="1" CornerRadius="0" TextChanged="FilterDataTypeBox_TextChanged" LostFocus="FilterDataTypeBox_LostFocus" />
+								<Button Padding="5,0" Style="{StaticResource GridHeaderButtonStyle}" HorizontalContentAlignment="Stretch" Content="Data Type" Name="FilterBarDataType" Click="FilterBarDataType_Click" />
+							</Grid>
+						</Border>
+						<Border Grid.Column="2" BorderThickness="0,0,1,0" BorderBrush="{StaticResource GridLineBrush}" >
+							<Grid>
+								<pc:SearchTextBox LabelText="Filter Name" LabelTextColor="Gray" Name="FilterNameBox" Margin="0" BorderThickness="1" CornerRadius="0" TextChanged="FilterNameBox_TextChanged" LostFocus="FilterNameBox_LostFocus" />
+								<Button Padding="5,0" Style="{StaticResource GridHeaderButtonStyle}" HorizontalContentAlignment="Stretch" Content="Name" Name="FilterBarName" Click="FilterBarName_Click" />
+							</Grid>
+						</Border>
+						<Border Grid.Column="3" BorderThickness="0,0,1,0" Padding="5,0" Background="{StaticResource GridHeaderButtonNormalBrush}" BorderBrush="{StaticResource GridLineBrush}" >
+							<TextBlock Text="Order" HorizontalAlignment="Left" VerticalAlignment="Center" />
+						</Border>
+						<Border Grid.Column="4" BorderThickness="0,0,1,0" Padding="5,0" Background="{StaticResource GridHeaderButtonNormalBrush}" BorderBrush="{StaticResource GridLineBrush}" >
+							<TextBlock Text="Hidden" HorizontalAlignment="Left" VerticalAlignment="Center" />
+						</Border>
+						<Border Grid.Column="5" BorderThickness="0,0,1,0" BorderBrush="{StaticResource GridLineBrush}" Background="{StaticResource GridHeaderButtonNormalBrush}" />
+						<Border Grid.Column="6" BorderThickness="0,0,1,0" BorderBrush="{StaticResource GridLineBrush}" Background="{StaticResource GridHeaderButtonNormalBrush}" />
+						<Border Grid.Column="7" BorderThickness="0,0,1,0" BorderBrush="{StaticResource GridLineBrush}" Background="{StaticResource GridHeaderButtonNormalBrush}" />
+					</Grid>
+				</Border>
+				<ListBox Grid.Row="1" Name="ValuesList" AllowDrop="True" BorderThickness="0" Margin="0" SelectionMode="Single" Padding="-1" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.IsVirtualizing="False" ItemContainerStyle="{StaticResource StretchedValueListItemContainerStyle}" PreviewMouseLeftButtonDown="ValuesList_PreviewMouseLeftButtonDown" PreviewMouseMove="ValuesList_PreviewMouseMove" QueryContinueDrag="ValuesList_QueryContinueDrag" DragLeave="ValuesList_DragLeave" PreviewDragOver="ValuesList_PreviewDragOver" PreviewDrop="ValuesList_Drop" >
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<Border Name="BG" Background="Transparent" BorderBrush="{StaticResource GridLineBrush}" BorderThickness="0,0,0,1" Margin="0" >
+								<Grid Grid.Column="0">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="{Binding ElementName=ItemsGridCD1, Path=Width}" />
+										<ColumnDefinition Width="{Binding ElementName=ItemsGridCD2, Path=Width}" />
+										<ColumnDefinition Width="{Binding ElementName=ItemsGridCD3, Path=Width}" />
+										<ColumnDefinition MinWidth="55" MaxWidth="55" />
+										<ColumnDefinition MinWidth="55" MaxWidth="55" />
+										<ColumnDefinition MinWidth="75" MaxWidth="75" />
+										<ColumnDefinition MinWidth="30" MaxWidth="30" />
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="27" />
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+									</Grid.RowDefinitions>
+									<Border Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="{StaticResource GridLineBrush}" >
+										<ComboBox SelectedIndex="{Binding Path=Scope, Converter={StaticResource DataScopeConverter}}" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" VerticalContentAlignment="Center" Margin="0" Name="Scope" >
+											<ComboBox.Items>
+												<ComboBoxItem Content="Public" />
+												<ComboBoxItem Content="Protected" />
+												<ComboBoxItem Content="Private" />
+												<ComboBoxItem Content="Internal" />
+												<ComboBoxItem Content="Protected Internal" />
+											</ComboBox.Items>
+										</ComboBox>
+									</Border>
+									<Border Grid.Column="1" BorderThickness="0,0,1,0" BorderBrush="{StaticResource GridLineBrush}" >
+										<pc:TextBox Name="DataType" Text="{Binding Path=DataType}" VerticalContentAlignment="Center" Background="Transparent" IsHaloEnabled="False" IsReadOnly="{Binding Path=., Converter={StaticResource ProjectTypeReadOnlyConverter}}" PreviewKeyDown="DataType_PreviewKeyDown" Validate="DataType_Validate" ToolTip="{Binding Path=DataType}"  />
+									</Border>
+									<Border Grid.Column="2" BorderThickness="0,0,1,0" BorderBrush="{StaticResource GridLineBrush}" >
+										<pc:TextBox Name="ElementName" Text="{Binding Path=Name}" VerticalContentAlignment="Center" Background="Transparent" IsHaloEnabled="False" IsReadOnly="{Binding Path=., Converter={StaticResource ProjectTypeReadOnlyConverter}}" PreviewKeyDown="ElementName_PreviewKeyDown" Validate="ElementName_Validate" ToolTip="{Binding Path=Name}" />
+									</Border>
+									<Border Grid.Column="3" BorderThickness="0,0,1,0" BorderBrush="{StaticResource GridLineBrush}" >
+										<pc:TextBox Name="Order" Margin="0" Text="{Binding Path=Order, Converter={StaticResource ElementOrderConverter}}" Background="Transparent" IsHaloEnabled="False" IsReadOnly="{Binding Path=., Converter={StaticResource ProjectTypeReadOnlyConverter}}" Validate="Order_Validate" ToolTip="{Binding Path=WPFDataType}" />
+									</Border>
+									<Border Grid.Column="4" BorderThickness="0,0,1,0" BorderBrush="{StaticResource GridLineBrush}" >
+										<CheckBox IsChecked="{Binding Path=IsHidden}" Name="Hidden" HorizontalAlignment="Center" VerticalAlignment="Center" />
+									</Border>
+									<Border Grid.Column="5" BorderThickness="0,0,1,0" BorderBrush="{StaticResource GridLineBrush}" IsHitTestVisible="False" >
+										<Label Content="Click to Move" FontSize="10" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" />
+									</Border>
+									<Border Name="DetailsGrid" Visibility="Collapsed" Grid.Row="1" Grid.ColumnSpan="6">
+										<Grid>
+											<Grid.RowDefinitions>
+												<RowDefinition Height="Auto" />
+												<RowDefinition Height="Auto" />
+												<RowDefinition Height="Auto" />
+											</Grid.RowDefinitions>
+											<Border Name="WPFGrid" Grid.Row="0" Visibility="{Binding Path=GenerateWPFBinding, Converter={StaticResource BoolVisibilityConverter}}" BorderThickness="0,1,1,0" BorderBrush="{StaticResource GridLineBrush}" UseLayoutRounding="True">
+												<Grid Grid.Row="0">
+													<Grid.RowDefinitions>
+														<RowDefinition Height="Auto" />
+													</Grid.RowDefinitions>
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="{Binding ElementName=ItemsGridCD1, Path=Width}" />
+														<ColumnDefinition Width="{Binding ElementName=ItemsGridCD2, Path=Width}" />
+														<ColumnDefinition Width="{Binding ElementName=ItemsGridCD3, Path=Width}" />
+														<ColumnDefinition MinWidth="184" MaxWidth="184" />
+													</Grid.ColumnDefinitions>
+													<Border Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="{StaticResource GridLineBrush}" />
+													<Border Grid.Column="1" BorderThickness="0,0,1,0" BorderBrush="{StaticResource GridLineBrush}" >
+														<pc:TextBox Height="27" Margin="0" Text="{Binding Path=WPFDataType}" VerticalContentAlignment="Center" LabelText="WPF Data Type" Background="Transparent" IsHaloEnabled="False" Name="WPFDataType" IsReadOnly="{Binding Path=., Converter={StaticResource ProjectTypeReadOnlyConverter}}" Validate="WPFDataType_Validate" ToolTip="{Binding Path=WPFDataType}" />
+													</Border>
+													<Border Grid.Column="2" BorderThickness="0,0,1,0" BorderBrush="{StaticResource GridLineBrush}" >
+														<pc:TextBox Height="27" Margin="0" Text="{Binding Path=WPFName}" VerticalContentAlignment="Center" LabelText="WPF Name" Background="Transparent" IsHaloEnabled="False" Name="WPFName" IsReadOnly="{Binding Path=., Converter={StaticResource ProjectTypeReadOnlyConverter}}" ToolTip="{Binding Path=WPFName}" />
+													</Border>
+												</Grid>
+											</Border>
+											<Border Name="AttributeGrid" Grid.Row="1" Visibility="{Binding Path=IsAttached, Converter={StaticResource BoolVisibilityConverter}}" BorderThickness="0,1,1,0" BorderBrush="{StaticResource GridLineBrush}" UseLayoutRounding="True">
+												<Grid Grid.Row="0">
+													<Grid.RowDefinitions>
+														<RowDefinition Height="Auto" />
+													</Grid.RowDefinitions>
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="150" />
+														<ColumnDefinition Width="1*" />
+														<ColumnDefinition Width="1*" />
+													</Grid.ColumnDefinitions>
+													<ToggleButton Grid.Column="0" Content="Enable Browsing" Margin="5" VerticalAlignment="Top" Padding="2,0" Height="23" IsChecked="{Binding Path=AttachedBrowsable}" Name="AttachedBrowsable" IsHitTestVisible="{Binding Path=., Converter={StaticResource ProjectTypeEnabledConverter}}" ToolTip="Determines if the attribute can be browsed." />
+													<ToggleButton Grid.Column="0" Content="Include Descendants" Margin="5,33,5,5" VerticalAlignment="Top" Padding="2,0" Height="23" IsChecked="{Binding Path=AttachedBrowsableIncludeDescendants}" IsEnabled="{Binding ElementName=AttachedBrowsable, Path=IsChecked}" IsHitTestVisible="{Binding Path=., Converter={StaticResource ProjectTypeEnabledConverter}}" Name="AttachedBrowsableIncludeDescendants" ToolTip="Determines if the descendants of the attribute can be browsed." />
+													<pc:TextBox Name="AttachedTargetTypes" Grid.Column="1" Margin="5,5,5,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Text="{Binding Path=AttachedTargetTypes}" IsReadOnly="{Binding Path=., Converter={StaticResource ProjectTypeReadOnlyConverter}}" ToolTip="Please enter the Target Types as a common seperated list." />
+													<pc:TextBox Name="AttachedAttributeTypes" Grid.Column="2" Margin="5,5,5,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Text="{Binding Path=AttachedAttributeTypes}" IsReadOnly="{Binding Path=., Converter={StaticResource ProjectTypeReadOnlyConverter}}" ToolTip="Please enter the Attribute Types as a common seperated list." />
+												</Grid>
+											</Border>
+											<Border Name="OptionsGrid" Grid.Row="2" BorderThickness="0,1,1,0" Padding="2,0" BorderBrush="{StaticResource GridLineBrush}" UseLayoutRounding="True" >
+												<Grid Grid.Row="0">
+													<Grid.RowDefinitions>
+														<RowDefinition Height="Auto" />
+													</Grid.RowDefinitions>
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="1*" />
+														<ColumnDefinition Width="1*" />
+														<ColumnDefinition Width="1*" />
+														<ColumnDefinition Width="1*" />
+														<ColumnDefinition Width="1*" />
+														<ColumnDefinition Width="1*" />
+													</Grid.ColumnDefinitions>
+													<ToggleButton Grid.Column="0" Content="Is Data Member" Margin="2.5,5" Padding="2,0" Height="23" IsChecked="{Binding Path=IsDataMember}" Name="IsDataMember" IsHitTestVisible="{Binding Path=., Converter={StaticResource ProjectTypeEnabledConverter}}" ToolTip="Determines if the member is marked as a member of the data contract." />
+													<ToggleButton Grid.Column="1" Content="Is Read-Only" Margin="2.5,5" Padding="2,0" Height="23" IsChecked="{Binding Path=IsReadOnly}" IsHitTestVisible="{Binding Path=., Converter={StaticResource ProjectTypeEnabledConverter}}" Name="IsReadOnly" ToolTip="The member is read-only." />
+													<ToggleButton Grid.Column="2" Content="Is Required" Margin="2.5,5" Padding="2,0" Height="23" IsChecked="{Binding Path=IsRequired}" IsHitTestVisible="{Binding Path=., Converter={StaticResource ProjectTypeEnabledConverter}}" Name="IsRequired" ToolTip="The member is required by the data contract." />
+													<ToggleButton Grid.Column="3" Content="Emit Default Value" Margin="2.5,5" Padding="2,0" Height="23" IsChecked="{Binding Path=EmitDefaultValue}" Name="EmitDefaultValue" IsHitTestVisible="{Binding Path=., Converter={StaticResource ProjectTypeEnabledConverter}}" ToolTip="Force WCF emit the default value for the type if no value is provided." />
+													<ToggleButton Grid.Column="4" Content="Has WPF Binding" Margin="2.5,5" Padding="2,0" Height="23" IsChecked="{Binding Path=GenerateWPFBinding}" Name="GenerateWPFBinding" IsHitTestVisible="{Binding Path=., Converter={StaticResource ProjectTypeEnabledConverter}}" ToolTip="Tells WCF Architect to generate a WPF binding for this member." />
+													<ToggleButton Grid.Column="5" Content="Is Attached" Margin="2.5,5" Padding="2,0" Height="23" IsEnabled="{Binding ElementName=GenerateWPFBinding, Path=IsChecked}" IsChecked="{Binding Path=IsAttached}" Name="IsAttached" IsHitTestVisible="{Binding Path=., Converter={StaticResource ProjectTypeEnabledConverter}}" ToolTip="Tells WCF Architect to generate an Attached WPF Binding for this member." />
+												</Grid>
+											</Border>
+										</Grid>
+									</Border>
+									<Button Grid.Column="6" Grid.RowSpan="4" Name="DeleteElement" Visibility="Hidden" Margin="1,1,2,1" Padding="0" Style="{StaticResource ListItemButtonStyle}" IsHitTestVisible="{Binding Path=., Converter={StaticResource ProjectTypeEnabledConverter}}" Click="DeleteElement_Click">
+										<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+									</Button>
+								</Grid>
+							</Border>
+							<DataTemplate.Triggers>
+								<Trigger SourceName="Scope" Property="IsDropDownOpen" Value="True">
+									<Setter TargetName="Scope" Property="Background" Value="White" />
+									<Setter TargetName="Scope" Property="BorderBrush" Value="{StaticResource FocusedBorderColor}" />
+								</Trigger>
+								<Trigger SourceName="DataType" Property="IsKeyboardFocusWithin" Value="True">
+									<Setter TargetName="DataType" Property="Background" Value="White" />
+								</Trigger>
+								<Trigger SourceName="ElementName" Property="IsKeyboardFocusWithin" Value="True">
+									<Setter TargetName="ElementName" Property="Background" Value="White" />
+								</Trigger>
+								<Trigger SourceName="WPFDataType" Property="IsKeyboardFocusWithin" Value="True">
+									<Setter TargetName="WPFDataType" Property="Background" Value="White" />
+								</Trigger>
+								<Trigger SourceName="WPFName" Property="IsKeyboardFocusWithin" Value="True">
+									<Setter TargetName="WPFName" Property="Background" Value="White" />
+								</Trigger>
+								<MultiDataTrigger>
+									<MultiDataTrigger.Conditions>
+										<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True" />
+										<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="False" />
+										<Condition Binding="{Binding Path=., Converter={StaticResource ProjectTypeEnabledConverter}}" Value="True" />
+									</MultiDataTrigger.Conditions>
+									<Setter TargetName="BG" Property="Background" Value="{StaticResource GridLineMouseOverBackground}" />
+									<Setter TargetName="DeleteElement" Property="Visibility" Value="Visible" />
+								</MultiDataTrigger>
+								<MultiDataTrigger>
+									<MultiDataTrigger.Conditions>
+										<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True" />
+										<Condition Binding="{Binding Path=., Converter={StaticResource ProjectTypeEnabledConverter}}" Value="True" />
+									</MultiDataTrigger.Conditions>
+									<Setter TargetName="DetailsGrid" Property="Visibility" Value="Visible" />
+									<Setter TargetName="BG" Property="Background" Value="White" />
+									<Setter TargetName="DeleteElement" Property="Visibility" Value="Visible" />
+								</MultiDataTrigger>
+								<MultiDataTrigger>
+									<MultiDataTrigger.Conditions>
+										<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True" />
+										<Condition Binding="{Binding Path=., Converter={StaticResource ProjectTypeEnabledConverter}}" Value="False" />
+									</MultiDataTrigger.Conditions>
+									<Setter TargetName="DetailsGrid" Property="Visibility" Value="Visible" />
+									<Setter TargetName="BG" Property="Background" Value="White" />
+								</MultiDataTrigger>
+							</DataTemplate.Triggers>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</Grid>
+		</Border>
+	</Grid>
+</Grid>

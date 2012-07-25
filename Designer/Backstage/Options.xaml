@@ -1,0 +1,288 @@
+﻿<Grid x:Class="WCFArchitect.Backstage.Options" x:ClassModifier="internal"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+	xmlns:pc="clr-namespace:Prospective.Controls;assembly=Prospective.Controls"
+	xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
+	xmlns:sys="clr-namespace:System;assembly=mscorlib"
+	xmlns:c1datetime="http://schemas.componentone.com/wpf/DateTimeEditors"
+	xmlns:Backstage="clr-namespace:WCFArchitect.Backstage"
+	xmlns:Project="clr-namespace:WCFArchitect.Interface"
+	xmlns:c1="http://schemas.componentone.com/wpf/Basic"
+	mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="1000" DataContext="{Binding RelativeSource={RelativeSource Self}}" >
+	<Grid.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Colors.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Generic.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/Prospective.Controls;component/Themes/Standard.xaml" />
+				<ResourceDictionary>
+					<Backstage:UserProfileReferencePathFrameworkConverter x:Key="UserProfileReferencePathFrameworkConverter" />
+					<Backstage:UserProfileReferencePathFrameworkNameConverter x:Key="UserProfileReferencePathFrameworkNameConverter" />
+					<Project:TabPositionConverter x:Key="TabPositionConverter" />
+					<Project:ScrollbarWidthConverter x:Key="ScrollbarWidthConverter" />
+				</ResourceDictionary>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Grid.Resources>
+	<Grid.ColumnDefinitions>
+		<ColumnDefinition Width="500*" />
+		<ColumnDefinition Width="500*" />
+	</Grid.ColumnDefinitions>
+	<Border Grid.Column="0" Margin="0" Padding="20,20,10,20">
+		<Border Background="#66FFFFFF" BorderBrush="#88FFFFFF" BorderThickness="1">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+				<Border BorderBrush="#CCCCCC" BorderThickness="0,0,0,1" Padding="0,0,0,5" Margin="0,0,0,10" Grid.Row="0">
+					<TextBlock Foreground="#333333" FontSize="18" Padding="5,0,0,0" Text="Options" />
+				</Border>
+				<GroupBox Header="Default Project Folder" Margin="5,0" Grid.Row="1">
+					<Grid>
+						<pc:TextBox Height="23" Margin="5,5,85,5" Name="DefaultProjectFolder" IsReadOnly="True" VerticalAlignment="Top" Text="{Binding Path=UserProfile.DefaultProjectFolder}" ToolTip="{Binding Path=UserProfile.DefaultProjectFolder}" />
+						<Button Content="Browse..." Height="23" HorizontalAlignment="Right" Margin="0,5,5,5" Name="DefaultProjectFolderBrowse" VerticalAlignment="Top" Width="75" Click="DefaultProjectFolderBrowse_Click" />
+					</Grid>
+				</GroupBox>
+				<GroupBox Header="Automatic Backups" Margin="5,5,5,0" Grid.Row="2">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<Label Content="Enabled:" Margin="5,5,0,0" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Width="Auto" />
+						<ToggleButton IsChecked="{Binding Path=UserProfile.AutomaticBackupsEnabled}" Name="AutomaticBackupsEnabled" Content="No" Margin="0,6,5,5" Checked="AutomaticBackupsEnabled_Checked" Unchecked="AutomaticBackupsEnabled_Unchecked" Height="23" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100" />
+						<Label Content="Interval:" Height="28" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top" Grid.Column="1" />
+						<c1datetime:C1TimeEditor Value="{Binding Path=UserProfile.AutomaticBackupsInterval}" Name="AutomaticBackupsInterval" IsEnabled="False" HorizontalAlignment="Right" Margin="0,6,5,5" Grid.Column="1" Format="TimeSpan" Height="24" VerticalAlignment="Top" Width="70" ValueChanged="AutomaticBackupsInterval_ValueChanged" />
+					</Grid>
+				</GroupBox>
+				<GroupBox Grid.Row="3" Margin="5,5,5,0" Header="Reference Assembly Paths">
+					<Grid>
+						<Label Content="Path:" Height="Auto" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" />
+						<pc:TextBox Height="23" Margin="47,7,169,0" Name="ReferencePath" VerticalAlignment="Top" TextChanged="ReferencePath_TextChanged" ToolTip="{Binding ElementName=ReferencePath, Path=Text}" />
+						<Button Content="Browse..." Height="23" HorizontalAlignment="Right" Margin="0,7,86,0" Name="ReferencePathBrowse" VerticalAlignment="Top" Width="75" Click="ReferencePathBrowse_Click" />
+						<Button Content="Add" Height="23" HorizontalAlignment="Right" Margin="0,7,5,0" Name="ReferencePathAdd" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="ReferencePathAdd_Click" />
+						<Border Grid.Row="0" Margin="0,35,0,0" BorderThickness="0,1,0,0" BorderBrush="{StaticResource NormalBorderColor}">
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="30" />
+									<RowDefinition Height="*" />
+								</Grid.RowDefinitions>
+								<Border BorderThickness="0,0,0,1" BorderBrush="{StaticResource GridLineBrush}" >
+									<Grid>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Name="ItemsGridCD1" Width="1.25*" />
+											<ColumnDefinition Name="ItemsGridCD2" Width="0.75*" />
+											<ColumnDefinition MinWidth="30" MaxWidth="30" />
+											<ColumnDefinition MaxWidth="11" />
+										</Grid.ColumnDefinitions>
+										<Border Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="{StaticResource GridLineBrush}" >
+											<Border Padding="5,0" Background="{StaticResource GridHeaderButtonNormalBrush}" >
+												<TextBlock Text="Path" HorizontalAlignment="Left" VerticalAlignment="Center" />
+											</Border>
+										</Border>
+										<Border Grid.Column="1" BorderThickness="0,0,1,0" BorderBrush="{StaticResource GridLineBrush}" >
+											<Border Padding="5,0" Background="{StaticResource GridHeaderButtonNormalBrush}" >
+												<TextBlock Text="Framework" HorizontalAlignment="Left" VerticalAlignment="Center" />
+											</Border>
+										</Border>
+										<Border Grid.Column="2" BorderThickness="0,0,1,0" BorderBrush="{StaticResource GridLineBrush}" Background="{StaticResource GridHeaderButtonNormalBrush}" />
+										<Border Grid.Column="3" BorderThickness="0,0,1,0" BorderBrush="{StaticResource GridLineBrush}" Background="{StaticResource GridHeaderButtonNormalBrush}" />
+									</Grid>
+								</Border>
+								<ListBox Grid.Row="1" Name="ReferencePathsList" BorderThickness="0" Margin="0" Padding="-1" SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.IsVirtualizing="True" ItemContainerStyle="{StaticResource StretchedValueListItemContainerStyle}" >
+									<ListBox.Resources>
+										<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+									</ListBox.Resources>
+									<ListBox.ItemTemplate>
+										<DataTemplate>
+											<Border Name="BG" Background="White" BorderBrush="{StaticResource GridLineBrush}" BorderThickness="1" Margin="-1,-1,-1,0" IsEnabled="{Binding Path=., Converter={StaticResource ProjectTypeEnabledConverter}}" >
+												<Grid>
+													<Grid.RowDefinitions>
+														<RowDefinition Height="27" />
+													</Grid.RowDefinitions>
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="{Binding ElementName=ItemsGridCD1, Path=Width}"  />
+														<ColumnDefinition Width="{Binding ElementName=ItemsGridCD2, Path=Width}" />
+														<ColumnDefinition Width="30" />
+													</Grid.ColumnDefinitions>
+													<Border Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="{StaticResource GridLineBrush}" >
+														<Grid>
+															<Grid.ColumnDefinitions>
+																<ColumnDefinition Name="RPGridCD" Width="*" />
+																<ColumnDefinition Width="30" />
+															</Grid.ColumnDefinitions>
+															<pc:TextBox Grid.Column="0" Name="ReferencePath" Text="{Binding Path=Path}" VerticalContentAlignment="Center" BorderThickness="1" BorderBrush="Transparent" Background="Transparent" CornerRadius="0" IsHaloEnabled="False" PreviewKeyDown="ReferencePath_PreviewKeyDown" ToolTip="{Binding Path=Path}"  />
+															<Button Name="ReferencePathUpdate" Grid.Column="1" Margin="1" Padding="0" Visibility="Collapsed" Style="{StaticResource ListItemButtonStyle}" Click="ReferencePathUpdate_Click">
+																<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Search.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+															</Button>
+														</Grid>
+													</Border>
+													<Border Grid.Column="1" BorderThickness="0,0,1,0" BorderBrush="{StaticResource GridLineBrush}" >
+														<ComboBox IsEditable="False" SelectedIndex="{Binding Path=Framework, Converter={StaticResource UserProfileReferencePathFrameworkConverter}}" VerticalContentAlignment="Center" Margin="0" Name="ReferencePathFramework" BorderThickness="1" BorderBrush="Transparent" Background="Transparent" PreviewKeyDown="ReferencePathFramework_PreviewKeyDown" >
+															<ComboBox.Items>
+																<ComboBoxItem Content="Any" />
+																<ComboBoxItem Content=".NET Framework 4.0" />
+																<ComboBoxItem Content=".NET Framework 4.0 (Client Profile)" />
+																<ComboBoxItem Content=".NET Framework 3.5" />
+																<ComboBoxItem Content=".NET Framework 3.5 (Client Profile)" />
+																<ComboBoxItem Content=".NET Framework 3.0" />
+															</ComboBox.Items>
+														</ComboBox>
+													</Border>
+													<Button Name="ReferencePathDelete" Grid.Column="2" Margin="1,1,2,1" Padding="0" Style="{StaticResource ListItemButtonStyle}" Click="ReferencePathDelete_Click">
+														<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+													</Button>
+												</Grid>
+											</Border>
+											<DataTemplate.Triggers>
+												<MultiDataTrigger>
+													<MultiDataTrigger.Conditions>
+														<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True" />
+														<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="False" />
+													</MultiDataTrigger.Conditions>
+													<Setter TargetName="BG" Property="Background" Value="{StaticResource GridLineMouseOverBackground}" />
+												</MultiDataTrigger>
+												<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsKeyboardFocusWithin}" Value="True">
+													<Setter TargetName="ReferencePathUpdate" Property="Visibility" Value="Visible" />
+												</DataTrigger>
+												<DataTrigger Binding="{Binding ElementName=ReferencePathFramework,Path=IsDropDownOpen}" Value="True">
+													<Setter TargetName="ReferencePathFramework" Property="Background" Value="White" />
+													<Setter TargetName="ReferencePathFramework" Property="BorderBrush" Value="{StaticResource FocusedBorderColor}" />
+												</DataTrigger>
+											</DataTemplate.Triggers>
+										</DataTemplate>
+									</ListBox.ItemTemplate>
+								</ListBox>
+							</Grid>
+						</Border>
+					</Grid>
+				</GroupBox>
+				<GroupBox Header="Service Utility Path" Margin="5,5,5,0" Grid.Row="4">
+					<Grid>
+						<pc:TextBox Text="{Binding Path=UserProfile.SvcUtilPath}" Name="SvcUtilPath" Height="23" IsReadOnly="True" Margin="5,5,85,5" VerticalAlignment="Top" ToolTip="{Binding Path=UserProfile.SvcUtilPath}" />
+						<Button Content="Browse..." Height="23" HorizontalAlignment="Right" Margin="0,5,5,5" Name="SvcUtilPathBrowse" VerticalAlignment="Top" Width="75" Click="SvcUtilPathBrowse_Click" />
+					</Grid>
+				</GroupBox>
+				<GroupBox Header="User Interface" Margin="5,5,5,0" Grid.Row="5">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<Label Content="Tab Position:" Height="Auto"  HorizontalAlignment="Left" Margin="5,4,0,0" VerticalAlignment="Top" />
+						<ComboBox Height="23" Margin="84,5,5,5" Name="TabPosition" SelectedIndex="{Binding Path=UserProfile.TabPosition, Converter={StaticResource TabPositionConverter}}"  SelectionChanged="TabPosition_SelectionChanged" >
+							<ComboBoxItem Content="Top" />
+							<ComboBoxItem Content="Right" />
+							<ComboBoxItem Content="Left" />
+							<ComboBoxItem Content="Bottom" />
+						</ComboBox>
+						<Label Content="Tab Maximum Width:" Grid.Column="1" Height="Auto" HorizontalAlignment="Left" Margin="5,4,0,0" VerticalAlignment="Top" />
+						<c1:C1NumericBox HorizontalAlignment="Right" Margin="0,5,5,0" Height="23" Name="TabMaximumWidth" ShowButtons="False" Value="{Binding Path=UserProfile.TabMaximumWidth}" VerticalAlignment="Top" Width="60" Grid.Column="1" ValueChanged="TabMaximumWidth_ValueChanged" />
+					</Grid>
+				</GroupBox>
+				<Button Content="Reset Development Environment" Grid.Row="7" Height="30" Margin="5" Name="ResetEnvironment" VerticalAlignment="Top" Click="ResetEnvironment_Click" />
+			</Grid>
+		</Border>
+	</Border>
+	<Border Grid.Column="1" Margin="0" Padding="10,20,20,20" BorderBrush="#CCCCCC" BorderThickness="1,0,0,0">
+		<Border Background="#66FFFFFF" BorderBrush="#88FFFFFF" BorderThickness="1">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+				<Border BorderBrush="#CCCCCC" BorderThickness="0,0,0,1" Padding="0,0,0,5" Margin="0,0,0,10" Grid.Row="0">
+					<TextBlock Foreground="#333333" FontSize="18" Padding="5,0,0,0" Text="About Prospective Software WCF Architect" />
+				</Border>
+				<StackPanel Grid.Row="1" Margin="5,0">
+					<Image Name="SKULevel" Source="pack://application:,,,/WCFArchitect;component/Icons/Odd/FullLogoDeveloper.png" Margin="0,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="100" Width="450" Stretch="None" Grid.Column="0" />
+					<Grid UseLayoutRounding="True" Margin="0,0,0,10">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="10" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<StackPanel Grid.Row="0">
+							<Label Content="Prospective Software WCF Architect Professional" Padding="4,0" Name="ProductTitle" />
+							<Label Name="AboutVersion" Content="Version: 1.0.0.0" Padding="4,0" />
+							<Label Content="© 2011 Prospective Software Inc." Padding="4,0" />
+							<Label Content="All Rights Reserved." Padding="4,0" />
+						</StackPanel>
+						<StackPanel Grid.Row="2">
+							<Label Content="Licensed To:" Foreground="DodgerBlue" Padding="4,0" />
+							<Label Name="LicenseName" Content="{Binding Path=LicenseInfo.LicenseeName}" Padding="4,0" />
+							<Label Name="LicenseCompany" Content="Prospective Software" Padding="4,0" />
+							<Grid Margin="0,5,5,0" Name="KeyGrid">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="100" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+								<Label Grid.Column="0" Height="22" Padding="4,0" VerticalContentAlignment="Center" Content="Key:" />
+								<Border Grid.Column="1" Margin="0,0,85,0" BorderThickness="1" BorderBrush="{StaticResource NormalBorderColor}">
+									<c1:C1MaskedTextBox FontSize="12" Name="Key" BorderThickness="0" Value="{Binding Path=LicenseKey.Key}" Text="" PromptChar=" " Mask="AAAAA-AAAAA-AAAAA-AAAAA-AAAAA" GotFocus="Key_GotFocus" />
+								</Border>
+								<ToggleButton Grid.Column="1" HorizontalAlignment="Right" Width="75" Name="KeyActivation" Content="Activate" Checked="KeyActivation_Checked" Unchecked="KeyActivation_Unchecked" />
+							</Grid>
+							<Grid Margin="0,5,5,0" Name="AuthGrid">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="100" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+								<Label Grid.Column="0" Height="22" Padding="4,0" VerticalContentAlignment="Center" Content="Authorization:" />
+								<Label Grid.Column="1" Name="Authorization" Content="{Binding Path=LicenseKey.Authorization}" />
+							</Grid>
+						</StackPanel>
+					</Grid>
+					<Grid UseLayoutRounding="True" Margin="0,0,0,10">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<TextBlock Text="Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it, may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law." TextWrapping="Wrap" Padding="4,0" />
+						<TextBlock Text="WCF Architect makes use of the open-source Oxygen Icons. Due to the licensing of these icons we are required to post the modified versions of these icons for download on our website. You can use the link below to download the icons or you can head over the Open Icon Library project to download the unaltered icons." TextWrapping="Wrap" Padding="4,0" Margin="0,10,0,5" Grid.Row="1" />
+						<TextBlock Margin="0,5,0,5" Grid.Row="2" Padding="4,0">
+							<Hyperlink Name="MILink" NavigateUri="http://www.prospectivesoftware.com/architect/downloads/ModifiedIcons.zip" RequestNavigate="MILink_RequestNavigate" >
+								Download the Modified Oxygen Icons.
+							</Hyperlink>
+						</TextBlock>
+						<TextBlock Margin="0,5,0,5" Grid.Row="3" Padding="4,0">
+							<Hyperlink Name="OILLink" NavigateUri="http://openiconlibrary.sourceforge.net/" RequestNavigate="OILLink_RequestNavigate">
+								Visit the Open Icon Library and download the Oxygen Icon Theme.
+							</Hyperlink>
+						</TextBlock>
+						<TextBlock Margin="0,5,0,5" Grid.Row="4" Padding="4,0">
+							Please use the following link to report any bugs you find:<LineBreak />
+							<Hyperlink Name="SLink" NavigateUri="http://support.prospectivesoftware.com/fogbugz/default.asp?pg=pgPublicEdit&amp;ixProject=2" RequestNavigate="SLink_RequestNavigate">
+								Prospective Software Issue Reporting Page
+							</Hyperlink>
+						</TextBlock>
+					</Grid>
+				</StackPanel>
+			</Grid>
+		</Border>
+	</Border>
+</Grid>

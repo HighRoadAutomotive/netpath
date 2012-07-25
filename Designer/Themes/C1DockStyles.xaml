@@ -1,0 +1,1324 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:c1="clr-namespace:C1.WPF;assembly=C1.WPF.4"
+					xmlns:c1d="clr-namespace:C1.WPF.Docking;assembly=C1.WPF.Docking.4"
+					xmlns:pc="clr-namespace:Prospective.Controls;assembly=Prospective.Controls"
+					xmlns:System="clr-namespace:System;assembly=mscorlib"
+					xmlns:Root="clr-namespace:WCFArchitect.Interface;assembly=WCFArchitect"
+					xmlns:Themes="clr-namespace:WCFArchitect.Themes;assembly=WCFArchitect">
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Colors.xaml" />
+		<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Generic.xaml" />
+		<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/ToolBars.xaml" />
+		<ResourceDictionary>
+			<Themes:DockModeConverter x:Key="DockModeConverter" />
+			<Root:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
+		</ResourceDictionary>
+	</ResourceDictionary.MergedDictionaries>
+
+	<!-- C1DockControl Background -->
+	<LinearGradientBrush x:Key="DockControlBackgroundGradient" StartPoint="1,0" EndPoint="0,1">
+		<GradientStop Color="#FFE7E9EC" Offset="0" />
+		<GradientStop Color="#FFBABEC2" Offset="1" />
+	</LinearGradientBrush>
+	<SolidColorBrush x:Key="DockControlBackgroundSolid" Color="#FF405070" />
+	<!--<SolidColorBrush x:Key="DockControlBackground" Color="#FF2B3B58" />-->
+	<SolidColorBrush x:Key="DockControlBackground" Color="#FF2B3B4B" />
+	<SolidColorBrush x:Key="DockButtonBorder" Color="#DDFFFFFF" />
+	<SolidColorBrush x:Key="DockButtonPressedBackground" Color="#99FFFFFF" />
+	<SolidColorBrush x:Key="DockButtonMouseOverBackground" Color="#66FFFFFF" />
+	
+	<Style x:Key="C1DockTabItemWindowStyle" TargetType="{x:Type Themes:C1DockTabItemWindow}">
+		<Setter Property="OverridesDefaultStyle" Value="True" />
+		<Setter Property="Padding" Value="5,3,10,3"/>
+		<Setter Property="MinWidth" Value="50" />
+		<Setter Property="HorizontalAlignment" Value="Stretch" />
+		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+		<Setter Property="Foreground" Value="{StaticResource NormalBackgroundColor}" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type Themes:C1DockTabItemWindow}">
+					<Border Name="BG" CornerRadius="0" BorderThickness="0" BorderBrush="Transparent" Background="{StaticResource PressedBackgroundColor}" Padding="{TemplateBinding Padding}" HorizontalAlignment="Stretch">
+						<Grid HorizontalAlignment="Stretch">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto"/>
+							</Grid.ColumnDefinitions>
+							<ContentPresenter ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+							<Button x:Name="PART_CloseButton" BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Grid.Column="1" Visibility="Hidden" HorizontalAlignment="Right" Margin="5,0,-6,0" ToolTip="Close" VerticalAlignment="Center" Command="{x:Static Themes:C1DockTabItemWindow.CloseCommand}">
+								<Button.Style>
+									<Style TargetType="{x:Type ButtonBase}">
+										<Setter Property="Template">
+											<Setter.Value>
+												<ControlTemplate TargetType="{x:Type ButtonBase}">
+													<Border Name="BG" BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
+														<ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+													</Border>
+													<ControlTemplate.Triggers>
+														<Trigger Property="IsMouseOver" Value="True">
+															<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+															<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonMouseOverBackground}" />
+														</Trigger>
+														<Trigger Property="IsPressed" Value="True">
+															<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+															<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+														</Trigger>
+													</ControlTemplate.Triggers>
+												</ControlTemplate>
+											</Setter.Value>
+										</Setter>
+									</Style>
+								</Button.Style>
+								<Border Padding="1,2">
+									<Path Data="M0,0L1.6,0 3,1.56 4.4,0 6,0 3.8,2.5 6,5 4.4,5 3,3.49 1.59,5 -4.2E-09,5 2.18,2.5z" Fill="{StaticResource DockControlBackground}" Stretch="Fill" Width="10" Height="8" />
+								</Border>
+							</Button>
+						</Grid>
+					</Border>
+					<ControlTemplate.Triggers>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsSelected" Value="False" />
+								<Condition Property="IsMouseOver" Value="True" />
+							</MultiTrigger.Conditions>
+							<Setter TargetName="BG" Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
+							<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource MouseOverBackgroundColor}" />
+							<Setter TargetName="PART_CloseButton" Property="Opacity" Value="0.6" />
+							<Setter TargetName="PART_CloseButton" Property="Visibility" Value="Visible" />
+						</MultiTrigger>
+						<Trigger Property="IsSelected" Value="True">
+							<Setter TargetName="BG" Property="Background" Value="{StaticResource SelectedBackgroundColor}" />
+							<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource SelectedBackgroundColor}" />
+							<Setter Property="Foreground" Value="{StaticResource NormalForegroundColor}" />
+							<Setter TargetName="PART_CloseButton" Property="Visibility" Value="Visible" />
+						</Trigger>
+						<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type c1d:C1DockTabControl}}, Path=TabStripPlacement}" Value="Right">
+							<Setter TargetName="BG" Property="BorderThickness" Value="0,1,1,1" />
+						</DataTrigger>
+						<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type c1d:C1DockTabControl}}, Path=TabStripPlacement}" Value="Left">
+							<Setter TargetName="BG" Property="BorderThickness" Value="1,1,0,1" />
+						</DataTrigger>
+						<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type c1d:C1DockTabControl}}, Path=TabStripPlacement}" Value="Top">
+							<Setter TargetName="BG" Property="BorderThickness" Value="1,1,1,0" />
+						</DataTrigger>
+						<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type c1d:C1DockTabControl}}, Path=TabStripPlacement}" Value="Bottom">
+							<Setter TargetName="BG" Property="BorderThickness" Value="1,0,1,1" />
+						</DataTrigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<DataTemplate x:Key="C1DockTabItemWindowContentTemplate">
+		<Border Name="BG" CornerRadius="0" BorderThickness="0" Margin="0" BorderBrush="{StaticResource SelectedBackgroundColor}" Background="{StaticResource NormalBackgroundColor}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+			<ContentPresenter Content="{Binding Path=.}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+		</Border>
+		<DataTemplate.Triggers>
+			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type c1d:C1DockTabControl}}, Path=TabStripPlacement}" Value="Left">
+				<Setter TargetName="BG" Property="BorderThickness" Value="4,0,0,0" />
+			</DataTrigger>
+			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type c1d:C1DockTabControl}}, Path=TabStripPlacement}" Value="Top">
+				<Setter TargetName="BG" Property="BorderThickness" Value="0,4,0,0" />
+			</DataTrigger>
+			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type c1d:C1DockTabControl}}, Path=TabStripPlacement}" Value="Right">
+				<Setter TargetName="BG" Property="BorderThickness" Value="0,0,4,0" />
+			</DataTrigger>
+			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type c1d:C1DockTabControl}}, Path=TabStripPlacement}" Value="Bottom">
+				<Setter TargetName="BG" Property="BorderThickness" Value="0,0,0,4" />
+			</DataTrigger>
+		</DataTemplate.Triggers>
+	</DataTemplate>
+
+	<ControlTemplate x:Key="C1DockTabControlBottomTemplate" TargetType="{x:Type c1d:C1DockTabControl}">
+		<Grid x:Name="Root" Background="Transparent">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+				<Border x:Name="HeaderContainer" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="{TemplateBinding Background}" Cursor="Hand" c1d:C1DockTabControl.Drag="{Binding RelativeSource={RelativeSource TemplatedParent}}">
+					<Border.Visibility>
+						<Binding Path="ShowHeader" RelativeSource="{RelativeSource TemplatedParent}">
+							<Binding.Converter>
+								<c1:VisibilityConverter Opposite="False"/>
+							</Binding.Converter>
+						</Binding>
+					</Border.Visibility>
+					<Grid>
+						<Border x:Name="HeaderBackground" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="{TemplateBinding HeaderBackground}"/>
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition/>
+								<ColumnDefinition Width="Auto"/>
+							</Grid.ColumnDefinitions>
+							<ContentControl ContentTemplate="{Binding SelectedItem.ActualSelectedHeaderTemplate, RelativeSource={RelativeSource TemplatedParent}}" Content="{Binding SelectedItem.Header, RelativeSource={RelativeSource TemplatedParent}}" Foreground="{TemplateBinding HeaderForeground}" IsTabStop="False" Margin="{TemplateBinding Padding}"/>
+							<StackPanel x:Name="StackPanelButtons" Grid.Column="1" HorizontalAlignment="Right" Margin="2" Orientation="Horizontal" Visibility="Collapsed">
+								<Border>
+									<Border.Visibility>
+										<Binding Path="CanUserSlide" RelativeSource="{RelativeSource TemplatedParent}">
+											<Binding.Converter>
+												<c1:VisibilityConverter Opposite="False"/>
+											</Binding.Converter>
+										</Binding>
+									</Border.Visibility>
+									<ToggleButton IsChecked="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource DockModeConverter}, Path=DockMode}" BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Right" Height="15" Margin="2,0" ToolTip="{Binding MakeSliding}" VerticalAlignment="Center" Width="15" >
+										<ToggleButton.Style>
+											<Style TargetType="{x:Type ButtonBase}">
+												<Setter Property="Padding" Value="2"/>
+												<Setter Property="Template">
+													<Setter.Value>
+														<ControlTemplate TargetType="{x:Type ButtonBase}">
+															<Border Name="BG" BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
+																<ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+															</Border>
+															<ControlTemplate.Triggers>
+																<Trigger Property="IsMouseOver" Value="True">
+																	<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+																	<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonMouseOverBackground}" />
+																</Trigger>
+																<Trigger Property="IsPressed" Value="True">
+																	<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+																	<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+																</Trigger>
+															</ControlTemplate.Triggers>
+														</ControlTemplate>
+													</Setter.Value>
+												</Setter>
+											</Style>
+										</ToggleButton.Style>
+										<Grid x:Name="AutoHideIcon" Height="10">
+											<Border Background="{TemplateBinding HeaderForeground}" CornerRadius="0,0,1,1" HorizontalAlignment="Center" Height="4" VerticalAlignment="Bottom" Width="1"/>
+											<Border BorderBrush="{TemplateBinding HeaderForeground}" BorderThickness="1" CornerRadius="1,1,0,0" HorizontalAlignment="Center" Height="7" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Top" Width="5">
+												<Grid>
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition/>
+														<ColumnDefinition/>
+													</Grid.ColumnDefinitions>
+													<Border Background="{TemplateBinding HeaderForeground}"/>
+												</Grid>
+											</Border>
+											<Border Background="{TemplateBinding HeaderForeground}" CornerRadius="1" HorizontalAlignment="Center" Height="1" Margin="0,0,0,3" VerticalAlignment="Bottom" Width="7"/>
+										</Grid>
+									</ToggleButton>
+								</Border>
+							</StackPanel>
+						</Grid>
+					</Grid>
+				</Border>
+				<c1:C1LinePanel x:Name="LineOuter" Orientation="Vertical" Grid.Row="1">
+					<c1:C1LinePanel.LineDefinitions>
+						<c1:LineDefinition Length="*"/>
+						<c1:LineDefinition Length="Auto"/>
+					</c1:C1LinePanel.LineDefinitions>
+					<Border x:Name="SelectedTabItem" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="{TemplateBinding Background}">
+						<ContentPresenter x:Name="SelectedItemContent" ContentTemplate="{TemplateBinding ContentTemplate}"/>
+					</Border>
+					<c1:C1LinePanel x:Name="LineTabItems" Orientation="Horizontal">
+						<c1:C1LinePanel.LineDefinitions>
+							<c1:LineDefinition Length="Auto"/>
+							<c1:LineDefinition Length="*"/>
+							<c1:LineDefinition Length="Auto"/>
+							<c1:LineDefinition Length="Auto"/>
+							<c1:LineDefinition Length="Auto"/>
+						</c1:C1LinePanel.LineDefinitions>
+						<c1:C1LinePanel.Visibility>
+							<Binding Path="ShowTabs" RelativeSource="{RelativeSource TemplatedParent}">
+								<Binding.Converter>
+									<c1:VisibilityConverter Opposite="False"/>
+								</Binding.Converter>
+							</Binding>
+						</c1:C1LinePanel.Visibility>
+						<Button x:Name="PreviousButton" BorderBrush="{StaticResource DockButtonBorder}" BorderThickness="1" Background="Transparent" Foreground="LightGray" Height="15" Margin="2" ToolTip="{Binding Previous}" Width="15">
+							<Button.Style>
+								<Style TargetType="{x:Type ButtonBase}">
+									<Setter Property="Padding" Value="3"/>
+									<Setter Property="Foreground" Value="LightGray" />
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="{x:Type ButtonBase}">
+												<Border Name="BG" BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
+													<Path Data="M5.3,1E-07L7,1E-07 4.7,2.5 7,5 5.3,5 3,2.5z M2.3,0L4,0 1.7,2.5 4,5 2.3,5 0,2.5z" Fill="{TemplateBinding Foreground}" Height="5" Stretch="Uniform" Width="7" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+												</Border>
+												<ControlTemplate.Triggers>
+													<Trigger Property="IsMouseOver" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonMouseOverBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+													<Trigger Property="IsPressed" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+												</ControlTemplate.Triggers>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</Button.Style>
+						</Button>
+						<ContentPresenter x:Name="TabPanelPresenter" Grid.Column="1" Margin="0,0,0,0">
+							<ContentPresenter.Content>
+								<c1:C1TabPanel x:Name="TabPanel" HorizontalAlignment="{TemplateBinding TabStripHorizontalAlignment}" IsItemsHost="True" Orientation="Horizontal" VerticalAlignment="{TemplateBinding TabStripVerticalAlignment}"/>
+							</ContentPresenter.Content>
+						</ContentPresenter>
+						<Button x:Name="NextButton" BorderBrush="{StaticResource DockButtonBorder}" BorderThickness="1" Background="Transparent" Grid.Column="3" Height="15" Margin="2" ToolTip="{Binding Next}" Width="15">
+							<Button.Style>
+								<Style TargetType="{x:Type ButtonBase}">
+									<Setter Property="Padding" Value="3"/>
+									<Setter Property="Foreground" Value="LightGray" />
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="{x:Type ButtonBase}">
+												<Border Name="BG" BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
+													<Path Data="M3,0L4.67,0 7,2.5 4.67,5 3,5 5.3,2.5z M0,0L1.67,0 4,2.5 1.67,5 0,5 2.3,2.5z" Fill="{TemplateBinding Foreground}" Height="5" Stretch="Uniform" Width="7" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+												</Border>
+												<ControlTemplate.Triggers>
+													<Trigger Property="IsMouseOver" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonMouseOverBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+													<Trigger Property="IsPressed" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+												</ControlTemplate.Triggers>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</Button.Style>
+						</Button>
+						<c1:C1DropDownButton x:Name="TabStripDropDown" BorderBrush="{StaticResource DockButtonBorder}" BorderThickness="1" Background="Transparent" Height="15" IsTabStop="False" IsEnabled="True" Margin="2" ToolTip="{Binding Menu}" Visibility="{TemplateBinding TabStripMenuVisibility}" Width="15" AutoClose="True">
+							<c1:C1DropDownButton.Style>
+								<Style TargetType="{x:Type c1:C1DropDownButton}">
+									<Setter Property="Foreground" Value="LightGray" />
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="{x:Type c1:C1DropDownButton}">
+												<Grid>
+													<Grid.RowDefinitions>
+														<RowDefinition Height="*"/>
+														<RowDefinition Height="Auto"/>
+													</Grid.RowDefinitions>
+													<ToggleButton x:Name="ArrowToggle" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalHeaderAlignment}" IsTabStop="True" Padding="0" VerticalContentAlignment="{TemplateBinding VerticalHeaderAlignment}">
+														<ToggleButton.Style>
+															<Style TargetType="{x:Type ToggleButton}">
+																<Setter Property="Padding" Value="3"/>
+																<Setter Property="Foreground" Value="LightGray" />
+																<Setter Property="Template">
+																	<Setter.Value>
+																		<ControlTemplate TargetType="{x:Type ToggleButton}">
+																			<Border Name="BG" BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
+																				<Border HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+																					<Grid Height="4" Margin="0,5,0,0" VerticalAlignment="Top" Width="7">
+																						<Polygon Fill="{TemplateBinding Foreground}" HorizontalAlignment="Center" Points="0,0 3.5,3.5 7,0" VerticalAlignment="Center"/>
+																						<Rectangle Fill="{TemplateBinding Foreground}" Height="1" Margin="0,-2,0,0" StrokeThickness="0" VerticalAlignment="Top"/>
+																					</Grid>
+																				</Border>
+																			</Border>
+																			<ControlTemplate.Triggers>
+																				<Trigger Property="IsMouseOver" Value="True">
+																					<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+																					<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonMouseOverBackground}" />
+																					<Setter Property="Foreground" Value="Black" />
+																				</Trigger>
+																				<Trigger Property="IsPressed" Value="True">
+																					<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+																					<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+																					<Setter Property="Foreground" Value="Black" />
+																				</Trigger>
+																				<Trigger Property="IsChecked" Value="True">
+																					<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+																					<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+																					<Setter Property="Foreground" Value="Black" />
+																				</Trigger>
+																			</ControlTemplate.Triggers>
+																		</ControlTemplate>
+																	</Setter.Value>
+																</Setter>
+															</Style>
+														</ToggleButton.Style>
+													</ToggleButton>
+													<Popup x:Name="DropDownPopup" Grid.Row="1">
+														<Grid Height="{TemplateBinding DropDownHeight}" MaxWidth="{TemplateBinding MaxDropDownWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}" MinWidth="{TemplateBinding MinDropDownWidth}" Width="{TemplateBinding DropDownWidth}">
+															<ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Margin="{TemplateBinding Padding}"/>
+														</Grid>
+													</Popup>
+												</Grid>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</c1:C1DropDownButton.Style>
+							<c1:C1MenuList x:Name="Menu" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Foreground="{TemplateBinding TabStripForeground}" HighlightedBackground="{TemplateBinding MouseOverBrush}" IsTabStop="True" OpenedBackground="{TemplateBinding PressedBrush}" Padding="0" KeyboardNavigation.TabNavigation="Once"/>
+						</c1:C1DropDownButton>
+						<Button x:Name="CloseButton" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding TabStripBackground}" Grid.Column="5" Foreground="{TemplateBinding Foreground}" Height="15" Margin="2,2,4,2" Grid.Row="5" ToolTip="{Binding CloseGlobal}" VerticalAlignment="Center" Width="15">
+							<Button.Style>
+								<Style TargetType="{x:Type ButtonBase}">
+									<Setter Property="Padding" Value="3"/>
+									<Setter Property="Foreground" Value="LightGray" />
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="{x:Type ButtonBase}">
+												<Border Name="BG" BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
+													<Path Data="M0,0L1.6,0 3,1.56 4.4,0 6,0 3.8,2.5 6,5 4.4,5 3,3.49 1.59,5 -4.2E-09,5 2.18,2.5z" Fill="{TemplateBinding Foreground}" Height="6" Stretch="Uniform" Width="7" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+												</Border>
+												<ControlTemplate.Triggers>
+													<Trigger Property="IsMouseOver" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonMouseOverBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+													<Trigger Property="IsPressed" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+												</ControlTemplate.Triggers>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</Button.Style>
+						</Button>
+					</c1:C1LinePanel>
+				</c1:C1LinePanel>
+			</Grid>
+			<c1d:C1DockPreview x:Name="Preview"/>
+			<c1d:C1DockPicker x:Name="Picker" Visibility="Collapsed"/>
+		</Grid>
+	</ControlTemplate>
+	<ControlTemplate x:Key="C1DockTabControlTopTemplate" TargetType="{x:Type c1d:C1DockTabControl}">
+		<Grid x:Name="Root" Background="Transparent">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+				<Border x:Name="HeaderContainer" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="{TemplateBinding Background}" Cursor="Hand" c1d:C1DockTabControl.Drag="{Binding RelativeSource={RelativeSource TemplatedParent}}">
+					<Border.Visibility>
+						<Binding Path="ShowHeader" RelativeSource="{RelativeSource TemplatedParent}">
+							<Binding.Converter>
+								<c1:VisibilityConverter Opposite="False"/>
+							</Binding.Converter>
+						</Binding>
+					</Border.Visibility>
+					<Grid>
+						<Border x:Name="HeaderBackground" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="{TemplateBinding HeaderBackground}"/>
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition/>
+								<ColumnDefinition Width="Auto"/>
+							</Grid.ColumnDefinitions>
+							<ContentControl ContentTemplate="{Binding SelectedItem.ActualSelectedHeaderTemplate, RelativeSource={RelativeSource TemplatedParent}}" Content="{Binding SelectedItem.Header, RelativeSource={RelativeSource TemplatedParent}}" Foreground="{TemplateBinding HeaderForeground}" IsTabStop="False" Margin="{TemplateBinding Padding}"/>
+							<StackPanel x:Name="StackPanelButtons" Grid.Column="1" HorizontalAlignment="Right" Margin="2" Orientation="Horizontal" Visibility="Collapsed">
+								<Border>
+									<Border.Visibility>
+										<Binding Path="CanUserSlide" RelativeSource="{RelativeSource TemplatedParent}">
+											<Binding.Converter>
+												<c1:VisibilityConverter Opposite="False"/>
+											</Binding.Converter>
+										</Binding>
+									</Border.Visibility>
+									<ToggleButton IsChecked="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource DockModeConverter}, Path=DockMode}" BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Right" Height="15" Margin="2,0" ToolTip="{Binding MakeSliding}" VerticalAlignment="Center" Width="15" >
+										<ToggleButton.Style>
+											<Style TargetType="{x:Type ButtonBase}">
+												<Setter Property="Padding" Value="2"/>
+												<Setter Property="Template">
+													<Setter.Value>
+														<ControlTemplate TargetType="{x:Type ButtonBase}">
+															<Border Name="BG" BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
+																<ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+															</Border>
+															<ControlTemplate.Triggers>
+																<Trigger Property="IsMouseOver" Value="True">
+																	<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+																	<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonMouseOverBackground}" />
+																</Trigger>
+																<Trigger Property="IsPressed" Value="True">
+																	<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+																	<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+																</Trigger>
+															</ControlTemplate.Triggers>
+														</ControlTemplate>
+													</Setter.Value>
+												</Setter>
+											</Style>
+										</ToggleButton.Style>
+										<Grid x:Name="AutoHideIcon" Height="10">
+											<Border Background="{TemplateBinding HeaderForeground}" CornerRadius="0,0,1,1" HorizontalAlignment="Center" Height="4" VerticalAlignment="Bottom" Width="1"/>
+											<Border BorderBrush="{TemplateBinding HeaderForeground}" BorderThickness="1" CornerRadius="1,1,0,0" HorizontalAlignment="Center" Height="7" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Top" Width="5">
+												<Grid>
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition/>
+														<ColumnDefinition/>
+													</Grid.ColumnDefinitions>
+													<Border Background="{TemplateBinding HeaderForeground}"/>
+												</Grid>
+											</Border>
+											<Border Background="{TemplateBinding HeaderForeground}" CornerRadius="1" HorizontalAlignment="Center" Height="1" Margin="0,0,0,3" VerticalAlignment="Bottom" Width="7"/>
+										</Grid>
+									</ToggleButton>
+								</Border>
+							</StackPanel>
+						</Grid>
+					</Grid>
+				</Border>
+				<c1:C1LinePanel x:Name="LineOuter" Orientation="Vertical" Grid.Row="1">
+					<c1:C1LinePanel.LineDefinitions>
+						<c1:LineDefinition Length="Auto"/>
+						<c1:LineDefinition Length="*"/>
+					</c1:C1LinePanel.LineDefinitions>
+					<c1:C1LinePanel x:Name="LineTabItems" Orientation="Horizontal">
+						<c1:C1LinePanel.LineDefinitions>
+							<c1:LineDefinition Length="Auto"/>
+							<c1:LineDefinition Length="*"/>
+							<c1:LineDefinition Length="Auto"/>
+							<c1:LineDefinition Length="Auto"/>
+							<c1:LineDefinition Length="Auto"/>
+						</c1:C1LinePanel.LineDefinitions>
+						<c1:C1LinePanel.Visibility>
+							<Binding Path="ShowTabs" RelativeSource="{RelativeSource TemplatedParent}">
+								<Binding.Converter>
+									<c1:VisibilityConverter Opposite="False"/>
+								</Binding.Converter>
+							</Binding>
+						</c1:C1LinePanel.Visibility>
+						<Button x:Name="PreviousButton" BorderBrush="{StaticResource DockButtonBorder}" BorderThickness="1" Background="Transparent" Foreground="LightGray" Height="15" Margin="2" ToolTip="{Binding Previous}" Width="15">
+							<Button.Style>
+								<Style TargetType="{x:Type ButtonBase}">
+									<Setter Property="Padding" Value="3"/>
+									<Setter Property="Foreground" Value="LightGray" />
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="{x:Type ButtonBase}">
+												<Border Name="BG" BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
+													<Path Data="M5.3,1E-07L7,1E-07 4.7,2.5 7,5 5.3,5 3,2.5z M2.3,0L4,0 1.7,2.5 4,5 2.3,5 0,2.5z" Fill="{TemplateBinding Foreground}" Height="5" Stretch="Uniform" Width="7" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+												</Border>
+												<ControlTemplate.Triggers>
+													<Trigger Property="IsMouseOver" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonMouseOverBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+													<Trigger Property="IsPressed" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+												</ControlTemplate.Triggers>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</Button.Style>
+						</Button>
+						<ContentPresenter x:Name="TabPanelPresenter" Grid.Column="1" Margin="0,0,0,0">
+							<ContentPresenter.Content>
+								<c1:C1TabPanel x:Name="TabPanel" HorizontalAlignment="{TemplateBinding TabStripHorizontalAlignment}" IsItemsHost="True" Orientation="Horizontal" VerticalAlignment="{TemplateBinding TabStripVerticalAlignment}"/>
+							</ContentPresenter.Content>
+						</ContentPresenter>
+						<Button x:Name="NextButton" BorderBrush="{StaticResource DockButtonBorder}" BorderThickness="1" Background="Transparent" Grid.Column="3" Height="15" Margin="2" ToolTip="{Binding Next}" Width="15">
+							<Button.Style>
+								<Style TargetType="{x:Type ButtonBase}">
+									<Setter Property="Padding" Value="3"/>
+									<Setter Property="Foreground" Value="LightGray" />
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="{x:Type ButtonBase}">
+												<Border Name="BG" BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
+													<Path Data="M3,0L4.67,0 7,2.5 4.67,5 3,5 5.3,2.5z M0,0L1.67,0 4,2.5 1.67,5 0,5 2.3,2.5z" Fill="{TemplateBinding Foreground}" Height="5" Stretch="Uniform" Width="7" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+												</Border>
+												<ControlTemplate.Triggers>
+													<Trigger Property="IsMouseOver" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonMouseOverBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+													<Trigger Property="IsPressed" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+												</ControlTemplate.Triggers>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</Button.Style>
+						</Button>
+						<c1:C1DropDownButton x:Name="TabStripDropDown" BorderBrush="{StaticResource DockButtonBorder}" BorderThickness="1" Background="Transparent" Height="15" IsTabStop="False" IsEnabled="True" Margin="2" ToolTip="{Binding Menu}" Visibility="{TemplateBinding TabStripMenuVisibility}" Width="15" AutoClose="True">
+							<c1:C1DropDownButton.Style>
+								<Style TargetType="{x:Type c1:C1DropDownButton}">
+									<Setter Property="Foreground" Value="LightGray" />
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="{x:Type c1:C1DropDownButton}">
+												<Grid>
+													<Grid.RowDefinitions>
+														<RowDefinition Height="*"/>
+														<RowDefinition Height="Auto"/>
+													</Grid.RowDefinitions>
+													<ToggleButton x:Name="ArrowToggle" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalHeaderAlignment}" IsTabStop="True" Padding="0" VerticalContentAlignment="{TemplateBinding VerticalHeaderAlignment}">
+														<ToggleButton.Style>
+															<Style TargetType="{x:Type ToggleButton}">
+																<Setter Property="Padding" Value="3"/>
+																<Setter Property="Foreground" Value="LightGray" />
+																<Setter Property="Template">
+																	<Setter.Value>
+																		<ControlTemplate TargetType="{x:Type ToggleButton}">
+																			<Border Name="BG" BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
+																				<Border HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+																					<Grid Height="4" Margin="0,5,0,0" VerticalAlignment="Top" Width="7">
+																						<Polygon Fill="{TemplateBinding Foreground}" HorizontalAlignment="Center" Points="0,0 3.5,3.5 7,0" VerticalAlignment="Center"/>
+																						<Rectangle Fill="{TemplateBinding Foreground}" Height="1" Margin="0,-2,0,0" StrokeThickness="0" VerticalAlignment="Top"/>
+																					</Grid>
+																				</Border>
+																			</Border>
+																			<ControlTemplate.Triggers>
+																				<Trigger Property="IsMouseOver" Value="True">
+																					<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+																					<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonMouseOverBackground}" />
+																					<Setter Property="Foreground" Value="Black" />
+																				</Trigger>
+																				<Trigger Property="IsPressed" Value="True">
+																					<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+																					<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+																					<Setter Property="Foreground" Value="Black" />
+																				</Trigger>
+																				<Trigger Property="IsChecked" Value="True">
+																					<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+																					<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+																					<Setter Property="Foreground" Value="Black" />
+																				</Trigger>
+																			</ControlTemplate.Triggers>
+																		</ControlTemplate>
+																	</Setter.Value>
+																</Setter>
+															</Style>
+														</ToggleButton.Style>
+													</ToggleButton>
+													<Popup x:Name="DropDownPopup" Grid.Row="1">
+														<Grid Height="{TemplateBinding DropDownHeight}" MaxWidth="{TemplateBinding MaxDropDownWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}" MinWidth="{TemplateBinding MinDropDownWidth}" Width="{TemplateBinding DropDownWidth}">
+															<ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Margin="{TemplateBinding Padding}"/>
+														</Grid>
+													</Popup>
+												</Grid>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</c1:C1DropDownButton.Style>
+							<c1:C1MenuList x:Name="Menu" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Foreground="{TemplateBinding TabStripForeground}" HighlightedBackground="{TemplateBinding MouseOverBrush}" IsTabStop="True" OpenedBackground="{TemplateBinding PressedBrush}" Padding="0" KeyboardNavigation.TabNavigation="Once"/>
+						</c1:C1DropDownButton>
+						<Button x:Name="CloseButton" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding TabStripBackground}" Grid.Column="5" Foreground="{TemplateBinding Foreground}" Height="15" Margin="2,2,4,2" Grid.Row="5" ToolTip="{Binding CloseGlobal}" VerticalAlignment="Center" Width="15">
+							<Button.Style>
+								<Style TargetType="{x:Type ButtonBase}">
+									<Setter Property="Padding" Value="3"/>
+									<Setter Property="Foreground" Value="LightGray" />
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="{x:Type ButtonBase}">
+												<Border Name="BG" BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
+													<Path Data="M0,0L1.6,0 3,1.56 4.4,0 6,0 3.8,2.5 6,5 4.4,5 3,3.49 1.59,5 -4.2E-09,5 2.18,2.5z" Fill="{TemplateBinding Foreground}" Height="6" Stretch="Uniform" Width="7" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+												</Border>
+												<ControlTemplate.Triggers>
+													<Trigger Property="IsMouseOver" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonMouseOverBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+													<Trigger Property="IsPressed" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+												</ControlTemplate.Triggers>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</Button.Style>
+						</Button>
+					</c1:C1LinePanel>
+					<Border x:Name="SelectedTabItem" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="{TemplateBinding Background}">
+						<ContentPresenter x:Name="SelectedItemContent" ContentTemplate="{TemplateBinding ContentTemplate}"/>
+					</Border>
+				</c1:C1LinePanel>
+			</Grid>
+			<c1d:C1DockPreview x:Name="Preview"/>
+			<c1d:C1DockPicker x:Name="Picker" Visibility="Collapsed"/>
+		</Grid>
+	</ControlTemplate>
+	<ControlTemplate x:Key="C1DockTabControlLeftTemplate" TargetType="{x:Type c1d:C1DockTabControl}">
+		<Grid x:Name="Root" Background="Transparent">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+				<Border x:Name="HeaderContainer" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="{TemplateBinding Background}" Cursor="Hand" c1d:C1DockTabControl.Drag="{Binding RelativeSource={RelativeSource TemplatedParent}}">
+					<Border.Visibility>
+						<Binding Path="ShowHeader" RelativeSource="{RelativeSource TemplatedParent}">
+							<Binding.Converter>
+								<c1:VisibilityConverter Opposite="False"/>
+							</Binding.Converter>
+						</Binding>
+					</Border.Visibility>
+					<Grid>
+						<Border x:Name="HeaderBackground" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="{TemplateBinding HeaderBackground}"/>
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition/>
+								<ColumnDefinition Width="Auto"/>
+							</Grid.ColumnDefinitions>
+							<ContentControl ContentTemplate="{Binding SelectedItem.ActualSelectedHeaderTemplate, RelativeSource={RelativeSource TemplatedParent}}" Content="{Binding SelectedItem.Header, RelativeSource={RelativeSource TemplatedParent}}" Foreground="{TemplateBinding HeaderForeground}" IsTabStop="False" Margin="{TemplateBinding Padding}"/>
+							<StackPanel x:Name="StackPanelButtons" Grid.Column="1" HorizontalAlignment="Right" Margin="2" Orientation="Horizontal" Visibility="Collapsed">
+								<Border>
+									<Border.Visibility>
+										<Binding Path="CanUserSlide" RelativeSource="{RelativeSource TemplatedParent}">
+											<Binding.Converter>
+												<c1:VisibilityConverter Opposite="False"/>
+											</Binding.Converter>
+										</Binding>
+									</Border.Visibility>
+									<ToggleButton IsChecked="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource DockModeConverter}, Path=DockMode}" BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Right" Height="15" Margin="2,0" ToolTip="{Binding MakeSliding}" VerticalAlignment="Center" Width="15" >
+										<ToggleButton.Style>
+											<Style TargetType="{x:Type ButtonBase}">
+												<Setter Property="Padding" Value="2"/>
+												<Setter Property="Template">
+													<Setter.Value>
+														<ControlTemplate TargetType="{x:Type ButtonBase}">
+															<Border Name="BG" BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
+																<ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+															</Border>
+															<ControlTemplate.Triggers>
+																<Trigger Property="IsMouseOver" Value="True">
+																	<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+																	<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonMouseOverBackground}" />
+																</Trigger>
+																<Trigger Property="IsPressed" Value="True">
+																	<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+																	<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+																</Trigger>
+															</ControlTemplate.Triggers>
+														</ControlTemplate>
+													</Setter.Value>
+												</Setter>
+											</Style>
+										</ToggleButton.Style>
+										<Grid x:Name="AutoHideIcon" Height="10">
+											<Border Background="{TemplateBinding HeaderForeground}" CornerRadius="0,0,1,1" HorizontalAlignment="Center" Height="4" VerticalAlignment="Bottom" Width="1"/>
+											<Border BorderBrush="{TemplateBinding HeaderForeground}" BorderThickness="1" CornerRadius="1,1,0,0" HorizontalAlignment="Center" Height="7" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Top" Width="5">
+												<Grid>
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition/>
+														<ColumnDefinition/>
+													</Grid.ColumnDefinitions>
+													<Border Background="{TemplateBinding HeaderForeground}"/>
+												</Grid>
+											</Border>
+											<Border Background="{TemplateBinding HeaderForeground}" CornerRadius="1" HorizontalAlignment="Center" Height="1" Margin="0,0,0,3" VerticalAlignment="Bottom" Width="7"/>
+										</Grid>
+									</ToggleButton>
+								</Border>
+							</StackPanel>
+						</Grid>
+					</Grid>
+				</Border>
+				<c1:C1LinePanel x:Name="LineOuter" Orientation="Horizontal" Grid.Row="1">
+					<c1:C1LinePanel.LineDefinitions>
+						<c1:LineDefinition Length="Auto"/>
+						<c1:LineDefinition Length="*"/>
+					</c1:C1LinePanel.LineDefinitions>
+					<c1:C1LinePanel x:Name="LineTabItems" Orientation="Vertical">
+						<c1:C1LinePanel.LineDefinitions>
+							<c1:LineDefinition Length="Auto"/>
+							<c1:LineDefinition Length="Auto"/>
+							<c1:LineDefinition Length="*"/>
+							<c1:LineDefinition Length="Auto"/>
+							<c1:LineDefinition Length="Auto"/>
+						</c1:C1LinePanel.LineDefinitions>
+						<c1:C1LinePanel.Visibility>
+							<Binding Path="ShowTabs" RelativeSource="{RelativeSource TemplatedParent}">
+								<Binding.Converter>
+									<c1:VisibilityConverter Opposite="False"/>
+								</Binding.Converter>
+							</Binding>
+						</c1:C1LinePanel.Visibility>
+						<c1:C1DropDownButton x:Name="TabStripDropDown" BorderBrush="{StaticResource DockButtonBorder}" HorizontalAlignment="Right" BorderThickness="1" Background="Transparent" Height="15" IsTabStop="False" IsEnabled="True" Margin="2" ToolTip="{Binding Menu}" Visibility="{TemplateBinding TabStripMenuVisibility}" Width="15" AutoClose="True">
+							<c1:C1DropDownButton.Style>
+								<Style TargetType="{x:Type c1:C1DropDownButton}">
+									<Setter Property="Foreground" Value="LightGray" />
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="{x:Type c1:C1DropDownButton}">
+												<Grid>
+													<Grid.RowDefinitions>
+														<RowDefinition Height="*"/>
+														<RowDefinition Height="Auto"/>
+													</Grid.RowDefinitions>
+													<ToggleButton x:Name="ArrowToggle" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalHeaderAlignment}" IsTabStop="True" Padding="0" VerticalContentAlignment="{TemplateBinding VerticalHeaderAlignment}">
+														<ToggleButton.Style>
+															<Style TargetType="{x:Type ToggleButton}">
+																<Setter Property="Padding" Value="3"/>
+																<Setter Property="Foreground" Value="LightGray" />
+																<Setter Property="Template">
+																	<Setter.Value>
+																		<ControlTemplate TargetType="{x:Type ToggleButton}">
+																			<Border Name="BG" BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
+																				<Border HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+																					<Grid Height="4" Margin="0,5,0,0" VerticalAlignment="Top" Width="7">
+																						<Polygon Fill="{TemplateBinding Foreground}" HorizontalAlignment="Center" Points="0,0 3.5,3.5 7,0" VerticalAlignment="Center"/>
+																						<Rectangle Fill="{TemplateBinding Foreground}" Height="1" Margin="0,-2,0,0" StrokeThickness="0" VerticalAlignment="Top"/>
+																					</Grid>
+																				</Border>
+																			</Border>
+																			<ControlTemplate.Triggers>
+																				<Trigger Property="IsMouseOver" Value="True">
+																					<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+																					<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonMouseOverBackground}" />
+																					<Setter Property="Foreground" Value="Black" />
+																				</Trigger>
+																				<Trigger Property="IsPressed" Value="True">
+																					<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+																					<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+																					<Setter Property="Foreground" Value="Black" />
+																				</Trigger>
+																				<Trigger Property="IsChecked" Value="True">
+																					<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+																					<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+																					<Setter Property="Foreground" Value="Black" />
+																				</Trigger>
+																			</ControlTemplate.Triggers>
+																		</ControlTemplate>
+																	</Setter.Value>
+																</Setter>
+															</Style>
+														</ToggleButton.Style>
+													</ToggleButton>
+													<Popup x:Name="DropDownPopup" Grid.Row="1">
+														<Grid Height="{TemplateBinding DropDownHeight}" MaxWidth="{TemplateBinding MaxDropDownWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}" MinWidth="{TemplateBinding MinDropDownWidth}" Width="{TemplateBinding DropDownWidth}">
+															<ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Margin="{TemplateBinding Padding}"/>
+														</Grid>
+													</Popup>
+												</Grid>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</c1:C1DropDownButton.Style>
+							<c1:C1MenuList x:Name="Menu" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Foreground="{TemplateBinding TabStripForeground}" HighlightedBackground="{TemplateBinding MouseOverBrush}" IsTabStop="True" OpenedBackground="{TemplateBinding PressedBrush}" Padding="0" KeyboardNavigation.TabNavigation="Once"/>
+						</c1:C1DropDownButton>
+						<Button x:Name="PreviousButton" BorderBrush="{StaticResource DockButtonBorder}" BorderThickness="1" Background="Transparent" Foreground="LightGray" Height="15" Margin="2" ToolTip="{Binding Previous}" Width="15">
+							<Button.Style>
+								<Style TargetType="{x:Type ButtonBase}">
+									<Setter Property="Padding" Value="3"/>
+									<Setter Property="Foreground" Value="LightGray" />
+									<Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="{x:Type ButtonBase}">
+												<Border Name="BG" BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
+													<Path Data="M5.3,1E-07L7,1E-07 4.7,2.5 7,5 5.3,5 3,2.5z M2.3,0L4,0 1.7,2.5 4,5 2.3,5 0,2.5z" Fill="{TemplateBinding Foreground}" Height="5" Stretch="Uniform" Width="7" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+												</Border>
+												<ControlTemplate.Triggers>
+													<Trigger Property="IsMouseOver" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonMouseOverBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+													<Trigger Property="IsPressed" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+												</ControlTemplate.Triggers>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</Button.Style>
+							<Button.LayoutTransform>
+								<RotateTransform Angle="90" />
+							</Button.LayoutTransform>
+						</Button>
+						<ContentPresenter x:Name="TabPanelPresenter" Grid.Column="1" Margin="0,0,0,0">
+							<ContentPresenter.Content>
+								<c1:C1TabPanel x:Name="TabPanel" HorizontalAlignment="{TemplateBinding TabStripHorizontalAlignment}" IsItemsHost="True" Orientation="Vertical" VerticalAlignment="{TemplateBinding TabStripVerticalAlignment}"/>
+							</ContentPresenter.Content>
+						</ContentPresenter>
+						<Button x:Name="NextButton" BorderBrush="{StaticResource DockButtonBorder}" BorderThickness="1" Background="Transparent" Grid.Column="3" Height="15" Margin="2" ToolTip="{Binding Next}" Width="15">
+							<Button.Style>
+								<Style TargetType="{x:Type ButtonBase}">
+									<Setter Property="Padding" Value="3"/>
+									<Setter Property="Foreground" Value="LightGray" />
+									<Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="{x:Type ButtonBase}">
+												<Border Name="BG" BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
+													<Path Data="M3,0L4.67,0 7,2.5 4.67,5 3,5 5.3,2.5z M0,0L1.67,0 4,2.5 1.67,5 0,5 2.3,2.5z" Fill="{TemplateBinding Foreground}" Height="5" Stretch="Uniform" Width="7" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+												</Border>
+												<ControlTemplate.Triggers>
+													<Trigger Property="IsMouseOver" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonMouseOverBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+													<Trigger Property="IsPressed" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+												</ControlTemplate.Triggers>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</Button.Style>
+							<Button.LayoutTransform>
+								<RotateTransform Angle="90" />
+							</Button.LayoutTransform>
+						</Button>
+						<Button x:Name="CloseButton" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding TabStripBackground}" Grid.Column="5" Foreground="{TemplateBinding Foreground}" Height="15" Margin="2,2,4,2" Grid.Row="5" ToolTip="{Binding CloseGlobal}" VerticalAlignment="Center" Width="15">
+							<Button.Style>
+								<Style TargetType="{x:Type ButtonBase}">
+									<Setter Property="Padding" Value="3"/>
+									<Setter Property="Foreground" Value="LightGray" />
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="{x:Type ButtonBase}">
+												<Border Name="BG" BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
+													<Path Data="M0,0L1.6,0 3,1.56 4.4,0 6,0 3.8,2.5 6,5 4.4,5 3,3.49 1.59,5 -4.2E-09,5 2.18,2.5z" Fill="{TemplateBinding Foreground}" Height="6" Stretch="Uniform" Width="7" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+												</Border>
+												<ControlTemplate.Triggers>
+													<Trigger Property="IsMouseOver" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonMouseOverBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+													<Trigger Property="IsPressed" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+												</ControlTemplate.Triggers>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</Button.Style>
+						</Button>
+					</c1:C1LinePanel>
+					<Border x:Name="SelectedTabItem" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="{TemplateBinding Background}">
+						<ContentPresenter x:Name="SelectedItemContent" ContentTemplate="{TemplateBinding ContentTemplate}"/>
+					</Border>
+				</c1:C1LinePanel>
+			</Grid>
+			<c1d:C1DockPreview x:Name="Preview"/>
+			<c1d:C1DockPicker x:Name="Picker" Visibility="Collapsed"/>
+		</Grid>
+	</ControlTemplate>
+	<ControlTemplate x:Key="C1DockTabControlRightTemplate" TargetType="{x:Type c1d:C1DockTabControl}">
+		<Grid x:Name="Root" Background="Transparent">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+				<Border x:Name="HeaderContainer" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="{TemplateBinding Background}" Cursor="Hand" c1d:C1DockTabControl.Drag="{Binding RelativeSource={RelativeSource TemplatedParent}}">
+					<Border.Visibility>
+						<Binding Path="ShowHeader" RelativeSource="{RelativeSource TemplatedParent}">
+							<Binding.Converter>
+								<c1:VisibilityConverter Opposite="False"/>
+							</Binding.Converter>
+						</Binding>
+					</Border.Visibility>
+					<Grid>
+						<Border x:Name="HeaderBackground" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="{TemplateBinding HeaderBackground}"/>
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition/>
+								<ColumnDefinition Width="Auto"/>
+							</Grid.ColumnDefinitions>
+							<ContentControl ContentTemplate="{Binding SelectedItem.ActualSelectedHeaderTemplate, RelativeSource={RelativeSource TemplatedParent}}" Content="{Binding SelectedItem.Header, RelativeSource={RelativeSource TemplatedParent}}" Foreground="{TemplateBinding HeaderForeground}" IsTabStop="False" Margin="{TemplateBinding Padding}"/>
+							<StackPanel x:Name="StackPanelButtons" Grid.Column="1" HorizontalAlignment="Right" Margin="2" Orientation="Horizontal" Visibility="Collapsed">
+								<Border>
+									<Border.Visibility>
+										<Binding Path="CanUserSlide" RelativeSource="{RelativeSource TemplatedParent}">
+											<Binding.Converter>
+												<c1:VisibilityConverter Opposite="False"/>
+											</Binding.Converter>
+										</Binding>
+									</Border.Visibility>
+									<ToggleButton IsChecked="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource DockModeConverter}, Path=DockMode}" BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Right" Height="15" Margin="2,0" ToolTip="{Binding MakeSliding}" VerticalAlignment="Center" Width="15" >
+										<ToggleButton.Style>
+											<Style TargetType="{x:Type ButtonBase}">
+												<Setter Property="Padding" Value="2"/>
+												<Setter Property="Template">
+													<Setter.Value>
+														<ControlTemplate TargetType="{x:Type ButtonBase}">
+															<Border Name="BG" BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
+																<ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+															</Border>
+															<ControlTemplate.Triggers>
+																<Trigger Property="IsMouseOver" Value="True">
+																	<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+																	<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonMouseOverBackground}" />
+																</Trigger>
+																<Trigger Property="IsPressed" Value="True">
+																	<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+																	<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+																</Trigger>
+															</ControlTemplate.Triggers>
+														</ControlTemplate>
+													</Setter.Value>
+												</Setter>
+											</Style>
+										</ToggleButton.Style>
+										<Grid x:Name="AutoHideIcon" Height="10">
+											<Border Background="{TemplateBinding HeaderForeground}" CornerRadius="0,0,1,1" HorizontalAlignment="Center" Height="4" VerticalAlignment="Bottom" Width="1"/>
+											<Border BorderBrush="{TemplateBinding HeaderForeground}" BorderThickness="1" CornerRadius="1,1,0,0" HorizontalAlignment="Center" Height="7" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Top" Width="5">
+												<Grid>
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition/>
+														<ColumnDefinition/>
+													</Grid.ColumnDefinitions>
+													<Border Background="{TemplateBinding HeaderForeground}"/>
+												</Grid>
+											</Border>
+											<Border Background="{TemplateBinding HeaderForeground}" CornerRadius="1" HorizontalAlignment="Center" Height="1" Margin="0,0,0,3" VerticalAlignment="Bottom" Width="7"/>
+										</Grid>
+									</ToggleButton>
+								</Border>
+							</StackPanel>
+						</Grid>
+					</Grid>
+				</Border>
+				<c1:C1LinePanel x:Name="LineOuter" Orientation="Horizontal" Grid.Row="1">
+					<c1:C1LinePanel.LineDefinitions>
+						<c1:LineDefinition Length="*"/>
+						<c1:LineDefinition Length="Auto"/>
+					</c1:C1LinePanel.LineDefinitions>
+					<Border x:Name="SelectedTabItem" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="{TemplateBinding Background}">
+						<ContentPresenter x:Name="SelectedItemContent" ContentTemplate="{TemplateBinding ContentTemplate}"/>
+					</Border>
+					<c1:C1LinePanel x:Name="LineTabItems" Orientation="Vertical">
+						<c1:C1LinePanel.LineDefinitions>
+							<c1:LineDefinition Length="Auto"/>
+							<c1:LineDefinition Length="Auto"/>
+							<c1:LineDefinition Length="*"/>
+							<c1:LineDefinition Length="Auto"/>
+							<c1:LineDefinition Length="Auto"/>
+						</c1:C1LinePanel.LineDefinitions>
+						<c1:C1LinePanel.Visibility>
+							<Binding Path="ShowTabs" RelativeSource="{RelativeSource TemplatedParent}">
+								<Binding.Converter>
+									<c1:VisibilityConverter Opposite="False"/>
+								</Binding.Converter>
+							</Binding>
+						</c1:C1LinePanel.Visibility>
+						<c1:C1DropDownButton x:Name="TabStripDropDown" BorderBrush="{StaticResource DockButtonBorder}" HorizontalAlignment="Left" BorderThickness="1" Background="Transparent" Height="15" IsTabStop="False" IsEnabled="True" Margin="2" ToolTip="{Binding Menu}" Visibility="{TemplateBinding TabStripMenuVisibility}" Width="15" AutoClose="True">
+							<c1:C1DropDownButton.Style>
+								<Style TargetType="{x:Type c1:C1DropDownButton}">
+									<Setter Property="Foreground" Value="LightGray" />
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="{x:Type c1:C1DropDownButton}">
+												<Grid>
+													<Grid.RowDefinitions>
+														<RowDefinition Height="*"/>
+														<RowDefinition Height="Auto"/>
+													</Grid.RowDefinitions>
+													<ToggleButton x:Name="ArrowToggle" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalHeaderAlignment}" IsTabStop="True" Padding="0" VerticalContentAlignment="{TemplateBinding VerticalHeaderAlignment}">
+														<ToggleButton.Style>
+															<Style TargetType="{x:Type ToggleButton}">
+																<Setter Property="Padding" Value="3"/>
+																<Setter Property="Foreground" Value="LightGray" />
+																<Setter Property="Template">
+																	<Setter.Value>
+																		<ControlTemplate TargetType="{x:Type ToggleButton}">
+																			<Border Name="BG" BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
+																				<Border HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+																					<Grid Height="4" Margin="0,5,0,0" VerticalAlignment="Top" Width="7">
+																						<Polygon Fill="{TemplateBinding Foreground}" HorizontalAlignment="Center" Points="0,0 3.5,3.5 7,0" VerticalAlignment="Center"/>
+																						<Rectangle Fill="{TemplateBinding Foreground}" Height="1" Margin="0,-2,0,0" StrokeThickness="0" VerticalAlignment="Top"/>
+																					</Grid>
+																				</Border>
+																			</Border>
+																			<ControlTemplate.Triggers>
+																				<Trigger Property="IsMouseOver" Value="True">
+																					<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+																					<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonMouseOverBackground}" />
+																					<Setter Property="Foreground" Value="Black" />
+																				</Trigger>
+																				<Trigger Property="IsPressed" Value="True">
+																					<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+																					<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+																					<Setter Property="Foreground" Value="Black" />
+																				</Trigger>
+																				<Trigger Property="IsChecked" Value="True">
+																					<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+																					<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+																					<Setter Property="Foreground" Value="Black" />
+																				</Trigger>
+																			</ControlTemplate.Triggers>
+																		</ControlTemplate>
+																	</Setter.Value>
+																</Setter>
+															</Style>
+														</ToggleButton.Style>
+													</ToggleButton>
+													<Popup x:Name="DropDownPopup" Grid.Row="1">
+														<Grid Height="{TemplateBinding DropDownHeight}" MaxWidth="{TemplateBinding MaxDropDownWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}" MinWidth="{TemplateBinding MinDropDownWidth}" Width="{TemplateBinding DropDownWidth}">
+															<ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Margin="{TemplateBinding Padding}"/>
+														</Grid>
+													</Popup>
+												</Grid>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</c1:C1DropDownButton.Style>
+							<c1:C1MenuList x:Name="Menu" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Foreground="{TemplateBinding TabStripForeground}" HighlightedBackground="{TemplateBinding MouseOverBrush}" IsTabStop="True" OpenedBackground="{TemplateBinding PressedBrush}" Padding="0" KeyboardNavigation.TabNavigation="Once"/>
+						</c1:C1DropDownButton>
+						<Button x:Name="PreviousButton" BorderBrush="{StaticResource DockButtonBorder}" BorderThickness="1" Background="Transparent" Foreground="LightGray" Height="15" Margin="2" ToolTip="{Binding Previous}" Width="15">
+							<Button.Style>
+								<Style TargetType="{x:Type ButtonBase}">
+									<Setter Property="Padding" Value="3"/>
+									<Setter Property="Foreground" Value="LightGray" />
+									<Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="{x:Type ButtonBase}">
+												<Border Name="BG" BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
+													<Path Data="M5.3,1E-07L7,1E-07 4.7,2.5 7,5 5.3,5 3,2.5z M2.3,0L4,0 1.7,2.5 4,5 2.3,5 0,2.5z" Fill="{TemplateBinding Foreground}" Height="5" Stretch="Uniform" Width="7" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+												</Border>
+												<ControlTemplate.Triggers>
+													<Trigger Property="IsMouseOver" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonMouseOverBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+													<Trigger Property="IsPressed" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+												</ControlTemplate.Triggers>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</Button.Style>
+							<Button.LayoutTransform>
+								<RotateTransform Angle="90" />
+							</Button.LayoutTransform>
+						</Button>
+						<ContentPresenter x:Name="TabPanelPresenter" Grid.Column="1" Margin="0,0,0,0">
+							<ContentPresenter.Content>
+								<c1:C1TabPanel x:Name="TabPanel" HorizontalAlignment="{TemplateBinding TabStripHorizontalAlignment}" IsItemsHost="True" Orientation="Vertical" VerticalAlignment="{TemplateBinding TabStripVerticalAlignment}"/>
+							</ContentPresenter.Content>
+						</ContentPresenter>
+						<Button x:Name="NextButton" BorderBrush="{StaticResource DockButtonBorder}" BorderThickness="1" Background="Transparent" Grid.Column="3" Height="15" Margin="2" ToolTip="{Binding Next}" Width="15">
+							<Button.Style>
+								<Style TargetType="{x:Type ButtonBase}">
+									<Setter Property="Padding" Value="3"/>
+									<Setter Property="Foreground" Value="LightGray" />
+									<Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="{x:Type ButtonBase}">
+												<Border Name="BG" BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
+													<Path Data="M3,0L4.67,0 7,2.5 4.67,5 3,5 5.3,2.5z M0,0L1.67,0 4,2.5 1.67,5 0,5 2.3,2.5z" Fill="{TemplateBinding Foreground}" Height="5" Stretch="Uniform" Width="7" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+												</Border>
+												<ControlTemplate.Triggers>
+													<Trigger Property="IsMouseOver" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonMouseOverBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+													<Trigger Property="IsPressed" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+												</ControlTemplate.Triggers>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</Button.Style>
+							<Button.LayoutTransform>
+								<RotateTransform Angle="90" />
+							</Button.LayoutTransform>
+						</Button>
+						<Button x:Name="CloseButton" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding TabStripBackground}" Grid.Column="5" Foreground="{TemplateBinding Foreground}" Height="15" Margin="2,2,4,2" Grid.Row="5" ToolTip="{Binding CloseGlobal}" VerticalAlignment="Center" Width="15">
+							<Button.Style>
+								<Style TargetType="{x:Type ButtonBase}">
+									<Setter Property="Padding" Value="3"/>
+									<Setter Property="Foreground" Value="LightGray" />
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="{x:Type ButtonBase}">
+												<Border Name="BG" BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
+													<Path Data="M0,0L1.6,0 3,1.56 4.4,0 6,0 3.8,2.5 6,5 4.4,5 3,3.49 1.59,5 -4.2E-09,5 2.18,2.5z" Fill="{TemplateBinding Foreground}" Height="6" Stretch="Uniform" Width="7" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+												</Border>
+												<ControlTemplate.Triggers>
+													<Trigger Property="IsMouseOver" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonMouseOverBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+													<Trigger Property="IsPressed" Value="True">
+														<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource DockButtonBorder}" />
+														<Setter TargetName="BG" Property="Background" Value="{StaticResource DockButtonPressedBackground}" />
+														<Setter Property="Foreground" Value="Black" />
+													</Trigger>
+												</ControlTemplate.Triggers>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</Button.Style>
+						</Button>
+					</c1:C1LinePanel>
+				</c1:C1LinePanel>
+			</Grid>
+			<c1d:C1DockPreview x:Name="Preview"/>
+			<c1d:C1DockPicker x:Name="Picker" Visibility="Collapsed"/>
+		</Grid>
+	</ControlTemplate>	<Style x:Key="C1DockTabControlStyle" TargetType="{x:Type c1d:C1DockTabControl}">
+		<Setter Property="Padding" Value="2"/>
+		<Setter Property="TabStripPlacement" Value="Bottom" />
+		<Setter Property="HeaderForeground" Value="White" />
+		<Setter Property="HeaderBackground" Value="{StaticResource PressedBackgroundColor}" />
+		<Setter Property="Template" Value="{StaticResource C1DockTabControlBottomTemplate}" />
+		<Style.Triggers>
+			<Trigger Property="TabStripPlacement" Value="Top">
+				<Setter Property="Template" Value="{StaticResource C1DockTabControlTopTemplate}"/>
+			</Trigger>
+			<Trigger Property="TabStripPlacement" Value="Left">
+				<Setter Property="Template" Value="{StaticResource C1DockTabControlLeftTemplate}"/>
+			</Trigger>
+			<Trigger Property="TabStripPlacement" Value="Right">
+				<Setter Property="Template" Value="{StaticResource C1DockTabControlRightTemplate}"/>
+			</Trigger>
+		</Style.Triggers>
+	</Style>
+
+	<Style x:Key="C1DockWindowStyle" TargetType="{x:Type c1d:C1DockWindow}">
+		<Setter Property="c1d:C1DockWindow.IsEnabled" Value="True"/>
+		<Setter Property="c1d:C1DockWindow.Cursor" Value="Arrow"/>
+		<Setter Property="c1d:C1DockWindow.ModalBackground" Value="#28000000"/>
+		<Setter Property="c1d:C1DockWindow.BorderThickness" Value="1"/>
+		<Setter Property="c1d:C1DockWindow.HorizontalAlignment" Value="Center"/>
+		<Setter Property="c1d:C1DockWindow.VerticalAlignment" Value="Center"/>
+		<Setter Property="c1d:C1DockWindow.Padding" Value="2"/>
+		<Setter Property="c1d:C1DockWindow.ShowMinimizeButton" Value="False"/>
+		<Setter Property="c1d:C1DockWindow.ShowMaximizeButton" Value="False"/>
+		<Setter Property="c1d:C1DockWindow.ShowCloseButton" Value="False"/>
+		<Setter Property="c1d:C1DockWindow.Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type c1d:C1DockWindow}">
+					<Grid x:Name="Root" MinHeight="26" MinWidth="70">
+						<Border x:Name="BackgroundElement" Background="{StaticResource MouseOverBackgroundColor}" BorderBrush="{StaticResource MouseOverBackgroundColor}" BorderThickness="0" CornerRadius="0" Grid.RowSpan="2"/>
+						<Grid Margin="1">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition/>
+							</Grid.RowDefinitions>
+							<Border x:Name="HeaderBackground" Background="{StaticResource NormalBorderColor}" CornerRadius="0"/>
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition/>
+									<ColumnDefinition Width="Auto"/>
+								</Grid.ColumnDefinitions>
+								<Grid x:Name="Drag" Margin="{TemplateBinding Border.BorderThickness}" MinHeight="20">
+									<Border Background="Transparent"/>
+									<ContentControl HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" FontStretch="{TemplateBinding FontStretch}" FontStyle="{TemplateBinding FontStyle}" FontWeight="{TemplateBinding FontWeight}" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" IsTabStop="False" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
+										<ContentPresenter x:Name="HeaderPresenter" Content="{TemplateBinding ContentControl.Content}" ContentTemplate="{TemplateBinding ContentTemplate}"/>
+									</ContentControl>
+								</Grid>
+							</Grid>
+							<Grid x:Name="ContentGrid" Grid.Row="1">
+								<ContentPresenter x:Name="Content" Cursor="{TemplateBinding Cursor}" Content="{TemplateBinding ContentControl.Content}" ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"/>
+							</Grid>
+							<Border x:Name="InactiveShade" IsHitTestVisible="False" Visibility="Collapsed" Background="#A5FFFFFF" CornerRadius="3" Grid.RowSpan="2"/>
+							<Border x:Name="Resize" BorderBrush="Transparent" BorderThickness="7" Grid.RowSpan="2"/>
+						</Grid>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- Dock Tab Item Header Templates -->
+	<DataTemplate x:Key="SolutionNavigatorHeaderTemplate">
+		<StackPanel Orientation="Horizontal">
+			<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/SolutionNavigator.png" Width="16" Height="16" Stretch="None" SnapsToDevicePixels="True" UseLayoutRounding="True" />
+			<TextBlock x:Name="HeaderText" Text="Solution Navigator" Padding="5,0,0,0" TextTrimming="CharacterEllipsis" Foreground="{StaticResource NormalBackgroundColor}" />
+		</StackPanel>
+		<DataTemplate.Triggers>
+			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type c1d:C1DockTabItem}},Path=IsSelected}" Value="True">
+				<Setter TargetName="HeaderText" Property="Foreground" Value="{StaticResource NormalForegroundColor}" />
+			</DataTrigger>
+		</DataTemplate.Triggers>
+	</DataTemplate>
+	<DataTemplate x:Key="ErrorListHeaderTemplate">
+		<StackPanel Orientation="Horizontal">
+			<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/ErrorList.png" Width="16" Height="16" Stretch="None" SnapsToDevicePixels="True" UseLayoutRounding="True" />
+			<TextBlock x:Name="HeaderText" Text="Error List" Padding="5,0,0,0" TextTrimming="CharacterEllipsis" Foreground="{StaticResource NormalBackgroundColor}" />
+		</StackPanel>
+		<DataTemplate.Triggers>
+			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type c1d:C1DockTabItem}},Path=IsSelected}" Value="True">
+				<Setter TargetName="HeaderText" Property="Foreground" Value="{StaticResource NormalForegroundColor}" />
+			</DataTrigger>
+		</DataTemplate.Triggers>
+	</DataTemplate>
+	<DataTemplate x:Key="OutputHeaderTemplate">
+		<StackPanel Orientation="Horizontal">
+			<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Output.png" Width="16" Height="16" Stretch="None" SnapsToDevicePixels="True" UseLayoutRounding="True" />
+			<TextBlock x:Name="HeaderText" Text="Output" Padding="5,0,0,0" TextTrimming="CharacterEllipsis" Foreground="{StaticResource NormalBackgroundColor}" />
+		</StackPanel>
+		<DataTemplate.Triggers>
+			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type c1d:C1DockTabItem}},Path=IsSelected}" Value="True">
+				<Setter TargetName="HeaderText" Property="Foreground" Value="{StaticResource NormalForegroundColor}" />
+			</DataTrigger>
+		</DataTemplate.Triggers>
+	</DataTemplate>
+	<DataTemplate x:Key="FindReplaceHeaderTemplate">
+		<StackPanel Orientation="Horizontal">
+			<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/FindReplace.png" Width="16" Height="16" Stretch="None" SnapsToDevicePixels="True" UseLayoutRounding="True" />
+			<TextBlock x:Name="HeaderText" Text="Find and Replace" Padding="5,0,0,0" TextTrimming="CharacterEllipsis" Foreground="{StaticResource NormalBackgroundColor}" />
+		</StackPanel>
+		<DataTemplate.Triggers>
+			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type c1d:C1DockTabItem}},Path=IsSelected}" Value="True">
+				<Setter TargetName="HeaderText" Property="Foreground" Value="{StaticResource NormalForegroundColor}" />
+			</DataTrigger>
+		</DataTemplate.Triggers>
+	</DataTemplate>
+
+	<!-- Tab Item Header Templates for Project Items-->
+	<Root:DocumentTypeImage16Converter x:Key="DocumentTypeImage16Converter" />
+	<DataTemplate x:Key="ProjectItemHeaderTemplate">
+		<Grid HorizontalAlignment="Stretch">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+			<Image Grid.Column="0" Source="{Binding Converter={StaticResource DocumentTypeImage16Converter}}" Width="16" Height="16" Stretch="None" UseLayoutRounding="True" />
+			<TextBlock Grid.Column="1" Text="{Binding Path=Name}" Padding="5,0,0,0" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+			<Image Grid.Column="2" Visibility="{Binding Path=IsLocked, Converter={StaticResource BoolVisibilityConverter}}" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/BindingSecurity.png" Width="16" Height="16" Stretch="None" UseLayoutRounding="True" Margin="5,0" />
+			<Image Grid.Column="3" Visibility="{Binding Path=IsDirty, Converter={StaticResource BoolVisibilityConverter}}" Source="pack://application:,,,/WCFArchitect;component/Icons/Odd/DirtyIndicator.png" Width="5" Height="5" Stretch="None" UseLayoutRounding="True" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5" />
+		</Grid>
+	</DataTemplate>
+
+</ResourceDictionary>

@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{BE2C75CD-FC68-4CE3-AEE0-EA2436C9B78E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{064D4EF5-AA8A-4E52-8921-9C0957ECC10D}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 3
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://www.high-road.net:8080/tfs/wcf%20architect
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Server\\Server.csproj
+		SccProjectName1 = Server
+		SccLocalPath1 = Server
+		SccProjectUniqueName2 = Client\\Client.csproj
+		SccProjectName2 = Client
+		SccLocalPath2 = Client
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BE2C75CD-FC68-4CE3-AEE0-EA2436C9B78E}.Debug|x86.ActiveCfg = Debug|x86
+		{BE2C75CD-FC68-4CE3-AEE0-EA2436C9B78E}.Debug|x86.Build.0 = Debug|x86
+		{BE2C75CD-FC68-4CE3-AEE0-EA2436C9B78E}.Release|x86.ActiveCfg = Release|x86
+		{BE2C75CD-FC68-4CE3-AEE0-EA2436C9B78E}.Release|x86.Build.0 = Release|x86
+		{064D4EF5-AA8A-4E52-8921-9C0957ECC10D}.Debug|x86.ActiveCfg = Debug|x86
+		{064D4EF5-AA8A-4E52-8921-9C0957ECC10D}.Debug|x86.Build.0 = Debug|x86
+		{064D4EF5-AA8A-4E52-8921-9C0957ECC10D}.Release|x86.ActiveCfg = Release|x86
+		{064D4EF5-AA8A-4E52-8921-9C0957ECC10D}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
