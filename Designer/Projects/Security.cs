@@ -40,8 +40,8 @@ namespace WCFArchitect.Projects
 		public string CodeName { get { return (string)GetValue(CodeNameProperty); } set { SetValue(CodeNameProperty, value); } }
 		public static readonly DependencyProperty CodeNameProperty = DependencyProperty.Register("CodeName", typeof(string), typeof(BindingSecurity));
 
-		public Project Parent { get { return (Project)GetValue(ParentProperty); } set { SetValue(ParentProperty, value); } }
-		public static readonly DependencyProperty ParentProperty = DependencyProperty.Register("Parent", typeof(Project), typeof(BindingSecurity));
+		public Namespace Parent { get { return (Namespace)GetValue(ParentProperty); } set { SetValue(ParentProperty, value); } }
+		public static readonly DependencyProperty ParentProperty = DependencyProperty.Register("Parent", typeof(Namespace), typeof(BindingSecurity));
 
 		//Internal Use - Searching / Filtering
 		public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
@@ -90,16 +90,16 @@ namespace WCFArchitect.Projects
 					{
 						if (Args.IsDataType == false)
 						{
-							if (Name != null && Name != "") if (Name.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, Parent, this));
-							if (CodeName != null && CodeName != "") if (CodeName.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Code Name", CodeName, Parent, this));
+							if (Name != null && Name != "") if (Name.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
+							if (CodeName != null && CodeName != "") if (CodeName.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Code Name", CodeName, Parent.Owner, this));
 						}
 					}
 					else
 					{
 						if (Args.IsDataType == false)
 						{
-							if (Name != null && Name != "") if (Name.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Name", Name, Parent, this));
-							if (CodeName != null && CodeName != "") if (CodeName.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Code Name", CodeName, Parent, this));
+							if (Name != null && Name != "") if (Name.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
+							if (CodeName != null && CodeName != "") if (CodeName.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Code Name", CodeName, Parent.Owner, this));
 						}
 					}
 				}
@@ -107,8 +107,8 @@ namespace WCFArchitect.Projects
 				{
 					if (Args.IsDataType == false)
 					{
-						if (Name != null && Name != "") if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, Parent, this));
-						if (CodeName != null && CodeName != "") if (Args.RegexSearch.IsMatch(CodeName)) results.Add(new FindReplaceResult("Code Name", CodeName, Parent, this));
+						if (Name != null && Name != "") if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
+						if (CodeName != null && CodeName != "") if (Args.RegexSearch.IsMatch(CodeName)) results.Add(new FindReplaceResult("Code Name", CodeName, Parent.Owner, this));
 					}
 				}
 
@@ -187,7 +187,7 @@ namespace WCFArchitect.Projects
 			}
 		}
 
-		public abstract BindingSecurity Copy(string HostName, Project Parent);
+		public abstract BindingSecurity Copy(string HostName, Namespace Parent);
 
 		public abstract string GenerateServerCode30();
 		public abstract string GenerateServerCode35();
@@ -226,7 +226,7 @@ namespace WCFArchitect.Projects
 
 		public BindingSecurityBasicHTTP() { }
 
-		public BindingSecurityBasicHTTP(string Name, Project Parent)
+		public BindingSecurityBasicHTTP(string Name, Namespace Parent)
 		{
 			this.id = Guid.NewGuid();
 			this.Name = Name;
@@ -249,7 +249,7 @@ namespace WCFArchitect.Projects
 				Parent.IsDirty = true;
 		}
 
-		public override BindingSecurity Copy(string HostName, Project Parent)
+		public override BindingSecurity Copy(string HostName, Namespace Parent)
 		{
 			if (Parent == this.Parent) return this;
 
@@ -506,7 +506,7 @@ namespace WCFArchitect.Projects
 
 		public BindingSecurityWSHTTP() { }
 
-		public BindingSecurityWSHTTP(string Name, Project Parent)
+		public BindingSecurityWSHTTP(string Name, Namespace Parent)
 		{
 			this.id = Guid.NewGuid();
 			this.Name = Name;
@@ -544,7 +544,7 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public override BindingSecurity Copy(string HostName, Project Parent)
+		public override BindingSecurity Copy(string HostName, Namespace Parent)
 		{
 			if (Parent == this.Parent) return this;
 
@@ -814,7 +814,7 @@ namespace WCFArchitect.Projects
 
 		public BindingSecurityWSDualHTTP() { }
 
-		public BindingSecurityWSDualHTTP(string Name, Project Parent)
+		public BindingSecurityWSDualHTTP(string Name, Namespace Parent)
 		{
 			this.id = Guid.NewGuid();
 			this.Name = Name;
@@ -849,7 +849,7 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public override BindingSecurity Copy(string HostName, Project Parent)
+		public override BindingSecurity Copy(string HostName, Namespace Parent)
 		{
 			if (Parent == this.Parent) return this;
 
@@ -1017,7 +1017,7 @@ namespace WCFArchitect.Projects
 
 		public BindingSecurityWSFederationHTTP() { }
 
-		public BindingSecurityWSFederationHTTP(string Name, Project Parent)
+		public BindingSecurityWSFederationHTTP(string Name, Namespace Parent)
 		{
 			this.id = Guid.NewGuid();
 			this.Name = Name;
@@ -1053,7 +1053,7 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public override BindingSecurity Copy(string HostName, Project Parent)
+		public override BindingSecurity Copy(string HostName, Namespace Parent)
 		{
 			if (Parent == this.Parent) return this;
 
@@ -1247,7 +1247,7 @@ namespace WCFArchitect.Projects
 		
 		public BindingSecurityTCP() {}
 
-		public BindingSecurityTCP(string Name, Project Parent)
+		public BindingSecurityTCP(string Name, Namespace Parent)
 		{
 			this.id = Guid.NewGuid();
 			this.Name = Name;
@@ -1281,7 +1281,7 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public override BindingSecurity Copy(string HostName, Project Parent)
+		public override BindingSecurity Copy(string HostName, Namespace Parent)
 		{
 			if (Parent == this.Parent) return this;
 
@@ -1574,7 +1574,7 @@ namespace WCFArchitect.Projects
 
 		public BindingSecurityNamedPipe() { }
 
-		public BindingSecurityNamedPipe(string Name, Project Parent)
+		public BindingSecurityNamedPipe(string Name, Namespace Parent)
 		{
 			this.id = Guid.NewGuid();
 			this.Name = Name;
@@ -1607,7 +1607,7 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public override BindingSecurity Copy(string HostName, Project Parent)
+		public override BindingSecurity Copy(string HostName, Namespace Parent)
 		{
 			if (Parent == this.Parent) return this;
 
@@ -1752,7 +1752,7 @@ namespace WCFArchitect.Projects
 
 		public BindingSecurityMSMQ() { }
 
-		public BindingSecurityMSMQ(string Name, Project Parent)
+		public BindingSecurityMSMQ(string Name, Namespace Parent)
 		{
 			this.id = Guid.NewGuid();
 			this.Name = Name;
@@ -1788,7 +1788,7 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public override BindingSecurity Copy(string HostName, Project Parent)
+		public override BindingSecurity Copy(string HostName, Namespace Parent)
 		{
 			if (Parent == this.Parent) return this;
 
@@ -2035,7 +2035,7 @@ namespace WCFArchitect.Projects
 
 		public BindingSecurityPeerTCP() { }
 
-		public BindingSecurityPeerTCP(string Name, Project Parent)
+		public BindingSecurityPeerTCP(string Name, Namespace Parent)
 		{
 			this.id = Guid.NewGuid();
 			this.Name = Name;
@@ -2068,7 +2068,7 @@ namespace WCFArchitect.Projects
 				Parent.IsDirty = true;
 		}
 
-		public override BindingSecurity Copy(string HostName, Project Parent)
+		public override BindingSecurity Copy(string HostName, Namespace Parent)
 		{
 			if (Parent == this.Parent) return this;
 
@@ -2204,7 +2204,7 @@ namespace WCFArchitect.Projects
 
 		public BindingSecurityWebHTTP() { }
 
-		public BindingSecurityWebHTTP(string Name, Project Parent)
+		public BindingSecurityWebHTTP(string Name, Namespace Parent)
 		{
 			this.id = Guid.NewGuid();
 			this.Name = Name;
@@ -2236,7 +2236,7 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public override BindingSecurity Copy(string HostName, Project Parent)
+		public override BindingSecurity Copy(string HostName, Namespace Parent)
 		{
 			if (Parent == this.Parent) return this;
 
@@ -2439,7 +2439,7 @@ namespace WCFArchitect.Projects
 
 		public BindingSecurityMSMQIntegration() { }
 
-		public BindingSecurityMSMQIntegration(string Name, Project Parent)
+		public BindingSecurityMSMQIntegration(string Name, Namespace Parent)
 		{
 			this.id = Guid.NewGuid();
 			this.Name = Name;
@@ -2475,7 +2475,7 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public override BindingSecurity Copy(string HostName, Project Parent)
+		public override BindingSecurity Copy(string HostName, Namespace Parent)
 		{
 			if (Parent == this.Parent) return this;
 

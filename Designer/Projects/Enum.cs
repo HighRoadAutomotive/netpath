@@ -340,7 +340,7 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public string GenerateServerCode30(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateServerCode30(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
 			Code.Append("\t[DataContract(");
@@ -348,7 +348,7 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("Namespace = \"{0}\"", Parent.URI);
 			Code.AppendLine(")]");
 			if (IsFlags == true) Code.AppendLine("[Flags]");
-			Code.AppendFormat("\t{0} enum {2} : {1}{3}", Parent.Owner.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), EnumDataType, CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} enum {2} : {1}{3}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", EnumDataType, CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			int FV = 0;
 			foreach (EnumElement EE in Elements)
@@ -363,12 +363,12 @@ namespace WCFArchitect.Projects
 			return Code.ToString();
 		}
 
-		public string GenerateServerCode35(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateServerCode35(string ProjectName)
 		{
-			return GenerateServerCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode40(ProjectName);
 		}
 
-		public string GenerateServerCode40(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateServerCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
 			Code.Append("\t[DataContract(");
@@ -377,7 +377,7 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("Namespace = \"{0}\"", Parent.URI);
 			Code.AppendLine(")]");
 			if (IsFlags == true) Code.AppendLine("\t[Flags]");
-			Code.AppendFormat("\t{0} enum {2} : {1}{3}", Parent.Owner.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), EnumDataType, CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} enum {2} : {1}{3}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", EnumDataType, CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			int FV = 0;
 			foreach (EnumElement EE in Elements)

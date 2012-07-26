@@ -77,9 +77,9 @@ namespace WCFArchitect.Compiler
 		private string ClientAssemblyName;
 		private bool IsDependencyProject;
 
-		private List<Projects.ProjectOutputPath> GetServerOutputPaths(string ProjectName) { ProjectOptions po = null; Globals.CompilerManager.Options.TryGetValue(ProjectName, out po); return new List<Projects.ProjectOutputPath>(po.ServerOutputPaths.Where(a => a.IsDependencyOutputPath == this.Project.IsDependencyProject)); }
-		private List<Projects.ProjectOutputPath> GetClientOutputPaths(string ProjectName) { ProjectOptions po = null; Globals.CompilerManager.Options.TryGetValue(ProjectName, out po); return new List<Projects.ProjectOutputPath>(po.ClientOutputPaths.Where(a => a.IsDependencyOutputPath == this.Project.IsDependencyProject)); }
-		public string GetBuildOutputPath(string ProjectName, Projects.ProjectOutputFramework Framework) { ProjectOptions po = null; Globals.CompilerManager.Options.TryGetValue(ProjectName, out po); if (Framework == Projects.ProjectOutputFramework.NET30) return po.BuildOutputPath + "NET30\\"; if (Framework == Projects.ProjectOutputFramework.NET35) return po.BuildOutputPath + "NET35\\"; if (Framework == Projects.ProjectOutputFramework.NET35Client) return po.BuildOutputPath + "NET35Client\\"; if (Framework == Projects.ProjectOutputFramework.NET40) return po.BuildOutputPath + "NET40\\"; if (Framework == Projects.ProjectOutputFramework.NET40Client) return po.BuildOutputPath + "NET40Client\\"; if (Framework == Projects.ProjectOutputFramework.SL30) return po.BuildOutputPath + "SL30\\"; if (Framework == Projects.ProjectOutputFramework.SL40) return po.BuildOutputPath + "SL40\\"; if (Framework == Projects.ProjectOutputFramework.SL50) return po.BuildOutputPath + "SL50\\"; return po.BuildOutputPath; }
+		private List<Projects.ProjectOutputPath> GetServerOutputPaths(string ProjectName) { ProjectOptions po = null; Globals.CompilerManager.Options.TryGetValue(ProjectName, out po); return new List<Projects.ProjectOutputPath>(po.ServerOutputPaths); }
+		private List<Projects.ProjectOutputPath> GetClientOutputPaths(string ProjectName) { ProjectOptions po = null; Globals.CompilerManager.Options.TryGetValue(ProjectName, out po); return new List<Projects.ProjectOutputPath>(po.ClientOutputPaths); }
+		public string GetBuildOutputPath(string ProjectName, Projects.ProjectOutputFramework Framework) { ProjectOptions po = null; Globals.CompilerManager.Options.TryGetValue(ProjectName, out po); if (Framework == Projects.ProjectOutputFramework.NET30) return po.BuildOutputPath + "NET30\\"; if (Framework == Projects.ProjectOutputFramework.NET35) return po.BuildOutputPath + "NET35\\"; if (Framework == Projects.ProjectOutputFramework.NET35Client) return po.BuildOutputPath + "NET35Client\\"; if (Framework == Projects.ProjectOutputFramework.NET40) return po.BuildOutputPath + "NET40\\"; if (Framework == Projects.ProjectOutputFramework.NET40Client) return po.BuildOutputPath + "NET40Client\\"; return po.BuildOutputPath; }
 		private List<Projects.Reference> GetReferences(string ProjectName) { ProjectOptions po = null; Globals.CompilerManager.Options.TryGetValue(ProjectName, out po); return po.References; }
 		private List<string> GetServiceExcludedTypes(string ProjectName) { ProjectOptions po = null; Globals.CompilerManager.Options.TryGetValue(ProjectName, out po); return po.ServiceExcludedTypes; }
 		private bool GetServiceGenerateDataContracts(string ProjectName) { if ((bool)WPFThread.Invoke(new Func<bool>(() => this.Project.ProjectHasServices()), System.Windows.Threading.DispatcherPriority.Send) == false) { return true; } else { ProjectOptions po = null; Globals.CompilerManager.Options.TryGetValue(ProjectName, out po); return po.ServiceGenerateDataContracts; } }		//If the project contains no Services it MUST be outputted using the /dconly option for the proxy generator.
@@ -146,7 +146,7 @@ namespace WCFArchitect.Compiler
 		{
 			IsFinished = false;
 
-			List<CompilerOutputFile> COFL = new List<CompilerOutputFile>(InternalBuild(DependencyAssemblies, ProjectName).Where(a => a.FileType == CompilerOutputFileType.Assembly));
+			List<CompilerOutputFile> COFL = new List<CompilerOutputFile>(InternalBuild(DependencyAssemblies, ProjectName));
 
 			IsFinished = true;
 			return COFL;
@@ -156,7 +156,7 @@ namespace WCFArchitect.Compiler
 		{
 			IsFinished = false;
 
-			List<CompilerOutputFile> COFL = new List<CompilerOutputFile>(InternalOutputFiles(ProjectName).Where(a => a.FileType == CompilerOutputFileType.Assembly));
+			List<CompilerOutputFile> COFL = new List<CompilerOutputFile>(InternalOutputFiles(ProjectName));
 
 			IsFinished = true;
 			return COFL;
@@ -168,19 +168,10 @@ namespace WCFArchitect.Compiler
 
 			WPFThread.Invoke(new Action(() =>
 			{
-				if (Project.IsDependencyProject == false)
-				{
-					ServerAssemblyName = Project.ServerAssemblyName;
-					ClientAssemblyName = Project.ClientAssemblyName;
-				}
-				else
-				{
-					ServerAssemblyName = Helpers.RegExs.ReplaceSpaces.Replace(Project.Name, ".") + ".Server";
-					ClientAssemblyName = Helpers.RegExs.ReplaceSpaces.Replace(Project.Name, ".") + ".Client";
-				}
+				ServerAssemblyName = Helpers.RegExs.ReplaceSpaces.Replace(Project.Name, ".") + ".Server";
+				ClientAssemblyName = Helpers.RegExs.ReplaceSpaces.Replace(Project.Name, ".") + ".Client";
 
 				SvcUtilPath = Globals.UserProfile.SvcUtilPath;
-				IsDependencyProject = Project.IsDependencyProject;
 
 				OutputFiles.Clear();
 
@@ -281,32 +272,32 @@ namespace WCFArchitect.Compiler
 				if (IsFramework30(ProjectName) == true)
 				{
 					AddOutputLine("Generating the .NET Framework 3.0 Server Code", CompilerMessageStage.Server);
-					WPFThread.Invoke(new Func<string>(() => Project.GenerateServerCode30(false, ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
-					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET30, CompilerOutputFileType.Code));
+					WPFThread.Invoke(new Func<string>(() => Project.GenerateServerCode30(ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
+					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET30));
 				}
 				if (IsFramework35(ProjectName) == true)
 				{
 					AddOutputLine("Generating the .NET Framework 3.5 Server Code", CompilerMessageStage.Server);
-					WPFThread.Invoke(new Func<string>(() => Project.GenerateServerCode35(false, ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
-					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET35, CompilerOutputFileType.Code));
+					WPFThread.Invoke(new Func<string>(() => Project.GenerateServerCode35(ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
+					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET35));
 				}
 				if (IsFramework35Client(ProjectName) == true)
 				{
 					AddOutputLine("Generating the .NET Framework 3.5 (Client Profile) Server Code", CompilerMessageStage.Server);
-					WPFThread.Invoke(new Func<string>(() => Project.GenerateServerCode35Client(false, ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
-					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET35Client, CompilerOutputFileType.Code));
+					WPFThread.Invoke(new Func<string>(() => Project.GenerateServerCode35Client(ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
+					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET35Client));
 				}
 				if (IsFramework40(ProjectName) == true)
 				{
 					AddOutputLine("Generating the .NET Framework 4.0 Server Code", CompilerMessageStage.Server);
-					WPFThread.Invoke(new Func<string>(() => Project.GenerateServerCode40(false, ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
-					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET40, CompilerOutputFileType.Code));
+					WPFThread.Invoke(new Func<string>(() => Project.GenerateServerCode40(ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
+					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET40));
 				}
 				if (IsFramework40Client(ProjectName) == true)
 				{
 					AddOutputLine("Generating the .NET Framework 4.0 (Client Profile) Server Code", CompilerMessageStage.Server);
-					WPFThread.Invoke(new Func<string>(() => Project.GenerateServerCode40Client(false, ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
-					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET40Client, CompilerOutputFileType.Code));
+					WPFThread.Invoke(new Func<string>(() => Project.GenerateServerCode40Client(ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
+					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET40Client));
 				}
 			}
 
@@ -350,32 +341,32 @@ namespace WCFArchitect.Compiler
 				if (IsFramework30(ProjectName) == true)
 				{
 					AddOutputLine("Generating the .NET Framework 3.0 Client Code", CompilerMessageStage.Client);
-					WPFThread.Invoke(new Func<string>(() => Project.GenerateClientCode30(false, ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
-					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET30, CompilerOutputFileType.Code));
+					WPFThread.Invoke(new Func<string>(() => Project.GenerateClientCode30(ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
+					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET30));
 				}
 				if (IsFramework35(ProjectName) == true)
 				{
 					AddOutputLine("Generating the .NET Framework 3.5 Client Code", CompilerMessageStage.Client);
-					WPFThread.Invoke(new Func<string>(() => Project.GenerateClientCode35(false, ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
-					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET35, CompilerOutputFileType.Code));
+					WPFThread.Invoke(new Func<string>(() => Project.GenerateClientCode35(ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
+					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET35));
 				}
 				if (IsFramework35Client(ProjectName) == true)
 				{
 					AddOutputLine("Generating the .NET Framework 3.5 (Client Profile) Client Code", CompilerMessageStage.Client);
-					WPFThread.Invoke(new Func<string>(() => Project.GenerateClientCode35Client(false, ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
-					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET35Client, CompilerOutputFileType.Code));
+					WPFThread.Invoke(new Func<string>(() => Project.GenerateClientCode35Client(ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
+					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET35Client));
 				}
 				if (IsFramework40(ProjectName) == true)
 				{
 					AddOutputLine("Generating the .NET Framework 4.0 Client Code", CompilerMessageStage.Client);
-					WPFThread.Invoke(new Func<string>(() => Project.GenerateClientCode40(false, ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
-					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET40, CompilerOutputFileType.Code));
+					WPFThread.Invoke(new Func<string>(() => Project.GenerateClientCode40(ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
+					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET40));
 				}
 				if (IsFramework40Client(ProjectName) == true)
 				{
 					AddOutputLine("Generating the .NET Framework 4.0 (Client Profile) Client Code", CompilerMessageStage.Client);
-					WPFThread.Invoke(new Func<string>(() => Project.GenerateClientCode40Client(false, ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
-					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET40Client, CompilerOutputFileType.Code));
+					WPFThread.Invoke(new Func<string>(() => Project.GenerateClientCode40Client(ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
+					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET40Client));
 				}
 			}
 
@@ -426,31 +417,31 @@ namespace WCFArchitect.Compiler
 				{
 					AddOutputLine("Generating the .NET Framework 3.0 Client Service Proxy Code", CompilerMessageStage.Proxy);
 					if (GenerateProxy30(false, ProjectName, DependencyAssemblies, OutputFiles) == false) HasErrors = true;
-					if (HasErrors == false) OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30), ClientAssemblyName + ".Services", false, Projects.ProjectOutputFramework.NET30, CompilerOutputFileType.Code));
+					if (HasErrors == false) OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30), ClientAssemblyName + ".Services", false, Projects.ProjectOutputFramework.NET30));
 				}
 				if (IsFramework35(ProjectName) == true)
 				{
 					AddOutputLine("Generating the .NET Framework 3.5 Client Service Proxy Code", CompilerMessageStage.Proxy);
 					if (GenerateProxy35(false, ProjectName, DependencyAssemblies, OutputFiles) == false) HasErrors = true;
-					if (HasErrors == false) OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35), ClientAssemblyName + ".Services", false, Projects.ProjectOutputFramework.NET35, CompilerOutputFileType.Code));
+					if (HasErrors == false) OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35), ClientAssemblyName + ".Services", false, Projects.ProjectOutputFramework.NET35));
 				}
 				if (IsFramework35Client(ProjectName) == true)
 				{
 					AddOutputLine("Generating the .NET Framework 3.5 (Client Profile) Client Service Proxy Code", CompilerMessageStage.Proxy);
 					if (GenerateProxy35Client(false, ProjectName, DependencyAssemblies, OutputFiles) == false) HasErrors = true;
-					if (HasErrors == false) OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client), ClientAssemblyName + ".Services", false, Projects.ProjectOutputFramework.NET35Client, CompilerOutputFileType.Code));
+					if (HasErrors == false) OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client), ClientAssemblyName + ".Services", false, Projects.ProjectOutputFramework.NET35Client));
 				}
 				if (IsFramework40(ProjectName) == true)
 				{
 					AddOutputLine("Generating the .NET Framework 4.0 Client Service Proxy Code", CompilerMessageStage.Proxy);
 					if (GenerateProxy40(false, ProjectName, DependencyAssemblies, OutputFiles) == false) HasErrors = true;
-					if (HasErrors == false) OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40), ClientAssemblyName + ".Services", false, Projects.ProjectOutputFramework.NET40, CompilerOutputFileType.Code));
+					if (HasErrors == false) OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40), ClientAssemblyName + ".Services", false, Projects.ProjectOutputFramework.NET40));
 				}
 				if (IsFramework40Client(ProjectName) == true)
 				{
 					AddOutputLine("Generating the .NET Framework 4.0 (Client Profile) Client Service Proxy Code", CompilerMessageStage.Proxy);
 					if (GenerateProxy40Client(false, ProjectName, DependencyAssemblies, OutputFiles) == false) HasErrors = true;
-					if (HasErrors == false) OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client), ClientAssemblyName + ".Services", false, Projects.ProjectOutputFramework.NET40Client, CompilerOutputFileType.Code));
+					if (HasErrors == false) OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client), ClientAssemblyName + ".Services", false, Projects.ProjectOutputFramework.NET40Client));
 				}
 			}
 
@@ -536,19 +527,10 @@ namespace WCFArchitect.Compiler
 
 			WPFThread.Invoke(new Action(() =>
 			{
-				if (Project.IsDependencyProject == false)
-				{
-					ServerAssemblyName = Project.ServerAssemblyName;
-					ClientAssemblyName = Project.ClientAssemblyName;
-				}
-				else
-				{
-					ServerAssemblyName = Helpers.RegExs.ReplaceSpaces.Replace(Project.Name, ".") + ".Server";
-					ClientAssemblyName = Helpers.RegExs.ReplaceSpaces.Replace(Project.Name, ".") + ".Client";
-				}
+				ServerAssemblyName = Helpers.RegExs.ReplaceSpaces.Replace(Project.Name, ".") + ".Server";
+				ClientAssemblyName = Helpers.RegExs.ReplaceSpaces.Replace(Project.Name, ".") + ".Client";
 
 				SvcUtilPath = Globals.UserProfile.SvcUtilPath;
-				IsDependencyProject = Project.IsDependencyProject;
 
 				OutputFiles.Clear();
 
@@ -573,23 +555,23 @@ namespace WCFArchitect.Compiler
 			{
 				if (IsFramework30(ProjectName) == true)
 				{
-					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET30, CompilerOutputFileType.Code));
+					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET30));
 				}
 				if (IsFramework35(ProjectName) == true)
 				{
-					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET35, CompilerOutputFileType.Code));
+					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET35));
 				}
 				if (IsFramework35Client(ProjectName) == true)
 				{
-					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET35Client, CompilerOutputFileType.Code));
+					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET35Client));
 				}
 				if (IsFramework40(ProjectName) == true)
 				{
-					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET40, CompilerOutputFileType.Code));
+					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET40));
 				}
 				if (IsFramework40Client(ProjectName) == true)
 				{
-					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET40Client, CompilerOutputFileType.Code));
+					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET40Client));
 				}
 			}
 
@@ -627,23 +609,23 @@ namespace WCFArchitect.Compiler
 			{
 				if (IsFramework30(ProjectName) == true)
 				{
-					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET30, CompilerOutputFileType.Code));
+					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET30));
 				}
 				if (IsFramework35(ProjectName) == true)
 				{
-					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET35, CompilerOutputFileType.Code));
+					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET35));
 				}
 				if (IsFramework35Client(ProjectName) == true)
 				{
-					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET35Client, CompilerOutputFileType.Code));
+					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET35Client));
 				}
 				if (IsFramework40(ProjectName) == true)
 				{
-					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET40, CompilerOutputFileType.Code));
+					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET40));
 				}
 				if (IsFramework40Client(ProjectName) == true)
 				{
-					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET40Client, CompilerOutputFileType.Code));
+					OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET40Client));
 				}
 			}
 
@@ -682,23 +664,23 @@ namespace WCFArchitect.Compiler
 			{
 				if (IsFramework30((ProjectName)) == true)
 				{
-					if (HasErrors == false) OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30), ClientAssemblyName + ".Services", false, Projects.ProjectOutputFramework.NET30, CompilerOutputFileType.Code));
+					if (HasErrors == false) OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30), ClientAssemblyName + ".Services", false, Projects.ProjectOutputFramework.NET30));
 				}
 				if (IsFramework35(ProjectName) == true)
 				{
-					if (HasErrors == false) OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35), ClientAssemblyName + ".Services", false, Projects.ProjectOutputFramework.NET35, CompilerOutputFileType.Code));
+					if (HasErrors == false) OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35), ClientAssemblyName + ".Services", false, Projects.ProjectOutputFramework.NET35));
 				}
 				if (IsFramework35Client(ProjectName) == true)
 				{
-					if (HasErrors == false) OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client), ClientAssemblyName + ".Services", false, Projects.ProjectOutputFramework.NET35Client, CompilerOutputFileType.Code));
+					if (HasErrors == false) OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client), ClientAssemblyName + ".Services", false, Projects.ProjectOutputFramework.NET35Client));
 				}
 				if (IsFramework40(ProjectName) == true)
 				{
-					if (HasErrors == false) OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40), ClientAssemblyName + ".Services", false, Projects.ProjectOutputFramework.NET40, CompilerOutputFileType.Code));
+					if (HasErrors == false) OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40), ClientAssemblyName + ".Services", false, Projects.ProjectOutputFramework.NET40));
 				}
 				if (IsFramework40Client(ProjectName) == true)
 				{
-					if (HasErrors == false) OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client), ClientAssemblyName + ".Services", false, Projects.ProjectOutputFramework.NET40Client, CompilerOutputFileType.Code));
+					if (HasErrors == false) OutputFiles.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client), ClientAssemblyName + ".Services", false, Projects.ProjectOutputFramework.NET40Client));
 				}
 			}
 
@@ -789,7 +771,7 @@ namespace WCFArchitect.Compiler
 				return false;
 			}
 
-			string Code = (string)WPFThread.Invoke(new Func<string>(() => Project.GenerateServerCode30(true, ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
+			string Code = (string)WPFThread.Invoke(new Func<string>(() => Project.GenerateServerCode30(ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
 
 			CompilerParameters Parameters = new CompilerParameters();
 			CompilerResults Results;
@@ -809,11 +791,8 @@ namespace WCFArchitect.Compiler
 				Parameters.ReferencedAssemblies.Clear();
 				foreach (Projects.Reference R in RL)
 					Parameters.ReferencedAssemblies.Add(R.Path);
-				var DL = DependencyAssemblies.Where(a => a.FileType == CompilerOutputFileType.Assembly && a.Framework == Projects.ProjectOutputFramework.NET30 && a.IsServerFile == true);
-				foreach (var D in DL)
-					Parameters.ReferencedAssemblies.Add(GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30) + D.FileName + ".dll");
 
-				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET30, CompilerOutputFileType.Assembly);
+				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET30);
 				AddOutputLine("Building '" + COF.FileName + ".dll' ... ", CompilerMessageStage.Server, false);
 				Parameters.CompilerOptions = BaseOptions + " /platform:anycpu ";
 				Parameters.OutputAssembly = GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30) + COF.FileName + ".dll";
@@ -899,7 +878,7 @@ namespace WCFArchitect.Compiler
 			AddOutputLine(MP.StandardOutput.ReadToEnd(), CompilerMessageStage.Proxy);
 
 			//Generate the Client Code
-			StringBuilder CodeArgs = new StringBuilder((string)WPFThread.Invoke(new Func<string>(() => Project.GenerateClientProxyArgs(GenerateAssemblyCode, IsClientClassesInternal(ProjectName))), System.Windows.Threading.DispatcherPriority.Send));
+			StringBuilder CodeArgs = new StringBuilder((string)WPFThread.Invoke(new Func<string>(() => Project.GenerateClientProxyArgs(IsClientClassesInternal(ProjectName))), System.Windows.Threading.DispatcherPriority.Send));
 			CodeArgs.Append(" /l:cs");
 			CodeArgs.Append(" /tcv:Version30");
 			RL = BuildProxyReferenceList(Projects.ProjectOutputFramework.NET30, false, ProjectName, DependencyAssemblies);
@@ -943,7 +922,7 @@ namespace WCFArchitect.Compiler
 			}
 			if (File.Exists(Path.Combine(GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30), ClientAssemblyName + ".Services.NET30.cs")) == false) return false;
 
-			string Code = (string)WPFThread.Invoke(new Func<string>(() => Project.GenerateClientCode30(true, ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
+			string Code = (string)WPFThread.Invoke(new Func<string>(() => Project.GenerateClientCode30(ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
 			string ServiceCode = File.ReadAllText(Path.Combine(GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30), ClientAssemblyName + ".Services.NET30.cs"));
 
 			CompilerParameters Parameters = new CompilerParameters();
@@ -964,11 +943,8 @@ namespace WCFArchitect.Compiler
 				Parameters.ReferencedAssemblies.Clear();
 				foreach (Projects.Reference R in RL)
 					Parameters.ReferencedAssemblies.Add(R.Path);
-				var DL = DependencyAssemblies.Where(a => a.FileType == CompilerOutputFileType.Assembly && a.Framework == Projects.ProjectOutputFramework.NET30 && a.IsClientFile == true);
-				foreach (var D in DL)
-					Parameters.ReferencedAssemblies.Add(GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30) + D.FileName + ".dll");
 
-				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET30, CompilerOutputFileType.Assembly);
+				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET30);
 				AddOutputLine("Building '" + COF.FileName + ".dll' ... ", CompilerMessageStage.Client, false);
 				Parameters.CompilerOptions = BaseOptions + " /platform:anycpu ";
 				Parameters.OutputAssembly = GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30) + COF.FileName + ".dll";
@@ -1005,7 +981,7 @@ namespace WCFArchitect.Compiler
 				return false;
 			}
 
-			string Code = (string)WPFThread.Invoke(new Func<string>(() => Project.GenerateServerCode35(true, ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
+			string Code = (string)WPFThread.Invoke(new Func<string>(() => Project.GenerateServerCode35(ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
 
 			CompilerParameters Parameters = new CompilerParameters();
 			CompilerResults Results;
@@ -1025,11 +1001,8 @@ namespace WCFArchitect.Compiler
 				Parameters.ReferencedAssemblies.Clear();
 				foreach (Projects.Reference R in RL)
 					Parameters.ReferencedAssemblies.Add(R.Path);
-				var DL = DependencyAssemblies.Where(a => a.FileType == CompilerOutputFileType.Assembly && a.Framework == Projects.ProjectOutputFramework.NET35 && a.IsServerFile == true);
-				foreach (var D in DL)
-					Parameters.ReferencedAssemblies.Add(GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35) + D.FileName + ".dll");
 
-				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET35, CompilerOutputFileType.Assembly);
+				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET35);
 				AddOutputLine("Building '" + COF.FileName + ".dll' ... ", CompilerMessageStage.Server, false);
 				Parameters.CompilerOptions = BaseOptions + " /platform:anycpu ";
 				Parameters.OutputAssembly = GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35) + COF.FileName + ".dll";
@@ -1115,7 +1088,7 @@ namespace WCFArchitect.Compiler
 			AddOutputLine(MP.StandardOutput.ReadToEnd(), CompilerMessageStage.Proxy);
 
 			//Generate the Client Code
-			StringBuilder CodeArgs = new StringBuilder((string)WPFThread.Invoke(new Func<string>(() => Project.GenerateClientProxyArgs(GenerateAssemblyCode, IsClientClassesInternal(ProjectName))), System.Windows.Threading.DispatcherPriority.Send));
+			StringBuilder CodeArgs = new StringBuilder((string)WPFThread.Invoke(new Func<string>(() => Project.GenerateClientProxyArgs(IsClientClassesInternal(ProjectName))), System.Windows.Threading.DispatcherPriority.Send));
 			CodeArgs.Append(" /l:cs");
 			CodeArgs.Append(" /tcv:Version35");
 			RL = BuildProxyReferenceList(Projects.ProjectOutputFramework.NET35, false, ProjectName, DependencyAssemblies);
@@ -1159,7 +1132,7 @@ namespace WCFArchitect.Compiler
 			}
 			if (File.Exists(Path.Combine(GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35), ClientAssemblyName + ".Services.NET35.cs")) == false) return false;
 
-			string Code = (string)WPFThread.Invoke(new Func<string>(() => Project.GenerateClientCode35(true, ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
+			string Code = (string)WPFThread.Invoke(new Func<string>(() => Project.GenerateClientCode35(ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
 			string ServiceCode = File.ReadAllText(Path.Combine(GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35), ClientAssemblyName + ".Services.NET35.cs"));
 
 			CompilerParameters Parameters = new CompilerParameters();
@@ -1180,11 +1153,8 @@ namespace WCFArchitect.Compiler
 				Parameters.ReferencedAssemblies.Clear();
 				foreach (Projects.Reference R in RL)
 					Parameters.ReferencedAssemblies.Add(R.Path);
-				var DL = DependencyAssemblies.Where(a => a.FileType == CompilerOutputFileType.Assembly && a.Framework == Projects.ProjectOutputFramework.NET35 && a.IsClientFile == true);
-				foreach (var D in DL)
-					Parameters.ReferencedAssemblies.Add(GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35) + D.FileName + ".dll");
 
-				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET35, CompilerOutputFileType.Assembly);
+				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET35);
 				AddOutputLine("Building '" + COF.FileName + ".dll' ... ", CompilerMessageStage.Client, false);
 				Parameters.CompilerOptions = BaseOptions + " /platform:anycpu ";
 				Parameters.OutputAssembly = GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35) + COF.FileName + ".dll";
@@ -1221,7 +1191,7 @@ namespace WCFArchitect.Compiler
 				return false;
 			}
 
-			string Code = (string)WPFThread.Invoke(new Func<string>(() => Project.GenerateServerCode35Client(true, ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
+			string Code = (string)WPFThread.Invoke(new Func<string>(() => Project.GenerateServerCode35Client(ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
 
 			CompilerParameters Parameters = new CompilerParameters();
 			CompilerResults Results;
@@ -1241,11 +1211,8 @@ namespace WCFArchitect.Compiler
 				Parameters.ReferencedAssemblies.Clear();
 				foreach (Projects.Reference R in RL)
 					Parameters.ReferencedAssemblies.Add(R.Path);
-				var DL = DependencyAssemblies.Where(a => a.FileType == CompilerOutputFileType.Assembly && a.Framework == Projects.ProjectOutputFramework.NET35Client && a.IsServerFile == true);
-				foreach (var D in DL)
-					Parameters.ReferencedAssemblies.Add(GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client) + D.FileName + ".dll");
 
-				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET35Client, CompilerOutputFileType.Assembly);
+				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET35Client);
 				AddOutputLine("Building '" + COF.FileName + ".dll' ... ", CompilerMessageStage.Server, false);
 				Parameters.CompilerOptions = BaseOptions + " /platform:anycpu ";
 				Parameters.OutputAssembly = GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client) + COF.FileName + ".dll";
@@ -1331,7 +1298,7 @@ namespace WCFArchitect.Compiler
 			AddOutputLine(MP.StandardOutput.ReadToEnd(), CompilerMessageStage.Proxy);
 
 			//Generate the Client Code
-			StringBuilder CodeArgs = new StringBuilder((string)WPFThread.Invoke(new Func<string>(() => Project.GenerateClientProxyArgs(GenerateAssemblyCode, IsClientClassesInternal(ProjectName))), System.Windows.Threading.DispatcherPriority.Send));
+			StringBuilder CodeArgs = new StringBuilder((string)WPFThread.Invoke(new Func<string>(() => Project.GenerateClientProxyArgs(IsClientClassesInternal(ProjectName))), System.Windows.Threading.DispatcherPriority.Send));
 			CodeArgs.Append(" /l:cs");
 			CodeArgs.Append(" /tcv:Version35");
 			RL = BuildProxyReferenceList(Projects.ProjectOutputFramework.NET35Client, false, ProjectName, DependencyAssemblies);
@@ -1375,7 +1342,7 @@ namespace WCFArchitect.Compiler
 			}
 			if (File.Exists(Path.Combine(GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client), ClientAssemblyName + ".Services.NET35Client.cs")) == false) return false;
 
-			string Code = (string)WPFThread.Invoke(new Func<string>(() => Project.GenerateClientCode35Client(true, ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
+			string Code = (string)WPFThread.Invoke(new Func<string>(() => Project.GenerateClientCode35Client(ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
 			string ServiceCode = File.ReadAllText(Path.Combine(GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client), ClientAssemblyName + ".Services.NET35Client.cs"));
 
 			CompilerParameters Parameters = new CompilerParameters();
@@ -1396,11 +1363,8 @@ namespace WCFArchitect.Compiler
 				Parameters.ReferencedAssemblies.Clear();
 				foreach (Projects.Reference R in RL)
 					Parameters.ReferencedAssemblies.Add(R.Path);
-				var DL = DependencyAssemblies.Where(a => a.FileType == CompilerOutputFileType.Assembly && a.Framework == Projects.ProjectOutputFramework.NET35Client && a.IsClientFile == true);
-				foreach (var D in DL)
-					Parameters.ReferencedAssemblies.Add(GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client) + D.FileName + ".dll");
 
-				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET35Client, CompilerOutputFileType.Assembly);
+				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET35Client);
 				AddOutputLine("Building '" + COF.FileName + ".dll' ... ", CompilerMessageStage.Client, false);
 				Parameters.CompilerOptions = BaseOptions + " /platform:anycpu ";
 				Parameters.OutputAssembly = GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client) + COF.FileName + ".dll";
@@ -1437,7 +1401,7 @@ namespace WCFArchitect.Compiler
 				return false;
 			}
 
-			string Code = (string)WPFThread.Invoke(new Func<string>(() => Project.GenerateServerCode40(true, ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
+			string Code = (string)WPFThread.Invoke(new Func<string>(() => Project.GenerateServerCode40(ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
 
 			CompilerParameters Parameters = new CompilerParameters();
 			CompilerResults Results;
@@ -1457,11 +1421,8 @@ namespace WCFArchitect.Compiler
 				Parameters.ReferencedAssemblies.Clear();
 				foreach (Projects.Reference R in RL)
 					Parameters.ReferencedAssemblies.Add(R.Path);
-				var DL = DependencyAssemblies.Where(a => a.FileType == CompilerOutputFileType.Assembly && a.Framework == Projects.ProjectOutputFramework.NET40 && a.IsServerFile == true);
-				foreach (var D in DL)
-					Parameters.ReferencedAssemblies.Add(GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40) + D.FileName + ".dll");
 
-				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET40, CompilerOutputFileType.Assembly);
+				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET40);
 				AddOutputLine("Building '" + COF.FileName + ".dll' ... ", CompilerMessageStage.Server, false);
 				Parameters.CompilerOptions = BaseOptions + " /platform:anycpu ";
 				Parameters.OutputAssembly = GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40) + COF.FileName + ".dll";
@@ -1547,7 +1508,7 @@ namespace WCFArchitect.Compiler
 			AddOutputLine(MP.StandardOutput.ReadToEnd(), CompilerMessageStage.Proxy);
 
 			//Generate the Client Code
-			StringBuilder CodeArgs = new StringBuilder((string)WPFThread.Invoke(new Func<string>(() => Project.GenerateClientProxyArgs(GenerateAssemblyCode, IsClientClassesInternal(ProjectName))), System.Windows.Threading.DispatcherPriority.Send));
+			StringBuilder CodeArgs = new StringBuilder((string)WPFThread.Invoke(new Func<string>(() => Project.GenerateClientProxyArgs(IsClientClassesInternal(ProjectName))), System.Windows.Threading.DispatcherPriority.Send));
 			CodeArgs.Append(" /l:cs");
 			CodeArgs.Append(" /tcv:Version35");
 			RL = BuildProxyReferenceList(Projects.ProjectOutputFramework.NET40, false, ProjectName, DependencyAssemblies);
@@ -1591,7 +1552,7 @@ namespace WCFArchitect.Compiler
 			}
 			if (File.Exists(Path.Combine(GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40), ClientAssemblyName + ".Services.NET40.cs")) == false) return false;
 
-			string Code = (string)WPFThread.Invoke(new Func<string>(() => Project.GenerateClientCode40(true, ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
+			string Code = (string)WPFThread.Invoke(new Func<string>(() => Project.GenerateClientCode40(ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
 			string ServiceCode = File.ReadAllText(Path.Combine(GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40), ClientAssemblyName + ".Services.NET40.cs"));
 
 			CompilerParameters Parameters = new CompilerParameters();
@@ -1612,11 +1573,8 @@ namespace WCFArchitect.Compiler
 				Parameters.ReferencedAssemblies.Clear();
 				foreach (Projects.Reference R in RL)
 					Parameters.ReferencedAssemblies.Add(R.Path);
-				var DL = DependencyAssemblies.Where(a => a.FileType == CompilerOutputFileType.Assembly && a.Framework == Projects.ProjectOutputFramework.NET40 && a.IsClientFile == true);
-				foreach (var D in DL)
-					Parameters.ReferencedAssemblies.Add(GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40) + D.FileName + ".dll");
 
-				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET40, CompilerOutputFileType.Assembly);
+				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET40);
 				AddOutputLine("Building '" + COF.FileName + ".dll' ... ", CompilerMessageStage.Client, false);
 				Parameters.CompilerOptions = BaseOptions + " /platform:anycpu ";
 				Parameters.OutputAssembly = GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40) + COF.FileName + ".dll";
@@ -1653,7 +1611,7 @@ namespace WCFArchitect.Compiler
 				return false;
 			}
 
-			string Code = (string)WPFThread.Invoke(new Func<string>(() => Project.GenerateServerCode40Client(true, ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
+			string Code = (string)WPFThread.Invoke(new Func<string>(() => Project.GenerateServerCode40Client(ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
 
 			CompilerParameters Parameters = new CompilerParameters();
 			CompilerResults Results;
@@ -1674,11 +1632,8 @@ namespace WCFArchitect.Compiler
 				Parameters.ReferencedAssemblies.Clear();
 				foreach (Projects.Reference R in RL)
 					Parameters.ReferencedAssemblies.Add(R.Path);
-				var DL = DependencyAssemblies.Where(a => a.FileType == CompilerOutputFileType.Assembly && a.Framework == Projects.ProjectOutputFramework.NET40Client && a.IsServerFile == true);
-				foreach (var D in DL)
-					Parameters.ReferencedAssemblies.Add(GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client) + D.FileName + ".dll");
 
-				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET40Client, CompilerOutputFileType.Assembly);
+				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET40Client);
 				AddOutputLine("Building '" + COF.FileName + ".dll' ... ", CompilerMessageStage.Server, false);
 				Parameters.CompilerOptions = BaseOptions + " /platform:anycpu ";
 				Parameters.OutputAssembly = GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client) + COF.FileName + ".dll";
@@ -1764,7 +1719,7 @@ namespace WCFArchitect.Compiler
 			AddOutputLine(MP.StandardOutput.ReadToEnd(), CompilerMessageStage.Proxy);
 
 			//Generate the Client Code
-			StringBuilder CodeArgs = new StringBuilder((string)WPFThread.Invoke(new Func<string>(() => Project.GenerateClientProxyArgs(GenerateAssemblyCode, IsClientClassesInternal(ProjectName))), System.Windows.Threading.DispatcherPriority.Send));
+			StringBuilder CodeArgs = new StringBuilder((string)WPFThread.Invoke(new Func<string>(() => Project.GenerateClientProxyArgs(IsClientClassesInternal(ProjectName))), System.Windows.Threading.DispatcherPriority.Send));
 			CodeArgs.Append(" /l:cs");
 			CodeArgs.Append(" /tcv:Version35");
 			RL = BuildProxyReferenceList(Projects.ProjectOutputFramework.NET40Client, false, ProjectName, DependencyAssemblies);
@@ -1808,7 +1763,7 @@ namespace WCFArchitect.Compiler
 			}
 			if (File.Exists(Path.Combine(GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client), ClientAssemblyName + ".Services.NET40Client.cs")) == false) return false;
 
-			string Code = (string)WPFThread.Invoke(new Func<string>(() => Project.GenerateClientCode40Client(true, ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
+			string Code = (string)WPFThread.Invoke(new Func<string>(() => Project.GenerateClientCode40Client(ProjectName)), System.Windows.Threading.DispatcherPriority.Send);
 			string ServiceCode = File.ReadAllText(Path.Combine(GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client), ClientAssemblyName + ".Services.NET40Client.cs"));
 
 			CompilerParameters Parameters = new CompilerParameters();
@@ -1829,11 +1784,8 @@ namespace WCFArchitect.Compiler
 				Parameters.ReferencedAssemblies.Clear();
 				foreach (Projects.Reference R in RL)
 					Parameters.ReferencedAssemblies.Add(R.Path);
-				var DL = DependencyAssemblies.Where(a => a.FileType == CompilerOutputFileType.Assembly && a.Framework == Projects.ProjectOutputFramework.NET40Client && a.IsClientFile == true);
-				foreach (var D in DL)
-					Parameters.ReferencedAssemblies.Add(GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client) + D.FileName + ".dll");
 
-				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET40Client, CompilerOutputFileType.Assembly);
+				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET40Client);
 				AddOutputLine("Building '" + COF.FileName + ".dll' ... ", CompilerMessageStage.Client, false);
 				Parameters.CompilerOptions = BaseOptions + " /platform:anycpu ";
 				Parameters.OutputAssembly = GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client) + COF.FileName + ".dll";
@@ -1865,7 +1817,7 @@ namespace WCFArchitect.Compiler
 		{
 			try
 			{
-				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET30, CompilerOutputFileType.Assembly);
+				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET30);
 				OutputFiles.Add(COF);
 			}
 			catch (Exception ex)
@@ -1887,7 +1839,7 @@ namespace WCFArchitect.Compiler
 		{
 			try
 			{
-				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET30, CompilerOutputFileType.Assembly);
+				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET30), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET30);
 				OutputFiles.Add(COF);
 			}
 			catch (Exception ex)
@@ -1907,7 +1859,7 @@ namespace WCFArchitect.Compiler
 		{
 			try
 			{
-				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET35, CompilerOutputFileType.Assembly);
+				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET35);
 				OutputFiles.Add(COF);
 			}
 			catch (Exception ex)
@@ -1929,7 +1881,7 @@ namespace WCFArchitect.Compiler
 		{
 			try
 			{
-				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET35, CompilerOutputFileType.Assembly);
+				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET35);
 				OutputFiles.Add(COF);
 			}
 			catch (Exception ex)
@@ -1949,7 +1901,7 @@ namespace WCFArchitect.Compiler
 		{
 			try
 			{
-				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET35Client, CompilerOutputFileType.Assembly);
+				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET35Client);
 				OutputFiles.Add(COF);
 			}
 			catch (Exception ex)
@@ -1971,7 +1923,7 @@ namespace WCFArchitect.Compiler
 		{
 			try
 			{
-				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET35Client, CompilerOutputFileType.Assembly);
+				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET35Client), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET35Client);
 				OutputFiles.Add(COF);
 			}
 			catch (Exception ex)
@@ -1991,7 +1943,7 @@ namespace WCFArchitect.Compiler
 		{
 			try
 			{
-				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET40, CompilerOutputFileType.Assembly);
+				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET40);
 				OutputFiles.Add(COF);
 			}
 			catch (Exception ex)
@@ -2013,7 +1965,7 @@ namespace WCFArchitect.Compiler
 		{
 			try
 			{
-				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET40, CompilerOutputFileType.Assembly);
+				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET40);
 				OutputFiles.Add(COF);
 			}
 			catch (Exception ex)
@@ -2033,7 +1985,7 @@ namespace WCFArchitect.Compiler
 		{
 			try
 			{
-				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET40Client, CompilerOutputFileType.Assembly);
+				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client), ServerAssemblyName, true, Projects.ProjectOutputFramework.NET40Client);
 				OutputFiles.Add(COF);
 			}
 			catch (Exception ex)
@@ -2055,7 +2007,7 @@ namespace WCFArchitect.Compiler
 		{
 			try
 			{
-				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET40Client, CompilerOutputFileType.Assembly);
+				CompilerOutputFile COF = new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Projects.ProjectOutputFramework.NET40Client), ClientAssemblyName, false, Projects.ProjectOutputFramework.NET40Client);
 				OutputFiles.Add(COF);
 			}
 			catch (Exception ex)
@@ -2078,46 +2030,16 @@ namespace WCFArchitect.Compiler
 
 			foreach (Projects.ProjectOutputPath OP in SOPL)
 			{
-				if (OP.GenerateAssembly == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsServerFile == true && a.FileType == CompilerOutputFileType.Assembly && a.Framework == Projects.ProjectOutputFramework.NET30));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
-				if (OP.GenerateCode == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsServerFile == true && a.FileType == CompilerOutputFileType.Code && a.Framework == Projects.ProjectOutputFramework.NET30));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
-				if (OP.OutputXSDWSDL == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsServerFile == true && a.FileType == CompilerOutputFileType.XSDWSDL && a.Framework == Projects.ProjectOutputFramework.NET30));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
+				List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsServerFile == true && a.Framework == Projects.ProjectOutputFramework.NET30));
+				foreach (CompilerOutputFile COF in FL)
+					COF.Copy(OP.Path);
 			}
 
 			foreach (Projects.ProjectOutputPath OP in COPL)
 			{
-				if (OP.GenerateAssembly == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsClientFile == true && a.FileType == CompilerOutputFileType.Assembly && a.Framework == Projects.ProjectOutputFramework.NET30));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
-				if (OP.GenerateCode == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsClientFile == true && a.FileType == CompilerOutputFileType.Code && a.Framework == Projects.ProjectOutputFramework.NET30));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
-				if (OP.OutputXSDWSDL == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsClientFile == true && a.FileType == CompilerOutputFileType.XSDWSDL && a.Framework == Projects.ProjectOutputFramework.NET30));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
+				List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsClientFile == true && a.Framework == Projects.ProjectOutputFramework.NET30));
+				foreach (CompilerOutputFile COF in FL)
+					COF.Copy(OP.Path);
 			}
 		}
 
@@ -2128,46 +2050,16 @@ namespace WCFArchitect.Compiler
 
 			foreach (Projects.ProjectOutputPath OP in SOPL)
 			{
-				if (OP.GenerateAssembly == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsServerFile == true && a.FileType == CompilerOutputFileType.Assembly && a.Framework == Projects.ProjectOutputFramework.NET35));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
-				if (OP.GenerateCode == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsServerFile == true && a.FileType == CompilerOutputFileType.Code && a.Framework == Projects.ProjectOutputFramework.NET35));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
-				if (OP.OutputXSDWSDL == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsServerFile == true && a.FileType == CompilerOutputFileType.XSDWSDL && a.Framework == Projects.ProjectOutputFramework.NET35));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
+				List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsServerFile == true && a.Framework == Projects.ProjectOutputFramework.NET35));
+				foreach (CompilerOutputFile COF in FL)
+					COF.Copy(OP.Path);
 			}
 
 			foreach (Projects.ProjectOutputPath OP in COPL)
 			{
-				if (OP.GenerateAssembly == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsClientFile == true && a.FileType == CompilerOutputFileType.Assembly && a.Framework == Projects.ProjectOutputFramework.NET35));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
-				if (OP.GenerateCode == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsClientFile == true && a.FileType == CompilerOutputFileType.Code && a.Framework == Projects.ProjectOutputFramework.NET35));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
-				if (OP.OutputXSDWSDL == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsClientFile == true && a.FileType == CompilerOutputFileType.XSDWSDL && a.Framework == Projects.ProjectOutputFramework.NET35));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
+				List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsClientFile == true && a.Framework == Projects.ProjectOutputFramework.NET35));
+				foreach (CompilerOutputFile COF in FL)
+					COF.Copy(OP.Path);
 			}
 		}
 
@@ -2178,46 +2070,16 @@ namespace WCFArchitect.Compiler
 
 			foreach (Projects.ProjectOutputPath OP in SOPL)
 			{
-				if (OP.GenerateAssembly == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsServerFile == true && a.FileType == CompilerOutputFileType.Assembly && a.Framework == Projects.ProjectOutputFramework.NET35Client));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
-				if (OP.GenerateCode == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsServerFile == true && a.FileType == CompilerOutputFileType.Code && a.Framework == Projects.ProjectOutputFramework.NET35Client));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
-				if (OP.OutputXSDWSDL == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsServerFile == true && a.FileType == CompilerOutputFileType.XSDWSDL && a.Framework == Projects.ProjectOutputFramework.NET35Client));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
+				List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsServerFile == true && a.Framework == Projects.ProjectOutputFramework.NET35Client));
+				foreach (CompilerOutputFile COF in FL)
+					COF.Copy(OP.Path);
 			}
 
 			foreach (Projects.ProjectOutputPath OP in COPL)
 			{
-				if (OP.GenerateAssembly == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsClientFile == true && a.FileType == CompilerOutputFileType.Assembly && a.Framework == Projects.ProjectOutputFramework.NET35Client));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
-				if (OP.GenerateCode == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsClientFile == true && a.FileType == CompilerOutputFileType.Code && a.Framework == Projects.ProjectOutputFramework.NET35Client));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
-				if (OP.OutputXSDWSDL == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsClientFile == true && a.FileType == CompilerOutputFileType.XSDWSDL && a.Framework == Projects.ProjectOutputFramework.NET35Client));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
+				List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsClientFile == true && a.Framework == Projects.ProjectOutputFramework.NET35Client));
+				foreach (CompilerOutputFile COF in FL)
+					COF.Copy(OP.Path);
 			}
 		}
 
@@ -2228,46 +2090,16 @@ namespace WCFArchitect.Compiler
 
 			foreach (Projects.ProjectOutputPath OP in SOPL)
 			{
-				if (OP.GenerateAssembly == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsServerFile == true && a.FileType == CompilerOutputFileType.Assembly && a.Framework == Projects.ProjectOutputFramework.NET40));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
-				if (OP.GenerateCode == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsServerFile == true && a.FileType == CompilerOutputFileType.Code && a.Framework == Projects.ProjectOutputFramework.NET40));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
-				if (OP.OutputXSDWSDL == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsServerFile == true && a.FileType == CompilerOutputFileType.XSDWSDL && a.Framework == Projects.ProjectOutputFramework.NET40));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
+				List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsServerFile == true && a.Framework == Projects.ProjectOutputFramework.NET40));
+				foreach (CompilerOutputFile COF in FL)
+					COF.Copy(OP.Path);
 			}
 
 			foreach (Projects.ProjectOutputPath OP in COPL)
 			{
-				if (OP.GenerateAssembly == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsClientFile == true && a.FileType == CompilerOutputFileType.Assembly && a.Framework == Projects.ProjectOutputFramework.NET40));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
-				if (OP.GenerateCode == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsClientFile == true && a.FileType == CompilerOutputFileType.Code && a.Framework == Projects.ProjectOutputFramework.NET40));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
-				if (OP.OutputXSDWSDL == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsClientFile == true && a.FileType == CompilerOutputFileType.XSDWSDL && a.Framework == Projects.ProjectOutputFramework.NET40));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
+				List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsClientFile == true && a.Framework == Projects.ProjectOutputFramework.NET40));
+				foreach (CompilerOutputFile COF in FL)
+					COF.Copy(OP.Path);
 			}
 		}
 
@@ -2278,46 +2110,16 @@ namespace WCFArchitect.Compiler
 
 			foreach (Projects.ProjectOutputPath OP in SOPL)
 			{
-				if (OP.GenerateAssembly == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsServerFile == true && a.FileType == CompilerOutputFileType.Assembly && a.Framework == Projects.ProjectOutputFramework.NET40Client));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
-				if (OP.GenerateCode == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsServerFile == true && a.FileType == CompilerOutputFileType.Code && a.Framework == Projects.ProjectOutputFramework.NET40Client));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
-				if (OP.OutputXSDWSDL == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsServerFile == true && a.FileType == CompilerOutputFileType.XSDWSDL && a.Framework == Projects.ProjectOutputFramework.NET40Client));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
+				List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsServerFile == true && a.Framework == Projects.ProjectOutputFramework.NET40Client));
+				foreach (CompilerOutputFile COF in FL)
+					COF.Copy(OP.Path);
 			}
 
 			foreach (Projects.ProjectOutputPath OP in COPL)
 			{
-				if (OP.GenerateAssembly == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsClientFile == true && a.FileType == CompilerOutputFileType.Assembly && a.Framework == Projects.ProjectOutputFramework.NET40Client));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
-				if (OP.GenerateCode == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsClientFile == true && a.FileType == CompilerOutputFileType.Code && a.Framework == Projects.ProjectOutputFramework.NET40Client));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
-				if (OP.OutputXSDWSDL == true)
-				{
-					List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsClientFile == true && a.FileType == CompilerOutputFileType.XSDWSDL && a.Framework == Projects.ProjectOutputFramework.NET40Client));
-					foreach (CompilerOutputFile COF in FL)
-						COF.Copy(OP.Path);
-				}
+				List<CompilerOutputFile> FL = new List<CompilerOutputFile>(OutputFiles.Where<CompilerOutputFile>(a => a.IsClientFile == true && a.Framework == Projects.ProjectOutputFramework.NET40Client));
+				foreach (CompilerOutputFile COF in FL)
+					COF.Copy(OP.Path);
 			}
 		}
 
@@ -2337,7 +2139,7 @@ namespace WCFArchitect.Compiler
 		{
 			List<string> Lines = new List<string>(Output.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));			
 			List<string> FileList = new List<string>();
-			string RXSD = (string)WPFThread.Invoke(new Func<string>(() => { return Project.Namespace.URI; }), System.Windows.Threading.DispatcherPriority.Send);
+			string RXSD = (string)WPFThread.Invoke(new Func<string>(() => { return Project.Root.URI; }), System.Windows.Threading.DispatcherPriority.Send);
 			if (RXSD.Contains("://") == true) RXSD = RXSD.Remove(0, RXSD.IndexOf("://") + 3);
 			RXSD = RXSD.Remove(RXSD.IndexOf("/"));
 			RXSD = RXSD.Replace("/", ".");
@@ -2426,14 +2228,14 @@ namespace WCFArchitect.Compiler
 
 			foreach (string f in WSDL)
 			{
-				COFL.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Framework), Path.GetFileName(f), true, Framework, CompilerOutputFileType.XSDWSDL, CompilerOutputLanguage.None));
-				COFL.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Framework), Path.GetFileName(f), false, Framework, CompilerOutputFileType.XSDWSDL, CompilerOutputLanguage.None));
+				COFL.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Framework), Path.GetFileName(f), true, Framework, CompilerOutputLanguage.None));
+				COFL.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Framework), Path.GetFileName(f), false, Framework, CompilerOutputLanguage.None));
 			}
 
 			foreach (string f in XSD)
 			{
-				COFL.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Framework), Path.GetFileName(f), true, Framework, CompilerOutputFileType.XSDWSDL, CompilerOutputLanguage.None));
-				COFL.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Framework), Path.GetFileName(f), false, Framework, CompilerOutputFileType.XSDWSDL, CompilerOutputLanguage.None));
+				COFL.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Framework), Path.GetFileName(f), true, Framework, CompilerOutputLanguage.None));
+				COFL.Add(new CompilerOutputFile(this, GetBuildOutputPath(ProjectName, Framework), Path.GetFileName(f), false, Framework, CompilerOutputLanguage.None));
 			}
 
 			return COFL;
@@ -2560,12 +2362,6 @@ namespace WCFArchitect.Compiler
 
 	#region - Compiler Output -
 
-	internal enum CompilerOutputFileType
-	{
-		Code,
-		Assembly,
-		XSDWSDL,
-	}
 
 	internal enum CompilerOutputLanguage
 	{
@@ -2581,25 +2377,22 @@ namespace WCFArchitect.Compiler
 		private string fileName;
 		private bool isServerFile;
 		private bool isClientFile;
-		private CompilerOutputFileType fileType;
 		private Projects.ProjectOutputFramework framework;
 		private CompilerOutputLanguage language;
 
 		public string BaseFileName { get { return fileName; } }
 		public bool IsServerFile { get { return isServerFile; } }
 		public bool IsClientFile { get { return isClientFile; } }
-		public CompilerOutputFileType FileType { get { return fileType; } }
 		public Projects.ProjectOutputFramework Framework { get { return framework; } }
 		public CompilerOutputLanguage Language { get { return language; } }
 
-		public CompilerOutputFile(Compiler Compiler, string BuildPath, string FileName, bool IsServerFile, Projects.ProjectOutputFramework Framework, CompilerOutputFileType FileType, CompilerOutputLanguage Langauage = CompilerOutputLanguage.CSharp)
+		public CompilerOutputFile(Compiler Compiler, string BuildPath, string FileName, bool IsServerFile, Projects.ProjectOutputFramework Framework, CompilerOutputLanguage Langauage = CompilerOutputLanguage.CSharp)
 		{
 			compiler = Compiler;
 			buildPath = BuildPath;
 			fileName = FileName;
 			isServerFile = IsServerFile;
 			isClientFile = !IsServerFile;
-			fileType = FileType;
 			framework = Framework;
 			language = Langauage;
 		}
@@ -2609,23 +2402,15 @@ namespace WCFArchitect.Compiler
 			get
 			{
 				StringBuilder FN = new StringBuilder(fileName);
-				if (FileType == CompilerOutputFileType.Assembly)
+				if (language == CompilerOutputLanguage.CSharp)
 				{
 					FN.Append(".");
 					FN.Append(System.Enum.GetName(typeof(Projects.ProjectOutputFramework), framework));
 				}
-				else
+				else if (language == CompilerOutputLanguage.VisualBasic)
 				{
-					if (language == CompilerOutputLanguage.CSharp)
-					{
-						FN.Append(".");
-						FN.Append(System.Enum.GetName(typeof(Projects.ProjectOutputFramework), framework));
-					}
-					else if (language == CompilerOutputLanguage.VisualBasic)
-					{
-						FN.Append(".");
-						FN.Append(System.Enum.GetName(typeof(Projects.ProjectOutputFramework), framework));
-					}
+					FN.Append(".");
+					FN.Append(System.Enum.GetName(typeof(Projects.ProjectOutputFramework), framework));
 				}
 				return FN.ToString();
 			}
@@ -2633,44 +2418,21 @@ namespace WCFArchitect.Compiler
 		
 		public bool Copy(string DestPath)
 		{
-			if (FileType == CompilerOutputFileType.Assembly)
+			if (language == CompilerOutputLanguage.CSharp)
 			{
 				try
 				{
-					if (File.Exists(DestPath + FileName + ".dll"))
+					if (File.Exists(DestPath + FileName + ".cs"))
 					{
-						FileInfo fi = new FileInfo(DestPath + FileName + ".dll");
+						FileInfo fi = new FileInfo(DestPath + FileName + ".cs");
 						if (fi.IsReadOnly == true)
 						{
-							compiler.AddMessage(new CompileMessage("OS5000", "The destination file '" + FileName + ".dll' is marked as read-only. Please set the file to set the file as writeable and compile the project again.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output);
+							compiler.AddMessage(new CompileMessage("OS5000", "The destination file '" + FileName + ".cs' is marked as read-only. Please set the file to set the file as writeable and compile the project again.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output);
 							return false;
 						}
 					}
-					compiler.AddOutputLine("Copying '" + FileName + ".dll' to " + DestPath + " ... ", CompilerMessageStage.Output, false);
-					File.Copy(buildPath + FileName + ".dll", DestPath + FileName + ".dll", true);
-					compiler.AddOutputLine("Complete!", CompilerMessageStage.Output);
-				}
-				catch (UnauthorizedAccessException) { compiler.AddMessage(new CompileMessage("OS5001", "Failed! You do not have permission to access the path '" + DestPath + "'.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-				catch (ArgumentException) { compiler.AddMessage(new CompileMessage("OS5002", "Failed! The path '" + DestPath + "' contains invalid characters.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-				catch (PathTooLongException) { compiler.AddMessage(new CompileMessage("OS5003", "Failed! The path '" + DestPath + "' is too long.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-				catch (DirectoryNotFoundException) { compiler.AddMessage(new CompileMessage("OS5004", "Failed! The path '" + DestPath + "' was not found.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-				catch (FileNotFoundException) { compiler.AddMessage(new CompileMessage("OS5005", "Failed! The source file was not found. This is typically due to a failed build.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-				catch (IOException) { compiler.AddMessage(new CompileMessage("OS5006", "Failed! I/O Error.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-				catch (NotSupportedException) { compiler.AddMessage(new CompileMessage("OS5007", "Failed! The path '" + DestPath + "' contains invalid characters.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-				catch (Exception) { compiler.AddMessage(new CompileMessage("OS5008", "Failed! Unspecified Reason.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-				try
-				{
-					if (File.Exists(DestPath + FileName + ".pdb"))
-					{
-						FileInfo fi = new FileInfo(DestPath + FileName + ".pdb");
-						if (fi.IsReadOnly == true)
-						{
-							compiler.AddMessage(new CompileMessage("OS5000", "The destination file '" + FileName + ".pdb' is marked as read-only. Please set the file to set the file as writeable and compile the project again.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output);
-							return false;
-						}
-					}
-					compiler.AddOutputLine("Copying '" + FileName + ".pdb' to " + DestPath + " ... ", CompilerMessageStage.Output, false);
-					File.Copy(buildPath + FileName + ".pdb", DestPath + FileName + ".pdb", true);
+					compiler.AddOutputLine("Copying '" + FileName + ".cs' to " + DestPath + " ... ", CompilerMessageStage.Output, false);
+					File.Copy(buildPath + FileName + ".cs", DestPath + FileName + ".cs", true);
 					compiler.AddOutputLine("Complete!", CompilerMessageStage.Output);
 				}
 				catch (UnauthorizedAccessException) { compiler.AddMessage(new CompileMessage("OS5001", "Failed! You do not have permission to access the path '" + DestPath + "'.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
@@ -2682,76 +2444,21 @@ namespace WCFArchitect.Compiler
 				catch (NotSupportedException) { compiler.AddMessage(new CompileMessage("OS5007", "Failed! The path '" + DestPath + "' contains invalid characters.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
 				catch (Exception) { compiler.AddMessage(new CompileMessage("OS5008", "Failed! Unspecified Reason.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
 			}
-			else
-			{
-				if (language == CompilerOutputLanguage.CSharp)
-				{
-					try
-					{
-						if (File.Exists(DestPath + FileName + ".cs"))
-						{
-							FileInfo fi = new FileInfo(DestPath + FileName + ".cs");
-							if (fi.IsReadOnly == true)
-							{
-								compiler.AddMessage(new CompileMessage("OS5000", "The destination file '" + FileName + ".cs' is marked as read-only. Please set the file to set the file as writeable and compile the project again.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output);
-								return false;
-							}
-						}
-						compiler.AddOutputLine("Copying '" + FileName + ".cs' to " + DestPath + " ... ", CompilerMessageStage.Output, false);
-						File.Copy(buildPath + FileName + ".cs", DestPath + FileName + ".cs", true);
-						compiler.AddOutputLine("Complete!", CompilerMessageStage.Output);
-					}
-					catch (UnauthorizedAccessException) { compiler.AddMessage(new CompileMessage("OS5001", "Failed! You do not have permission to access the path '" + DestPath + "'.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-					catch (ArgumentException) { compiler.AddMessage(new CompileMessage("OS5002", "Failed! The path '" + DestPath + "' contains invalid characters.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-					catch (PathTooLongException) { compiler.AddMessage(new CompileMessage("OS5003", "Failed! The path '" + DestPath + "' is too long.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-					catch (DirectoryNotFoundException) { compiler.AddMessage(new CompileMessage("OS5004", "Failed! The path '" + DestPath + "' was not found.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-					catch (FileNotFoundException) { compiler.AddMessage(new CompileMessage("OS5005", "Failed! The source file was not found. This is typically due to a failed build.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-					catch (IOException) { compiler.AddMessage(new CompileMessage("OS5006", "Failed! I/O Error.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-					catch (NotSupportedException) { compiler.AddMessage(new CompileMessage("OS5007", "Failed! The path '" + DestPath + "' contains invalid characters.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-					catch (Exception) { compiler.AddMessage(new CompileMessage("OS5008", "Failed! Unspecified Reason.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-				}
-				else if (language == CompilerOutputLanguage.VisualBasic)
-				{
-					try
-					{
-						if (File.Exists(DestPath + FileName + ".vb"))
-						{
-							FileInfo fi = new FileInfo(DestPath + FileName + ".vb");
-							if (fi.IsReadOnly == true)
-							{
-								compiler.AddMessage(new CompileMessage("OS5000", "The destination file '" + FileName + ".vb' is marked as read-only. Please set the file to set the file as writeable and compile the project again.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output);
-								return false;
-							}
-						}
-						compiler.AddOutputLine("Copying '" + FileName + ".vb' to " + DestPath + " ... ", CompilerMessageStage.Output, false);
-						File.Copy(buildPath + FileName + ".vb", DestPath + FileName + ".vb", true);
-						compiler.AddOutputLine("Complete!", CompilerMessageStage.Output);
-					}
-					catch (UnauthorizedAccessException) { compiler.AddMessage(new CompileMessage("OS5001", "Failed! You do not have permission to access the path '" + DestPath + "'.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-					catch (ArgumentException) { compiler.AddMessage(new CompileMessage("OS5002", "Failed! The path '" + DestPath + "' contains invalid characters.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-					catch (PathTooLongException) { compiler.AddMessage(new CompileMessage("OS5003", "Failed! The path '" + DestPath + "' is too long.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-					catch (DirectoryNotFoundException) { compiler.AddMessage(new CompileMessage("OS5004", "Failed! The path '" + DestPath + "' was not found.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-					catch (FileNotFoundException) { compiler.AddMessage(new CompileMessage("OS5005", "Failed! The source file was not found. This is typically due to a failed build.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-					catch (IOException) { compiler.AddMessage(new CompileMessage("OS5006", "Failed! I/O Error.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-					catch (NotSupportedException) { compiler.AddMessage(new CompileMessage("OS5007", "Failed! The path '" + DestPath + "' contains invalid characters.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-					catch (Exception) { compiler.AddMessage(new CompileMessage("OS5008", "Failed! Unspecified Reason.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }
-				}
-			}
-			if (FileType == CompilerOutputFileType.XSDWSDL)
+			else if (language == CompilerOutputLanguage.VisualBasic)
 			{
 				try
 				{
-					if (File.Exists(DestPath + FileName))
+					if (File.Exists(DestPath + FileName + ".vb"))
 					{
-						FileInfo fi = new FileInfo(DestPath + FileName);
+						FileInfo fi = new FileInfo(DestPath + FileName + ".vb");
 						if (fi.IsReadOnly == true)
 						{
-							compiler.AddMessage(new CompileMessage("OS5000", "The destination file '" + FileName + "' is marked as read-only. Please set the file to set the file as writeable and compile the project again.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output);
+							compiler.AddMessage(new CompileMessage("OS5000", "The destination file '" + FileName + ".vb' is marked as read-only. Please set the file to set the file as writeable and compile the project again.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output);
 							return false;
 						}
 					}
-					compiler.AddOutputLine("Copying '" + FileName + "' to " + DestPath + " ... ", CompilerMessageStage.Output, false);
-					File.Copy(buildPath + FileName, DestPath + FileName, true);
+					compiler.AddOutputLine("Copying '" + FileName + ".vb' to " + DestPath + " ... ", CompilerMessageStage.Output, false);
+					File.Copy(buildPath + FileName + ".vb", DestPath + FileName + ".vb", true);
 					compiler.AddOutputLine("Complete!", CompilerMessageStage.Output);
 				}
 				catch (UnauthorizedAccessException) { compiler.AddMessage(new CompileMessage("OS5001", "Failed! You do not have permission to access the path '" + DestPath + "'.", CompileMessageSeverity.Error, null, null, null), CompilerMessageStage.Output); return false; }

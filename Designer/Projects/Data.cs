@@ -325,14 +325,14 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public string GenerateServerCode30(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateServerCode30(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
 			Code.Append("\t[DataContract(");
 			if (ContractName != "" && ContractName != null) Code.AppendFormat("Name = \"{0}\", ", ContractName);
 			Code.AppendFormat("Namespace = \"{0}\"", Parent.URI);
 			Code.AppendLine(")]");
-			Code.AppendFormat("\t{0} partial class {1}{2}", Parent.Owner.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} partial class {1}{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			foreach (DataElement DE in Elements)
 				Code.Append(DE.GenerateServerCode30());
@@ -340,12 +340,12 @@ namespace WCFArchitect.Projects
 			return Code.ToString();
 		}
 
-		public string GenerateServerCode35(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateServerCode35(string ProjectName)
 		{
-			return GenerateServerCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode40(ProjectName);
 		}
 
-		public string GenerateServerCode40(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateServerCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
 			Code.Append("\t[DataContract(");
@@ -353,7 +353,7 @@ namespace WCFArchitect.Projects
 			if (ContractName != "" && ContractName != null)  Code.AppendFormat("Name = \"{0}\", ", ContractName);
 			Code.AppendFormat("Namespace = \"{0}\"", Parent.URI);
 			Code.AppendLine(")]");
-			Code.AppendFormat("\t{0} partial class {1}{2}", Parent.Owner.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} partial class {1}{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			foreach (DataElement DE in Elements)
 				Code.Append(DE.GenerateServerCode40());
@@ -361,7 +361,7 @@ namespace WCFArchitect.Projects
 			return Code.ToString();
 		}
 
-		public string GenerateClientCode30(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateClientCode30(string ProjectName)
 		{
 			bool HasWPF = false;
 			foreach (DataElement DE in Elements)
@@ -377,7 +377,7 @@ namespace WCFArchitect.Projects
 
 			StringBuilder Code = new StringBuilder();
 			Code.AppendFormat("\t//WPF Integration Object for the {0} DTO{1}", ContractName, Environment.NewLine);
-			Code.AppendFormat("\t{0} partial class {1} : DependencyObject{2}", Parent.Owner.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), WPFName, Environment.NewLine);
+			Code.AppendFormat("\t{0} partial class {1} : DependencyObject{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", WPFName, Environment.NewLine);
 			Code.AppendLine("\t{");
 
 			Code.AppendLine("\t\t//Properties");
@@ -450,12 +450,12 @@ namespace WCFArchitect.Projects
 			return Code.ToString();
 		}
 
-		public string GenerateClientCode35(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateClientCode35(string ProjectName)
 		{
-			return GenerateClientCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode40(ProjectName);
 		}
 
-		public string GenerateClientCode40(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateClientCode40(string ProjectName)
 		{
 			bool HasWPF = false;
 			foreach (DataElement DE in Elements)
@@ -471,7 +471,7 @@ namespace WCFArchitect.Projects
 
 			StringBuilder Code = new StringBuilder();
 			Code.AppendFormat("\t//WPF Integration Object for the {0} DTO{1}", ContractName, Environment.NewLine);
-			Code.AppendFormat("\t{0} partial class {1} : DependencyObject{2}", Parent.Owner.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), WPFName, Environment.NewLine);
+			Code.AppendFormat("\t{0} partial class {1} : DependencyObject{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", WPFName, Environment.NewLine);
 			Code.AppendLine("\t{");
 
 			Code.AppendLine("\t\t//Properties");

@@ -32,41 +32,26 @@
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 				<Label Content="Output Path:" Height="Auto" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" Grid.RowSpan="2" />
 				<pc:TextBox Text="{Binding Path=Path.Path}" Height="23" Margin="88,7,86,0" Name="OutputPathName" VerticalAlignment="Top" ToolTip="{Binding Path=Path.Path}"  />
 				<Button Content="Browse..." Height="23" HorizontalAlignment="Right" Margin="0,7,5,0" Name="OutputBrowse" VerticalAlignment="Top" Width="75" Click="OutputBrowse_Click" />
-				<Grid Grid.Row="1">
+				<Grid Grid.Row="1" Margin="0,5">
 					<Grid.RowDefinitions>
-						<RowDefinition Height="45" />
 						<RowDefinition Height="*" />
 					</Grid.RowDefinitions>
 					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
 					<Label Content="Framework:" Height="28" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Top" Grid.Column="0" Grid.Row="0" />
-					<ComboBox Height="23" Margin="5,0" SelectedIndex="{Binding Path=Path.Framework, Converter={StaticResource ProjectOutputPathFrameworkConverter}}" VerticalAlignment="Bottom" ToolTip="{Binding Path=Path.Framework, Converter={StaticResource ProjectOutputPathFrameworkNameConverter}}" >
+					<ComboBox Height="Auto"  Grid.Column="1" Margin="5,0" SelectedIndex="{Binding Path=Path.Framework, Converter={StaticResource ProjectOutputPathFrameworkConverter}}" VerticalAlignment="Center" ToolTip="{Binding Path=Path.Framework, Converter={StaticResource ProjectOutputPathFrameworkNameConverter}}" >
 						<ComboBoxItem Content=".NET Framework 4.0" />
 						<ComboBoxItem Content=".NET Framework 4.0 Client Profile" />
 						<ComboBoxItem Content=".NET Framework 3.5" />
 						<ComboBoxItem Content=".NET Framework 3.5 Client Profile" />
 						<ComboBoxItem Content=".NET Framework 3.0" />
 					</ComboBox>
-				</Grid>
-				<Grid Grid.Row="2">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="*" />
-					</Grid.ColumnDefinitions>
-					<RadioButton Content="Output Code" Name="OutputCode" IsChecked="{Binding Path=Path.GenerateCode}" Grid.Row="0" Grid.Column="0" Margin="5,5,5,2.5" VerticalAlignment="Center" HorizontalAlignment="Left" />
-					<RadioButton Content="Output Assembly" Name="OutputAssembly" IsChecked="{Binding Path=Path.GenerateAssembly}" Grid.Row="0" Grid.Column="1" Margin="5,5,5,2.5" VerticalAlignment="Center" HorizontalAlignment="Left" />
-					<CheckBox Content="Output Dependencies" IsChecked="{Binding Path=Path.IsDependencyOutputPath}" Grid.Row="1" Grid.Column="0" Margin="5,2.5,5,5" VerticalAlignment="Center" HorizontalAlignment="Left" />
-					<CheckBox Content="Output XSD/WSDL" IsChecked="{Binding Path=Path.OutputXSDWSDL}" Grid.Row="1" Grid.Column="1" Margin="5,2.5,5,5" VerticalAlignment="Center" HorizontalAlignment="Left" />
 				</Grid>
 			</Grid>
 	

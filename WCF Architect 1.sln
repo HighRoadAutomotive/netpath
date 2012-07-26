@@ -6,18 +6,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Installer", "Installer\Installer.csproj", "{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}"
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://high-road.net:8080/tfs/wcf%20architect
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = WCF\u0020Architect\\WCF\u0020Architect.csproj
-		SccProjectName1 = WCF\u0020Architect
-		SccLocalPath1 = WCF\u0020Architect
-		SccProjectUniqueName2 = WCF\u0020Architect\u0020Installer\\WCF\u0020Architect\u0020Installer.csproj
-		SccProjectName2 = WCF\u0020Architect\u0020Installer
-		SccLocalPath2 = WCF\u0020Architect\u0020Installer
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms

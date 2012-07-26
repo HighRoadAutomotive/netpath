@@ -58,8 +58,8 @@ namespace WCFArchitect.Projects
 		public TimeSpan SendTimeout { get { return (TimeSpan)GetValue(SendTimeoutProperty); } set { SetValue(SendTimeoutProperty, value); } }
 		public static readonly DependencyProperty SendTimeoutProperty = DependencyProperty.Register("SendTimeout", typeof(TimeSpan), typeof(ServiceBinding));
 
-		public Project Parent { get { return (Project)GetValue(ParentProperty); } set { SetValue(ParentProperty, value); } }
-		public static readonly DependencyProperty ParentProperty = DependencyProperty.Register("Parent", typeof(Project), typeof(ServiceBinding));
+		public Namespace Parent { get { return (Namespace)GetValue(ParentProperty); } set { SetValue(ParentProperty, value); } }
+		public static readonly DependencyProperty ParentProperty = DependencyProperty.Register("Parent", typeof(Namespace), typeof(ServiceBinding));
 
 		//Internal Use - Searching / Filtering
 		public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
@@ -111,18 +111,18 @@ namespace WCFArchitect.Projects
 					{
 						if (Args.IsDataType == false)
 						{
-							if (Name != null && Name != "") if (Name.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, Parent, this));
-							if (CodeName != null && CodeName != "") if (CodeName.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Code Name", CodeName, Parent, this));
-							if (Name != null && Name != "") if (Namespace.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Namespace", Namespace, Parent, this));
+							if (Name != null && Name != "") if (Name.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
+							if (CodeName != null && CodeName != "") if (CodeName.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Code Name", CodeName, Parent.Owner, this));
+							if (Name != null && Name != "") if (Namespace.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Namespace", Namespace, Parent.Owner, this));
 						}
 					}
 					else
 					{
 						if (Args.IsDataType == false)
 						{
-							if (Name != null && Name != "") if (Name.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Name", Name, Parent, this));
-							if (CodeName != null && CodeName != "") if (CodeName.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Code Name", CodeName, Parent, this));
-							if (Namespace != null && Namespace != "") if (Namespace.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Namespace", Namespace, Parent, this));
+							if (Name != null && Name != "") if (Name.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
+							if (CodeName != null && CodeName != "") if (CodeName.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Code Name", CodeName, Parent.Owner, this));
+							if (Namespace != null && Namespace != "") if (Namespace.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Namespace", Namespace, Parent.Owner, this));
 						}
 					}
 				}
@@ -130,9 +130,9 @@ namespace WCFArchitect.Projects
 				{
 					if (Args.IsDataType == false)
 					{
-						if (Name != null && Name != "") if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, Parent, this));
-						if (CodeName != null && CodeName != "") if (Args.RegexSearch.IsMatch(CodeName)) results.Add(new FindReplaceResult("Code Name", CodeName, Parent, this));
-						if (Namespace != null && Namespace != "") if (Args.RegexSearch.IsMatch(Namespace)) results.Add(new FindReplaceResult("Namespace", Namespace, Parent, this));
+						if (Name != null && Name != "") if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
+						if (CodeName != null && CodeName != "") if (Args.RegexSearch.IsMatch(CodeName)) results.Add(new FindReplaceResult("Code Name", CodeName, Parent.Owner, this));
+						if (Namespace != null && Namespace != "") if (Args.RegexSearch.IsMatch(Namespace)) results.Add(new FindReplaceResult("Namespace", Namespace, Parent.Owner, this));
 					}
 				}
 
@@ -217,19 +217,19 @@ namespace WCFArchitect.Projects
 			}
 		}
 
-		public abstract ServiceBinding Copy(string HostName, Project Parent);
+		public abstract ServiceBinding Copy(string HostName, Namespace Parent);
 
-		public abstract string GenerateServerCode30(bool GenerateAssemblyCode, string ProjectName);
-		public abstract string GenerateServerCode35(bool GenerateAssemblyCode, string ProjectName);
-		public abstract string GenerateServerCode40(bool GenerateAssemblyCode, string ProjectName);
-		public abstract string GenerateServerCode35Client(bool GenerateAssemblyCode, string ProjectName);
-		public abstract string GenerateServerCode40Client(bool GenerateAssemblyCode, string ProjectName);
+		public abstract string GenerateServerCode30(string ProjectName);
+		public abstract string GenerateServerCode35(string ProjectName);
+		public abstract string GenerateServerCode40(string ProjectName);
+		public abstract string GenerateServerCode35Client(string ProjectName);
+		public abstract string GenerateServerCode40Client(string ProjectName);
 
-		public abstract string GenerateClientCode30(bool GenerateAssemblyCode, string ProjectName);
-		public abstract string GenerateClientCode35(bool GenerateAssemblyCode, string ProjectName);
-		public abstract string GenerateClientCode40(bool GenerateAssemblyCode, string ProjectName);
-		public abstract string GenerateClientCode35Client(bool GenerateAssemblyCode, string ProjectName);
-		public abstract string GenerateClientCode40Client(bool GenerateAssemblyCode, string ProjectName);
+		public abstract string GenerateClientCode30(string ProjectName);
+		public abstract string GenerateClientCode35(string ProjectName);
+		public abstract string GenerateClientCode40(string ProjectName);
+		public abstract string GenerateClientCode35Client(string ProjectName);
+		public abstract string GenerateClientCode40Client(string ProjectName);
 	}
 
 	#region  - ServiceBindingBasicHTTP Class -
@@ -274,7 +274,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingBasicHTTP() { }
 
-		public ServiceBindingBasicHTTP(string Name, Project Parent)
+		public ServiceBindingBasicHTTP(string Name, Namespace Parent)
 		{
 			this.id = Guid.NewGuid();
 			this.Name = Name;
@@ -326,7 +326,7 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public override ServiceBinding Copy(string HostName, Project Parent)
+		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
 			if (Parent == this.Parent) return this;
 
@@ -357,15 +357,15 @@ namespace WCFArchitect.Projects
 			return BD;
 		}
 
-		public override string GenerateServerCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode30(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : BasicHttpBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : BasicHttpBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -410,16 +410,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), TransferMode), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : BasicHttpBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : BasicHttpBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -462,31 +462,31 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), TransferMode), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35Client(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40Client(string ProjectName)
 		{
-			return GenerateServerCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode40(ProjectName);
 		}
 
-		public override string GenerateClientCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode30(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : BasicHttpBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : BasicHttpBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -531,16 +531,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), TransferMode), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : BasicHttpBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : BasicHttpBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -583,20 +583,20 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), TransferMode), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35Client(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40Client(string ProjectName)
 		{
-			return GenerateClientCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode40(ProjectName);
 		}
 	}
 
@@ -650,7 +650,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingWSHTTP() { }
 
-		public ServiceBindingWSHTTP(string Name, Project Parent)
+		public ServiceBindingWSHTTP(string Name, Namespace Parent)
 		{
 			this.id = Guid.NewGuid();
 			this.Name = Name;
@@ -692,7 +692,7 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public override ServiceBinding Copy(string HostName, Project Parent)
+		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
 			if (Parent == this.Parent) return this;
 
@@ -736,15 +736,15 @@ namespace WCFArchitect.Projects
 				Parent.IsDirty = true;
 		}
 
-		public override string GenerateServerCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode30(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WSHttpBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WSHttpBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -790,16 +790,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WSHttpBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WSHttpBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -843,31 +843,31 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35Client(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40Client(string ProjectName)
 		{
-			return GenerateServerCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode40(ProjectName);
 		}
 
-		public override string GenerateClientCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode30(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WSHttpBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WSHttpBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -913,16 +913,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WSHttpBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WSHttpBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -966,20 +966,20 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35Client(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40Client(string ProjectName)
 		{
-			return GenerateClientCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode40(ProjectName);
 		}
 	}
 
@@ -1033,7 +1033,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingWS2007HTTP() { }
 
-		public ServiceBindingWS2007HTTP(string Name, Project Parent)
+		public ServiceBindingWS2007HTTP(string Name, Namespace Parent)
 		{
 			this.id = Guid.NewGuid();
 			this.Name = Name;
@@ -1072,7 +1072,7 @@ namespace WCFArchitect.Projects
 				Parent.IsDirty = true;
 		}
 
-		public override ServiceBinding Copy(string HostName, Project Parent)
+		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
 			if (Parent == this.Parent) return this;
 
@@ -1119,15 +1119,15 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public override string GenerateServerCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode30(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WS2007HttpBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WS2007HttpBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -1173,16 +1173,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WS2007HttpBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WS2007HttpBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -1226,31 +1226,31 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35Client(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40Client(string ProjectName)
 		{
-			return GenerateServerCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode40(ProjectName);
 		}
 
-		public override string GenerateClientCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode30(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WS2007HttpBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WS2007HttpBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -1296,16 +1296,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WS2007HttpBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WS2007HttpBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -1349,20 +1349,20 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35Client(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40Client(string ProjectName)
 		{
-			return GenerateClientCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode40(ProjectName);
 		}
 	}
 
@@ -1413,7 +1413,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingWSDualHTTP() { }
 
-		public ServiceBindingWSDualHTTP(string Name, Project Parent)
+		public ServiceBindingWSDualHTTP(string Name, Namespace Parent)
 		{
 			this.id = Guid.NewGuid();
 			this.Name = Name;
@@ -1465,7 +1465,7 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public override ServiceBinding Copy(string HostName, Project Parent)
+		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
 			if (Parent == this.Parent) return this;
 
@@ -1496,15 +1496,15 @@ namespace WCFArchitect.Projects
 			return BD;
 		}
 
-		public override string GenerateServerCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode30(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WSDualHttpBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WSDualHttpBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -1549,16 +1549,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WSDualHttpBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WSDualHttpBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -1601,31 +1601,31 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35Client(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40Client(string ProjectName)
 		{
-			return GenerateServerCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode40(ProjectName);
 		}
 
-		public override string GenerateClientCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode30(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WSDualHttpBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WSDualHttpBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -1670,16 +1670,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WSDualHttpBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WSDualHttpBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -1722,20 +1722,20 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35Client(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40Client(string ProjectName)
 		{
-			return GenerateClientCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode40(ProjectName);
 		}
 	}
 
@@ -1792,7 +1792,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingWSFederationHTTP() { }
 
-		public ServiceBindingWSFederationHTTP(string Name, Project Parent)
+		public ServiceBindingWSFederationHTTP(string Name, Namespace Parent)
 		{
 			this.id = Guid.NewGuid();
 			this.Name = Name;
@@ -1845,7 +1845,7 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public override ServiceBinding Copy(string HostName, Project Parent)
+		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
 			if (Parent == this.Parent) return this;
 
@@ -1879,15 +1879,15 @@ namespace WCFArchitect.Projects
 			return BD;
 		}
 
-		public override string GenerateServerCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode30(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WSFederationHttpBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WSFederationHttpBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -1937,16 +1937,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WSFederationHttpBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WSFederationHttpBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -1994,31 +1994,31 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35Client(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40Client(string ProjectName)
 		{
-			return GenerateServerCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode40(ProjectName);
 		}
 
-		public override string GenerateClientCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode30(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WSFederationHttpBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WSFederationHttpBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -2068,16 +2068,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WSFederationHttpBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WSFederationHttpBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -2125,20 +2125,20 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35Client(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40Client(string ProjectName)
 		{
-			return GenerateClientCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode40(ProjectName);
 		}
 	}
 
@@ -2195,7 +2195,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingWS2007FederationHTTP() { }
 
-		public ServiceBindingWS2007FederationHTTP(string Name, Project Parent)
+		public ServiceBindingWS2007FederationHTTP(string Name, Namespace Parent)
 		{
 			this.id = Guid.NewGuid();
 			this.Name = Name;
@@ -2248,7 +2248,7 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public override ServiceBinding Copy(string HostName, Project Parent)
+		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
 			if (Parent == this.Parent) return this;
 
@@ -2282,15 +2282,15 @@ namespace WCFArchitect.Projects
 			return BD;
 		}
 
-		public override string GenerateServerCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode30(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WS2007FederationHttpBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WS2007FederationHttpBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -2340,16 +2340,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WS2007FederationHttpBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WS2007FederationHttpBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -2397,31 +2397,31 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35Client(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40Client(string ProjectName)
 		{
-			return GenerateServerCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode40(ProjectName);
 		}
 
-		public override string GenerateClientCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode30(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WS2007FederationHttpBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WS2007FederationHttpBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -2471,16 +2471,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WS2007FederationHttpBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WS2007FederationHttpBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -2528,20 +2528,20 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), TextEncoding), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}");
-			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35Client(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40Client(string ProjectName)
 		{
-			return GenerateClientCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode40(ProjectName);
 		}
 	}
 
@@ -2595,7 +2595,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingTCP() { }
 
-		public ServiceBindingTCP(string Name, Project Parent)
+		public ServiceBindingTCP(string Name, Namespace Parent)
 		{
 			this.id = Guid.NewGuid();
 			this.Name = Name;
@@ -2647,7 +2647,7 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public override ServiceBinding Copy(string HostName, Project Parent)
+		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
 			if (Parent == this.Parent) return this;
 
@@ -2677,15 +2677,15 @@ namespace WCFArchitect.Projects
 			return BD;
 		}
 
-		public override string GenerateServerCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode30(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : NetTcpBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : NetTcpBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -2732,16 +2732,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTransactionProtocol), TransactionProtocol), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), TransferMode), Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : NetTcpBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : NetTcpBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -2786,31 +2786,31 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTransactionProtocol), TransactionProtocol), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), TransferMode), Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35Client(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40Client(string ProjectName)
 		{
-			return GenerateServerCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode40(ProjectName);
 		}
 
-		public override string GenerateClientCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode30(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : NetTcpBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : NetTcpBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -2857,16 +2857,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTransactionProtocol), TransactionProtocol), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), TransferMode), Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : NetTcpBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : NetTcpBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -2911,20 +2911,20 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTransactionProtocol), TransactionProtocol), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), TransferMode), Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35Client(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40Client(string ProjectName)
 		{
-			return GenerateClientCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode40(ProjectName);
 		}
 	}
 
@@ -2963,7 +2963,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingNamedPipe() { }
 
-		public ServiceBindingNamedPipe(string Name, Project Parent)
+		public ServiceBindingNamedPipe(string Name, Namespace Parent)
 		{
 			this.id = Guid.NewGuid();
 			this.Name = Name;
@@ -3010,7 +3010,7 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public override ServiceBinding Copy(string HostName, Project Parent)
+		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
 			if (Parent == this.Parent) return this;
 
@@ -3038,15 +3038,15 @@ namespace WCFArchitect.Projects
 			return BD;
 		}
 
-		public override string GenerateServerCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode30(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : NetNamedPipeBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : NetNamedPipeBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -3088,16 +3088,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTransactionProtocol), TransactionProtocol), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), TransferMode), Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : NetNamedPipeBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : NetNamedPipeBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -3137,31 +3137,31 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTransactionProtocol), TransactionProtocol), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), TransferMode), Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35Client(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40Client(string ProjectName)
 		{
-			return GenerateServerCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode40(ProjectName);
 		}
 
-		public override string GenerateClientCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode30(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : NetNamedPipeBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : NetNamedPipeBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -3203,16 +3203,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTransactionProtocol), TransactionProtocol), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), TransferMode), Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : NetNamedPipeBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : NetNamedPipeBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -3252,20 +3252,20 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTransactionProtocol), TransactionProtocol), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), TransferMode), Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35Client(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40Client(string ProjectName)
 		{
-			return GenerateClientCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode40(ProjectName);
 		}
 	}
 
@@ -3331,7 +3331,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingMSMQ() { }
 
-		public ServiceBindingMSMQ(string Name, Project Parent)
+		public ServiceBindingMSMQ(string Name, Namespace Parent)
 		{
 			this.id = Guid.NewGuid();
 			this.Name = Name;
@@ -3386,7 +3386,7 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public override ServiceBinding Copy(string HostName, Project Parent)
+		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
 			if (Parent == this.Parent) return this;
 
@@ -3423,15 +3423,15 @@ namespace WCFArchitect.Projects
 			return BD;
 		}
 
-		public override string GenerateServerCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode30(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : NetMsmqBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : NetMsmqBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -3482,16 +3482,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.UseMSMQTracing = {0};{1}", UseMSMQTracing == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.UseSourceJournal = {0};{1}", UseSourceJournal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ValidityDuration != TimeSpan.Zero) Code.AppendFormat("\t\t\tthis.ValidityDuration = new TimeSpan({0});{1}", ValidityDuration.Ticks, Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : NetMsmqBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : NetMsmqBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -3540,31 +3540,31 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.UseMSMQTracing = {0};{1}", UseMSMQTracing == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.UseSourceJournal = {0};{1}", UseSourceJournal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ValidityDuration != TimeSpan.Zero) Code.AppendFormat("\t\t\tthis.ValidityDuration = new TimeSpan({0});{1}", ValidityDuration.Ticks, Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35Client(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40Client(string ProjectName)
 		{
-			return GenerateServerCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode40(ProjectName);
 		}
 
-		public override string GenerateClientCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode30(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : NetMsmqBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : NetMsmqBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -3615,16 +3615,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.UseMSMQTracing = {0};{1}", UseMSMQTracing == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.UseSourceJournal = {0};{1}", UseSourceJournal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ValidityDuration != TimeSpan.Zero) Code.AppendFormat("\t\t\tthis.ValidityDuration = new TimeSpan({0});{1}", ValidityDuration.Ticks, Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : NetMsmqBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : NetMsmqBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -3673,20 +3673,20 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.UseMSMQTracing = {0};{1}", UseMSMQTracing == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.UseSourceJournal = {0};{1}", UseSourceJournal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ValidityDuration != TimeSpan.Zero) Code.AppendFormat("\t\t\tthis.ValidityDuration = new TimeSpan({0});{1}", ValidityDuration.Ticks, Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35Client(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40Client(string ProjectName)
 		{
-			return GenerateClientCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode40(ProjectName);
 		}
 	}
 
@@ -3713,7 +3713,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingPeerTCP() { }
 
-		public ServiceBindingPeerTCP(string Name, Project Parent)
+		public ServiceBindingPeerTCP(string Name, Namespace Parent)
 		{
 			this.id = Guid.NewGuid();
 			this.Name = Name;
@@ -3762,7 +3762,7 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public override ServiceBinding Copy(string HostName, Project Parent)
+		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
 			if (Parent == this.Parent) return this;
 
@@ -3786,15 +3786,15 @@ namespace WCFArchitect.Projects
 			return BD;
 		}
 
-		public override string GenerateServerCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode30(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : NetPeerTcpBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : NetPeerTcpBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -3832,16 +3832,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.Port = {0};{1}", Port, Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : NetPeerTcpBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : NetPeerTcpBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -3877,31 +3877,31 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.Port = {0};{1}", Port, Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\this.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\this.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35Client(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40Client(string ProjectName)
 		{
-			return GenerateServerCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode40(ProjectName);
 		}
 
-		public override string GenerateClientCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode30(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : NetPeerTcpBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : NetPeerTcpBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -3939,16 +3939,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.Port = {0};{1}", Port, Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : NetPeerTcpBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : NetPeerTcpBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -3984,20 +3984,20 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.Port = {0};{1}", Port, Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\this.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\this.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35Client(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40Client(string ProjectName)
 		{
-			return GenerateClientCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode40(ProjectName);
 		}
 	}
 
@@ -4045,7 +4045,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingWebHTTP() { }
 
-		public ServiceBindingWebHTTP(string Name, Project Parent)
+		public ServiceBindingWebHTTP(string Name, Namespace Parent)
 		{
 			this.id = Guid.NewGuid();
 			this.Name = Name;
@@ -4097,7 +4097,7 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public override ServiceBinding Copy(string HostName, Project Parent)
+		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
 			if (Parent == this.Parent) return this;
 
@@ -4127,15 +4127,15 @@ namespace WCFArchitect.Projects
 			return BD;
 		}
 
-		public override string GenerateServerCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode30(string ProjectName)
 		{
 			return "";
 		}
 
-		public override string GenerateServerCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WebHttpBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WebHttpBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -4180,16 +4180,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), TransferMode), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.WriteEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), WriteEncoding), Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WebHttpBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WebHttpBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -4232,31 +4232,31 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), TransferMode), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.WriteEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), WriteEncoding), Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\this.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\this.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35Client(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40Client(string ProjectName)
 		{
 			return "";
 		}
 
-		public override string GenerateClientCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode30(string ProjectName)
 		{
 			return "";
 		}
 
-		public override string GenerateClientCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WebHttpBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WebHttpBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -4301,16 +4301,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), TransferMode), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.WriteEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), WriteEncoding), Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : WebHttpBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : WebHttpBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -4353,18 +4353,18 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), TransferMode), Environment.NewLine);
 			if (ProxyAddress != "" && UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.WriteEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), WriteEncoding), Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\this.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\this.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35Client(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40Client(string ProjectName)
 		{
 			return "";
 		}
@@ -4426,7 +4426,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingMSMQIntegration() { }
 
-		public ServiceBindingMSMQIntegration(string Name, Project Parent)
+		public ServiceBindingMSMQIntegration(string Name, Namespace Parent)
 		{
 			this.id = Guid.NewGuid();
 			this.Name = Name;
@@ -4478,7 +4478,7 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public override ServiceBinding Copy(string HostName, Project Parent)
+		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
 			if (Parent == this.Parent) return this;
 
@@ -4513,15 +4513,15 @@ namespace WCFArchitect.Projects
 			return BD;
 		}
 
-		public override string GenerateServerCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode30(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : System.ServiceModel.MsmqIntegration.MsmqIntegrationBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : System.ServiceModel.MsmqIntegration.MsmqIntegrationBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -4569,16 +4569,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.UseMSMQTracing = {0};{1}", UseMSMQTracing == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.UseSourceJournal = {0};{1}", UseSourceJournal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ValidityDuration != TimeSpan.Zero) Code.AppendFormat("\t\t\tthis.ValidityDuration = new TimeSpan({0});{1}", ValidityDuration.Ticks, Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : System.ServiceModel.MsmqIntegration.MsmqIntegrationBinding{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : System.ServiceModel.MsmqIntegration.MsmqIntegrationBinding{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -4624,31 +4624,31 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.UseMSMQTracing = {0};{1}", UseMSMQTracing == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.UseSourceJournal = {0};{1}", UseSourceJournal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ValidityDuration != TimeSpan.Zero) Code.AppendFormat("\t\t\tthis.ValidityDuration = new TimeSpan({0});{1}", ValidityDuration.Ticks, Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateServerCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode35Client(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public override string GenerateServerCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateServerCode40Client(string ProjectName)
 		{
-			return GenerateServerCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode40(ProjectName);
 		}
 
-		public override string GenerateClientCode30(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode30(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode35(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : System.ServiceModel.MsmqIntegration.MsmqIntegrationBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : System.ServiceModel.MsmqIntegration.MsmqIntegrationBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -4696,16 +4696,16 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.UseMSMQTracing = {0};{1}", UseMSMQTracing == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.UseSourceJournal = {0};{1}", UseSourceJournal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ValidityDuration != TimeSpan.Zero) Code.AppendFormat("\t\t\tthis.ValidityDuration = new TimeSpan({0});{1}", ValidityDuration.Ticks, Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\t{0}.{1}.Set{2}Security(this.Security);{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\t{0}.Security.Set{1}Security(this.Security);{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode40(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t{0} class {1} : System.ServiceModel.MsmqIntegration.MsmqIntegrationBinding{2}", Parent.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : System.ServiceModel.MsmqIntegration.MsmqIntegrationBinding{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendFormat("\t\tpublic {0}(){1}", CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t{");
@@ -4751,20 +4751,20 @@ namespace WCFArchitect.Projects
 			Code.AppendFormat("\t\t\tthis.UseMSMQTracing = {0};{1}", UseMSMQTracing == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.UseSourceJournal = {0};{1}", UseSourceJournal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			if (ValidityDuration != TimeSpan.Zero) Code.AppendFormat("\t\t\tthis.ValidityDuration = new TimeSpan({0});{1}", ValidityDuration.Ticks, Environment.NewLine);
-			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.{1}.Create{2}Security();{3}", Parent.Namespace.Name + "." + Parent.BindingsNamespace, Parent.SecurityClass, Security.CodeName, Environment.NewLine);
+			if (Security != null) Code.AppendFormat("\t\t\tthis.Security = {0}.Security.Create{1}Security();{2}", Parent.FullName, Security.CodeName, Environment.NewLine);
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 			return Code.ToString();
 		}
 
-		public override string GenerateClientCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode35Client(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public override string GenerateClientCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public override string GenerateClientCode40Client(string ProjectName)
 		{
-			return GenerateClientCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode40(ProjectName);
 		}
 	}
 

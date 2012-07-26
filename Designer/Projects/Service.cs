@@ -377,17 +377,17 @@ namespace WCFArchitect.Projects
 			return NoErrors;
 		}
 
-		public string GenerateServerCode30(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateServerCode30(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public string GenerateServerCode35(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateServerCode35(string ProjectName)
 		{
-			return GenerateServerCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode40(ProjectName);
 		}
 
-		public string GenerateServerCode40(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateServerCode40(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
 			if (IsCallback == false)
@@ -404,7 +404,7 @@ namespace WCFArchitect.Projects
 				Code.AppendFormat("Namespace = \"{0}\"", Parent.URI);
 				Code.AppendLine(")]");
 			}
-			Code.AppendFormat("\t{0} interface I{1}{2}", Parent.Owner.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} interface I{1}{2}", Parent.Owner.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			foreach (Property P in Properties)
 				Code.Append(P.GenerateServerCode40());
@@ -414,24 +414,24 @@ namespace WCFArchitect.Projects
 			return Code.ToString();
 		}
 
-		public string GenerateClientCode30(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateClientCode30(string ProjectName)
 		{
-			return GenerateClientCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode35(ProjectName);
 		}
 
-		public string GenerateClientCode35(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateClientCode35(string ProjectName)
 		{
-			return GenerateClientCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateClientCode40(ProjectName);
 		}
 
-		public string GenerateClientCode40(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateClientCode40(string ProjectName)
 		{
 			if (IsCallback == true) return "";
 			StringBuilder Code = new StringBuilder();
 
-			Code.AppendFormat("\t{0} partial class {1}Client{2}", Parent.Owner.Compiler.ClientClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} partial class {1}Client{2}", Parent.Owner.ClientPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
-			foreach (Host H in Parent.Owner.Hosts)
+			foreach (Host H in Globals.ProjectSpace.OfType<Host>())
 				if (H.Service == this)
 					Code.Append(H.GenerateClientCode40());
 			foreach (Property P in Properties)

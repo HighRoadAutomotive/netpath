@@ -280,13 +280,13 @@ namespace WCFArchitect.Projects
 			}
 		}
 
-		public string GenerateServerCode30(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateServerCode30(string ProjectName)
 		{
 			if (Service == null) return "";
 
 			StringBuilder Code = new StringBuilder();
 
-			Code.AppendFormat("\t{0} class {1} : ServiceHost{1}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : ServiceHost{1}", Parent.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			string BAVars = "";
 			for (int i = 0; i < BaseAddresses.Count; i++)
@@ -530,13 +530,13 @@ namespace WCFArchitect.Projects
 			return Code.ToString();
 		}
 
-		public string GenerateServerCode35(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateServerCode35(string ProjectName)
 		{
 			if (Service == null) return "";
 
 			StringBuilder Code = new StringBuilder();
 
-			Code.AppendFormat("\t{0} class {1} : ServiceHost{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : ServiceHost{2}", Parent.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			string BAVars = "";
 			for (int i = 0; i < BaseAddresses.Count; i++)
@@ -780,13 +780,13 @@ namespace WCFArchitect.Projects
 			return Code.ToString();
 		}
 
-		public string GenerateServerCode40(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateServerCode40(string ProjectName)
 		{
 			if (Service == null) return "";
 
 			StringBuilder Code = new StringBuilder();
 
-			Code.AppendFormat("\t{0} class {1} : ServiceHost{2}", Parent.Compiler.ServerClassVisibility(GenerateAssemblyCode, ProjectName), CodeName, Environment.NewLine);
+			Code.AppendFormat("\t{0} class {1} : ServiceHost{2}", Parent.ServerPublicClasses == true ? "public" : "internal", CodeName, Environment.NewLine);
 			Code.AppendLine("\t{");
 			string BAVars = "";
 			for (int i = 0; i < BaseAddresses.Count;i++ )
@@ -1018,14 +1018,14 @@ namespace WCFArchitect.Projects
 			return Code.ToString();
 		}
 
-		public string GenerateServerCode35Client(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateServerCode35Client(string ProjectName)
 		{
-			return GenerateServerCode35(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode35(ProjectName);
 		}
 
-		public string GenerateServerCode40Client(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateServerCode40Client(string ProjectName)
 		{
-			return GenerateServerCode40(GenerateAssemblyCode, ProjectName);
+			return GenerateServerCode40(ProjectName);
 		}
 
 		public string GenerateClientCode30()
@@ -1275,7 +1275,7 @@ namespace WCFArchitect.Projects
 
 		public string GenerateServerCode()
 		{
-			return string.Format("\t\t\tthis.AddServiceEndpoint(typeof({0}.I{1}), new {2}.{3}.{4}(), {5}URI);", Parent.Service.Parent.FullName, Parent.Service.CodeName, Parent.Parent.Namespace.Name, Parent.Parent.BindingsNamespace, Binding.CodeName, CodeName);
+			return string.Format("\t\t\tthis.AddServiceEndpoint(typeof({0}.I{1}), new {2}.{3}(), {4}URI);", Parent.Service.Parent.FullName, Parent.Service.CodeName, Binding.Parent.FullName, Binding.CodeName, CodeName);
 		}
 
 		public string GenerateClientCode()
@@ -2064,10 +2064,10 @@ namespace WCFArchitect.Projects
 		{
 			StringBuilder Code = new System.Text.StringBuilder();
 			Code.AppendFormat("\t\t\tthis.{0} = new ServiceDebugBehavior();{1}", CodeName, Environment.NewLine);
-			Code.AppendFormat("\t\t\tthis.{0}.HttpHelpPageBinding = new {1}.{2}();{3}", CodeName, Parent.Parent.BindingsNamespace, HttpHelpPageBinding.CodeName, Environment.NewLine);
+			Code.AppendFormat("\t\t\tthis.{0}.HttpHelpPageBinding = new {1}.{2}();{3}", CodeName, HttpHelpPageBinding.Parent.FullName, HttpHelpPageBinding.CodeName, Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.{0}.HttpHelpPageEnabled = {1};{2}", CodeName, HttpHelpPageEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.{0}.HttpHelpPageUrl = new Uri({1});{2}", CodeName, HttpHelpPageUrl, Environment.NewLine);
-			Code.AppendFormat("\t\t\tthis.{0}.HttpsHelpPageBinding = new {1}.{2}();{3}", CodeName, Parent.Parent.BindingsNamespace, HttpsHelpPageBinding.CodeName, Environment.NewLine);
+			Code.AppendFormat("\t\t\tthis.{0}.HttpsHelpPageBinding = new {1}.{2}();{3}", CodeName, HttpsHelpPageBinding.Parent.FullName, HttpsHelpPageBinding.CodeName, Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.{0}.HttpsHelpPageEnabled = {1};{2}", CodeName, HttpsHelpPageEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.{0}.HttpsHelpPageUrl = new Uri({1});{2}", CodeName, HttpsHelpPageUrl, Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.{0}.IncludeExceptionDetailInFaults = new Uri({1});{2}", CodeName, IncludeExceptionDetailInFaults == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
@@ -2162,10 +2162,10 @@ namespace WCFArchitect.Projects
 			StringBuilder Code = new System.Text.StringBuilder();
 			Code.AppendFormat("\t\t\tthis.{0} = new ServiceMetadataBehavior();{1}", CodeName, Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.{0}.ExternalMetadataLocation = new Uri({1});{2}", CodeName, ExternalMetadataLocation, Environment.NewLine);
-			Code.AppendFormat("\t\t\tthis.{0}.HttpGetBinding = new {1}.{2}();{3}", CodeName, Parent.Parent.BindingsNamespace, HttpGetBinding.CodeName, Environment.NewLine);
+			Code.AppendFormat("\t\t\tthis.{0}.HttpGetBinding = new {1}.{2}();{3}", CodeName, HttpGetBinding.Parent.FullName, HttpGetBinding.CodeName, Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.{0}.HttpGetEnabled = {1};{2}", CodeName, HttpGetEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.{0}.HttpGetUrl = new Uri({1});{2}", CodeName, HttpGetUrl, Environment.NewLine);
-			Code.AppendFormat("\t\t\tthis.{0}.HttpsGetBinding = new {1}.{2}();{3}", CodeName, Parent.Parent.BindingsNamespace, HttpsGetBinding.CodeName, Environment.NewLine);
+			Code.AppendFormat("\t\t\tthis.{0}.HttpsGetBinding = new {1}.{2}();{3}", CodeName, HttpsGetBinding.Parent.FullName, HttpsGetBinding.CodeName, Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.{0}.HttpsGetEnabled = {1};{2}", CodeName, HttpsGetEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			Code.AppendFormat("\t\t\tthis.{0}.HttpsGetUrl = new Uri({1});{2}", CodeName, HttpsGetUrl, Environment.NewLine);
 			if (IsDefaultBehavior == true) Code.AppendFormat("\t\t\tthis.Description.Behaviors.Add({0});{1}", CodeName, Environment.NewLine);

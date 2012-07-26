@@ -178,6 +178,46 @@
     <Compile Include="Compiler\CompilerManager.cs" />
     <Compile Include="Compiler\Compiler.cs" />
     <Compile Include="Helpers\GACUtil.cs" />
+    <Compile Include="Interface\Bindings\BasicHTTP.xaml.cs">
+      <DependentUpon>BasicHTTP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Bindings\Converters.cs" />
+    <Compile Include="Interface\Bindings\MSMQ.xaml.cs">
+      <DependentUpon>MSMQ.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Bindings\MSMQIntegration.xaml.cs">
+      <DependentUpon>MSMQIntegration.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Bindings\NamedPipe.xaml.cs">
+      <DependentUpon>NamedPipe.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Bindings\PeerTCP.xaml.cs">
+      <DependentUpon>PeerTCP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Bindings\SelectBinding.xaml.cs">
+      <DependentUpon>SelectBinding.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Bindings\TCP.xaml.cs">
+      <DependentUpon>TCP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Bindings\WebHTTP.xaml.cs">
+      <DependentUpon>WebHTTP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Bindings\WS2007FederationHTTP.xaml.cs">
+      <DependentUpon>WS2007FederationHTTP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Bindings\WS2007HTTP.xaml.cs">
+      <DependentUpon>WS2007HTTP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Bindings\WSDualHTTP.xaml.cs">
+      <DependentUpon>WSDualHTTP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Bindings\WSFederationHTTP.xaml.cs">
+      <DependentUpon>WSFederationHTTP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Bindings\WSHTTP.xaml.cs">
+      <DependentUpon>WSHTTP.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interface\Converters.cs" />
     <Compile Include="Interface\FindReplace.xaml.cs">
       <DependentUpon>FindReplace.xaml</DependentUpon>
@@ -200,6 +240,25 @@
     <Compile Include="Interface\ErrorList.xaml.cs">
       <DependentUpon>ErrorList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interface\Host\Converters.cs" />
+    <Compile Include="Interface\Host\DebugBehavior.xaml.cs">
+      <DependentUpon>DebugBehavior.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Host\Endpoint.xaml.cs">
+      <DependentUpon>Endpoint.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Host\Host.xaml.cs">
+      <DependentUpon>Host.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Host\MetadataBehavior.xaml.cs">
+      <DependentUpon>MetadataBehavior.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Host\NewBehavior.xaml.cs">
+      <DependentUpon>NewBehavior.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Host\ThrottlingBehavior.xaml.cs">
+      <DependentUpon>ThrottlingBehavior.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interface\Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>
     </Compile>
@@ -212,33 +271,45 @@
     <Compile Include="Interface\Output.xaml.cs">
       <DependentUpon>Output.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Interface\Project\Bindings\SelectBinding.xaml.cs">
-      <DependentUpon>SelectBinding.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Interface\Project\AddDependency.xaml.cs">
       <DependentUpon>AddDependency.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Interface\Project\Host\Converters.cs" />
-    <Compile Include="Interface\Project\Host\Endpoint.xaml.cs">
-      <DependentUpon>Endpoint.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Host\ThrottlingBehavior.xaml.cs">
-      <DependentUpon>ThrottlingBehavior.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Host\MetadataBehavior.xaml.cs">
-      <DependentUpon>MetadataBehavior.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Host\Host.xaml.cs">
-      <DependentUpon>Host.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Host\NewBehavior.xaml.cs">
-      <DependentUpon>NewBehavior.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Host\DebugBehavior.xaml.cs">
-      <DependentUpon>DebugBehavior.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Interface\Project\OutputPath.xaml.cs">
       <DependentUpon>OutputPath.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Security\BasicHTTP.xaml.cs">
+      <DependentUpon>BasicHTTP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Security\Converters.cs" />
+    <Compile Include="Interface\Security\MSMQ.xaml.cs">
+      <DependentUpon>MSMQ.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Security\MSMQIntegration.xaml.cs">
+      <DependentUpon>MSMQIntegration.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Security\NamedPipe.xaml.cs">
+      <DependentUpon>NamedPipe.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Security\PeerTCP.xaml.cs">
+      <DependentUpon>PeerTCP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Security\SelectSecurity.xaml.cs">
+      <DependentUpon>SelectSecurity.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Security\TCP.xaml.cs">
+      <DependentUpon>TCP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Security\WebHTTP.xaml.cs">
+      <DependentUpon>WebHTTP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Security\WSDualHTTP.xaml.cs">
+      <DependentUpon>WSDualHTTP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Security\WSFederationHTTP.xaml.cs">
+      <DependentUpon>WSFederationHTTP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Security\WSHTTP.xaml.cs">
+      <DependentUpon>WSHTTP.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interface\Service\Converters.cs" />
     <None Include="Interface\Service\OperationParameter.xaml.cs">
@@ -288,6 +359,58 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </None>
+    <Page Include="Interface\Bindings\BasicHTTP.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Bindings\MSMQ.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Bindings\MSMQIntegration.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Bindings\NamedPipe.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Bindings\PeerTCP.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Bindings\SelectBinding.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Bindings\TCP.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Bindings\WebHTTP.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Bindings\WS2007FederationHTTP.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Bindings\WS2007HTTP.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Bindings\WSDualHTTP.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Bindings\WSFederationHTTP.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Bindings\WSHTTP.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Interface\FindReplace.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -316,6 +439,30 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Interface\Host\DebugBehavior.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Host\Endpoint.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Host\Host.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Host\MetadataBehavior.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Host\NewBehavior.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Host\ThrottlingBehavior.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Interface\Main.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -336,83 +483,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Interface\Project\Bindings\BasicHTTP.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Project\Bindings\MSMQ.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Project\Bindings\MSMQIntegration.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Project\Bindings\NamedPipe.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Project\Bindings\PeerTCP.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Project\Bindings\SelectBinding.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Project\Bindings\TCP.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Project\Bindings\WebHTTP.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Project\Bindings\WS2007FederationHTTP.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Project\Bindings\WS2007HTTP.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Project\Bindings\WSDualHTTP.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Project\Bindings\WSFederationHTTP.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Project\Bindings\WSHTTP.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Interface\Project\AddDependency.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Project\Host\Endpoint.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Project\Host\ThrottlingBehavior.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Project\Host\MetadataBehavior.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Project\Host\Host.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Project\Host\NewBehavior.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Project\Host\DebugBehavior.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -424,54 +495,54 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Interface\Project\Security\BasicHTTP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Project\Security\MSMQ.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Project\Security\MSMQIntegration.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Project\Security\NamedPipe.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Project\Security\PeerTCP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Project\Security\SelectSecurity.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Project\Security\TCP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Project\Security\WebHTTP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Project\Security\WSDualHTTP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Project\Security\WSFederationHTTP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Project\Security\WSHTTP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <None Include="Interface\Service\OperationParameter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </None>
+    <Page Include="Interface\Security\BasicHTTP.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Security\MSMQ.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Security\MSMQIntegration.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Security\NamedPipe.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Security\PeerTCP.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Security\SelectSecurity.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Security\TCP.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Security\WebHTTP.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Security\WSDualHTTP.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Security\WSFederationHTTP.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Security\WSHTTP.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Interface\Service\Property.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -508,79 +579,8 @@
     <Compile Include="Interface\Project\AddReference.xaml.cs">
       <DependentUpon>AddReference.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Interface\Project\Bindings\BasicHTTP.xaml.cs">
-      <DependentUpon>BasicHTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Bindings\Converters.cs" />
-    <Compile Include="Interface\Project\Bindings\MSMQ.xaml.cs">
-      <DependentUpon>MSMQ.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Bindings\MSMQIntegration.xaml.cs">
-      <DependentUpon>MSMQIntegration.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Bindings\NamedPipe.xaml.cs">
-      <DependentUpon>NamedPipe.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Bindings\PeerTCP.xaml.cs">
-      <DependentUpon>PeerTCP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Bindings\TCP.xaml.cs">
-      <DependentUpon>TCP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Bindings\WebHTTP.xaml.cs">
-      <DependentUpon>WebHTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Bindings\WS2007FederationHTTP.xaml.cs">
-      <DependentUpon>WS2007FederationHTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Bindings\WS2007HTTP.xaml.cs">
-      <DependentUpon>WS2007HTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Bindings\WSDualHTTP.xaml.cs">
-      <DependentUpon>WSDualHTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Bindings\WSFederationHTTP.xaml.cs">
-      <DependentUpon>WSFederationHTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Bindings\WSHTTP.xaml.cs">
-      <DependentUpon>WSHTTP.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Interface\Project\Project.xaml.cs">
       <DependentUpon>Project.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Security\BasicHTTP.xaml.cs">
-      <DependentUpon>BasicHTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Security\Converters.cs" />
-    <Compile Include="Interface\Project\Security\MSMQ.xaml.cs">
-      <DependentUpon>MSMQ.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Security\MSMQIntegration.xaml.cs">
-      <DependentUpon>MSMQIntegration.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Security\NamedPipe.xaml.cs">
-      <DependentUpon>NamedPipe.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Security\PeerTCP.xaml.cs">
-      <DependentUpon>PeerTCP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Security\SelectSecurity.xaml.cs">
-      <DependentUpon>SelectSecurity.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Security\TCP.xaml.cs">
-      <DependentUpon>TCP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Security\WebHTTP.xaml.cs">
-      <DependentUpon>WebHTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Security\WSDualHTTP.xaml.cs">
-      <DependentUpon>WSDualHTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Security\WSFederationHTTP.xaml.cs">
-      <DependentUpon>WSFederationHTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Security\WSHTTP.xaml.cs">
-      <DependentUpon>WSHTTP.xaml</DependentUpon>
     </Compile>
     <Page Include="Themes\Backstage.xaml">
       <SubType>Designer</SubType>

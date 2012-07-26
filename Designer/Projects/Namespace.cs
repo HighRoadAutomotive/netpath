@@ -15,7 +15,7 @@ namespace WCFArchitect.Projects
 		public Guid ID { get { return (Guid)GetValue(IDProperty); } set { SetValue(IDProperty, value); } }
 		public static readonly DependencyProperty IDProperty = DependencyProperty.Register("ID", typeof(Guid), typeof(Namespace));
 
-		public string Name { get { return (string)GetValue(NameProperty); } set { if (Globals.IsLoading == false) Globals.ReplaceDataType(Name, Parent == null ? Owner.Namespace.Name : Parent.FullName, Helpers.RegExs.ReplaceSpaces.Replace(value == null ? "" : value, @""), Parent == null ? Owner.Namespace.Name : Parent.FullName); SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value == null ? "" : value, "")); } }
+		public string Name { get { return (string)GetValue(NameProperty); } set { if (Globals.IsLoading == false) Globals.ReplaceDataType(Name, Parent == null ? FullName : Parent.FullName, Helpers.RegExs.ReplaceSpaces.Replace(value == null ? "" : value, @""), Parent == null ? FullName : Parent.FullName); SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value == null ? "" : value, "")); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(Namespace));
 
 		public string FullName { get { return GetNamespaceString(); } set { SetValue(FullNameProperty, value); } }
@@ -41,6 +41,15 @@ namespace WCFArchitect.Projects
 
 		public ObservableCollection<Service> Services { get { return (ObservableCollection<Service>)GetValue(ServicesProperty); } set { SetValue(ServicesProperty, value); } }
 		public static readonly DependencyProperty ServicesProperty = DependencyProperty.Register("Services", typeof(ObservableCollection<Service>), typeof(Namespace));
+
+		public ObservableCollection<ServiceBinding> Bindings { get { return (ObservableCollection<ServiceBinding>)GetValue(BindingsProperty); } set { SetValue(BindingsProperty, value); } }
+		public static readonly DependencyProperty BindingsProperty = DependencyProperty.Register("Bindings", typeof(ObservableCollection<ServiceBinding>), typeof(Namespace));
+
+		public ObservableCollection<BindingSecurity> Security { get { return (ObservableCollection<BindingSecurity>)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
+		public static readonly DependencyProperty SecurityProperty = DependencyProperty.Register("Security", typeof(ObservableCollection<BindingSecurity>), typeof(Namespace));
+
+		public ObservableCollection<Host> Hosts { get { return (ObservableCollection<Host>)GetValue(HostsProperty); } set { SetValue(HostsProperty, value); } }
+		public static readonly DependencyProperty HostsProperty = DependencyProperty.Register("Hosts", typeof(ObservableCollection<Host>), typeof(Namespace));
 
 		//Internal Use - Searching / Filtering
 		public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
@@ -122,11 +131,41 @@ namespace WCFArchitect.Projects
 					if (T.Name != "" && T.Name.IndexOf(Value, StringComparison.InvariantCultureIgnoreCase) < 0) T.IsSearchMatch = false;
 					T.Search(Value);
 				}
+				foreach (Projects.ServiceBinding T in Bindings)
+				{
+					T.IsSearching = true;
+					T.IsSearchMatch = T.Name.Contains(Value);
+				}
+				foreach (Projects.BindingSecurity T in Security)
+				{
+					T.IsSearching = true;
+					T.IsSearchMatch = T.Name.Contains(Value);
+				}
+				foreach (Projects.Host T in Hosts)
+				{
+					T.IsSearching = true;
+					T.IsSearchMatch = T.Name.Contains(Value);
+				}
 				foreach (Namespace T in Children)
 					T.Search(Value);
 			}
 			else
 			{
+				foreach (Projects.ServiceBinding T in Bindings)
+				{
+					T.IsSearching = false;
+					T.IsSearchMatch = false;
+				}
+				foreach (Projects.BindingSecurity T in Security)
+				{
+					T.IsSearching = false;
+					T.IsSearchMatch = false;
+				}
+				foreach (Projects.Host T in Hosts)
+				{
+					T.IsSearching = false;
+					T.IsSearchMatch = false;
+				}
 				foreach (Service T in Services)
 				{
 					T.IsSearching = false;
@@ -301,18 +340,15 @@ namespace WCFArchitect.Projects
 			}
 		}
 
-		public void ChangeOwners(Projects.Project NewOwner)
+		public void ChangeOwners(Projects.Namespace NewOwner)
 		{
 			foreach (Projects.Service S in Services)
 			{
-				foreach (Projects.Host H in Owner.Hosts)
+				foreach (Projects.Host H in Hosts)
 				{
 					if (H.Service == S)
 					{
-						Owner.Hosts.Remove(H);
-						NewOwner.Hosts.Add(H);
 						foreach (Projects.HostEndpoint HE in H.Endpoints) HE.Binding = HE.Binding.Copy(H.CodeName, NewOwner);
-						break;
 					}
 				}
 			}
@@ -328,7 +364,7 @@ namespace WCFArchitect.Projects
 				string ns = "";
 
 				Namespace tp = Parent;
-				if (tp == null) tp = Owner.Namespace;
+				if (tp == null) tp = Owner.Root;
 
 				string tns = "";
 				while (tp != null)
@@ -367,18 +403,10 @@ namespace WCFArchitect.Projects
 		{
 			bool HN = false;
 
-			//A hack to support the fact that we couldn't change the namespace layout and root is not actually the root of anything. This MUST be changed in the V2 file structure reorg. The Updater must handle this.
-			if (IsProjectRoot == false)
-			{
-				foreach (Namespace N in Children)
-					if (N.HasServices() == true) HN = true;
+			foreach (Namespace N in Children)
+				if (N.HasServices() == true) HN = true;
 
-				if (Services.Count > 0) HN = true;
-			}
-			else // This is the hack.
-			{
-				if (Owner.Services.Count > 0) HN = true;
-			}
+			if (Services.Count > 0) HN = true;
 			return HN;
 		}
 
@@ -391,6 +419,25 @@ namespace WCFArchitect.Projects
 		{
 			if (IsOpen == true)
 				Globals.MainScreen.OpenProjectItem(this);
+
+			if (IsOpen == true)
+				Globals.MainScreen.OpenProjectItem(this);
+
+			foreach (ServiceBinding SB in Bindings)
+				SB.Parent = this;
+
+			foreach (BindingSecurity BS in Security)
+				BS.Parent = this;
+
+			foreach (Host H in Hosts)
+			{
+				H.Parent = Owner;
+				H.Credentials.Owner = H;
+				foreach (HostBehavior HB in H.Behaviors)
+					HB.Parent = H;
+				foreach (HostEndpoint HE in H.Endpoints)
+					HE.Parent = H;
+			}
 
 			foreach (Enum E in Enums)
 			{
@@ -486,10 +533,19 @@ namespace WCFArchitect.Projects
 			foreach (Namespace TN in Children)
 				if (TN.VerifyCode(Compiler) == false) NoErrors = false;
 
+			foreach (ServiceBinding SB in Bindings)
+				if (SB.VerifyCode(Compiler) == false) NoErrors = false;
+
+			foreach (BindingSecurity BS in Security)
+				if (BS.VerifyCode(Compiler) == false) NoErrors = false;
+
+			foreach (Host HE in Hosts)
+				if (HE.VerifyCode(Compiler) == false) NoErrors = false;
+
 			return NoErrors;
 		}
 
-		public string GenerateServerCode30(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateServerCode30(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
 
@@ -503,7 +559,7 @@ namespace WCFArchitect.Projects
 				Code.AppendLine("\t**************************************************************************/");
 				Code.AppendLine();
 				foreach (Enum EE in Enums)
-					Code.AppendLine(EE.GenerateServerCode30(GenerateAssemblyCode, ProjectName));
+					Code.AppendLine(EE.GenerateServerCode30(ProjectName));
 				Code.AppendLine();
 			}
 
@@ -514,7 +570,7 @@ namespace WCFArchitect.Projects
 				Code.AppendLine("\t**************************************************************************/");
 				Code.AppendLine();
 				foreach (Data DE in Data)
-					Code.AppendLine(DE.GenerateServerCode30(GenerateAssemblyCode, ProjectName));
+					Code.AppendLine(DE.GenerateServerCode30(ProjectName));
 				Code.AppendLine();
 			}
 
@@ -525,19 +581,65 @@ namespace WCFArchitect.Projects
 				Code.AppendLine("\t**************************************************************************/");
 				Code.AppendLine();
 				foreach (Service SE in Services)
-					Code.AppendLine(SE.GenerateServerCode30(GenerateAssemblyCode, ProjectName));
+					Code.AppendLine(SE.GenerateServerCode30(ProjectName));
 				Code.AppendLine();
+			}
+
+			if (Bindings.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tService Bindings");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}{1}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				foreach (ServiceBinding SB in Bindings)
+					Code.AppendLine(SB.GenerateServerCode30(ProjectName));
+				Code.AppendLine("}");
+				Code.AppendLine();
+				Code.AppendLine();
+			}
+
+			if (Security.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tBinding Security");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}.{1}{2}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				Code.AppendFormat("\t{0} partial class Security{2}", Owner.ServerPublicClasses == true ? "public" : "internal", Environment.NewLine);
+				Code.AppendLine("\t{");
+				foreach (BindingSecurity BS in Security)
+					Code.AppendLine(BS.GenerateServerCode30());
+				Code.AppendLine("\t}");
+				Code.AppendLine("}");
+				Code.AppendLine();
+				Code.AppendLine();
+			}
+
+			if (Hosts.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tService Hosts");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}.{1}{2}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				foreach (Host HE in Hosts)
+					Code.AppendLine(HE.GenerateServerCode30(ProjectName));
+				Code.AppendLine("}");
 			}
 
 			Code.AppendLine("}");
 
 			foreach (Namespace TN in Children)
-				Code.AppendLine(TN.GenerateServerCode30(GenerateAssemblyCode, ProjectName));
+				Code.AppendLine(TN.GenerateServerCode30(ProjectName));
 
 			return Code.ToString();
 		}
 
-		public string GenerateServerCode35(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateServerCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
 
@@ -551,7 +653,7 @@ namespace WCFArchitect.Projects
 				Code.AppendLine("\t**************************************************************************/");
 				Code.AppendLine();
 				foreach (Enum EE in Enums)
-					Code.AppendLine(EE.GenerateServerCode35(GenerateAssemblyCode, ProjectName));
+					Code.AppendLine(EE.GenerateServerCode35(ProjectName));
 				Code.AppendLine();
 			}
 
@@ -562,7 +664,7 @@ namespace WCFArchitect.Projects
 				Code.AppendLine("\t**************************************************************************/");
 				Code.AppendLine();
 				foreach (Data DE in Data)
-					Code.AppendLine(DE.GenerateServerCode35(GenerateAssemblyCode, ProjectName));
+					Code.AppendLine(DE.GenerateServerCode35(ProjectName));
 				Code.AppendLine();
 			}
 
@@ -573,19 +675,65 @@ namespace WCFArchitect.Projects
 				Code.AppendLine("\t**************************************************************************/");
 				Code.AppendLine();
 				foreach (Service SE in Services)
-					Code.AppendLine(SE.GenerateServerCode35(GenerateAssemblyCode, ProjectName));
+					Code.AppendLine(SE.GenerateServerCode35(ProjectName));
 				Code.AppendLine();
+			}
+
+			if (Bindings.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tService Bindings");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}{1}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				foreach (ServiceBinding SB in Bindings)
+					Code.AppendLine(SB.GenerateServerCode35(ProjectName));
+				Code.AppendLine("}");
+				Code.AppendLine();
+				Code.AppendLine();
+			}
+
+			if (Security.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tBinding Security");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}.{1}{2}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				Code.AppendFormat("\t{0} partial class Security{2}", Owner.ServerPublicClasses == true ? "public" : "internal", Environment.NewLine);
+				Code.AppendLine("\t{");
+				foreach (BindingSecurity BS in Security)
+					Code.AppendLine(BS.GenerateServerCode35());
+				Code.AppendLine("\t}");
+				Code.AppendLine("}");
+				Code.AppendLine();
+				Code.AppendLine();
+			}
+
+			if (Hosts.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tService Hosts");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}.{1}{2}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				foreach (Host HE in Hosts)
+					Code.AppendLine(HE.GenerateServerCode35(ProjectName));
+				Code.AppendLine("}");
 			}
 
 			Code.AppendLine("}");
 
 			foreach (Namespace TN in Children)
-				Code.AppendLine(TN.GenerateServerCode35(GenerateAssemblyCode, ProjectName));
+				Code.AppendLine(TN.GenerateServerCode35(ProjectName));
 
 			return Code.ToString();
 		}
 
-		public string GenerateServerCode40(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateServerCode35Client(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
 
@@ -599,7 +747,7 @@ namespace WCFArchitect.Projects
 				Code.AppendLine("\t**************************************************************************/");
 				Code.AppendLine();
 				foreach (Enum EE in Enums)
-					Code.AppendLine(EE.GenerateServerCode40(GenerateAssemblyCode, ProjectName));
+					Code.AppendLine(EE.GenerateServerCode35(ProjectName));
 				Code.AppendLine();
 			}
 
@@ -610,7 +758,7 @@ namespace WCFArchitect.Projects
 				Code.AppendLine("\t**************************************************************************/");
 				Code.AppendLine();
 				foreach (Data DE in Data)
-					Code.AppendLine(DE.GenerateServerCode40(GenerateAssemblyCode, ProjectName));
+					Code.AppendLine(DE.GenerateServerCode35(ProjectName));
 				Code.AppendLine();
 			}
 
@@ -621,19 +769,253 @@ namespace WCFArchitect.Projects
 				Code.AppendLine("\t**************************************************************************/");
 				Code.AppendLine();
 				foreach (Service SE in Services)
-					Code.AppendLine(SE.GenerateServerCode40(GenerateAssemblyCode, ProjectName));
+					Code.AppendLine(SE.GenerateServerCode35(ProjectName));
 				Code.AppendLine();
+			}
+
+			if (Bindings.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tService Bindings");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}{1}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				foreach (ServiceBinding SB in Bindings)
+					Code.AppendLine(SB.GenerateServerCode35Client(ProjectName));
+				Code.AppendLine("}");
+				Code.AppendLine();
+				Code.AppendLine();
+			}
+
+			if (Security.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tBinding Security");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}.{1}{2}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				Code.AppendFormat("\t{0} partial class Security{2}", Owner.ServerPublicClasses == true ? "public" : "internal", Environment.NewLine);
+				Code.AppendLine("\t{");
+				foreach (BindingSecurity BS in Security)
+					Code.AppendLine(BS.GenerateServerCode35Client());
+				Code.AppendLine("\t}");
+				Code.AppendLine("}");
+				Code.AppendLine();
+				Code.AppendLine();
+			}
+
+			if (Hosts.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tService Hosts");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}.{1}{2}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				foreach (Host HE in Hosts)
+					Code.AppendLine(HE.GenerateServerCode35Client(ProjectName));
+				Code.AppendLine("}");
 			}
 
 			Code.AppendLine("}");
 
 			foreach (Namespace TN in Children)
-				Code.AppendLine(TN.GenerateServerCode40(GenerateAssemblyCode, ProjectName));
+				Code.AppendLine(TN.GenerateServerCode35Client(ProjectName));
 
 			return Code.ToString();
 		}
 
-		public string GenerateClientCode30(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateServerCode40(string ProjectName)
+		{
+			StringBuilder Code = new StringBuilder();
+
+			Code.AppendFormat("namespace {0}{1}", FullName, Environment.NewLine);
+			Code.AppendLine("{");
+
+			if (Enums.Count > 0)
+			{
+				Code.AppendLine("\t/**************************************************************************");
+				Code.AppendLine("\t*\tEnumerations");
+				Code.AppendLine("\t**************************************************************************/");
+				Code.AppendLine();
+				foreach (Enum EE in Enums)
+					Code.AppendLine(EE.GenerateServerCode40(ProjectName));
+				Code.AppendLine();
+			}
+
+			if (Data.Count > 0)
+			{
+				Code.AppendLine("\t/**************************************************************************");
+				Code.AppendLine("\t*\tData Contracts");
+				Code.AppendLine("\t**************************************************************************/");
+				Code.AppendLine();
+				foreach (Data DE in Data)
+					Code.AppendLine(DE.GenerateServerCode40(ProjectName));
+				Code.AppendLine();
+			}
+
+			if (Services.Count > 0)
+			{
+				Code.AppendLine("\t/**************************************************************************");
+				Code.AppendLine("\t*\tService Contracts");
+				Code.AppendLine("\t**************************************************************************/");
+				Code.AppendLine();
+				foreach (Service SE in Services)
+					Code.AppendLine(SE.GenerateServerCode40(ProjectName));
+				Code.AppendLine();
+			}
+
+			if (Bindings.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tService Bindings");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}{1}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				foreach (ServiceBinding SB in Bindings)
+					Code.AppendLine(SB.GenerateServerCode40(ProjectName));
+				Code.AppendLine("}");
+				Code.AppendLine();
+				Code.AppendLine();
+			}
+
+			if (Security.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tBinding Security");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}.{1}{2}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				Code.AppendFormat("\t{0} partial class Security{2}", Owner.ServerPublicClasses == true ? "public" : "internal", Environment.NewLine);
+				Code.AppendLine("\t{");
+				foreach (BindingSecurity BS in Security)
+					Code.AppendLine(BS.GenerateServerCode40());
+				Code.AppendLine("\t}");
+				Code.AppendLine("}");
+				Code.AppendLine();
+				Code.AppendLine();
+			}
+
+			if (Hosts.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tService Hosts");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}.{1}{2}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				foreach (Host HE in Hosts)
+					Code.AppendLine(HE.GenerateServerCode40(ProjectName));
+				Code.AppendLine("}");
+			}
+
+			Code.AppendLine("}");
+
+			foreach (Namespace TN in Children)
+				Code.AppendLine(TN.GenerateServerCode40(ProjectName));
+
+			return Code.ToString();
+		}
+
+		public string GenerateServerCode40Client(string ProjectName)
+		{
+			StringBuilder Code = new StringBuilder();
+
+			Code.AppendFormat("namespace {0}{1}", FullName, Environment.NewLine);
+			Code.AppendLine("{");
+
+			if (Enums.Count > 0)
+			{
+				Code.AppendLine("\t/**************************************************************************");
+				Code.AppendLine("\t*\tEnumerations");
+				Code.AppendLine("\t**************************************************************************/");
+				Code.AppendLine();
+				foreach (Enum EE in Enums)
+					Code.AppendLine(EE.GenerateServerCode40(ProjectName));
+				Code.AppendLine();
+			}
+
+			if (Data.Count > 0)
+			{
+				Code.AppendLine("\t/**************************************************************************");
+				Code.AppendLine("\t*\tData Contracts");
+				Code.AppendLine("\t**************************************************************************/");
+				Code.AppendLine();
+				foreach (Data DE in Data)
+					Code.AppendLine(DE.GenerateServerCode40(ProjectName));
+				Code.AppendLine();
+			}
+
+			if (Services.Count > 0)
+			{
+				Code.AppendLine("\t/**************************************************************************");
+				Code.AppendLine("\t*\tService Contracts");
+				Code.AppendLine("\t**************************************************************************/");
+				Code.AppendLine();
+				foreach (Service SE in Services)
+					Code.AppendLine(SE.GenerateServerCode40(ProjectName));
+				Code.AppendLine();
+			}
+
+			if (Bindings.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tService Bindings");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}{1}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				foreach (ServiceBinding SB in Bindings)
+					Code.AppendLine(SB.GenerateServerCode40Client(ProjectName));
+				Code.AppendLine("}");
+				Code.AppendLine();
+				Code.AppendLine();
+			}
+
+			if (Security.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tBinding Security");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}.{1}{2}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				Code.AppendFormat("\t{0} partial class Security{2}", Owner.ServerPublicClasses == true ? "public" : "internal", Environment.NewLine);
+				Code.AppendLine("\t{");
+				foreach (BindingSecurity BS in Security)
+					Code.AppendLine(BS.GenerateServerCode40Client());
+				Code.AppendLine("\t}");
+				Code.AppendLine("}");
+				Code.AppendLine();
+				Code.AppendLine();
+			}
+
+			if (Hosts.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tService Hosts");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}.{1}{2}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				foreach (Host HE in Hosts)
+					Code.AppendLine(HE.GenerateServerCode40Client(ProjectName));
+				Code.AppendLine("}");
+			}
+
+			Code.AppendLine("}");
+
+			foreach (Namespace TN in Children)
+				Code.AppendLine(TN.GenerateServerCode40Client(ProjectName));
+
+			return Code.ToString();
+		}
+
+		public string GenerateClientCode30(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
 
@@ -647,7 +1029,7 @@ namespace WCFArchitect.Projects
 				Code.AppendLine("\t**************************************************************************/");
 				Code.AppendLine();
 				foreach (Data DE in Data)
-					Code.AppendLine(DE.GenerateClientCode30(GenerateAssemblyCode, ProjectName));
+					Code.AppendLine(DE.GenerateClientCode30(ProjectName));
 				Code.AppendLine();
 			}
 
@@ -658,19 +1040,52 @@ namespace WCFArchitect.Projects
 				Code.AppendLine("\t**************************************************************************/");
 				Code.AppendLine();
 				foreach (Service SE in Services)
-					Code.AppendLine(SE.GenerateClientCode30(GenerateAssemblyCode, ProjectName));
+					Code.AppendLine(SE.GenerateClientCode30(ProjectName));
+				Code.AppendLine();
+			}
+
+			if (Bindings.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tService Bindings");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}{1}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				foreach (ServiceBinding SB in Bindings)
+					Code.AppendLine(SB.GenerateClientCode30(ProjectName));
+				Code.AppendLine("}");
+				Code.AppendLine();
+				Code.AppendLine();
+			}
+
+			if (Security.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tBinding Security");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}.{1}{2}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				Code.AppendFormat("\t{0} partial class Security{2}", Owner.ServerPublicClasses == true ? "public" : "internal", Environment.NewLine);
+				Code.AppendLine("\t{");
+				foreach (BindingSecurity BS in Security)
+					Code.AppendLine(BS.GenerateClientCode30());
+				Code.AppendLine("\t}");
+				Code.AppendLine("}");
+				Code.AppendLine();
 				Code.AppendLine();
 			}
 
 			Code.AppendLine("}");
 
 			foreach (Namespace TN in Children)
-				Code.AppendLine(TN.GenerateClientCode30(GenerateAssemblyCode, ProjectName));
+				Code.AppendLine(TN.GenerateClientCode30(ProjectName));
 
 			return Code.ToString();
 		}
 
-		public string GenerateClientCode35(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateClientCode35(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
 
@@ -684,7 +1099,7 @@ namespace WCFArchitect.Projects
 				Code.AppendLine("\t**************************************************************************/");
 				Code.AppendLine();
 				foreach (Data DE in Data)
-					Code.AppendLine(DE.GenerateClientCode35(GenerateAssemblyCode, ProjectName));
+					Code.AppendLine(DE.GenerateClientCode35(ProjectName));
 				Code.AppendLine();
 			}
 
@@ -695,19 +1110,52 @@ namespace WCFArchitect.Projects
 				Code.AppendLine("\t**************************************************************************/");
 				Code.AppendLine();
 				foreach (Service SE in Services)
-					Code.AppendLine(SE.GenerateClientCode35(GenerateAssemblyCode, ProjectName));
+					Code.AppendLine(SE.GenerateClientCode35(ProjectName));
+				Code.AppendLine();
+			}
+
+			if (Bindings.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tService Bindings");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}{1}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				foreach (ServiceBinding SB in Bindings)
+					Code.AppendLine(SB.GenerateClientCode35(ProjectName));
+				Code.AppendLine("}");
+				Code.AppendLine();
+				Code.AppendLine();
+			}
+
+			if (Security.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tBinding Security");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}.{1}{2}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				Code.AppendFormat("\t{0} partial class Security{2}", Owner.ServerPublicClasses == true ? "public" : "internal", Environment.NewLine);
+				Code.AppendLine("\t{");
+				foreach (BindingSecurity BS in Security)
+					Code.AppendLine(BS.GenerateClientCode35());
+				Code.AppendLine("\t}");
+				Code.AppendLine("}");
+				Code.AppendLine();
 				Code.AppendLine();
 			}
 
 			Code.AppendLine("}");
 
 			foreach (Namespace TN in Children)
-				Code.AppendLine(TN.GenerateClientCode35(GenerateAssemblyCode, ProjectName));
+				Code.AppendLine(TN.GenerateClientCode35(ProjectName));
 
 			return Code.ToString();
 		}
 
-		public string GenerateClientCode40(bool GenerateAssemblyCode, string ProjectName)
+		public string GenerateClientCode35Client(string ProjectName)
 		{
 			StringBuilder Code = new StringBuilder();
 
@@ -721,7 +1169,7 @@ namespace WCFArchitect.Projects
 				Code.AppendLine("\t**************************************************************************/");
 				Code.AppendLine();
 				foreach (Data DE in Data)
-					Code.AppendLine(DE.GenerateClientCode40(GenerateAssemblyCode, ProjectName));
+					Code.AppendLine(DE.GenerateClientCode35(ProjectName));
 				Code.AppendLine();
 			}
 
@@ -732,14 +1180,187 @@ namespace WCFArchitect.Projects
 				Code.AppendLine("\t**************************************************************************/");
 				Code.AppendLine();
 				foreach (Service SE in Services)
-					Code.AppendLine(SE.GenerateClientCode40(GenerateAssemblyCode, ProjectName));
+					Code.AppendLine(SE.GenerateClientCode35(ProjectName));
+				Code.AppendLine();
+			}
+
+			if (Bindings.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tService Bindings");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}{1}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				foreach (ServiceBinding SB in Bindings)
+					Code.AppendLine(SB.GenerateClientCode35Client(ProjectName));
+				Code.AppendLine("}");
+				Code.AppendLine();
+				Code.AppendLine();
+			}
+
+			if (Security.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tBinding Security");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}.{1}{2}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				Code.AppendFormat("\t{0} partial class Security{2}", Owner.ServerPublicClasses == true ? "public" : "internal", Environment.NewLine);
+				Code.AppendLine("\t{");
+				foreach (BindingSecurity BS in Security)
+					Code.AppendLine(BS.GenerateClientCode35Client());
+				Code.AppendLine("\t}");
+				Code.AppendLine("}");
+				Code.AppendLine();
 				Code.AppendLine();
 			}
 
 			Code.AppendLine("}");
 
 			foreach (Namespace TN in Children)
-				Code.AppendLine(TN.GenerateClientCode40(GenerateAssemblyCode, ProjectName));
+				Code.AppendLine(TN.GenerateClientCode35Client(ProjectName));
+
+			return Code.ToString();
+		}
+
+		public string GenerateClientCode40(string ProjectName)
+		{
+			StringBuilder Code = new StringBuilder();
+
+			Code.AppendFormat("namespace {0}{1}", FullName, Environment.NewLine);
+			Code.AppendLine("{");
+
+			if (Data.Count > 0)
+			{
+				Code.AppendLine("\t/**************************************************************************");
+				Code.AppendLine("\t*\tData Contracts");
+				Code.AppendLine("\t**************************************************************************/");
+				Code.AppendLine();
+				foreach (Data DE in Data)
+					Code.AppendLine(DE.GenerateClientCode40(ProjectName));
+				Code.AppendLine();
+			}
+
+			if (Services.Count > 0)
+			{
+				Code.AppendLine("\t/**************************************************************************");
+				Code.AppendLine("\t*\tService Contracts");
+				Code.AppendLine("\t**************************************************************************/");
+				Code.AppendLine();
+				foreach (Service SE in Services)
+					Code.AppendLine(SE.GenerateClientCode40(ProjectName));
+				Code.AppendLine();
+			}
+
+			if (Bindings.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tService Bindings");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}{1}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				foreach (ServiceBinding SB in Bindings)
+					Code.AppendLine(SB.GenerateClientCode40(ProjectName));
+				Code.AppendLine("}");
+				Code.AppendLine();
+				Code.AppendLine();
+			}
+
+			if (Security.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tBinding Security");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}.{1}{2}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				Code.AppendFormat("\t{0} partial class Security{2}", Owner.ServerPublicClasses == true ? "public" : "internal", Environment.NewLine);
+				Code.AppendLine("\t{");
+				foreach (BindingSecurity BS in Security)
+					Code.AppendLine(BS.GenerateClientCode40());
+				Code.AppendLine("\t}");
+				Code.AppendLine("}");
+				Code.AppendLine();
+				Code.AppendLine();
+			}
+
+			Code.AppendLine("}");
+
+			foreach (Namespace TN in Children)
+				Code.AppendLine(TN.GenerateClientCode40(ProjectName));
+
+			return Code.ToString();
+		}
+
+		public string GenerateClientCode40Client(string ProjectName)
+		{
+			StringBuilder Code = new StringBuilder();
+
+			Code.AppendFormat("namespace {0}{1}", FullName, Environment.NewLine);
+			Code.AppendLine("{");
+
+			if (Data.Count > 0)
+			{
+				Code.AppendLine("\t/**************************************************************************");
+				Code.AppendLine("\t*\tData Contracts");
+				Code.AppendLine("\t**************************************************************************/");
+				Code.AppendLine();
+				foreach (Data DE in Data)
+					Code.AppendLine(DE.GenerateClientCode40(ProjectName));
+				Code.AppendLine();
+			}
+
+			if (Services.Count > 0)
+			{
+				Code.AppendLine("\t/**************************************************************************");
+				Code.AppendLine("\t*\tService Contracts");
+				Code.AppendLine("\t**************************************************************************/");
+				Code.AppendLine();
+				foreach (Service SE in Services)
+					Code.AppendLine(SE.GenerateClientCode40(ProjectName));
+				Code.AppendLine();
+			}
+
+			if (Bindings.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tService Bindings");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}{1}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				foreach (ServiceBinding SB in Bindings)
+					Code.AppendLine(SB.GenerateClientCode40Client(ProjectName));
+				Code.AppendLine("}");
+				Code.AppendLine();
+				Code.AppendLine();
+			}
+
+			if (Security.Count > 0)
+			{
+				Code.AppendLine("/**************************************************************************");
+				Code.AppendLine("*\tBinding Security");
+				Code.AppendLine("**************************************************************************/");
+				Code.AppendLine();
+				Code.AppendFormat("namespace {0}.{1}{2}", FullName, Environment.NewLine);
+				Code.AppendLine("{");
+				Code.AppendFormat("\t{0} partial class Security{2}", Owner.ServerPublicClasses == true ? "public" : "internal", Environment.NewLine);
+				Code.AppendLine("\t{");
+				foreach (BindingSecurity BS in Security)
+					Code.AppendLine(BS.GenerateClientCode40Client());
+				Code.AppendLine("\t}");
+				Code.AppendLine("}");
+				Code.AppendLine();
+				Code.AppendLine();
+			}
+
+			Code.AppendLine("}");
+
+			foreach (Namespace TN in Children)
+				Code.AppendLine(TN.GenerateClientCode40Client(ProjectName));
 
 			return Code.ToString();
 		}
