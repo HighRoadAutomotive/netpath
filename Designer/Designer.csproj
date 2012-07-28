@@ -175,9 +175,6 @@
     <None Include="Backstage\ReferencePath.xaml.cs">
       <DependentUpon>ReferencePath.xaml</DependentUpon>
     </None>
-    <Compile Include="Compiler\CompilerManager.cs" />
-    <Compile Include="Compiler\Compiler.cs" />
-    <Compile Include="Helpers\GACUtil.cs" />
     <Compile Include="Interface\Bindings\BasicHTTP.xaml.cs">
       <DependentUpon>BasicHTTP.xaml</DependentUpon>
     </Compile>
@@ -274,8 +271,8 @@
     <Compile Include="Interface\Project\AddDependency.xaml.cs">
       <DependentUpon>AddDependency.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Interface\Project\OutputPath.xaml.cs">
-      <DependentUpon>OutputPath.xaml</DependentUpon>
+    <Compile Include="Interface\Project\OutputPathNET.xaml.cs">
+      <DependentUpon>OutputPathNET.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interface\Security\BasicHTTP.xaml.cs">
       <DependentUpon>BasicHTTP.xaml</DependentUpon>
@@ -327,11 +324,8 @@
     <Compile Include="Interface\Service\Service.xaml.cs">
       <DependentUpon>Service.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\RegExs.cs" />
     <Compile Include="Options\Licensing.cs" />
     <Compile Include="Options\UserProfile.cs" />
-    <Compile Include="Projects\FindReplace.cs" />
-    <Compile Include="Projects\Namespace.cs" />
     <Compile Include="Themes\C1DockStyles.cs" />
     <Compile Include="Themes\DragAdorner.cs" />
     <Compile Include="Themes\TreeViewHelpers.cs" />
@@ -487,7 +481,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Interface\Project\OutputPath.xaml">
+    <Page Include="Interface\Project\OutputPathNET.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -625,13 +619,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Options\License.cs" />
-    <Compile Include="Projects\Binding.cs" />
-    <Compile Include="Projects\Data.cs" />
-    <Compile Include="Projects\Enum.cs" />
-    <Compile Include="Projects\Host.cs" />
-    <Compile Include="Projects\Project.cs" />
-    <Compile Include="Projects\Security.cs" />
-    <Compile Include="Projects\Service.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -645,7 +632,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="Projects\Projects.kvtmodel" />
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -655,7 +641,6 @@
     <EmbeddedResource Include="Options\LicenseKey.kvtmodel" />
     <EmbeddedResource Include="Options\UserProfile.kvtmodel" />
     <None Include="app.manifest" />
-    <None Include="Projects\Projects.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -997,6 +982,12 @@
     <Resource Include="Icons\Odd\FullLogoStandard.png" />
     <Resource Include="Icons\Odd\FullLogoTrial.png" />
     <None Include="Icons\Odd\Source\FullLogoSource.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Projects\Projects.csproj">
+      <Project>{fe02550c-5269-4327-a129-fb9d41316005}</Project>
+      <Name>Projects</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

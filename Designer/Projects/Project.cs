@@ -169,6 +169,48 @@ namespace WCFArchitect.Projects
 		}
 	}
 
+	public enum ProjectOutputFramework
+	{
+		NET30,
+		NET35,
+		NET35Client,
+		NET40,
+		NET40Client,
+		NET45,
+	}
+
+	internal class DependencyProject : Project
+	{
+
+	}
+
+	public class ProjectOutputPath : DependencyObject
+	{
+		private Guid projectID;
+		public Guid ProjectID { get { return projectID; } }
+		private Guid id;
+		public Guid ID { get { return id; } }
+
+		public bool IsEnabled { get { return (bool)GetValue(IsEnabledProperty); } set { SetValue(IsEnabledProperty, value); } }
+		public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register("IsEnabled", typeof(bool), typeof(ProjectOutputPath), new UIPropertyMetadata(true));
+
+		public string Path { get { return (string)GetValue(PathProperty); } set { SetValue(PathProperty, value); } }
+		public static readonly DependencyProperty PathProperty = DependencyProperty.Register("Path", typeof(string), typeof(ProjectOutputPath));
+
+		public ProjectOutputFramework Framework { get { return (ProjectOutputFramework)GetValue(FrameworkProperty); } set { SetValue(FrameworkProperty, value); } }
+		public static readonly DependencyProperty FrameworkProperty = DependencyProperty.Register("Framework", typeof(ProjectOutputFramework), typeof(ProjectOutputPath));
+
+		public ProjectOutputPath() { }
+
+		public ProjectOutputPath(Guid ProjectID, string Path)
+		{
+			id = Guid.NewGuid();
+			projectID = ProjectID;
+			this.Path = Path;
+			this.Framework = ProjectOutputFramework.NET45;
+		}
+	}
+
 	internal class Project : OpenableDocument
 	{
 		private Guid id = Guid.Empty;
@@ -841,66 +883,6 @@ namespace WCFArchitect.Projects
 			if (ServiceCollectionType == ProjectCollectionType.BindingList) CodeArgs.Append(" /ct:System.ComponentModel.BindingList`1");
 			CodeArgs.Append(" /nologo");
 			return CodeArgs.ToString();
-		}
-	}
-
-	internal enum ProjectOutputFramework
-	{
-		NET30,
-		NET35,
-		NET35Client,
-		NET40,
-		NET40Client,
-		NET45
-	}
-
-	internal enum ProjectOutputPlatform
-	{
-		x86,
-		x64,
-		Itanium,
-		AnyCPU,
-	}
-
-	internal enum ProjectOutputConfiguration
-	{
-		Debug,
-		Release,
-	}
-
-	internal class ProjectOutputPath : DependencyObject
-	{
-		private Guid projectID;
-		public Guid ProjectID { get { return projectID; } }
-		private Guid id;
-		public Guid ID { get { return id; } }
-		private Guid userProfileID;
-		public Guid UserProfileID { get { return userProfileID; } }
-
-		public bool IsEnabled { get { return (bool)GetValue(IsEnabledProperty); } set { SetValue(IsEnabledProperty, value); } }
-		public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register("IsEnabled", typeof(bool), typeof(ProjectOutputPath), new UIPropertyMetadata(true));
-
-		public string Path { get { return (string)GetValue(PathProperty); } set { SetValue(PathProperty, value); } }
-		public static readonly DependencyProperty PathProperty = DependencyProperty.Register("Path", typeof(string), typeof(ProjectOutputPath));
-
-		public ProjectOutputFramework Framework { get { return (ProjectOutputFramework)GetValue(FrameworkProperty); } set { SetValue(FrameworkProperty, value); } }
-		public static readonly DependencyProperty FrameworkProperty = DependencyProperty.Register("Framework", typeof(ProjectOutputFramework), typeof(ProjectOutputPath));
-
-		public ProjectOutputPath() { }
-
-		public ProjectOutputPath(Guid ProjectID, string Path)
-		{
-			id = Guid.NewGuid();
-			projectID = ProjectID;
-			userProfileID = Globals.UserProfile.ID;
-			this.Path = Path;
-			this.Framework = ProjectOutputFramework.NET45;
-		}
-
-		//This provides upgrade path support from older project files. DO NOT REMOVE!
-		public void SetOwnerProject(Project Project)
-		{
-			projectID = Project.ID;
 		}
 	}
 

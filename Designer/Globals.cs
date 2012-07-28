@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
@@ -49,6 +50,18 @@ namespace WCFArchitect
 
 		public static T GetVisualParent<T>(object childObject) where T : Visual { DependencyObject child = childObject as DependencyObject; while ((child != null) && !(child is T)) { child = VisualTreeHelper.GetParent(child); } return child as T; }
 		public static T GetVisualChild<T>(Visual parent) where T : Visual { T child = default(T); int numVisuals = VisualTreeHelper.GetChildrenCount(parent); for (int i = 0; i < numVisuals; i++) { Visual v = (Visual)VisualTreeHelper.GetChild(parent, i); child = v as T; if (child == null) { child = GetVisualChild<T>(v); } if (child != null) { break; } } return child; }
+
+		public static string GetRelativePath(string BasePath, string FilePath)
+		{
+			if (!Path.IsPathRooted(FilePath)) FilePath = Path.GetFullPath(FilePath);
+			if (!Path.IsPathRooted(BasePath)) BasePath = Path.GetFullPath(BasePath);
+
+			if (!BasePath.EndsWith("\\")) BasePath += "\\";
+
+			Uri t = new Uri("file:///" + FilePath);
+			Uri b = new Uri("file:///" + BasePath);
+			return b.MakeRelativeUri(t).ToString();
+		}
 
 		public static void OpenProjectSpace(string Path, Action<bool> FinishedAction)
 		{
@@ -232,11 +245,6 @@ namespace WCFArchitect
 				Globals.MainScreen.SystemStatus.Text = "Ready";
 
 			}), System.Windows.Threading.DispatcherPriority.Background);
-		}
-
-		public static Projects.Developer GetCurrentDeveloper()
-		{
-			return Globals.ProjectSpace.OfType<Projects.Developer>().Where(a => a.UserName == Globals.UserProfile.User && a.ComputerName == Globals.UserProfile.ComputerName).First();
 		}
 
 		public static void BackupProjectSpace(object State)
