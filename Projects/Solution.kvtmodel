@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Model Version="4.01" Guid="67c404a4-5a9e-474c-b7e0-23ff341dbc76" IdGenerator="7" HasErrors="false" DefaultPlatformId="1001" LanguageId="0" MemberDisplayFormatId="1" PlatformIds="1001">
+  <ReferencePaths>
+    <ReferencePath Path="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5" />
+  </ReferencePaths>
+  <Assemblies>
+    <Assembly Id="1" Name="WCFArchitect.Projects.dll" Expanded="true" Selected="true" Path="bin\WCFArchitect.Projects.dll">
+      <Namespaces>
+        <Namespace Id="2" Name="WCFArchitect.Helpers" Expanded="false" Selected="false">
+          <Classes />
+          <Structures />
+        </Namespace>
+        <Namespace Id="3" Name="WCFArchitect.Projects" Expanded="true" Selected="false">
+          <Classes>
+            <Class Id="4" Name="Solution" Expanded="true" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.Solution, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields>
+                <Field Id="5" Name="id" Expanded="false" Selected="false" />
+              </Fields>
+              <Properties>
+                <Property Id="6" Name="Name" Expanded="false" Selected="false" />
+                <Property Id="7" Name="Projects" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+          </Classes>
+          <Structures />
+        </Namespace>
+      </Namespaces>
+      <PlatformAssemblyPaths>
+        <PlatformAssemblyPath PlatformId="1001" Path="bin\WCFArchitect.Projects.dll" />
+      </PlatformAssemblyPaths>
+    </Assembly>
+  </Assemblies>
+</Model>

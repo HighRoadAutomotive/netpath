@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WCFArchitect</RootNamespace>
     <AssemblyName>WCFArchitect</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -45,6 +45,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -54,6 +55,7 @@
     <DefineConstants>TRACE;DEVELOPER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Icons\DesignStudio.ico</ApplicationIcon>
@@ -76,6 +78,7 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release %28PROFESSIONAL%29|x86'">
     <OutputPath>..\Build\</OutputPath>
@@ -84,6 +87,7 @@
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release %28STANDARD%29|x86'">
     <OutputPath>..\Build\</OutputPath>
@@ -100,6 +104,7 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -234,9 +239,6 @@
     <None Include="Interface\Enum\FlagsEnumElement.xaml.cs">
       <DependentUpon>FlagsEnumElement.xaml</DependentUpon>
     </None>
-    <Compile Include="Interface\ErrorList.xaml.cs">
-      <DependentUpon>ErrorList.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Interface\Host\Converters.cs" />
     <Compile Include="Interface\Host\DebugBehavior.xaml.cs">
       <DependentUpon>DebugBehavior.xaml</DependentUpon>
@@ -429,10 +431,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </None>
-    <Page Include="Interface\ErrorList.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Interface\Host\DebugBehavior.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -470,10 +468,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Interface\Output.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Project\AddReference.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -570,9 +564,6 @@
       <DependentUpon>RecentProjectItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Globals.cs" />
-    <Compile Include="Interface\Project\AddReference.xaml.cs">
-      <DependentUpon>AddReference.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Interface\Project\Project.xaml.cs">
       <DependentUpon>Project.xaml</DependentUpon>
     </Compile>

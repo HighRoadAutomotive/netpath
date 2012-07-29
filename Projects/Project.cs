@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using MP.Karvonite;
 
 namespace WCFArchitect.Projects
 {
@@ -64,15 +65,10 @@ namespace WCFArchitect.Projects
 	public class OpenableDocument : DependencyObject
 	{
 		//Open document handling
-		public bool IsLoading { get; protected set; }
-		public bool IsDocumentOpening { get; protected set; }
-		public bool IsSaving { get; protected set; }
-		public bool IsClosing { get; protected set; }
-		bool ia = false;
-		public bool IsActive { get { return ia; }  set { if(IsClosing == false) ia = value; } }
+		public bool IsActive { get; set; }
 		public bool IsOpen { get; set; }
 
-		public bool IsDirty { get { return (bool)GetValue(IsDirtyProperty); } set { if (IsActive == true) if (IsSaving == false) if (IsLoading == false) if(IsDocumentOpening == false) SetValue(IsDirtyProperty, value); } }
+		public bool IsDirty { get { return (bool)GetValue(IsDirtyProperty); } set { if (IsActive == true) SetValue(IsDirtyProperty, value); } }
 		public static readonly DependencyProperty IsDirtyProperty = DependencyProperty.Register("IsDirty", typeof(bool), typeof(OpenableDocument), new UIPropertyMetadata(false));
 
 		public bool IsLocked { get { return (bool)GetValue(IsLockedProperty); } set { SetValue(IsLockedProperty, value); } }
@@ -86,9 +82,10 @@ namespace WCFArchitect.Projects
 		}
 	}
 
-	public abstract class Project : OpenableDocument
+	public abstract partial class Project : OpenableDocument
 	{
 		public Guid ID { get; private set; }
+		public string AbsolutePath { get; private set; }
 
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(Project));
@@ -148,6 +145,53 @@ namespace WCFArchitect.Projects
 			if (e.Property == Project.IsTreeExpandedProperty) return;
 
 			IsDirty = true;
+		}
+
+		public static Project Open(string BasePath, string ProjectPath)
+		{
+			string abspath = new Uri(new Uri(System.IO.Path.GetDirectoryName(BasePath)), ProjectPath).LocalPath;
+
+			//Check the solution to make sure it exists
+			if (!System.IO.File.Exists(abspath))
+				throw new System.IO.FileNotFoundException("Unable to locate the Project file '" + abspath + "'");
+
+			//Make sure the solution isn't read-only.
+			System.IO.FileInfo fi = new System.IO.FileInfo(abspath);
+			if (fi.IsReadOnly == true)
+				throw new System.IO.IOException("The Project '" + abspath + "' is currently read-only. Please disable read-only mode on this file.");
+
+			//Get the project info from the file.
+			ObjectSpace os = new ObjectSpace("Project.kvtmodel", "WCFArchitect.Projects");
+			os.Open(abspath, ObjectSpaceOpenMode.ReadOnly);
+			Project t = os.OfType<Project>().FirstOrDefault();
+			os.Close();
+
+			//Load any dependency projects
+			if (t != null)
+			{
+				t.AbsolutePath = abspath;
+				foreach (DependencyProject dp in t.DependencyProjects)
+					dp.Project = Project.Open(abspath, dp.Path);
+			}
+
+			return t;
+		}
+
+		public static void Save(Project Data, string Path)
+		{
+			//Make sure the solution isn't read-only.
+			if (!System.IO.File.Exists(Path))
+			{
+				System.IO.FileInfo fi = new System.IO.FileInfo(Path);
+				if (fi.IsReadOnly == true)
+					throw new System.IO.IOException("The Project '" + Path + "' is currently read-only. Please disable read-only mode on this file.");
+			}
+
+			ObjectSpace os = new ObjectSpace("Project.kvtmodel", "WCFArchitect.Projects");
+			os.CreateObjectLibrary(Path, ExistingFileAction.Overwrite);
+			os.Add(Data);
+			os.Save();
+			os.Close();
 		}
 
 		public void Search(string Value)

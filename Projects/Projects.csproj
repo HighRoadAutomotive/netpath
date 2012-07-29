@@ -74,9 +74,12 @@
     <Compile Include="Helpers\GACUtil.cs" />
     <Compile Include="Helpers\RegExs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Solution.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Project.kvtmodel" />
     <None Include="Projects.cd" />
+    <EmbeddedResource Include="Solution.kvtmodel" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

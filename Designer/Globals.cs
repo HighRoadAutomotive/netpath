@@ -30,13 +30,12 @@ namespace WCFArchitect
 
 		public static ObjectSpace ProjectSpace { get; set; }
 		public static Projects.Solution Solution { get; set; }
+		public static string SolutionPath { get; set; }
 		public static ObservableCollectionSortable<Projects.Project> Projects { get; set; }
 		public static Options.RecentSolution ActiveProjectInfo { get; set; }
 		public static ObservableCollectionSortable<Projects.OpenableDocument> OpenDocuments { get; set; }
 		public static ThumbnailToolBarButton BuildSolutionButton { get; set; }
 		public static ThumbnailToolBarButton BuildOutputButton { get; set; }
-
-		public static Compiler.CompilerManager CompilerManager { get; set; }
 
 		public static bool IsLoading { get; set; }
 		public static bool IsLoadSorting { get; set; }
@@ -68,24 +67,11 @@ namespace WCFArchitect
 			Application.Current.Dispatcher.BeginInvoke(new Action(() =>
 			{
 				IsLoading = true;
-				if (ProjectSpace.State == ObjectSpaceState.Open) FinishedAction(false);
 
-				//Load the project file
-				if (!System.IO.File.Exists(Path))
-				{
-					Prospective.Controls.MessageBox.Show("Unable to located the requested file, please try again.", "Unable to Locate Project File.", MessageBoxButton.OK);
-					FinishedAction(false);
-					return;
-				}
-				System.IO.FileInfo fi = new System.IO.FileInfo(Path);
-				if (fi.IsReadOnly == true)
-				{
-					Prospective.Controls.MessageBox.Show("The solution file '" + Path + "' is currently read-only. Please disable read-only mode on this file.", "Open Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-					FinishedAction(false);
-					return;
-				}
+				//Check for backups and open the solution.
 				if (System.IO.File.Exists(System.IO.Path.ChangeExtension(Path, ".bak")))
 				{
+					System.IO.FileInfo fi = new System.IO.FileInfo(Path);
 					System.IO.FileInfo bfi = new System.IO.FileInfo(System.IO.Path.ChangeExtension(Path, ".bak"));
 					if (fi.LastWriteTime < bfi.LastWriteTime)
 					{
@@ -104,106 +90,69 @@ namespace WCFArchitect
 						System.IO.File.Delete(System.IO.Path.ChangeExtension(Path, ".bak"));
 					}
 				}
-
-				Globals.ProjectSpace.EnableConcurrency = true;
-				Globals.ProjectSpace.Open(Path, ObjectSpaceOpenMode.ReadWrite);
-
-#if TRIAL
-				if (Globals.ProjectSpace.OfType<Projects.Project>().Count() > 3)
+				try
 				{
-					if (Globals.LicenseInfo.ExpirationURL != "" && Globals.LicenseInfo.ExpirationURL != null)
-					{
-						if (Prospective.Controls.MessageBox.Show("This trial version of WCF Architect is unable to open any solution that contains more than 3 projects." + Environment.NewLine + Environment.NewLine + "Would you like to purchase a copy of WCF Architect?", "Open Error", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
-							System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(Globals.LicenseInfo.ExpirationURL));
-					}
-					else
-						Prospective.Controls.MessageBox.Show("This trial version of WCF Architect is unable to open any solution that contains more than 3 projects." + Environment.NewLine + Environment.NewLine + "Please purchase a licensed copy of WCF Architect from http://architect.prospectivesoftware.com/pricing.htm to open this Solution.", "Open Error", MessageBoxButton.OK, MessageBoxImage.Error);
-					Globals.ProjectSpace.Close();
+					SolutionPath = Path;
+					Globals.Solution = WCFArchitect.Projects.Solution.Open(Path);
+				}
+				catch (Exception ex)
+				{
+					Prospective.Controls.MessageBox.Show(ex.Message, "Solution Load Error", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
 					FinishedAction(false);
 					return;
 				}
-#endif
-
-				Globals.Solution = Globals.ProjectSpace.OfType<Projects.Solution>().First<Projects.Solution>();
-#if TRIAL
-				if (Globals.Solution.TrialID == "" || Globals.Solution.TrialID == null) Globals.Solution.TrialID = Globals.LicenseKey.Authorization;
-				if (Globals.Solution.TrialID != Globals.LicenseKey.Authorization)
-				{
-					if (Globals.LicenseInfo.ExpirationURL != "" && Globals.LicenseInfo.ExpirationURL != null)
-					{
-						if (Prospective.Controls.MessageBox.Show("This solution was created using a different installation of the WCF Architect Trial and can only be opened by the installation that created it or by a licensed copy of WCF Architect." + Environment.NewLine + Environment.NewLine + "Would you like to purchase a copy of WCF Architect?", "Open Error", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
-							System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(Globals.LicenseInfo.ExpirationURL));
-					}
-					else
-						Prospective.Controls.MessageBox.Show("This solution was created using a different installation of the WCF Architect Trial and can only be opened by the installation that created it or by a licensed copy of WCF Architect." + Environment.NewLine + Environment.NewLine + "Please purchase a licensed copy of WCF Architect from http://architect.prospectivesoftware.com/pricing.htm to open this Solution.", "Open Error", MessageBoxButton.OK, MessageBoxImage.Error);
-					Globals.ProjectSpace.Close();
-					FinishedAction(false);
-					return;
-				}
-#else
-				Globals.Solution.TrialID = "";
-#endif
-				if (Globals.UserProfile.AutomaticBackupsEnabled == true)
-					BackupTimer = new System.Threading.Timer(new System.Threading.TimerCallback(Globals.BackupProjectSpace), null, (long)Globals.UserProfile.AutomaticBackupsInterval.TotalMilliseconds, (long)Globals.UserProfile.AutomaticBackupsInterval.TotalMilliseconds);
 				
-				Globals.Solution = Globals.ProjectSpace.OfType<Projects.Solution>().First<Projects.Solution>();
-				Globals.Projects = new ObservableCollectionSortable<Projects.Project>(Globals.ProjectSpace.OfType<Projects.Project>().OrderBy(x => x.Name));
+				//Load projects
+				Globals.Projects = new ObservableCollectionSortable<Projects.Project>();
+				foreach (string p in Globals.Solution.Projects)
+				{
+					if (System.IO.File.Exists(System.IO.Path.ChangeExtension(p, ".bak")))
+					{
+						System.IO.FileInfo fi = new System.IO.FileInfo(p);
+						System.IO.FileInfo bfi = new System.IO.FileInfo(System.IO.Path.ChangeExtension(p, ".bak"));
+						if (fi.LastWriteTime < bfi.LastWriteTime)
+						{
+							if (Prospective.Controls.MessageBox.Show("WCF Architect has detected that the solution '" + p + "' was not properly closed. A newer backup exists. Would you like to use this backup?", "Open Error", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.Yes)
+							{
+								System.IO.File.Delete(p);
+								System.IO.File.Move(System.IO.Path.ChangeExtension(p, ".bak"), p);
+							}
+							else
+							{
+								System.IO.File.Delete(System.IO.Path.ChangeExtension(p, ".bak"));
+							}
+						}
+						else
+						{
+							System.IO.File.Delete(System.IO.Path.ChangeExtension(p, ".bak"));
+						}
+					}
+
+					//Open the project.
+					try
+					{
+						Globals.Projects.Add(WCFArchitect.Projects.Project.Open(SolutionPath, p));
+					}
+					catch (Exception ex)
+					{
+						Prospective.Controls.MessageBox.Show(ex.Message, "Project Load Error", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+						FinishedAction(false);
+						return;
+					}
+				}
+				Globals.Projects.Sort(a => a.Name);
+
+				if (Globals.UserProfile.AutomaticBackupsEnabled == true)
+					BackupTimer = new System.Threading.Timer(new System.Threading.TimerCallback(Globals.BackupSolution), null, (long)Globals.UserProfile.AutomaticBackupsInterval.TotalMilliseconds, (long)Globals.UserProfile.AutomaticBackupsInterval.TotalMilliseconds);
+
 				Globals.MainScreen.SolutionNavigatorHeaderTitle.Text = "Solution '" + Globals.Solution.Name + "' (" + Globals.Projects.Count + " Projects)";
 				if (Globals.Projects.Count == 1) Globals.MainScreen.SolutionNavigatorHeaderTitle.Text = "Solution '" + Globals.Solution.Name + "' (1 Project)";
 				Globals.MainScreen.SolutionNavigatorView.ItemsSource = Globals.Projects;
 
-				//Check to see if this developer/computer is listed. Set last edited if it is, add developer if it isn't.
-				bool HasDeveloper = false;
-				foreach (Projects.Developer TD in Globals.ProjectSpace.OfType<Projects.Developer>())
-				{
-					TD.LastEditedBy = false;
-					if (TD.UserName == Globals.UserProfile.User && TD.ComputerName == Globals.UserProfile.ComputerName)
-					{
-						TD.LastEditedBy = true;
-						HasDeveloper = true;
-					}
-				}
-				if (HasDeveloper == false)
-					Globals.ProjectSpace.Add(new Projects.Developer() { ID = Guid.NewGuid(), ComputerName = Globals.UserProfile.ComputerName, UserName = Globals.UserProfile.User, LastEditedBy = true });
-				else
-				{	//This code removes redundant entries in the developer list.
-					List<Projects.Developer> TDL = new List<Projects.Developer>(Globals.ProjectSpace.OfType<Projects.Developer>().Where(a => a.UserName == Globals.UserProfile.User && a.ComputerName == Globals.UserProfile.ComputerName));
-					if (TDL.Count > 1)
-					{
-						for (int i = 1; i < TDL.Count; i++)
-							Globals.ProjectSpace.Remove(TDL[i]);
-					}
-				}
-
-				Globals.ProjectSpace.Save();
-
 				MainScreen.OutputTabs.Items.Clear();
 				MainScreen.ErrorListTabs.Items.Clear();
 
-				IsOpening = true;
-				foreach (Projects.Project P in Globals.Projects)
-					P.Open();
-				IsOpening = false;
-
 				Globals.IsLoading = false;
-
-				Globals.IsLoadSorting = true;
-				Globals.MainScreen.SortOpenWindows();
-				Globals.IsLoadSorting = false;
-
-				bool HasActive = false;
-				foreach (Themes.C1DockTabItemWindow W in MainScreen.ProjectTabs.Items)
-				{
-					if (W.DocumentData.IsActive == true)
-					{
-						MainScreen.ProjectTabs.SelectedItem = W;
-						HasActive = true;
-						break;
-					}
-				}
-				if (HasActive == false)
-					if (MainScreen.ProjectTabs.Items.Count > 0)
-						MainScreen.ProjectTabs.SelectedIndex = 0;
 
 				if (TaskbarManager.IsPlatformSupported == true)
 				{
@@ -217,7 +166,7 @@ namespace WCFArchitect
 			}), System.Windows.Threading.DispatcherPriority.Background);
 		}
 
-		public static void SaveProjectSpace()
+		public static void SaveSolution()
 		{
 			Application.Current.Dispatcher.BeginInvoke(new Action(() =>
 			{
@@ -227,9 +176,10 @@ namespace WCFArchitect
 
 				Globals.MainScreen.SystemStatus.Text = "Saving...";
 
-				Globals.MainScreen.IndexOpenWindows();
+				WCFArchitect.Projects.Solution.Save(Globals.Solution, SolutionPath);
 
-				Globals.ProjectSpace.Save();
+				foreach (WCFArchitect.Projects.Project p in Globals.Projects)
+					WCFArchitect.Projects.Project.Save(p, p.AbsolutePath);
 
 				IsFinding = false;
 				IsSaving = false;
@@ -247,7 +197,7 @@ namespace WCFArchitect
 			}), System.Windows.Threading.DispatcherPriority.Background);
 		}
 
-		public static void BackupProjectSpace(object State)
+		public static void BackupSolution(object State)
 		{
 			Application.Current.Dispatcher.BeginInvoke(new Action(() =>
 			{
@@ -256,20 +206,11 @@ namespace WCFArchitect
 				IsSaving = true;
 
 				Globals.MainScreen.SystemStatus.Text = "Auto-Saving Backup File...";
-				Globals.MainScreen.IndexOpenWindows();
 
-				List<object> DOL = new List<object>();
+				WCFArchitect.Projects.Solution.Save(Globals.Solution, System.IO.Path.ChangeExtension(SolutionPath, ".bak"));
 
-				DOL.Add(Solution);
-				DOL.AddRange(Projects);
-				DOL.AddRange(Globals.ProjectSpace.OfType<WCFArchitect.Projects.Developer>());
-
-				ObjectSpace os = new ObjectSpace("Projects.kvtmodel", "WCFArchitect");
-				os.CreateObjectLibrary(System.IO.Path.ChangeExtension(ProjectSpace.FileName, ".bak"), ExistingFileAction.Overwrite);
-				os.Open(System.IO.Path.ChangeExtension(ProjectSpace.FileName, ".bak"), ObjectSpaceOpenMode.ReadWrite);
-				foreach (object o in DOL) os.Add(o);
-				os.Save();
-				os.Close();
+				foreach (WCFArchitect.Projects.Project p in Globals.Projects)
+					WCFArchitect.Projects.Project.Save(p, System.IO.Path.ChangeExtension(p.AbsolutePath, ".bak"));
 
 				IsFinding = false;
 				IsSaving = false;
@@ -277,7 +218,7 @@ namespace WCFArchitect
 			}), System.Windows.Threading.DispatcherPriority.Background);
 		}
 
-		public static void CloseProjectSpace()
+		public static void CloseSolution()
 		{
 			if (ProjectSpace == null) return;
 			if (ProjectSpace.State == ObjectSpaceState.Closed) return;
@@ -286,38 +227,16 @@ namespace WCFArchitect
 				if(BackupTimer != null)
 					BackupTimer.Dispose();
 
-			Globals.MainScreen.IndexOpenWindows();
-
 			if (TaskbarManager.IsPlatformSupported == true)
 			{
 				Globals.BuildSolutionButton.Enabled = false;
 				Globals.BuildOutputButton.Enabled = false;
 			}
 
-			string OSPath = ProjectSpace.FileName;
-			ProjectSpace.Save();
-			ProjectSpace.Close();
+			SaveSolution();
 
 			MainScreen.ProjectTabs.Items.Clear();
 			OpenDocuments.Clear();
-
-			//ProjectSpace.CompactObjectLibrary(OSPath);		//BROKEN! (not reported due to website being down)
-		}
-
-		public static void ReplaceDataType(string OldName, string OldNamespace, string NewName, string NewNamespace)
-		{
-			if (IsClosing == true) return;
-			if (IsFinding == true) return;
-			if (Prospective.Controls.MessageBox.Show("Would you like WCF Architect to attempt to update any references to this data type? This will search the entire solution.'", "Update References", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.No) return;
-
-			WCFArchitect.Projects.FindReplaceInfo FRINamespace = new Projects.FindReplaceInfo(WCFArchitect.Projects.FindItems.Any, WCFArchitect.Projects.FindLocations.EntireSolution, OldNamespace + "." + OldName, false, false, NewNamespace + "." + NewName, true);
-			WCFArchitect.Projects.FindReplaceInfo FRINameOnly = new Projects.FindReplaceInfo(WCFArchitect.Projects.FindItems.Any, WCFArchitect.Projects.FindLocations.EntireSolution, OldName, false, false, NewName, true);
-
-			foreach(Projects.Project P in Projects)
-			{
-				P.FindReplace(FRINameOnly);
-				P.FindReplace(FRINamespace);
-			}
 		}
 	}
 }

@@ -133,25 +133,6 @@
 						</ListBox>
 					</Grid>
 				</GroupBox>
-				<GroupBox Name="ReferencesGroup" Header="References" Background="White" Margin="10,0,10,10" IsEnabled="True" Grid.Row="3">
-					<Grid>
-						<Border BorderThickness="0,0,0,1" BorderBrush="{StaticResource NormalBorderColor}" Margin="0,0,0,35">
-							<ListView IsSynchronizedWithCurrentItem="False" HorizontalAlignment="Stretch" BorderThickness="0" VerticalAlignment="Stretch" x:Name="ReferenceItems" SelectionMode="Multiple" AlternationCount="1" ItemContainerStyle="{StaticResource ListViewItemContainerStyle}" >
-								<ListView.View>
-									<GridView>
-										<GridViewColumn Header="ID" Width="0" DisplayMemberBinding="{Binding Path=ID}" />
-										<GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding Path=Name}"/>
-										<GridViewColumn Header="Client Profile" Width="75" DisplayMemberBinding="{Binding Path=IsClientProfile}"/>
-										<GridViewColumn Header="Version" Width="Auto" DisplayMemberBinding="{Binding Path=Version}"/>
-										<GridViewColumn Header="Path" Width="Auto" DisplayMemberBinding="{Binding Path=Path}"/>
-									</GridView>
-								</ListView.View>
-							</ListView>
-						</Border>
-						<Button Content="Add" Height="23" HorizontalAlignment="Right" Margin="0,0,93,6" Name="ReferenceAdd" VerticalAlignment="Bottom" Width="75" Click="ReferenceAdd_Click" />
-						<Button Content="Remove" Height="23" HorizontalAlignment="Right" Margin="0,0,10,6" Name="ReferenceRemove" VerticalAlignment="Bottom" Width="75" Click="ReferenceRemove_Click" />
-					</Grid>
-				</GroupBox>
 			</Grid>
 		</TabItem>
 		<TabItem Header="Build" Name="BuildTab">

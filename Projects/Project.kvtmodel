@@ -1,0 +1,789 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Model Version="4.01" Guid="39d851a4-f456-42a8-9bcf-60d61a7a3329" IdGenerator="517" HasErrors="false" DefaultPlatformId="1001" LanguageId="0" MemberDisplayFormatId="1" PlatformIds="1001">
+  <ReferencePaths>
+    <ReferencePath Path="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5" />
+  </ReferencePaths>
+  <Assemblies>
+    <Assembly Id="1" Name="WCFArchitect.Projects.dll" Expanded="true" Selected="false" Path="bin\WCFArchitect.Projects.dll">
+      <Namespaces>
+        <Namespace Id="2" Name="WCFArchitect.Helpers" Expanded="false" Selected="false">
+          <Classes />
+          <Structures />
+        </Namespace>
+        <Namespace Id="3" Name="WCFArchitect.Projects" Expanded="true" Selected="false">
+          <Classes>
+            <Class Id="4" Name="BindingSecurity" Expanded="false" Selected="false" BaseClassId="95" Type1001="WCFArchitect.Projects.BindingSecurity, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="true">
+              <Fields />
+              <Properties>
+                <Property Id="5" Name="IsTreeExpanded" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="6" Name="BindingSecurityBasicHTTP" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityBasicHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="7" Name="Mode" Expanded="false" Selected="false" />
+                <Property Id="8" Name="MessageAlgorithmSuite" Expanded="false" Selected="false" />
+                <Property Id="9" Name="MessageClientCredentialType" Expanded="false" Selected="false" />
+                <Property Id="10" Name="TransportClientCredentialType" Expanded="false" Selected="false" />
+                <Property Id="11" Name="TransportProxyCredentialType" Expanded="false" Selected="false" />
+                <Property Id="12" Name="TransportRealm" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="13" Name="BindingSecurityMSMQ" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityMSMQ, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="14" Name="Mode" Expanded="false" Selected="false" />
+                <Property Id="15" Name="MessageAlgorithmSuite" Expanded="false" Selected="false" />
+                <Property Id="16" Name="MessageClientCredentialType" Expanded="false" Selected="false" />
+                <Property Id="17" Name="TransportAuthenticationMode" Expanded="false" Selected="false" />
+                <Property Id="18" Name="TransportEncryptionAlgorithm" Expanded="false" Selected="false" />
+                <Property Id="19" Name="TransportProtectionLevel" Expanded="false" Selected="false" />
+                <Property Id="20" Name="TransportSecureHashAlgorithm" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="21" Name="BindingSecurityMSMQIntegration" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityMSMQIntegration, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="22" Name="Mode" Expanded="false" Selected="false" />
+                <Property Id="23" Name="TransportAuthenticationMode" Expanded="false" Selected="false" />
+                <Property Id="24" Name="TransportEncryptionAlgorithm" Expanded="false" Selected="false" />
+                <Property Id="25" Name="TransportProtectionLevel" Expanded="false" Selected="false" />
+                <Property Id="26" Name="TransportSecureHashAlgorithm" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="27" Name="BindingSecurityNamedPipe" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityNamedPipe, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="28" Name="Mode" Expanded="false" Selected="false" />
+                <Property Id="29" Name="TransportProtectionLevel" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="30" Name="BindingSecurityPeerTCP" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityPeerTCP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="31" Name="Mode" Expanded="false" Selected="false" />
+                <Property Id="32" Name="TransportClientCredentialType" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="33" Name="BindingSecurityTCP" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityTCP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="34" Name="Mode" Expanded="false" Selected="false" />
+                <Property Id="35" Name="MessageAlgorithmSuite" Expanded="false" Selected="false" />
+                <Property Id="36" Name="MessageClientCredentialType" Expanded="false" Selected="false" />
+                <Property Id="37" Name="TransportClientCredentialType" Expanded="false" Selected="false" />
+                <Property Id="38" Name="TransportProtectionLevel" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="39" Name="BindingSecurityWebHTTP" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityWebHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="40" Name="Mode" Expanded="false" Selected="false" />
+                <Property Id="41" Name="TransportClientCredentialType" Expanded="false" Selected="false" />
+                <Property Id="42" Name="TransportProxyCredentialType" Expanded="false" Selected="false" />
+                <Property Id="43" Name="TransportRealm" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="44" Name="BindingSecurityWSDualHTTP" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityWSDualHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="45" Name="Mode" Expanded="false" Selected="false" />
+                <Property Id="46" Name="MessageAlgorithmSuite" Expanded="false" Selected="false" />
+                <Property Id="47" Name="MessageClientCredentialType" Expanded="false" Selected="false" />
+                <Property Id="48" Name="MessageNegotiateServiceCredential" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="49" Name="BindingSecurityWSFederationHTTP" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityWSFederationHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="50" Name="Mode" Expanded="false" Selected="false" />
+                <Property Id="51" Name="MessageAlgorithmSuite" Expanded="false" Selected="false" />
+                <Property Id="52" Name="MessageClientCredentialType" Expanded="false" Selected="false" />
+                <Property Id="53" Name="MessageEstablishSecurityContext" Expanded="false" Selected="false" />
+                <Property Id="54" Name="MessageIssuedKeyType" Expanded="false" Selected="false" />
+                <Property Id="55" Name="MessageIssuedTokenType" Expanded="false" Selected="false" />
+                <Property Id="56" Name="MessageIssuerAddress" Expanded="false" Selected="false" />
+                <Property Id="57" Name="MessageIssuerMetadataAddress" Expanded="false" Selected="false" />
+                <Property Id="58" Name="MessageNegotiateServiceCredential" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="59" Name="BindingSecurityWSHTTP" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityWSHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="60" Name="Mode" Expanded="false" Selected="false" />
+                <Property Id="61" Name="MessageAlgorithmSuite" Expanded="false" Selected="false" />
+                <Property Id="62" Name="MessageClientCredentialType" Expanded="false" Selected="false" />
+                <Property Id="63" Name="MessageEstablishSecurityContext" Expanded="false" Selected="false" />
+                <Property Id="64" Name="MessageNegotiateServiceCredential" Expanded="false" Selected="false" />
+                <Property Id="65" Name="TransportClientCredentialType" Expanded="false" Selected="false" />
+                <Property Id="66" Name="TransportProxyCredentialType" Expanded="false" Selected="false" />
+                <Property Id="67" Name="TransportRealm" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="68" Name="Data" Expanded="false" Selected="false" BaseClassId="95" Type1001="WCFArchitect.Projects.Data, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="69" Name="HasWPFType" Expanded="false" Selected="false" />
+                <Property Id="70" Name="WPFType" Expanded="false" Selected="false" />
+                <Property Id="71" Name="IsReference" Expanded="false" Selected="false" />
+                <Property Id="72" Name="Elements" Expanded="false" Selected="false" />
+                <Property Id="73" Name="IsTreeExpanded" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="74" Name="DataElement" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.DataElement, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields>
+                <Field Id="503" Name="id" Expanded="false" Selected="false" />
+              </Fields>
+              <Properties>
+                <Property Id="75" Name="Scope" Expanded="false" Selected="false" />
+                <Property Id="76" Name="DataType" Expanded="false" Selected="false" />
+                <Property Id="77" Name="Name" Expanded="false" Selected="false" />
+                <Property Id="78" Name="HasContractType" Expanded="false" Selected="false" />
+                <Property Id="79" Name="ContractType" Expanded="false" Selected="false" />
+                <Property Id="80" Name="HasWPFType" Expanded="false" Selected="false" />
+                <Property Id="81" Name="WPFType" Expanded="false" Selected="false" />
+                <Property Id="82" Name="IsHidden" Expanded="false" Selected="false" />
+                <Property Id="83" Name="IsReadOnly" Expanded="false" Selected="false" />
+                <Property Id="84" Name="IsAttached" Expanded="false" Selected="false" />
+                <Property Id="85" Name="AttachedBrowsable" Expanded="false" Selected="false" />
+                <Property Id="86" Name="AttachedBrowsableIncludeDescendants" Expanded="false" Selected="false" />
+                <Property Id="87" Name="AttachedTargetTypes" Expanded="false" Selected="false" />
+                <Property Id="88" Name="AttachedAttributeTypes" Expanded="false" Selected="false" />
+                <Property Id="89" Name="IsDataMember" Expanded="false" Selected="false" />
+                <Property Id="90" Name="EmitDefaultValue" Expanded="false" Selected="false" />
+                <Property Id="91" Name="IsRequired" Expanded="false" Selected="false" />
+                <Property Id="92" Name="Order" Expanded="false" Selected="false" />
+                <Property Id="93" Name="IsTreeExpanded" Expanded="false" Selected="false" />
+                <Property Id="94" Name="Owner" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="95" Name="DataType" Expanded="false" Selected="false" BaseClassId="233" Type1001="WCFArchitect.Projects.DataType, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields>
+                <Field Id="504" Name="id" Expanded="false" Selected="false" />
+              </Fields>
+              <Properties>
+                <Property Id="96" Name="ID" Expanded="false" Selected="false" />
+                <Property Id="97" Name="HasContractType" Expanded="false" Selected="false" />
+                <Property Id="98" Name="ContractType" Expanded="false" Selected="false" />
+                <Property Id="99" Name="Scope" Expanded="false" Selected="false" />
+                <Property Id="100" Name="Name" Expanded="false" Selected="false" />
+                <Property Id="101" Name="IsPartial" Expanded="false" Selected="false" />
+                <Property Id="102" Name="CollectionGenericType" Expanded="false" Selected="false" />
+                <Property Id="103" Name="DictionaryKeyGenericType" Expanded="false" Selected="false" />
+                <Property Id="104" Name="DictionaryValueGenericType" Expanded="false" Selected="false" />
+                <Property Id="105" Name="ExternalType" Expanded="false" Selected="false" />
+                <Property Id="106" Name="InheritedTypes" Expanded="false" Selected="false" />
+                <Property Id="107" Name="Parent" Expanded="false" Selected="false" />
+                <Property Id="108" Name="TypeMode" Expanded="false" Selected="false" />
+                <Property Id="109" Name="Primitive" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="110" Name="DependencyProject" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.DependencyProject, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="111" Name="Path" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="112" Name="Enum" Expanded="false" Selected="false" BaseClassId="95" Type1001="WCFArchitect.Projects.Enum, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="113" Name="IsReference" Expanded="false" Selected="false" />
+                <Property Id="114" Name="IsFlags" Expanded="false" Selected="false" />
+                <Property Id="115" Name="BaseType" Expanded="false" Selected="false" />
+                <Property Id="116" Name="Elements" Expanded="false" Selected="false" />
+                <Property Id="117" Name="IsTreeExpanded" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="118" Name="EnumElement" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.EnumElement, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields>
+                <Field Id="505" Name="id" Expanded="false" Selected="false" />
+              </Fields>
+              <Properties>
+                <Property Id="119" Name="Name" Expanded="false" Selected="false" />
+                <Property Id="120" Name="IsExcluded" Expanded="false" Selected="false" />
+                <Property Id="121" Name="IsHidden" Expanded="false" Selected="false" />
+                <Property Id="122" Name="Value" Expanded="false" Selected="false" />
+                <Property Id="123" Name="ContractValue" Expanded="false" Selected="false" />
+                <Property Id="124" Name="IsTreeExpanded" Expanded="false" Selected="false" />
+                <Property Id="125" Name="Owner" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="126" Name="Host" Expanded="false" Selected="false" BaseClassId="95" Type1001="WCFArchitect.Projects.Host, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="127" Name="Namespace" Expanded="false" Selected="false" />
+                <Property Id="128" Name="ConfigurationName" Expanded="false" Selected="false" />
+                <Property Id="129" Name="Credentials" Expanded="false" Selected="false" />
+                <Property Id="130" Name="BaseAddresses" Expanded="false" Selected="false" />
+                <Property Id="131" Name="CloseTimeout" Expanded="false" Selected="false" />
+                <Property Id="132" Name="OpenTimeout" Expanded="false" Selected="false" />
+                <Property Id="133" Name="ManualFlowControlLimit" Expanded="false" Selected="false" />
+                <Property Id="134" Name="AuthorizationImpersonateCallerForAllOperations" Expanded="false" Selected="false" />
+                <Property Id="135" Name="AuthorizationPrincipalPermissionMode" Expanded="false" Selected="false" />
+                <Property Id="136" Name="Service" Expanded="false" Selected="false" />
+                <Property Id="137" Name="Behaviors" Expanded="false" Selected="false" />
+                <Property Id="138" Name="Endpoints" Expanded="false" Selected="false" />
+                <Property Id="139" Name="IsTreeExpanded" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="140" Name="HostBehavior" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.HostBehavior, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="true">
+              <Fields>
+                <Field Id="506" Name="id" Expanded="false" Selected="false" />
+              </Fields>
+              <Properties>
+                <Property Id="141" Name="Name" Expanded="false" Selected="false" />
+                <Property Id="142" Name="IsDefaultBehavior" Expanded="false" Selected="false" />
+                <Property Id="143" Name="Parent" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="144" Name="HostCredentials" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.HostCredentials, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="145" Name="UseCertificatesSecurity" Expanded="false" Selected="false" />
+                <Property Id="146" Name="UseIssuedTokenSecurity" Expanded="false" Selected="false" />
+                <Property Id="147" Name="UsePeerSecurity" Expanded="false" Selected="false" />
+                <Property Id="148" Name="UseUserNamePasswordSecurity" Expanded="false" Selected="false" />
+                <Property Id="149" Name="UseWindowsServiceSecurity" Expanded="false" Selected="false" />
+                <Property Id="150" Name="ClientCertificateAuthenticationValidationMode" Expanded="false" Selected="false" />
+                <Property Id="151" Name="ClientCertificateAuthenticationIncludeWindowsGroups" Expanded="false" Selected="false" />
+                <Property Id="152" Name="ClientCertificateAuthenticationMapClientCertificateToWindowsAccount" Expanded="false" Selected="false" />
+                <Property Id="153" Name="ClientCertificateAuthenticationRevocationMode" Expanded="false" Selected="false" />
+                <Property Id="154" Name="ClientCertificateAuthenticationStoreLocation" Expanded="false" Selected="false" />
+                <Property Id="155" Name="IssuedTokenAllowedAudiencesUris" Expanded="false" Selected="false" />
+                <Property Id="156" Name="IssuedTokenAllowUntrustedRsaIssuers" Expanded="false" Selected="false" />
+                <Property Id="157" Name="IssuedTokenAudienceUriMode" Expanded="false" Selected="false" />
+                <Property Id="158" Name="IssuedTokenCertificateValidationMode" Expanded="false" Selected="false" />
+                <Property Id="159" Name="IssuedTokenRevocationMode" Expanded="false" Selected="false" />
+                <Property Id="160" Name="IssuedTokenTrustedStoreLocation" Expanded="false" Selected="false" />
+                <Property Id="161" Name="PeerMeshPassword" Expanded="false" Selected="false" />
+                <Property Id="162" Name="PeerMessageSenderAuthenticationCertificateValidationMode" Expanded="false" Selected="false" />
+                <Property Id="163" Name="PeerMessageSenderAuthenticationRevocationMode" Expanded="false" Selected="false" />
+                <Property Id="164" Name="PeerMessageSenderAuthenticationTrustedStoreLocation" Expanded="false" Selected="false" />
+                <Property Id="165" Name="PeerAuthenticationCertificateValidationMode" Expanded="false" Selected="false" />
+                <Property Id="166" Name="PeerAuthenticationRevocationMode" Expanded="false" Selected="false" />
+                <Property Id="167" Name="PeerAuthenticationTrustedStoreLocation" Expanded="false" Selected="false" />
+                <Property Id="168" Name="UserNamePasswordCachedLogonTokenLifetime" Expanded="false" Selected="false" />
+                <Property Id="169" Name="UserNamePasswordCacheLogonTokens" Expanded="false" Selected="false" />
+                <Property Id="170" Name="UserNamePasswordIncludeWindowsGroups" Expanded="false" Selected="false" />
+                <Property Id="171" Name="UserNamePasswordMaxCachedLogonTokens" Expanded="false" Selected="false" />
+                <Property Id="172" Name="UserNamePasswordValidationMode" Expanded="false" Selected="false" />
+                <Property Id="173" Name="WindowsServiceAllowAnonymousLogons" Expanded="false" Selected="false" />
+                <Property Id="174" Name="WindowsServiceIncludeWindowsGroups" Expanded="false" Selected="false" />
+                <Property Id="175" Name="Owner" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="176" Name="HostDebugBehavior" Expanded="false" Selected="false" BaseClassId="140" Type1001="WCFArchitect.Projects.HostDebugBehavior, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="177" Name="HttpHelpPageBinding" Expanded="false" Selected="false" />
+                <Property Id="178" Name="HttpHelpPageEnabled" Expanded="false" Selected="false" />
+                <Property Id="179" Name="HttpHelpPageUrl" Expanded="false" Selected="false" />
+                <Property Id="180" Name="HttpsHelpPageBinding" Expanded="false" Selected="false" />
+                <Property Id="181" Name="HttpsHelpPageEnabled" Expanded="false" Selected="false" />
+                <Property Id="182" Name="HttpsHelpPageUrl" Expanded="false" Selected="false" />
+                <Property Id="183" Name="IncludeExceptionDetailInFaults" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="184" Name="HostEndpoint" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.HostEndpoint, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields>
+                <Field Id="507" Name="id" Expanded="false" Selected="false" />
+              </Fields>
+              <Properties>
+                <Property Id="185" Name="Name" Expanded="false" Selected="false" />
+                <Property Id="186" Name="Binding" Expanded="false" Selected="false" />
+                <Property Id="187" Name="ServerAddress" Expanded="false" Selected="false" />
+                <Property Id="188" Name="ServerPort" Expanded="false" Selected="false" />
+                <Property Id="189" Name="ServerUseHTTPS" Expanded="false" Selected="false" />
+                <Property Id="190" Name="ClientAddress" Expanded="false" Selected="false" />
+                <Property Id="191" Name="ClientIdentityType" Expanded="false" Selected="false" />
+                <Property Id="192" Name="ClientIdentityData" Expanded="false" Selected="false" />
+                <Property Id="193" Name="ClientAddressHeaders" Expanded="false" Selected="false" />
+                <Property Id="194" Name="Parent" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="195" Name="HostEndpointAddressHeader" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.HostEndpointAddressHeader, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields>
+                <Field Id="508" Name="id" Expanded="false" Selected="false" />
+              </Fields>
+              <Properties>
+                <Property Id="196" Name="Name" Expanded="false" Selected="false" />
+                <Property Id="197" Name="Namespace" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="198" Name="HostMetadataBehavior" Expanded="false" Selected="false" BaseClassId="140" Type1001="WCFArchitect.Projects.HostMetadataBehavior, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="199" Name="ExternalMetadataLocation" Expanded="false" Selected="false" />
+                <Property Id="200" Name="HttpGetBinding" Expanded="false" Selected="false" />
+                <Property Id="201" Name="HttpGetEnabled" Expanded="false" Selected="false" />
+                <Property Id="202" Name="HttpGetUrl" Expanded="false" Selected="false" />
+                <Property Id="203" Name="HttpsGetBinding" Expanded="false" Selected="false" />
+                <Property Id="204" Name="HttpsGetEnabled" Expanded="false" Selected="false" />
+                <Property Id="205" Name="HttpsGetUrl" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="206" Name="HostThrottlingBehavior" Expanded="false" Selected="false" BaseClassId="140" Type1001="WCFArchitect.Projects.HostThrottlingBehavior, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="207" Name="MaxConcurrentCalls" Expanded="false" Selected="false" />
+                <Property Id="208" Name="MaxConcurrentInstances" Expanded="false" Selected="false" />
+                <Property Id="209" Name="MaxConcurrentSessions" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="210" Name="Method" Expanded="false" Selected="false" BaseClassId="238" Type1001="WCFArchitect.Projects.Method, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="true">
+              <Fields />
+              <Properties>
+                <Property Id="211" Name="UseAsyncPattern" Expanded="false" Selected="false" />
+                <Property Id="212" Name="UseAwaitPattern" Expanded="false" Selected="false" />
+                <Property Id="213" Name="IsInitiating" Expanded="false" Selected="false" />
+                <Property Id="214" Name="IsTerminating" Expanded="false" Selected="false" />
+                <Property Id="215" Name="Parameters" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="216" Name="MethodParameter" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.MethodParameter, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields>
+                <Field Id="509" Name="id" Expanded="false" Selected="false" />
+              </Fields>
+              <Properties>
+                <Property Id="217" Name="Type" Expanded="false" Selected="false" />
+                <Property Id="218" Name="Name" Expanded="false" Selected="false" />
+                <Property Id="219" Name="IsHidden" Expanded="false" Selected="false" />
+                <Property Id="220" Name="Owner" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="221" Name="Namespace" Expanded="false" Selected="false" BaseClassId="95" Type1001="WCFArchitect.Projects.Namespace, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="222" Name="FullName" Expanded="false" Selected="false" />
+                <Property Id="223" Name="URI" Expanded="false" Selected="false" />
+                <Property Id="224" Name="Owner" Expanded="false" Selected="false" />
+                <Property Id="225" Name="Children" Expanded="false" Selected="false" />
+                <Property Id="226" Name="Enums" Expanded="false" Selected="false" />
+                <Property Id="227" Name="Data" Expanded="false" Selected="false" />
+                <Property Id="228" Name="Services" Expanded="false" Selected="false" />
+                <Property Id="229" Name="Bindings" Expanded="false" Selected="false" />
+                <Property Id="230" Name="Security" Expanded="false" Selected="false" />
+                <Property Id="231" Name="Hosts" Expanded="false" Selected="false" />
+                <Property Id="232" Name="IsTreeExpanded" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="233" Name="OpenableDocument" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.OpenableDocument, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="234" Name="IsActive" Expanded="false" Selected="false" />
+                <Property Id="235" Name="IsOpen" Expanded="false" Selected="false" />
+                <Property Id="236" Name="IsDirty" Expanded="false" Selected="false" />
+                <Property Id="237" Name="IsLocked" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="238" Name="Operation" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.Operation, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="true">
+              <Fields>
+                <Field Id="510" Name="id" Expanded="false" Selected="false" />
+              </Fields>
+              <Properties>
+                <Property Id="239" Name="Name" Expanded="false" Selected="false" />
+                <Property Id="240" Name="ContractName" Expanded="false" Selected="false" />
+                <Property Id="241" Name="IsOneWay" Expanded="false" Selected="false" />
+                <Property Id="242" Name="ProtectionLevel" Expanded="false" Selected="false" />
+                <Property Id="243" Name="ReturnType" Expanded="false" Selected="false" />
+                <Property Id="244" Name="IsTreeExpanded" Expanded="false" Selected="false" />
+                <Property Id="245" Name="Owner" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="246" Name="Project" Expanded="false" Selected="true" BaseClassId="233" Type1001="WCFArchitect.Projects.Project, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="true">
+              <Fields />
+              <Properties>
+                <Property Id="247" Name="ID" Expanded="false" Selected="false" />
+                <Property Id="248" Name="AbsolutePath" Expanded="false" Selected="false" />
+                <Property Id="249" Name="Name" Expanded="false" Selected="false" />
+                <Property Id="250" Name="UsingNamespaces" Expanded="false" Selected="false" />
+                <Property Id="251" Name="Namespace" Expanded="false" Selected="false" />
+                <Property Id="252" Name="ServerOutputFile" Expanded="false" Selected="false" />
+                <Property Id="253" Name="ClientOutputFile" Expanded="false" Selected="false" />
+                <Property Id="254" Name="ServiceSerializer" Expanded="false" Selected="false" />
+                <Property Id="255" Name="CollectionSerializationOverride" Expanded="false" Selected="false" />
+                <Property Id="256" Name="DependencyProjects" Expanded="false" Selected="false" />
+                <Property Id="257" Name="IsTreeExpanded" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="258" Name="ProjectNET" Expanded="false" Selected="false" BaseClassId="246" Type1001="WCFArchitect.Projects.ProjectNET, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="259" Name="ServerOutputPaths" Expanded="false" Selected="false" />
+                <Property Id="260" Name="ClientOutputPaths" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="261" Name="ProjectNETOutputPath" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.ProjectNETOutputPath, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields>
+                <Field Id="511" Name="projectID" Expanded="false" Selected="false" />
+                <Field Id="512" Name="id" Expanded="false" Selected="false" />
+              </Fields>
+              <Properties>
+                <Property Id="262" Name="IsEnabled" Expanded="false" Selected="false" />
+                <Property Id="263" Name="Path" Expanded="false" Selected="false" />
+                <Property Id="264" Name="Framework" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="265" Name="ProjectRT" Expanded="false" Selected="false" BaseClassId="246" Type1001="WCFArchitect.Projects.ProjectRT, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="266" Name="ServerOutputPaths" Expanded="false" Selected="false" />
+                <Property Id="267" Name="ClientOutputPaths" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="268" Name="ProjectRTOutputPath" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.ProjectRTOutputPath, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields>
+                <Field Id="513" Name="projectID" Expanded="false" Selected="false" />
+                <Field Id="514" Name="id" Expanded="false" Selected="false" />
+              </Fields>
+              <Properties>
+                <Property Id="269" Name="IsEnabled" Expanded="false" Selected="false" />
+                <Property Id="270" Name="Path" Expanded="false" Selected="false" />
+                <Property Id="271" Name="Framework" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="272" Name="ProjectSL" Expanded="false" Selected="false" BaseClassId="246" Type1001="WCFArchitect.Projects.ProjectSL, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="273" Name="ServerOutputPaths" Expanded="false" Selected="false" />
+                <Property Id="274" Name="ClientOutputPaths" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="275" Name="ProjectSLOutputPath" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.ProjectSLOutputPath, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields>
+                <Field Id="515" Name="projectID" Expanded="false" Selected="false" />
+                <Field Id="516" Name="id" Expanded="false" Selected="false" />
+              </Fields>
+              <Properties>
+                <Property Id="276" Name="IsEnabled" Expanded="false" Selected="false" />
+                <Property Id="277" Name="Path" Expanded="false" Selected="false" />
+                <Property Id="278" Name="Framework" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="279" Name="ProjectUsingNamespace" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.ProjectUsingNamespace, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields>
+                <Field Id="517" Name="id" Expanded="false" Selected="false" />
+              </Fields>
+              <Properties>
+                <Property Id="280" Name="Namespace" Expanded="false" Selected="false" />
+                <Property Id="281" Name="IsFullFrameworkOnly" Expanded="false" Selected="false" />
+                <Property Id="282" Name="Server" Expanded="false" Selected="false" />
+                <Property Id="283" Name="Client" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="284" Name="Property" Expanded="false" Selected="false" BaseClassId="238" Type1001="WCFArchitect.Projects.Property, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="285" Name="IsReadOnly" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="286" Name="Service" Expanded="true" Selected="false" BaseClassId="95" Type1001="WCFArchitect.Projects.Service, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="287" Name="Operations" Expanded="false" Selected="false" />
+                <Property Id="288" Name="IsCallback" Expanded="false" Selected="false" />
+                <Property Id="289" Name="Callback" Expanded="false" Selected="false" />
+                <Property Id="290" Name="ProtectionLevel" Expanded="false" Selected="false" />
+                <Property Id="291" Name="SessionMode" Expanded="false" Selected="false" />
+                <Property Id="292" Name="ConfigurationName" Expanded="false" Selected="false" />
+                <Property Id="293" Name="IsTreeExpanded" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="294" Name="ServiceBinding" Expanded="false" Selected="false" BaseClassId="95" Type1001="WCFArchitect.Projects.ServiceBinding, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="true">
+              <Fields />
+              <Properties>
+                <Property Id="295" Name="Namespace" Expanded="false" Selected="false" />
+                <Property Id="296" Name="EndpointAddress" Expanded="false" Selected="false" />
+                <Property Id="297" Name="ListenAddress" Expanded="false" Selected="false" />
+                <Property Id="298" Name="CloseTimeout" Expanded="false" Selected="false" />
+                <Property Id="299" Name="OpenTimeout" Expanded="false" Selected="false" />
+                <Property Id="300" Name="ReceiveTimeout" Expanded="false" Selected="false" />
+                <Property Id="301" Name="SendTimeout" Expanded="false" Selected="false" />
+                <Property Id="302" Name="IsTreeExpanded" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="303" Name="ServiceBindingBasicHTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingBasicHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="304" Name="Security" Expanded="false" Selected="false" />
+                <Property Id="305" Name="AllowCookies" Expanded="false" Selected="false" />
+                <Property Id="306" Name="BypassProxyOnLocal" Expanded="false" Selected="false" />
+                <Property Id="307" Name="HostNameComparisonMode" Expanded="false" Selected="false" />
+                <Property Id="308" Name="MaxBufferPoolSize" Expanded="false" Selected="false" />
+                <Property Id="309" Name="MaxBufferSize" Expanded="false" Selected="false" />
+                <Property Id="310" Name="MaxReceivedMessageSize" Expanded="false" Selected="false" />
+                <Property Id="311" Name="MessageEncoding" Expanded="false" Selected="false" />
+                <Property Id="312" Name="ProxyAddress" Expanded="false" Selected="false" />
+                <Property Id="313" Name="TextEncoding" Expanded="false" Selected="false" />
+                <Property Id="314" Name="TransferMode" Expanded="false" Selected="false" />
+                <Property Id="315" Name="UseDefaultWebProxy" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="316" Name="ServiceBindingMSMQ" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingMSMQ, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="317" Name="Security" Expanded="false" Selected="false" />
+                <Property Id="318" Name="MaxBufferPoolSize" Expanded="false" Selected="false" />
+                <Property Id="319" Name="MaxReceivedMessageSize" Expanded="false" Selected="false" />
+                <Property Id="320" Name="CustomDeadLetterQueue" Expanded="false" Selected="false" />
+                <Property Id="321" Name="DeadLetterQueue" Expanded="false" Selected="false" />
+                <Property Id="322" Name="ExactlyOnce" Expanded="false" Selected="false" />
+                <Property Id="323" Name="MaxRetryCycles" Expanded="false" Selected="false" />
+                <Property Id="324" Name="QueueTransferProtocol" Expanded="false" Selected="false" />
+                <Property Id="325" Name="ReceiveContextEnabled" Expanded="false" Selected="false" />
+                <Property Id="326" Name="ReceiveErrorHandling" Expanded="false" Selected="false" />
+                <Property Id="327" Name="ReceiveRetryCount" Expanded="false" Selected="false" />
+                <Property Id="328" Name="RetryCycleDelay" Expanded="false" Selected="false" />
+                <Property Id="329" Name="TimeToLive" Expanded="false" Selected="false" />
+                <Property Id="330" Name="UseActiveDirectory" Expanded="false" Selected="false" />
+                <Property Id="331" Name="UseMSMQTracing" Expanded="false" Selected="false" />
+                <Property Id="332" Name="UseSourceJournal" Expanded="false" Selected="false" />
+                <Property Id="333" Name="ValidityDuration" Expanded="false" Selected="false" />
+                <Property Id="334" Name="Durable" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="335" Name="ServiceBindingMSMQIntegration" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingMSMQIntegration, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="336" Name="Security" Expanded="false" Selected="false" />
+                <Property Id="337" Name="MaxReceivedMessageSize" Expanded="false" Selected="false" />
+                <Property Id="338" Name="CustomDeadLetterQueue" Expanded="false" Selected="false" />
+                <Property Id="339" Name="DeadLetterQueue" Expanded="false" Selected="false" />
+                <Property Id="340" Name="ExactlyOnce" Expanded="false" Selected="false" />
+                <Property Id="341" Name="MaxRetryCycles" Expanded="false" Selected="false" />
+                <Property Id="342" Name="ReceiveContextEnabled" Expanded="false" Selected="false" />
+                <Property Id="343" Name="ReceiveErrorHandling" Expanded="false" Selected="false" />
+                <Property Id="344" Name="ReceiveRetryCount" Expanded="false" Selected="false" />
+                <Property Id="345" Name="RetryCycleDelay" Expanded="false" Selected="false" />
+                <Property Id="346" Name="TimeToLive" Expanded="false" Selected="false" />
+                <Property Id="347" Name="UseMSMQTracing" Expanded="false" Selected="false" />
+                <Property Id="348" Name="UseSourceJournal" Expanded="false" Selected="false" />
+                <Property Id="349" Name="ValidityDuration" Expanded="false" Selected="false" />
+                <Property Id="350" Name="Durable" Expanded="false" Selected="false" />
+                <Property Id="351" Name="SerializationFormat" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="352" Name="ServiceBindingNamedPipe" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingNamedPipe, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="353" Name="Security" Expanded="false" Selected="false" />
+                <Property Id="354" Name="HostNameComparisonMode" Expanded="false" Selected="false" />
+                <Property Id="355" Name="MaxBufferPoolSize" Expanded="false" Selected="false" />
+                <Property Id="356" Name="MaxBufferSize" Expanded="false" Selected="false" />
+                <Property Id="357" Name="MaxReceivedMessageSize" Expanded="false" Selected="false" />
+                <Property Id="358" Name="TransferMode" Expanded="false" Selected="false" />
+                <Property Id="359" Name="TransactionFlow" Expanded="false" Selected="false" />
+                <Property Id="360" Name="MaxConnections" Expanded="false" Selected="false" />
+                <Property Id="361" Name="TransactionProtocol" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="362" Name="ServiceBindingNetHTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingNetHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="363" Name="Security" Expanded="false" Selected="false" />
+                <Property Id="364" Name="AllowCookies" Expanded="false" Selected="false" />
+                <Property Id="365" Name="BypassProxyOnLocal" Expanded="false" Selected="false" />
+                <Property Id="366" Name="HostNameComparisonMode" Expanded="false" Selected="false" />
+                <Property Id="367" Name="MaxBufferPoolSize" Expanded="false" Selected="false" />
+                <Property Id="368" Name="MaxBufferSize" Expanded="false" Selected="false" />
+                <Property Id="369" Name="MaxReceivedMessageSize" Expanded="false" Selected="false" />
+                <Property Id="370" Name="MessageEncoding" Expanded="false" Selected="false" />
+                <Property Id="371" Name="ProxyAddress" Expanded="false" Selected="false" />
+                <Property Id="372" Name="TextEncoding" Expanded="false" Selected="false" />
+                <Property Id="373" Name="TransferMode" Expanded="false" Selected="false" />
+                <Property Id="374" Name="UseDefaultWebProxy" Expanded="false" Selected="false" />
+                <Property Id="375" Name="CreateNotificationOnConnection" Expanded="false" Selected="false" />
+                <Property Id="376" Name="DisablePayloadMasking" Expanded="false" Selected="false" />
+                <Property Id="377" Name="KeepAliveInterval" Expanded="false" Selected="false" />
+                <Property Id="378" Name="MaxPendingConnections" Expanded="false" Selected="false" />
+                <Property Id="379" Name="SubProtocol" Expanded="false" Selected="false" />
+                <Property Id="380" Name="TransportUsage" Expanded="false" Selected="false" />
+                <Property Id="381" Name="ReliableSessionEnabled" Expanded="false" Selected="false" />
+                <Property Id="382" Name="ReliableSessionInactivityTimeout" Expanded="false" Selected="false" />
+                <Property Id="383" Name="ReliableSessionsOrdered" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="384" Name="ServiceBindingPeerTCP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingPeerTCP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="385" Name="Security" Expanded="false" Selected="false" />
+                <Property Id="386" Name="MaxBufferPoolSize" Expanded="false" Selected="false" />
+                <Property Id="387" Name="MaxReceivedMessageSize" Expanded="false" Selected="false" />
+                <Property Id="388" Name="ListenIPAddress" Expanded="false" Selected="false" />
+                <Property Id="389" Name="Port" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="390" Name="ServiceBindingTCP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingTCP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="391" Name="Security" Expanded="false" Selected="false" />
+                <Property Id="392" Name="HostNameComparisonMode" Expanded="false" Selected="false" />
+                <Property Id="393" Name="ReliableSessionEnabled" Expanded="false" Selected="false" />
+                <Property Id="394" Name="ReliableSessionInactivityTimeout" Expanded="false" Selected="false" />
+                <Property Id="395" Name="ReliableSessionsOrdered" Expanded="false" Selected="false" />
+                <Property Id="396" Name="MaxBufferPoolSize" Expanded="false" Selected="false" />
+                <Property Id="397" Name="MaxBufferSize" Expanded="false" Selected="false" />
+                <Property Id="398" Name="MaxReceivedMessageSize" Expanded="false" Selected="false" />
+                <Property Id="399" Name="TransferMode" Expanded="false" Selected="false" />
+                <Property Id="400" Name="TransactionFlow" Expanded="false" Selected="false" />
+                <Property Id="401" Name="ListenBacklog" Expanded="false" Selected="false" />
+                <Property Id="402" Name="MaxConnections" Expanded="false" Selected="false" />
+                <Property Id="403" Name="PortSharingEnabled" Expanded="false" Selected="false" />
+                <Property Id="404" Name="TransactionProtocol" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="405" Name="ServiceBindingWebHTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingWebHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="406" Name="Security" Expanded="false" Selected="false" />
+                <Property Id="407" Name="AllowCookies" Expanded="false" Selected="false" />
+                <Property Id="408" Name="BypassProxyOnLocal" Expanded="false" Selected="false" />
+                <Property Id="409" Name="HostNameComparisonMode" Expanded="false" Selected="false" />
+                <Property Id="410" Name="MaxBufferPoolSize" Expanded="false" Selected="false" />
+                <Property Id="411" Name="MaxBufferSize" Expanded="false" Selected="false" />
+                <Property Id="412" Name="MaxReceivedMessageSize" Expanded="false" Selected="false" />
+                <Property Id="413" Name="ProxyAddress" Expanded="false" Selected="false" />
+                <Property Id="414" Name="TransferMode" Expanded="false" Selected="false" />
+                <Property Id="415" Name="UseDefaultWebProxy" Expanded="false" Selected="false" />
+                <Property Id="416" Name="CrossDomainScriptAccessEnabled" Expanded="false" Selected="false" />
+                <Property Id="417" Name="WriteEncoding" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="418" Name="ServiceBindingWS2007FederationHTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingWS2007FederationHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="419" Name="Security" Expanded="false" Selected="false" />
+                <Property Id="420" Name="BypassProxyOnLocal" Expanded="false" Selected="false" />
+                <Property Id="421" Name="HostNameComparisonMode" Expanded="false" Selected="false" />
+                <Property Id="422" Name="ReliableSessionInactivityTimeout" Expanded="false" Selected="false" />
+                <Property Id="423" Name="ReliableSessionEnabled" Expanded="false" Selected="false" />
+                <Property Id="424" Name="ReliableSessionsOrdered" Expanded="false" Selected="false" />
+                <Property Id="425" Name="MaxBufferPoolSize" Expanded="false" Selected="false" />
+                <Property Id="426" Name="MaxReceivedMessageSize" Expanded="false" Selected="false" />
+                <Property Id="427" Name="MessageEncoding" Expanded="false" Selected="false" />
+                <Property Id="428" Name="ProxyAddress" Expanded="false" Selected="false" />
+                <Property Id="429" Name="TextEncoding" Expanded="false" Selected="false" />
+                <Property Id="430" Name="UseDefaultWebProxy" Expanded="false" Selected="false" />
+                <Property Id="431" Name="PrivacyNoticeAt" Expanded="false" Selected="false" />
+                <Property Id="432" Name="PrivacyNoticeVersion" Expanded="false" Selected="false" />
+                <Property Id="433" Name="TransactionFlow" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="434" Name="ServiceBindingWS2007HTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingWS2007HTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="435" Name="Security" Expanded="false" Selected="false" />
+                <Property Id="436" Name="AllowCookies" Expanded="false" Selected="false" />
+                <Property Id="437" Name="BypassProxyOnLocal" Expanded="false" Selected="false" />
+                <Property Id="438" Name="HostNameComparisonMode" Expanded="false" Selected="false" />
+                <Property Id="439" Name="ReliableSessionEnabled" Expanded="false" Selected="false" />
+                <Property Id="440" Name="ReliableSessionInactivityTimeout" Expanded="false" Selected="false" />
+                <Property Id="441" Name="ReliableSessionsOrdered" Expanded="false" Selected="false" />
+                <Property Id="442" Name="MaxBufferPoolSize" Expanded="false" Selected="false" />
+                <Property Id="443" Name="MaxReceivedMessageSize" Expanded="false" Selected="false" />
+                <Property Id="444" Name="MessageEncoding" Expanded="false" Selected="false" />
+                <Property Id="445" Name="ProxyAddress" Expanded="false" Selected="false" />
+                <Property Id="446" Name="TextEncoding" Expanded="false" Selected="false" />
+                <Property Id="447" Name="UseDefaultWebProxy" Expanded="false" Selected="false" />
+                <Property Id="448" Name="TransactionFlow" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="449" Name="ServiceBindingWSDualHTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingWSDualHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="450" Name="Security" Expanded="false" Selected="false" />
+                <Property Id="451" Name="ClientBaseAddress" Expanded="false" Selected="false" />
+                <Property Id="452" Name="BypassProxyOnLocal" Expanded="false" Selected="false" />
+                <Property Id="453" Name="HostNameComparisonMode" Expanded="false" Selected="false" />
+                <Property Id="454" Name="ReliableSessionInactivityTimeout" Expanded="false" Selected="false" />
+                <Property Id="455" Name="ReliableSessionsOrdered" Expanded="false" Selected="false" />
+                <Property Id="456" Name="MaxBufferPoolSize" Expanded="false" Selected="false" />
+                <Property Id="457" Name="MaxReceivedMessageSize" Expanded="false" Selected="false" />
+                <Property Id="458" Name="MessageEncoding" Expanded="false" Selected="false" />
+                <Property Id="459" Name="ProxyAddress" Expanded="false" Selected="false" />
+                <Property Id="460" Name="TextEncoding" Expanded="false" Selected="false" />
+                <Property Id="461" Name="UseDefaultWebProxy" Expanded="false" Selected="false" />
+                <Property Id="462" Name="TransactionFlow" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="463" Name="ServiceBindingWSFederationHTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingWSFederationHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="464" Name="Security" Expanded="false" Selected="false" />
+                <Property Id="465" Name="BypassProxyOnLocal" Expanded="false" Selected="false" />
+                <Property Id="466" Name="HostNameComparisonMode" Expanded="false" Selected="false" />
+                <Property Id="467" Name="ReliableSessionEnabled" Expanded="false" Selected="false" />
+                <Property Id="468" Name="ReliableSessionInactivityTimeout" Expanded="false" Selected="false" />
+                <Property Id="469" Name="ReliableSessionsOrdered" Expanded="false" Selected="false" />
+                <Property Id="470" Name="MaxBufferPoolSize" Expanded="false" Selected="false" />
+                <Property Id="471" Name="MaxReceivedMessageSize" Expanded="false" Selected="false" />
+                <Property Id="472" Name="MessageEncoding" Expanded="false" Selected="false" />
+                <Property Id="473" Name="ProxyAddress" Expanded="false" Selected="false" />
+                <Property Id="474" Name="TextEncoding" Expanded="false" Selected="false" />
+                <Property Id="475" Name="UseDefaultWebProxy" Expanded="false" Selected="false" />
+                <Property Id="476" Name="PrivacyNoticeAt" Expanded="false" Selected="false" />
+                <Property Id="477" Name="PrivacyNoticeVersion" Expanded="false" Selected="false" />
+                <Property Id="478" Name="TransactionFlow" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+            <Class Id="479" Name="ServiceBindingWSHTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingWSHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields />
+              <Properties>
+                <Property Id="480" Name="Security" Expanded="false" Selected="false" />
+                <Property Id="481" Name="AllowCookies" Expanded="false" Selected="false" />
+                <Property Id="482" Name="BypassProxyOnLocal" Expanded="false" Selected="false" />
+                <Property Id="483" Name="HostNameComparisonMode" Expanded="false" Selected="false" />
+                <Property Id="484" Name="ReliableSessionEnabled" Expanded="false" Selected="false" />
+                <Property Id="485" Name="ReliableSessionInactivityTimeout" Expanded="false" Selected="false" />
+                <Property Id="486" Name="ReliableSessionsOrdered" Expanded="false" Selected="false" />
+                <Property Id="487" Name="MaxBufferPoolSize" Expanded="false" Selected="false" />
+                <Property Id="488" Name="MaxReceivedMessageSize" Expanded="false" Selected="false" />
+                <Property Id="489" Name="MessageEncoding" Expanded="false" Selected="false" />
+                <Property Id="490" Name="ProxyAddress" Expanded="false" Selected="false" />
+                <Property Id="491" Name="TextEncoding" Expanded="false" Selected="false" />
+                <Property Id="492" Name="UseDefaultWebProxy" Expanded="false" Selected="false" />
+                <Property Id="493" Name="TransactionFlow" Expanded="false" Selected="false" />
+              </Properties>
+            </Class>
+          </Classes>
+          <Structures />
+        </Namespace>
+      </Namespaces>
+      <PlatformAssemblyPaths>
+        <PlatformAssemblyPath PlatformId="1001" Path="bin\WCFArchitect.Projects.dll" />
+      </PlatformAssemblyPaths>
+    </Assembly>
+    <Assembly Id="494" Name="Prospective.Utilities.dll" Expanded="true" Selected="false" Path="bin\Prospective.Utilities.dll">
+      <Namespaces>
+        <Namespace Id="495" Name="Prospective.Utilities.Cryptography" Expanded="false" Selected="false">
+          <Classes />
+          <Structures />
+        </Namespace>
+        <Namespace Id="496" Name="Prospective.Utilities.Types" Expanded="false" Selected="false">
+          <Classes>
+            <Class Id="499" Name="Base2" Expanded="false" Selected="false" BaseClassId="0" Type1001="Prospective.Utilities.Types.Base2, Prospective.Utilities, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+              <Fields>
+                <Field Id="500" Name="storeMode" Expanded="false" Selected="false" />
+                <Field Id="501" Name="parseMode" Expanded="false" Selected="false" />
+                <Field Id="502" Name="bits" Expanded="false" Selected="false" />
+              </Fields>
+              <Properties />
+            </Class>
+          </Classes>
+          <Structures />
+        </Namespace>
+        <Namespace Id="497" Name="System.Collections.Concurrent" Expanded="false" Selected="false">
+          <Classes />
+          <Structures />
+        </Namespace>
+        <Namespace Id="498" Name="System.Collections.ObjectModel" Expanded="false" Selected="false">
+          <Classes />
+          <Structures />
+        </Namespace>
+      </Namespaces>
+      <PlatformAssemblyPaths>
+        <PlatformAssemblyPath PlatformId="1001" Path="bin\Prospective.Utilities.dll" />
+      </PlatformAssemblyPaths>
+    </Assembly>
+  </Assemblies>
+</Model>
