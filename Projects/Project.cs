@@ -71,14 +71,10 @@ namespace WCFArchitect.Projects
 		public bool IsDirty { get { return (bool)GetValue(IsDirtyProperty); } set { if (IsActive == true) SetValue(IsDirtyProperty, value); } }
 		public static readonly DependencyProperty IsDirtyProperty = DependencyProperty.Register("IsDirty", typeof(bool), typeof(OpenableDocument), new UIPropertyMetadata(false));
 
-		public bool IsLocked { get { return (bool)GetValue(IsLockedProperty); } set { SetValue(IsLockedProperty, value); } }
-		public static readonly DependencyProperty IsLockedProperty = DependencyProperty.Register("IsLocked", typeof(bool), typeof(OpenableDocument), new UIPropertyMetadata(false));
-
 		public OpenableDocument()
 		{
 			IsActive = false;
 			IsDirty = false;
-			IsLocked = false;
 		}
 	}
 

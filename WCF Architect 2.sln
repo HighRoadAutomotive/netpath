@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Designer", "Designer\Designer.csproj", "{26437A88-CCC9-4006-BE4E-2EB3EAC8D78D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Installer", "Installer\Installer.csproj", "{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Projects", "Projects\Projects.csproj", "{FE02550C-5269-4327-A129-FB9D41316005}"
 EndProject
 Global
@@ -51,31 +49,6 @@ Global
 		{26437A88-CCC9-4006-BE4E-2EB3EAC8D78D}.Release|Mixed Platforms.Build.0 = Release|x86
 		{26437A88-CCC9-4006-BE4E-2EB3EAC8D78D}.Release|x86.ActiveCfg = Release|x86
 		{26437A88-CCC9-4006-BE4E-2EB3EAC8D78D}.Release|x86.Build.0 = Release|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Debug|x86.ActiveCfg = Debug|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Debug|x86.Build.0 = Debug|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Release (PROFESSIONAL)|Any CPU.ActiveCfg = Release|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Release (PROFESSIONAL)|Mixed Platforms.ActiveCfg = Release|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Release (PROFESSIONAL)|Mixed Platforms.Build.0 = Release|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Release (PROFESSIONAL)|x86.ActiveCfg = Release|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Release (PROFESSIONAL)|x86.Build.0 = Release|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Release (STANDARD)|Any CPU.ActiveCfg = Release|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Release (STANDARD)|Mixed Platforms.ActiveCfg = Release|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Release (STANDARD)|Mixed Platforms.Build.0 = Release|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Release (STANDARD)|x86.ActiveCfg = Release|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Release (STANDARD)|x86.Build.0 = Release|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Release (TRIAL)|Any CPU.ActiveCfg = Release (TRIAL)|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Release (TRIAL)|Mixed Platforms.ActiveCfg = Release|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Release (TRIAL)|Mixed Platforms.Build.0 = Release|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Release (TRIAL)|x86.ActiveCfg = Release|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Release (TRIAL)|x86.Build.0 = Release|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Release|Any CPU.ActiveCfg = Release|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Release|Mixed Platforms.Build.0 = Release|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Release|x86.ActiveCfg = Release|x86
-		{9A99AFAE-66D0-472F-AC3A-D7B84994E8F0}.Release|x86.Build.0 = Release|x86
 		{FE02550C-5269-4327-A129-FB9D41316005}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FE02550C-5269-4327-A129-FB9D41316005}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE02550C-5269-4327-A129-FB9D41316005}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

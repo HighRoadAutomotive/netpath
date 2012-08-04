@@ -367,13 +367,12 @@
                 <Property Id="232" Name="IsTreeExpanded" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="233" Name="OpenableDocument" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.OpenableDocument, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="233" Name="OpenableDocument" Expanded="true" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.OpenableDocument, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="234" Name="IsActive" Expanded="false" Selected="false" />
-                <Property Id="235" Name="IsOpen" Expanded="false" Selected="false" />
+                <Property Id="235" Name="IsOpen" Expanded="false" Selected="true" />
                 <Property Id="236" Name="IsDirty" Expanded="false" Selected="false" />
-                <Property Id="237" Name="IsLocked" Expanded="false" Selected="false" />
               </Properties>
             </Class>
             <Class Id="238" Name="Operation" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.Operation, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="true">
@@ -390,7 +389,7 @@
                 <Property Id="245" Name="Owner" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="246" Name="Project" Expanded="false" Selected="true" BaseClassId="233" Type1001="WCFArchitect.Projects.Project, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="true">
+            <Class Id="246" Name="Project" Expanded="false" Selected="false" BaseClassId="233" Type1001="WCFArchitect.Projects.Project, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="true">
               <Fields />
               <Properties>
                 <Property Id="247" Name="ID" Expanded="false" Selected="false" />

@@ -1,0 +1,460 @@
+﻿<Window x:Class="WCFArchitect.Interface.Main"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:r="clr-namespace:Fluent;assembly=Fluent"
+		xmlns:c1="http://schemas.componentone.com/wpf/Basic"
+		xmlns:c1d="http://schemas.componentone.com/wpf/C1Docking"
+		xmlns:pc="clr-namespace:Prospective.Controls;assembly=Prospective.Controls"
+		xmlns:Root="clr-namespace:WCFArchitect.Interface"
+		xmlns:Projects="clr-namespace:WCFArchitect.Projects"
+		xmlns:Themes="clr-namespace:WCFArchitect.Themes"
+		xmlns:WARoot="clr-namespace:WCFArchitect"
+		Title="Prospective Software WCF Architect" Height="984" Width="1280" MinHeight="984" MinWidth="1280" UseLayoutRounding="True" ResizeMode="CanResizeWithGrip" WindowStartupLocation="Manual" TextOptions.TextFormattingMode="Display" TextOptions.TextHintingMode="Fixed" TextOptions.TextRenderingMode="ClearType" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.ClearTypeHint="Enabled" Icon="pack://application:,,,/WCFArchitect;component/Icons/DesignStudio.ico" DataContext="{Binding RelativeSource={RelativeSource Self}}" Activated="Window_Activated" SourceInitialized="Window_SourceInitialized" Closing="Window_Closing" PreviewKeyDown="Window_PreviewKeyDown" PreviewKeyUp="Window_PreviewKeyUp" PreviewMouseWheel="Window_PreviewMouseWheel">
+	<Window.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Backstage.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Colors.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Generic.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/ProjectTreeView.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/ToolBars.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/C1DockStyles.xaml" />
+				<ResourceDictionary>
+					<Root:ProjectTypeImage32Converter x:Key="ProjectTypeImage32Converter" />
+					<Root:DocumentTypeImage16Converter x:Key="DocumentTypeImage16Converter" />
+				</ResourceDictionary>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Window.Resources>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		<Grid Grid.Column="0" Grid.Row="0" Margin="0" Panel.ZIndex="20001" x:Name="TabPanel">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition x:Name="ColumnDefinition10" Width="2"/>
+				<ColumnDefinition x:Name="ColumnDefinition11" Width="Auto"/>
+				<ColumnDefinition x:Name="ColumnDefinition12" Width="*" MinWidth="200"/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition x:Name="RowDefinition10" Height="Auto"/>
+			</Grid.RowDefinitions>
+			<Border Grid.ColumnSpan="3" Background="{StaticResource ToolBarPanelBackground}" BorderThickness="0,0,0,1" BorderBrush="{StaticResource ToolBarBorder}" Margin="-1,0,0,0" Padding="1,0,0,0" />
+			<Grid Grid.Column="1">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="55" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Border Background="Transparent" BorderThickness="0">
+					<ToggleButton Name="BackstageToggle" Style="{StaticResource FileMenuButtonStyle}" Checked="BackstageToggle_Checked" Unchecked="BackstageToggle_Unchecked">
+						<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/LogoIcon.png" Width="32" Height="32" Stretch="Uniform" StretchDirection="Both" />
+					</ToggleButton>
+				</Border>
+				<ToolBarTray Background="Transparent" Grid.Column="1"  Margin="-1,1,0,0" VerticalAlignment="Top" IsHitTestVisible="True" IsLocked="True" >
+					<ToolBar Style="{StaticResource ToolBarStyle}" Name="StandardToolbar" Padding="0">
+						<ToggleButton Name="NewItem" MaxWidth="100" ToolTip="Add New Item" Style="{StaticResource MainToggleButtonStyle}" Checked="NewItem_Checked" Unchecked="NewItem_Unchecked">
+							<StackPanel Orientation="Horizontal">
+								<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/NewItem.png" Width="32" Height="32" Stretch="Uniform" StretchDirection="Both" />
+							</StackPanel>
+						</ToggleButton>
+						<Separator Background="{StaticResource ToolBarGripper}" Margin="3" />
+						<Button Name="Save" MaxWidth="100" ToolTip="Save" Click="Save_Click" Style="{StaticResource ToolbarButtonStyle}">
+							<StackPanel Orientation="Horizontal">
+								<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/Save.png" Width="32" Height="32" Stretch="Uniform" StretchDirection="Both" />
+							</StackPanel>
+						</Button>
+						<Separator Background="{StaticResource ToolBarGripper}" Margin="3" />
+						<Button Name="BuildSolution" MaxWidth="100" ToolTip="Build Solution" Click="BuildSolution_Click" Style="{StaticResource ToolbarButtonStyle}">
+							<StackPanel Orientation="Horizontal">
+								<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/BuildSolution.png" Width="32" Height="32" Stretch="Uniform" StretchDirection="Both" />
+							</StackPanel>
+						</Button>
+						<Button Name="BuildProject" MaxWidth="100" ToolTip="Build Project" Click="BuildProject_Click" Style="{StaticResource ToolbarButtonStyle}">
+							<StackPanel Orientation="Horizontal">
+								<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/BuildProject.png" Width="32" Height="32" Stretch="Uniform" StretchDirection="Both" />
+							</StackPanel>
+						</Button>
+						<Button Name="BuildOutput" MaxWidth="100" ToolTip="Build Output" Click="BuildOutput_Click" Style="{StaticResource ToolbarButtonStyle}">
+							<StackPanel Orientation="Horizontal">
+								<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/BuildOutput.png" Width="32" Height="32" Stretch="Uniform" StretchDirection="Both" />
+							</StackPanel>
+						</Button>
+						<Separator Background="{StaticResource ToolBarGripper}" Margin="3" />
+						<Button Name="OpenHelp" MaxWidth="100" ToolTip="Open Help Contents" Click="Help_Click" Style="{StaticResource ToolbarButtonStyle}">
+							<StackPanel Orientation="Horizontal">
+								<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/Help.png" Width="32" Height="32" Stretch="Uniform" StretchDirection="Both" />
+							</StackPanel>
+						</Button>
+						<Button Name="ReportBug" MaxWidth="100" Style="{StaticResource ToolbarButtonStyle}" Visibility="Collapsed">
+							<StackPanel Orientation="Horizontal" ToolTip="Report an Issue">
+								<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/ReportBug.png" Width="32" Height="32" Stretch="Uniform" StretchDirection="Both" />
+							</StackPanel>
+						</Button>
+					</ToolBar>
+				</ToolBarTray>
+			</Grid>
+		</Grid>
+		<r:BackstageTabControl Background="{StaticResource DockControlBackground}" Grid.Row="1" Margin="0" Name="Backstage" CornerSwoopVisibility="Visible" Visibility="Collapsed">
+			<r:Button Name="BackstageSave" Header="Save" Click="Save_Click" Icon="pack://application:,,,/WCFArchitect;component/Icons/X16/Save.png" IsEnabled="False" />
+			<r:Button Name="BackstageSaveAs" Header="Save As" Click="SaveAs_Click" Icon="pack://application:,,,/WCFArchitect;component/Icons/X16/Save.png" IsEnabled="False" />
+			<r:Button Name="BackstageOpen" Header="Open" Click="Open_Click" Icon="pack://application:,,,/WCFArchitect;component/Icons/X16/Open.png" />
+			<r:Button Name="BackstageImport" Header="Import" Click="Import_Click" Icon="pack://application:,,,/WCFArchitect;component/Icons/X16/Import.png" IsEnabled="False" />
+			<r:Button Name="BackstageClose" Header="Close" Click="Close_Click" Icon="pack://application:,,,/WCFArchitect;component/Icons/X16/Close.png" IsEnabled="False" />
+			<r:BackstageTabItem Name="BackstageProjectInfo" Header="Info" IsEnabled="False" FontSize="12" />
+			<r:BackstageTabItem Name="BackstageProjects" Header="Solutions" FontSize="12" />
+			<r:BackstageTabItem Name="BackstageOptions" Header="Options" FontSize="12" />
+			<r:Button Name="BackstageHelp" Header="Help" Click="Help_Click" Icon="pack://application:,,,/WCFArchitect;component/Icons/X16/Help.png" />
+			<r:Button Name="BackstageExit" Header="Exit" Click="Exit_Click" Icon="pack://application:,,,/WCFArchitect;component/Icons/X16/Exit.png" />
+		</r:BackstageTabControl>
+		<Border Name="DockView" Grid.Row="1" Margin="-1,-1,-1,-4" >
+			<c1d:C1DockControl Name="DockViewControl" DockTabControlStyle="{StaticResource C1DockTabControlStyle}" Background="{StaticResource DockControlBackground}" BorderThickness="1" Padding="2" Margin="0" ViewChanged="DockView_ViewChanged" WindowStyle="{StaticResource C1DockWindowStyle}">
+				<c1d:C1DockTabControl Background="White" TabStripBackground="LightGray" Name="DockTop" Dock="Top" DockWidth="250" DockHeight="250" DockMode="Sliding" TabItemShape="Rectangle" CanUserHide="False" TabStripMenuVisibility="Collapsed" />
+				<c1d:C1DockTabControl Background="White" TabStripBackground="LightGray" Name="DockSolutionNavigator" Dock="Left" DockMode="Docked" DockWidth="200" DockHeight="400" TabItemShape="Rectangle" CanUserHide="False" CanUserFloat="False" CanUserReorder="False" CanUserSlide="True" CanUserDock="True" TabStripMenuVisibility="Collapsed" TabStripOverlap="1" >
+					<c1d:C1DockTabItem Background="LightSteelBlue" x:Name="SolutionNavigatorTab" Header="Solution Navigator" CanUserClose="False" HeaderTemplate="{StaticResource SolutionNavigatorHeaderTemplate}">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="28" />
+								<RowDefinition Height="26" />
+								<RowDefinition Height="26" />
+								<RowDefinition Height="*" />
+							</Grid.RowDefinitions>
+							<Border Background="{StaticResource ToolBarBackground}" Padding="4,2">
+								<StackPanel Orientation="Horizontal" Grid.Row="0">
+									<ToggleButton IsChecked="{Binding Path=SolutionNavigatorShowAll}" Name="SolutionNavigatorShowAllToggle" Padding="2,1" Style="{StaticResource MainToggleButtonStyle}" ToolTip="Show Namespaces" Checked="SolutionNavigatorShowAllToggle_Checked">
+										<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Solution.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform" Grid.Column="0"/>
+									</ToggleButton>
+									<ToggleButton IsChecked="{Binding Path=SolutionNavigatorShowNamespaces}" Name="SolutionNavigatorShowNamespacesToggle" Padding="2,1" Style="{StaticResource MainToggleButtonStyle}" ToolTip="Show Namespaces" Checked="SolutionNavigatorShowNamespacesToggle_Checked">
+										<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Namespace.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform" Grid.Column="0"/>
+									</ToggleButton>
+									<ToggleButton IsChecked="{Binding Path=SolutionNavigatorShowServices}" Name="SolutionNavigatorShowServicesToggle" Padding="2,1" Style="{StaticResource MainToggleButtonStyle}" ToolTip="Show Service Contracts" Checked="SolutionNavigatorShowServicesToggle_Checked">
+										<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Service.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform" Grid.Column="0"/>
+									</ToggleButton>
+									<ToggleButton IsChecked="{Binding Path=SolutionNavigatorShowData}" Name="SolutionNavigatorShowDataToggle" Padding="2,1" Style="{StaticResource MainToggleButtonStyle}" ToolTip="Show Data Contracts" Checked="SolutionNavigatorShowDataToggle_Checked">
+										<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Data.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform" Grid.Column="0"/>
+									</ToggleButton>
+									<ToggleButton IsChecked="{Binding Path=SolutionNavigatorShowEnums}" Name="SolutionNavigatorShowEnumToggle" Padding="2,1" Style="{StaticResource MainToggleButtonStyle}" ToolTip="Show Enum Contracts" Checked="SolutionNavigatorShowEnumToggle_Checked">
+										<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Enum.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform" Grid.Column="0"/>
+									</ToggleButton>
+								</StackPanel>
+							</Border>
+							<Border BorderThickness="0" Background="White" Grid.Row="1">
+								<TextBox Name="SolutionNavigatorSearch" Margin="4,2" Style="{StaticResource SearchTextBox}" TextChanged="SolutionNavigatorSearch_TextChanged" />
+							</Border>
+							<Border BorderThickness="0" Background="White" Grid.Row="2">
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="28" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+									<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X24/Solution.png" HorizontalAlignment="Right" VerticalAlignment="Center" UseLayoutRounding="True" Height="24" Width="24" Stretch="Uniform" Visibility="Visible" Grid.Column="0"/>
+									<TextBlock Name="SolutionNavigatorHeaderTitle" Grid.Column="1" Text="Solution" Padding="3,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+								</Grid>
+							</Border>
+							<TreeView Name="SolutionNavigatorView" BorderThickness="0" Margin="0" Grid.Row="3" ItemTemplateSelector="{StaticResource SolutionNavigatorTemplateSelector}" ItemContainerStyle="{StaticResource ProjectTreeViewItemStyle}" UseLayoutRounding="True" AllowDrop="True" HorizontalContentAlignment="Stretch" TreeViewItem.PreviewMouseDoubleClick="SolutionNavigatorView_MouseDoubleClick" KeyUp="SolutionNavigatorView_KeyUp" PreviewMouseLeftButtonDown="SolutionNavigatorView_PreviewMouseLeftButtonDown" PreviewMouseMove="SolutionNavigatorView_PreviewMouseMove" QueryContinueDrag="SolutionNavigatorView_QueryContinueDrag" DragLeave="SolutionNavigatorView_DragLeave" PreviewDragOver="SolutionNavigatorView_PreviewDragOver" Drop="SolutionNavigatorView_Drop" />
+						</Grid>
+					</c1d:C1DockTabItem>
+				</c1d:C1DockTabControl>
+				<c1d:C1DockTabControl Background="White" TabStripBackground="LightGray" Name="DockErrorList" Dock="Bottom" DockMode="Sliding" DockHeight="250" DockWidth="250" TabItemShape="Rectangle"  CanUserHide="False" CanUserFloat="False" CanUserReorder="False" CanUserSlide="True" CanUserDock="True" TabStripMenuVisibility="Collapsed" >
+					<c1d:C1DockTabItem x:Name="ErrorListTab" CanUserClose="False" HeaderTemplate="{StaticResource ErrorListHeaderTemplate}" IsSelected="False" >
+						<TabControl Name="ErrorListTabs" TabStripPlacement="Bottom" />
+					</c1d:C1DockTabItem>
+				</c1d:C1DockTabControl>
+				<c1d:C1DockTabControl Background="White" TabStripBackground="LightGray" Name="DockOutput" Dock="Bottom" DockMode="Sliding" DockHeight="250" DockWidth="250" TabItemShape="Rectangle"  CanUserHide="False" CanUserFloat="False" CanUserReorder="False" CanUserSlide="True" CanUserDock="True" TabStripMenuVisibility="Collapsed" >
+					<c1d:C1DockTabItem x:Name="OutputTab" CanUserClose="False" HeaderTemplate="{StaticResource OutputHeaderTemplate}" IsSelected="False" >
+						<TabControl Name="OutputTabs" TabStripPlacement="Bottom" />
+					</c1d:C1DockTabItem>
+				</c1d:C1DockTabControl>
+				<c1d:C1DockTabControl Background="White" TabStripBackground="LightGray" Name="DockFindReplace" Dock="Bottom" DockMode="Sliding" DockHeight="250" DockWidth="250" TabItemShape="Rectangle" CanUserHide="False" CanUserFloat="False" CanUserReorder="False" CanUserSlide="True" CanUserDock="True" TabStripMenuVisibility="Collapsed" >
+					<c1d:C1DockTabItem x:Name="FindReplaceTab" CanUserClose="False" HeaderTemplate="{StaticResource FindReplaceHeaderTemplate}" IsSelected="False" >
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="62" />
+								<RowDefinition Height="*" />
+							</Grid.RowDefinitions>
+							<Button Content="New Search" Name="FindNewSearch" Width="75" Height="23" Margin="6,5,0,0" HorizontalAlignment="Left" Click="FindNewSearch_Click" VerticalAlignment="Top" />
+							<Button Content="Close" Name="FindClose" Width="75" Height="23" Margin="6,34,0,0" HorizontalAlignment="Left" Click="FindClose_Click" VerticalAlignment="Top" />
+							<Label Content="Find What:" HorizontalAlignment="Left" Margin="86,5,0,0" Height="Auto" VerticalAlignment="Top" />
+							<pc:TextBox Name="FindValue" Margin="174,6,576,0" Height="23" VerticalAlignment="Top" />
+							<Label Content="Replace With:" HorizontalAlignment="Left" Margin="86,34,0,0" Height="Auto" VerticalAlignment="Top" />
+							<pc:TextBox Name="FindReplaceValue" Height="23" Margin="174,35,576,0" VerticalAlignment="Top" />
+							<Label Content="Type:" HorizontalAlignment="Right" Margin="0,4,532,0" Height="Auto" VerticalAlignment="Top" />
+							<ComboBox Height="23" HorizontalAlignment="Right" Margin="0,6,382,0" Name="FindItem" VerticalAlignment="Top" Width="130" >
+								<ComboBoxItem Content="Any" IsSelected="True" />
+								<ComboBoxItem Content="Project" />
+								<ComboBoxItem Content="Namespace" />
+								<ComboBoxItem Content="Service" />
+								<ComboBoxItem Content="Data" />
+								<ComboBoxItem Content="Enum" />
+							</ComboBox>
+							<Label Content="Look In:" HorizontalAlignment="Right" Margin="0,33,518,0" Height="Auto" VerticalAlignment="Top" />
+							<ComboBox Height="23" HorizontalAlignment="Right" Margin="0,35,382,0" Name="FindLocation" VerticalAlignment="Top" Width="130" >
+								<ComboBoxItem Content="Entire Solution" IsSelected="True" />
+								<ComboBoxItem Content="Current Project" />
+								<ComboBoxItem Content="Open Documents" />
+							</ComboBox>
+							<CheckBox Content="Use Regular Expressions" Height="16" HorizontalAlignment="Right" Margin="0,9,231,0" Name="FindUseRegex" VerticalAlignment="Top" />
+							<CheckBox Content="Match Case" Height="16" HorizontalAlignment="Right" Margin="0,38,294,0" Name="FindMatchCase" VerticalAlignment="Top" />
+							<Button Content="Find Next" Name="FindNext" Width="100" Height="23" Margin="0,5,111,0" HorizontalAlignment="Right" Click="FindNext_Click" VerticalAlignment="Top" />
+							<Button Content="Replace" Name="FindReplace" Width="100" Height="23" Margin="0,34,111,0" HorizontalAlignment="Right" Click="FindReplace_Click" VerticalAlignment="Top" />
+							<Button Content="Find All" Name="FindAll" Width="100" Height="23" Margin="0,5,5,0" HorizontalAlignment="Right" Click="FindAll_Click" VerticalAlignment="Top" />
+							<Button Content="Replace All" Name="FindReplaceAll" Width="100" Height="23" Margin="0,34,5,0" HorizontalAlignment="Right" Click="FindReplaceAll_Click" VerticalAlignment="Top" />
+							<TabControl Grid.Row="1" Name="FindReplaceTabs" TabStripPlacement="Bottom" SelectionChanged="FindReplaceTabs_SelectionChanged" />
+						</Grid>
+					</c1d:C1DockTabItem>
+				</c1d:C1DockTabControl>
+				<c1d:C1DockTabControl ContentTemplate="{StaticResource C1DockTabItemWindowContentTemplate}" ItemContainerStyle="{StaticResource C1DockTabItemWindowStyle}" Padding="5" Background="White" x:Name="ProjectTabs" TabStripPlacement="Top" TabStripMenuVisibility="Visible" ShowHeader="False" TabItemShape="Rectangle" TabStripOverlap="0" TabStripOverlapDirection="Left" TabItemClose="InEachTab" HorizontalFill="True" VerticalFill="True" SelectionChanged="ProjectTabs_SelectionChanged" TabItemClosing="ProjectTabs_TabItemClosing" MouseUp="ProjectTabs_MouseUp"/>
+			</c1d:C1DockControl>
+		</Border>
+		<Border Name="NewItemScreen" Grid.Row="1" Background="{StaticResource DockControlBackground}" BorderThickness="0" Visibility="Collapsed">
+			<Border Margin="100" Padding="10" CornerRadius="5" Background="White" BorderThickness="1" BorderBrush="DarkGray">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="*" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<Border BorderBrush="#CCCCCC" BorderThickness="0,0,0,1" Padding="0,0,0,5" Margin="0,0,0,5" Grid.Row="0">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="24" />
+							</Grid.ColumnDefinitions>
+							<StackPanel Orientation="Horizontal" Grid.Column="0">
+								<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/NewItem.png" UseLayoutRounding="True" Height="32" Width="32" Stretch="Uniform" Margin="5,0"/>
+								<TextBlock Text="New Item" Foreground="#555555" FontSize="18" Height="Auto" VerticalAlignment="Center" />
+							</StackPanel>
+							<Button Name="NewItemClose" Grid.Column="2" Margin="0" Width="22" Height="22" VerticalAlignment="Top" HorizontalAlignment="Right" Click="NewItemClose_Click" Padding="0" Style="{StaticResource ListItemButtonStyle}">
+								<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+							</Button>
+						</Grid>
+					</Border>
+					<Grid Grid.Row="1" Margin="2.5,0">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<ListBox HorizontalAlignment="Stretch" Margin="2.5,0,2.5,0" Grid.Column="0" BorderThickness="1" VerticalAlignment="Stretch" Name="NewItemTypesList" SelectionMode="Single" ItemTemplate="{StaticResource ListBoxItemTemplate}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" SelectionChanged="NewItemTypesList_SelectionChanged">
+							<ListBox.Resources>
+								<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+							</ListBox.Resources>
+							<ListBox.Items>
+								<Root:NewItemType DataType="1" Title="Namespace" Description="Namespaces are used to organize services in WCF." ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/Namespace.png" />
+								<Root:NewItemType DataType="2" Title="Service" Description="Services are used to organize services in WCF." ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/Service.png" />
+								<Root:NewItemType DataType="3" Title="Data" Description="Data contracts are used to send data in WCF." ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/Data.png" />
+								<Root:NewItemType DataType="4" Title="Enumeration" Description="Enumeration contracts are used to create enums for WCF." ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/Enum.png" />
+								<Root:NewItemType DataType="5" Title="Binding" Description="Bindings in WCF determine how a service will communicate." ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/Binding.png" />
+								<Root:NewItemType DataType="6" Title="Security" Description="Security objects are used to secure Bindings in WCF." ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/BindingSecurity.png" />
+								<Root:NewItemType DataType="7" Title="Host" Description="Hosts are used to host WCF Services." ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/Host.png" />
+							</ListBox.Items>
+						</ListBox>
+						<ListBox HorizontalAlignment="Stretch" Margin="2.5,0,2.5,0" Grid.Column="1" Visibility="Collapsed" BorderThickness="1" VerticalAlignment="Stretch" Name="NewItemProjectsList" SelectionMode="Single" ItemContainerStyle="{StaticResource StretchedContainerStyle}" SelectionChanged="NewItemProjectsList_SelectionChanged">
+							<ListBox.Resources>
+								<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+							</ListBox.Resources>
+							<ListBox.ItemTemplate>
+								<DataTemplate>
+									<Border Name="BG" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="0" >
+										<Grid >
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="40" />
+												<ColumnDefinition Width="*" />
+												<ColumnDefinition Width="5" />
+											</Grid.ColumnDefinitions>
+											<Grid.RowDefinitions>
+												<RowDefinition Height="40" />
+											</Grid.RowDefinitions>
+											<Image Source="{Binding Converter={StaticResource ProjectTypeImage32Converter}}" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="32" Width="32" Stretch="Uniform" Grid.Column="0"/>
+											<TextBlock Text="{Binding Path=Name}" Foreground="Black" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Grid.Column="1"/>
+										</Grid>
+									</Border>
+									<DataTemplate.Triggers>
+										<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
+											<Setter TargetName="BG" Property="Background" Value="{StaticResource ItemHoverBackground}" />
+											<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource ItemHoverBorder}" />
+										</DataTrigger>
+										<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
+											<Setter TargetName="BG" Property="Background" Value="{StaticResource ItemSelectedBackground}" />
+											<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource ItemHoverBorder}" />
+										</DataTrigger>
+									</DataTemplate.Triggers>
+								</DataTemplate>
+							</ListBox.ItemTemplate>
+						</ListBox>
+						<Border Name="NewItemProjectNamespaces" Margin="2.5,0,2.5,0" Grid.Column="2" Visibility="Collapsed">
+							<Grid>
+								<ToggleButton Name="NewItemProjectNamespaceRoot" Margin="0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="30" Checked="NewItemProjectNamespaceRoot_Checked" />
+								<TreeView Name="NewItemProjectNamespaceList" BorderThickness="1" Margin="0,35,0,0" ItemContainerStyle="{StaticResource NamespaceTreeViewItemStyle}" HorizontalContentAlignment="Stretch" SelectedItemChanged="NewItemProjectNamespaceRoot_SelectedItemChanged">
+									<TreeView.ItemTemplate>
+										<HierarchicalDataTemplate DataType="{x:Type Projects:Namespace}" ItemsSource="{Binding Path=Children}">
+											<Grid>
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="20" />
+													<ColumnDefinition Width="*" />
+												</Grid.ColumnDefinitions>
+												<Image Name="ItemImage" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Namespace.png" HorizontalAlignment="Right" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Margin="0,1" Stretch="Uniform" Visibility="Visible" Grid.Column="0"/>
+												<TextBlock Name="ItemTitle" Grid.Column="1" Text="{Binding Path=Name}" ToolTip="{Binding Path=URI}" Padding="3,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+											</Grid>
+											<HierarchicalDataTemplate.Triggers>
+												<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TreeViewItem}},Path=IsExpanded}" Value="True">
+													<Setter TargetName="ItemImage" Property="Source" Value="pack://application:,,,/WCFArchitect;component/Icons/X16/NamespaceOpen.png" />
+												</DataTrigger>
+											</HierarchicalDataTemplate.Triggers>
+										</HierarchicalDataTemplate>
+									</TreeView.ItemTemplate>
+								</TreeView>
+							</Grid>
+						</Border>
+						<ListBox HorizontalAlignment="Stretch" Margin="2.5,0,2.5,0" Grid.Column="2" Visibility="Collapsed" BorderThickness="1" VerticalAlignment="Stretch" Name="NewItemBindingTypesList" SelectionMode="Single" ItemTemplate="{StaticResource ListBoxItemTemplate}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" SelectionChanged="NewItemBindingTypesList_SelectionChanged">
+							<ListBox.Resources>
+								<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+							</ListBox.Resources>
+							<ListBox.Items>
+								<Root:NewItemType DataType="1" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png" Title="Basic HTTP Binding" Description="A binding that can be used with any web service that conforms to the WS-I Basic Profile." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
+								<Root:NewItemType DataType="2" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png" Title="WS HTTP Binding" Description="A binding that supports, security, reliable sessions, and distributed transactions over HTTP." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
+								<Root:NewItemType DataType="3" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png" Title="WS 2007 HTTP Binding" Description="A binding that derives from the WS HTTP Binding and provides updated support for Security, Reliable Sessions, and Transaction Flows." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
+								<Root:NewItemType DataType="4" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSDualHTTP.png" Title="WS Dual HTTP Binding" Description="A binding that supports duplex contracts over HTTP." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
+								<Root:NewItemType DataType="5" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png" Title="WS Federation HTTP Binding" Description="A binding that supports federated security over HTTP." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
+								<Root:NewItemType DataType="6" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png" Title="WS 2007 Federation HTTP Binding" Description="A binding that derives from the WS 2007 HTTP Binding and supports federated security." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
+								<Root:NewItemType DataType="7" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png" Title="TCP Binding" Description="A binding that provides security and reliability for cross-machine communications." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
+								<Root:NewItemType DataType="8" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/NamedPipe.png" Title="Named Pipe Binding" Description="A binding that provides security and reliability for intra-machine communications." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
+								<Root:NewItemType DataType="8" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQ.png" Title="MSMQ Binding" Description="A queued binding for cross-machine communications." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
+								<Root:NewItemType DataType="10" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/PeerTCP.png" Title="Peer TCP Binding" Description="A secure binding for peer-to-peer applications" Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
+								<Root:NewItemType DataType="11" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WebHTTP.png" Title="Web HTTP Binding" Description="A binding that provides the use of HTTP requests instead SOAP messags." Frameworks="3.5, 3.5 Client, 4.0" />
+								<Root:NewItemType DataType="12" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQIntegration.png" Title="MSMQ Integration Binding" Description="A binding for mapping MSMQ messages to WCF messages." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
+							</ListBox.Items>
+						</ListBox>
+						<ListBox HorizontalAlignment="Stretch" Margin="2.5,0,2.5,0" Grid.Column="2" Visibility="Collapsed" BorderThickness="1" VerticalAlignment="Stretch" Name="NewItemSecurityTypesList" SelectionMode="Single" ItemTemplate="{StaticResource ListBoxItemTemplate}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" SelectionChanged="NewItemSecurityTypesList_SelectionChanged">
+							<ListBox.Resources>
+								<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+							</ListBox.Resources>
+							<ListBox.Items>
+								<Root:NewItemType DataType="1" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png" Title="Basic HTTP Security" Description="Security configuration for a Basic HTTP Binding." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
+								<Root:NewItemType DataType="2" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png" Title="WS HTTP Security" Description="Security configuration for a WS HTTP or WS 2007 HTTP Binding." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
+								<Root:NewItemType DataType="3" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSDualHTTP.png" Title="WS Dual Security" Description="Security configuration for a WS Dual Binding." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
+								<Root:NewItemType DataType="4" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png" Title="WS Federation Security" Description="Security configuration for a WS Federation or WS 2007 Federation Binding." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
+								<Root:NewItemType DataType="5" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png" Title="TCP Security" Description="Security configuration for a TCP Binding." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
+								<Root:NewItemType DataType="6" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/NamedPipe.png" Title="Named Pipe Security" Description="Security configuration for a Named Pipe Binding." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
+								<Root:NewItemType DataType="7" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQ.png" Title="MSMQ Security" Description="Security configuration for an MSMQ Binding." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
+								<Root:NewItemType DataType="8" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/PeerTCP.png" Title="Peer TCP Security" Description="Security configuration for a Peer TCP Binding" Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
+								<Root:NewItemType DataType="9" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WebHTTP.png" Title="Web HTTP Security" Description="Security configuration for a Web HTTP Binding." Frameworks="3.5, 3.5 Client, 4.0" />
+								<Root:NewItemType DataType="10" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQIntegration.png" Title="MSMQ Integration Security" Description="Security configuration for an MSMQ Integration Binding" Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
+							</ListBox.Items>
+						</ListBox>
+					</Grid>
+					<Border BorderBrush="#CCCCCC" BorderThickness="0,1,0,0" Padding="0,5,0,0" Margin="0,5,0,0" Grid.Row="2">
+						<Grid>
+							<pc:TextBox Name="NewItemName" Margin="50,0,5,0" HorizontalAlignment="Stretch" KeyUp="NewItemName_KeyUp" TextChanged="NewItemName_TextChanged" />
+							<Label Content="Name:" Padding="5,0" HorizontalAlignment="Left" VerticalAlignment="Center" />
+						</Grid>
+					</Border>
+					<Border BorderBrush="#CCCCCC" BorderThickness="0,1,0,0" Padding="0,5,0,0" Margin="0,5,0,0" Grid.Row="3">
+						<Grid Margin="5,0">
+							<Button Name="NewItemCancel" Content="Cancel" Width="75" HorizontalAlignment="Left" Click="NewItemCancel_Click" />
+							<Button Name="NewItemAdd" Content="Add" Width="75" HorizontalAlignment="Right" IsEnabled="False" Click="NewItemAdd_Click" />
+						</Grid>
+					</Border>
+				</Grid>
+			</Border>
+		</Border>
+		<Border x:Name="SwitcherWindow" Grid.Row="1" BorderThickness="1" BorderBrush="LightGray" Background="White" CornerRadius="5" Height="400" Width="400" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
+			<Border.Effect>
+				<DropShadowEffect BlurRadius="5" Color="LightGray" Opacity=".5" RenderingBias="Quality" ShadowDepth="5" />
+			</Border.Effect>
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="50" />
+					<RowDefinition Height="*" />
+					<RowDefinition Height="25" />
+				</Grid.RowDefinitions>
+				<Image x:Name="SwitcherSelectedItemImage" Margin="10" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" />
+				<TextBlock x:Name="SwitcherSelectedItemName" Height="20" Margin="35,8,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Top" FontSize="13" FontWeight="Bold" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+				<TextBlock x:Name="SwitcherSelectedItemNamespace" Height="16" Margin="40,28,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Top" FontSize="12" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+				<TextBlock x:Name="SwitcherSelectedItemProject" Grid.Row="2" Height="Auto" Margin="10,5,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Top" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+				<Border Grid.Row="1" Background="AliceBlue" BorderThickness="0,1" BorderBrush="LightGray" Padding="10,5">
+					<Grid>
+						<TextBlock Height="20" HorizontalAlignment="Stretch" VerticalAlignment="Top" Text="Active Pages" FontSize="13" FontWeight="Bold" />
+						<ListBox Background="Transparent" BorderThickness="0" Margin="0,20,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="SwitcherDocumentList" SelectionMode="Single" ItemContainerStyle="{StaticResource StretchedContainerStyle}" SelectionChanged="SwitcherDocumentList_SelectionChanged" >
+							<ListBox.Resources>
+								<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+							</ListBox.Resources>
+							<ListBox.ItemTemplate>
+								<DataTemplate>
+									<Border Name="BG" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="0" >
+										<Grid >
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="20" />
+												<ColumnDefinition Width="*" />
+												<ColumnDefinition Width="5" />
+											</Grid.ColumnDefinitions>
+											<Grid.RowDefinitions>
+												<RowDefinition Height="20" />
+											</Grid.RowDefinitions>
+											<Image Source="{Binding Converter={StaticResource DocumentTypeImage16Converter}}" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform" Grid.Column="0"/>
+											<TextBlock Text="{Binding Path=Name}" Foreground="Black" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Grid.Column="1"/>
+										</Grid>
+									</Border>
+									<DataTemplate.Triggers>
+										<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
+											<Setter TargetName="BG" Property="Background" Value="{StaticResource ItemHoverBackground}" />
+											<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource ItemHoverBorder}" />
+										</DataTrigger>
+										<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
+											<Setter TargetName="BG" Property="Background" Value="{StaticResource ItemSelectedBackground}" />
+											<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource ItemHoverBorder}" />
+										</DataTrigger>
+									</DataTemplate.Triggers>
+								</DataTemplate>
+							</ListBox.ItemTemplate>
+						</ListBox>
+					</Grid>
+				</Border>
+			</Grid>
+		</Border>
+		<r:StatusBar Grid.Row="2">
+			<r:StatusBarItem HorizontalAlignment="Left" Width="Auto">
+				<Border>
+					<TextBlock Name="SystemStatus" Text="Ready" VerticalAlignment="Center" />
+				</Border>
+			</r:StatusBarItem>
+			<r:StatusBarItem Name="BuildStatusGroup" HorizontalAlignment="Right" Width="Auto" Visibility="Collapsed" >
+				<Border HorizontalAlignment="Right">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="5" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						<TextBlock Grid.Column="0" Text="Building ..." VerticalAlignment="Center" />
+						<ProgressBar Name="BuildProgress" Grid.Column="2" VerticalAlignment="Center" Width="100" Height="16" Minimum="0" Value="0" />
+					</Grid>
+				</Border>
+			</r:StatusBarItem>
+			<Separator HorizontalAlignment="Right" />
+			<r:StatusBarItem HorizontalAlignment="Right" Width="Auto">
+				<Border HorizontalAlignment="Right">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="5" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="5" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="5" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						<TextBlock Name="KeyboardScrollStatus" Grid.Column="0" Text="SCR" VerticalAlignment="Center" Visibility="Hidden" />
+						<TextBlock Name="KeyboardCapsLockStatus" Grid.Column="2" Text="CAPS" VerticalAlignment="Center" Visibility="Hidden" />
+						<TextBlock Name="KeyboardNumLockStatus" Grid.Column="4" Text="NUM" VerticalAlignment="Center" Visibility="Hidden" />
+						<TextBlock Name="KeyboardInsertStatusOff" Grid.Column="6" Text="INS" VerticalAlignment="Center" Visibility="Hidden" />
+						<TextBlock Name="KeyboardInsertStatusOn" Grid.Column="7" Text="OVR" VerticalAlignment="Center" Visibility="Hidden" />
+					</Grid>
+				</Border>
+			</r:StatusBarItem>
+		</r:StatusBar>
+	</Grid>
+</Window>

@@ -1,0 +1,70 @@
+﻿<Grid x:Class="WCFArchitect.Interface.Project.Security.NamedPipe" x:ClassModifier="internal"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" 
+	xmlns:c1datetime="http://schemas.componentone.com/wpf/DateTimeEditors"
+	xmlns:pc="clr-namespace:Prospective.Controls;assembly=Prospective.Controls"
+	xmlns:Security="clr-namespace:WCFArchitect.Interface.Project.Security"
+	xmlns:InRoot="clr-namespace:WCFArchitect.Interface"
+	d:DesignHeight="750" d:DesignWidth="750" DataContext="{Binding RelativeSource={RelativeSource Self}}" >
+	<Grid.Resources>
+		<Security:NetNamedPipeSecurityModeConverter x:Key="NetNamedPipeSecurityModeConverter" />
+		<Security:ProtectionLevelConverter x:Key="ProtectionLevelConverter" />
+		<InRoot:ProjectTypeVisibilityConverter x:Key="ProjectTypeVisibilityConverter" />
+		<InRoot:ProjectTypeEnabledConverter x:Key="ProjectTypeEnabledConverter" />
+		<InRoot:ProjectTypeReadOnlyConverter x:Key="ProjectTypeReadOnlyConverter" />
+	</Grid.Resources>
+	<Grid.RowDefinitions>
+		<RowDefinition Height="Auto" />
+		<RowDefinition Height="*" />
+	</Grid.RowDefinitions>
+	<Border BorderBrush="#CCCCCC" BorderThickness="0,0,0,1" Padding="0,0,0,5" Margin="0,0,0,5" Grid.Row="0">
+		<StackPanel Orientation="Horizontal">
+			<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/NamedPipe.png" UseLayoutRounding="True" Height="32" Width="32" Stretch="Uniform" Margin="5,0"/>
+			<TextBlock Text="{Binding Path=Security.Name}" Foreground="#555555" FontSize="18" Height="Auto" VerticalAlignment="Center" />
+			<TextBlock Text=" - Named Pipe Binding" Foreground="#555555" FontSize="18" Height="Auto" VerticalAlignment="Center" />
+		</StackPanel>
+	</Border>
+	<Grid Grid.Row="1">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="35" />
+			<RowDefinition Height="60" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<Grid Grid.Row="0">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+			<Label Content="Display Name:" Height="Auto" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" />
+			<pc:TextBox Text="{Binding Path=Security.Name}" Name="DisplayName" Height="23" Margin="97,7,5,0" VerticalAlignment="Top" IsReadOnly="{Binding Path=Security, Converter={StaticResource ProjectTypeReadOnlyConverter}}" ToolTip="{Binding Path=Security.Name}" />
+			<Label Content="Code Name:" Height="Auto" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" Grid.Column="1" />
+			<pc:TextBox Text="{Binding Path=Security.CodeName}" Name="CodeName" Height="23" Margin="86,7,5,0" VerticalAlignment="Top" Grid.Column="1" IsReadOnly="{Binding Path=Security, Converter={StaticResource ProjectTypeReadOnlyConverter}}" TextChanged="CodeName_TextChanged" Validate="CodeName_Validate" ToolTip="{Binding Path=Security.CodeName}" />
+			<Label Content="Security Mode:" Height="Auto" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" Grid.Column="2" />
+			<ComboBox Height="23" Margin="100,7,5,0" VerticalAlignment="Top" Grid.Column="2" SelectedIndex="{Binding Path=Security.Mode, Converter={StaticResource NetNamedPipeSecurityModeConverter}}" IsHitTestVisible="{Binding Path=Security, Converter={StaticResource ProjectTypeEnabledConverter}}" >
+				<ComboBox.Items>
+					<ComboBoxItem Content="None" />
+					<ComboBoxItem Content="Transport" />
+				</ComboBox.Items>
+			</ComboBox>
+		</Grid>
+		<Grid Grid.Row="1">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<GroupBox Header="Transport" Margin="5,0" Grid.Column="0" >
+				<Grid>
+					<Label Content="Protection Level:" Margin="5,6,0,0" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Width="Auto" />
+					<ComboBox Height="23" Margin="180,7,5,0" SelectedIndex="{Binding Path=Security.TransportProtectionLevel, Converter={StaticResource ProtectionLevelConverter}}" VerticalAlignment="Top" IsHitTestVisible="{Binding Path=Security, Converter={StaticResource ProjectTypeEnabledConverter}}" >
+						<ComboBoxItem Content="None" />
+						<ComboBoxItem Content="Sign" />
+						<ComboBoxItem Content="Encrypt and Sign" />
+					</ComboBox>
+				</Grid>
+			</GroupBox>
+		</Grid>
+	</Grid>
+</Grid>
