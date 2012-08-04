@@ -14,9 +14,5 @@ namespace WCFArchitect.Options
 
 		public string Authorization { get { return (string)GetValue(AuthorizationProperty); } set { SetValue(AuthorizationProperty, value); } }
 		public static readonly DependencyProperty AuthorizationProperty = DependencyProperty.Register("Authorization", typeof(string), typeof(License));
-		
-		//Timebomb Variables
-		public DateTime LastNISTCheck { get; set; }
-		public bool LastNISTCheckOK { get; set; }
    }
 }
