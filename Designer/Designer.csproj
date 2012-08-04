@@ -126,9 +126,6 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Fluent">
-      <HintPath>..\..\..\..\Downloads\Controls\Fluent Ribbon Source\Fluent\Fluent\bin\Release\Fluent.dll</HintPath>
-    </Reference>
     <Reference Include="Karvonite40">
       <HintPath>C:\Program Files (x86)\Karvonite 4\Bin\Karvonite40.dll</HintPath>
     </Reference>
@@ -144,7 +141,8 @@
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="Prospective.Controls, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\Prospective\Prospective.Controls\Build\Prospective.Controls.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Prospective\Controls\Build\Prospective.Controls.dll</HintPath>
     </Reference>
     <Reference Include="Prospective.Utilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\Prospective\Prospective.Utilities\Build\Prospective.Utilities.dll</HintPath>
@@ -176,8 +174,6 @@
     </ApplicationDefinition>
     <Compile Include="Options\Licensing.cs" />
     <Compile Include="Options\UserProfile.cs" />
-    <Compile Include="Themes\DragAdorner.cs" />
-    <Compile Include="Themes\TreeViewHelpers.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -192,14 +188,6 @@
       <SubType>Designer</SubType>
     </Resource>
     <Page Include="Themes\Colors.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Themes\ProjectTreeView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Themes\ToolBars.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

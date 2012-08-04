@@ -53,20 +53,8 @@ namespace WCFArchitect
 			{
 				for (int i = 0; i < args.Count; i++)
 				{
-					if (args[i] == "/NoStart" || args[i] == "/nostart" || args[i] == "/NS" || args[i] == "/ns")
-						Start = false;
-
 					if (args[i] == "/ResetUserProfile" || args[i] == "/resetuserprofile" || args[i] == "/RU" || args[i] == "/ru")
 						ResetUserProfile();
-
-					if (args[i] == "/SetKey" || args[i] == "/setkey")
-						SetKey(args[i + 1]);
-
-					if (args[i] == "/DeactivateKey" || args[i] == "/deactivatekey")
-						DeactivateKey();
-
-					if (args[i] == "/DeleteLicense" || args[i] == "/deletelicense")
-						DeleteLicenseFile();
 
 					if (args[i] == "/o")
 						Globals.ArgSolutionPath = args[i + 1];
@@ -130,32 +118,6 @@ namespace WCFArchitect
 				uos.Add(Globals.UserProfile);
 			}
 			uos.Save();
-		}
-
-		public void SetKey(string Key)
-		{
-			var TLL = los.OfType<Options.License>();
-			foreach (Options.License T in TLL) los.Remove(T);
-
-			Options.License TL = new Options.License();
-			TL.Authorization = "";
-			TL.Key = Key.Replace("-", "");
-			los.Add(TL);
-			los.Save();
-		}
-		
-		public void DeactivateKey()
-		{
-			Options.License TLL = los.OfType<Options.License>().DefaultIfEmpty(null).First();
-			Globals.LicenseKey = TLL;
-			bool v = Options.Licensing.Deactivate();
-		}
-
-		public void DeleteLicenseFile()
-		{
-			los.Close();
-			File.Delete(Globals.LicenseKeyPath + "License.dat");
-			this.Shutdown(0);
 		}
 
 		private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

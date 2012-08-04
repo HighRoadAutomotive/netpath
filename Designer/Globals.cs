@@ -44,8 +44,8 @@ namespace WCFArchitect
 		public static bool IsFinding { get; set; }
 		public static bool IsSaving { get; set; }
 		public static bool IsClosing { get; set; }
-		public static Interface.Main MainScreen { get; set; }
-		public static List<Interface.Project.Project> ProjectScreens { get; set; }
+		//public static Interface.Main MainScreen { get; set; }
+		//public static List<Interface.Project.Project> ProjectScreens { get; set; }
 
 		public static T GetVisualParent<T>(object childObject) where T : Visual { DependencyObject child = childObject as DependencyObject; while ((child != null) && !(child is T)) { child = VisualTreeHelper.GetParent(child); } return child as T; }
 		public static T GetVisualChild<T>(Visual parent) where T : Visual { T child = default(T); int numVisuals = VisualTreeHelper.GetChildrenCount(parent); for (int i = 0; i < numVisuals; i++) { Visual v = (Visual)VisualTreeHelper.GetChild(parent, i); child = v as T; if (child == null) { child = GetVisualChild<T>(v); } if (child != null) { break; } } return child; }
@@ -145,12 +145,7 @@ namespace WCFArchitect
 				if (Globals.UserProfile.AutomaticBackupsEnabled == true)
 					BackupTimer = new System.Threading.Timer(new System.Threading.TimerCallback(Globals.BackupSolution), null, (long)Globals.UserProfile.AutomaticBackupsInterval.TotalMilliseconds, (long)Globals.UserProfile.AutomaticBackupsInterval.TotalMilliseconds);
 
-				Globals.MainScreen.SolutionNavigatorHeaderTitle.Text = "Solution '" + Globals.Solution.Name + "' (" + Globals.Projects.Count + " Projects)";
-				if (Globals.Projects.Count == 1) Globals.MainScreen.SolutionNavigatorHeaderTitle.Text = "Solution '" + Globals.Solution.Name + "' (1 Project)";
-				Globals.MainScreen.SolutionNavigatorView.ItemsSource = Globals.Projects;
-
-				MainScreen.OutputTabs.Items.Clear();
-				MainScreen.ErrorListTabs.Items.Clear();
+				//TODO: Setup Project Navigator here.
 
 				Globals.IsLoading = false;
 
@@ -159,8 +154,6 @@ namespace WCFArchitect
 					Globals.BuildSolutionButton.Enabled = true;
 					Globals.BuildOutputButton.Enabled = true;
 				}
-
-				MainScreen.UpdateTabsLayout();
 
 				FinishedAction(true);
 			}), System.Windows.Threading.DispatcherPriority.Background);
@@ -173,8 +166,6 @@ namespace WCFArchitect
 				if (ProjectSpace.State == ObjectSpaceState.Closed) return;
 				IsFinding = true;
 				IsSaving = true;
-
-				Globals.MainScreen.SystemStatus.Text = "Saving...";
 
 				WCFArchitect.Projects.Solution.Save(Globals.Solution, SolutionPath);
 
@@ -192,8 +183,6 @@ namespace WCFArchitect
 					OD.IsActive = ia;
 				}
 
-				Globals.MainScreen.SystemStatus.Text = "Ready";
-
 			}), System.Windows.Threading.DispatcherPriority.Background);
 		}
 
@@ -205,8 +194,6 @@ namespace WCFArchitect
 				IsFinding = true;
 				IsSaving = true;
 
-				Globals.MainScreen.SystemStatus.Text = "Auto-Saving Backup File...";
-
 				WCFArchitect.Projects.Solution.Save(Globals.Solution, System.IO.Path.ChangeExtension(SolutionPath, ".bak"));
 
 				foreach (WCFArchitect.Projects.Project p in Globals.Projects)
@@ -214,7 +201,6 @@ namespace WCFArchitect
 
 				IsFinding = false;
 				IsSaving = false;
-				Globals.MainScreen.SystemStatus.Text = "Ready";
 			}), System.Windows.Threading.DispatcherPriority.Background);
 		}
 
@@ -235,7 +221,6 @@ namespace WCFArchitect
 
 			SaveSolution();
 
-			MainScreen.ProjectTabs.Items.Clear();
 			OpenDocuments.Clear();
 		}
 	}

@@ -5,9 +5,10 @@
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Office2010/Silver.xaml" />
-				<ResourceDictionary Source="pack://application:,,,/Prospective.Controls;component/Themes/Standard.xaml" />
-				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/C1Styles.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/Prospective.Controls;component/Themes/Generic.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Colors.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/C1NumericBox.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/C1TimeEditor.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>
