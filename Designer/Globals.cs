@@ -245,6 +245,12 @@ namespace WCFArchitect
 			Messages.Enqueue(new MessageBox(Origin, Caption, Message, new List<MessageAction>(Actions)));
 			Globals.MainScreen.ProcessNextMessage();
 		}
+
+		public static void ShowDialogBox(Projects.Project Origin, string Caption, object Content, params MessageAction[] Actions)
+		{
+			Messages.Enqueue(new MessageBox(Origin, Caption, Content, new List<MessageAction>(Actions)));
+			Globals.MainScreen.ProcessNextMessage();
+		}
 	}
 
 	internal class MessageBox : DependencyObject
@@ -252,15 +258,15 @@ namespace WCFArchitect
 		public string Caption { get { return (string)GetValue(CaptionProperty); } set { SetValue(CaptionProperty, value); } }
 		public static readonly DependencyProperty CaptionProperty = DependencyProperty.Register("Caption", typeof(string), typeof(MessageBox), new PropertyMetadata(""));
 
-		public string Message { get { return (string)GetValue(MessageProperty); } set { SetValue(MessageProperty, value); } }
-		public static readonly DependencyProperty MessageProperty = DependencyProperty.Register("Message", typeof(string), typeof(MessageBox), new PropertyMetadata(""));
+		public object Message { get { return (object)GetValue(MessageProperty); } set { SetValue(MessageProperty, value); } }
+		public static readonly DependencyProperty MessageProperty = DependencyProperty.Register("Message", typeof(object), typeof(MessageBox), new PropertyMetadata(new object()));
 
 		public List<MessageAction> Actions { get { return (List<MessageAction>)GetValue(ActionsProperty); } set { SetValue(ActionsProperty, value); } }
 		public static readonly DependencyProperty ActionsProperty = DependencyProperty.Register("Actions", typeof(List<MessageAction>), typeof(MessageBox));
 
 		public Projects.Project Origin { get; private set; }
 
-		public MessageBox(Projects.Project Origin, string Caption, string Message, List<MessageAction> Actions)
+		public MessageBox(Projects.Project Origin, string Caption, object Message, List<MessageAction> Actions)
 		{
 			this.Origin = Origin;
 			this.Caption = Caption;

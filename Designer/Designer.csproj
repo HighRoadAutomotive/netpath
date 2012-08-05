@@ -160,6 +160,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Interface\Dialogs\AddProject.xaml.cs">
+      <DependentUpon>AddProject.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Dialogs\NewSolution.xaml.cs">
+      <DependentUpon>NewSolution.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interface\Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>
     </Compile>
@@ -170,6 +176,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Globals.cs" />
+    <Page Include="Interface\Dialogs\AddProject.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Dialogs\NewSolution.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Interface\Main.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -561,6 +575,7 @@
   <ItemGroup>
     <Resource Include="Icons\Odd\FullLogoWinRT.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

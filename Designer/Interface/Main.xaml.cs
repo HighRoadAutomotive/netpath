@@ -25,8 +25,8 @@ namespace WCFArchitect.Interface
 		public string MessageCaption { get { return (string)GetValue(MessageCaptionProperty); } set { SetValue(MessageCaptionProperty, value); } }
 		public static readonly DependencyProperty MessageCaptionProperty = DependencyProperty.Register("MessageCaption", typeof(string), typeof(Main));
 
-		public string Message { get { return (string)GetValue(MessageProperty); } set { SetValue(MessageProperty, value); } }
-		public static readonly DependencyProperty MessageProperty = DependencyProperty.Register("Message", typeof(string), typeof(Main));
+		public object Message { get { return (object)GetValue(MessageProperty); } set { SetValue(MessageProperty, value); } }
+		public static readonly DependencyProperty MessageProperty = DependencyProperty.Register("Message", typeof(object), typeof(Main));
 
 		public ObservableCollection<Button> MessageActions { get { return (ObservableCollection<Button>)GetValue(MessageActionsProperty); } set { SetValue(MessageActionsProperty, value); } }
 		public static readonly DependencyProperty MessageActionsProperty = DependencyProperty.Register("MessageActions", typeof(ObservableCollection<Button>), typeof(Main));
@@ -52,6 +52,7 @@ namespace WCFArchitect.Interface
 
 			//Initialize the Options screen.
 			UserProfile = Globals.UserProfile;
+			if (Globals.UserProfile.AutomaticBackupsEnabled == true) AutomaticBackupsEnabled.Content = "Yes";
 			AboutVersion.Content = "Version " + System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).FileVersion;
 #if TRIAL
 			ProductTitle.Content = "Prospective Software WCF Architect Trial Edition";
@@ -206,6 +207,13 @@ namespace WCFArchitect.Interface
 
 		#region - System Menu -
 
+		private void SystemMenuHome_Click(object sender, RoutedEventArgs e)
+		{
+			ActiveProjectScreen.Visibility = System.Windows.Visibility.Collapsed;
+			HomeScreen.Visibility = System.Windows.Visibility.Visible;
+			OptionsScreen.Visibility = System.Windows.Visibility.Collapsed;
+		}
+
 		private void SystemMenu_Click(object sender, RoutedEventArgs e)
 		{
 			SystemMenu.ContextMenu.PlacementTarget = SystemMenu;
@@ -226,10 +234,14 @@ namespace WCFArchitect.Interface
 		{
 		}
 
+		private void SystemMenuClose_Click(object sender, RoutedEventArgs e)
+		{
+		}
+
 		private void SystemMenuOptions_Click(object sender, RoutedEventArgs e)
 		{
 			ActiveProjectScreen.Visibility = System.Windows.Visibility.Collapsed;
-			StartScreen.Visibility = System.Windows.Visibility.Collapsed;
+			HomeScreen.Visibility = System.Windows.Visibility.Collapsed;
 			OptionsScreen.Visibility = System.Windows.Visibility.Visible;
 		}
 
@@ -244,8 +256,32 @@ namespace WCFArchitect.Interface
 
 		#endregion
 
-		#region - Options -
+		#region - Home -
 
+		private void NewSolution_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void NewProject_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void UpdateYes_Click(object sender, RoutedEventArgs e)
+		{
+			System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(Globals.NewVersionPath));
+			Application.Current.Shutdown(0);
+		}
+
+		private void UpdateNo_Click(object sender, RoutedEventArgs e)
+		{
+			UpdateAvailable.Visibility = System.Windows.Visibility.Collapsed;
+		}
+
+		#endregion
+
+		#region - Options -
 
 		private void DefaultProjectFolderBrowse_Click(object sender, RoutedEventArgs e)
 		{

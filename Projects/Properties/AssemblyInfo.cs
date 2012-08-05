@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WCF Architect Service Definition Language")]
-[assembly: AssemblyDescription("Provides the Service Definition Language support for WCF Architect.")]
+[assembly: AssemblyTitle("WCF Architect Project Definitions")]
+[assembly: AssemblyDescription("Provides the Project Definitions for WCF Architect.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Prospective Software Inc.")]
 [assembly: AssemblyProduct("WCF Architect")]
-[assembly: AssemblyCopyright("Copyright © 2013 Prospective Software Inc.")]
+[assembly: AssemblyCopyright("Copyright © 2012 Prospective Software Inc.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,4 +33,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.2000.0")]
+[assembly: AssemblyFileVersion("2.0.2100.0")]

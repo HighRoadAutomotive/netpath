@@ -13,7 +13,7 @@
 		TextOptions.TextFormattingMode="Display" TextOptions.TextHintingMode="Fixed" TextOptions.TextRenderingMode="ClearType" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.ClearTypeHint="Enabled" 
 		SourceInitialized="Main_SourceInitialized" StateChanged="Main_StateChanged" Closing="Main_Closing" KeyUp="Main_KeyUp">
 	<chrome:WindowChrome.WindowChrome>
-		<chrome:WindowChrome CaptionHeight="32" ResizeBorderThickness="4" CornerRadius="0" GlassFrameThickness="0" />
+		<chrome:WindowChrome CaptionHeight="34" ResizeBorderThickness="4" CornerRadius="0" GlassFrameThickness="0" />
 	</chrome:WindowChrome.WindowChrome>
 	<Border x:Name="WindowBorder" BorderThickness="0" BorderBrush="{StaticResource WindowBorderColor}" Background="{StaticResource WindowBackground}" Margin="8">
 		<Grid>
@@ -34,10 +34,14 @@
 				<Button x:Name="SystemMenu" Grid.Column="0" Style="{StaticResource WindowSystemButtonStyle}" chrome:WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenu_Click" >
 					<Button.ContextMenu>
 						<ContextMenu>
+							<MenuItem Header="Home" x:Name="SystemMenuHome" Click="SystemMenuHome_Click" />
+							<Separator/>
 							<MenuItem Header="Open" x:Name="SystemMenuOpen" Click="SystemMenuOpen_Click" />
 							<Separator/>
-							<MenuItem Header="Save" x:Name="SystemMenuSave" Click="SystemMenuSave_Click" />
-							<MenuItem Header="Save As" x:Name="SystemMenuSaveAs" Click="SystemMenuSaveAs_Click" />
+							<MenuItem Header="Save" x:Name="SystemMenuSave" Click="SystemMenuSave_Click" IsEnabled="False" />
+							<MenuItem Header="Save As" x:Name="SystemMenuSaveAs" Click="SystemMenuSaveAs_Click" IsEnabled="False" />
+							<Separator/>
+							<MenuItem Header="Close" x:Name="SystemMenuClose" Click="SystemMenuClose_Click" IsEnabled="False" />
 							<Separator/>
 							<MenuItem Header="Options" x:Name="SystemMenuOptions" Click="SystemMenuOptions_Click" />
 							<Separator/>
@@ -73,7 +77,69 @@
 			<Border Grid.Row="1" BorderBrush="{StaticResource WindowBorderColor}" BorderThickness="0,1,0,0">
 				<Grid>
 					<ContentPresenter x:Name="ActiveProjectScreen" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" UseLayoutRounding="True" Visibility="Collapsed" />
-					<Grid x:Name="StartScreen" Visibility="Collapsed" >
+					<Grid x:Name="HomeScreen" >
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<Border Name="UpdateAvailable" Height="50" Grid.ColumnSpan="2" Grid.Row="0" Visibility="Collapsed" Background="{StaticResource DefaultBackgroundColor}" BorderBrush="Transparent">
+							<Grid>
+								<Label Content="There is a new version of WCF Architect available. Would you like to download it now?" FontSize="16" FontWeight="SemiBold" Height="Auto" HorizontalAlignment="Left" Margin="10,8,0,0" VerticalAlignment="Top" />
+								<Button Content="Yes" Height="27" HorizontalAlignment="Right" Margin="0,11,87,0" Name="UpdateYes" VerticalAlignment="Top" Width="75" Click="UpdateYes_Click" />
+								<Button Content="No" Height="27" HorizontalAlignment="Right" Margin="0,11,6,0" Name="UpdateNo" VerticalAlignment="Top" Width="75" Click="UpdateNo_Click" />
+							</Grid>
+						</Border>
+						<StackPanel Grid.Column="0" Grid.Row="1" Margin="5">
+							<Border Name="ImportantProjectsBlock" Visibility="Collapsed">
+								<StackPanel>
+									<TextBlock Text="Important" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="0,0,0,10" />
+									<ScrollViewer VerticalScrollBarVisibility="Auto">
+										<StackPanel Name="ImportantProjectsList" />
+									</ScrollViewer>
+								</StackPanel>
+							</Border>
+							<Border Name="RecentProjectsBlock">
+								<StackPanel>
+									<TextBlock Text="Recent" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="0,0,0,10" />
+									<ScrollViewer VerticalScrollBarVisibility="Auto">
+										<StackPanel Name="RecentProjectsList" />
+									</ScrollViewer>
+								</StackPanel>
+							</Border>
+						</StackPanel>
+						<StackPanel Grid.Column="1" Grid.Row="1" Margin="5">
+							<TextBlock Text="New" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="0,0,0,10" />
+							<Button x:Name="NewSolution" Grid.Row="0" HorizontalContentAlignment="Left" Click="NewSolution_Click" >
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="Auto" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+									<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X64/Solution.png" Margin="10,5" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="64" Width="64" Stretch="None" Grid.Column="0" />
+									<StackPanel Grid.Column="1" Margin="10">
+										<Label Content="New Solution" Foreground="Gray" FontSize="14pt" FontWeight="Bold" Padding="0"/>
+										<Label Content="Create a new WCF Architect Solution." Padding="0" />
+									</StackPanel>
+								</Grid>
+							</Button>
+							<Button x:Name="AddProject" Grid.Row="0" Margin="0,10,0,0" HorizontalContentAlignment="Left" Click="NewProject_Click" >
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="Auto" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+									<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X64/Project.png" Margin="10,5" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="64" Width="64" Stretch="None" Grid.Column="0" />
+									<StackPanel Grid.Column="1" Margin="10">
+										<Label Content="Add Project" Foreground="Gray" FontSize="14pt" FontWeight="Bold" Padding="0"/>
+										<Label Content="Add a WCF Architect Project to the open Solution." Padding="0" />
+									</StackPanel>
+								</Grid>
+							</Button>
+						</StackPanel>
 					</Grid>
 					<Grid x:Name="OptionsScreen" Visibility="Collapsed" >
 						<Grid.ColumnDefinitions>
@@ -90,7 +156,7 @@
 								<RowDefinition Height="Auto" />
 								<RowDefinition Height="*" />
 							</Grid.RowDefinitions>
-							<TextBlock Text="Options" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Padding="5,0,0,0" Margin="0,0,0,10" Grid.Row="0" />
+							<TextBlock Text="Options" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="0,0,0,10" Grid.Row="0" />
 							<GroupBox Header="Default Project Folder" Margin="5,0" Grid.Row="1" DataContext="{Binding Path=UserProfile}">
 								<Grid>
 									<TextBox Height="23" Margin="5,5,85,5" Name="DefaultProjectFolder" IsReadOnly="True" VerticalAlignment="Top" Text="{Binding Path=DefaultProjectFolder}" ToolTip="{Binding Path=DefaultProjectFolder}" />
@@ -106,7 +172,7 @@
 									<Label Content="Enabled:" Margin="5,5,0,0" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Width="Auto" />
 									<ToggleButton IsChecked="{Binding Path=AutomaticBackupsEnabled}" Name="AutomaticBackupsEnabled" Content="No" Margin="0,6,5,5" Checked="AutomaticBackupsEnabled_Checked" Unchecked="AutomaticBackupsEnabled_Unchecked" Height="23" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100" />
 									<Label Content="Interval:" Height="28" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top" Grid.Column="1" />
-									<c1datetime:C1TimeEditor Value="{Binding Path=AutomaticBackupsInterval}" Name="AutomaticBackupsInterval" IsEnabled="False" HorizontalAlignment="Right" Margin="0,6,5,5" Grid.Column="1" Format="TimeSpan" Height="24" VerticalAlignment="Top" Width="70" ValueChanged="AutomaticBackupsInterval_ValueChanged" />
+									<c1datetime:C1TimeEditor Value="{Binding Path=AutomaticBackupsInterval}" Name="AutomaticBackupsInterval" IsEnabled="{Binding ElementName=AutomaticBackupsEnabled, Path=IsChecked}" HorizontalAlignment="Right" Margin="0,6,5,5" Grid.Column="1" Format="TimeSpan" Height="24" VerticalAlignment="Top" Width="70" ValueChanged="AutomaticBackupsInterval_ValueChanged" />
 								</Grid>
 							</GroupBox>
 						</Grid>
@@ -118,7 +184,7 @@
 								<RowDefinition Height="Auto" />
 								<RowDefinition Height="*" />
 							</Grid.RowDefinitions>
-							<TextBlock Text="About WCF Architect" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Padding="5,0,0,0" Margin="0,0,0,10" Grid.Row="0"/>
+							<TextBlock Text="About WCF Architect" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="0,0,0,10" Grid.Row="0"/>
 							<StackPanel Grid.Row="1" Margin="5,0">
 								<Image Name="SKULevel" Source="pack://application:,,,/WCFArchitect;component/Icons/Odd/FullLogoDeveloper.png" Margin="0,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="100" Width="450" Stretch="None" Grid.Column="0" />
 								<Grid UseLayoutRounding="True" Margin="0,0,0,10">
@@ -201,7 +267,7 @@
 									</MultiBinding>
 								</TextBlock.Text>
 							</TextBlock>
-							<TextBlock Text="{Binding Path=Message}" Grid.Row="1" FontSize="14pt" Margin="20" />
+							<ContentControl Content="{Binding Path=Message}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="14pt" Grid.Row="1" Margin="20" />
 							<ItemsControl x:Name="MessageBoxButtons" ItemsSource="{Binding Path=MessageActions}" Grid.Row="2" Margin="5" HorizontalAlignment="Right">
 								<ItemsControl.ItemsPanel>
 									<ItemsPanelTemplate>
