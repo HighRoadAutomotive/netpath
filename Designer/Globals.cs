@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Collections.ObjectModel;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.IO;
 using System.Text;
@@ -15,18 +16,28 @@ namespace WCFArchitect
 	{
 		public static System.Threading.Timer BackupTimer { get; set; }
 
-		public static Options.License LicenseKey { get; set; }
-		public static Prospective.Server.Licensing.LicenseInfoWPF LicenseInfo { get; set; }
 		public static string ApplicationPath { get; set; }
 		public static Version ApplicationVersion { get; set; }
-		public static string LicenseKeyPath { get; set; }
-		public static ObjectSpace LicenseKeySpace { get; set; }
 		public static string ArgSolutionPath { get; set; }
+
 		public static bool IsNewVersionAvailable { get; set; }
 		public static string NewVersionPath { get; set; }
+
+		public static string LicenseKeyPath { get; set; }
+
 		public static Options.UserProfile UserProfile { get; set; }
 		public static ObjectSpace UserProfileSpace { get; set; }
 		public static string UserProfilePath { get; set; }
+
+		public static ConcurrentQueue<MessageBox> Messages { get; set; }
+
+		public enum WindowsVersion
+		{
+			WinVista = 60,
+			WinSeven = 61,
+			WinEight = 62,
+		}
+		public static WindowsVersion WindowsLevel { get; set; }
 
 		public static ObjectSpace ProjectSpace { get; set; }
 		public static Projects.Solution Solution { get; set; }
@@ -44,11 +55,16 @@ namespace WCFArchitect
 		public static bool IsFinding { get; set; }
 		public static bool IsSaving { get; set; }
 		public static bool IsClosing { get; set; }
-		//public static Interface.Main MainScreen { get; set; }
+		public static Interface.Main MainScreen { get; set; }
 		//public static List<Interface.Project.Project> ProjectScreens { get; set; }
 
 		public static T GetVisualParent<T>(object childObject) where T : Visual { DependencyObject child = childObject as DependencyObject; while ((child != null) && !(child is T)) { child = VisualTreeHelper.GetParent(child); } return child as T; }
 		public static T GetVisualChild<T>(Visual parent) where T : Visual { T child = default(T); int numVisuals = VisualTreeHelper.GetChildrenCount(parent); for (int i = 0; i < numVisuals; i++) { Visual v = (Visual)VisualTreeHelper.GetChild(parent, i); child = v as T; if (child == null) { child = GetVisualChild<T>(v); } if (child != null) { break; } } return child; }
+
+		static Globals()
+		{
+			Messages = new ConcurrentQueue<MessageBox>();
+		}
 
 		public static string GetRelativePath(string BasePath, string FilePath)
 		{
@@ -222,6 +238,48 @@ namespace WCFArchitect
 			SaveSolution();
 
 			OpenDocuments.Clear();
+		}
+
+		public static void ShowMessageBox(Projects.Project Origin, string Caption, string Message, params MessageAction[] Actions)
+		{
+			Messages.Enqueue(new MessageBox(Origin, Caption, Message, new List<MessageAction>(Actions)));
+			Globals.MainScreen.ProcessNextMessage();
+		}
+	}
+
+	internal class MessageBox : DependencyObject
+	{
+		public string Caption { get { return (string)GetValue(CaptionProperty); } set { SetValue(CaptionProperty, value); } }
+		public static readonly DependencyProperty CaptionProperty = DependencyProperty.Register("Caption", typeof(string), typeof(MessageBox), new PropertyMetadata(""));
+
+		public string Message { get { return (string)GetValue(MessageProperty); } set { SetValue(MessageProperty, value); } }
+		public static readonly DependencyProperty MessageProperty = DependencyProperty.Register("Message", typeof(string), typeof(MessageBox), new PropertyMetadata(""));
+
+		public List<MessageAction> Actions { get { return (List<MessageAction>)GetValue(ActionsProperty); } set { SetValue(ActionsProperty, value); } }
+		public static readonly DependencyProperty ActionsProperty = DependencyProperty.Register("Actions", typeof(List<MessageAction>), typeof(MessageBox));
+
+		public Projects.Project Origin { get; private set; }
+
+		public MessageBox(Projects.Project Origin, string Caption, string Message, List<MessageAction> Actions)
+		{
+			this.Origin = Origin;
+			this.Caption = Caption;
+			this.Message = Message;
+			this.Actions = Actions;
+		}
+	}
+
+	public class MessageAction
+	{
+		public string Title { get; private set; }
+		public Action Action { get; private set; }
+		public object Owner { get; internal set; }
+
+		public MessageAction(string Title, Action Action)
+		{
+			this.Title = Title;
+			this.Action = Action;
+			this.Owner = null;
 		}
 	}
 }

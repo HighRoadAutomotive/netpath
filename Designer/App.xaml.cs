@@ -11,7 +11,6 @@ namespace WCFArchitect
 {
 	public partial class App : Application
 	{
-		private ObjectSpace los;
 		private ObjectSpace uos;
 
 		private void Application_Startup(object sender, StartupEventArgs e)
@@ -22,16 +21,7 @@ namespace WCFArchitect
 			Prospective.Server.Licensing.LicenseClient.ExeFile = Globals.ApplicationPath + "WCFArchitect.exe";
 
 			//Check to see if the License Key path exists and make a folder if it does not.
-			Globals.LicenseKeyPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\Prospective Software\\WCF Architect\\";
-			if (System.IO.Directory.Exists(Globals.LicenseKeyPath) == false) System.IO.Directory.CreateDirectory(Globals.LicenseKeyPath);
-
-			//Load the license data file
-			los = new ObjectSpace("LicenseKey.kvtmodel", "WCFArchitect");
-			if (!File.Exists(Globals.LicenseKeyPath + "License.dat"))
-				los.CreateObjectLibrary(Globals.LicenseKeyPath + "License.dat", ExistingFileAction.DoNotOverwrite);
-			los.EnableConcurrency = true;
-			los.Open(Globals.LicenseKeyPath + "License.dat", ObjectSpaceOpenMode.ReadWrite);
-			Globals.LicenseKeySpace = los;
+			Globals.LicenseKeyPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\Prospective Software\\WCF Architect\\key.dat";
 
 			//Check to see if the User Profile path exists and make a folder if it does not.
 			Globals.UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Prospective Software\\WCF Architect\\";
@@ -77,22 +67,8 @@ namespace WCFArchitect
 				uos.Add(Globals.UserProfile);
 			}
 
-			try
-			{
-				Options.License TL = los.OfType<Options.License>().First();
-			}
-			catch
-			{
-				Options.License TL = new Options.License();
-				TL.Authorization = "";
-				TL.Key = "";
-				los.Add(TL);
-				los.Save();
-			}
-
 			if (Options.Licensing.Validate() == false)
 			{
-				los.Save();
 				this.Shutdown(0);
 			}
 		}
@@ -101,8 +77,6 @@ namespace WCFArchitect
 		{
 			uos.Save();
 			uos.Close();
-			los.Save();
-			los.Close();
 		}
 
 		public void ResetUserProfile()

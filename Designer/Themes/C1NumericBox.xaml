@@ -4,16 +4,17 @@
 			xmlns:System="clr-namespace:System;assembly=mscorlib"
 			xmlns:c1="clr-namespace:C1.WPF;assembly=C1.WPF.4" >
 	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="pack://application:,,,/Prospective.Controls;component/Themes/Defaults.xaml" />
 		<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Colors.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 	<Style x:Key="{x:Type c1:C1NumericBox}" TargetType="{x:Type c1:C1NumericBox}">
-		<Setter Property="Background" Value="{StaticResource NormalBackgroundColor}" />
-		<Setter Property="BorderBrush" Value="{StaticResource NormalBorderColor}" />
-		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="Foreground" Value="{StaticResource NormalForegroundColor}" />
-		<Setter Property="SelectionBackground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
-		<Setter Property="SelectionForeground" Value="{StaticResource NormalForegroundColor}" />
+		<Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}" />
+		<Setter Property="BorderBrush" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
+		<Setter Property="SelectionBackground" Value="{StaticResource DefaultBackgroundColor}" />
+		<Setter Property="SelectionForeground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="TextAlignment" Value="Right" />
@@ -58,16 +59,16 @@
 					</Grid>
 					<ControlTemplate.Triggers>
 						<Trigger SourceName="ValidationDecorator" Property="ValidationState" Value="InvalidFocused">
-							<Setter Property="BorderBrush" Value="{StaticResource ErrorBorderColor}" />
+							<Setter Property="Background" Value="{StaticResource ErrorBackgroundColor}" />
 						</Trigger>
 						<Trigger SourceName="ValidationDecorator" Property="ValidationState" Value="InvalidUnfocused">
-							<Setter Property="BorderBrush" Value="{StaticResource ErrorBorderColor}" />
+							<Setter Property="Background" Value="{StaticResource ErrorBackgroundColor}" />
 						</Trigger>
 						<Trigger Property="IsKeyboardFocusWithin" Value="True">
-							<Setter Property="BorderBrush" Value="{StaticResource FocusedBorderColor}" />
+							<Setter Property="Background" Value="{StaticResource FocusedBackgroundColor}" />
 						</Trigger>
 						<Trigger Property="IsEnabled" Value="False">
-							<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+							<Setter Property="Foreground" Value="{StaticResource DisabledFontColor}" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
