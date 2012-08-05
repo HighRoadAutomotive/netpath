@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:c1="http://schemas.componentone.com/winfx/2006/xaml"
+		xmlns:c1datetime="clr-namespace:C1.WPF.DateTimeEditors;assembly=C1.WPF.DateTimeEditors.4"
 		xmlns:chrome="clr-namespace:Prospective.Controls.Chrome;assembly=Prospective.Controls"
         mc:Ignorable="d" d:DesignHeight="900" d:DesignWidth="1200"
 		DataContext="{Binding RelativeSource={RelativeSource Self}}"
@@ -71,7 +72,111 @@
 			</Grid>
 			<Border Grid.Row="1" BorderBrush="{StaticResource WindowBorderColor}" BorderThickness="0,1,0,0">
 				<Grid>
-					<Grid x:Name="Screens" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" UseLayoutRounding="True" />
+					<ContentPresenter x:Name="ActiveProjectScreen" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" UseLayoutRounding="True" Visibility="Collapsed" />
+					<Grid x:Name="StartScreen" Visibility="Collapsed" >
+					</Grid>
+					<Grid x:Name="OptionsScreen" Visibility="Collapsed" >
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<Grid Grid.Column="0" >
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="*" />
+							</Grid.RowDefinitions>
+							<TextBlock Text="Options" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Padding="5,0,0,0" Margin="0,0,0,10" Grid.Row="0" />
+							<GroupBox Header="Default Project Folder" Margin="5,0" Grid.Row="1" DataContext="{Binding Path=UserProfile}">
+								<Grid>
+									<TextBox Height="23" Margin="5,5,85,5" Name="DefaultProjectFolder" IsReadOnly="True" VerticalAlignment="Top" Text="{Binding Path=DefaultProjectFolder}" ToolTip="{Binding Path=DefaultProjectFolder}" />
+									<Button Content="Browse..." Height="23" HorizontalAlignment="Right" Margin="0,5,5,5" Name="DefaultProjectFolderBrowse" VerticalAlignment="Top" Width="75" Click="DefaultProjectFolderBrowse_Click" />
+								</Grid>
+							</GroupBox>
+							<GroupBox Header="Automatic Backups" Margin="5,5,5,0" Grid.Row="2" DataContext="{Binding Path=UserProfile}">
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+									<Label Content="Enabled:" Margin="5,5,0,0" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Width="Auto" />
+									<ToggleButton IsChecked="{Binding Path=AutomaticBackupsEnabled}" Name="AutomaticBackupsEnabled" Content="No" Margin="0,6,5,5" Checked="AutomaticBackupsEnabled_Checked" Unchecked="AutomaticBackupsEnabled_Unchecked" Height="23" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100" />
+									<Label Content="Interval:" Height="28" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top" Grid.Column="1" />
+									<c1datetime:C1TimeEditor Value="{Binding Path=AutomaticBackupsInterval}" Name="AutomaticBackupsInterval" IsEnabled="False" HorizontalAlignment="Right" Margin="0,6,5,5" Grid.Column="1" Format="TimeSpan" Height="24" VerticalAlignment="Top" Width="70" ValueChanged="AutomaticBackupsInterval_ValueChanged" />
+								</Grid>
+							</GroupBox>
+						</Grid>
+						<Grid Grid.Column="1" Margin="0">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="*" />
+							</Grid.RowDefinitions>
+							<TextBlock Text="About WCF Architect" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Padding="5,0,0,0" Margin="0,0,0,10" Grid.Row="0"/>
+							<StackPanel Grid.Row="1" Margin="5,0">
+								<Image Name="SKULevel" Source="pack://application:,,,/WCFArchitect;component/Icons/Odd/FullLogoDeveloper.png" Margin="0,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="100" Width="450" Stretch="None" Grid.Column="0" />
+								<Grid UseLayoutRounding="True" Margin="0,0,0,10">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="10" />
+										<RowDefinition Height="Auto" />
+									</Grid.RowDefinitions>
+									<StackPanel Grid.Row="0">
+										<Label Content="Prospective Software WCF Architect Professional" Padding="4,0" Name="ProductTitle" />
+										<Label Name="AboutVersion" Content="Version: 1.0.0.0" Padding="4,0" />
+										<Label Content="© 2011 Prospective Software Inc." Padding="4,0" />
+										<Label Content="All Rights Reserved." Padding="4,0" />
+									</StackPanel>
+									<StackPanel Grid.Row="2">
+										<Label Content="Licensed To:" Foreground="DodgerBlue" Padding="4,0" />
+										<Label Name="LicenseName" Content="{Binding Path=LicenseInfo.LicenseeName}" Padding="4,0" />
+										<Label Name="LicenseCompany" Content="Prospective Software" Padding="4,0" />
+									</StackPanel>
+								</Grid>
+								<Grid UseLayoutRounding="True" Margin="0,0,0,10">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+									</Grid.RowDefinitions>
+									<TextBlock Text="Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it, may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law." Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" />
+									<TextBlock Text="WCF Architect makes use of the open-source Oxygen Icons. Due to the licensing of these icons we are required to post the modified versions of these icons for download on our website. You can use the link below to download the icons or you can head over the Open Icon Library project to download the unaltered icons." Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" Margin="0,10,0,5" Grid.Row="1" />
+									<TextBlock Text="Windows is a registered trademark of Microsoft Corporation in the United States and other countries." Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" Margin="0,10,0,5" Grid.Row="2" />
+									<TextBlock Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" Margin="0,5,0,5" Grid.Row="3" Padding="4,0">
+										<Hyperlink Name="MILink" NavigateUri="http://www.prospectivesoftware.com/architect/downloads/ModifiedIcons.zip" RequestNavigate="MILink_RequestNavigate" >
+											Download the Modified Oxygen Icons
+										</Hyperlink>
+									</TextBlock>
+									<TextBlock Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" Margin="0,5,0,5" Grid.Row="4" Padding="4,0">
+										<Hyperlink Name="OILLink" NavigateUri="http://openiconlibrary.sourceforge.net/" RequestNavigate="OILLink_RequestNavigate">
+											Visit the Open Icon Library and download the Oxygen Icon Theme
+										</Hyperlink>
+									</TextBlock>
+									<TextBlock Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" Margin="0,5,0,5" Grid.Row="5" Padding="4,0">
+										Please use the following link to report any problems you may encounter:<LineBreak />
+										<Hyperlink Name="SLink" NavigateUri="http://tracker.prospectivesoftware.net/" RequestNavigate="SLink_RequestNavigate">
+											Prospective Software Issue Reporting Page
+										</Hyperlink>
+									</TextBlock>
+								</Grid>
+							</StackPanel>
+						</Grid>
+					</Grid>
 				</Grid>
 			</Border>
 			<Border x:Name="MessageBox" Background="#66000000" Grid.RowSpan="2" Visibility="Hidden">
