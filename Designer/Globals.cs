@@ -103,7 +103,7 @@ namespace WCFArchitect
 				try
 				{
 					SolutionPath = Path;
-					Globals.Solution = WCFArchitect.Projects.Solution.Open(Path, false);
+					Globals.Solution = WCFArchitect.Projects.Solution.Open(Path);
 				}
 				catch (Exception ex)
 				{
@@ -204,10 +204,10 @@ namespace WCFArchitect
 				if(BackupTimer != null)
 					BackupTimer.Dispose();
 
-			WCFArchitect.Projects.Solution.Close(Globals.Solution, Globals.SolutionPath, SaveData);
+			WCFArchitect.Projects.Solution.Save(Globals.Solution);
 
 			foreach (WCFArchitect.Projects.Project p in Globals.Projects)
-				WCFArchitect.Projects.Project.Close(p, p.AbsolutePath, SaveData);
+				WCFArchitect.Projects.Project.Save(p);
 		}
 
 		public static void ShowMessageBox(Projects.Project Origin, string Caption, string Message, params MessageAction[] Actions)
