@@ -210,8 +210,7 @@ namespace WCFArchitect.Projects
 
 	public class HostEndpoint : DependencyObject
 	{
-		protected Guid id;
-		[IgnoreDataMember()] public Guid ID { get { return id; } }
+		public Guid ID { get; protected set; }
 
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(HostEndpoint));
@@ -382,8 +381,7 @@ namespace WCFArchitect.Projects
 
 	public class HostEndpointAddressHeader : DependencyObject
 	{
-		protected Guid id;
-		[IgnoreDataMember()] public Guid ID { get { return id; } }
+		public Guid ID { get; protected set; }
 
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(HostEndpointAddressHeader));
@@ -518,8 +516,7 @@ namespace WCFArchitect.Projects
 
 	public abstract class HostBehavior : DependencyObject
 	{
-		protected Guid id;
-		[IgnoreDataMember()] public Guid ID { get { return id; } }
+		public Guid ID { get; protected set; }
 		
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(HostBehavior));

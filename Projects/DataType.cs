@@ -50,8 +50,7 @@ namespace WCFArchitect.Projects
 
 	public class DataType : OpenableDocument
 	{
-		protected Guid id = Guid.Empty;
-		[IgnoreDataMember()] public Guid ID { get { return id; } protected set { id = value; } }
+		public Guid ID { get; protected set; }
 
 		public bool HasContractType { get { return (bool)GetValue(HasContractTypeProperty); } set { SetValue(HasContractTypeProperty, value); if (value == false) { ContractType = null; } else { ContractType = new DataType(DataTypeMode.Class); ContractType.Name = Name; ContractType.Scope = Scope; } } }
 		public static readonly DependencyProperty HasContractTypeProperty = DependencyProperty.Register("HasContractType", typeof(bool), typeof(Data));

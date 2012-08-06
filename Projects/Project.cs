@@ -24,8 +24,7 @@ namespace WCFArchitect.Projects
 
 	public class ProjectUsingNamespace : DependencyObject
 	{
-		private Guid id = Guid.Empty;
-		[IgnoreDataMember()] public Guid ID { get { return id; } }
+		public Guid ID { get; protected set; }
 		
 		public string Namespace { get { return (string)GetValue(NamespaceProperty); } set { SetValue(NamespaceProperty, value); } }
 		public static readonly DependencyProperty NamespaceProperty = DependencyProperty.Register("Namespace", typeof(string), typeof(ProjectUsingNamespace));
@@ -80,8 +79,8 @@ namespace WCFArchitect.Projects
 
 	public abstract partial class Project : OpenableDocument
 	{
-		public Guid ID { get; private set; }
-		public string AbsolutePath { get; private set; }
+		public Guid ID { get; protected set; }
+		[IgnoreDataMember()] public string AbsolutePath { get; private set; }
 
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(Project));
@@ -334,10 +333,8 @@ namespace WCFArchitect.Projects
 
 	public class ProjectNETOutputPath : DependencyObject
 	{
-		private Guid projectID;
-		[IgnoreDataMember()] public Guid ProjectID { get { return projectID; } }
-		private Guid id;
-		[IgnoreDataMember()] public Guid ID { get { return id; } }
+		public Guid ProjectID { get; protected set; }
+		public Guid ID { get; protected set; }
 
 		public bool IsEnabled { get { return (bool)GetValue(IsEnabledProperty); } set { SetValue(IsEnabledProperty, value); } }
 		public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register("IsEnabled", typeof(bool), typeof(ProjectNETOutputPath), new UIPropertyMetadata(true));
@@ -352,8 +349,8 @@ namespace WCFArchitect.Projects
 
 		public ProjectNETOutputPath(Guid ProjectID, string Path)
 		{
-			id = Guid.NewGuid();
-			projectID = ProjectID;
+			ID = Guid.NewGuid();
+			ProjectID = ProjectID;
 			this.Path = Path;
 			this.Framework = ProjectNETOutputFramework.NET45;
 		}
@@ -361,10 +358,8 @@ namespace WCFArchitect.Projects
 
 	public class ProjectSLOutputPath : DependencyObject
 	{
-		private Guid projectID;
-		[IgnoreDataMember()] public Guid ProjectID { get { return projectID; } }
-		private Guid id;
-		[IgnoreDataMember()] public Guid ID { get { return id; } }
+		public Guid ProjectID { get; protected set; }
+		public Guid ID { get; protected set; }
 
 		public bool IsEnabled { get { return (bool)GetValue(IsEnabledProperty); } set { SetValue(IsEnabledProperty, value); } }
 		public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register("IsEnabled", typeof(bool), typeof(ProjectSLOutputPath), new UIPropertyMetadata(true));
@@ -379,8 +374,8 @@ namespace WCFArchitect.Projects
 
 		public ProjectSLOutputPath(Guid ProjectID, string Path)
 		{
-			id = Guid.NewGuid();
-			projectID = ProjectID;
+			ID = Guid.NewGuid();
+			ProjectID = ProjectID;
 			this.Path = Path;
 			this.Framework = ProjectSLOutputFramework.SL50;
 		}
@@ -388,10 +383,8 @@ namespace WCFArchitect.Projects
 
 	public class ProjectRTOutputPath : DependencyObject
 	{
-		private Guid projectID;
-		[IgnoreDataMember()] public Guid ProjectID { get { return projectID; } }
-		private Guid id;
-		[IgnoreDataMember()] public Guid ID { get { return id; } }
+		public Guid ProjectID { get; protected set; }
+		public Guid ID { get; protected set; }
 
 		public bool IsEnabled { get { return (bool)GetValue(IsEnabledProperty); } set { SetValue(IsEnabledProperty, value); } }
 		public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register("IsEnabled", typeof(bool), typeof(ProjectRTOutputPath), new UIPropertyMetadata(true));
@@ -406,8 +399,8 @@ namespace WCFArchitect.Projects
 
 		public ProjectRTOutputPath(Guid ProjectID, string Path)
 		{
-			id = Guid.NewGuid();
-			projectID = ProjectID;
+			ID = Guid.NewGuid();
+			ProjectID = ProjectID;
 			this.Path = Path;
 			this.Framework = ProjectRTOutputFramework.WIN8;
 		}
