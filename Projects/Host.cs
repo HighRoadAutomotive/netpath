@@ -19,56 +19,55 @@ namespace WCFArchitect.Projects
 		X509
 	}
 
-	[DataContract()]
 	public class Host : DataType
 	{
-		[DataMember()] public string Namespace { get { return (string)GetValue(NamespaceProperty); } set { SetValue(NamespaceProperty, value); } }
+		public string Namespace { get { return (string)GetValue(NamespaceProperty); } set { SetValue(NamespaceProperty, value); } }
 		public static readonly DependencyProperty NamespaceProperty = DependencyProperty.Register("Namespace", typeof(string), typeof(Host));
 		
-		[DataMember()] public string ConfigurationName { get { return (string)GetValue(ConfigurationNameProperty); } set { SetValue(ConfigurationNameProperty, value); } }
+		public string ConfigurationName { get { return (string)GetValue(ConfigurationNameProperty); } set { SetValue(ConfigurationNameProperty, value); } }
 		public static readonly DependencyProperty ConfigurationNameProperty = DependencyProperty.Register("ConfigurationName", typeof(string), typeof(Host));
 		
-		[DataMember()] public HostCredentials Credentials { get { return (HostCredentials)GetValue(CredentialsProperty); } set { SetValue(CredentialsProperty, value); } }
+		public HostCredentials Credentials { get { return (HostCredentials)GetValue(CredentialsProperty); } set { SetValue(CredentialsProperty, value); } }
 		public static readonly DependencyProperty CredentialsProperty = DependencyProperty.Register("Credentials", typeof(HostCredentials), typeof(Host));
 
-		[DataMember()] public ObservableCollection<string> BaseAddresses { get { return (ObservableCollection<string>)GetValue(BaseAddressProperty); } set { SetValue(BaseAddressProperty, value); } }
+		public ObservableCollection<string> BaseAddresses { get { return (ObservableCollection<string>)GetValue(BaseAddressProperty); } set { SetValue(BaseAddressProperty, value); } }
 		public static readonly DependencyProperty BaseAddressProperty = DependencyProperty.Register("BaseAddress", typeof(ObservableCollection<string>), typeof(Host));
 		
-		[DataMember()] public TimeSpan CloseTimeout { get { return (TimeSpan)GetValue(CloseTimeoutProperty); } set { SetValue(CloseTimeoutProperty, value); } }
+		public TimeSpan CloseTimeout { get { return (TimeSpan)GetValue(CloseTimeoutProperty); } set { SetValue(CloseTimeoutProperty, value); } }
 		public static readonly DependencyProperty CloseTimeoutProperty = DependencyProperty.Register("CloseTimeout", typeof(TimeSpan), typeof(Host));
 		
-		[DataMember()] public TimeSpan OpenTimeout { get { return (TimeSpan)GetValue(OpenTimeoutProperty); } set { SetValue(OpenTimeoutProperty, value); } }
+		public TimeSpan OpenTimeout { get { return (TimeSpan)GetValue(OpenTimeoutProperty); } set { SetValue(OpenTimeoutProperty, value); } }
 		public static readonly DependencyProperty OpenTimeoutProperty = DependencyProperty.Register("OpenTimeout", typeof(TimeSpan), typeof(Host));
 
-		[DataMember()] public int ManualFlowControlLimit { get { return (int)GetValue(ManualFlowControlLimitProperty); } set { SetValue(ManualFlowControlLimitProperty, value); } }
+		public int ManualFlowControlLimit { get { return (int)GetValue(ManualFlowControlLimitProperty); } set { SetValue(ManualFlowControlLimitProperty, value); } }
 		public static readonly DependencyProperty ManualFlowControlLimitProperty = DependencyProperty.Register("ManualFlowControlLimit", typeof(int), typeof(Project));
 
-		[DataMember()] public bool AuthorizationImpersonateCallerForAllOperations { get { return (bool)GetValue(AuthorizationImpersonateCallerForAllOperationsProperty); } set { SetValue(AuthorizationImpersonateCallerForAllOperationsProperty, value); } }
+		public bool AuthorizationImpersonateCallerForAllOperations { get { return (bool)GetValue(AuthorizationImpersonateCallerForAllOperationsProperty); } set { SetValue(AuthorizationImpersonateCallerForAllOperationsProperty, value); } }
 		public static readonly DependencyProperty AuthorizationImpersonateCallerForAllOperationsProperty = DependencyProperty.Register("AuthorizationImpersonateCallerForAllOperations", typeof(bool), typeof(Host));
 		
-		[DataMember()] public System.ServiceModel.Description.PrincipalPermissionMode AuthorizationPrincipalPermissionMode { get { return (System.ServiceModel.Description.PrincipalPermissionMode)GetValue(AuthorizationPrincipalPermissionModeProperty); } set { SetValue(AuthorizationPrincipalPermissionModeProperty, value); } }
+		public System.ServiceModel.Description.PrincipalPermissionMode AuthorizationPrincipalPermissionMode { get { return (System.ServiceModel.Description.PrincipalPermissionMode)GetValue(AuthorizationPrincipalPermissionModeProperty); } set { SetValue(AuthorizationPrincipalPermissionModeProperty, value); } }
 		public static readonly DependencyProperty AuthorizationPrincipalPermissionModeProperty = DependencyProperty.Register("AuthorizationPrincipalPermissionMode", typeof(System.ServiceModel.Description.PrincipalPermissionMode), typeof(Host));
 
-		[DataMember()] public WCFArchitect.Projects.Service Service { get { return (WCFArchitect.Projects.Service)GetValue(ServiceProperty); } set { SetValue(ServiceProperty, value); } }
+		public WCFArchitect.Projects.Service Service { get { return (WCFArchitect.Projects.Service)GetValue(ServiceProperty); } set { SetValue(ServiceProperty, value); } }
 		public static readonly DependencyProperty ServiceProperty = DependencyProperty.Register("Service", typeof(WCFArchitect.Projects.Service), typeof(Host));
 
-		[DataMember()] public ObservableCollection<WCFArchitect.Projects.HostBehavior> Behaviors { get { return (ObservableCollection<WCFArchitect.Projects.HostBehavior>)GetValue(BehaviorsProperty); } set { SetValue(BehaviorsProperty, value); } }
+		public ObservableCollection<WCFArchitect.Projects.HostBehavior> Behaviors { get { return (ObservableCollection<WCFArchitect.Projects.HostBehavior>)GetValue(BehaviorsProperty); } set { SetValue(BehaviorsProperty, value); } }
 		public static readonly DependencyProperty BehaviorsProperty = DependencyProperty.Register("Behaviors", typeof(ObservableCollection<WCFArchitect.Projects.HostBehavior>), typeof(Host));
 
-		[DataMember()] public ObservableCollection<HostEndpoint> Endpoints { get { return (ObservableCollection<HostEndpoint>)GetValue(EndpointsProperty); } set { SetValue(EndpointsProperty, value); } }
+		public ObservableCollection<HostEndpoint> Endpoints { get { return (ObservableCollection<HostEndpoint>)GetValue(EndpointsProperty); } set { SetValue(EndpointsProperty, value); } }
 		public static readonly DependencyProperty EndpointsProperty = DependencyProperty.Register("Endpoints", typeof(ObservableCollection<HostEndpoint>), typeof(Host));
 
 		//Internal Use - Searching / Filtering
-		public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
+		[IgnoreDataMember()] public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
 		public static readonly DependencyProperty IsSearchingProperty = DependencyProperty.Register("IsSearching", typeof(bool), typeof(Host));
 
-		public bool IsSearchMatch { get { return (bool)GetValue(IsSearchMatchProperty); } set { SetValue(IsSearchMatchProperty, value); } }
+		[IgnoreDataMember()] public bool IsSearchMatch { get { return (bool)GetValue(IsSearchMatchProperty); } set { SetValue(IsSearchMatchProperty, value); } }
 		public static readonly DependencyProperty IsSearchMatchProperty = DependencyProperty.Register("IsSearchMatch", typeof(bool), typeof(Host));
 
-		public bool IsFiltering { get { return false; } set { } }
-		public bool IsFilterMatch { get { return false; } set { } }
+		[IgnoreDataMember()] public bool IsFiltering { get { return false; } set { } }
+		[IgnoreDataMember()] public bool IsFilterMatch { get { return false; } set { } }
 
-		[DataMember()] public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
+		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Host), new UIPropertyMetadata(false));
 
 		public Host() : base(DataTypeMode.Class) { Endpoints = new ObservableCollection<HostEndpoint>(); }
@@ -209,37 +208,36 @@ namespace WCFArchitect.Projects
 		}
 	}
 
-	[DataContract()]
 	public class HostEndpoint : DependencyObject
 	{
-		[DataMember()] protected Guid id;
-		public Guid ID { get { return id; } }
+		protected Guid id;
+		[IgnoreDataMember()] public Guid ID { get { return id; } }
 
-		[DataMember()] public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
+		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(HostEndpoint));
 
-		[DataMember()] public ServiceBinding Binding { get { return (ServiceBinding)GetValue(BindingProperty); } set { SetValue(BindingProperty, value); } }
+		public ServiceBinding Binding { get { return (ServiceBinding)GetValue(BindingProperty); } set { SetValue(BindingProperty, value); } }
 		public static readonly DependencyProperty BindingProperty = DependencyProperty.Register("Binding", typeof(ServiceBinding), typeof(HostEndpoint));
 
-		[DataMember()] public string ServerAddress { get { return (string)GetValue(ServerAddressProperty); } set { SetValue(ServerAddressProperty, value); } }
+		public string ServerAddress { get { return (string)GetValue(ServerAddressProperty); } set { SetValue(ServerAddressProperty, value); } }
 		public static readonly DependencyProperty ServerAddressProperty = DependencyProperty.Register("ServerAddress", typeof(string), typeof(HostEndpoint));
 
-		[DataMember()] public int ServerPort { get { return (int)GetValue(ServerPortProperty); } set { SetValue(ServerPortProperty, value); } }
+		public int ServerPort { get { return (int)GetValue(ServerPortProperty); } set { SetValue(ServerPortProperty, value); } }
 		public static readonly DependencyProperty ServerPortProperty = DependencyProperty.Register("ServerPort", typeof(int), typeof(HostEndpoint));
 
-		[DataMember()] public bool ServerUseHTTPS { get { return (bool)GetValue(ServerUseHTTPSProperty); } set { SetValue(ServerUseHTTPSProperty, value); } }
+		public bool ServerUseHTTPS { get { return (bool)GetValue(ServerUseHTTPSProperty); } set { SetValue(ServerUseHTTPSProperty, value); } }
 		public static readonly DependencyProperty ServerUseHTTPSProperty = DependencyProperty.Register("ServerUseHTTPS", typeof(bool), typeof(HostEndpoint));
 
-		[DataMember()] public string ClientAddress { get { return (string)GetValue(ClientAddressProperty); } set { SetValue(ClientAddressProperty, value); } }
+		public string ClientAddress { get { return (string)GetValue(ClientAddressProperty); } set { SetValue(ClientAddressProperty, value); } }
 		public static readonly DependencyProperty ClientAddressProperty = DependencyProperty.Register("ClientAddress", typeof(string), typeof(HostEndpoint));
 
-		[DataMember()] public HostEndpointIdentityType ClientIdentityType { get { return (HostEndpointIdentityType)GetValue(ClientIdentityTypeProperty); } set { SetValue(ClientIdentityTypeProperty, value); } }
+		public HostEndpointIdentityType ClientIdentityType { get { return (HostEndpointIdentityType)GetValue(ClientIdentityTypeProperty); } set { SetValue(ClientIdentityTypeProperty, value); } }
 		public static readonly DependencyProperty ClientIdentityTypeProperty = DependencyProperty.Register("ClientIdentityType", typeof(HostEndpointIdentityType), typeof(HostEndpoint));
 
-		[DataMember()] public string ClientIdentityData { get { return (string)GetValue(ClientIdentityDataProperty); } set { SetValue(ClientIdentityDataProperty, value); } }
+		public string ClientIdentityData { get { return (string)GetValue(ClientIdentityDataProperty); } set { SetValue(ClientIdentityDataProperty, value); } }
 		public static readonly DependencyProperty ClientIdentityDataProperty = DependencyProperty.Register("ClientIdentityData", typeof(string), typeof(HostEndpoint));
 
-		[DataMember()] public ObservableCollection<HostEndpointAddressHeader> ClientAddressHeaders { get { return (ObservableCollection<HostEndpointAddressHeader>)GetValue(ClientAddressHeadersProperty); } set { SetValue(ClientAddressHeadersProperty, value); } }
+		public ObservableCollection<HostEndpointAddressHeader> ClientAddressHeaders { get { return (ObservableCollection<HostEndpointAddressHeader>)GetValue(ClientAddressHeadersProperty); } set { SetValue(ClientAddressHeadersProperty, value); } }
 		public static readonly DependencyProperty ClientAddressHeadersProperty = DependencyProperty.Register("ClientAddressHeaders", typeof(ObservableCollection<HostEndpointAddressHeader>), typeof(HostEndpoint));
 
 		public Host Parent { get; set; }
@@ -382,16 +380,15 @@ namespace WCFArchitect.Projects
 		}
 	}
 
-	[DataContract()]
 	public class HostEndpointAddressHeader : DependencyObject
 	{
-		[DataMember()] protected Guid id;
-		public Guid ID { get { return id; } }
+		protected Guid id;
+		[IgnoreDataMember()] public Guid ID { get { return id; } }
 
-		[DataMember()] public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
+		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(HostEndpointAddressHeader));
 
-		[DataMember()] public string Namespace { get { return (string)GetValue(NamespaceProperty); } set { SetValue(NamespaceProperty, value); } }
+		public string Namespace { get { return (string)GetValue(NamespaceProperty); } set { SetValue(NamespaceProperty, value); } }
 		public static readonly DependencyProperty NamespaceProperty = DependencyProperty.Register("Namespace", typeof(string), typeof(HostEndpointAddressHeader));
 
 		public HostEndpointAddressHeader() { }
@@ -404,97 +401,96 @@ namespace WCFArchitect.Projects
 		}
 	}
 
-	[DataContract()]
 	public class HostCredentials : DependencyObject
 	{
-		[DataMember()] public bool UseCertificatesSecurity { get { return (bool)GetValue(UseCertificatesSecurityProperty); } set { SetValue(UseCertificatesSecurityProperty, value); } }
+		public bool UseCertificatesSecurity { get { return (bool)GetValue(UseCertificatesSecurityProperty); } set { SetValue(UseCertificatesSecurityProperty, value); } }
 		public static readonly DependencyProperty UseCertificatesSecurityProperty = DependencyProperty.Register("UseCertificatesSecurity", typeof(bool), typeof(HostCredentials));
 		
-		[DataMember()] public bool UseIssuedTokenSecurity { get { return (bool)GetValue(UseIssuedTokenSecurityProperty); } set { SetValue(UseIssuedTokenSecurityProperty, value); } }
+		public bool UseIssuedTokenSecurity { get { return (bool)GetValue(UseIssuedTokenSecurityProperty); } set { SetValue(UseIssuedTokenSecurityProperty, value); } }
 		public static readonly DependencyProperty UseIssuedTokenSecurityProperty = DependencyProperty.Register("UseIssuedTokenSecurity", typeof(bool), typeof(HostCredentials));
 		
-		[DataMember()] public bool UsePeerSecurity { get { return (bool)GetValue(UsePeerSecurityProperty); } set { SetValue(UsePeerSecurityProperty, value); } }
+		public bool UsePeerSecurity { get { return (bool)GetValue(UsePeerSecurityProperty); } set { SetValue(UsePeerSecurityProperty, value); } }
 		public static readonly DependencyProperty UsePeerSecurityProperty = DependencyProperty.Register("UsePeerSecurity", typeof(bool), typeof(HostCredentials));
 		
-		[DataMember()] public bool UseUserNamePasswordSecurity { get { return (bool)GetValue(UseUserNamePasswordSecurityProperty); } set { SetValue(UseUserNamePasswordSecurityProperty, value); } }
+		public bool UseUserNamePasswordSecurity { get { return (bool)GetValue(UseUserNamePasswordSecurityProperty); } set { SetValue(UseUserNamePasswordSecurityProperty, value); } }
 		public static readonly DependencyProperty UseUserNamePasswordSecurityProperty = DependencyProperty.Register("UseUserNamePasswordSecurity", typeof(bool), typeof(HostCredentials));
 		
-		[DataMember()] public bool UseWindowsServiceSecurity { get { return (bool)GetValue(UseWindowsServiceSecurityProperty); } set { SetValue(UseWindowsServiceSecurityProperty, value); } }
+		public bool UseWindowsServiceSecurity { get { return (bool)GetValue(UseWindowsServiceSecurityProperty); } set { SetValue(UseWindowsServiceSecurityProperty, value); } }
 		public static readonly DependencyProperty UseWindowsServiceSecurityProperty = DependencyProperty.Register("UseWindowsServiceSecurity", typeof(bool), typeof(HostCredentials));
 
-		[DataMember()] public System.ServiceModel.Security.X509CertificateValidationMode ClientCertificateAuthenticationValidationMode { get { return (System.ServiceModel.Security.X509CertificateValidationMode)GetValue(ClientCertificateAuthenticationValidationModeProperty); } set { SetValue(ClientCertificateAuthenticationValidationModeProperty, value); } }
+		public System.ServiceModel.Security.X509CertificateValidationMode ClientCertificateAuthenticationValidationMode { get { return (System.ServiceModel.Security.X509CertificateValidationMode)GetValue(ClientCertificateAuthenticationValidationModeProperty); } set { SetValue(ClientCertificateAuthenticationValidationModeProperty, value); } }
 		public static readonly DependencyProperty ClientCertificateAuthenticationValidationModeProperty = DependencyProperty.Register("ClientCertificateAuthenticationValidationMode", typeof(System.ServiceModel.Security.X509CertificateValidationMode), typeof(HostBehavior));
 		
-		[DataMember()] public bool ClientCertificateAuthenticationIncludeWindowsGroups { get { return (bool)GetValue(ClientCertificateAuthenticationIncludeWindowsGroupsProperty); } set { SetValue(ClientCertificateAuthenticationIncludeWindowsGroupsProperty, value); } }
+		public bool ClientCertificateAuthenticationIncludeWindowsGroups { get { return (bool)GetValue(ClientCertificateAuthenticationIncludeWindowsGroupsProperty); } set { SetValue(ClientCertificateAuthenticationIncludeWindowsGroupsProperty, value); } }
 		public static readonly DependencyProperty ClientCertificateAuthenticationIncludeWindowsGroupsProperty = DependencyProperty.Register("ClientCertificateAuthenticationIncludeWindowsGroups", typeof(bool), typeof(HostBehavior));
 		
-		[DataMember()] public bool ClientCertificateAuthenticationMapClientCertificateToWindowsAccount { get { return (bool)GetValue(ClientCertificateAuthenticationMapClientCertificateToWindowsAccountProperty); } set { SetValue(ClientCertificateAuthenticationMapClientCertificateToWindowsAccountProperty, value); } }
+		public bool ClientCertificateAuthenticationMapClientCertificateToWindowsAccount { get { return (bool)GetValue(ClientCertificateAuthenticationMapClientCertificateToWindowsAccountProperty); } set { SetValue(ClientCertificateAuthenticationMapClientCertificateToWindowsAccountProperty, value); } }
 		public static readonly DependencyProperty ClientCertificateAuthenticationMapClientCertificateToWindowsAccountProperty = DependencyProperty.Register("ClientCertificateAuthenticationMapClientCertificateToWindowsAccount", typeof(bool), typeof(HostBehavior));
 		
-		[DataMember()] public System.Security.Cryptography.X509Certificates.X509RevocationMode ClientCertificateAuthenticationRevocationMode { get { return (System.Security.Cryptography.X509Certificates.X509RevocationMode)GetValue(ClientCertificateAuthenticationRevocationModeProperty); } set { SetValue(ClientCertificateAuthenticationRevocationModeProperty, value); } }
+		public System.Security.Cryptography.X509Certificates.X509RevocationMode ClientCertificateAuthenticationRevocationMode { get { return (System.Security.Cryptography.X509Certificates.X509RevocationMode)GetValue(ClientCertificateAuthenticationRevocationModeProperty); } set { SetValue(ClientCertificateAuthenticationRevocationModeProperty, value); } }
 		public static readonly DependencyProperty ClientCertificateAuthenticationRevocationModeProperty = DependencyProperty.Register("ClientCertificateAuthenticationRevocationMode", typeof(System.Security.Cryptography.X509Certificates.X509RevocationMode), typeof(HostBehavior));
 		
-		[DataMember()] public System.Security.Cryptography.X509Certificates.StoreLocation ClientCertificateAuthenticationStoreLocation { get { return (System.Security.Cryptography.X509Certificates.StoreLocation)GetValue(ClientCertificateAuthenticationStoreLocationProperty); } set { SetValue(ClientCertificateAuthenticationStoreLocationProperty, value); } }
+		public System.Security.Cryptography.X509Certificates.StoreLocation ClientCertificateAuthenticationStoreLocation { get { return (System.Security.Cryptography.X509Certificates.StoreLocation)GetValue(ClientCertificateAuthenticationStoreLocationProperty); } set { SetValue(ClientCertificateAuthenticationStoreLocationProperty, value); } }
 		public static readonly DependencyProperty ClientCertificateAuthenticationStoreLocationProperty = DependencyProperty.Register("ClientCertificateAuthenticationStoreLocation", typeof(System.Security.Cryptography.X509Certificates.StoreLocation), typeof(HostBehavior));
 
-		[DataMember()] public ObservableCollection<string> IssuedTokenAllowedAudiencesUris { get { return (ObservableCollection<string>)GetValue(IssuedTokenAllowedAudiencesUrisProperty); } set { SetValue(IssuedTokenAllowedAudiencesUrisProperty, value); } }
+		public ObservableCollection<string> IssuedTokenAllowedAudiencesUris { get { return (ObservableCollection<string>)GetValue(IssuedTokenAllowedAudiencesUrisProperty); } set { SetValue(IssuedTokenAllowedAudiencesUrisProperty, value); } }
 		public static readonly DependencyProperty IssuedTokenAllowedAudiencesUrisProperty = DependencyProperty.Register("IssuedTokenAllowedAudiencesUris", typeof(ObservableCollection<string>), typeof(HostBehavior));
 
-		[DataMember()] public bool IssuedTokenAllowUntrustedRsaIssuers { get { return (bool)GetValue(IssuedTokenAllowUntrustedRsaIssuersProperty); } set { SetValue(IssuedTokenAllowUntrustedRsaIssuersProperty, value); } }
+		public bool IssuedTokenAllowUntrustedRsaIssuers { get { return (bool)GetValue(IssuedTokenAllowUntrustedRsaIssuersProperty); } set { SetValue(IssuedTokenAllowUntrustedRsaIssuersProperty, value); } }
 		public static readonly DependencyProperty IssuedTokenAllowUntrustedRsaIssuersProperty = DependencyProperty.Register("IssuedTokenAllowUntrustedRsaIssuers", typeof(bool), typeof(HostBehavior));
 		
-		[DataMember()] public System.IdentityModel.Selectors.AudienceUriMode IssuedTokenAudienceUriMode { get { return (System.IdentityModel.Selectors.AudienceUriMode)GetValue(IssuedTokenAudienceUriModeProperty); } set { SetValue(IssuedTokenAudienceUriModeProperty, value); } }
+		public System.IdentityModel.Selectors.AudienceUriMode IssuedTokenAudienceUriMode { get { return (System.IdentityModel.Selectors.AudienceUriMode)GetValue(IssuedTokenAudienceUriModeProperty); } set { SetValue(IssuedTokenAudienceUriModeProperty, value); } }
 		public static readonly DependencyProperty IssuedTokenAudienceUriModeProperty = DependencyProperty.Register("IssuedTokenAudienceUriMode", typeof(System.IdentityModel.Selectors.AudienceUriMode), typeof(HostBehavior));
 
-		[DataMember()] public System.ServiceModel.Security.X509CertificateValidationMode IssuedTokenCertificateValidationMode { get { return (System.ServiceModel.Security.X509CertificateValidationMode)GetValue(IssuedTokenCertificateValidationModeProperty); } set { SetValue(IssuedTokenCertificateValidationModeProperty, value); } }
+		public System.ServiceModel.Security.X509CertificateValidationMode IssuedTokenCertificateValidationMode { get { return (System.ServiceModel.Security.X509CertificateValidationMode)GetValue(IssuedTokenCertificateValidationModeProperty); } set { SetValue(IssuedTokenCertificateValidationModeProperty, value); } }
 		public static readonly DependencyProperty IssuedTokenCertificateValidationModeProperty = DependencyProperty.Register("IssuedTokenCertificateValidationMode", typeof(System.ServiceModel.Security.X509CertificateValidationMode), typeof(HostBehavior));
 
-		[DataMember()] public System.Security.Cryptography.X509Certificates.X509RevocationMode IssuedTokenRevocationMode { get { return (System.Security.Cryptography.X509Certificates.X509RevocationMode)GetValue(IssuedTokenRevocationModeProperty); } set { SetValue(IssuedTokenRevocationModeProperty, value); } }
+		public System.Security.Cryptography.X509Certificates.X509RevocationMode IssuedTokenRevocationMode { get { return (System.Security.Cryptography.X509Certificates.X509RevocationMode)GetValue(IssuedTokenRevocationModeProperty); } set { SetValue(IssuedTokenRevocationModeProperty, value); } }
 		public static readonly DependencyProperty IssuedTokenRevocationModeProperty = DependencyProperty.Register("IssuedTokenRevocationMode", typeof(System.Security.Cryptography.X509Certificates.X509RevocationMode), typeof(HostBehavior));
 
-		[DataMember()] public System.Security.Cryptography.X509Certificates.StoreLocation IssuedTokenTrustedStoreLocation { get { return (System.Security.Cryptography.X509Certificates.StoreLocation)GetValue(IssuedTokenTrustedStoreLocationProperty); } set { SetValue(IssuedTokenTrustedStoreLocationProperty, value); } }
+		public System.Security.Cryptography.X509Certificates.StoreLocation IssuedTokenTrustedStoreLocation { get { return (System.Security.Cryptography.X509Certificates.StoreLocation)GetValue(IssuedTokenTrustedStoreLocationProperty); } set { SetValue(IssuedTokenTrustedStoreLocationProperty, value); } }
 		public static readonly DependencyProperty IssuedTokenTrustedStoreLocationProperty = DependencyProperty.Register("IssuedTokenTrustedStoreLocation", typeof(System.Security.Cryptography.X509Certificates.StoreLocation), typeof(HostBehavior));
 
-		[DataMember()] public string PeerMeshPassword { get { return (string)GetValue(PeerMeshPasswordProperty); } set { SetValue(PeerMeshPasswordProperty, value); } }
+		public string PeerMeshPassword { get { return (string)GetValue(PeerMeshPasswordProperty); } set { SetValue(PeerMeshPasswordProperty, value); } }
 		public static readonly DependencyProperty PeerMeshPasswordProperty = DependencyProperty.Register("PeerMeshPassword", typeof(string), typeof(HostBehavior));
 
-		[DataMember()] public System.ServiceModel.Security.X509CertificateValidationMode PeerMessageSenderAuthenticationCertificateValidationMode { get { return (System.ServiceModel.Security.X509CertificateValidationMode)GetValue(PeerMessageSenderAuthenticationCertificateValidationModeProperty); } set { SetValue(PeerMessageSenderAuthenticationCertificateValidationModeProperty, value); } }
+		public System.ServiceModel.Security.X509CertificateValidationMode PeerMessageSenderAuthenticationCertificateValidationMode { get { return (System.ServiceModel.Security.X509CertificateValidationMode)GetValue(PeerMessageSenderAuthenticationCertificateValidationModeProperty); } set { SetValue(PeerMessageSenderAuthenticationCertificateValidationModeProperty, value); } }
 		public static readonly DependencyProperty PeerMessageSenderAuthenticationCertificateValidationModeProperty = DependencyProperty.Register("PeerMessageSenderAuthenticationCertificateValidationMode ", typeof(System.ServiceModel.Security.X509CertificateValidationMode), typeof(HostBehavior));
 
-		[DataMember()] public System.Security.Cryptography.X509Certificates.X509RevocationMode PeerMessageSenderAuthenticationRevocationMode { get { return (System.Security.Cryptography.X509Certificates.X509RevocationMode)GetValue(PeerMessageSenderAuthenticationRevocationModeProperty); } set { SetValue(PeerMessageSenderAuthenticationRevocationModeProperty, value); } }
+		public System.Security.Cryptography.X509Certificates.X509RevocationMode PeerMessageSenderAuthenticationRevocationMode { get { return (System.Security.Cryptography.X509Certificates.X509RevocationMode)GetValue(PeerMessageSenderAuthenticationRevocationModeProperty); } set { SetValue(PeerMessageSenderAuthenticationRevocationModeProperty, value); } }
 		public static readonly DependencyProperty PeerMessageSenderAuthenticationRevocationModeProperty = DependencyProperty.Register("PeerMessageSenderAuthenticationRevocationMode", typeof(System.Security.Cryptography.X509Certificates.X509RevocationMode), typeof(HostBehavior));
 
-		[DataMember()] public System.Security.Cryptography.X509Certificates.StoreLocation PeerMessageSenderAuthenticationTrustedStoreLocation { get { return (System.Security.Cryptography.X509Certificates.StoreLocation)GetValue(PeerMessageSenderAuthenticationTrustedStoreLocationProperty); } set { SetValue(PeerMessageSenderAuthenticationTrustedStoreLocationProperty, value); } }
+		public System.Security.Cryptography.X509Certificates.StoreLocation PeerMessageSenderAuthenticationTrustedStoreLocation { get { return (System.Security.Cryptography.X509Certificates.StoreLocation)GetValue(PeerMessageSenderAuthenticationTrustedStoreLocationProperty); } set { SetValue(PeerMessageSenderAuthenticationTrustedStoreLocationProperty, value); } }
 		public static readonly DependencyProperty PeerMessageSenderAuthenticationTrustedStoreLocationProperty = DependencyProperty.Register("PeerMessageSenderAuthenticationTrustedStoreLocation", typeof(System.Security.Cryptography.X509Certificates.StoreLocation), typeof(HostBehavior));
 
-		[DataMember()] public System.ServiceModel.Security.X509CertificateValidationMode PeerAuthenticationCertificateValidationMode { get { return (System.ServiceModel.Security.X509CertificateValidationMode)GetValue(PeerAuthenticationCertificateValidationModeProperty); } set { SetValue(PeerAuthenticationCertificateValidationModeProperty, value); } }
+		public System.ServiceModel.Security.X509CertificateValidationMode PeerAuthenticationCertificateValidationMode { get { return (System.ServiceModel.Security.X509CertificateValidationMode)GetValue(PeerAuthenticationCertificateValidationModeProperty); } set { SetValue(PeerAuthenticationCertificateValidationModeProperty, value); } }
 		public static readonly DependencyProperty PeerAuthenticationCertificateValidationModeProperty = DependencyProperty.Register("PeerAuthenticationCertificateValidationMode", typeof(System.ServiceModel.Security.X509CertificateValidationMode), typeof(HostBehavior));
 
-		[DataMember()] public System.Security.Cryptography.X509Certificates.X509RevocationMode PeerAuthenticationRevocationMode { get { return (System.Security.Cryptography.X509Certificates.X509RevocationMode)GetValue(PeerAuthenticationRevocationModeProperty); } set { SetValue(PeerAuthenticationRevocationModeProperty, value); } }
+		public System.Security.Cryptography.X509Certificates.X509RevocationMode PeerAuthenticationRevocationMode { get { return (System.Security.Cryptography.X509Certificates.X509RevocationMode)GetValue(PeerAuthenticationRevocationModeProperty); } set { SetValue(PeerAuthenticationRevocationModeProperty, value); } }
 		public static readonly DependencyProperty PeerAuthenticationRevocationModeProperty = DependencyProperty.Register("PeerAuthenticationRevocationMode", typeof(System.Security.Cryptography.X509Certificates.X509RevocationMode), typeof(HostBehavior));
 
-		[DataMember()] public System.Security.Cryptography.X509Certificates.StoreLocation PeerAuthenticationTrustedStoreLocation { get { return (System.Security.Cryptography.X509Certificates.StoreLocation)GetValue(PeerAuthenticationTrustedStoreLocationProperty); } set { SetValue(PeerAuthenticationTrustedStoreLocationProperty, value); } } 
+		public System.Security.Cryptography.X509Certificates.StoreLocation PeerAuthenticationTrustedStoreLocation { get { return (System.Security.Cryptography.X509Certificates.StoreLocation)GetValue(PeerAuthenticationTrustedStoreLocationProperty); } set { SetValue(PeerAuthenticationTrustedStoreLocationProperty, value); } } 
 		public static readonly DependencyProperty PeerAuthenticationTrustedStoreLocationProperty = DependencyProperty.Register("PeerAuthenticationTrustedStoreLocation", typeof(System.Security.Cryptography.X509Certificates.StoreLocation), typeof(HostBehavior));
 
-		[DataMember()] public TimeSpan UserNamePasswordCachedLogonTokenLifetime { get { return (TimeSpan)GetValue(UserNamePasswordCachedLogonTokenLifetimeProperty); } set { SetValue(UserNamePasswordCachedLogonTokenLifetimeProperty, value); } } 
+		public TimeSpan UserNamePasswordCachedLogonTokenLifetime { get { return (TimeSpan)GetValue(UserNamePasswordCachedLogonTokenLifetimeProperty); } set { SetValue(UserNamePasswordCachedLogonTokenLifetimeProperty, value); } } 
 		public static readonly DependencyProperty UserNamePasswordCachedLogonTokenLifetimeProperty = DependencyProperty.Register("UserNamePasswordCachedLogonTokenLifetime", typeof(TimeSpan), typeof(HostBehavior));
 		
-		[DataMember()] public bool UserNamePasswordCacheLogonTokens { get { return (bool)GetValue(UserNamePasswordCacheLogonTokensProperty); } set { SetValue(UserNamePasswordCacheLogonTokensProperty, value); } }
+		public bool UserNamePasswordCacheLogonTokens { get { return (bool)GetValue(UserNamePasswordCacheLogonTokensProperty); } set { SetValue(UserNamePasswordCacheLogonTokensProperty, value); } }
 		public static readonly DependencyProperty UserNamePasswordCacheLogonTokensProperty = DependencyProperty.Register("UserNamePasswordCacheLogonTokens", typeof(bool), typeof(HostBehavior));
 		
-		[DataMember()] public bool UserNamePasswordIncludeWindowsGroups { get { return (bool)GetValue(UserNamePasswordIncludeWindowsGroupsProperty); } set { SetValue(UserNamePasswordIncludeWindowsGroupsProperty, value); } }
+		public bool UserNamePasswordIncludeWindowsGroups { get { return (bool)GetValue(UserNamePasswordIncludeWindowsGroupsProperty); } set { SetValue(UserNamePasswordIncludeWindowsGroupsProperty, value); } }
 		public static readonly DependencyProperty UserNamePasswordIncludeWindowsGroupsProperty = DependencyProperty.Register("UserNamePasswordIncludeWindowsGroups", typeof(bool), typeof(HostBehavior));
 		
-		[DataMember()] public int UserNamePasswordMaxCachedLogonTokens { get { return (int)GetValue(UserNamePasswordMaxCachedLogonTokensProperty); } set { SetValue(UserNamePasswordMaxCachedLogonTokensProperty, value); } }
+		public int UserNamePasswordMaxCachedLogonTokens { get { return (int)GetValue(UserNamePasswordMaxCachedLogonTokensProperty); } set { SetValue(UserNamePasswordMaxCachedLogonTokensProperty, value); } }
 		public static readonly DependencyProperty UserNamePasswordMaxCachedLogonTokensProperty = DependencyProperty.Register("UserNamePasswordMaxCachedLogonTokens", typeof(int), typeof(HostBehavior));
 		
-		[DataMember()] public System.ServiceModel.Security.UserNamePasswordValidationMode UserNamePasswordValidationMode { get { return (System.ServiceModel.Security.UserNamePasswordValidationMode)GetValue(UserNamePasswordValidationModeProperty); } set { SetValue(UserNamePasswordValidationModeProperty, value); } }
+		public System.ServiceModel.Security.UserNamePasswordValidationMode UserNamePasswordValidationMode { get { return (System.ServiceModel.Security.UserNamePasswordValidationMode)GetValue(UserNamePasswordValidationModeProperty); } set { SetValue(UserNamePasswordValidationModeProperty, value); } }
 		public static readonly DependencyProperty UserNamePasswordValidationModeProperty = DependencyProperty.Register("UserNamePasswordValidationMode", typeof(System.ServiceModel.Security.UserNamePasswordValidationMode), typeof(HostBehavior));
 		
-		[DataMember()] public bool WindowsServiceAllowAnonymousLogons { get { return (bool)GetValue(WindowsServiceAllowAnonymousLogonsProperty); } set { SetValue(WindowsServiceAllowAnonymousLogonsProperty, value); } }
+		public bool WindowsServiceAllowAnonymousLogons { get { return (bool)GetValue(WindowsServiceAllowAnonymousLogonsProperty); } set { SetValue(WindowsServiceAllowAnonymousLogonsProperty, value); } }
 		public static readonly DependencyProperty WindowsServiceAllowAnonymousLogonsProperty = DependencyProperty.Register("WindowsServiceAllowAnonymousLogons", typeof(bool), typeof(HostBehavior));
 		
-		[DataMember()] public bool WindowsServiceIncludeWindowsGroups { get { return (bool)GetValue(WindowsServiceIncludeWindowsGroupsProperty); } set { SetValue(WindowsServiceIncludeWindowsGroupsProperty, value); } }
+		public bool WindowsServiceIncludeWindowsGroups { get { return (bool)GetValue(WindowsServiceIncludeWindowsGroupsProperty); } set { SetValue(WindowsServiceIncludeWindowsGroupsProperty, value); } }
 		public static readonly DependencyProperty WindowsServiceIncludeWindowsGroupsProperty = DependencyProperty.Register("WindowsServiceIncludeWindowsGroups", typeof(bool), typeof(HostBehavior));
 
 		public Host Owner { get; set; }
@@ -520,19 +516,18 @@ namespace WCFArchitect.Projects
 		}
 	}
 
-	[DataContract()]
 	public abstract class HostBehavior : DependencyObject
 	{
-		[DataMember()] protected Guid id;
-		public Guid ID { get { return id; } }
+		protected Guid id;
+		[IgnoreDataMember()] public Guid ID { get { return id; } }
 		
-		[DataMember()] public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
+		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(HostBehavior));
 
-		[DataMember()] public bool IsDefaultBehavior { get { return (bool)GetValue(IsDefaultBehaviorProperty); } set { SetValue(IsDefaultBehaviorProperty, value); } }
+		public bool IsDefaultBehavior { get { return (bool)GetValue(IsDefaultBehaviorProperty); } set { SetValue(IsDefaultBehaviorProperty, value); } }
 		public static readonly DependencyProperty IsDefaultBehaviorProperty = DependencyProperty.Register("IsDefaultBehavior", typeof(bool), typeof(HostBehavior), new UIPropertyMetadata(true));
 
-		[DataMember()] public Host Parent { get { return (Host)GetValue(ParentProperty); } set { SetValue(ParentProperty, value); } }
+		public Host Parent { get { return (Host)GetValue(ParentProperty); } set { SetValue(ParentProperty, value); } }
 		public static readonly DependencyProperty ParentProperty =  DependencyProperty.Register("Parent", typeof(Host), typeof(HostBehavior));
 
 		public HostBehavior() { }
@@ -638,28 +633,27 @@ namespace WCFArchitect.Projects
 		}
 	}
 
-	[DataContract()]
 	public class HostDebugBehavior : HostBehavior
 	{
-		[DataMember()] public ServiceBinding HttpHelpPageBinding { get { return (ServiceBinding)GetValue(HttpHelpPageBindingProperty); } set { SetValue(HttpHelpPageBindingProperty, value); } }
+		public ServiceBinding HttpHelpPageBinding { get { return (ServiceBinding)GetValue(HttpHelpPageBindingProperty); } set { SetValue(HttpHelpPageBindingProperty, value); } }
 		public static readonly DependencyProperty HttpHelpPageBindingProperty = DependencyProperty.Register("HttpHelpPageBinding", typeof(ServiceBinding), typeof(HostDebugBehavior));
 
-		[DataMember()] public bool HttpHelpPageEnabled { get { return (bool)GetValue(HttpHelpPageEnabledProperty); } set { SetValue(HttpHelpPageEnabledProperty, value); } }
+		public bool HttpHelpPageEnabled { get { return (bool)GetValue(HttpHelpPageEnabledProperty); } set { SetValue(HttpHelpPageEnabledProperty, value); } }
 		public static readonly DependencyProperty HttpHelpPageEnabledProperty = DependencyProperty.Register("HttpHelpPageEnabled", typeof(bool), typeof(HostDebugBehavior));
 		
-		[DataMember()] public string HttpHelpPageUrl { get { return (string)GetValue(HttpHelpPageUrlProperty); } set { SetValue(HttpHelpPageUrlProperty, value); } }
+		public string HttpHelpPageUrl { get { return (string)GetValue(HttpHelpPageUrlProperty); } set { SetValue(HttpHelpPageUrlProperty, value); } }
 		public static readonly DependencyProperty HttpHelpPageUrlProperty = DependencyProperty.Register("HttpHelpPageUrl", typeof(string), typeof(HostDebugBehavior));
 		
-		[DataMember()] public ServiceBinding HttpsHelpPageBinding { get { return (ServiceBinding)GetValue(HttpsHelpPageBindingProperty); } set { SetValue(HttpsHelpPageBindingProperty, value); } }
+		public ServiceBinding HttpsHelpPageBinding { get { return (ServiceBinding)GetValue(HttpsHelpPageBindingProperty); } set { SetValue(HttpsHelpPageBindingProperty, value); } }
 		public static readonly DependencyProperty HttpsHelpPageBindingProperty = DependencyProperty.Register("HttpsHelpPageBinding", typeof(ServiceBinding), typeof(HostDebugBehavior));
 		
-		[DataMember()] public bool HttpsHelpPageEnabled { get { return (bool)GetValue(HttpsHelpPageEnabledProperty); } set { SetValue(HttpsHelpPageEnabledProperty, value); } }
+		public bool HttpsHelpPageEnabled { get { return (bool)GetValue(HttpsHelpPageEnabledProperty); } set { SetValue(HttpsHelpPageEnabledProperty, value); } }
 		public static readonly DependencyProperty HttpsHelpPageEnabledProperty = DependencyProperty.Register("HttpsHelpPageEnabled", typeof(bool), typeof(HostDebugBehavior));
 		
-		[DataMember()] public string HttpsHelpPageUrl { get { return (string)GetValue(HttpsHelpPageUrlProperty); } set { SetValue(HttpsHelpPageUrlProperty, value); } }
+		public string HttpsHelpPageUrl { get { return (string)GetValue(HttpsHelpPageUrlProperty); } set { SetValue(HttpsHelpPageUrlProperty, value); } }
 		public static readonly DependencyProperty HttpsHelpPageUrlProperty = DependencyProperty.Register("HttpsHelpPageUrl", typeof(string), typeof(HostDebugBehavior));
 		
-		[DataMember()] public bool IncludeExceptionDetailInFaults { get { return (bool)GetValue(IncludeExceptionDetailInFaultsProperty); } set { SetValue(IncludeExceptionDetailInFaultsProperty, value); } }
+		public bool IncludeExceptionDetailInFaults { get { return (bool)GetValue(IncludeExceptionDetailInFaultsProperty); } set { SetValue(IncludeExceptionDetailInFaultsProperty, value); } }
 		public static readonly DependencyProperty IncludeExceptionDetailInFaultsProperty = DependencyProperty.Register("IncludeExceptionDetailInFaults", typeof(bool), typeof(HostDebugBehavior));
 				
 		public HostDebugBehavior() { }
@@ -691,28 +685,27 @@ namespace WCFArchitect.Projects
 		}
 	}
 
-	[DataContract()]
 	public class HostMetadataBehavior : HostBehavior
 	{
-		[DataMember()] public string ExternalMetadataLocation { get { return (string)GetValue(ExternalMetadataLocationProperty); } set { SetValue(ExternalMetadataLocationProperty, value); } }
+		public string ExternalMetadataLocation { get { return (string)GetValue(ExternalMetadataLocationProperty); } set { SetValue(ExternalMetadataLocationProperty, value); } }
 		public static readonly DependencyProperty ExternalMetadataLocationProperty =  DependencyProperty.Register("ExternalMetadataLocation", typeof(string), typeof(HostMetadataBehavior));
 
-		[DataMember()] public ServiceBinding HttpGetBinding { get { return (ServiceBinding)GetValue(HttpGetBindingProperty); } set { SetValue(HttpGetBindingProperty, value); } }
+		public ServiceBinding HttpGetBinding { get { return (ServiceBinding)GetValue(HttpGetBindingProperty); } set { SetValue(HttpGetBindingProperty, value); } }
 		public static readonly DependencyProperty HttpGetBindingProperty = DependencyProperty.Register("HttpGetBinding", typeof(ServiceBinding), typeof(HostMetadataBehavior));
 
-		[DataMember()] public bool HttpGetEnabled { get { return (bool)GetValue(HttpGetEnabledProperty); } set { SetValue(HttpGetEnabledProperty, value); } }
+		public bool HttpGetEnabled { get { return (bool)GetValue(HttpGetEnabledProperty); } set { SetValue(HttpGetEnabledProperty, value); } }
 		public static readonly DependencyProperty HttpGetEnabledProperty = DependencyProperty.Register("HttpGetEnabled", typeof(bool), typeof(HostMetadataBehavior));
 		
-		[DataMember()] public string HttpGetUrl { get { return (string)GetValue(HttpGetUrlProperty); } set { SetValue(HttpGetUrlProperty, value); } }
+		public string HttpGetUrl { get { return (string)GetValue(HttpGetUrlProperty); } set { SetValue(HttpGetUrlProperty, value); } }
 		public static readonly DependencyProperty HttpGetUrlProperty = DependencyProperty.Register("HttpGetUrl", typeof(string), typeof(HostMetadataBehavior));
 		
-		[DataMember()] public ServiceBinding HttpsGetBinding { get { return (ServiceBinding)GetValue(HttpsGetBindingProperty); } set { SetValue(HttpsGetBindingProperty, value); } }
+		public ServiceBinding HttpsGetBinding { get { return (ServiceBinding)GetValue(HttpsGetBindingProperty); } set { SetValue(HttpsGetBindingProperty, value); } }
 		public static readonly DependencyProperty HttpsGetBindingProperty = DependencyProperty.Register("HttpsGetBinding", typeof(ServiceBinding), typeof(HostMetadataBehavior));
 		
-		[DataMember()] public bool HttpsGetEnabled { get { return (bool)GetValue(HttpsGetEnabledProperty); } set { SetValue(HttpsGetEnabledProperty, value); } }
+		public bool HttpsGetEnabled { get { return (bool)GetValue(HttpsGetEnabledProperty); } set { SetValue(HttpsGetEnabledProperty, value); } }
 		public static readonly DependencyProperty HttpsGetEnabledProperty = DependencyProperty.Register("HttpsGetEnabled", typeof(bool), typeof(HostMetadataBehavior));
 		
-		[DataMember()] public string HttpsGetUrl { get { return (string)GetValue(HttpsGetUrlProperty); } set { SetValue(HttpsGetUrlProperty, value); } }
+		public string HttpsGetUrl { get { return (string)GetValue(HttpsGetUrlProperty); } set { SetValue(HttpsGetUrlProperty, value); } }
 		public static readonly DependencyProperty HttpsGetUrlProperty = DependencyProperty.Register("HttpsGetUrl", typeof(string), typeof(HostMetadataBehavior));
 
 		public HostMetadataBehavior() { }
@@ -743,16 +736,15 @@ namespace WCFArchitect.Projects
 		}
 	}
 
-	[DataContract()]
 	public class HostThrottlingBehavior : HostBehavior
 	{
-		[DataMember()] public int MaxConcurrentCalls { get { return (int)GetValue(MaxConcurrentCallsProperty); } set { SetValue(MaxConcurrentCallsProperty, value); } }
+		public int MaxConcurrentCalls { get { return (int)GetValue(MaxConcurrentCallsProperty); } set { SetValue(MaxConcurrentCallsProperty, value); } }
 		public static readonly DependencyProperty MaxConcurrentCallsProperty =  DependencyProperty.Register("MaxConcurrentCalls", typeof(int), typeof(HostThrottlingBehavior));
 		
-		[DataMember()] public int MaxConcurrentInstances { get { return (int)GetValue(MaxConcurrentInstancesProperty); } set { SetValue(MaxConcurrentInstancesProperty, value); } }
+		public int MaxConcurrentInstances { get { return (int)GetValue(MaxConcurrentInstancesProperty); } set { SetValue(MaxConcurrentInstancesProperty, value); } }
 		public static readonly DependencyProperty MaxConcurrentInstancesProperty = DependencyProperty.Register("MaxConcurrentInstances", typeof(int), typeof(HostThrottlingBehavior));
 
-		[DataMember()] public int MaxConcurrentSessions { get { return (int)GetValue(MaxConcurrentSessionsProperty); } set { SetValue(MaxConcurrentSessionsProperty, value); } }
+		public int MaxConcurrentSessions { get { return (int)GetValue(MaxConcurrentSessionsProperty); } set { SetValue(MaxConcurrentSessionsProperty, value); } }
 		public static readonly DependencyProperty MaxConcurrentSessionsProperty = DependencyProperty.Register("MaxConcurrentSessions", typeof(int), typeof(HostThrottlingBehavior));
 
 		public HostThrottlingBehavior() { }

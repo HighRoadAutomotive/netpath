@@ -17,35 +17,34 @@ namespace WCFArchitect.Projects
 		ProtectedInternal,
 	}
 
-	[DataContract()]
 	public class Data : DataType
 	{
-		[DataMember()] public bool HasWPFType { get { return (bool)GetValue(HasWPFTypeProperty); } set { SetValue(HasWPFTypeProperty, value); if (value == false) { ContractType = null; } else { ContractType = new DataType(DataTypeMode.Class); WPFType.Name = Name + "WPF"; WPFType.Scope = Scope; WPFType.InheritedTypes.Add(new DataType("DependencyObject", DataTypeMode.Class)); } } }
+		public bool HasWPFType { get { return (bool)GetValue(HasWPFTypeProperty); } set { SetValue(HasWPFTypeProperty, value); if (value == false) { ContractType = null; } else { ContractType = new DataType(DataTypeMode.Class); WPFType.Name = Name + "WPF"; WPFType.Scope = Scope; WPFType.InheritedTypes.Add(new DataType("DependencyObject", DataTypeMode.Class)); } } }
 		public static readonly DependencyProperty HasWPFTypeProperty = DependencyProperty.Register("HasWPFType", typeof(bool), typeof(Data));
 
-		[DataMember()] public DataType WPFType { get { return (DataType)GetValue(WPFTypeProperty); } set { SetValue(WPFTypeProperty, value); } }
+		public DataType WPFType { get { return (DataType)GetValue(WPFTypeProperty); } set { SetValue(WPFTypeProperty, value); } }
 		public static readonly DependencyProperty WPFTypeProperty = DependencyProperty.Register("WPFType", typeof(DataType), typeof(Data));
 
-		[DataMember()] public bool IsReference { get { return (bool)GetValue(IsReferenceProperty); } set { SetValue(IsReferenceProperty, value); } }
+		public bool IsReference { get { return (bool)GetValue(IsReferenceProperty); } set { SetValue(IsReferenceProperty, value); } }
 		public static readonly DependencyProperty IsReferenceProperty = DependencyProperty.Register("IsReference", typeof(bool), typeof(Data));
 
-		[DataMember()] public ObservableCollection<DataElement> Elements { get { return (ObservableCollection<DataElement>)GetValue(ElementsProperty); } set { SetValue(ElementsProperty, value); } }
+		public ObservableCollection<DataElement> Elements { get { return (ObservableCollection<DataElement>)GetValue(ElementsProperty); } set { SetValue(ElementsProperty, value); } }
 		public static readonly DependencyProperty ElementsProperty = DependencyProperty.Register("Elements", typeof(ObservableCollection<DataElement>), typeof(Data));
 
 		//Internal Use - Searching / Filtering
-		public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
+		[IgnoreDataMember()] public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
 		public static readonly DependencyProperty IsSearchingProperty = DependencyProperty.Register("IsSearching", typeof(bool), typeof(Data));
 
-		public bool IsSearchMatch { get { return (bool)GetValue(IsSearchMatchProperty); } set { SetValue(IsSearchMatchProperty, value); } }
+		[IgnoreDataMember()] public bool IsSearchMatch { get { return (bool)GetValue(IsSearchMatchProperty); } set { SetValue(IsSearchMatchProperty, value); } }
 		public static readonly DependencyProperty IsSearchMatchProperty = DependencyProperty.Register("IsSearchMatch", typeof(bool), typeof(Data));
 
-		public bool IsFiltering { get { return (bool)GetValue(IsFilteringProperty); } set { SetValue(IsFilteringProperty, value); } }
+		[IgnoreDataMember()] public bool IsFiltering { get { return (bool)GetValue(IsFilteringProperty); } set { SetValue(IsFilteringProperty, value); } }
 		public static readonly DependencyProperty IsFilteringProperty = DependencyProperty.Register("IsFiltering", typeof(bool), typeof(Data));
 
-		public bool IsFilterMatch { get { return (bool)GetValue(IsFilterMatchProperty); } set { SetValue(IsFilterMatchProperty, value); } }
+		[IgnoreDataMember()] public bool IsFilterMatch { get { return (bool)GetValue(IsFilterMatchProperty); } set { SetValue(IsFilterMatchProperty, value); } }
 		public static readonly DependencyProperty IsFilterMatchProperty = DependencyProperty.Register("IsFilterMatch", typeof(bool), typeof(Data));
 
-		[DataMember()] public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
+		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Data));
 
 		public Data()
@@ -230,80 +229,79 @@ namespace WCFArchitect.Projects
 		}
 	}
 
-	[DataContract()]
 	public class DataElement : DependencyObject
 	{
-		[DataMember()] private Guid id;
-		public Guid ID { get { return id; } }
+		private Guid id;
+		[IgnoreDataMember()] public Guid ID { get { return id; } }
 
 		//Basic Data-Type Settings
-		[DataMember()] public DataScope Scope { get { return (DataScope)GetValue(ScopeProperty); } set { SetValue(ScopeProperty, value); } }
+		public DataScope Scope { get { return (DataScope)GetValue(ScopeProperty); } set { SetValue(ScopeProperty, value); } }
 		public static readonly DependencyProperty ScopeProperty = DependencyProperty.Register("Scope", typeof(DataScope), typeof(DataElement), new PropertyMetadata(DataScope.Public));
 
-		[DataMember()] public DataType DataType { get { return (DataType)GetValue(DataTypeProperty); } set { SetValue(DataTypeProperty, value); } }
+		public DataType DataType { get { return (DataType)GetValue(DataTypeProperty); } set { SetValue(DataTypeProperty, value); } }
 		public static readonly DependencyProperty DataTypeProperty = DependencyProperty.Register("DataType", typeof(DataType), typeof(DataElement));
 
-		[DataMember()] public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value == null ? "" : value, @"")); } }
+		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value == null ? "" : value, @"")); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(DataElement));
 
-		[DataMember()] public bool HasContractType { get { return (bool)GetValue(HasContractTypeProperty); } set { SetValue(HasContractTypeProperty, value); if (value == false) { ContractType = null; } else { ContractType = new DataType(DataTypeMode.Enum); ContractType.Name = DataType.Name; ContractType.Scope = DataType.Scope; } } }
+		public bool HasContractType { get { return (bool)GetValue(HasContractTypeProperty); } set { SetValue(HasContractTypeProperty, value); if (value == false) { ContractType = null; } else { ContractType = new DataType(DataTypeMode.Enum); ContractType.Name = DataType.Name; ContractType.Scope = DataType.Scope; } } }
 		public static readonly DependencyProperty HasContractTypeProperty = DependencyProperty.Register("HasContractType", typeof(bool), typeof(DataElement));
 
-		[DataMember()] public DataType ContractType { get { return (DataType)GetValue(ContractTypeProperty); } set { SetValue(ContractTypeProperty, value); } }
+		public DataType ContractType { get { return (DataType)GetValue(ContractTypeProperty); } set { SetValue(ContractTypeProperty, value); } }
 		public static readonly DependencyProperty ContractTypeProperty = DependencyProperty.Register("ContractType", typeof(DataType), typeof(DataElement));
 
-		[DataMember()] public bool HasWPFType { get { return (bool)GetValue(HasWPFTypeProperty); } set { SetValue(HasWPFTypeProperty, value); if (value == false) { WPFType = null; } else { WPFType = new DataType(DataTypeMode.Class); WPFType.Name = DataType.Name; WPFType.Scope = DataType.Scope; } } }
+		public bool HasWPFType { get { return (bool)GetValue(HasWPFTypeProperty); } set { SetValue(HasWPFTypeProperty, value); if (value == false) { WPFType = null; } else { WPFType = new DataType(DataTypeMode.Class); WPFType.Name = DataType.Name; WPFType.Scope = DataType.Scope; } } }
 		public static readonly DependencyProperty HasWPFTypeProperty = DependencyProperty.Register("HasWPFType", typeof(bool), typeof(DataElement));
 
-		[DataMember()] public DataType WPFType { get { return (DataType)GetValue(WPFTypeProperty); } set { SetValue(WPFTypeProperty, value); } }
+		public DataType WPFType { get { return (DataType)GetValue(WPFTypeProperty); } set { SetValue(WPFTypeProperty, value); } }
 		public static readonly DependencyProperty WPFTypeProperty = DependencyProperty.Register("WPFType", typeof(DataType), typeof(DataElement));
 
-		[DataMember()] public bool IsHidden { get { return (bool)GetValue(IsHiddenProperty); } set { SetValue(IsHiddenProperty, value); } }
+		public bool IsHidden { get { return (bool)GetValue(IsHiddenProperty); } set { SetValue(IsHiddenProperty, value); } }
 		public static readonly DependencyProperty IsHiddenProperty = DependencyProperty.Register("IsHidden", typeof(bool), typeof(DataElement));
 
 		//WPF Class Settings
-		[DataMember()] public bool IsReadOnly { get { return (bool)GetValue(IsReadOnlyProperty); } set { SetValue(IsReadOnlyProperty, value); } }
+		public bool IsReadOnly { get { return (bool)GetValue(IsReadOnlyProperty); } set { SetValue(IsReadOnlyProperty, value); } }
 		public static readonly DependencyProperty IsReadOnlyProperty = DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(DataElement));
 
-		[DataMember()] public bool IsAttached { get { return (bool)GetValue(IsAttachedProperty); } set { SetValue(IsAttachedProperty, value); } }
+		public bool IsAttached { get { return (bool)GetValue(IsAttachedProperty); } set { SetValue(IsAttachedProperty, value); } }
 		public static readonly DependencyProperty IsAttachedProperty = DependencyProperty.Register("IsAttached", typeof(bool), typeof(DataElement));
 
-		[DataMember()] public bool AttachedBrowsable { get { return (bool)GetValue(AttachedBrowsableProperty); } set { SetValue(AttachedBrowsableProperty, value); } }
+		public bool AttachedBrowsable { get { return (bool)GetValue(AttachedBrowsableProperty); } set { SetValue(AttachedBrowsableProperty, value); } }
 		public static readonly DependencyProperty AttachedBrowsableProperty = DependencyProperty.Register("AttachedBrowsable", typeof(bool), typeof(DataElement));
 
-		[DataMember()] public bool AttachedBrowsableIncludeDescendants { get { return (bool)GetValue(AttachedBrowsableIncludeDescendantsProperty); } set { SetValue(AttachedBrowsableIncludeDescendantsProperty, value); } }
+		public bool AttachedBrowsableIncludeDescendants { get { return (bool)GetValue(AttachedBrowsableIncludeDescendantsProperty); } set { SetValue(AttachedBrowsableIncludeDescendantsProperty, value); } }
 		public static readonly DependencyProperty AttachedBrowsableIncludeDescendantsProperty = DependencyProperty.Register("AttachedBrowsableIncludeDescendants", typeof(bool), typeof(DataElement));
 
-		[DataMember()] public string AttachedTargetTypes { get { return (string)GetValue(AttachedTargetTypesProperty); } set { SetValue(AttachedTargetTypesProperty, value); } }
+		public string AttachedTargetTypes { get { return (string)GetValue(AttachedTargetTypesProperty); } set { SetValue(AttachedTargetTypesProperty, value); } }
 		public static readonly DependencyProperty AttachedTargetTypesProperty = DependencyProperty.Register("AttachedTargetTypes", typeof(string), typeof(DataElement));
 
-		[DataMember()] public string AttachedAttributeTypes { get { return (string)GetValue(AttachedAttributeTypesProperty); } set { SetValue(AttachedAttributeTypesProperty, value); } }
+		public string AttachedAttributeTypes { get { return (string)GetValue(AttachedAttributeTypesProperty); } set { SetValue(AttachedAttributeTypesProperty, value); } }
 		public static readonly DependencyProperty AttachedAttributeTypesProperty = DependencyProperty.Register("AttachedAttributeTypes", typeof(string), typeof(DataElement));
 
 		//DataMember Settings
-		[DataMember()] public bool IsDataMember { get { return (bool)GetValue(IsDataMemberProperty); } set { SetValue(IsDataMemberProperty, value); } }
+		public bool IsDataMember { get { return (bool)GetValue(IsDataMemberProperty); } set { SetValue(IsDataMemberProperty, value); } }
 		public static readonly DependencyProperty IsDataMemberProperty = DependencyProperty.Register("IsDataMember", typeof(bool), typeof(DataElement), new UIPropertyMetadata(true));
 		
-		[DataMember()] public bool EmitDefaultValue { get { return (bool)GetValue(EmitDefaultValueProperty); } set { SetValue(EmitDefaultValueProperty, value); } }
+		public bool EmitDefaultValue { get { return (bool)GetValue(EmitDefaultValueProperty); } set { SetValue(EmitDefaultValueProperty, value); } }
 		public static readonly DependencyProperty EmitDefaultValueProperty = DependencyProperty.Register("EmitDefaultValue", typeof(bool), typeof(DataElement));
 
-		[DataMember()] public bool IsRequired { get { return (bool)GetValue(IsRequiredProperty); } set { SetValue(IsRequiredProperty, value); } }
+		public bool IsRequired { get { return (bool)GetValue(IsRequiredProperty); } set { SetValue(IsRequiredProperty, value); } }
 		public static readonly DependencyProperty IsRequiredProperty = DependencyProperty.Register("IsRequired", typeof(bool), typeof(DataElement));
 
-		[DataMember()] public int Order { get { return (int)GetValue(OrderProperty); } set { SetValue(OrderProperty, value); } }
+		public int Order { get { return (int)GetValue(OrderProperty); } set { SetValue(OrderProperty, value); } }
 		public static readonly DependencyProperty OrderProperty = DependencyProperty.Register("Order", typeof(int), typeof(DataElement));
 
 		//Internal Use
-		public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
+		[IgnoreDataMember()] public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
 		public static readonly DependencyProperty IsSearchingProperty = DependencyProperty.Register("IsSearching", typeof(bool), typeof(DataElement));
 
-		public bool IsSearchMatch { get { return (bool)GetValue(IsSearchMatchProperty); } set { SetValue(IsSearchMatchProperty, value); } }
+		[IgnoreDataMember()] public bool IsSearchMatch { get { return (bool)GetValue(IsSearchMatchProperty); } set { SetValue(IsSearchMatchProperty, value); } }
 		public static readonly DependencyProperty IsSearchMatchProperty = DependencyProperty.Register("IsSearchMatch", typeof(bool), typeof(DataElement));
 
-		public bool IsFiltering { get { return false; } set { } }
-		public bool IsFilterMatch { get { return false; } set { } }
+		[IgnoreDataMember()] public bool IsFiltering { get { return false; } set { } }
+		[IgnoreDataMember()] public bool IsFilterMatch { get { return false; } set { } }
 		public bool IsTreeExpanded { get { return false; } set { } }
-		[DataMember()] public Data Owner { get; set; }
+		public Data Owner { get; set; }
 
 		public DataElement()
 		{

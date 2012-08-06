@@ -25,40 +25,39 @@ namespace WCFArchitect.Projects
 		WSAtomicTransactionOctober2004 = 3
 	}
 
-	[DataContract()]
 	public abstract class ServiceBinding : DataType
 	{
 		//Basic Binding settings
-		[DataMember()] public string Namespace { get { return (string)GetValue(NamespaceProperty); } set { SetValue(NamespaceProperty, value); } }
+		public string Namespace { get { return (string)GetValue(NamespaceProperty); } set { SetValue(NamespaceProperty, value); } }
 		public static readonly DependencyProperty NamespaceProperty = DependencyProperty.Register("Namespace", typeof(string), typeof(ServiceBinding));
 
-		[DataMember()] public string EndpointAddress { get { return (string)GetValue(EndpointAddressProperty); } set { SetValue(EndpointAddressProperty, value); } }
+		public string EndpointAddress { get { return (string)GetValue(EndpointAddressProperty); } set { SetValue(EndpointAddressProperty, value); } }
 		public static readonly DependencyProperty EndpointAddressProperty = DependencyProperty.Register("EndpointAddress", typeof(string), typeof(ServiceBinding));
 
-		[DataMember()] public string ListenAddress { get { return (string)GetValue(ListenAddressProperty); } set { SetValue(ListenAddressProperty, value); } }
+		public string ListenAddress { get { return (string)GetValue(ListenAddressProperty); } set { SetValue(ListenAddressProperty, value); } }
 		public static readonly DependencyProperty ListenAddressProperty = DependencyProperty.Register("ListenAddress", typeof(string), typeof(ServiceBinding));
 
-		[DataMember()] public TimeSpan CloseTimeout { get { return (TimeSpan)GetValue(CloseTimeoutProperty); } set { SetValue(CloseTimeoutProperty, value); } }
+		public TimeSpan CloseTimeout { get { return (TimeSpan)GetValue(CloseTimeoutProperty); } set { SetValue(CloseTimeoutProperty, value); } }
 		public static readonly DependencyProperty CloseTimeoutProperty = DependencyProperty.Register("CloseTimeout", typeof(TimeSpan), typeof(ServiceBinding));
 
-		[DataMember()] public TimeSpan OpenTimeout { get { return (TimeSpan)GetValue(OpenTimeoutProperty); } set { SetValue(OpenTimeoutProperty, value); } }
+		public TimeSpan OpenTimeout { get { return (TimeSpan)GetValue(OpenTimeoutProperty); } set { SetValue(OpenTimeoutProperty, value); } }
 		public static readonly DependencyProperty OpenTimeoutProperty = DependencyProperty.Register("OpenTimeout", typeof(TimeSpan), typeof(ServiceBinding));
 
-		[DataMember()] public TimeSpan ReceiveTimeout { get { return (TimeSpan)GetValue(ReceiveTimeoutProperty); } set { SetValue(ReceiveTimeoutProperty, value); } }
+		public TimeSpan ReceiveTimeout { get { return (TimeSpan)GetValue(ReceiveTimeoutProperty); } set { SetValue(ReceiveTimeoutProperty, value); } }
 		public static readonly DependencyProperty ReceiveTimeoutProperty = DependencyProperty.Register("ReceiveTimeout", typeof(TimeSpan), typeof(ServiceBinding));
 
-		[DataMember()] public TimeSpan SendTimeout { get { return (TimeSpan)GetValue(SendTimeoutProperty); } set { SetValue(SendTimeoutProperty, value); } }
+		public TimeSpan SendTimeout { get { return (TimeSpan)GetValue(SendTimeoutProperty); } set { SetValue(SendTimeoutProperty, value); } }
 		public static readonly DependencyProperty SendTimeoutProperty = DependencyProperty.Register("SendTimeout", typeof(TimeSpan), typeof(ServiceBinding));
 
 		//Internal Use - Searching / Filtering
-		public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
+		[IgnoreDataMember()] public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
 		public static readonly DependencyProperty IsSearchingProperty = DependencyProperty.Register("IsSearching", typeof(bool), typeof(ServiceBinding));
 
-		public bool IsSearchMatch { get { return (bool)GetValue(IsSearchMatchProperty); } set { SetValue(IsSearchMatchProperty, value); } }
+		[IgnoreDataMember()] public bool IsSearchMatch { get { return (bool)GetValue(IsSearchMatchProperty); } set { SetValue(IsSearchMatchProperty, value); } }
 		public static readonly DependencyProperty IsSearchMatchProperty = DependencyProperty.Register("IsSearchMatch", typeof(bool), typeof(ServiceBinding));
 
-		public bool IsFiltering { get { return false; } set { } }
-		public bool IsFilterMatch { get { return false; } set { } }
+		[IgnoreDataMember()] public bool IsFiltering { get { return false; } set { } }
+		[IgnoreDataMember()] public bool IsFilterMatch { get { return false; } set { } }
 
 		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(ServiceBinding), new UIPropertyMetadata(false));
@@ -179,43 +178,42 @@ namespace WCFArchitect.Projects
 
 	#region  - ServiceBindingBasicHTTP Class -
 
-	[DataContract()]
 	public class ServiceBindingBasicHTTP : ServiceBinding
 	{
-		[DataMember()] public BindingSecurityBasicHTTP Security { get { return (BindingSecurityBasicHTTP)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
+		public BindingSecurityBasicHTTP Security { get { return (BindingSecurityBasicHTTP)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
 		public static readonly DependencyProperty SecurityProperty = DependencyProperty.Register("Security", typeof(BindingSecurityBasicHTTP), typeof(ServiceBindingBasicHTTP));
 
-		[DataMember()] public bool AllowCookies { get { return (bool)GetValue(AllowCookiesProperty); } set { SetValue(AllowCookiesProperty, value); } }
+		public bool AllowCookies { get { return (bool)GetValue(AllowCookiesProperty); } set { SetValue(AllowCookiesProperty, value); } }
 		public static readonly DependencyProperty AllowCookiesProperty = DependencyProperty.Register("AllowCookies", typeof(bool), typeof(ServiceBindingBasicHTTP));
 
-		[DataMember()] public bool BypassProxyOnLocal { get { return (bool)GetValue(BypassProxyOnLocalProperty); } set { SetValue(BypassProxyOnLocalProperty, value); } }
+		public bool BypassProxyOnLocal { get { return (bool)GetValue(BypassProxyOnLocalProperty); } set { SetValue(BypassProxyOnLocalProperty, value); } }
 		public static readonly DependencyProperty BypassProxyOnLocalProperty = DependencyProperty.Register("BypassProxyOnLocal", typeof(bool), typeof(ServiceBindingBasicHTTP));
 
-		[DataMember()] public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
+		public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
 		public static readonly DependencyProperty HostNameComparisonModeProperty = DependencyProperty.Register("HostNameComparisonMode", typeof(System.ServiceModel.HostNameComparisonMode), typeof(ServiceBindingBasicHTTP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
 		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingBasicHTTP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxBufferSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxBufferSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
 		public static readonly DependencyProperty MaxBufferSizeProperty = DependencyProperty.Register("MaxBufferSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingBasicHTTP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
 		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingBasicHTTP));
 
-		[DataMember()] public System.ServiceModel.WSMessageEncoding MessageEncoding { get { return (System.ServiceModel.WSMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
+		public System.ServiceModel.WSMessageEncoding MessageEncoding { get { return (System.ServiceModel.WSMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
 		public static readonly DependencyProperty MessageEncodingProperty = DependencyProperty.Register("MessageEncoding", typeof(System.ServiceModel.WSMessageEncoding), typeof(ServiceBindingBasicHTTP));
 
-		[DataMember()] public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
+		public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
 		public static readonly DependencyProperty ProxyAddressProperty = DependencyProperty.Register("ProxyAddress", typeof(string), typeof(ServiceBindingBasicHTTP));
 
-		[DataMember()] public ServiceBindingTextEncoding TextEncoding { get { return (ServiceBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
+		public ServiceBindingTextEncoding TextEncoding { get { return (ServiceBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
 		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(ServiceBindingTextEncoding), typeof(ServiceBindingBasicHTTP));
 
-		[DataMember()] public System.ServiceModel.TransferMode TransferMode { get { return (System.ServiceModel.TransferMode)GetValue(TransferModeProperty); } set { SetValue(TransferModeProperty, value); } }
+		public System.ServiceModel.TransferMode TransferMode { get { return (System.ServiceModel.TransferMode)GetValue(TransferModeProperty); } set { SetValue(TransferModeProperty, value); } }
 		public static readonly DependencyProperty TransferModeProperty = DependencyProperty.Register("TransferMode", typeof(System.ServiceModel.TransferMode), typeof(ServiceBindingBasicHTTP));
 
-		[DataMember()] public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
+		public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
 		public static readonly DependencyProperty UseDefaultWebProxyProperty = DependencyProperty.Register("UseDefaultWebProxy", typeof(bool), typeof(ServiceBindingBasicHTTP));
 
 		public ServiceBindingBasicHTTP(): base() { }
@@ -293,72 +291,71 @@ namespace WCFArchitect.Projects
 
 	#region  - ServiceBindingNetHTTP Class -
 
-	[DataContract()]
 	public class ServiceBindingNetHTTP : ServiceBinding
 	{
-		[DataMember()] public BindingSecurityBasicHTTP Security { get { return (BindingSecurityBasicHTTP)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
+		public BindingSecurityBasicHTTP Security { get { return (BindingSecurityBasicHTTP)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
 		public static readonly DependencyProperty SecurityProperty = DependencyProperty.Register("Security", typeof(BindingSecurityBasicHTTP), typeof(ServiceBindingNetHTTP));
 
-		[DataMember()] public bool AllowCookies { get { return (bool)GetValue(AllowCookiesProperty); } set { SetValue(AllowCookiesProperty, value); } }
+		public bool AllowCookies { get { return (bool)GetValue(AllowCookiesProperty); } set { SetValue(AllowCookiesProperty, value); } }
 		public static readonly DependencyProperty AllowCookiesProperty = DependencyProperty.Register("AllowCookies", typeof(bool), typeof(ServiceBindingNetHTTP));
 
-		[DataMember()] public bool BypassProxyOnLocal { get { return (bool)GetValue(BypassProxyOnLocalProperty); } set { SetValue(BypassProxyOnLocalProperty, value); } }
+		public bool BypassProxyOnLocal { get { return (bool)GetValue(BypassProxyOnLocalProperty); } set { SetValue(BypassProxyOnLocalProperty, value); } }
 		public static readonly DependencyProperty BypassProxyOnLocalProperty = DependencyProperty.Register("BypassProxyOnLocal", typeof(bool), typeof(ServiceBindingNetHTTP));
 
-		[DataMember()] public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
+		public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
 		public static readonly DependencyProperty HostNameComparisonModeProperty = DependencyProperty.Register("HostNameComparisonMode", typeof(System.ServiceModel.HostNameComparisonMode), typeof(ServiceBindingNetHTTP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
 		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingNetHTTP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxBufferSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxBufferSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
 		public static readonly DependencyProperty MaxBufferSizeProperty = DependencyProperty.Register("MaxBufferSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingNetHTTP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
 		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingNetHTTP));
 
-		[DataMember()] public System.ServiceModel.NetHttpMessageEncoding MessageEncoding { get { return (System.ServiceModel.NetHttpMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
+		public System.ServiceModel.NetHttpMessageEncoding MessageEncoding { get { return (System.ServiceModel.NetHttpMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
 		public static readonly DependencyProperty MessageEncodingProperty = DependencyProperty.Register("MessageEncoding", typeof(System.ServiceModel.NetHttpMessageEncoding), typeof(ServiceBindingNetHTTP));
 
-		[DataMember()] public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
+		public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
 		public static readonly DependencyProperty ProxyAddressProperty = DependencyProperty.Register("ProxyAddress", typeof(string), typeof(ServiceBindingNetHTTP));
 
-		[DataMember()] public ServiceBindingTextEncoding TextEncoding { get { return (ServiceBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
+		public ServiceBindingTextEncoding TextEncoding { get { return (ServiceBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
 		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(ServiceBindingTextEncoding), typeof(ServiceBindingNetHTTP));
 
-		[DataMember()] public System.ServiceModel.TransferMode TransferMode { get { return (System.ServiceModel.TransferMode)GetValue(TransferModeProperty); } set { SetValue(TransferModeProperty, value); } }
+		public System.ServiceModel.TransferMode TransferMode { get { return (System.ServiceModel.TransferMode)GetValue(TransferModeProperty); } set { SetValue(TransferModeProperty, value); } }
 		public static readonly DependencyProperty TransferModeProperty = DependencyProperty.Register("TransferMode", typeof(System.ServiceModel.TransferMode), typeof(ServiceBindingNetHTTP));
 
-		[DataMember()] public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
+		public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
 		public static readonly DependencyProperty UseDefaultWebProxyProperty = DependencyProperty.Register("UseDefaultWebProxy", typeof(bool), typeof(ServiceBindingNetHTTP));
 
 		//WebSocket Settings
-		[DataMember()] public bool CreateNotificationOnConnection { get { return (bool)GetValue(CreateNotificationOnConnectionProperty); } set { SetValue(CreateNotificationOnConnectionProperty, value); } }
+		public bool CreateNotificationOnConnection { get { return (bool)GetValue(CreateNotificationOnConnectionProperty); } set { SetValue(CreateNotificationOnConnectionProperty, value); } }
 		public static readonly DependencyProperty CreateNotificationOnConnectionProperty = DependencyProperty.Register("CreateNotificationOnConnection", typeof(bool), typeof(ServiceBindingNetHTTP));
 
-		[DataMember()] public bool DisablePayloadMasking { get { return (bool)GetValue(DisablePayloadMaskingProperty); } set { SetValue(DisablePayloadMaskingProperty, value); } }
+		public bool DisablePayloadMasking { get { return (bool)GetValue(DisablePayloadMaskingProperty); } set { SetValue(DisablePayloadMaskingProperty, value); } }
 		public static readonly DependencyProperty DisablePayloadMaskingProperty = DependencyProperty.Register("DisablePayloadMasking", typeof(bool), typeof(ServiceBindingNetHTTP));
 
-		[DataMember()] public TimeSpan KeepAliveInterval { get { return (TimeSpan)GetValue(KeepAliveIntervalProperty); } set { SetValue(KeepAliveIntervalProperty, value); } }
+		public TimeSpan KeepAliveInterval { get { return (TimeSpan)GetValue(KeepAliveIntervalProperty); } set { SetValue(KeepAliveIntervalProperty, value); } }
 		public static readonly DependencyProperty KeepAliveIntervalProperty = DependencyProperty.Register("KeepAliveInterval", typeof(TimeSpan), typeof(ServiceBindingNetHTTP));
 
-		[DataMember()] public int MaxPendingConnections { get { return (int)GetValue(MaxPendingConnectionsProperty); } set { SetValue(MaxPendingConnectionsProperty, value); } }
+		public int MaxPendingConnections { get { return (int)GetValue(MaxPendingConnectionsProperty); } set { SetValue(MaxPendingConnectionsProperty, value); } }
 		public static readonly DependencyProperty MaxPendingConnectionsProperty = DependencyProperty.Register("MaxPendingConnections", typeof(int), typeof(ServiceBindingNetHTTP));
 
-		[DataMember()] public string SubProtocol { get { return (string)GetValue(SubProtocolProperty); } set { SetValue(SubProtocolProperty, value); } }
+		public string SubProtocol { get { return (string)GetValue(SubProtocolProperty); } set { SetValue(SubProtocolProperty, value); } }
 		public static readonly DependencyProperty SubProtocolProperty = DependencyProperty.Register("SubProtocol", typeof(string), typeof(ServiceBindingNetHTTP));
 
-		[DataMember()] public System.ServiceModel.Channels.WebSocketTransportUsage TransportUsage { get { return (System.ServiceModel.Channels.WebSocketTransportUsage)GetValue(TransportUsageProperty); } set { SetValue(TransportUsageProperty, value); } }
+		public System.ServiceModel.Channels.WebSocketTransportUsage TransportUsage { get { return (System.ServiceModel.Channels.WebSocketTransportUsage)GetValue(TransportUsageProperty); } set { SetValue(TransportUsageProperty, value); } }
 		public static readonly DependencyProperty TransportUsageProperty = DependencyProperty.Register("TransportUsage", typeof(System.ServiceModel.Channels.WebSocketTransportUsage), typeof(ServiceBindingNetHTTP));
 
 		//Reliable Sessions
-		[DataMember()] public bool ReliableSessionEnabled { get { return (bool)GetValue(ReliableSessionEnabledProperty); } set { SetValue(ReliableSessionEnabledProperty, value); } }
+		public bool ReliableSessionEnabled { get { return (bool)GetValue(ReliableSessionEnabledProperty); } set { SetValue(ReliableSessionEnabledProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionEnabledProperty = DependencyProperty.Register("ReliableSessionEnabled", typeof(bool), typeof(ServiceBindingNetHTTP));
 
-		[DataMember()] public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
+		public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingNetHTTP));
 
-		[DataMember()] public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
+		public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionsOrderedProperty = DependencyProperty.Register("ReliableSessionsOrdered", typeof(bool), typeof(ServiceBindingNetHTTP));
 
 		public ServiceBindingNetHTTP() : base() { }
@@ -452,49 +449,48 @@ namespace WCFArchitect.Projects
 
 	#region - ServiceBindingWSHTTP Class -
 
-	[DataContract()]
 	public class ServiceBindingWSHTTP : ServiceBinding
 	{
-		[DataMember()] public BindingSecurityWSHTTP Security { get { return (BindingSecurityWSHTTP)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
+		public BindingSecurityWSHTTP Security { get { return (BindingSecurityWSHTTP)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
 		public static readonly DependencyProperty SecurityProperty = DependencyProperty.Register("Security", typeof(BindingSecurityWSHTTP), typeof(ServiceBindingWSHTTP));
 
-		[DataMember()] public bool AllowCookies { get { return (bool)GetValue(AllowCookiesProperty); } set { SetValue(AllowCookiesProperty, value); } }
+		public bool AllowCookies { get { return (bool)GetValue(AllowCookiesProperty); } set { SetValue(AllowCookiesProperty, value); } }
 		public static readonly DependencyProperty AllowCookiesProperty = DependencyProperty.Register("AllowCookies", typeof(bool), typeof(ServiceBindingWSHTTP));
 
-		[DataMember()] public bool BypassProxyOnLocal { get { return (bool)GetValue(BypassProxyOnLocalProperty); } set { SetValue(BypassProxyOnLocalProperty, value); } }
+		public bool BypassProxyOnLocal { get { return (bool)GetValue(BypassProxyOnLocalProperty); } set { SetValue(BypassProxyOnLocalProperty, value); } }
 		public static readonly DependencyProperty BypassProxyOnLocalProperty = DependencyProperty.Register("BypassProxyOnLocal", typeof(bool), typeof(ServiceBindingWSHTTP));
 
-		[DataMember()] public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
+		public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
 		public static readonly DependencyProperty HostNameComparisonModeProperty = DependencyProperty.Register("HostNameComparisonMode", typeof(System.ServiceModel.HostNameComparisonMode), typeof(ServiceBindingWSHTTP));
 
-		[DataMember()] public bool ReliableSessionEnabled { get { return (bool)GetValue(ReliableSessionEnabledProperty); } set { SetValue(ReliableSessionEnabledProperty, value); } }
+		public bool ReliableSessionEnabled { get { return (bool)GetValue(ReliableSessionEnabledProperty); } set { SetValue(ReliableSessionEnabledProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionEnabledProperty = DependencyProperty.Register("ReliableSessionEnabled", typeof(bool), typeof(ServiceBindingWSHTTP));
 
-		[DataMember()] public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
+		public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingWSHTTP));
 
-		[DataMember()] public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
+		public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionsOrderedProperty = DependencyProperty.Register("ReliableSessionsOrdered", typeof(bool), typeof(ServiceBindingWSHTTP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
 		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingWSHTTP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
 		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingWSHTTP));
 
-		[DataMember()] public System.ServiceModel.WSMessageEncoding MessageEncoding { get { return (System.ServiceModel.WSMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
+		public System.ServiceModel.WSMessageEncoding MessageEncoding { get { return (System.ServiceModel.WSMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
 		public static readonly DependencyProperty MessageEncodingProperty = DependencyProperty.Register("MessageEncoding", typeof(System.ServiceModel.WSMessageEncoding), typeof(ServiceBindingWSHTTP));
 
-		[DataMember()] public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
+		public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
 		public static readonly DependencyProperty ProxyAddressProperty = DependencyProperty.Register("ProxyAddress", typeof(string), typeof(ServiceBindingWSHTTP));
 
-		[DataMember()] public ServiceBindingTextEncoding TextEncoding { get { return (ServiceBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
+		public ServiceBindingTextEncoding TextEncoding { get { return (ServiceBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
 		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(ServiceBindingTextEncoding), typeof(ServiceBindingWSHTTP));
 
-		[DataMember()] public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
+		public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
 		public static readonly DependencyProperty UseDefaultWebProxyProperty = DependencyProperty.Register("UseDefaultWebProxy", typeof(bool), typeof(ServiceBindingWSHTTP));
 
-		[DataMember()] public bool TransactionFlow { get { return (bool)GetValue(TransactionFlowProperty); } set { SetValue(TransactionFlowProperty, value); } }
+		public bool TransactionFlow { get { return (bool)GetValue(TransactionFlowProperty); } set { SetValue(TransactionFlowProperty, value); } }
 		public static readonly DependencyProperty TransactionFlowProperty = DependencyProperty.Register("TransactionFlow", typeof(bool), typeof(ServiceBindingWSHTTP));
 
 		public ServiceBindingWSHTTP() : base() { }
@@ -575,49 +571,48 @@ namespace WCFArchitect.Projects
 
 	#region - ServiceBindingWS2007HTTP Class -
 
-	[DataContract()]
 	public class ServiceBindingWS2007HTTP : ServiceBinding
 	{
-		[DataMember()] public BindingSecurityWSHTTP Security { get { return (BindingSecurityWSHTTP)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
+		public BindingSecurityWSHTTP Security { get { return (BindingSecurityWSHTTP)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
 		public static readonly DependencyProperty SecurityProperty = DependencyProperty.Register("Security", typeof(BindingSecurityWSHTTP), typeof(ServiceBindingWSHTTP));
 
-		[DataMember()] public bool AllowCookies { get { return (bool)GetValue(AllowCookiesProperty); } set { SetValue(AllowCookiesProperty, value); } }
+		public bool AllowCookies { get { return (bool)GetValue(AllowCookiesProperty); } set { SetValue(AllowCookiesProperty, value); } }
 		public static readonly DependencyProperty AllowCookiesProperty = DependencyProperty.Register("AllowCookies", typeof(bool), typeof(ServiceBindingWS2007HTTP));
 
-		[DataMember()] public bool BypassProxyOnLocal { get { return (bool)GetValue(BypassProxyOnLocalProperty); } set { SetValue(BypassProxyOnLocalProperty, value); } }
+		public bool BypassProxyOnLocal { get { return (bool)GetValue(BypassProxyOnLocalProperty); } set { SetValue(BypassProxyOnLocalProperty, value); } }
 		public static readonly DependencyProperty BypassProxyOnLocalProperty = DependencyProperty.Register("BypassProxyOnLocal", typeof(bool), typeof(ServiceBindingWS2007HTTP));
 
-		[DataMember()] public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
+		public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
 		public static readonly DependencyProperty HostNameComparisonModeProperty = DependencyProperty.Register("HostNameComparisonMode", typeof(System.ServiceModel.HostNameComparisonMode), typeof(ServiceBindingWS2007HTTP));
 
-		[DataMember()] public bool ReliableSessionEnabled { get { return (bool)GetValue(ReliableSessionEnabledProperty); } set { SetValue(ReliableSessionEnabledProperty, value); } }
+		public bool ReliableSessionEnabled { get { return (bool)GetValue(ReliableSessionEnabledProperty); } set { SetValue(ReliableSessionEnabledProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionEnabledProperty = DependencyProperty.Register("ReliableSessionEnabled", typeof(bool), typeof(ServiceBindingWS2007HTTP));
 
-		[DataMember()] public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
+		public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingWS2007HTTP));
 
-		[DataMember()] public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
+		public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionsOrderedProperty = DependencyProperty.Register("ReliableSessionsOrdered", typeof(bool), typeof(ServiceBindingWS2007HTTP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
 		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingWS2007HTTP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
 		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingWS2007HTTP));
 
-		[DataMember()] public System.ServiceModel.WSMessageEncoding MessageEncoding { get { return (System.ServiceModel.WSMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
+		public System.ServiceModel.WSMessageEncoding MessageEncoding { get { return (System.ServiceModel.WSMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
 		public static readonly DependencyProperty MessageEncodingProperty = DependencyProperty.Register("MessageEncoding", typeof(System.ServiceModel.WSMessageEncoding), typeof(ServiceBindingWS2007HTTP));
 
-		[DataMember()] public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
+		public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
 		public static readonly DependencyProperty ProxyAddressProperty = DependencyProperty.Register("ProxyAddress", typeof(string), typeof(ServiceBindingWS2007HTTP));
 
-		[DataMember()] public ServiceBindingTextEncoding TextEncoding { get { return (ServiceBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
+		public ServiceBindingTextEncoding TextEncoding { get { return (ServiceBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
 		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(ServiceBindingTextEncoding), typeof(ServiceBindingWS2007HTTP));
 
-		[DataMember()] public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
+		public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
 		public static readonly DependencyProperty UseDefaultWebProxyProperty = DependencyProperty.Register("UseDefaultWebProxy", typeof(bool), typeof(ServiceBindingWS2007HTTP));
 
-		[DataMember()] public bool TransactionFlow { get { return (bool)GetValue(TransactionFlowProperty); } set { SetValue(TransactionFlowProperty, value); } }
+		public bool TransactionFlow { get { return (bool)GetValue(TransactionFlowProperty); } set { SetValue(TransactionFlowProperty, value); } }
 		public static readonly DependencyProperty TransactionFlowProperty = DependencyProperty.Register("TransactionFlow", typeof(bool), typeof(ServiceBindingWS2007HTTP));
 
 		public ServiceBindingWS2007HTTP() : base() { }
@@ -698,46 +693,45 @@ namespace WCFArchitect.Projects
 
 	#region - ServiceBindingWSDualHTTP Class -
 
-	[DataContract()]
 	public class ServiceBindingWSDualHTTP : ServiceBinding
 	{
-		[DataMember()] public BindingSecurityWSDualHTTP Security { get { return (BindingSecurityWSDualHTTP)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
+		public BindingSecurityWSDualHTTP Security { get { return (BindingSecurityWSDualHTTP)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
 		public static readonly DependencyProperty SecurityProperty = DependencyProperty.Register("Security", typeof(BindingSecurityWSDualHTTP), typeof(ServiceBindingWSDualHTTP));
 
-		[DataMember()] public string ClientBaseAddress { get { return (string)GetValue(ClientBaseAddressProperty); } set { SetValue(ClientBaseAddressProperty, value); } }
+		public string ClientBaseAddress { get { return (string)GetValue(ClientBaseAddressProperty); } set { SetValue(ClientBaseAddressProperty, value); } }
 		public static readonly DependencyProperty ClientBaseAddressProperty = DependencyProperty.Register("ClientBaseAddress", typeof(string), typeof(ServiceBindingWSDualHTTP));
 
-		[DataMember()] public bool BypassProxyOnLocal { get { return (bool)GetValue(BypassProxyOnLocalProperty); } set { SetValue(BypassProxyOnLocalProperty, value); } }
+		public bool BypassProxyOnLocal { get { return (bool)GetValue(BypassProxyOnLocalProperty); } set { SetValue(BypassProxyOnLocalProperty, value); } }
 		public static readonly DependencyProperty BypassProxyOnLocalProperty = DependencyProperty.Register("BypassProxyOnLocal", typeof(bool), typeof(ServiceBindingWS2007HTTP));
 
-		[DataMember()] public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
+		public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
 		public static readonly DependencyProperty HostNameComparisonModeProperty = DependencyProperty.Register("HostNameComparisonMode", typeof(System.ServiceModel.HostNameComparisonMode), typeof(ServiceBindingWS2007HTTP));
 
-		[DataMember()] public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
+		public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingWS2007HTTP));
 
-		[DataMember()] public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
+		public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionsOrderedProperty = DependencyProperty.Register("ReliableSessionsOrdered", typeof(bool), typeof(ServiceBindingWS2007HTTP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
 		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingWS2007HTTP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
 		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingWS2007HTTP));
 
-		[DataMember()] public System.ServiceModel.WSMessageEncoding MessageEncoding { get { return (System.ServiceModel.WSMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
+		public System.ServiceModel.WSMessageEncoding MessageEncoding { get { return (System.ServiceModel.WSMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
 		public static readonly DependencyProperty MessageEncodingProperty = DependencyProperty.Register("MessageEncoding", typeof(System.ServiceModel.WSMessageEncoding), typeof(ServiceBindingWS2007HTTP));
 
-		[DataMember()] public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
+		public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
 		public static readonly DependencyProperty ProxyAddressProperty = DependencyProperty.Register("ProxyAddress", typeof(string), typeof(ServiceBindingWS2007HTTP));
 
-		[DataMember()] public ServiceBindingTextEncoding TextEncoding { get { return (ServiceBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
+		public ServiceBindingTextEncoding TextEncoding { get { return (ServiceBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
 		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(ServiceBindingTextEncoding), typeof(ServiceBindingWS2007HTTP));
 
-		[DataMember()] public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
+		public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
 		public static readonly DependencyProperty UseDefaultWebProxyProperty = DependencyProperty.Register("UseDefaultWebProxy", typeof(bool), typeof(ServiceBindingWS2007HTTP));
 
-		[DataMember()] public bool TransactionFlow { get { return (bool)GetValue(TransactionFlowProperty); } set { SetValue(TransactionFlowProperty, value); } }
+		public bool TransactionFlow { get { return (bool)GetValue(TransactionFlowProperty); } set { SetValue(TransactionFlowProperty, value); } }
 		public static readonly DependencyProperty TransactionFlowProperty = DependencyProperty.Register("TransactionFlow", typeof(bool), typeof(ServiceBindingWS2007HTTP));
 
 		public ServiceBindingWSDualHTTP() : base() { }
@@ -815,52 +809,51 @@ namespace WCFArchitect.Projects
 
 	#region - ServiceBindingWSFederationHTTP Class -
 
-	[DataContract()]
 	public class ServiceBindingWSFederationHTTP : ServiceBinding
 	{
-		[DataMember()] public BindingSecurityWSFederationHTTP Security { get { return (BindingSecurityWSFederationHTTP)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
+		public BindingSecurityWSFederationHTTP Security { get { return (BindingSecurityWSFederationHTTP)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
 		public static readonly DependencyProperty SecurityProperty = DependencyProperty.Register("Security", typeof(BindingSecurityWSFederationHTTP), typeof(ServiceBindingWSFederationHTTP));
 		
-		[DataMember()] public bool BypassProxyOnLocal { get { return (bool)GetValue(BypassProxyOnLocalProperty); } set { SetValue(BypassProxyOnLocalProperty, value); } }
+		public bool BypassProxyOnLocal { get { return (bool)GetValue(BypassProxyOnLocalProperty); } set { SetValue(BypassProxyOnLocalProperty, value); } }
 		public static readonly DependencyProperty BypassProxyOnLocalProperty = DependencyProperty.Register("BypassProxyOnLocal", typeof(bool), typeof(ServiceBindingWSFederationHTTP));
 
-		[DataMember()] public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
+		public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
 		public static readonly DependencyProperty HostNameComparisonModeProperty = DependencyProperty.Register("HostNameComparisonMode", typeof(System.ServiceModel.HostNameComparisonMode), typeof(ServiceBindingWSFederationHTTP));
 
-		[DataMember()] public bool ReliableSessionEnabled { get { return (bool)GetValue(ReliableSessionEnabledProperty); } set { SetValue(ReliableSessionEnabledProperty, value); } }
+		public bool ReliableSessionEnabled { get { return (bool)GetValue(ReliableSessionEnabledProperty); } set { SetValue(ReliableSessionEnabledProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionEnabledProperty = DependencyProperty.Register("ReliableSessionEnabled", typeof(bool), typeof(ServiceBindingWSFederationHTTP));
 
-		[DataMember()] public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
+		public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingWSFederationHTTP));
 
-		[DataMember()] public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
+		public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionsOrderedProperty = DependencyProperty.Register("ReliableSessionsOrdered", typeof(bool), typeof(ServiceBindingWSFederationHTTP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
 		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingWSFederationHTTP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
 		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBinding));
 
-		[DataMember()] public System.ServiceModel.WSMessageEncoding MessageEncoding { get { return (System.ServiceModel.WSMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
+		public System.ServiceModel.WSMessageEncoding MessageEncoding { get { return (System.ServiceModel.WSMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
 		public static readonly DependencyProperty MessageEncodingProperty = DependencyProperty.Register("MessageEncoding", typeof(System.ServiceModel.WSMessageEncoding), typeof(ServiceBindingWSFederationHTTP));
 
-		[DataMember()] public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
+		public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
 		public static readonly DependencyProperty ProxyAddressProperty = DependencyProperty.Register("ProxyAddress", typeof(string), typeof(ServiceBindingWSFederationHTTP));
 
-		[DataMember()] public ServiceBindingTextEncoding TextEncoding { get { return (ServiceBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
+		public ServiceBindingTextEncoding TextEncoding { get { return (ServiceBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
 		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(ServiceBindingTextEncoding), typeof(ServiceBindingWSFederationHTTP));
 
-		[DataMember()] public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
+		public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
 		public static readonly DependencyProperty UseDefaultWebProxyProperty = DependencyProperty.Register("UseDefaultWebProxy", typeof(bool), typeof(ServiceBindingWSFederationHTTP));
 
-		[DataMember()] public string PrivacyNoticeAt { get { return (string)GetValue(PrivacyNoticeAtProperty); } set { SetValue(PrivacyNoticeAtProperty, value); } }
+		public string PrivacyNoticeAt { get { return (string)GetValue(PrivacyNoticeAtProperty); } set { SetValue(PrivacyNoticeAtProperty, value); } }
 		public static readonly DependencyProperty PrivacyNoticeAtProperty = DependencyProperty.Register("PrivacyNoticeAt", typeof(string), typeof(ServiceBindingWSFederationHTTP));
 
-		[DataMember()] public int PrivacyNoticeVersion { get { return (int)GetValue(PrivacyNoticeVersionProperty); } set { SetValue(PrivacyNoticeVersionProperty, value); } }
+		public int PrivacyNoticeVersion { get { return (int)GetValue(PrivacyNoticeVersionProperty); } set { SetValue(PrivacyNoticeVersionProperty, value); } }
 		public static readonly DependencyProperty PrivacyNoticeVersionProperty = DependencyProperty.Register("PrivacyNoticeVersion", typeof(int), typeof(ServiceBindingWSFederationHTTP));
 
-		[DataMember()] public bool TransactionFlow { get { return (bool)GetValue(TransactionFlowProperty); } set { SetValue(TransactionFlowProperty, value); } }
+		public bool TransactionFlow { get { return (bool)GetValue(TransactionFlowProperty); } set { SetValue(TransactionFlowProperty, value); } }
 		public static readonly DependencyProperty TransactionFlowProperty = DependencyProperty.Register("TransactionFlow", typeof(bool), typeof(ServiceBindingWSFederationHTTP));
 
 		public ServiceBindingWSFederationHTTP() : base() { }
@@ -942,52 +935,51 @@ namespace WCFArchitect.Projects
 
 	#region - ServiceBindingWS2007FederationHTTP Class -
 
-	[DataContract()]
 	public class ServiceBindingWS2007FederationHTTP : ServiceBinding
 	{
-		[DataMember()] public BindingSecurityWSFederationHTTP Security { get { return (BindingSecurityWSFederationHTTP)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
+		public BindingSecurityWSFederationHTTP Security { get { return (BindingSecurityWSFederationHTTP)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
 		public static readonly DependencyProperty SecurityProperty = DependencyProperty.Register("Security", typeof(BindingSecurityWSFederationHTTP), typeof(ServiceBindingWS2007FederationHTTP));
 
-		[DataMember()] public bool BypassProxyOnLocal { get { return (bool)GetValue(BypassProxyOnLocalProperty); } set { SetValue(BypassProxyOnLocalProperty, value); } }
+		public bool BypassProxyOnLocal { get { return (bool)GetValue(BypassProxyOnLocalProperty); } set { SetValue(BypassProxyOnLocalProperty, value); } }
 		public static readonly DependencyProperty BypassProxyOnLocalProperty = DependencyProperty.Register("BypassProxyOnLocal", typeof(bool), typeof(ServiceBindingWS2007FederationHTTP));
 
-		[DataMember()] public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
+		public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
 		public static readonly DependencyProperty HostNameComparisonModeProperty = DependencyProperty.Register("HostNameComparisonMode", typeof(System.ServiceModel.HostNameComparisonMode), typeof(ServiceBindingWS2007FederationHTTP));
 
-		[DataMember()] public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
+		public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingWS2007FederationHTTP));
 
-		[DataMember()] public bool ReliableSessionEnabled { get { return (bool)GetValue(ReliableSessionEnabledProperty); } set { SetValue(ReliableSessionEnabledProperty, value); } }
+		public bool ReliableSessionEnabled { get { return (bool)GetValue(ReliableSessionEnabledProperty); } set { SetValue(ReliableSessionEnabledProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionEnabledProperty = DependencyProperty.Register("ReliableSessionEnabled", typeof(bool), typeof(ServiceBindingWS2007FederationHTTP));
 
-		[DataMember()] public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
+		public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionsOrderedProperty = DependencyProperty.Register("ReliableSessionsOrdered", typeof(bool), typeof(ServiceBindingWS2007FederationHTTP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
 		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingWS2007FederationHTTP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
 		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBinding));
 
-		[DataMember()] public System.ServiceModel.WSMessageEncoding MessageEncoding { get { return (System.ServiceModel.WSMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
+		public System.ServiceModel.WSMessageEncoding MessageEncoding { get { return (System.ServiceModel.WSMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
 		public static readonly DependencyProperty MessageEncodingProperty = DependencyProperty.Register("MessageEncoding", typeof(System.ServiceModel.WSMessageEncoding), typeof(ServiceBindingWS2007FederationHTTP));
 
-		[DataMember()] public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
+		public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
 		public static readonly DependencyProperty ProxyAddressProperty = DependencyProperty.Register("ProxyAddress", typeof(string), typeof(ServiceBindingWS2007FederationHTTP));
 
-		[DataMember()] public ServiceBindingTextEncoding TextEncoding { get { return (ServiceBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
+		public ServiceBindingTextEncoding TextEncoding { get { return (ServiceBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
 		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(ServiceBindingTextEncoding), typeof(ServiceBindingWS2007FederationHTTP));
 
-		[DataMember()] public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
+		public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
 		public static readonly DependencyProperty UseDefaultWebProxyProperty = DependencyProperty.Register("UseDefaultWebProxy", typeof(bool), typeof(ServiceBindingWS2007FederationHTTP));
 
-		[DataMember()] public string PrivacyNoticeAt { get { return (string)GetValue(PrivacyNoticeAtProperty); } set { SetValue(PrivacyNoticeAtProperty, value); } }
+		public string PrivacyNoticeAt { get { return (string)GetValue(PrivacyNoticeAtProperty); } set { SetValue(PrivacyNoticeAtProperty, value); } }
 		public static readonly DependencyProperty PrivacyNoticeAtProperty = DependencyProperty.Register("PrivacyNoticeAt", typeof(string), typeof(ServiceBindingWS2007FederationHTTP));
 
-		[DataMember()] public int PrivacyNoticeVersion { get { return (int)GetValue(PrivacyNoticeVersionProperty); } set { SetValue(PrivacyNoticeVersionProperty, value); } }
+		public int PrivacyNoticeVersion { get { return (int)GetValue(PrivacyNoticeVersionProperty); } set { SetValue(PrivacyNoticeVersionProperty, value); } }
 		public static readonly DependencyProperty PrivacyNoticeVersionProperty = DependencyProperty.Register("PrivacyNoticeVersion", typeof(int), typeof(ServiceBindingWS2007FederationHTTP));
 
-		[DataMember()] public bool TransactionFlow { get { return (bool)GetValue(TransactionFlowProperty); } set { SetValue(TransactionFlowProperty, value); } }
+		public bool TransactionFlow { get { return (bool)GetValue(TransactionFlowProperty); } set { SetValue(TransactionFlowProperty, value); } }
 		public static readonly DependencyProperty TransactionFlowProperty = DependencyProperty.Register("TransactionFlow", typeof(bool), typeof(ServiceBindingWS2007FederationHTTP));
 
 		public ServiceBindingWS2007FederationHTTP() : base() { }
@@ -1069,49 +1061,48 @@ namespace WCFArchitect.Projects
 
 	#region - ServiceBindingTCP Class -
 
-	[DataContract()]
 	public class ServiceBindingTCP : ServiceBinding
 	{
-		[DataMember()] public BindingSecurityTCP Security { get { return (BindingSecurityTCP)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
+		public BindingSecurityTCP Security { get { return (BindingSecurityTCP)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
 		public static readonly DependencyProperty SecurityProperty = DependencyProperty.Register("Security", typeof(BindingSecurityTCP), typeof(ServiceBindingTCP));
 
-		[DataMember()] public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
+		public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
 		public static readonly DependencyProperty HostNameComparisonModeProperty = DependencyProperty.Register("HostNameComparisonMode", typeof(System.ServiceModel.HostNameComparisonMode), typeof(ServiceBindingTCP));
 
-		[DataMember()] public bool ReliableSessionEnabled { get { return (bool)GetValue(ReliableSessionEnabledProperty); } set { SetValue(ReliableSessionEnabledProperty, value); } }
+		public bool ReliableSessionEnabled { get { return (bool)GetValue(ReliableSessionEnabledProperty); } set { SetValue(ReliableSessionEnabledProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionEnabledProperty = DependencyProperty.Register("ReliableSessionEnabled", typeof(bool), typeof(ServiceBindingTCP));
 
-		[DataMember()] public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
+		public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingTCP));
 
-		[DataMember()] public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
+		public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionsOrderedProperty = DependencyProperty.Register("ReliableSessionsOrdered", typeof(bool), typeof(ServiceBindingTCP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
 		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingTCP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxBufferSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxBufferSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
 		public static readonly DependencyProperty MaxBufferSizeProperty = DependencyProperty.Register("MaxBufferSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingTCP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
 		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBinding));
 
-		[DataMember()] public System.ServiceModel.TransferMode TransferMode { get { return (System.ServiceModel.TransferMode)GetValue(TransferModeProperty); } set { SetValue(TransferModeProperty, value); } }
+		public System.ServiceModel.TransferMode TransferMode { get { return (System.ServiceModel.TransferMode)GetValue(TransferModeProperty); } set { SetValue(TransferModeProperty, value); } }
 		public static readonly DependencyProperty TransferModeProperty = DependencyProperty.Register("TransferMode", typeof(System.ServiceModel.TransferMode), typeof(ServiceBindingTCP));
 
-		[DataMember()] public bool TransactionFlow { get { return (bool)GetValue(TransactionFlowProperty); } set { SetValue(TransactionFlowProperty, value); } }
+		public bool TransactionFlow { get { return (bool)GetValue(TransactionFlowProperty); } set { SetValue(TransactionFlowProperty, value); } }
 		public static readonly DependencyProperty TransactionFlowProperty = DependencyProperty.Register("TransactionFlow", typeof(bool), typeof(ServiceBindingTCP));
 
-		[DataMember()] public int ListenBacklog { get { return (int)GetValue(ListenBacklogProperty); } set { SetValue(ListenBacklogProperty, value); } }
+		public int ListenBacklog { get { return (int)GetValue(ListenBacklogProperty); } set { SetValue(ListenBacklogProperty, value); } }
 		public static readonly DependencyProperty ListenBacklogProperty = DependencyProperty.Register("ListenBacklog", typeof(int), typeof(ServiceBindingTCP));
 
-		[DataMember()] public int MaxConnections { get { return (int)GetValue(MaxConnectionsProperty); } set { SetValue(MaxConnectionsProperty, value); } }
+		public int MaxConnections { get { return (int)GetValue(MaxConnectionsProperty); } set { SetValue(MaxConnectionsProperty, value); } }
 		public static readonly DependencyProperty MaxConnectionsProperty = DependencyProperty.Register("MaxConnections", typeof(int), typeof(ServiceBindingTCP));
 
-		[DataMember()] public bool PortSharingEnabled { get { return (bool)GetValue(PortSharingEnabledProperty); } set { SetValue(PortSharingEnabledProperty, value); } }
+		public bool PortSharingEnabled { get { return (bool)GetValue(PortSharingEnabledProperty); } set { SetValue(PortSharingEnabledProperty, value); } }
 		public static readonly DependencyProperty PortSharingEnabledProperty = DependencyProperty.Register("PortSharingEnabled", typeof(bool), typeof(ServiceBindingTCP));
 
-		[DataMember()] public ServiceBindingTransactionProtocol TransactionProtocol { get { return (ServiceBindingTransactionProtocol)GetValue(TransactionProtocolProperty); } set { SetValue(TransactionProtocolProperty, value); } }
+		public ServiceBindingTransactionProtocol TransactionProtocol { get { return (ServiceBindingTransactionProtocol)GetValue(TransactionProtocolProperty); } set { SetValue(TransactionProtocolProperty, value); } }
 		public static readonly DependencyProperty TransactionProtocolProperty = DependencyProperty.Register("TransactionProtocol", typeof(ServiceBindingTransactionProtocol), typeof(ServiceBindingTCP));
 
 		public ServiceBindingTCP() : base() { }
@@ -1194,34 +1185,33 @@ namespace WCFArchitect.Projects
 
 	#region - ServiceBindingNamedPipe Class -
 
-	[DataContract()]
 	public class ServiceBindingNamedPipe : ServiceBinding
 	{
-		[DataMember()] public BindingSecurityNamedPipe Security { get { return (BindingSecurityNamedPipe)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
+		public BindingSecurityNamedPipe Security { get { return (BindingSecurityNamedPipe)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
 		public static readonly DependencyProperty SecurityProperty = DependencyProperty.Register("Security", typeof(BindingSecurityNamedPipe), typeof(ServiceBindingNamedPipe));
 
-		[DataMember()] public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
+		public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
 		public static readonly DependencyProperty HostNameComparisonModeProperty = DependencyProperty.Register("HostNameComparisonMode", typeof(System.ServiceModel.HostNameComparisonMode), typeof(ServiceBindingNamedPipe));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
 		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingNamedPipe));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxBufferSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxBufferSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
 		public static readonly DependencyProperty MaxBufferSizeProperty = DependencyProperty.Register("MaxBufferSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingNamedPipe));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
 		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingNamedPipe));
 
-		[DataMember()] public System.ServiceModel.TransferMode TransferMode { get { return (System.ServiceModel.TransferMode)GetValue(TransferModeProperty); } set { SetValue(TransferModeProperty, value); } }
+		public System.ServiceModel.TransferMode TransferMode { get { return (System.ServiceModel.TransferMode)GetValue(TransferModeProperty); } set { SetValue(TransferModeProperty, value); } }
 		public static readonly DependencyProperty TransferModeProperty = DependencyProperty.Register("TransferMode", typeof(System.ServiceModel.TransferMode), typeof(ServiceBindingNamedPipe));
 
-		[DataMember()] public bool TransactionFlow { get { return (bool)GetValue(TransactionFlowProperty); } set { SetValue(TransactionFlowProperty, value); } }
+		public bool TransactionFlow { get { return (bool)GetValue(TransactionFlowProperty); } set { SetValue(TransactionFlowProperty, value); } }
 		public static readonly DependencyProperty TransactionFlowProperty = DependencyProperty.Register("TransactionFlow", typeof(bool), typeof(ServiceBindingNamedPipe));
 
-		[DataMember()] public int MaxConnections { get { return (int)GetValue(MaxConnectionsProperty); } set { SetValue(MaxConnectionsProperty, value); } }
+		public int MaxConnections { get { return (int)GetValue(MaxConnectionsProperty); } set { SetValue(MaxConnectionsProperty, value); } }
 		public static readonly DependencyProperty MaxConnectionsProperty = DependencyProperty.Register("MaxConnections", typeof(int), typeof(ServiceBindingNamedPipe));
 
-		[DataMember()] public ServiceBindingTransactionProtocol TransactionProtocol { get { return (ServiceBindingTransactionProtocol)GetValue(TransactionProtocolProperty); } set { SetValue(TransactionProtocolProperty, value); } }
+		public ServiceBindingTransactionProtocol TransactionProtocol { get { return (ServiceBindingTransactionProtocol)GetValue(TransactionProtocolProperty); } set { SetValue(TransactionProtocolProperty, value); } }
 		public static readonly DependencyProperty TransactionProtocolProperty = DependencyProperty.Register("TransactionProtocol", typeof(ServiceBindingTransactionProtocol), typeof(ServiceBindingNamedPipe));
 
 		public ServiceBindingNamedPipe() : base() { }
@@ -1294,61 +1284,60 @@ namespace WCFArchitect.Projects
 
 	#region - ServiceBindingMSMQ Class -
 
-	[DataContract()]
 	public class ServiceBindingMSMQ : ServiceBinding
 	{
-		[DataMember()] public BindingSecurityMSMQ Security { get { return (BindingSecurityMSMQ)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
+		public BindingSecurityMSMQ Security { get { return (BindingSecurityMSMQ)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
 		public static readonly DependencyProperty SecurityProperty = DependencyProperty.Register("Security", typeof(BindingSecurityMSMQ), typeof(ServiceBindingMSMQ));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
 		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingMSMQ));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
 		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingMSMQ));
 
-		[DataMember()] public string CustomDeadLetterQueue { get { return (string)GetValue(CustomDeadLetterQueueProperty); } set { SetValue(CustomDeadLetterQueueProperty, value); } }
+		public string CustomDeadLetterQueue { get { return (string)GetValue(CustomDeadLetterQueueProperty); } set { SetValue(CustomDeadLetterQueueProperty, value); } }
 		public static readonly DependencyProperty CustomDeadLetterQueueProperty = DependencyProperty.Register("CustomDeadLetterQueue", typeof(string), typeof(ServiceBindingMSMQ));
 
-		[DataMember()] public System.ServiceModel.DeadLetterQueue DeadLetterQueue { get { return (System.ServiceModel.DeadLetterQueue)GetValue(DeadLetterQueueProperty); } set { SetValue(DeadLetterQueueProperty, value); } }
+		public System.ServiceModel.DeadLetterQueue DeadLetterQueue { get { return (System.ServiceModel.DeadLetterQueue)GetValue(DeadLetterQueueProperty); } set { SetValue(DeadLetterQueueProperty, value); } }
 		public static readonly DependencyProperty DeadLetterQueueProperty = DependencyProperty.Register("DeadLetterQueue", typeof(System.ServiceModel.DeadLetterQueue), typeof(ServiceBindingMSMQ));
 
-		[DataMember()] public bool ExactlyOnce { get { return (bool)GetValue(ExactlyOnceProperty); } set { SetValue(ExactlyOnceProperty, value); } }
+		public bool ExactlyOnce { get { return (bool)GetValue(ExactlyOnceProperty); } set { SetValue(ExactlyOnceProperty, value); } }
 		public static readonly DependencyProperty ExactlyOnceProperty = DependencyProperty.Register("ExactlyOnce", typeof(bool), typeof(ServiceBindingMSMQ));
 
-		[DataMember()] public int MaxRetryCycles { get { return (int)GetValue(MaxRetryCyclesProperty); } set { SetValue(MaxRetryCyclesProperty, value); } }
+		public int MaxRetryCycles { get { return (int)GetValue(MaxRetryCyclesProperty); } set { SetValue(MaxRetryCyclesProperty, value); } }
 		public static readonly DependencyProperty MaxRetryCyclesProperty = DependencyProperty.Register("MaxRetryCycles", typeof(int), typeof(ServiceBindingMSMQ));
 
-		[DataMember()] public System.ServiceModel.QueueTransferProtocol QueueTransferProtocol { get { return (System.ServiceModel.QueueTransferProtocol)GetValue(QueueTransferProtocolProperty); } set { SetValue(QueueTransferProtocolProperty, value); } }
+		public System.ServiceModel.QueueTransferProtocol QueueTransferProtocol { get { return (System.ServiceModel.QueueTransferProtocol)GetValue(QueueTransferProtocolProperty); } set { SetValue(QueueTransferProtocolProperty, value); } }
 		public static readonly DependencyProperty QueueTransferProtocolProperty = DependencyProperty.Register("QueueTransferProtocol", typeof(System.ServiceModel.QueueTransferProtocol), typeof(ServiceBindingMSMQ));
 
-		[DataMember()] public bool ReceiveContextEnabled { get { return (bool)GetValue(ReceiveContextEnabledProperty); } set { SetValue(ReceiveContextEnabledProperty, value); } }
+		public bool ReceiveContextEnabled { get { return (bool)GetValue(ReceiveContextEnabledProperty); } set { SetValue(ReceiveContextEnabledProperty, value); } }
 		public static readonly DependencyProperty ReceiveContextEnabledProperty = DependencyProperty.Register("ReceiveContextEnabled", typeof(bool), typeof(ServiceBindingMSMQ));
 
-		[DataMember()] public System.ServiceModel.ReceiveErrorHandling ReceiveErrorHandling { get { return (System.ServiceModel.ReceiveErrorHandling)GetValue(ReceiveErrorHandlingProperty); } set { SetValue(ReceiveErrorHandlingProperty, value); } }
+		public System.ServiceModel.ReceiveErrorHandling ReceiveErrorHandling { get { return (System.ServiceModel.ReceiveErrorHandling)GetValue(ReceiveErrorHandlingProperty); } set { SetValue(ReceiveErrorHandlingProperty, value); } }
 		public static readonly DependencyProperty ReceiveErrorHandlingProperty = DependencyProperty.Register("ReceiveErrorHandling", typeof(System.ServiceModel.ReceiveErrorHandling), typeof(ServiceBindingMSMQ));
 
-		[DataMember()] public int ReceiveRetryCount { get { return (int)GetValue(ReceiveRetryCountProperty); } set { SetValue(ReceiveRetryCountProperty, value); } }
+		public int ReceiveRetryCount { get { return (int)GetValue(ReceiveRetryCountProperty); } set { SetValue(ReceiveRetryCountProperty, value); } }
 		public static readonly DependencyProperty ReceiveRetryCountProperty = DependencyProperty.Register("ReceiveRetryCount", typeof(int), typeof(ServiceBindingMSMQ));
 
-		[DataMember()] public TimeSpan RetryCycleDelay { get { return (TimeSpan)GetValue(RetryCycleDelayProperty); } set { SetValue(RetryCycleDelayProperty, value); } }
+		public TimeSpan RetryCycleDelay { get { return (TimeSpan)GetValue(RetryCycleDelayProperty); } set { SetValue(RetryCycleDelayProperty, value); } }
 		public static readonly DependencyProperty RetryCycleDelayProperty = DependencyProperty.Register("RetryCycleDelay", typeof(TimeSpan), typeof(ServiceBindingMSMQ));
 
-		[DataMember()] public TimeSpan TimeToLive { get { return (TimeSpan)GetValue(TimeToLiveProperty); } set { SetValue(TimeToLiveProperty, value); } }
+		public TimeSpan TimeToLive { get { return (TimeSpan)GetValue(TimeToLiveProperty); } set { SetValue(TimeToLiveProperty, value); } }
 		public static readonly DependencyProperty TimeToLiveProperty = DependencyProperty.Register("TimeToLive", typeof(TimeSpan), typeof(ServiceBindingMSMQ));
 
-		[DataMember()] public bool UseActiveDirectory { get { return (bool)GetValue(UseActiveDirectoryProperty); } set { SetValue(UseActiveDirectoryProperty, value); } }
+		public bool UseActiveDirectory { get { return (bool)GetValue(UseActiveDirectoryProperty); } set { SetValue(UseActiveDirectoryProperty, value); } }
 		public static readonly DependencyProperty UseActiveDirectoryProperty = DependencyProperty.Register("UseActiveDirectory", typeof(bool), typeof(ServiceBindingMSMQ));
 
-		[DataMember()] public bool UseMSMQTracing { get { return (bool)GetValue(UseMSMQTracingProperty); } set { SetValue(UseMSMQTracingProperty, value); } }
+		public bool UseMSMQTracing { get { return (bool)GetValue(UseMSMQTracingProperty); } set { SetValue(UseMSMQTracingProperty, value); } }
 		public static readonly DependencyProperty UseMSMQTracingProperty = DependencyProperty.Register("UseMSMQTracing", typeof(bool), typeof(ServiceBindingMSMQ));
 
-		[DataMember()] public bool UseSourceJournal { get { return (bool)GetValue(UseSourceJournalProperty); } set { SetValue(UseSourceJournalProperty, value); } }
+		public bool UseSourceJournal { get { return (bool)GetValue(UseSourceJournalProperty); } set { SetValue(UseSourceJournalProperty, value); } }
 		public static readonly DependencyProperty UseSourceJournalProperty = DependencyProperty.Register("UseSourceJournal", typeof(bool), typeof(ServiceBindingMSMQ));
 
-		[DataMember()] public TimeSpan ValidityDuration { get { return (TimeSpan)GetValue(ValidityDurationProperty); } set { SetValue(ValidityDurationProperty, value); } }
+		public TimeSpan ValidityDuration { get { return (TimeSpan)GetValue(ValidityDurationProperty); } set { SetValue(ValidityDurationProperty, value); } }
 		public static readonly DependencyProperty ValidityDurationProperty = DependencyProperty.Register("ValidityDuration", typeof(TimeSpan), typeof(ServiceBindingMSMQ));
 
-		[DataMember()] public bool Durable { get { return (bool)GetValue(DurableProperty); } set { SetValue(DurableProperty, value); } }
+		public bool Durable { get { return (bool)GetValue(DurableProperty); } set { SetValue(DurableProperty, value); } }
 		public static readonly DependencyProperty DurableProperty = DependencyProperty.Register("Durable", typeof(bool), typeof(ServiceBindingMSMQ));
 
 		public ServiceBindingMSMQ() : base() { }
@@ -1438,22 +1427,21 @@ namespace WCFArchitect.Projects
 
 	#region - ServiceBindingPeerTCP Class -
 
-	[DataContract()]
 	public class ServiceBindingPeerTCP : ServiceBinding
 	{
-		[DataMember()] public BindingSecurityPeerTCP Security { get { return (BindingSecurityPeerTCP)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
+		public BindingSecurityPeerTCP Security { get { return (BindingSecurityPeerTCP)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
 		public static readonly DependencyProperty SecurityProperty = DependencyProperty.Register("Security", typeof(BindingSecurityPeerTCP), typeof(ServiceBindingPeerTCP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
 		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingPeerTCP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
 		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingPeerTCP));
 
-		[DataMember()] public string ListenIPAddress { get { return (string)GetValue(ListenIPAddressProperty); } set { SetValue(ListenIPAddressProperty, value); } }
+		public string ListenIPAddress { get { return (string)GetValue(ListenIPAddressProperty); } set { SetValue(ListenIPAddressProperty, value); } }
 		public static readonly DependencyProperty ListenIPAddressProperty = DependencyProperty.Register("ListenIPAddress", typeof(string), typeof(ServiceBindingPeerTCP));
 		
-		[DataMember()] public int Port { get { return (int)GetValue(PortProperty); } set { SetValue(PortProperty, value); } }
+		public int Port { get { return (int)GetValue(PortProperty); } set { SetValue(PortProperty, value); } }
 		public static readonly DependencyProperty PortProperty = DependencyProperty.Register("Port", typeof(int), typeof(ServiceBindingPeerTCP));
 
 		public ServiceBindingPeerTCP() : base() { }
@@ -1518,43 +1506,42 @@ namespace WCFArchitect.Projects
 
 	#region - ServiceBindingWebHTTP Class -
 
-	[DataContract()]
 	public class ServiceBindingWebHTTP : ServiceBinding
 	{
-		[DataMember()] public BindingSecurityWebHTTP Security { get { return (BindingSecurityWebHTTP)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
+		public BindingSecurityWebHTTP Security { get { return (BindingSecurityWebHTTP)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
 		public static readonly DependencyProperty SecurityProperty = DependencyProperty.Register("Security", typeof(BindingSecurityWebHTTP), typeof(ServiceBindingWebHTTP));
 				
-		[DataMember()] public bool AllowCookies { get { return (bool)GetValue(AllowCookiesProperty); } set { SetValue(AllowCookiesProperty, value); } }
+		public bool AllowCookies { get { return (bool)GetValue(AllowCookiesProperty); } set { SetValue(AllowCookiesProperty, value); } }
 		public static readonly DependencyProperty AllowCookiesProperty = DependencyProperty.Register("AllowCookies", typeof(bool), typeof(ServiceBindingWebHTTP));
 
-		[DataMember()] public bool BypassProxyOnLocal { get { return (bool)GetValue(BypassProxyOnLocalProperty); } set { SetValue(BypassProxyOnLocalProperty, value); } }
+		public bool BypassProxyOnLocal { get { return (bool)GetValue(BypassProxyOnLocalProperty); } set { SetValue(BypassProxyOnLocalProperty, value); } }
 		public static readonly DependencyProperty BypassProxyOnLocalProperty = DependencyProperty.Register("BypassProxyOnLocal", typeof(bool), typeof(ServiceBindingWebHTTP));
 
-		[DataMember()] public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
+		public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
 		public static readonly DependencyProperty HostNameComparisonModeProperty = DependencyProperty.Register("HostNameComparisonMode", typeof(System.ServiceModel.HostNameComparisonMode), typeof(ServiceBindingWebHTTP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
 		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingWebHTTP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxBufferSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxBufferSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
 		public static readonly DependencyProperty MaxBufferSizeProperty = DependencyProperty.Register("MaxBufferSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingWebHTTP));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
 		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingWebHTTP));
 
-		[DataMember()] public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
+		public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
 		public static readonly DependencyProperty ProxyAddressProperty = DependencyProperty.Register("ProxyAddress", typeof(string), typeof(ServiceBindingWebHTTP));
 
-		[DataMember()] public System.ServiceModel.TransferMode TransferMode { get { return (System.ServiceModel.TransferMode)GetValue(TransferModeProperty); } set { SetValue(TransferModeProperty, value); } }
+		public System.ServiceModel.TransferMode TransferMode { get { return (System.ServiceModel.TransferMode)GetValue(TransferModeProperty); } set { SetValue(TransferModeProperty, value); } }
 		public static readonly DependencyProperty TransferModeProperty = DependencyProperty.Register("TransferMode", typeof(System.ServiceModel.TransferMode), typeof(ServiceBindingWebHTTP));
 
-		[DataMember()] public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
+		public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
 		public static readonly DependencyProperty UseDefaultWebProxyProperty = DependencyProperty.Register("UseDefaultWebProxy", typeof(bool), typeof(ServiceBindingWebHTTP));
 
-		[DataMember()] public bool CrossDomainScriptAccessEnabled { get { return (bool)GetValue(CrossDomainScriptAccessEnabledProperty); } set { SetValue(CrossDomainScriptAccessEnabledProperty, value); } }
+		public bool CrossDomainScriptAccessEnabled { get { return (bool)GetValue(CrossDomainScriptAccessEnabledProperty); } set { SetValue(CrossDomainScriptAccessEnabledProperty, value); } }
 		public static readonly DependencyProperty CrossDomainScriptAccessEnabledProperty = DependencyProperty.Register("CrossDomainScriptAccessEnabled", typeof(bool), typeof(ServiceBindingWebHTTP));
 
-		[DataMember()] public ServiceBindingTextEncoding WriteEncoding { get { return (ServiceBindingTextEncoding)GetValue(WriteEncodingProperty); } set { SetValue(WriteEncodingProperty, value); } }
+		public ServiceBindingTextEncoding WriteEncoding { get { return (ServiceBindingTextEncoding)GetValue(WriteEncodingProperty); } set { SetValue(WriteEncodingProperty, value); } }
 		public static readonly DependencyProperty WriteEncodingProperty = DependencyProperty.Register("WriteEncoding", typeof(ServiceBindingTextEncoding), typeof(ServiceBindingWebHTTP));
 
 		public ServiceBindingWebHTTP() : base() { }
@@ -1631,55 +1618,54 @@ namespace WCFArchitect.Projects
 
 	#region - ServiceBindingMSMQIntegration Class -
 
-	[DataContract()]
 	public class ServiceBindingMSMQIntegration : ServiceBinding
 	{
-		[DataMember()] public BindingSecurityMSMQIntegration Security { get { return (BindingSecurityMSMQIntegration)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
+		public BindingSecurityMSMQIntegration Security { get { return (BindingSecurityMSMQIntegration)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
 		public static readonly DependencyProperty SecurityProperty = DependencyProperty.Register("Security", typeof(BindingSecurityMSMQIntegration), typeof(ServiceBindingMSMQIntegration));
 
-		[DataMember()] public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
 		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingMSMQIntegration));
 
-		[DataMember()] public string CustomDeadLetterQueue { get { return (string)GetValue(CustomDeadLetterQueueProperty); } set { SetValue(CustomDeadLetterQueueProperty, value); } }
+		public string CustomDeadLetterQueue { get { return (string)GetValue(CustomDeadLetterQueueProperty); } set { SetValue(CustomDeadLetterQueueProperty, value); } }
 		public static readonly DependencyProperty CustomDeadLetterQueueProperty = DependencyProperty.Register("CustomDeadLetterQueue", typeof(string), typeof(ServiceBindingMSMQIntegration));
 
-		[DataMember()] public System.ServiceModel.DeadLetterQueue DeadLetterQueue { get { return (System.ServiceModel.DeadLetterQueue)GetValue(DeadLetterQueueProperty); } set { SetValue(DeadLetterQueueProperty, value); } }
+		public System.ServiceModel.DeadLetterQueue DeadLetterQueue { get { return (System.ServiceModel.DeadLetterQueue)GetValue(DeadLetterQueueProperty); } set { SetValue(DeadLetterQueueProperty, value); } }
 		public static readonly DependencyProperty DeadLetterQueueProperty = DependencyProperty.Register("DeadLetterQueue", typeof(System.ServiceModel.DeadLetterQueue), typeof(ServiceBindingMSMQIntegration));
 
-		[DataMember()] public bool ExactlyOnce { get { return (bool)GetValue(ExactlyOnceProperty); } set { SetValue(ExactlyOnceProperty, value); } }
+		public bool ExactlyOnce { get { return (bool)GetValue(ExactlyOnceProperty); } set { SetValue(ExactlyOnceProperty, value); } }
 		public static readonly DependencyProperty ExactlyOnceProperty = DependencyProperty.Register("ExactlyOnce", typeof(bool), typeof(ServiceBindingMSMQIntegration));
 
-		[DataMember()] public int MaxRetryCycles { get { return (int)GetValue(MaxRetryCyclesProperty); } set { SetValue(MaxRetryCyclesProperty, value); } }
+		public int MaxRetryCycles { get { return (int)GetValue(MaxRetryCyclesProperty); } set { SetValue(MaxRetryCyclesProperty, value); } }
 		public static readonly DependencyProperty MaxRetryCyclesProperty = DependencyProperty.Register("MaxRetryCycles", typeof(int), typeof(ServiceBindingMSMQIntegration));
 
-		[DataMember()] public bool ReceiveContextEnabled { get { return (bool)GetValue(ReceiveContextEnabledProperty); } set { SetValue(ReceiveContextEnabledProperty, value); } }
+		public bool ReceiveContextEnabled { get { return (bool)GetValue(ReceiveContextEnabledProperty); } set { SetValue(ReceiveContextEnabledProperty, value); } }
 		public static readonly DependencyProperty ReceiveContextEnabledProperty = DependencyProperty.Register("ReceiveContextEnabled", typeof(bool), typeof(ServiceBindingMSMQIntegration));
 
-		[DataMember()] public System.ServiceModel.ReceiveErrorHandling ReceiveErrorHandling { get { return (System.ServiceModel.ReceiveErrorHandling)GetValue(ReceiveErrorHandlingProperty); } set { SetValue(ReceiveErrorHandlingProperty, value); } }
+		public System.ServiceModel.ReceiveErrorHandling ReceiveErrorHandling { get { return (System.ServiceModel.ReceiveErrorHandling)GetValue(ReceiveErrorHandlingProperty); } set { SetValue(ReceiveErrorHandlingProperty, value); } }
 		public static readonly DependencyProperty ReceiveErrorHandlingProperty = DependencyProperty.Register("ReceiveErrorHandling", typeof(System.ServiceModel.ReceiveErrorHandling), typeof(ServiceBindingMSMQIntegration));
 
-		[DataMember()] public int ReceiveRetryCount { get { return (int)GetValue(ReceiveRetryCountProperty); } set { SetValue(ReceiveRetryCountProperty, value); } }
+		public int ReceiveRetryCount { get { return (int)GetValue(ReceiveRetryCountProperty); } set { SetValue(ReceiveRetryCountProperty, value); } }
 		public static readonly DependencyProperty ReceiveRetryCountProperty = DependencyProperty.Register("ReceiveRetryCount", typeof(int), typeof(ServiceBindingMSMQIntegration));
 
-		[DataMember()] public TimeSpan RetryCycleDelay { get { return (TimeSpan)GetValue(RetryCycleDelayProperty); } set { SetValue(RetryCycleDelayProperty, value); } }
+		public TimeSpan RetryCycleDelay { get { return (TimeSpan)GetValue(RetryCycleDelayProperty); } set { SetValue(RetryCycleDelayProperty, value); } }
 		public static readonly DependencyProperty RetryCycleDelayProperty = DependencyProperty.Register("RetryCycleDelay", typeof(TimeSpan), typeof(ServiceBindingMSMQIntegration));
 
-		[DataMember()] public TimeSpan TimeToLive { get { return (TimeSpan)GetValue(TimeToLiveProperty); } set { SetValue(TimeToLiveProperty, value); } }
+		public TimeSpan TimeToLive { get { return (TimeSpan)GetValue(TimeToLiveProperty); } set { SetValue(TimeToLiveProperty, value); } }
 		public static readonly DependencyProperty TimeToLiveProperty = DependencyProperty.Register("TimeToLive", typeof(TimeSpan), typeof(ServiceBindingMSMQIntegration));
 
-		[DataMember()] public bool UseMSMQTracing { get { return (bool)GetValue(UseMSMQTracingProperty); } set { SetValue(UseMSMQTracingProperty, value); } }
+		public bool UseMSMQTracing { get { return (bool)GetValue(UseMSMQTracingProperty); } set { SetValue(UseMSMQTracingProperty, value); } }
 		public static readonly DependencyProperty UseMSMQTracingProperty = DependencyProperty.Register("UseMSMQTracing", typeof(bool), typeof(ServiceBindingMSMQIntegration));
 
-		[DataMember()] public bool UseSourceJournal { get { return (bool)GetValue(UseSourceJournalProperty); } set { SetValue(UseSourceJournalProperty, value); } }
+		public bool UseSourceJournal { get { return (bool)GetValue(UseSourceJournalProperty); } set { SetValue(UseSourceJournalProperty, value); } }
 		public static readonly DependencyProperty UseSourceJournalProperty = DependencyProperty.Register("UseSourceJournal", typeof(bool), typeof(ServiceBindingMSMQIntegration));
 
-		[DataMember()] public TimeSpan ValidityDuration { get { return (TimeSpan)GetValue(ValidityDurationProperty); } set { SetValue(ValidityDurationProperty, value); } }
+		public TimeSpan ValidityDuration { get { return (TimeSpan)GetValue(ValidityDurationProperty); } set { SetValue(ValidityDurationProperty, value); } }
 		public static readonly DependencyProperty ValidityDurationProperty = DependencyProperty.Register("ValidityDuration", typeof(TimeSpan), typeof(ServiceBindingMSMQIntegration));
 
-		[DataMember()] public bool Durable { get { return (bool)GetValue(DurableProperty); } set { SetValue(DurableProperty, value); } }
+		public bool Durable { get { return (bool)GetValue(DurableProperty); } set { SetValue(DurableProperty, value); } }
 		public static readonly DependencyProperty DurableProperty = DependencyProperty.Register("Durable", typeof(bool), typeof(ServiceBinding));
 
-		[DataMember()] public System.ServiceModel.MsmqIntegration.MsmqMessageSerializationFormat SerializationFormat { get { return (System.ServiceModel.MsmqIntegration.MsmqMessageSerializationFormat)GetValue(SerializationFormatProperty); } set { SetValue(SerializationFormatProperty, value); } }
+		public System.ServiceModel.MsmqIntegration.MsmqMessageSerializationFormat SerializationFormat { get { return (System.ServiceModel.MsmqIntegration.MsmqMessageSerializationFormat)GetValue(SerializationFormatProperty); } set { SetValue(SerializationFormatProperty, value); } }
 		public static readonly DependencyProperty SerializationFormatProperty = DependencyProperty.Register("SerializationFormat", typeof(System.ServiceModel.MsmqIntegration.MsmqMessageSerializationFormat), typeof(ServiceBindingMSMQIntegration));
 
 		public ServiceBindingMSMQIntegration() : base() { }

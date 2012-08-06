@@ -22,22 +22,21 @@ namespace WCFArchitect.Projects
 		Array
 	}
 
-	[DataContract()]
 	public class ProjectUsingNamespace : DependencyObject
 	{
-		[DataMember()] private Guid id = Guid.Empty;
-		public Guid ID { get { return id; } }
+		private Guid id = Guid.Empty;
+		[IgnoreDataMember()] public Guid ID { get { return id; } }
 		
-		[DataMember()] public string Namespace { get { return (string)GetValue(NamespaceProperty); } set { SetValue(NamespaceProperty, value); } }
+		public string Namespace { get { return (string)GetValue(NamespaceProperty); } set { SetValue(NamespaceProperty, value); } }
 		public static readonly DependencyProperty NamespaceProperty = DependencyProperty.Register("Namespace", typeof(string), typeof(ProjectUsingNamespace));
 
-		[DataMember()] public bool IsFullFrameworkOnly { get { return (bool)GetValue(IsFullFrameworkOnlyProperty); } set { SetValue(IsFullFrameworkOnlyProperty, value); } }
+		public bool IsFullFrameworkOnly { get { return (bool)GetValue(IsFullFrameworkOnlyProperty); } set { SetValue(IsFullFrameworkOnlyProperty, value); } }
 		public static readonly DependencyProperty IsFullFrameworkOnlyProperty = DependencyProperty.Register("IsFullFrameworkOnly", typeof(bool), typeof(ProjectUsingNamespace));
 
-		[DataMember()] public bool Server { get { return (bool)GetValue(ServerProperty); } set { SetValue(ServerProperty, value); } }
+		public bool Server { get { return (bool)GetValue(ServerProperty); } set { SetValue(ServerProperty, value); } }
 		public static readonly DependencyProperty ServerProperty = DependencyProperty.Register("Server", typeof(bool), typeof(ProjectUsingNamespace));
 
-		[DataMember()] public bool Client { get { return (bool)GetValue(ClientProperty); } set { SetValue(ClientProperty, value); } }
+		public bool Client { get { return (bool)GetValue(ClientProperty); } set { SetValue(ClientProperty, value); } }
 		public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("Client", typeof(bool), typeof(ProjectUsingNamespace));
 
 		public ProjectUsingNamespace()
@@ -79,50 +78,49 @@ namespace WCFArchitect.Projects
 		}
 	}
 
-	[DataContract()]
 	public abstract partial class Project : OpenableDocument
 	{
-		[DataMember()] public Guid ID { get; private set; }
+		public Guid ID { get; private set; }
 		public string AbsolutePath { get; private set; }
 
-		[DataMember()] public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
+		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(Project));
 
-		[DataMember()] public ObservableCollection<ProjectUsingNamespace> UsingNamespaces { get { return (ObservableCollection<ProjectUsingNamespace>)GetValue(UsingNamespacesProperty); } set { SetValue(UsingNamespacesProperty, value); } }
+		public ObservableCollection<ProjectUsingNamespace> UsingNamespaces { get { return (ObservableCollection<ProjectUsingNamespace>)GetValue(UsingNamespacesProperty); } set { SetValue(UsingNamespacesProperty, value); } }
 		public static readonly DependencyProperty UsingNamespacesProperty = DependencyProperty.Register("UsingNamespaces", typeof(ObservableCollection<ProjectUsingNamespace>), typeof(Project));
 
-		[DataMember()] public Namespace Namespace { get { return (Namespace)GetValue(NamespaceProperty); } set { SetValue(NamespaceProperty, value); } }
+		public Namespace Namespace { get { return (Namespace)GetValue(NamespaceProperty); } set { SetValue(NamespaceProperty, value); } }
 		public static readonly DependencyProperty NamespaceProperty = DependencyProperty.Register("Namespace", typeof(Namespace), typeof(Project));
 
-		[DataMember()] public string ServerOutputFile { get { return (string)GetValue(ServerOutputFileProperty); } set { SetValue(ServerOutputFileProperty, value); } }
+		public string ServerOutputFile { get { return (string)GetValue(ServerOutputFileProperty); } set { SetValue(ServerOutputFileProperty, value); } }
 		public static readonly DependencyProperty ServerOutputFileProperty = DependencyProperty.Register("ServerOutputFile", typeof(string), typeof(Project), new PropertyMetadata("Server"));
 
-		[DataMember()] public string ClientOutputFile { get { return (string)GetValue(ClientOutputFileProperty); } set { SetValue(ClientOutputFileProperty, value); } }
+		public string ClientOutputFile { get { return (string)GetValue(ClientOutputFileProperty); } set { SetValue(ClientOutputFileProperty, value); } }
 		public static readonly DependencyProperty ClientOutputFileProperty = DependencyProperty.Register("ClientOutputName", typeof(string), typeof(Project), new PropertyMetadata("Client"));
 
-		[DataMember()] public ProjectServiceSerializerType ServiceSerializer { get { return (ProjectServiceSerializerType)GetValue(ServiceSerializerProperty); } set { SetValue(ServiceSerializerProperty, value); } }
+		public ProjectServiceSerializerType ServiceSerializer { get { return (ProjectServiceSerializerType)GetValue(ServiceSerializerProperty); } set { SetValue(ServiceSerializerProperty, value); } }
 		public static readonly DependencyProperty ServiceSerializerProperty = DependencyProperty.Register("ServiceSerializer", typeof(ProjectServiceSerializerType), typeof(Project));
 
-		[DataMember()] public ProjectCollectionSerializationOverride CollectionSerializationOverride { get { return (ProjectCollectionSerializationOverride)GetValue(CollectionSerializationOverrideProperty); } set { SetValue(CollectionSerializationOverrideProperty, value); } }
+		public ProjectCollectionSerializationOverride CollectionSerializationOverride { get { return (ProjectCollectionSerializationOverride)GetValue(CollectionSerializationOverrideProperty); } set { SetValue(CollectionSerializationOverrideProperty, value); } }
 		public static readonly DependencyProperty CollectionSerializationOverrideProperty = DependencyProperty.Register("CollectionSerializationOverride", typeof(ProjectCollectionSerializationOverride), typeof(Project), new PropertyMetadata(ProjectCollectionSerializationOverride.None));
 
-		[DataMember()] public ObservableCollection<DependencyProject> DependencyProjects { get { return (ObservableCollection<DependencyProject>)GetValue(DependencyProjectsProperty); } set { SetValue(DependencyProjectsProperty, value); } }
+		public ObservableCollection<DependencyProject> DependencyProjects { get { return (ObservableCollection<DependencyProject>)GetValue(DependencyProjectsProperty); } set { SetValue(DependencyProjectsProperty, value); } }
 		public static readonly DependencyProperty DependencyProjectsProperty = DependencyProperty.Register("DependencyProjects", typeof(ObservableCollection<DependencyProject>), typeof(Project));
 
 		//Internal Use - Searching / Filtering
-		public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
+		[IgnoreDataMember()] public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
 		public static readonly DependencyProperty IsSearchingProperty = DependencyProperty.Register("IsSearching", typeof(bool), typeof(Project));
 
-		public bool IsSearchMatch { get { return (bool)GetValue(IsSearchMatchProperty); } set { SetValue(IsSearchMatchProperty, value); } }
+		[IgnoreDataMember()] public bool IsSearchMatch { get { return (bool)GetValue(IsSearchMatchProperty); } set { SetValue(IsSearchMatchProperty, value); } }
 		public static readonly DependencyProperty IsSearchMatchProperty = DependencyProperty.Register("IsSearchMatch", typeof(bool), typeof(Project));
 
-		public bool IsFiltering { get { return (bool)GetValue(IsFilteringProperty); } set { SetValue(IsFilteringProperty, value); } }
+		[IgnoreDataMember()] public bool IsFiltering { get { return (bool)GetValue(IsFilteringProperty); } set { SetValue(IsFilteringProperty, value); } }
 		public static readonly DependencyProperty IsFilteringProperty = DependencyProperty.Register("IsFiltering", typeof(bool), typeof(Project));
 
-		public bool IsFilterMatch { get { return (bool)GetValue(IsFilterMatchProperty); } set { SetValue(IsFilterMatchProperty, value); } }
+		[IgnoreDataMember()] public bool IsFilterMatch { get { return (bool)GetValue(IsFilterMatchProperty); } set { SetValue(IsFilterMatchProperty, value); } }
 		public static readonly DependencyProperty IsFilterMatchProperty = DependencyProperty.Register("IsFilterMatch", typeof(bool), typeof(Project));
 
-		[DataMember()] public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
+		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Project), new UIPropertyMetadata(true));
 
 		public Project() : base()
@@ -304,13 +302,12 @@ namespace WCFArchitect.Projects
 		}
 	}
 
-	[DataContract()]
 	public class DependencyProject : DependencyObject
 	{
-		[DataMember()] public string Path { get { return (string)GetValue(PathProperty); } set { SetValue(PathProperty, value); } }
+		public string Path { get { return (string)GetValue(PathProperty); } set { SetValue(PathProperty, value); } }
 		public static readonly DependencyProperty PathProperty = DependencyProperty.Register("Path", typeof(string), typeof(DependencyProject), new PropertyMetadata(0));
 
-		[DataMember()] public Project Project { get { return (Project)GetValue(ProjectProperty); } set { SetValue(ProjectProperty, value); } }
+		[IgnoreDataMember()] public Project Project { get { return (Project)GetValue(ProjectProperty); } set { SetValue(ProjectProperty, value); } }
 		public static readonly DependencyProperty ProjectProperty = DependencyProperty.Register("Project", typeof(Project), typeof(DependencyProject));
 	}
 
@@ -335,21 +332,20 @@ namespace WCFArchitect.Projects
 		WIN8,
 	}
 
-	[DataContract()]
 	public class ProjectNETOutputPath : DependencyObject
 	{
-		[DataMember()] private Guid projectID;
-		public Guid ProjectID { get { return projectID; } }
-		[DataMember()] private Guid id;
-		public Guid ID { get { return id; } }
+		private Guid projectID;
+		[IgnoreDataMember()] public Guid ProjectID { get { return projectID; } }
+		private Guid id;
+		[IgnoreDataMember()] public Guid ID { get { return id; } }
 
-		[DataMember()] public bool IsEnabled { get { return (bool)GetValue(IsEnabledProperty); } set { SetValue(IsEnabledProperty, value); } }
+		public bool IsEnabled { get { return (bool)GetValue(IsEnabledProperty); } set { SetValue(IsEnabledProperty, value); } }
 		public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register("IsEnabled", typeof(bool), typeof(ProjectNETOutputPath), new UIPropertyMetadata(true));
 
-		[DataMember()] public string Path { get { return (string)GetValue(PathProperty); } set { SetValue(PathProperty, value); } }
+		public string Path { get { return (string)GetValue(PathProperty); } set { SetValue(PathProperty, value); } }
 		public static readonly DependencyProperty PathProperty = DependencyProperty.Register("Path", typeof(string), typeof(ProjectNETOutputPath));
 
-		[DataMember()] public ProjectNETOutputFramework Framework { get { return (ProjectNETOutputFramework)GetValue(FrameworkProperty); } set { SetValue(FrameworkProperty, value); } }
+		public ProjectNETOutputFramework Framework { get { return (ProjectNETOutputFramework)GetValue(FrameworkProperty); } set { SetValue(FrameworkProperty, value); } }
 		public static readonly DependencyProperty FrameworkProperty = DependencyProperty.Register("Framework", typeof(ProjectNETOutputFramework), typeof(ProjectNETOutputPath));
 
 		public ProjectNETOutputPath() { }
@@ -363,21 +359,20 @@ namespace WCFArchitect.Projects
 		}
 	}
 
-	[DataContract()]
 	public class ProjectSLOutputPath : DependencyObject
 	{
-		[DataMember()] private Guid projectID;
-		public Guid ProjectID { get { return projectID; } }
-		[DataMember()] private Guid id;
-		public Guid ID { get { return id; } }
+		private Guid projectID;
+		[IgnoreDataMember()] public Guid ProjectID { get { return projectID; } }
+		private Guid id;
+		[IgnoreDataMember()] public Guid ID { get { return id; } }
 
-		[DataMember()] public bool IsEnabled { get { return (bool)GetValue(IsEnabledProperty); } set { SetValue(IsEnabledProperty, value); } }
+		public bool IsEnabled { get { return (bool)GetValue(IsEnabledProperty); } set { SetValue(IsEnabledProperty, value); } }
 		public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register("IsEnabled", typeof(bool), typeof(ProjectSLOutputPath), new UIPropertyMetadata(true));
 
-		[DataMember()] public string Path { get { return (string)GetValue(PathProperty); } set { SetValue(PathProperty, value); } }
+		public string Path { get { return (string)GetValue(PathProperty); } set { SetValue(PathProperty, value); } }
 		public static readonly DependencyProperty PathProperty = DependencyProperty.Register("Path", typeof(string), typeof(ProjectSLOutputPath));
 
-		[DataMember()] public ProjectSLOutputFramework Framework { get { return (ProjectSLOutputFramework)GetValue(FrameworkProperty); } set { SetValue(FrameworkProperty, value); } }
+		public ProjectSLOutputFramework Framework { get { return (ProjectSLOutputFramework)GetValue(FrameworkProperty); } set { SetValue(FrameworkProperty, value); } }
 		public static readonly DependencyProperty FrameworkProperty = DependencyProperty.Register("Framework", typeof(ProjectSLOutputFramework), typeof(ProjectSLOutputPath));
 
 		public ProjectSLOutputPath() { }
@@ -391,21 +386,20 @@ namespace WCFArchitect.Projects
 		}
 	}
 
-	[DataContract()]
 	public class ProjectRTOutputPath : DependencyObject
 	{
-		[DataMember()] private Guid projectID;
-		public Guid ProjectID { get { return projectID; } }
-		[DataMember()] private Guid id;
-		public Guid ID { get { return id; } }
+		private Guid projectID;
+		[IgnoreDataMember()] public Guid ProjectID { get { return projectID; } }
+		private Guid id;
+		[IgnoreDataMember()] public Guid ID { get { return id; } }
 
-		[DataMember()] public bool IsEnabled { get { return (bool)GetValue(IsEnabledProperty); } set { SetValue(IsEnabledProperty, value); } }
+		public bool IsEnabled { get { return (bool)GetValue(IsEnabledProperty); } set { SetValue(IsEnabledProperty, value); } }
 		public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register("IsEnabled", typeof(bool), typeof(ProjectRTOutputPath), new UIPropertyMetadata(true));
 
-		[DataMember()] public string Path { get { return (string)GetValue(PathProperty); } set { SetValue(PathProperty, value); } }
+		public string Path { get { return (string)GetValue(PathProperty); } set { SetValue(PathProperty, value); } }
 		public static readonly DependencyProperty PathProperty = DependencyProperty.Register("Path", typeof(string), typeof(ProjectRTOutputPath));
 
-		[DataMember()] public ProjectRTOutputFramework Framework { get { return (ProjectRTOutputFramework)GetValue(FrameworkProperty); } set { SetValue(FrameworkProperty, value); } }
+		public ProjectRTOutputFramework Framework { get { return (ProjectRTOutputFramework)GetValue(FrameworkProperty); } set { SetValue(FrameworkProperty, value); } }
 		public static readonly DependencyProperty FrameworkProperty = DependencyProperty.Register("Framework", typeof(ProjectRTOutputFramework), typeof(ProjectRTOutputPath));
 
 		public ProjectRTOutputPath() { }
@@ -418,13 +412,13 @@ namespace WCFArchitect.Projects
 			this.Framework = ProjectRTOutputFramework.WIN8;
 		}
 	}
-	[DataContract()]
+
 	public class ProjectNET : Project
 	{
-		[DataMember()] public ObservableCollection<ProjectNETOutputPath> ServerOutputPaths { get { return (ObservableCollection<ProjectNETOutputPath>)GetValue(ServerOutputPathsProperty); } set { SetValue(ServerOutputPathsProperty, value); } }
+		public ObservableCollection<ProjectNETOutputPath> ServerOutputPaths { get { return (ObservableCollection<ProjectNETOutputPath>)GetValue(ServerOutputPathsProperty); } set { SetValue(ServerOutputPathsProperty, value); } }
 		public static readonly DependencyProperty ServerOutputPathsProperty = DependencyProperty.Register("ServerOutputPaths", typeof(ObservableCollection<ProjectNETOutputPath>), typeof(ProjectNET));
 
-		[DataMember()] public ObservableCollection<ProjectNETOutputPath> ClientOutputPaths { get { return (ObservableCollection<ProjectNETOutputPath>)GetValue(ClientOutputPathsProperty); } set { SetValue(ClientOutputPathsProperty, value); } }
+		public ObservableCollection<ProjectNETOutputPath> ClientOutputPaths { get { return (ObservableCollection<ProjectNETOutputPath>)GetValue(ClientOutputPathsProperty); } set { SetValue(ClientOutputPathsProperty, value); } }
 		public static readonly DependencyProperty ClientOutputPathsProperty = DependencyProperty.Register("ClientOutputPaths", typeof(ObservableCollection<ProjectNETOutputPath>), typeof(ProjectNET));
 
 		public ProjectNET() : base() { }
@@ -459,13 +453,12 @@ namespace WCFArchitect.Projects
 		}
 	}
 
-	[DataContract()]
 	public class ProjectSL : Project
 	{
-		[DataMember()] public ObservableCollection<ProjectSLOutputPath> ServerOutputPaths { get { return (ObservableCollection<ProjectSLOutputPath>)GetValue(ServerOutputPathsProperty); } set { SetValue(ServerOutputPathsProperty, value); } }
+		public ObservableCollection<ProjectSLOutputPath> ServerOutputPaths { get { return (ObservableCollection<ProjectSLOutputPath>)GetValue(ServerOutputPathsProperty); } set { SetValue(ServerOutputPathsProperty, value); } }
 		public static readonly DependencyProperty ServerOutputPathsProperty = DependencyProperty.Register("ServerOutputPaths", typeof(ObservableCollection<ProjectSLOutputPath>), typeof(ProjectSL));
 
-		[DataMember()] public ObservableCollection<ProjectSLOutputPath> ClientOutputPaths { get { return (ObservableCollection<ProjectSLOutputPath>)GetValue(ClientOutputPathsProperty); } set { SetValue(ClientOutputPathsProperty, value); } }
+		public ObservableCollection<ProjectSLOutputPath> ClientOutputPaths { get { return (ObservableCollection<ProjectSLOutputPath>)GetValue(ClientOutputPathsProperty); } set { SetValue(ClientOutputPathsProperty, value); } }
 		public static readonly DependencyProperty ClientOutputPathsProperty = DependencyProperty.Register("ClientOutputPaths", typeof(ObservableCollection<ProjectSLOutputPath>), typeof(ProjectSL));
 
 		public ProjectSL() : base() { }
@@ -500,13 +493,12 @@ namespace WCFArchitect.Projects
 		}
 	}
 
-	[DataContract()]
 	public class ProjectRT : Project
 	{
-		[DataMember()] public ObservableCollection<ProjectRTOutputPath> ServerOutputPaths { get { return (ObservableCollection<ProjectRTOutputPath>)GetValue(ServerOutputPathsProperty); } set { SetValue(ServerOutputPathsProperty, value); } }
+		public ObservableCollection<ProjectRTOutputPath> ServerOutputPaths { get { return (ObservableCollection<ProjectRTOutputPath>)GetValue(ServerOutputPathsProperty); } set { SetValue(ServerOutputPathsProperty, value); } }
 		public static readonly DependencyProperty ServerOutputPathsProperty = DependencyProperty.Register("ServerOutputPaths", typeof(ObservableCollection<ProjectRTOutputPath>), typeof(ProjectRT));
 
-		[DataMember()] public ObservableCollection<ProjectRTOutputPath> ClientOutputPaths { get { return (ObservableCollection<ProjectRTOutputPath>)GetValue(ClientOutputPathsProperty); } set { SetValue(ClientOutputPathsProperty, value); } }
+		public ObservableCollection<ProjectRTOutputPath> ClientOutputPaths { get { return (ObservableCollection<ProjectRTOutputPath>)GetValue(ClientOutputPathsProperty); } set { SetValue(ClientOutputPathsProperty, value); } }
 		public static readonly DependencyProperty ClientOutputPathsProperty = DependencyProperty.Register("ClientOutputPaths", typeof(ObservableCollection<ProjectRTOutputPath>), typeof(ProjectRT));
 
 		public ProjectRT() : base() { }

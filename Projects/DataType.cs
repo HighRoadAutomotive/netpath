@@ -48,46 +48,45 @@ namespace WCFArchitect.Projects
 		ByteArray
 	}
 
-	[DataContract()]
 	public class DataType : OpenableDocument
 	{
-		[DataMember()] protected Guid id = Guid.Empty;
-		public Guid ID { get { return id; } protected set { id = value; } }
+		protected Guid id = Guid.Empty;
+		[IgnoreDataMember()] public Guid ID { get { return id; } protected set { id = value; } }
 
-		[DataMember()] public bool HasContractType { get { return (bool)GetValue(HasContractTypeProperty); } set { SetValue(HasContractTypeProperty, value); if (value == false) { ContractType = null; } else { ContractType = new DataType(DataTypeMode.Class); ContractType.Name = Name; ContractType.Scope = Scope; } } }
+		public bool HasContractType { get { return (bool)GetValue(HasContractTypeProperty); } set { SetValue(HasContractTypeProperty, value); if (value == false) { ContractType = null; } else { ContractType = new DataType(DataTypeMode.Class); ContractType.Name = Name; ContractType.Scope = Scope; } } }
 		public static readonly DependencyProperty HasContractTypeProperty = DependencyProperty.Register("HasContractType", typeof(bool), typeof(Data));
 
-		[DataMember()] public DataType ContractType { get { return (DataType)GetValue(ContractTypeProperty); } set { SetValue(ContractTypeProperty, value); } }
+		public DataType ContractType { get { return (DataType)GetValue(ContractTypeProperty); } set { SetValue(ContractTypeProperty, value); } }
 		public static readonly DependencyProperty ContractTypeProperty = DependencyProperty.Register("ContractType", typeof(DataType), typeof(Data));
 
-		[DataMember()] public DataScope Scope { get { return (DataScope)GetValue(ScopeProperty); } set { SetValue(ScopeProperty, value); } }
+		public DataScope Scope { get { return (DataScope)GetValue(ScopeProperty); } set { SetValue(ScopeProperty, value); } }
 		public static readonly DependencyProperty ScopeProperty = DependencyProperty.Register("Scope", typeof(DataScope), typeof(DataType), new PropertyMetadata(DataScope.Public));
 
-		[DataMember()] public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value == null ? "" : value, @"")); } }
+		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value == null ? "" : value, @"")); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(DataType));
 
-		[DataMember()] public bool IsPartial { get { return (bool)GetValue(IsPartialProperty); } set { SetValue(IsPartialProperty, value); } }
+		public bool IsPartial { get { return (bool)GetValue(IsPartialProperty); } set { SetValue(IsPartialProperty, value); } }
 		public static readonly DependencyProperty IsPartialProperty = DependencyProperty.Register("IsPartial", typeof(bool), typeof(DataType));
 
-		[DataMember()] public bool IsAbstract { get { return (bool)GetValue(IsAbstractProperty); } set { SetValue(IsAbstractProperty, value); } }
+		public bool IsAbstract { get { return (bool)GetValue(IsAbstractProperty); } set { SetValue(IsAbstractProperty, value); } }
 		public static readonly DependencyProperty IsAbstractProperty = DependencyProperty.Register("IsAbstract", typeof(bool), typeof(DataType));
 
-		[DataMember()] public DataType CollectionGenericType { get { return (DataType)GetValue(CollectionGenericTypeProperty); } set { SetValue(CollectionGenericTypeProperty, value); } }
+		public DataType CollectionGenericType { get { return (DataType)GetValue(CollectionGenericTypeProperty); } set { SetValue(CollectionGenericTypeProperty, value); } }
 		public static readonly DependencyProperty CollectionGenericTypeProperty = DependencyProperty.Register("CollectionGenericType", typeof(DataType), typeof(DataType));
 
-		[DataMember()] public DataType DictionaryKeyGenericType { get { return (DataType)GetValue(DictionaryKeyGenericTypeProperty); } set { SetValue(DictionaryKeyGenericTypeProperty, value); } }
+		public DataType DictionaryKeyGenericType { get { return (DataType)GetValue(DictionaryKeyGenericTypeProperty); } set { SetValue(DictionaryKeyGenericTypeProperty, value); } }
 		public static readonly DependencyProperty DictionaryKeyGenericTypeProperty = DependencyProperty.Register("DictionaryKeyGenericType", typeof(DataType), typeof(DataType));
 
-		[DataMember()] public DataType DictionaryValueGenericType { get { return (DataType)GetValue(DictionaryValueGenericTypeProperty); } set { SetValue(DictionaryValueGenericTypeProperty, value); } }
+		public DataType DictionaryValueGenericType { get { return (DataType)GetValue(DictionaryValueGenericTypeProperty); } set { SetValue(DictionaryValueGenericTypeProperty, value); } }
 		public static readonly DependencyProperty DictionaryValueGenericTypeProperty = DependencyProperty.Register("DictionaryValueGenericType", typeof(DataType), typeof(DataType));
 
-		[DataMember()] public DataTypeMode ExternalType { get { return (DataTypeMode)GetValue(ExternalTypeProperty); } set { SetValue(ExternalTypeProperty, value); } }
+		public DataTypeMode ExternalType { get { return (DataTypeMode)GetValue(ExternalTypeProperty); } set { SetValue(ExternalTypeProperty, value); } }
 		public static readonly DependencyProperty ExternalTypeProperty = DependencyProperty.Register("ExternalType", typeof(DataTypeMode), typeof(DataType));
 
-		[DataMember()] public ObservableCollection<DataType> InheritedTypes { get { return (ObservableCollection<DataType>)GetValue(InheritedTypesProperty); } set { SetValue(InheritedTypesProperty, value); } }
+		public ObservableCollection<DataType> InheritedTypes { get { return (ObservableCollection<DataType>)GetValue(InheritedTypesProperty); } set { SetValue(InheritedTypesProperty, value); } }
 		public static readonly DependencyProperty InheritedTypesProperty = DependencyProperty.Register("InheritedTypes", typeof(ObservableCollection<DataType>), typeof(DataType));
 
-		[DataMember()] public Namespace Parent { get { return (Namespace)GetValue(ParentProperty); } set { SetValue(ParentProperty, value); } }
+		public Namespace Parent { get { return (Namespace)GetValue(ParentProperty); } set { SetValue(ParentProperty, value); } }
 		public static readonly DependencyProperty ParentProperty = DependencyProperty.Register("Parent", typeof(Namespace), typeof(DataType));
 
 		public DataTypeMode TypeMode { get; private set; }

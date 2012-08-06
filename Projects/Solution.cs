@@ -9,16 +9,15 @@ using System.Runtime.Serialization;
 
 namespace WCFArchitect.Projects
 {
-	[DataContract()]
 	public class Solution : DependencyObject
 	{
-		[DataMember()] private Guid id = Guid.Empty;
-		public Guid ID { get { return id; } }
+		private Guid id = Guid.Empty;
+		[IgnoreDataMember()] public Guid ID { get { return id; } }
 
-		[DataMember()] public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
+		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(Solution));
 
-		[DataMember()] public ObservableCollection<string> Projects { get { return (ObservableCollection<string>)GetValue(ProjectsProperty); } set { SetValue(ProjectsProperty, value); } }
+		public ObservableCollection<string> Projects { get { return (ObservableCollection<string>)GetValue(ProjectsProperty); } set { SetValue(ProjectsProperty, value); } }
 		public static readonly DependencyProperty ProjectsProperty = DependencyProperty.Register("Projects", typeof(ObservableCollection<string>), typeof(Solution));
 
 		public string AbsolutePath { get; private set; }
