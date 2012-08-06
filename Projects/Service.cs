@@ -268,7 +268,7 @@ namespace WCFArchitect.Projects
 
 	public abstract class Operation : DependencyObject
 	{
-		public Guid ID { get; protected set; }
+		public Guid ID { get; set; }
 
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value == null ? "" : value, @"")); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(Operation));
@@ -510,7 +510,7 @@ namespace WCFArchitect.Projects
 
 	public class MethodParameter : DependencyObject
 	{
-		public Guid ID { get; protected set; }
+		public Guid ID { get; set; }
 
 		public DataType Type { get { return (DataType)GetValue(TypeProperty); } set { SetValue(TypeProperty, value); } }
 		public static readonly DependencyProperty TypeProperty = DependencyProperty.Register("Type", typeof(DataType), typeof(MethodParameter));

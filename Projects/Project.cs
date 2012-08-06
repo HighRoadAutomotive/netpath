@@ -24,7 +24,7 @@ namespace WCFArchitect.Projects
 
 	public class ProjectUsingNamespace : DependencyObject
 	{
-		public Guid ID { get; protected set; }
+		public Guid ID { get; set; }
 		
 		public string Namespace { get { return (string)GetValue(NamespaceProperty); } set { SetValue(NamespaceProperty, value); } }
 		public static readonly DependencyProperty NamespaceProperty = DependencyProperty.Register("Namespace", typeof(string), typeof(ProjectUsingNamespace));
@@ -64,10 +64,10 @@ namespace WCFArchitect.Projects
 	public class OpenableDocument : DependencyObject
 	{
 		//Open document handling
-		public bool IsActive { get; set; }
-		public bool IsOpen { get; set; }
+		[IgnoreDataMember()] public bool IsActive { get; set; }
+		[IgnoreDataMember()] public bool IsOpen { get; set; }
 
-		public bool IsDirty { get { return (bool)GetValue(IsDirtyProperty); } set { if (IsActive == true) SetValue(IsDirtyProperty, value); } }
+		[IgnoreDataMember()] public bool IsDirty { get { return (bool)GetValue(IsDirtyProperty); } set { if (IsActive == true) SetValue(IsDirtyProperty, value); } }
 		public static readonly DependencyProperty IsDirtyProperty = DependencyProperty.Register("IsDirty", typeof(bool), typeof(OpenableDocument), new UIPropertyMetadata(false));
 
 		public OpenableDocument()
@@ -79,7 +79,7 @@ namespace WCFArchitect.Projects
 
 	public abstract partial class Project : OpenableDocument
 	{
-		public Guid ID { get; protected set; }
+		public Guid ID { get; set; }
 		[IgnoreDataMember()] public string AbsolutePath { get; private set; }
 
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
@@ -334,7 +334,7 @@ namespace WCFArchitect.Projects
 	public class ProjectNETOutputPath : DependencyObject
 	{
 		public Guid ProjectID { get; protected set; }
-		public Guid ID { get; protected set; }
+		public Guid ID { get; set; }
 
 		public bool IsEnabled { get { return (bool)GetValue(IsEnabledProperty); } set { SetValue(IsEnabledProperty, value); } }
 		public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register("IsEnabled", typeof(bool), typeof(ProjectNETOutputPath), new UIPropertyMetadata(true));
@@ -359,7 +359,7 @@ namespace WCFArchitect.Projects
 	public class ProjectSLOutputPath : DependencyObject
 	{
 		public Guid ProjectID { get; protected set; }
-		public Guid ID { get; protected set; }
+		public Guid ID { get; set; }
 
 		public bool IsEnabled { get { return (bool)GetValue(IsEnabledProperty); } set { SetValue(IsEnabledProperty, value); } }
 		public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register("IsEnabled", typeof(bool), typeof(ProjectSLOutputPath), new UIPropertyMetadata(true));
@@ -384,7 +384,7 @@ namespace WCFArchitect.Projects
 	public class ProjectRTOutputPath : DependencyObject
 	{
 		public Guid ProjectID { get; protected set; }
-		public Guid ID { get; protected set; }
+		public Guid ID { get; set; }
 
 		public bool IsEnabled { get { return (bool)GetValue(IsEnabledProperty); } set { SetValue(IsEnabledProperty, value); } }
 		public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register("IsEnabled", typeof(bool), typeof(ProjectRTOutputPath), new UIPropertyMetadata(true));

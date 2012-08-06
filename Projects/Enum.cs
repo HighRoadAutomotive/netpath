@@ -205,7 +205,7 @@ namespace WCFArchitect.Projects
 
 	public class EnumElement : DependencyObject
 	{
-		public Guid ID { get; protected set; }
+		public Guid ID { get; set; }
 
 		//Basic
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value == null ? "" : value, @"")); } }

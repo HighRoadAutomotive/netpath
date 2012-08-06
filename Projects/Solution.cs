@@ -11,7 +11,7 @@ namespace WCFArchitect.Projects
 {
 	public class Solution : DependencyObject
 	{
-		public Guid ID { get; protected set; }
+		public Guid ID { get; set; }
 
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(Solution));

@@ -231,7 +231,7 @@ namespace WCFArchitect.Projects
 
 	public class DataElement : DependencyObject
 	{
-		public Guid ID { get; protected set; }
+		public Guid ID { get; set; }
 
 		//Basic Data-Type Settings
 		public DataScope Scope { get { return (DataScope)GetValue(ScopeProperty); } set { SetValue(ScopeProperty, value); } }

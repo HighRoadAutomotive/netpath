@@ -17,13 +17,23 @@ namespace WCFArchitect.Projects
 			if (!System.IO.File.Exists(Path))
 				throw new System.IO.FileNotFoundException("Unable to locate file '" + Path + "'");
 
-			DataContractSerializer dcs = new DataContractSerializer(typeof(T), new DataContractSerializerSettings() { MaxItemsInObjectGraph = Int32.MaxValue, IgnoreExtensionDataObject = true, SerializeReadOnlyTypes = true, PreserveObjectReferences = true });
+			List<Type> kt = new List<Type>(new Type[] { 
+				typeof(Solution), typeof(Project), typeof(ProjectNET), typeof(ProjectRT), typeof(ProjectSL), typeof(ProjectNETOutputPath), typeof(ProjectRTOutputPath), typeof(ProjectSLOutputPath), 
+				typeof(BindingSecurity), typeof(BindingSecurityBasicHTTP), typeof(BindingSecurityMSMQ), typeof(BindingSecurityMSMQIntegration), typeof(BindingSecurityNamedPipe), typeof(BindingSecurityPeerTCP), typeof(BindingSecurityTCP), typeof(BindingSecurityWebHTTP), typeof(BindingSecurityWSDualHTTP), typeof(BindingSecurityWSFederationHTTP), typeof(BindingSecurityWSHTTP),
+				typeof(ServiceBinding), typeof(ServiceBindingBasicHTTP), typeof(ServiceBindingMSMQ), typeof(ServiceBindingMSMQIntegration), typeof(ServiceBindingNamedPipe), typeof(ServiceBindingNetHTTP), typeof(ServiceBindingPeerTCP), typeof(ServiceBindingTCP), typeof(ServiceBindingWebHTTP), typeof(ServiceBindingWS2007FederationHTTP), typeof(ServiceBindingWS2007HTTP), typeof(ServiceBindingWSDualHTTP), typeof(ServiceBindingWSFederationHTTP), typeof(ServiceBindingWSHTTP),
+				typeof(Host), typeof(HostBehavior), typeof(HostCredentials), typeof(HostDebugBehavior), typeof(HostEndpoint), typeof(HostEndpointAddressHeader), typeof(HostMetadataBehavior), typeof(HostThrottlingBehavior),
+				typeof(DataType), typeof(Namespace),
+				typeof(Service), typeof(Operation), typeof(Method), typeof(MethodParameter), typeof(Property),
+				typeof(Enum), typeof(EnumElement),
+				typeof(Data), typeof(DataElement)
+			});
+
+			DataContractSerializer dcs = new DataContractSerializer(typeof(T), new DataContractSerializerSettings() { KnownTypes = kt, MaxItemsInObjectGraph = Int32.MaxValue, IgnoreExtensionDataObject = true, SerializeReadOnlyTypes = true, PreserveObjectReferences = true });
 			FileStream fs = new FileStream(Path, FileMode.Open, FileAccess.Read);
 			XmlReader tr = XmlReader.Create(fs, new XmlReaderSettings() { CloseInput = true, Async = false });
-			XmlDictionaryReader reader = XmlDictionaryReader.CreateTextReader(fs, new XmlDictionaryReaderQuotas());
 
-			T t = (T)dcs.ReadObject(reader);
-			reader.Close();
+			T t = (T)dcs.ReadObject(tr);
+			tr.Close();
 			return t;
 		}
 
@@ -37,7 +47,18 @@ namespace WCFArchitect.Projects
 					throw new System.IO.IOException("The file '" + Path + "' is currently read-only. Please disable read-only mode on this file.");
 			}
 
-			DataContractSerializer dcs = new DataContractSerializer(typeof(T), new DataContractSerializerSettings() { MaxItemsInObjectGraph = Int32.MaxValue, IgnoreExtensionDataObject = true, SerializeReadOnlyTypes = true, PreserveObjectReferences = true });
+			List<Type> kt = new List<Type>(new Type[] { 
+				typeof(Solution), typeof(Project), typeof(ProjectNET), typeof(ProjectRT), typeof(ProjectSL), typeof(ProjectNETOutputPath), typeof(ProjectRTOutputPath), typeof(ProjectSLOutputPath), 
+				typeof(BindingSecurity), typeof(BindingSecurityBasicHTTP), typeof(BindingSecurityMSMQ), typeof(BindingSecurityMSMQIntegration), typeof(BindingSecurityNamedPipe), typeof(BindingSecurityPeerTCP), typeof(BindingSecurityTCP), typeof(BindingSecurityWebHTTP), typeof(BindingSecurityWSDualHTTP), typeof(BindingSecurityWSFederationHTTP), typeof(BindingSecurityWSHTTP),
+				typeof(ServiceBinding), typeof(ServiceBindingBasicHTTP), typeof(ServiceBindingMSMQ), typeof(ServiceBindingMSMQIntegration), typeof(ServiceBindingNamedPipe), typeof(ServiceBindingNetHTTP), typeof(ServiceBindingPeerTCP), typeof(ServiceBindingTCP), typeof(ServiceBindingWebHTTP), typeof(ServiceBindingWS2007FederationHTTP), typeof(ServiceBindingWS2007HTTP), typeof(ServiceBindingWSDualHTTP), typeof(ServiceBindingWSFederationHTTP), typeof(ServiceBindingWSHTTP),
+				typeof(Host), typeof(HostBehavior), typeof(HostCredentials), typeof(HostDebugBehavior), typeof(HostEndpoint), typeof(HostEndpointAddressHeader), typeof(HostMetadataBehavior), typeof(HostThrottlingBehavior),
+				typeof(DataType), typeof(Namespace),
+				typeof(Service), typeof(Operation), typeof(Method), typeof(MethodParameter), typeof(Property),
+				typeof(Enum), typeof(EnumElement),
+				typeof(Data), typeof(DataElement)
+			});
+
+			DataContractSerializer dcs = new DataContractSerializer(typeof(T), new DataContractSerializerSettings() { KnownTypes = kt, MaxItemsInObjectGraph = Int32.MaxValue, IgnoreExtensionDataObject = true, SerializeReadOnlyTypes = true, PreserveObjectReferences = true });
 			FileStream fs = new FileStream(Path, FileMode.Create);
 			XmlWriter xw = XmlWriter.Create(fs, new XmlWriterSettings() { Encoding = Encoding.UTF8, NewLineChars = Environment.NewLine, NewLineHandling = System.Xml.NewLineHandling.Entitize, CloseOutput = true, WriteEndDocumentOnClose = true, Indent = true, Async = false });
 			dcs.WriteObject(xw, Data);
