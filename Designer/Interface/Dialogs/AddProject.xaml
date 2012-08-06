@@ -1,7 +1,0 @@
-﻿<Grid x:Class="WCFArchitect.Interface.Dialogs.AddProject"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        MinHeight="45" MinWidth="600">
-	<Label Content="Name:" HorizontalAlignment="Left" Margin="10,11,0,0" VerticalAlignment="Top" />
-	<TextBox x:Name="NewProjectOptionsName" Height="23" Margin="74,12,10,0" VerticalAlignment="Top" />
-</Grid>

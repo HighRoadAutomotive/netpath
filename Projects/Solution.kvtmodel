@@ -4,7 +4,7 @@
     <ReferencePath Path="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5" />
   </ReferencePaths>
   <Assemblies>
-    <Assembly Id="1" Name="WCFArchitect.Projects.dll" Expanded="true" Selected="true" Path="bin\WCFArchitect.Projects.dll">
+    <Assembly Id="1" Name="WAP.dll" Expanded="true" Selected="true" Path="bin\WAP.dll">
       <Namespaces>
         <Namespace Id="2" Name="WCFArchitect.Helpers" Expanded="false" Selected="false">
           <Classes />
@@ -12,7 +12,7 @@
         </Namespace>
         <Namespace Id="3" Name="WCFArchitect.Projects" Expanded="true" Selected="false">
           <Classes>
-            <Class Id="4" Name="Solution" Expanded="true" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.Solution, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="4" Name="Solution" Expanded="true" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.Solution, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields>
                 <Field Id="5" Name="id" Expanded="false" Selected="false" />
               </Fields>
@@ -26,7 +26,7 @@
         </Namespace>
       </Namespaces>
       <PlatformAssemblyPaths>
-        <PlatformAssemblyPath PlatformId="1001" Path="bin\WCFArchitect.Projects.dll" />
+        <PlatformAssemblyPath PlatformId="1001" Path="bin\WAP.dll" />
       </PlatformAssemblyPaths>
     </Assembly>
   </Assemblies>

@@ -50,6 +50,11 @@ namespace WCFArchitect.Interface
 			
 			InitializeComponent();
 
+			Globals.MainScreen = this;
+
+			//Initialize the Home screen.
+			RefreshRecentList();
+
 			//Initialize the Options screen.
 			UserProfile = Globals.UserProfile;
 			if (Globals.UserProfile.AutomaticBackupsEnabled == true) AutomaticBackupsEnabled.Content = "Yes";
@@ -145,7 +150,7 @@ namespace WCFArchitect.Interface
 
 		#endregion
 
-		#region - MessageBox -
+		#region - Dialog Box -
 
 		public async void ProcessNextMessage()
 		{
@@ -174,7 +179,8 @@ namespace WCFArchitect.Interface
 
 				if (next != null)
 				{
-					MessageProject = next.Origin.Name;
+					if (next.Origin != null) MessageProject = next.Origin.Name.ToUpper();
+					else MessageProject = "WCF ARCHITECT";
 					MessageCaption = next.Caption;
 					Message = next.Message;
 					foreach (MessageAction a in next.Actions)
@@ -260,12 +266,26 @@ namespace WCFArchitect.Interface
 
 		private void NewSolution_Click(object sender, RoutedEventArgs e)
 		{
-
+			Dialogs.NewSolution np = new Dialogs.NewSolution();
+			Globals.ShowDialogBox(null, "New Solution", np, new MessageAction("Create", new Action(() => np.Create())), new MessageAction("Cancel", new Action(() => { return; })));
 		}
 
-		private void NewProject_Click(object sender, RoutedEventArgs e)
+		private void AddNETProject_Click(object sender, RoutedEventArgs e)
 		{
+			Dialogs.NewProject np = new Dialogs.NewProject(typeof(Projects.ProjectNET));
+			Globals.ShowDialogBox(null, "New .NET Framework Project", np, new MessageAction("Create", new Action(() => np.Create())), new MessageAction("Cancel", new Action(() => { return; })));
+		}
 
+		private void AddSLProject_Click(object sender, RoutedEventArgs e)
+		{
+			Dialogs.NewProject np = new Dialogs.NewProject(typeof(Projects.ProjectNET));
+			Globals.ShowDialogBox(null, "New Silverlight Project", np, new MessageAction("Create", new Action(() => np.Create())), new MessageAction("Cancel", new Action(() => { return; })));
+		}
+
+		private void AddRTProject_Click(object sender, RoutedEventArgs e)
+		{
+			Dialogs.NewProject np = new Dialogs.NewProject(typeof(Projects.ProjectNET));
+			Globals.ShowDialogBox(null, "New Windows Runtime Project", np, new MessageAction("Create", new Action(() => np.Create())), new MessageAction("Cancel", new Action(() => { return; })));
 		}
 
 		private void UpdateYes_Click(object sender, RoutedEventArgs e)
@@ -277,6 +297,28 @@ namespace WCFArchitect.Interface
 		private void UpdateNo_Click(object sender, RoutedEventArgs e)
 		{
 			UpdateAvailable.Visibility = System.Windows.Visibility.Collapsed;
+		}
+
+		public void RefreshRecentList()
+		{
+			if (Globals.UserProfile.ImportantProjects.Count > 0) Globals.UserProfile.ImportantProjects.Sort(delegate(WCFArchitect.Options.RecentSolution p1, WCFArchitect.Options.RecentSolution p2) { return p2.LastAccessed.CompareTo(p1.LastAccessed); });
+			if (Globals.UserProfile.RecentProjects.Count > 0) Globals.UserProfile.RecentProjects.Sort(delegate(WCFArchitect.Options.RecentSolution p1, WCFArchitect.Options.RecentSolution p2) { return p2.LastAccessed.CompareTo(p1.LastAccessed); });
+
+			ImportantProjectsBlock.Visibility = System.Windows.Visibility.Collapsed;
+			ImportantProjectsList.Children.Clear();
+			RecentProjectsList.Children.Clear();
+
+			foreach (WCFArchitect.Options.RecentSolution RP in Globals.UserProfile.ImportantProjects)
+			{
+				ImportantProjectsBlock.Visibility = System.Windows.Visibility.Visible;
+				RecentProjectItem NRPI = new RecentProjectItem(RP, true);
+				ImportantProjectsList.Children.Add(NRPI);
+			}
+			foreach (WCFArchitect.Options.RecentSolution RP in Globals.UserProfile.RecentProjects)
+			{
+				RecentProjectItem NRPI = new RecentProjectItem(RP, false);
+				RecentProjectsList.Children.Add(NRPI);
+			}
 		}
 
 		#endregion
@@ -342,13 +384,262 @@ namespace WCFArchitect.Interface
 			if (e.NewValue.HasValue == false) { UserProfile.AutomaticBackupsInterval = new TimeSpan(0, 5, 0); return; }
 			if (e.NewValue.Value.TotalMinutes < 1) { UserProfile.AutomaticBackupsInterval = new TimeSpan(0, 1, 0); return; }
 			UserProfile.AutomaticBackupsInterval = e.NewValue.Value;
-			if (Globals.ProjectSpace.State == MP.Karvonite.ObjectSpaceState.Open)
-			{
-				Globals.BackupTimer.Dispose();
-				Globals.BackupTimer = new System.Threading.Timer(new System.Threading.TimerCallback(Globals.BackupSolution), null, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds);
-			}
+			Globals.BackupTimer.Dispose();
+			Globals.BackupTimer = new System.Threading.Timer(new System.Threading.TimerCallback(Globals.BackupSolution), null, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds);
 		}
 
 		#endregion
+
+		#region - Solutions - 
+		
+		public bool NewSolution(string Name, string Path)
+		{
+			if (CloseSolution(true) == false) return false;
+
+			Projects.Solution.Save(new Projects.Solution(Name), Path);
+
+			OpenSolution(Path);
+
+			return true;
+		}
+
+		public void NewNETProject(string Name, string Path)
+		{
+			Projects.Project NP = new Projects.ProjectNET(Name);
+			Globals.Solution.Projects.Add(Globals.GetRelativePath(System.IO.Path.GetDirectoryName(Globals.SolutionPath), Path));
+			Projects.Project.Save(NP, Path);
+			Globals.Projects.Add(Projects.Project.Open(Globals.SolutionPath, Path));
+		}
+
+		public void NewSLProject(string Name, string Path)
+		{
+			Projects.Project NP = new Projects.ProjectSL(Name);
+			Globals.Solution.Projects.Add(Globals.GetRelativePath(System.IO.Path.GetDirectoryName(Globals.SolutionPath), Path));
+			Projects.Project.Save(NP, Path);
+			Globals.Projects.Add(Projects.Project.Open(Globals.SolutionPath, Path));
+		}
+
+		public void NewRTProject(string Name, string Path)
+		{
+			Projects.Project NP = new Projects.ProjectRT(Name);
+			Globals.Solution.Projects.Add(Globals.GetRelativePath(System.IO.Path.GetDirectoryName(Globals.SolutionPath), Path));
+			Projects.Project.Save(NP, Path);
+			Globals.Projects.Add(Projects.Project.Open(Globals.SolutionPath, Path));
+		}
+
+		public void OpenSolution(string Path)
+		{
+			if (CloseSolution(true) == false) return;
+
+			Globals.OpenSolution(Path, OpenSolutionFinished);
+		}
+
+		public void OpenSolutionFinished(bool Success)
+		{
+			if (Success == true)
+			{
+				//Determine if there is already a recent entry. Create one if false. Update the current one if true.
+				bool ProjectHasRecentEntry = false;
+				foreach (WCFArchitect.Options.RecentSolution RP in Globals.UserProfile.ImportantProjects)
+					if (RP.Path == Globals.SolutionPath)
+					{
+						ProjectHasRecentEntry = true;
+						RP.LastAccessed = DateTime.Now;
+						Globals.SolutionInfo = RP;
+					}
+				foreach (WCFArchitect.Options.RecentSolution RP in Globals.UserProfile.RecentProjects)
+					if (RP.Path == Globals.SolutionPath)
+					{
+						ProjectHasRecentEntry = true;
+						RP.LastAccessed = DateTime.Now;
+						Globals.SolutionInfo = RP;
+					}
+				if (ProjectHasRecentEntry == false)
+				{
+					Options.RecentSolution NRP = new Options.RecentSolution(Globals.Solution.Name, Globals.SolutionPath);
+					Globals.UserProfile.RecentProjects.Add(NRP);
+					Globals.SolutionInfo = NRP;
+				}
+
+				RefreshRecentList();
+
+				AddNETProject.IsEnabled = true;
+				AddSLProject.IsEnabled = true;
+				AddRTProject.IsEnabled = true;
+				SystemMenuSave.IsEnabled = true;
+				SystemMenuSaveAs.IsEnabled = true;
+				SystemMenuClose.IsEnabled = true;
+				this.Title = Globals.Solution.Name + " - Prospective Software WCF Architect";
+			}
+		}
+
+		public bool CloseSolution(bool AskBeforeClose = false, bool Closing = false)
+		{
+			Globals.IsClosing = true;
+
+			if (Globals.Solution != null)
+			{
+				if (AskBeforeClose == true)
+				{
+					Globals.ShowMessageBox(null, "Continue?", "In order to perform the requested action, the current project will be saved and closed. Would you like to continue?", new MessageAction("Yes", new Action(() => Globals.CloseSolution(true))), new MessageAction("No", new Action(() => Globals.CloseSolution(false))), new MessageAction("Cancel", new Action(() => {return;})));
+				}
+				else
+				{
+					if (Closing == true)
+					{
+						Globals.ShowMessageBox(null, "Save Solution?", "Would you like to save your work?", new MessageAction("Yes", new Action(() => Globals.CloseSolution(true))), new MessageAction("No", new Action(() => Globals.CloseSolution(false))), new MessageAction("Cancel", new Action(() => { return; })));
+					}
+					else
+					{
+						Globals.CloseSolution(true);
+					}
+				}
+			}
+
+			Globals.SolutionInfo = null;
+			AddNETProject.IsEnabled = false;
+			AddSLProject.IsEnabled = false;
+			AddRTProject.IsEnabled = false;
+			SystemMenuSave.IsEnabled = false;
+			SystemMenuSaveAs.IsEnabled = false;
+			SystemMenuClose.IsEnabled = false;
+			this.Title = "Prospective Software WCF Architect";
+
+			if (!(Globals.SolutionPath == null || Globals.SolutionPath == ""))
+				System.IO.File.Delete(System.IO.Path.ChangeExtension(Globals.SolutionPath, ".bak"));
+
+			Globals.Solution = null;
+
+			Globals.IsClosing = false;
+			return true;
+		}
+
+		#endregion
+	}
+
+	internal partial class RecentProjectItem : Control
+	{
+		public WCFArchitect.Options.RecentSolution Data;
+		public bool IsImportant = false;
+
+		public string ItemTitle { get { return (string)GetValue(ItemTitleProperty); } set { SetValue(ItemTitleProperty, value); } }
+		public static readonly DependencyProperty ItemTitleProperty = DependencyProperty.Register("ItemTitle", typeof(string), typeof(RecentProjectItem), new PropertyMetadata(""));
+
+		public string ItemPath { get { return (string)GetValue(ItemPathProperty); } set { SetValue(ItemPathProperty, value); } }
+		public static readonly DependencyProperty ItemPathProperty = DependencyProperty.Register("ItemPath", typeof(string), typeof(RecentProjectItem), new PropertyMetadata(""));
+
+		public string ItemFlag { get { return (string)GetValue(ItemFlagProperty); } set { SetValue(ItemFlagProperty, value); } }
+		public static readonly DependencyProperty ItemFlagProperty = DependencyProperty.Register("ItemFlag", typeof(string), typeof(RecentProjectItem), new PropertyMetadata("pack://application:,,,/WCFArchitect;component/Icons/X32/FlagRecent.png"));
+
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static RoutedCommand OpenCommand = new RoutedCommand();
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static RoutedCommand FlagCommand = new RoutedCommand();
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static RoutedCommand FolderCommand = new RoutedCommand();
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static RoutedCommand RemoveCommand = new RoutedCommand();
+
+		static RecentProjectItem()
+		{
+			CommandManager.RegisterClassCommandBinding(typeof(RecentProjectItem), new CommandBinding(RecentProjectItem.OpenCommand, OnOpenCommandExecuted));
+			CommandManager.RegisterClassCommandBinding(typeof(RecentProjectItem), new CommandBinding(RecentProjectItem.FlagCommand, OnFlagCommandExecuted));
+			CommandManager.RegisterClassCommandBinding(typeof(RecentProjectItem), new CommandBinding(RecentProjectItem.FolderCommand, OnFolderCommandExecuted));
+			CommandManager.RegisterClassCommandBinding(typeof(RecentProjectItem), new CommandBinding(RecentProjectItem.RemoveCommand, OnRemoveCommandExecuted));
+		}
+
+		private static void OnRemoveCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			RecentProjectItem t = e.Parameter as RecentProjectItem;
+			if (t == null) return;
+
+			t.CMRemove();
+		}
+
+		private static void OnFolderCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			RecentProjectItem t = e.Parameter as RecentProjectItem;
+			if (t == null) return;
+
+			t.CMOpenFolder();
+		}
+
+		private static void OnFlagCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			RecentProjectItem t = e.Parameter as RecentProjectItem;
+			if (t == null) return;
+
+			t.FlagImportant();
+		}
+
+		private static void OnOpenCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			RecentProjectItem t = e.Parameter as RecentProjectItem;
+			if (t == null) return;
+
+			t.OpenProject();
+		}
+
+		public RecentProjectItem(WCFArchitect.Options.RecentSolution Data, bool IsImportant)
+		{
+			this.Data = Data;
+			this.IsImportant = IsImportant;
+
+			ItemTitle = Data.Name;
+			ItemPath = Data.Path;
+
+			if (IsImportant == true) ItemFlag = "pack://application:,,,/WCFArchitect;component/Icons/X32/FlagImportant.png";
+		}
+
+		private void FlagImportant()
+		{
+			if (IsImportant == true)
+			{
+				Globals.UserProfile.ImportantProjects.Remove(Data);
+				Globals.UserProfile.RecentProjects.Add(Data);
+
+				ItemFlag = "pack://application:,,,/WCFArchitect;component/Icons/X32/FlagImportant.png";
+			}
+			else
+			{
+				Globals.UserProfile.RecentProjects.Remove(Data);
+				Globals.UserProfile.ImportantProjects.Add(Data);
+
+				ItemFlag = "pack://application:,,,/WCFArchitect;component/Icons/X32/FlagRecent.png";
+			}
+
+			Globals.MainScreen.RefreshRecentList();
+		}
+
+		private void OpenProject()
+		{
+			if (!System.IO.File.Exists(Data.Path))
+			{
+				if (Prospective.Controls.MessageBox.Show("Unable to located the requested file, would you like to remove this project from the list?", "Unable to Locate Project File.", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+					if (IsImportant == true) { Globals.UserProfile.ImportantProjects.Remove(Data); } else { Globals.UserProfile.RecentProjects.Remove(Data); }
+				Globals.MainScreen.RefreshRecentList();
+				return;
+			}
+
+			Data.LastAccessed = DateTime.Now;
+			Globals.SolutionInfo = Data;
+			Globals.MainScreen.OpenSolution(Data.Path);
+		}
+
+		private void CMOpenFolder()
+		{
+			System.Diagnostics.ProcessStartInfo PSI = new System.Diagnostics.ProcessStartInfo(System.IO.Path.GetDirectoryName(Data.Path));
+			PSI.UseShellExecute = true;
+			System.Diagnostics.Process.Start(PSI);
+		}
+
+		private void CMRemove()
+		{
+			if (IsImportant == true)
+			{
+				Globals.UserProfile.ImportantProjects.Remove(Data);
+			}
+			else
+			{
+				Globals.UserProfile.RecentProjects.Remove(Data);
+			}
+			Globals.MainScreen.RefreshRecentList();
+		}
 	}
 }

@@ -160,8 +160,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Interface\Dialogs\AddProject.xaml.cs">
-      <DependentUpon>AddProject.xaml</DependentUpon>
+    <Compile Include="Interface\Dialogs\NewProject.xaml.cs">
+      <DependentUpon>NewProject.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interface\Dialogs\NewSolution.xaml.cs">
       <DependentUpon>NewSolution.xaml</DependentUpon>
@@ -176,7 +176,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Globals.cs" />
-    <Page Include="Interface\Dialogs\AddProject.xaml">
+    <Page Include="Interface\Dialogs\NewProject.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -278,12 +278,6 @@
   <ItemGroup>
     <Resource Include="Icons\X16\Service.png" />
     <Resource Include="Icons\X32\Enum.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X24\flag-red.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X24\flag-black.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\X64\Logo.png" />
@@ -575,7 +569,10 @@
   <ItemGroup>
     <Resource Include="Icons\Odd\FullLogoWinRT.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Icons\X32\FlagImportant.png" />
+    <Resource Include="Icons\X32\FlagRecent.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

@@ -123,6 +123,8 @@ namespace WCFArchitect.Projects
 		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Project), new UIPropertyMetadata(true));
 
+		internal ObjectSpace os { get; set; }
+
 		public Project() : base()
 		{
 			this.DependencyProjects = new ObservableCollection<DependencyProject>();
@@ -143,9 +145,9 @@ namespace WCFArchitect.Projects
 			IsDirty = true;
 		}
 
-		public static Project Open(string BasePath, string ProjectPath)
+		public static Project Open(string SolutionPath, string ProjectPath)
 		{
-			string abspath = new Uri(new Uri(System.IO.Path.GetDirectoryName(BasePath)), ProjectPath).LocalPath;
+			string abspath = new Uri(new Uri(System.IO.Path.GetDirectoryName(SolutionPath)), ProjectPath).LocalPath;
 
 			//Check the solution to make sure it exists
 			if (!System.IO.File.Exists(abspath))
@@ -157,7 +159,7 @@ namespace WCFArchitect.Projects
 				throw new System.IO.IOException("The Project '" + abspath + "' is currently read-only. Please disable read-only mode on this file.");
 
 			//Get the project info from the file.
-			ObjectSpace os = new ObjectSpace("Project.kvtmodel", "WCFArchitect.Projects");
+			ObjectSpace os = new ObjectSpace("Project.kvtmodel", "WAP");
 			os.Open(abspath, ObjectSpaceOpenMode.ReadOnly);
 			Project t = os.OfType<Project>().FirstOrDefault();
 			os.Close();
@@ -173,21 +175,47 @@ namespace WCFArchitect.Projects
 			return t;
 		}
 
+		public static void Save(Project Data)
+		{
+			Data.os.Save();
+		}
+
 		public static void Save(Project Data, string Path)
 		{
 			//Make sure the solution isn't read-only.
-			if (!System.IO.File.Exists(Path))
+			if (System.IO.File.Exists(Path))
 			{
 				System.IO.FileInfo fi = new System.IO.FileInfo(Path);
 				if (fi.IsReadOnly == true)
 					throw new System.IO.IOException("The Project '" + Path + "' is currently read-only. Please disable read-only mode on this file.");
 			}
 
-			ObjectSpace os = new ObjectSpace("Project.kvtmodel", "WCFArchitect.Projects");
+			ObjectSpace os = new ObjectSpace("Project.kvtmodel", "WAP");
 			os.CreateObjectLibrary(Path, ExistingFileAction.Overwrite);
-			os.Add(Data);
-			os.Save();
-			os.Close();
+			os.Dump(Path, new object[] { Data });
+		}
+
+		public static void Close(Project Data, string Path, bool SaveData)
+		{
+			//Make sure the solution isn't read-only.
+			if (System.IO.File.Exists(Path))
+			{
+				System.IO.FileInfo fi = new System.IO.FileInfo(Path);
+				if (fi.IsReadOnly == true)
+					throw new System.IO.IOException("The Solution '" + Path + "' is currently read-only. Please disable read-only mode on this file.");
+			}
+
+			if (SaveData == true) Save(Data);
+
+			Data.os.Close();
+
+			//Now we do a manual compaction because the provided one is broken.
+			ObjectSpace ts = new ObjectSpace("Project.kvtmodel", "WAP");
+			ts.CompactObjectLibrary(Path);
+			if (SaveData == true)
+			{
+
+			}
 		}
 
 		public void Search(string Value)

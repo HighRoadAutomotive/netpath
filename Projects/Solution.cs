@@ -20,6 +20,8 @@ namespace WCFArchitect.Projects
 		public ObservableCollection<string> Projects { get { return (ObservableCollection<string>)GetValue(ProjectsProperty); } set { SetValue(ProjectsProperty, value); } }
 		public static readonly DependencyProperty ProjectsProperty = DependencyProperty.Register("Projects", typeof(ObservableCollection<string>), typeof(Solution));
 
+		internal ObjectSpace os { get; set; }
+
 		public Solution() { }
 
 		public Solution(string Name)
@@ -29,7 +31,7 @@ namespace WCFArchitect.Projects
 			this.Name = Name;
 		}
 
-		public static Solution Open(string Path)
+		public static Solution Open(string Path, bool ReadOnly)
 		{
 			//Check the solution to make sure it exists
 			if (!System.IO.File.Exists(Path))
@@ -41,31 +43,58 @@ namespace WCFArchitect.Projects
 				throw new System.IO.IOException("The Solution '" + Path + "' is currently read-only. Please disable read-only mode on this file.");
 
 
-			ObjectSpace os = new ObjectSpace("Solution.kvtmodel", "WCFArchitect.Projects");
-			os.Open(Path, ObjectSpaceOpenMode.ReadOnly);
+			ObjectSpace os = new ObjectSpace("Solution.kvtmodel", "WAP");
+			if (ReadOnly == false) os.Open(Path, ObjectSpaceOpenMode.ReadWrite);
+			else os.Open(Path, ObjectSpaceOpenMode.ReadOnly);
 
 			Solution t = os.OfType<Solution>().FirstOrDefault();
-
-			os.Close();
+			t.os = os;
 
 			return t;
+		}
+
+		public static void Save(Solution Data)
+		{
+			Data.os.Save();
 		}
 
 		public static void Save(Solution Data, string Path)
 		{
 			//Make sure the solution isn't read-only.
-			if (!System.IO.File.Exists(Path))
+			if (System.IO.File.Exists(Path))
 			{
 				System.IO.FileInfo fi = new System.IO.FileInfo(Path);
 				if (fi.IsReadOnly == true)
 					throw new System.IO.IOException("The Solution '" + Path + "' is currently read-only. Please disable read-only mode on this file.");
 			}
 
-			ObjectSpace os = new ObjectSpace("Solution.kvtmodel", "WCFArchitect.Projects");
-			os.CreateObjectLibrary(Path, ExistingFileAction.Overwrite);
+			ObjectSpace os = new ObjectSpace("Solution.kvtmodel", "WAP");
+			os.Open(Path, ObjectSpaceOpenMode.ReadWrite);
 			os.Add(Data);
-			os.Save();
 			os.Close();
+		}
+
+		public static void Close(Solution Data, string Path, bool SaveData)
+		{
+			//Make sure the solution isn't read-only.
+			if (System.IO.File.Exists(Path))
+			{
+				System.IO.FileInfo fi = new System.IO.FileInfo(Path);
+				if (fi.IsReadOnly == true)
+					throw new System.IO.IOException("The Solution '" + Path + "' is currently read-only. Please disable read-only mode on this file.");
+			}
+
+			if(SaveData == true) Save(Data);
+
+			Data.os.Close();
+
+			//Now we do a manual compaction because the provided one is broken.
+			ObjectSpace ts = new ObjectSpace("Solution.kvtmodel", "WAP");
+			ts.CompactObjectLibrary(Path);
+			if (SaveData == true)
+			{
+
+			}
 		}
 	}
 }

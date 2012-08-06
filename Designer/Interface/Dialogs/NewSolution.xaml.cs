@@ -16,6 +16,8 @@ namespace WCFArchitect.Interface.Dialogs
 {
 	public partial class NewSolution : Grid
 	{
+		internal string FileName { get; set; }
+
 		public NewSolution()
 		{
 			InitializeComponent();
@@ -23,7 +25,6 @@ namespace WCFArchitect.Interface.Dialogs
 
 		private void NewSolutionOptionsBrowse_Click(object sender, RoutedEventArgs e)
 		{
-			string FileName = "";
 			string openpath = Globals.UserProfile.DefaultProjectFolder;
 			if (!(NewSolutionOptionsLocation.Text == "" || NewSolutionOptionsLocation.Text == null)) openpath = NewSolutionOptionsLocation.Text;
 
@@ -39,6 +40,11 @@ namespace WCFArchitect.Interface.Dialogs
 			FileName = sfd.FileName;
 
 			NewSolutionOptionsLocation.Text = new System.IO.FileInfo(FileName).Directory.FullName + "\\";
+		}
+
+		internal void Create()
+		{
+			Globals.MainScreen.NewSolution(NewSolutionOptionsName.Text, FileName);
 		}
 	}
 }

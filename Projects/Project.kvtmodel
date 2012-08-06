@@ -4,7 +4,7 @@
     <ReferencePath Path="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5" />
   </ReferencePaths>
   <Assemblies>
-    <Assembly Id="1" Name="WCFArchitect.Projects.dll" Expanded="true" Selected="false" Path="bin\WCFArchitect.Projects.dll">
+    <Assembly Id="1" Name="WAP.dll" Expanded="true" Selected="true" Path="bin\WAP.dll">
       <Namespaces>
         <Namespace Id="2" Name="WCFArchitect.Helpers" Expanded="false" Selected="false">
           <Classes />
@@ -12,13 +12,13 @@
         </Namespace>
         <Namespace Id="3" Name="WCFArchitect.Projects" Expanded="true" Selected="false">
           <Classes>
-            <Class Id="4" Name="BindingSecurity" Expanded="false" Selected="false" BaseClassId="95" Type1001="WCFArchitect.Projects.BindingSecurity, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="true">
+            <Class Id="4" Name="BindingSecurity" Expanded="false" Selected="false" BaseClassId="95" Type1001="WCFArchitect.Projects.BindingSecurity, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="true">
               <Fields />
               <Properties>
                 <Property Id="5" Name="IsTreeExpanded" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="6" Name="BindingSecurityBasicHTTP" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityBasicHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="6" Name="BindingSecurityBasicHTTP" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityBasicHTTP, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="7" Name="Mode" Expanded="false" Selected="false" />
@@ -29,7 +29,7 @@
                 <Property Id="12" Name="TransportRealm" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="13" Name="BindingSecurityMSMQ" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityMSMQ, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="13" Name="BindingSecurityMSMQ" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityMSMQ, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="14" Name="Mode" Expanded="false" Selected="false" />
@@ -41,7 +41,7 @@
                 <Property Id="20" Name="TransportSecureHashAlgorithm" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="21" Name="BindingSecurityMSMQIntegration" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityMSMQIntegration, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="21" Name="BindingSecurityMSMQIntegration" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityMSMQIntegration, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="22" Name="Mode" Expanded="false" Selected="false" />
@@ -51,21 +51,21 @@
                 <Property Id="26" Name="TransportSecureHashAlgorithm" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="27" Name="BindingSecurityNamedPipe" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityNamedPipe, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="27" Name="BindingSecurityNamedPipe" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityNamedPipe, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="28" Name="Mode" Expanded="false" Selected="false" />
                 <Property Id="29" Name="TransportProtectionLevel" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="30" Name="BindingSecurityPeerTCP" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityPeerTCP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="30" Name="BindingSecurityPeerTCP" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityPeerTCP, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="31" Name="Mode" Expanded="false" Selected="false" />
                 <Property Id="32" Name="TransportClientCredentialType" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="33" Name="BindingSecurityTCP" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityTCP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="33" Name="BindingSecurityTCP" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityTCP, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="34" Name="Mode" Expanded="false" Selected="false" />
@@ -75,7 +75,7 @@
                 <Property Id="38" Name="TransportProtectionLevel" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="39" Name="BindingSecurityWebHTTP" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityWebHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="39" Name="BindingSecurityWebHTTP" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityWebHTTP, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="40" Name="Mode" Expanded="false" Selected="false" />
@@ -84,7 +84,7 @@
                 <Property Id="43" Name="TransportRealm" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="44" Name="BindingSecurityWSDualHTTP" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityWSDualHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="44" Name="BindingSecurityWSDualHTTP" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityWSDualHTTP, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="45" Name="Mode" Expanded="false" Selected="false" />
@@ -93,7 +93,7 @@
                 <Property Id="48" Name="MessageNegotiateServiceCredential" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="49" Name="BindingSecurityWSFederationHTTP" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityWSFederationHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="49" Name="BindingSecurityWSFederationHTTP" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityWSFederationHTTP, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="50" Name="Mode" Expanded="false" Selected="false" />
@@ -107,7 +107,7 @@
                 <Property Id="58" Name="MessageNegotiateServiceCredential" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="59" Name="BindingSecurityWSHTTP" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityWSHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="59" Name="BindingSecurityWSHTTP" Expanded="false" Selected="false" BaseClassId="4" Type1001="WCFArchitect.Projects.BindingSecurityWSHTTP, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="60" Name="Mode" Expanded="false" Selected="false" />
@@ -120,7 +120,7 @@
                 <Property Id="67" Name="TransportRealm" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="68" Name="Data" Expanded="false" Selected="false" BaseClassId="95" Type1001="WCFArchitect.Projects.Data, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="68" Name="Data" Expanded="false" Selected="false" BaseClassId="95" Type1001="WCFArchitect.Projects.Data, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="69" Name="HasWPFType" Expanded="false" Selected="false" />
@@ -130,7 +130,7 @@
                 <Property Id="73" Name="IsTreeExpanded" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="74" Name="DataElement" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.DataElement, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="74" Name="DataElement" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.DataElement, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields>
                 <Field Id="503" Name="id" Expanded="false" Selected="false" />
               </Fields>
@@ -157,7 +157,7 @@
                 <Property Id="94" Name="Owner" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="95" Name="DataType" Expanded="false" Selected="false" BaseClassId="233" Type1001="WCFArchitect.Projects.DataType, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="95" Name="DataType" Expanded="false" Selected="false" BaseClassId="233" Type1001="WCFArchitect.Projects.DataType, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields>
                 <Field Id="504" Name="id" Expanded="false" Selected="false" />
               </Fields>
@@ -178,13 +178,13 @@
                 <Property Id="109" Name="Primitive" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="110" Name="DependencyProject" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.DependencyProject, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="110" Name="DependencyProject" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.DependencyProject, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="111" Name="Path" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="112" Name="Enum" Expanded="false" Selected="false" BaseClassId="95" Type1001="WCFArchitect.Projects.Enum, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="112" Name="Enum" Expanded="false" Selected="false" BaseClassId="95" Type1001="WCFArchitect.Projects.Enum, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="113" Name="IsReference" Expanded="false" Selected="false" />
@@ -194,7 +194,7 @@
                 <Property Id="117" Name="IsTreeExpanded" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="118" Name="EnumElement" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.EnumElement, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="118" Name="EnumElement" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.EnumElement, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields>
                 <Field Id="505" Name="id" Expanded="false" Selected="false" />
               </Fields>
@@ -208,7 +208,7 @@
                 <Property Id="125" Name="Owner" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="126" Name="Host" Expanded="false" Selected="false" BaseClassId="95" Type1001="WCFArchitect.Projects.Host, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="126" Name="Host" Expanded="false" Selected="false" BaseClassId="95" Type1001="WCFArchitect.Projects.Host, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="127" Name="Namespace" Expanded="false" Selected="false" />
@@ -226,7 +226,7 @@
                 <Property Id="139" Name="IsTreeExpanded" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="140" Name="HostBehavior" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.HostBehavior, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="true">
+            <Class Id="140" Name="HostBehavior" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.HostBehavior, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="true">
               <Fields>
                 <Field Id="506" Name="id" Expanded="false" Selected="false" />
               </Fields>
@@ -236,7 +236,7 @@
                 <Property Id="143" Name="Parent" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="144" Name="HostCredentials" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.HostCredentials, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="144" Name="HostCredentials" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.HostCredentials, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="145" Name="UseCertificatesSecurity" Expanded="false" Selected="false" />
@@ -272,7 +272,7 @@
                 <Property Id="175" Name="Owner" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="176" Name="HostDebugBehavior" Expanded="false" Selected="false" BaseClassId="140" Type1001="WCFArchitect.Projects.HostDebugBehavior, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="176" Name="HostDebugBehavior" Expanded="false" Selected="false" BaseClassId="140" Type1001="WCFArchitect.Projects.HostDebugBehavior, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="177" Name="HttpHelpPageBinding" Expanded="false" Selected="false" />
@@ -284,7 +284,7 @@
                 <Property Id="183" Name="IncludeExceptionDetailInFaults" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="184" Name="HostEndpoint" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.HostEndpoint, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="184" Name="HostEndpoint" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.HostEndpoint, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields>
                 <Field Id="507" Name="id" Expanded="false" Selected="false" />
               </Fields>
@@ -301,7 +301,7 @@
                 <Property Id="194" Name="Parent" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="195" Name="HostEndpointAddressHeader" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.HostEndpointAddressHeader, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="195" Name="HostEndpointAddressHeader" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.HostEndpointAddressHeader, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields>
                 <Field Id="508" Name="id" Expanded="false" Selected="false" />
               </Fields>
@@ -310,7 +310,7 @@
                 <Property Id="197" Name="Namespace" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="198" Name="HostMetadataBehavior" Expanded="false" Selected="false" BaseClassId="140" Type1001="WCFArchitect.Projects.HostMetadataBehavior, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="198" Name="HostMetadataBehavior" Expanded="false" Selected="false" BaseClassId="140" Type1001="WCFArchitect.Projects.HostMetadataBehavior, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="199" Name="ExternalMetadataLocation" Expanded="false" Selected="false" />
@@ -322,7 +322,7 @@
                 <Property Id="205" Name="HttpsGetUrl" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="206" Name="HostThrottlingBehavior" Expanded="false" Selected="false" BaseClassId="140" Type1001="WCFArchitect.Projects.HostThrottlingBehavior, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="206" Name="HostThrottlingBehavior" Expanded="false" Selected="false" BaseClassId="140" Type1001="WCFArchitect.Projects.HostThrottlingBehavior, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="207" Name="MaxConcurrentCalls" Expanded="false" Selected="false" />
@@ -330,7 +330,7 @@
                 <Property Id="209" Name="MaxConcurrentSessions" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="210" Name="Method" Expanded="false" Selected="false" BaseClassId="238" Type1001="WCFArchitect.Projects.Method, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="true">
+            <Class Id="210" Name="Method" Expanded="false" Selected="false" BaseClassId="238" Type1001="WCFArchitect.Projects.Method, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="true">
               <Fields />
               <Properties>
                 <Property Id="211" Name="UseAsyncPattern" Expanded="false" Selected="false" />
@@ -340,7 +340,7 @@
                 <Property Id="215" Name="Parameters" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="216" Name="MethodParameter" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.MethodParameter, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="216" Name="MethodParameter" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.MethodParameter, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields>
                 <Field Id="509" Name="id" Expanded="false" Selected="false" />
               </Fields>
@@ -351,7 +351,7 @@
                 <Property Id="220" Name="Owner" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="221" Name="Namespace" Expanded="false" Selected="false" BaseClassId="95" Type1001="WCFArchitect.Projects.Namespace, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="221" Name="Namespace" Expanded="false" Selected="false" BaseClassId="95" Type1001="WCFArchitect.Projects.Namespace, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="222" Name="FullName" Expanded="false" Selected="false" />
@@ -367,15 +367,15 @@
                 <Property Id="232" Name="IsTreeExpanded" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="233" Name="OpenableDocument" Expanded="true" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.OpenableDocument, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="233" Name="OpenableDocument" Expanded="true" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.OpenableDocument, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="234" Name="IsActive" Expanded="false" Selected="false" />
-                <Property Id="235" Name="IsOpen" Expanded="false" Selected="true" />
+                <Property Id="235" Name="IsOpen" Expanded="false" Selected="false" />
                 <Property Id="236" Name="IsDirty" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="238" Name="Operation" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.Operation, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="true">
+            <Class Id="238" Name="Operation" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.Operation, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="true">
               <Fields>
                 <Field Id="510" Name="id" Expanded="false" Selected="false" />
               </Fields>
@@ -389,7 +389,7 @@
                 <Property Id="245" Name="Owner" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="246" Name="Project" Expanded="false" Selected="false" BaseClassId="233" Type1001="WCFArchitect.Projects.Project, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="true">
+            <Class Id="246" Name="Project" Expanded="false" Selected="false" BaseClassId="233" Type1001="WCFArchitect.Projects.Project, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="true">
               <Fields />
               <Properties>
                 <Property Id="247" Name="ID" Expanded="false" Selected="false" />
@@ -405,14 +405,14 @@
                 <Property Id="257" Name="IsTreeExpanded" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="258" Name="ProjectNET" Expanded="false" Selected="false" BaseClassId="246" Type1001="WCFArchitect.Projects.ProjectNET, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="258" Name="ProjectNET" Expanded="false" Selected="false" BaseClassId="246" Type1001="WCFArchitect.Projects.ProjectNET, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="259" Name="ServerOutputPaths" Expanded="false" Selected="false" />
                 <Property Id="260" Name="ClientOutputPaths" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="261" Name="ProjectNETOutputPath" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.ProjectNETOutputPath, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="261" Name="ProjectNETOutputPath" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.ProjectNETOutputPath, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields>
                 <Field Id="511" Name="projectID" Expanded="false" Selected="false" />
                 <Field Id="512" Name="id" Expanded="false" Selected="false" />
@@ -423,14 +423,14 @@
                 <Property Id="264" Name="Framework" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="265" Name="ProjectRT" Expanded="false" Selected="false" BaseClassId="246" Type1001="WCFArchitect.Projects.ProjectRT, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="265" Name="ProjectRT" Expanded="false" Selected="false" BaseClassId="246" Type1001="WCFArchitect.Projects.ProjectRT, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="266" Name="ServerOutputPaths" Expanded="false" Selected="false" />
                 <Property Id="267" Name="ClientOutputPaths" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="268" Name="ProjectRTOutputPath" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.ProjectRTOutputPath, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="268" Name="ProjectRTOutputPath" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.ProjectRTOutputPath, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields>
                 <Field Id="513" Name="projectID" Expanded="false" Selected="false" />
                 <Field Id="514" Name="id" Expanded="false" Selected="false" />
@@ -441,14 +441,14 @@
                 <Property Id="271" Name="Framework" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="272" Name="ProjectSL" Expanded="false" Selected="false" BaseClassId="246" Type1001="WCFArchitect.Projects.ProjectSL, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="272" Name="ProjectSL" Expanded="false" Selected="false" BaseClassId="246" Type1001="WCFArchitect.Projects.ProjectSL, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="273" Name="ServerOutputPaths" Expanded="false" Selected="false" />
                 <Property Id="274" Name="ClientOutputPaths" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="275" Name="ProjectSLOutputPath" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.ProjectSLOutputPath, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="275" Name="ProjectSLOutputPath" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.ProjectSLOutputPath, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields>
                 <Field Id="515" Name="projectID" Expanded="false" Selected="false" />
                 <Field Id="516" Name="id" Expanded="false" Selected="false" />
@@ -459,7 +459,7 @@
                 <Property Id="278" Name="Framework" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="279" Name="ProjectUsingNamespace" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.ProjectUsingNamespace, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="279" Name="ProjectUsingNamespace" Expanded="false" Selected="false" BaseClassId="0" Type1001="WCFArchitect.Projects.ProjectUsingNamespace, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields>
                 <Field Id="517" Name="id" Expanded="false" Selected="false" />
               </Fields>
@@ -470,13 +470,13 @@
                 <Property Id="283" Name="Client" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="284" Name="Property" Expanded="false" Selected="false" BaseClassId="238" Type1001="WCFArchitect.Projects.Property, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="284" Name="Property" Expanded="false" Selected="false" BaseClassId="238" Type1001="WCFArchitect.Projects.Property, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="285" Name="IsReadOnly" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="286" Name="Service" Expanded="true" Selected="false" BaseClassId="95" Type1001="WCFArchitect.Projects.Service, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="286" Name="Service" Expanded="true" Selected="false" BaseClassId="95" Type1001="WCFArchitect.Projects.Service, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="287" Name="Operations" Expanded="false" Selected="false" />
@@ -488,7 +488,7 @@
                 <Property Id="293" Name="IsTreeExpanded" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="294" Name="ServiceBinding" Expanded="false" Selected="false" BaseClassId="95" Type1001="WCFArchitect.Projects.ServiceBinding, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="true">
+            <Class Id="294" Name="ServiceBinding" Expanded="false" Selected="false" BaseClassId="95" Type1001="WCFArchitect.Projects.ServiceBinding, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="true">
               <Fields />
               <Properties>
                 <Property Id="295" Name="Namespace" Expanded="false" Selected="false" />
@@ -501,7 +501,7 @@
                 <Property Id="302" Name="IsTreeExpanded" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="303" Name="ServiceBindingBasicHTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingBasicHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="303" Name="ServiceBindingBasicHTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingBasicHTTP, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="304" Name="Security" Expanded="false" Selected="false" />
@@ -518,7 +518,7 @@
                 <Property Id="315" Name="UseDefaultWebProxy" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="316" Name="ServiceBindingMSMQ" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingMSMQ, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="316" Name="ServiceBindingMSMQ" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingMSMQ, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="317" Name="Security" Expanded="false" Selected="false" />
@@ -541,7 +541,7 @@
                 <Property Id="334" Name="Durable" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="335" Name="ServiceBindingMSMQIntegration" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingMSMQIntegration, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="335" Name="ServiceBindingMSMQIntegration" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingMSMQIntegration, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="336" Name="Security" Expanded="false" Selected="false" />
@@ -562,7 +562,7 @@
                 <Property Id="351" Name="SerializationFormat" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="352" Name="ServiceBindingNamedPipe" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingNamedPipe, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="352" Name="ServiceBindingNamedPipe" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingNamedPipe, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="353" Name="Security" Expanded="false" Selected="false" />
@@ -576,7 +576,7 @@
                 <Property Id="361" Name="TransactionProtocol" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="362" Name="ServiceBindingNetHTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingNetHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="362" Name="ServiceBindingNetHTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingNetHTTP, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="363" Name="Security" Expanded="false" Selected="false" />
@@ -602,7 +602,7 @@
                 <Property Id="383" Name="ReliableSessionsOrdered" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="384" Name="ServiceBindingPeerTCP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingPeerTCP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="384" Name="ServiceBindingPeerTCP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingPeerTCP, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="385" Name="Security" Expanded="false" Selected="false" />
@@ -612,7 +612,7 @@
                 <Property Id="389" Name="Port" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="390" Name="ServiceBindingTCP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingTCP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="390" Name="ServiceBindingTCP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingTCP, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="391" Name="Security" Expanded="false" Selected="false" />
@@ -631,7 +631,7 @@
                 <Property Id="404" Name="TransactionProtocol" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="405" Name="ServiceBindingWebHTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingWebHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="405" Name="ServiceBindingWebHTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingWebHTTP, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="406" Name="Security" Expanded="false" Selected="false" />
@@ -648,7 +648,7 @@
                 <Property Id="417" Name="WriteEncoding" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="418" Name="ServiceBindingWS2007FederationHTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingWS2007FederationHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="418" Name="ServiceBindingWS2007FederationHTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingWS2007FederationHTTP, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="419" Name="Security" Expanded="false" Selected="false" />
@@ -668,7 +668,7 @@
                 <Property Id="433" Name="TransactionFlow" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="434" Name="ServiceBindingWS2007HTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingWS2007HTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="434" Name="ServiceBindingWS2007HTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingWS2007HTTP, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="435" Name="Security" Expanded="false" Selected="false" />
@@ -687,7 +687,7 @@
                 <Property Id="448" Name="TransactionFlow" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="449" Name="ServiceBindingWSDualHTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingWSDualHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="449" Name="ServiceBindingWSDualHTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingWSDualHTTP, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="450" Name="Security" Expanded="false" Selected="false" />
@@ -705,7 +705,7 @@
                 <Property Id="462" Name="TransactionFlow" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="463" Name="ServiceBindingWSFederationHTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingWSFederationHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="463" Name="ServiceBindingWSFederationHTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingWSFederationHTTP, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="464" Name="Security" Expanded="false" Selected="false" />
@@ -725,7 +725,7 @@
                 <Property Id="478" Name="TransactionFlow" Expanded="false" Selected="false" />
               </Properties>
             </Class>
-            <Class Id="479" Name="ServiceBindingWSHTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingWSHTTP, WCFArchitect.Projects, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
+            <Class Id="479" Name="ServiceBindingWSHTTP" Expanded="false" Selected="false" BaseClassId="294" Type1001="WCFArchitect.Projects.ServiceBindingWSHTTP, WAP, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null" IsAbstract="false">
               <Fields />
               <Properties>
                 <Property Id="480" Name="Security" Expanded="false" Selected="false" />
@@ -749,7 +749,7 @@
         </Namespace>
       </Namespaces>
       <PlatformAssemblyPaths>
-        <PlatformAssemblyPath PlatformId="1001" Path="bin\WCFArchitect.Projects.dll" />
+        <PlatformAssemblyPath PlatformId="1001" Path="bin\WAP.dll" />
       </PlatformAssemblyPaths>
     </Assembly>
     <Assembly Id="494" Name="Prospective.Utilities.dll" Expanded="true" Selected="false" Path="bin\Prospective.Utilities.dll">

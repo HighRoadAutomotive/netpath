@@ -8,7 +8,6 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using MP.Karvonite;
-using Microsoft.WindowsAPICodePack.Taskbar;
 
 namespace WCFArchitect
 {
@@ -39,14 +38,10 @@ namespace WCFArchitect
 		}
 		public static WindowsVersion WindowsLevel { get; set; }
 
-		public static ObjectSpace ProjectSpace { get; set; }
-		public static Projects.Solution Solution { get; set; }
 		public static string SolutionPath { get; set; }
+		public static Projects.Solution Solution { get; set; }
+		public static Options.RecentSolution SolutionInfo { get; set; }
 		public static ObservableCollectionSortable<Projects.Project> Projects { get; set; }
-		public static Options.RecentSolution ActiveProjectInfo { get; set; }
-		public static ObservableCollectionSortable<Projects.OpenableDocument> OpenDocuments { get; set; }
-		public static ThumbnailToolBarButton BuildSolutionButton { get; set; }
-		public static ThumbnailToolBarButton BuildOutputButton { get; set; }
 
 		public static bool IsLoading { get; set; }
 		public static bool IsLoadSorting { get; set; }
@@ -56,7 +51,6 @@ namespace WCFArchitect
 		public static bool IsSaving { get; set; }
 		public static bool IsClosing { get; set; }
 		public static Interface.Main MainScreen { get; set; }
-		//public static List<Interface.Project.Project> ProjectScreens { get; set; }
 
 		public static T GetVisualParent<T>(object childObject) where T : Visual { DependencyObject child = childObject as DependencyObject; while ((child != null) && !(child is T)) { child = VisualTreeHelper.GetParent(child); } return child as T; }
 		public static T GetVisualChild<T>(Visual parent) where T : Visual { T child = default(T); int numVisuals = VisualTreeHelper.GetChildrenCount(parent); for (int i = 0; i < numVisuals; i++) { Visual v = (Visual)VisualTreeHelper.GetChild(parent, i); child = v as T; if (child == null) { child = GetVisualChild<T>(v); } if (child != null) { break; } } return child; }
@@ -78,7 +72,7 @@ namespace WCFArchitect
 			return b.MakeRelativeUri(t).ToString();
 		}
 
-		public static void OpenProjectSpace(string Path, Action<bool> FinishedAction)
+		public static void OpenSolution(string Path, Action<bool> FinishedAction)
 		{
 			Application.Current.Dispatcher.BeginInvoke(new Action(() =>
 			{
@@ -109,11 +103,11 @@ namespace WCFArchitect
 				try
 				{
 					SolutionPath = Path;
-					Globals.Solution = WCFArchitect.Projects.Solution.Open(Path);
+					Globals.Solution = WCFArchitect.Projects.Solution.Open(Path, false);
 				}
 				catch (Exception ex)
 				{
-					Prospective.Controls.MessageBox.Show(ex.Message, "Solution Load Error", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+					Prospective.Controls.MessageBox.Show(ex.Message, "Solution Load Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 					FinishedAction(false);
 					return;
 				}
@@ -151,7 +145,7 @@ namespace WCFArchitect
 					}
 					catch (Exception ex)
 					{
-						Prospective.Controls.MessageBox.Show(ex.Message, "Project Load Error", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+						Prospective.Controls.MessageBox.Show(ex.Message, "Project Load Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 						FinishedAction(false);
 						return;
 					}
@@ -165,12 +159,6 @@ namespace WCFArchitect
 
 				Globals.IsLoading = false;
 
-				if (TaskbarManager.IsPlatformSupported == true)
-				{
-					Globals.BuildSolutionButton.Enabled = true;
-					Globals.BuildOutputButton.Enabled = true;
-				}
-
 				FinishedAction(true);
 			}), System.Windows.Threading.DispatcherPriority.Background);
 		}
@@ -179,25 +167,16 @@ namespace WCFArchitect
 		{
 			Application.Current.Dispatcher.BeginInvoke(new Action(() =>
 			{
-				if (ProjectSpace.State == ObjectSpaceState.Closed) return;
 				IsFinding = true;
 				IsSaving = true;
 
-				WCFArchitect.Projects.Solution.Save(Globals.Solution, SolutionPath);
+				WCFArchitect.Projects.Solution.Save(Globals.Solution);
 
 				foreach (WCFArchitect.Projects.Project p in Globals.Projects)
-					WCFArchitect.Projects.Project.Save(p, p.AbsolutePath);
+					WCFArchitect.Projects.Project.Save(p);
 
 				IsFinding = false;
 				IsSaving = false;
-
-				foreach (Projects.OpenableDocument OD in OpenDocuments)
-				{
-					bool ia = OD.IsActive;
-					OD.IsActive = true;
-					OD.IsDirty = false;
-					OD.IsActive = ia;
-				}
 
 			}), System.Windows.Threading.DispatcherPriority.Background);
 		}
@@ -206,7 +185,6 @@ namespace WCFArchitect
 		{
 			Application.Current.Dispatcher.BeginInvoke(new Action(() =>
 			{
-				if (ProjectSpace.State == ObjectSpaceState.Closed) return;
 				IsFinding = true;
 				IsSaving = true;
 
@@ -220,24 +198,16 @@ namespace WCFArchitect
 			}), System.Windows.Threading.DispatcherPriority.Background);
 		}
 
-		public static void CloseSolution()
+		public static void CloseSolution(bool SaveData)
 		{
-			if (ProjectSpace == null) return;
-			if (ProjectSpace.State == ObjectSpaceState.Closed) return;
-
 			if (Globals.UserProfile.AutomaticBackupsEnabled == true)
 				if(BackupTimer != null)
 					BackupTimer.Dispose();
 
-			if (TaskbarManager.IsPlatformSupported == true)
-			{
-				Globals.BuildSolutionButton.Enabled = false;
-				Globals.BuildOutputButton.Enabled = false;
-			}
+			WCFArchitect.Projects.Solution.Close(Globals.Solution, Globals.SolutionPath, SaveData);
 
-			SaveSolution();
-
-			OpenDocuments.Clear();
+			foreach (WCFArchitect.Projects.Project p in Globals.Projects)
+				WCFArchitect.Projects.Project.Close(p, p.AbsolutePath, SaveData);
 		}
 
 		public static void ShowMessageBox(Projects.Project Origin, string Caption, string Message, params MessageAction[] Actions)
