@@ -45,7 +45,7 @@ namespace WCFArchitect.Projects
 		public Enum(string Name, Namespace Parent) : base(DataTypeMode.Enum)
 		{
 			this.Elements = new ObservableCollection<EnumElement>();
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.Name = Name;
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
@@ -238,13 +238,13 @@ namespace WCFArchitect.Projects
 
 		public EnumElement()
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.IsExcluded = false;
 		}
 
 		public EnumElement(string Name, string Value, string ContractValue, Enum Owner)
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.Name = Name;
 			this.Value = Value;
 			this.ContractValue = ContractValue;
@@ -254,7 +254,7 @@ namespace WCFArchitect.Projects
 
 		public EnumElement(string Name, string Flags, Enum Owner)
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.Name = Name;
 			this.IsExcluded = false;
 			this.Owner = Owner;

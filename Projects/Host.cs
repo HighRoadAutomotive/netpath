@@ -77,7 +77,7 @@ namespace WCFArchitect.Projects
 			this.BaseAddresses = new ObservableCollection<string>();
 			this.Behaviors = new ObservableCollection<HostBehavior>();
 			this.Endpoints = new ObservableCollection<HostEndpoint>();
-			id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
 			this.Parent = Parent;
@@ -246,7 +246,7 @@ namespace WCFArchitect.Projects
 		public HostEndpoint(Host Parent, string Name)
 		{
 			ClientAddressHeaders = new ObservableCollection<HostEndpointAddressHeader>();
-			id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.Parent = Parent;
 			this.Name = Helpers.RegExs.ReplaceSpaces.Replace(Name, "");
 		}
@@ -393,7 +393,7 @@ namespace WCFArchitect.Projects
 
 		public HostEndpointAddressHeader(string Name, string Namespace)
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.Name = Name;
 			this.Namespace = Namespace;
 		}
@@ -657,7 +657,7 @@ namespace WCFArchitect.Projects
 
 		public HostDebugBehavior(string Name, Host Parent)
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
 			this.Parent = Parent;
@@ -709,7 +709,7 @@ namespace WCFArchitect.Projects
 
 		public HostMetadataBehavior(string Name, Host Parent)
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
 			this.Parent = Parent;
@@ -748,7 +748,7 @@ namespace WCFArchitect.Projects
 
 		public HostThrottlingBehavior(string Name, Host Parent)
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
 			this.Parent = Parent;

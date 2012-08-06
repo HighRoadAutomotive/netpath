@@ -176,7 +176,7 @@ namespace WCFArchitect.Projects
 
 		public BindingSecurityBasicHTTP(string Name, Namespace Parent) : base()
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			InheritedTypes.Add(new DataType("System.ServiceModel.BasicHttpSecurity", DataTypeMode.Class));
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
@@ -249,7 +249,7 @@ namespace WCFArchitect.Projects
 
 		public BindingSecurityWSHTTP(string Name, Namespace Parent) : base()
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			InheritedTypes.Add(new DataType("System.ServiceModel.WSHttpSecurity", DataTypeMode.Class));
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
@@ -318,7 +318,7 @@ namespace WCFArchitect.Projects
 
 		public BindingSecurityWSDualHTTP(string Name, Namespace Parent) : base()
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			InheritedTypes.Add(new DataType("System.ServiceModel.WSDualHttpSecurity", DataTypeMode.Class));
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
@@ -394,7 +394,7 @@ namespace WCFArchitect.Projects
 
 		public BindingSecurityWSFederationHTTP(string Name, Namespace Parent) : base()
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			InheritedTypes.Add(new DataType("System.ServiceModel.WSFederationHttpSecurity", DataTypeMode.Class));
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
@@ -465,7 +465,7 @@ namespace WCFArchitect.Projects
 
 		public BindingSecurityTCP(string Name, Namespace Parent) : base()
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			InheritedTypes.Add(new DataType("System.ServiceModel.NetTcpSecurity", DataTypeMode.Class));
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
@@ -521,7 +521,7 @@ namespace WCFArchitect.Projects
 
 		public BindingSecurityNamedPipe(string Name, Namespace Parent) : base()
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			InheritedTypes.Add(new DataType("System.ServiceModel.NetNamedPipeSecurity", DataTypeMode.Class));
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
@@ -588,7 +588,7 @@ namespace WCFArchitect.Projects
 
 		public BindingSecurityMSMQ(string Name, Namespace Parent) : base()
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			InheritedTypes.Add(new DataType("System.ServiceModel.NetMsmqSecurity", DataTypeMode.Class));
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
@@ -648,7 +648,7 @@ namespace WCFArchitect.Projects
 
 		public BindingSecurityPeerTCP(string Name, Namespace Parent)
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			InheritedTypes.Add(new DataType("System.ServiceModel.PeerSecuritySettings", DataTypeMode.Class));
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
@@ -706,7 +706,7 @@ namespace WCFArchitect.Projects
 
 		public BindingSecurityWebHTTP(string Name, Namespace Parent) : base()
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			InheritedTypes.Add(new DataType("System.ServiceModel.WebHttpSecurity", DataTypeMode.Class));
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
@@ -768,7 +768,7 @@ namespace WCFArchitect.Projects
 
 		public BindingSecurityMSMQIntegration(string Name, Namespace Parent) : base()
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			InheritedTypes.Add(new DataType("System.ServiceModel.MsmqIntegration.MsmqIntegrationSecurity", DataTypeMode.Class));
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");

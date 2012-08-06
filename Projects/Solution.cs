@@ -26,7 +26,7 @@ namespace WCFArchitect.Projects
 		public Solution(string Name)
 		{
 			this.Projects = new ObservableCollection<string>();
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.Name = Name;
 		}
 

@@ -222,7 +222,7 @@ namespace WCFArchitect.Projects
 		{
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.InheritedTypes.Add(new DataType("System.ServiceModel.BasicHttpBinding", DataTypeMode.Class));
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.Name = r.Replace(Name, @"");
 			this.Parent = Parent;
 
@@ -365,7 +365,7 @@ namespace WCFArchitect.Projects
 		{
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.InheritedTypes.Add(new DataType("System.ServiceModel.NetHTTPBinding", DataTypeMode.Class));
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.Name = r.Replace(Name, @"");
 			this.Parent = Parent;
 
@@ -497,7 +497,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingWSHTTP(string Name, Namespace Parent) : base()
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.Parent = Parent;
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
@@ -619,7 +619,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingWS2007HTTP(string Name, Namespace Parent) : base()
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.Parent = Parent;
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
@@ -738,7 +738,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingWSDualHTTP(string Name, Namespace Parent) : base()
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.Parent = Parent;
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
@@ -860,7 +860,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingWSFederationHTTP(string Name, Namespace Parent) : base()
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.Parent = Parent;
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
@@ -986,7 +986,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingWS2007FederationHTTP(string Name, Namespace Parent) : base()
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.Parent = Parent;
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
@@ -1109,7 +1109,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingTCP(string Name, Namespace Parent) : base()
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.Parent = Parent;
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
@@ -1218,7 +1218,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingNamedPipe(string Name, Namespace Parent) : base()
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.Parent = Parent;
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
@@ -1344,7 +1344,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingMSMQ(string Name, Namespace Parent) : base()
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.Parent = Parent;
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
@@ -1448,7 +1448,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingPeerTCP(string Name, Namespace Parent) : base()
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.Parent = Parent;
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
@@ -1548,7 +1548,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingWebHTTP(string Name, Namespace Parent) : base()
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.Parent = Parent;
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
@@ -1672,7 +1672,7 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingMSMQIntegration(string Name, Namespace Parent) : base()
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.Parent = Parent;
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");

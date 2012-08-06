@@ -44,7 +44,7 @@ namespace WCFArchitect.Projects
 
 		public ProjectUsingNamespace(string Namespace)
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.Namespace = Namespace;
 			this.IsFullFrameworkOnly = false;
 			this.Server = true;
@@ -53,7 +53,7 @@ namespace WCFArchitect.Projects
 
 		public ProjectUsingNamespace(string Namespace, bool Server, bool Client)
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.Namespace = Namespace;
 			this.IsFullFrameworkOnly = false;
 			this.Server = Server;

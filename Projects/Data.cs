@@ -54,7 +54,7 @@ namespace WCFArchitect.Projects
 		public Data(string Name, Namespace Parent)
 		{
 			this.Elements = new ObservableCollection<DataElement>();
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.Name = Name;
 			this.Name = Helpers.RegExs.ReplaceSpaces.Replace(Name, @"");
 			this.HasContractType = false;
@@ -304,7 +304,7 @@ namespace WCFArchitect.Projects
 
 		public DataElement()
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.DataType = new DataType(PrimitiveTypes.String);
 			this.DataType.Scope = DataScope.Public;
 			this.HasWPFType = true;
@@ -316,7 +316,7 @@ namespace WCFArchitect.Projects
 
 		public DataElement(DataScope Scope, DataType DataType, string Name, Data Owner)
 		{
-			this.id = Guid.NewGuid();
+			this.ID = Guid.NewGuid();
 			this.DataType = DataType;
 			this.DataType.Scope = DataScope.Public;
 			this.HasWPFType = true;
