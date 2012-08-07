@@ -7,10 +7,10 @@
 		xmlns:c1datetime="clr-namespace:C1.WPF.DateTimeEditors;assembly=C1.WPF.DateTimeEditors.4"
 		xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 		xmlns:local="clr-namespace:WCFArchitect.Interface"
-        mc:Ignorable="d" d:DesignHeight="900" d:DesignWidth="1200"
+        mc:Ignorable="d" d:DesignHeight="990" d:DesignWidth="1280"
 		DataContext="{Binding RelativeSource={RelativeSource Self}}"
 		Style="{StaticResource MainWindowStyle}"
-	    Title="WCF Architect" MinHeight="900" MinWidth="1200"
+	    Title="WCF Architect" MinHeight="990" MinWidth="1280"
 		TextOptions.TextFormattingMode="Display" TextOptions.TextHintingMode="Fixed" TextOptions.TextRenderingMode="ClearType" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.ClearTypeHint="Enabled"
 		SourceInitialized="Main_SourceInitialized" StateChanged="Main_StateChanged" Closing="Main_Closing" KeyUp="Main_KeyUp">
 	<pc:WindowChrome.WindowChrome>
@@ -120,7 +120,7 @@
 			</Grid>
 			<Border Grid.Row="1" BorderBrush="{StaticResource WindowBorderColor}" BorderThickness="0,1,0,0">
 				<Grid>
-					<ContentPresenter x:Name="ActiveProjectScreen" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" UseLayoutRounding="True" Visibility="Collapsed" />
+					<ContentPresenter x:Name="ActiveProjectScreen" Content="{Binding Path=SelectedProject}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" UseLayoutRounding="True" Visibility="Collapsed" />
 					<Grid x:Name="HomeScreen" >
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />

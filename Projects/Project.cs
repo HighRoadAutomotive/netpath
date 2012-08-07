@@ -349,8 +349,8 @@ namespace WCFArchitect.Projects
 
 		public ProjectNETOutputPath(Guid ProjectID, string Path)
 		{
-			ID = Guid.NewGuid();
-			ProjectID = ProjectID;
+			this.ID = Guid.NewGuid();
+			this.ProjectID = ProjectID;
 			this.Path = Path;
 			this.Framework = ProjectNETOutputFramework.NET45;
 		}
@@ -374,8 +374,8 @@ namespace WCFArchitect.Projects
 
 		public ProjectSLOutputPath(Guid ProjectID, string Path)
 		{
-			ID = Guid.NewGuid();
-			ProjectID = ProjectID;
+			this.ID = Guid.NewGuid();
+			this.ProjectID = ProjectID;
 			this.Path = Path;
 			this.Framework = ProjectSLOutputFramework.SL50;
 		}
@@ -399,8 +399,8 @@ namespace WCFArchitect.Projects
 
 		public ProjectRTOutputPath(Guid ProjectID, string Path)
 		{
-			ID = Guid.NewGuid();
-			ProjectID = ProjectID;
+			this.ID = Guid.NewGuid();
+			this.ProjectID = ProjectID;
 			this.Path = Path;
 			this.Framework = ProjectRTOutputFramework.WIN8;
 		}

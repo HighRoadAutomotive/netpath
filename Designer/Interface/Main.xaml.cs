@@ -18,6 +18,10 @@ namespace WCFArchitect.Interface
 {
 	public partial class Main : Window
 	{
+		//Project Properties
+		public object SelectedProject { get { return (object)GetValue(SelectedProjectProperty); } set { SetValue(SelectedProjectProperty, value); } }
+		public static readonly DependencyProperty SelectedProjectProperty = DependencyProperty.Register("SelectedProject", typeof(object), typeof(Main));
+		
 		//Message Box Properties
 		public string MessageProject { get { return (string)GetValue(MessageProjectProperty); } set { SetValue(MessageProjectProperty, value); } }
 		public static readonly DependencyProperty MessageProjectProperty = DependencyProperty.Register("MessageProject", typeof(string), typeof(Main));
@@ -39,6 +43,13 @@ namespace WCFArchitect.Interface
 		public static readonly DependencyProperty UserProfileProperty = DependencyProperty.Register("UserProfile", typeof(WCFArchitect.Options.UserProfile), typeof(Main));
 
 		public bool IsProcessingMessage { get; private set; }
+		
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static RoutedCommand SelectProjectCommand = new RoutedCommand();
+
+		static Main()
+		{
+			CommandManager.RegisterClassCommandBinding(typeof(Main), new CommandBinding(Main.SelectProjectCommand, OnSelectProjectCommandExecuted));
+		}
 
 		public Main()
 		{
@@ -51,6 +62,7 @@ namespace WCFArchitect.Interface
 			InitializeComponent();
 
 			Globals.MainScreen = this;
+			Globals.Projects.CollectionChanged += Projects_CollectionChanged;
 
 			//Initialize the Home screen.
 			RefreshRecentList();
@@ -233,7 +245,7 @@ namespace WCFArchitect.Interface
 
 		private void SystemMenuSave_Click(object sender, RoutedEventArgs e)
 		{
-			ScreenButtons.Visibility = System.Windows.Visibility.Collapsed;
+			Globals.SaveSolution();
 		}
 
 		private void SystemMenuSaveAs_Click(object sender, RoutedEventArgs e)
@@ -242,6 +254,7 @@ namespace WCFArchitect.Interface
 
 		private void SystemMenuClose_Click(object sender, RoutedEventArgs e)
 		{
+			CloseSolution(true);
 		}
 
 		private void SystemMenuOptions_Click(object sender, RoutedEventArgs e)
@@ -258,6 +271,31 @@ namespace WCFArchitect.Interface
 		private void SystemMenuExit_Click(object sender, RoutedEventArgs e)
 		{
 			this.Close();
+		}
+
+		#endregion
+
+		#region - Projects -
+
+		private void Projects_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+			{
+
+			}
+			if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+			{
+			}
+		}
+
+		private static void OnSelectProjectCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			ProjectItem t = e.Parameter as ProjectItem;
+			if (t == null) return;
+			Main s = sender as Main;
+			if (s == null) return;
+
+			s.SelectedProject = t.Content;
 		}
 
 		#endregion
@@ -515,6 +553,24 @@ namespace WCFArchitect.Interface
 		}
 
 		#endregion
+	}
+
+	internal partial class ProjectItem : Button
+	{
+		public bool IsSelected { get { return (bool)GetValue(IsSelectedProperty); } set { SetValue(IsSelectedProperty, value); } }
+		public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.Register("IsSelected", typeof(bool), typeof(ProjectItem), new PropertyMetadata(false));
+
+		public object Header { get { return (object)GetValue(HeaderProperty); } set { SetValue(HeaderProperty, value); } }
+		public static readonly DependencyProperty HeaderProperty = DependencyProperty.Register("Header", typeof(object), typeof(ProjectItem), new PropertyMetadata(new object()));
+
+		internal Projects.Project Project { get; private set; }
+
+		public ProjectItem(Projects.Project Project)
+		{
+			this.Project = Project;
+			this.Header = Project.Name.ToUpper();
+			this.Content = new Project.Screen(Project);
+		}
 	}
 
 	internal partial class RecentProjectItem : Control
