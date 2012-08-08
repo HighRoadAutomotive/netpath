@@ -44,7 +44,7 @@ namespace WCFArchitect.Compiler.Generators
 				if (b.Parent.Owner.GetType() == typeof(Projects.ProjectNET))
 				{
 					Projects.ProjectNET p = b.Parent.Owner as Projects.ProjectNET;
-					if (p.NET45 != true)
+					if (Globals.CurrentNETOutput == Projects.ProjectNETOutputFramework.NET45 && p != null)
 						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS6001", "The binding '" + o.Name + "' in the '" + o.Parent.Name + "' project cannot be used with any other target framework level than 4.5. Please select .NET Framework 4.5 as your Target Framework in the Project page or remove this binding.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
 				}
 				if (b.Security == null)

@@ -40,10 +40,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Karvonite40, Version=4.0.600.250, Culture=neutral, PublicKeyToken=a250635ee744b9fb, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Karvonite 4\Bin\Karvonite40.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -85,7 +81,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Parser\Parser.csproj">
+    <ProjectReference Include="..\Projects\Projects.csproj">
       <Project>{fe02550c-5269-4327-a129-fb9d41316005}</Project>
       <Name>Projects</Name>
     </ProjectReference>

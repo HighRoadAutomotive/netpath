@@ -1,15 +1,22 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:wap="clr-namespace:WCFArchitect.Projects;assembly=WCFArchitect.Projects"
+					xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 					xmlns:local="clr-namespace:WCFArchitect.Interface.Project">
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="pack://application:,,,/Prospective.Controls;component/Themes/Defaults.xaml" />
 	</ResourceDictionary.MergedDictionaries>
+
+	<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
 	
-	<SolidColorBrush x:Key="NamespaceContainerColor" Color="#FF003399" />
-	
+	<SolidColorBrush x:Key="NamespaceContainerColor" Color="#FF000099" />
+	<SolidColorBrush x:Key="ServiceContainerColor" Color="#FF006600" />
+	<SolidColorBrush x:Key="OperationContainerColor" Color="#FF006699" />
+	<SolidColorBrush x:Key="PropertyContainerColor" Color="#FF0033FF" />
+
 	<SolidColorBrush x:Key="BindingContainerColor" Color="#FF990066" />
 	<SolidColorBrush x:Key="SecurityContainerColor" Color="#FF660000" />
+	<SolidColorBrush x:Key="HostContainerColor" Color="#FF993300" />
 
 	<ItemsPanelTemplate x:Key="ProjectListPanelTemplate">
 		<StackPanel Orientation="Vertical" IsItemsHost="True" />
@@ -223,7 +230,7 @@
 	<DataTemplate x:Key="ServiceBindingNetHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingNetHTTP}">
 		<StackPanel Orientation="Vertical" Margin="3">
 			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/BasicTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/BasicHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
 				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
 			<TextBlock Text="WCF Binding Type: NetHttpBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
@@ -366,14 +373,14 @@
 								<Condition Property="IsEnabled" Value="True" />
 								<Condition Property="IsMouseOver" Value="True" />
 							</MultiTrigger.Conditions>
-							<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource BindingContainerColor}" />
+							<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource HostContainerColor}" />
 						</MultiTrigger>
 						<MultiTrigger>
 							<MultiTrigger.Conditions>
 								<Condition Property="IsEnabled" Value="True" />
 								<Condition Property="IsPressed" Value="True" />
 							</MultiTrigger.Conditions>
-							<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource BindingContainerColor}" />
+							<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource HostContainerColor}" />
 						</MultiTrigger>
 						<Trigger Property="IsEnabled" Value="False">
 							<Setter Property="Opacity" Value="0.75"/>
