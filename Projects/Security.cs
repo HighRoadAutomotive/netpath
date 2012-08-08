@@ -217,6 +217,74 @@ namespace WCFArchitect.Projects
 
 	#endregion
 
+	#region - BindingSecurityBasicHTTPS Class -
+
+	public class BindingSecurityBasicHTTPS : BindingSecurity
+	{
+		public System.ServiceModel.BasicHttpsSecurityMode Mode { get { return (System.ServiceModel.BasicHttpsSecurityMode)GetValue(ModeProperty); } set { SetValue(ModeProperty, value); } }
+		public static readonly DependencyProperty ModeProperty = DependencyProperty.Register("Mode", typeof(System.ServiceModel.BasicHttpsSecurityMode), typeof(BindingSecurityBasicHTTP));
+
+		public BindingSecurityAlgorithmSuite MessageAlgorithmSuite { get { return (BindingSecurityAlgorithmSuite)GetValue(MessageAlgorithmSuiteProperty); } set { SetValue(MessageAlgorithmSuiteProperty, value); } }
+		public static readonly DependencyProperty MessageAlgorithmSuiteProperty = DependencyProperty.Register("MessageAlgorithmSuite", typeof(BindingSecurityAlgorithmSuite), typeof(BindingSecurityBasicHTTP));
+
+		public System.ServiceModel.BasicHttpMessageCredentialType MessageClientCredentialType { get { return (System.ServiceModel.BasicHttpMessageCredentialType)GetValue(MessageClientCredentialTypeProperty); } set { SetValue(MessageClientCredentialTypeProperty, value); } }
+		public static readonly DependencyProperty MessageClientCredentialTypeProperty = DependencyProperty.Register("MessageClientCredentialType", typeof(System.ServiceModel.BasicHttpMessageCredentialType), typeof(BindingSecurityBasicHTTP));
+
+		public System.ServiceModel.HttpClientCredentialType TransportClientCredentialType { get { return (System.ServiceModel.HttpClientCredentialType)GetValue(TransportClientCredentialTypeProperty); } set { SetValue(TransportClientCredentialTypeProperty, value); } }
+		public static readonly DependencyProperty TransportClientCredentialTypeProperty = DependencyProperty.Register("TransportClientCredentialType", typeof(System.ServiceModel.HttpClientCredentialType), typeof(BindingSecurityBasicHTTP));
+
+		public System.ServiceModel.HttpProxyCredentialType TransportProxyCredentialType { get { return (System.ServiceModel.HttpProxyCredentialType)GetValue(TransportProxyCredentialTypeProperty); } set { SetValue(TransportProxyCredentialTypeProperty, value); } }
+		public static readonly DependencyProperty TransportProxyCredentialTypeProperty = DependencyProperty.Register("TransportProxyCredentialType", typeof(System.ServiceModel.HttpProxyCredentialType), typeof(BindingSecurityBasicHTTP));
+
+		public string TransportRealm { get { return (string)GetValue(TransportRealmProperty); } set { SetValue(TransportRealmProperty, value); } }
+		public static readonly DependencyProperty TransportRealmProperty = DependencyProperty.Register("TransportRealm", typeof(string), typeof(BindingSecurityBasicHTTP));
+
+		public BindingSecurityBasicHTTPS() : base() { }
+
+		public BindingSecurityBasicHTTPS(string Name, Namespace Parent)
+			: base()
+		{
+			this.ID = Guid.NewGuid();
+			InheritedTypes.Add(new DataType("System.ServiceModel.BasicHttpSecurity", DataTypeMode.Class));
+			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
+			this.Name = r.Replace(Name, @"");
+			this.Parent = Parent;
+
+			this.Mode = System.ServiceModel.BasicHttpsSecurityMode.Transport;
+		}
+
+		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnPropertyChanged(e);
+
+			if (e.Property == BindingSecurity.IsSearchingProperty) return;
+			if (e.Property == BindingSecurity.IsSearchMatchProperty) return;
+			if (e.Property == BindingSecurity.IsTreeExpandedProperty) return;
+
+			if (Parent != null)
+				Parent.IsDirty = true;
+		}
+
+		public override BindingSecurity Copy(string HostName, Namespace Parent)
+		{
+			if (Parent == this.Parent) return this;
+
+			BindingSecurityBasicHTTPS BD = new BindingSecurityBasicHTTPS(Name + HostName, Parent);
+			BD.MessageAlgorithmSuite = MessageAlgorithmSuite;
+			BD.MessageClientCredentialType = MessageClientCredentialType;
+			BD.Mode = Mode;
+			BD.TransportClientCredentialType = TransportClientCredentialType;
+			BD.TransportProxyCredentialType = TransportProxyCredentialType;
+			BD.TransportRealm = TransportRealm;
+
+			Parent.Security.Add(BD);
+
+			return BD;
+		}
+	}
+
+	#endregion
+
 	#region - BindingSecurityWSHTTP Class -
 
 	public class BindingSecurityWSHTTP : BindingSecurity

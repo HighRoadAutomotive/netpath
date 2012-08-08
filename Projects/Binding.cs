@@ -289,6 +289,120 @@ namespace WCFArchitect.Projects
 
 	#endregion
 
+	#region  - ServiceBindingBasicHTTPS Class -
+
+	public class ServiceBindingBasicHTTPS : ServiceBinding
+	{
+		public BindingSecurityBasicHTTPS Security { get { return (BindingSecurityBasicHTTPS)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
+		public static readonly DependencyProperty SecurityProperty = DependencyProperty.Register("Security", typeof(BindingSecurityBasicHTTPS), typeof(ServiceBindingBasicHTTPS));
+
+		public bool AllowCookies { get { return (bool)GetValue(AllowCookiesProperty); } set { SetValue(AllowCookiesProperty, value); } }
+		public static readonly DependencyProperty AllowCookiesProperty = DependencyProperty.Register("AllowCookies", typeof(bool), typeof(ServiceBindingBasicHTTPS));
+
+		public bool BypassProxyOnLocal { get { return (bool)GetValue(BypassProxyOnLocalProperty); } set { SetValue(BypassProxyOnLocalProperty, value); } }
+		public static readonly DependencyProperty BypassProxyOnLocalProperty = DependencyProperty.Register("BypassProxyOnLocal", typeof(bool), typeof(ServiceBindingBasicHTTPS));
+
+		public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
+		public static readonly DependencyProperty HostNameComparisonModeProperty = DependencyProperty.Register("HostNameComparisonMode", typeof(System.ServiceModel.HostNameComparisonMode), typeof(ServiceBindingBasicHTTPS));
+
+		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingBasicHTTPS));
+
+		public Prospective.Utilities.Types.Base2 MaxBufferSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferSizeProperty = DependencyProperty.Register("MaxBufferSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingBasicHTTPS));
+
+		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingBasicHTTPS));
+
+		public System.ServiceModel.WSMessageEncoding MessageEncoding { get { return (System.ServiceModel.WSMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
+		public static readonly DependencyProperty MessageEncodingProperty = DependencyProperty.Register("MessageEncoding", typeof(System.ServiceModel.WSMessageEncoding), typeof(ServiceBindingBasicHTTPS));
+
+		public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
+		public static readonly DependencyProperty ProxyAddressProperty = DependencyProperty.Register("ProxyAddress", typeof(string), typeof(ServiceBindingBasicHTTPS));
+
+		public ServiceBindingTextEncoding TextEncoding { get { return (ServiceBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
+		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(ServiceBindingTextEncoding), typeof(ServiceBindingBasicHTTPS));
+
+		public System.ServiceModel.TransferMode TransferMode { get { return (System.ServiceModel.TransferMode)GetValue(TransferModeProperty); } set { SetValue(TransferModeProperty, value); } }
+		public static readonly DependencyProperty TransferModeProperty = DependencyProperty.Register("TransferMode", typeof(System.ServiceModel.TransferMode), typeof(ServiceBindingBasicHTTPS));
+
+		public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
+		public static readonly DependencyProperty UseDefaultWebProxyProperty = DependencyProperty.Register("UseDefaultWebProxy", typeof(bool), typeof(ServiceBindingBasicHTTPS));
+
+		public ServiceBindingBasicHTTPS() : base() { }
+
+		public ServiceBindingBasicHTTPS(string Name, Namespace Parent)
+			: base()
+		{
+			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
+			this.InheritedTypes.Add(new DataType("System.ServiceModel.BasicHttpBinding", DataTypeMode.Class));
+			this.ID = Guid.NewGuid();
+			this.Name = r.Replace(Name, @"");
+			this.Parent = Parent;
+
+			this.CloseTimeout = new TimeSpan(0, 1, 0);
+			this.OpenTimeout = new TimeSpan(0, 1, 0);
+			this.ReceiveTimeout = new TimeSpan(0, 10, 0);
+			this.SendTimeout = new TimeSpan(0, 1, 0);
+
+			this.AllowCookies = false;
+			this.BypassProxyOnLocal = false;
+			this.HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
+			this.MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
+			this.MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
+			this.MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			this.MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
+			this.TextEncoding = ServiceBindingTextEncoding.UTF8;
+			this.TransferMode = System.ServiceModel.TransferMode.Buffered;
+			this.UseDefaultWebProxy = true;
+		}
+
+		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnPropertyChanged(e);
+
+			if (e.Property == ServiceBinding.IsSearchingProperty) return;
+			if (e.Property == ServiceBinding.IsSearchMatchProperty) return;
+			if (e.Property == ServiceBinding.IsTreeExpandedProperty) return;
+
+			if (Parent != null)
+				Parent.IsDirty = true;
+		}
+
+		public override ServiceBinding Copy(string HostName, Namespace Parent)
+		{
+			if (Parent == this.Parent) return this;
+
+			ServiceBindingBasicHTTPS BD = new ServiceBindingBasicHTTPS(Name + HostName, Parent);
+			BD.Namespace = Namespace;
+			BD.EndpointAddress = EndpointAddress;
+			BD.ListenAddress = ListenAddress;
+			BD.CloseTimeout = CloseTimeout;
+			BD.OpenTimeout = OpenTimeout;
+			BD.ReceiveTimeout = ReceiveTimeout;
+			BD.SendTimeout = SendTimeout;
+			BD.Security = (BindingSecurityBasicHTTPS)Security.Copy(HostName, Parent);
+
+			BD.AllowCookies = AllowCookies;
+			BD.BypassProxyOnLocal = BypassProxyOnLocal;
+			BD.HostNameComparisonMode = HostNameComparisonMode;
+			BD.MaxBufferPoolSize = MaxBufferPoolSize;
+			BD.MaxBufferSize = MaxBufferSize;
+			BD.MaxReceivedMessageSize = MaxReceivedMessageSize;
+			BD.MessageEncoding = MessageEncoding;
+			BD.ProxyAddress = ProxyAddress;
+			BD.TextEncoding = TextEncoding;
+			BD.TransferMode = TransferMode;
+			BD.UseDefaultWebProxy = UseDefaultWebProxy;
+
+			Parent.Bindings.Add(BD);
+
+			return BD;
+		}
+	}
+
+	#endregion
+
 	#region  - ServiceBindingNetHTTP Class -
 
 	public class ServiceBindingNetHTTP : ServiceBinding
@@ -418,6 +532,164 @@ namespace WCFArchitect.Projects
 			BD.ReceiveTimeout = ReceiveTimeout;
 			BD.SendTimeout = SendTimeout;
 			BD.Security = (BindingSecurityBasicHTTP)Security.Copy(HostName, Parent);
+
+			BD.AllowCookies = AllowCookies;
+			BD.BypassProxyOnLocal = BypassProxyOnLocal;
+			BD.HostNameComparisonMode = HostNameComparisonMode;
+			BD.MaxBufferPoolSize = MaxBufferPoolSize;
+			BD.MaxBufferSize = MaxBufferSize;
+			BD.MaxReceivedMessageSize = MaxReceivedMessageSize;
+			BD.MessageEncoding = MessageEncoding;
+			BD.ProxyAddress = ProxyAddress;
+			BD.TextEncoding = TextEncoding;
+			BD.TransferMode = TransferMode;
+			BD.CreateNotificationOnConnection = CreateNotificationOnConnection;
+			BD.DisablePayloadMasking = DisablePayloadMasking;
+			BD.MaxPendingConnections = MaxPendingConnections;
+			BD.SubProtocol = SubProtocol;
+			BD.TransportUsage = TransportUsage;
+			BD.UseDefaultWebProxy = UseDefaultWebProxy;
+			BD.ReliableSessionEnabled = ReliableSessionEnabled;
+			BD.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
+			BD.ReliableSessionsOrdered = ReliableSessionsOrdered;
+
+			Parent.Bindings.Add(BD);
+
+			return BD;
+		}
+	}
+
+	#endregion
+
+	#region  - ServiceBindingNetHTTPS Class -
+
+	public class ServiceBindingNetHTTPS : ServiceBinding
+	{
+		public BindingSecurityBasicHTTPS Security { get { return (BindingSecurityBasicHTTPS)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
+		public static readonly DependencyProperty SecurityProperty = DependencyProperty.Register("Security", typeof(BindingSecurityBasicHTTPS), typeof(ServiceBindingNetHTTPS));
+
+		public bool AllowCookies { get { return (bool)GetValue(AllowCookiesProperty); } set { SetValue(AllowCookiesProperty, value); } }
+		public static readonly DependencyProperty AllowCookiesProperty = DependencyProperty.Register("AllowCookies", typeof(bool), typeof(ServiceBindingNetHTTPS));
+
+		public bool BypassProxyOnLocal { get { return (bool)GetValue(BypassProxyOnLocalProperty); } set { SetValue(BypassProxyOnLocalProperty, value); } }
+		public static readonly DependencyProperty BypassProxyOnLocalProperty = DependencyProperty.Register("BypassProxyOnLocal", typeof(bool), typeof(ServiceBindingNetHTTPS));
+
+		public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
+		public static readonly DependencyProperty HostNameComparisonModeProperty = DependencyProperty.Register("HostNameComparisonMode", typeof(System.ServiceModel.HostNameComparisonMode), typeof(ServiceBindingNetHTTPS));
+
+		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingNetHTTPS));
+
+		public Prospective.Utilities.Types.Base2 MaxBufferSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferSizeProperty = DependencyProperty.Register("MaxBufferSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingNetHTTPS));
+
+		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingNetHTTPS));
+
+		public System.ServiceModel.NetHttpMessageEncoding MessageEncoding { get { return (System.ServiceModel.NetHttpMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
+		public static readonly DependencyProperty MessageEncodingProperty = DependencyProperty.Register("MessageEncoding", typeof(System.ServiceModel.NetHttpMessageEncoding), typeof(ServiceBindingNetHTTPS));
+
+		public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
+		public static readonly DependencyProperty ProxyAddressProperty = DependencyProperty.Register("ProxyAddress", typeof(string), typeof(ServiceBindingNetHTTPS));
+
+		public ServiceBindingTextEncoding TextEncoding { get { return (ServiceBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
+		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(ServiceBindingTextEncoding), typeof(ServiceBindingNetHTTPS));
+
+		public System.ServiceModel.TransferMode TransferMode { get { return (System.ServiceModel.TransferMode)GetValue(TransferModeProperty); } set { SetValue(TransferModeProperty, value); } }
+		public static readonly DependencyProperty TransferModeProperty = DependencyProperty.Register("TransferMode", typeof(System.ServiceModel.TransferMode), typeof(ServiceBindingNetHTTPS));
+
+		public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
+		public static readonly DependencyProperty UseDefaultWebProxyProperty = DependencyProperty.Register("UseDefaultWebProxy", typeof(bool), typeof(ServiceBindingNetHTTPS));
+
+		//WebSocket Settings
+		public bool CreateNotificationOnConnection { get { return (bool)GetValue(CreateNotificationOnConnectionProperty); } set { SetValue(CreateNotificationOnConnectionProperty, value); } }
+		public static readonly DependencyProperty CreateNotificationOnConnectionProperty = DependencyProperty.Register("CreateNotificationOnConnection", typeof(bool), typeof(ServiceBindingNetHTTPS));
+
+		public bool DisablePayloadMasking { get { return (bool)GetValue(DisablePayloadMaskingProperty); } set { SetValue(DisablePayloadMaskingProperty, value); } }
+		public static readonly DependencyProperty DisablePayloadMaskingProperty = DependencyProperty.Register("DisablePayloadMasking", typeof(bool), typeof(ServiceBindingNetHTTPS));
+
+		public TimeSpan KeepAliveInterval { get { return (TimeSpan)GetValue(KeepAliveIntervalProperty); } set { SetValue(KeepAliveIntervalProperty, value); } }
+		public static readonly DependencyProperty KeepAliveIntervalProperty = DependencyProperty.Register("KeepAliveInterval", typeof(TimeSpan), typeof(ServiceBindingNetHTTPS));
+
+		public int MaxPendingConnections { get { return (int)GetValue(MaxPendingConnectionsProperty); } set { SetValue(MaxPendingConnectionsProperty, value); } }
+		public static readonly DependencyProperty MaxPendingConnectionsProperty = DependencyProperty.Register("MaxPendingConnections", typeof(int), typeof(ServiceBindingNetHTTPS));
+
+		public string SubProtocol { get { return (string)GetValue(SubProtocolProperty); } set { SetValue(SubProtocolProperty, value); } }
+		public static readonly DependencyProperty SubProtocolProperty = DependencyProperty.Register("SubProtocol", typeof(string), typeof(ServiceBindingNetHTTPS));
+
+		public System.ServiceModel.Channels.WebSocketTransportUsage TransportUsage { get { return (System.ServiceModel.Channels.WebSocketTransportUsage)GetValue(TransportUsageProperty); } set { SetValue(TransportUsageProperty, value); } }
+		public static readonly DependencyProperty TransportUsageProperty = DependencyProperty.Register("TransportUsage", typeof(System.ServiceModel.Channels.WebSocketTransportUsage), typeof(ServiceBindingNetHTTPS));
+
+		//Reliable Sessions
+		public bool ReliableSessionEnabled { get { return (bool)GetValue(ReliableSessionEnabledProperty); } set { SetValue(ReliableSessionEnabledProperty, value); } }
+		public static readonly DependencyProperty ReliableSessionEnabledProperty = DependencyProperty.Register("ReliableSessionEnabled", typeof(bool), typeof(ServiceBindingNetHTTPS));
+
+		public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
+		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingNetHTTPS));
+
+		public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
+		public static readonly DependencyProperty ReliableSessionsOrderedProperty = DependencyProperty.Register("ReliableSessionsOrdered", typeof(bool), typeof(ServiceBindingNetHTTPS));
+
+		public ServiceBindingNetHTTPS() : base() { }
+
+		public ServiceBindingNetHTTPS(string Name, Namespace Parent)
+			: base()
+		{
+			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
+			this.InheritedTypes.Add(new DataType("System.ServiceModel.NetHTTPBinding", DataTypeMode.Class));
+			this.ID = Guid.NewGuid();
+			this.Name = r.Replace(Name, @"");
+			this.Parent = Parent;
+
+			this.CloseTimeout = new TimeSpan(0, 1, 0);
+			this.OpenTimeout = new TimeSpan(0, 1, 0);
+			this.ReceiveTimeout = new TimeSpan(0, 10, 0);
+			this.SendTimeout = new TimeSpan(0, 1, 0);
+
+			this.AllowCookies = false;
+			this.BypassProxyOnLocal = false;
+			this.HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
+			this.MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
+			this.MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
+			this.MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			this.MessageEncoding = System.ServiceModel.NetHttpMessageEncoding.Text;
+			this.TextEncoding = ServiceBindingTextEncoding.UTF8;
+			this.TransferMode = System.ServiceModel.TransferMode.Buffered;
+			this.UseDefaultWebProxy = true;
+			this.CreateNotificationOnConnection = false;
+			this.DisablePayloadMasking = false;
+			this.MaxPendingConnections = 32;
+			this.TransportUsage = System.ServiceModel.Channels.WebSocketTransportUsage.WhenDuplex;
+			this.ReliableSessionEnabled = false;
+			this.ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
+			this.ReliableSessionsOrdered = false;
+		}
+
+		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnPropertyChanged(e);
+
+			if (e.Property == ServiceBinding.IsSearchingProperty) return;
+			if (e.Property == ServiceBinding.IsSearchMatchProperty) return;
+			if (e.Property == ServiceBinding.IsTreeExpandedProperty) return;
+
+			if (Parent != null)
+				Parent.IsDirty = true;
+		}
+
+		public override ServiceBinding Copy(string HostName, Namespace Parent)
+		{
+			if (Parent == this.Parent) return this;
+
+			ServiceBindingNetHTTPS BD = new ServiceBindingNetHTTPS(Name + HostName, Parent);
+			BD.Namespace = Namespace;
+			BD.EndpointAddress = EndpointAddress;
+			BD.ListenAddress = ListenAddress;
+			BD.CloseTimeout = CloseTimeout;
+			BD.OpenTimeout = OpenTimeout;
+			BD.ReceiveTimeout = ReceiveTimeout;
+			BD.SendTimeout = SendTimeout;
+			BD.Security = (BindingSecurityBasicHTTPS)Security.Copy(HostName, Parent);
 
 			BD.AllowCookies = AllowCookies;
 			BD.BypassProxyOnLocal = BypassProxyOnLocal;

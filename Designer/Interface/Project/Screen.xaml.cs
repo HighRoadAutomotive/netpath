@@ -90,41 +90,8 @@ namespace WCFArchitect.Interface.Project
 
 		public override DataTemplate SelectTemplate(object item, DependencyObject container)
 		{
-			if(item.GetType() == typeof(Projects.BindingSecurityBasicHTTP)) return BasicHTTPTemplate;
-			if(item.GetType() == typeof(Projects.BindingSecurityBasicHTTP)) return BasicHTTPSTemplate;
-			if(item.GetType() == typeof(Projects.BindingSecurityMSMQ)) return MSMQTemplate;
-			if(item.GetType() == typeof(Projects.BindingSecurityMSMQIntegration)) return MSMQIntegrationTemplate;
-			if(item.GetType() == typeof(Projects.BindingSecurityNamedPipe)) return NamedPipeTemplate;
-			if(item.GetType() == typeof(Projects.BindingSecurityPeerTCP)) return PeerTCPTemplate;
-			if(item.GetType() == typeof(Projects.BindingSecurityTCP)) return TCPTemplate;
-			if(item.GetType() == typeof(Projects.BindingSecurityWebHTTP)) return WebHTTPTemplate;
-			if(item.GetType() == typeof(Projects.BindingSecurityWSDualHTTP)) return WSDualHTTPTemplate;
-			if(item.GetType() == typeof(Projects.BindingSecurityWSFederationHTTP)) return WSFederationHTTPTemplate;
-			if(item.GetType() == typeof(Projects.BindingSecurityWSHTTP)) return WSHTTPTemplate;
-			return BasicHTTPTemplate;
-		}
-	}
-
-	public class ProjectListBindingTemplateSelector : DataTemplateSelector
-	{
-		public DataTemplate BasicHTTPTemplate { get; set; }
-		public DataTemplate NetHTTPTemplate { get; set; }
-		public DataTemplate NetHTTPSTemplate { get; set; }
-		public DataTemplate MSMQTemplate { get; set; }
-		public DataTemplate MSMQIntegrationTemplate { get; set; }
-		public DataTemplate NamedPipeTemplate { get; set; }
-		public DataTemplate PeerTCPTemplate { get; set; }
-		public DataTemplate TCPTemplate { get; set; }
-		public DataTemplate WebHTTPTemplate { get; set; }
-		public DataTemplate WSDualHTTPTemplate { get; set; }
-		public DataTemplate WSFederationHTTPTemplate { get; set; }
-		public DataTemplate WSFederation2007HTTPTemplate { get; set; }
-		public DataTemplate WSHTTPTemplate { get; set; }
-		public DataTemplate WS2007HTTPTemplate { get; set; }
-
-		public override DataTemplate SelectTemplate(object item, DependencyObject container)
-		{
 			if (item.GetType() == typeof(Projects.BindingSecurityBasicHTTP)) return BasicHTTPTemplate;
+			if (item.GetType() == typeof(Projects.BindingSecurityBasicHTTP)) return BasicHTTPSTemplate;
 			if (item.GetType() == typeof(Projects.BindingSecurityMSMQ)) return MSMQTemplate;
 			if (item.GetType() == typeof(Projects.BindingSecurityMSMQIntegration)) return MSMQIntegrationTemplate;
 			if (item.GetType() == typeof(Projects.BindingSecurityNamedPipe)) return NamedPipeTemplate;
@@ -135,6 +102,58 @@ namespace WCFArchitect.Interface.Project
 			if (item.GetType() == typeof(Projects.BindingSecurityWSFederationHTTP)) return WSFederationHTTPTemplate;
 			if (item.GetType() == typeof(Projects.BindingSecurityWSHTTP)) return WSHTTPTemplate;
 			return BasicHTTPTemplate;
+		}
+	}
+
+	public class ProjectListBindingTemplateSelector : DataTemplateSelector
+	{
+		public DataTemplate BasicHTTPTemplate { get; set; }
+		public DataTemplate BasicHTTPSTemplate { get; set; }
+		public DataTemplate NetHTTPTemplate { get; set; }
+		public DataTemplate NetHTTPSTemplate { get; set; }
+		public DataTemplate MSMQTemplate { get; set; }
+		public DataTemplate MSMQIntegrationTemplate { get; set; }
+		public DataTemplate NamedPipeTemplate { get; set; }
+		public DataTemplate PeerTCPTemplate { get; set; }
+		public DataTemplate TCPTemplate { get; set; }
+		public DataTemplate WebHTTPTemplate { get; set; }
+		public DataTemplate WSDualHTTPTemplate { get; set; }
+		public DataTemplate WSFederationHTTPTemplate { get; set; }
+		public DataTemplate WS2007FederationHTTPTemplate { get; set; }
+		public DataTemplate WSHTTPTemplate { get; set; }
+		public DataTemplate WS2007HTTPTemplate { get; set; }
+
+		public override DataTemplate SelectTemplate(object item, DependencyObject container)
+		{
+			if (item.GetType() == typeof(Projects.ServiceBindingBasicHTTP)) return BasicHTTPTemplate;
+			if (item.GetType() == typeof(Projects.ServiceBindingBasicHTTPS)) return BasicHTTPSTemplate;
+			if (item.GetType() == typeof(Projects.ServiceBindingNetHTTP)) return NetHTTPTemplate;
+			if (item.GetType() == typeof(Projects.ServiceBindingNetHTTPS)) return NetHTTPSTemplate;
+			if (item.GetType() == typeof(Projects.ServiceBindingMSMQ)) return MSMQTemplate;
+			if (item.GetType() == typeof(Projects.ServiceBindingMSMQIntegration)) return MSMQIntegrationTemplate;
+			if (item.GetType() == typeof(Projects.ServiceBindingNamedPipe)) return NamedPipeTemplate;
+			if (item.GetType() == typeof(Projects.ServiceBindingPeerTCP)) return PeerTCPTemplate;
+			if (item.GetType() == typeof(Projects.ServiceBindingTCP)) return TCPTemplate;
+			if (item.GetType() == typeof(Projects.ServiceBindingWebHTTP)) return WebHTTPTemplate;
+			if (item.GetType() == typeof(Projects.ServiceBindingWSDualHTTP)) return WSDualHTTPTemplate;
+			if (item.GetType() == typeof(Projects.ServiceBindingWSFederationHTTP)) return WSFederationHTTPTemplate;
+			if (item.GetType() == typeof(Projects.ServiceBindingWS2007FederationHTTP)) return WS2007FederationHTTPTemplate;
+			if (item.GetType() == typeof(Projects.ServiceBindingWSHTTP)) return WSHTTPTemplate;
+			if (item.GetType() == typeof(Projects.ServiceBindingWS2007HTTP)) return WS2007HTTPTemplate;
+			return BasicHTTPTemplate;
+		}
+	}
+
+	public class ProjectListOperationTemplateSelector : DataTemplateSelector
+	{
+		public DataTemplate MethodTemplate { get; set; }
+		public DataTemplate PropertyTemplate { get; set; }
+
+		public override DataTemplate SelectTemplate(object item, DependencyObject container)
+		{
+			if (item.GetType() == typeof(Projects.Method)) return MethodTemplate;
+			if (item.GetType() == typeof(Projects.Property)) return PropertyTemplate;
+			return MethodTemplate;
 		}
 	}
 }

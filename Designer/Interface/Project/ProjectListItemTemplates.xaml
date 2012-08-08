@@ -15,8 +15,10 @@
 		<StackPanel Orientation="Vertical" IsItemsHost="True" />
 	</ItemsPanelTemplate>
 	
+	<!-- Service Templates -->
+	
 	<!-- Security Templates -->
-	<Style x:Key="SecurityContainerTemplate" TargetType="{x:Type ToggleButton}">
+	<Style x:Key="SecurityContainerTemplate" TargetType="{x:Type Button}">
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
 		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
@@ -29,29 +31,24 @@
 		<Setter Property="UseLayoutRounding" Value="True" />
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type ToggleButton}">
+				<ControlTemplate TargetType="{x:Type Button}">
 					<Border x:Name="PART_Border" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" Padding="5,0,0,0">
 						<ContentPresenter Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
 					</Border>
 					<ControlTemplate.Triggers>
-						<Trigger Property="IsChecked" Value="True">
-							<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource SecurityContainerColor}" />
-						</Trigger>
 						<MultiTrigger>
 							<MultiTrigger.Conditions>
 								<Condition Property="IsEnabled" Value="True" />
-								<Condition Property="IsChecked" Value="False" />
 								<Condition Property="IsMouseOver" Value="True" />
 							</MultiTrigger.Conditions>
-							<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
+							<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource SecurityContainerColor}" />
 						</MultiTrigger>
 						<MultiTrigger>
 							<MultiTrigger.Conditions>
 								<Condition Property="IsEnabled" Value="True" />
-								<Condition Property="IsChecked" Value="False" />
 								<Condition Property="IsPressed" Value="True" />
 							</MultiTrigger.Conditions>
-							<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource PressedBackgroundColor}" />
+							<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource SecurityContainerColor}" />
 						</MultiTrigger>
 						<Trigger Property="IsEnabled" Value="False">
 							<Setter Property="Opacity" Value="0.75"/>
@@ -64,16 +61,25 @@
 	<DataTemplate x:Key="BindingSecurityBasicHTTPItemTemplate" DataType="{x:Type wap:BindingSecurityBasicHTTP}">
 		<StackPanel Orientation="Vertical" Margin="3">
 			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/BasicHTTP.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/BasicHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
 				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
 			<TextBlock Text="WCF Security Type: BasicHttpSecurity" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
 		</StackPanel>
 	</DataTemplate>
+	<DataTemplate x:Key="BindingSecurityBasicHTTPSItemTemplate" DataType="{x:Type wap:BindingSecurityBasicHTTPS}">
+		<StackPanel Orientation="Vertical" Margin="3">
+			<StackPanel Orientation="Horizontal">
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/BasicHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
+			</StackPanel>
+			<TextBlock Text="WCF Security Type: BasicHttpsSecurity" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
+		</StackPanel>
+	</DataTemplate>
 	<DataTemplate x:Key="BindingSecurityMSMQItemTemplate" DataType="{x:Type wap:BindingSecurityMSMQ}">
 		<StackPanel Orientation="Vertical" Margin="3">
 			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/MSMQ.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/MSMQ.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
 				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
 			<TextBlock Text="WCF Security Type: NetMsmqSecurity" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
@@ -82,7 +88,7 @@
 	<DataTemplate x:Key="BindingSecurityMSMQIntegrationItemTemplate" DataType="{x:Type wap:BindingSecurityMSMQIntegration}">
 		<StackPanel Orientation="Vertical" Margin="3">
 			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/MSMQ.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/MSMQ.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
 				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
 			<TextBlock Text="WCF Security Type: MsmqIntegrationSecurity" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
@@ -91,7 +97,7 @@
 	<DataTemplate x:Key="BindingSecurityNamedPipeItemTemplate" DataType="{x:Type wap:BindingSecurityNamedPipe}">
 		<StackPanel Orientation="Vertical" Margin="3">
 			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/NamedPipe.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/NamedPipe.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
 				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
 			<TextBlock Text="WCF Security Type: NetNamedPipeSecurity" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
@@ -100,7 +106,7 @@
 	<DataTemplate x:Key="BindingSecurityPeerTCPItemTemplate" DataType="{x:Type wap:BindingSecurityPeerTCP}">
 		<StackPanel Orientation="Vertical" Margin="3">
 			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/PeerTCP.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/PeerTCP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
 				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
 			<TextBlock Text="WCF Security Type: PeerSecuritySettings" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
@@ -109,7 +115,7 @@
 	<DataTemplate x:Key="BindingSecurityTCPItemTemplate" DataType="{x:Type wap:BindingSecurityTCP}">
 		<StackPanel Orientation="Vertical" Margin="3">
 			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/TCP.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/TCP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
 				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
 			<TextBlock Text="WCF Security Type: NetTcpSecurity" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
@@ -118,7 +124,7 @@
 	<DataTemplate x:Key="BindingSecurityWebHTTPItemTemplate" DataType="{x:Type wap:BindingSecurityWebHTTP}">
 		<StackPanel Orientation="Vertical" Margin="3">
 			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WebHTTP.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WebHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
 				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
 			<TextBlock Text="WCF Security Type: WebHttpSecurity" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
@@ -127,7 +133,7 @@
 	<DataTemplate x:Key="BindingSecurityWSDualHTTPItemTemplate" DataType="{x:Type wap:BindingSecurityWSDualHTTP}">
 		<StackPanel Orientation="Vertical" Margin="3">
 			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSDualHTTP.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSDualHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
 				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
 			<TextBlock Text="WCF Security Type: WSDualHttpSecurity" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
@@ -136,7 +142,7 @@
 	<DataTemplate x:Key="BindingSecurityWSFederationHTTPItemTemplate" DataType="{x:Type wap:BindingSecurityWSFederationHTTP}">
 		<StackPanel Orientation="Vertical" Margin="3">
 			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSFederationHTTP.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSFederationHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
 				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
 			<TextBlock Text="WCF Security Type: WSFederationHttpSecurity" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
@@ -145,18 +151,248 @@
 	<DataTemplate x:Key="BindingSecurityWSHTTPItemTemplate" DataType="{x:Type wap:BindingSecurityWSHTTP}">
 		<StackPanel Orientation="Vertical" Margin="3">
 			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSHTTP.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
 				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
 			<TextBlock Text="WCF Security Type: WSHttpSecurity" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
 		</StackPanel>
 	</DataTemplate>
-	<local:ProjectListSecurityTemplateSelector x:Key="ProjectListSecurityTemplateSelector" BasicHTTPTemplate="{StaticResource BindingSecurityBasicHTTPItemTemplate}" MSMQTemplate="{StaticResource BindingSecurityMSMQItemTemplate}" MSMQIntegrationTemplate="{StaticResource BindingSecurityMSMQIntegrationItemTemplate}" 
-	NamedPipeTemplate="{StaticResource BindingSecurityNamedPipeItemTemplate}" PeerTCPTemplate="{StaticResource BindingSecurityPeerTCPItemTemplate}" TCPTemplate="{StaticResource BindingSecurityTCPItemTemplate}" WebHTTPTemplate="{StaticResource BindingSecurityWebHTTPItemTemplate}"
-	WSDualHTTPTemplate="{StaticResource BindingSecurityWSDualHTTPItemTemplate}" WSFederationHTTPTemplate="{StaticResource BindingSecurityWSFederationHTTPItemTemplate}" WSHTTPTemplate="{StaticResource BindingSecurityWSHTTPItemTemplate}" />
+	<local:ProjectListSecurityTemplateSelector x:Key="ProjectListSecurityTemplateSelector" BasicHTTPTemplate="{StaticResource BindingSecurityBasicHTTPItemTemplate}" BasicHTTPSTemplate="{StaticResource BindingSecurityBasicHTTPSItemTemplate}" MSMQTemplate="{StaticResource BindingSecurityMSMQItemTemplate}" 
+	MSMQIntegrationTemplate="{StaticResource BindingSecurityMSMQIntegrationItemTemplate}" NamedPipeTemplate="{StaticResource BindingSecurityNamedPipeItemTemplate}" PeerTCPTemplate="{StaticResource BindingSecurityPeerTCPItemTemplate}" TCPTemplate="{StaticResource BindingSecurityTCPItemTemplate}" 
+	WebHTTPTemplate="{StaticResource BindingSecurityWebHTTPItemTemplate}" WSDualHTTPTemplate="{StaticResource BindingSecurityWSDualHTTPItemTemplate}" WSFederationHTTPTemplate="{StaticResource BindingSecurityWSFederationHTTPItemTemplate}" WSHTTPTemplate="{StaticResource BindingSecurityWSHTTPItemTemplate}" />
 
-	
-	
+	<!-- Binding Templates -->
+	<Style x:Key="BindingContainerTemplate" TargetType="{x:Type Button}">
+		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
+		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
+		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
+		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
+		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="BorderBrush" Value="{StaticResource DefaultBorderColor}"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="UseLayoutRounding" Value="True" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type Button}">
+					<Border x:Name="PART_Border" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" Padding="5,0,0,0">
+						<ContentPresenter Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+					</Border>
+					<ControlTemplate.Triggers>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsEnabled" Value="True" />
+								<Condition Property="IsMouseOver" Value="True" />
+							</MultiTrigger.Conditions>
+							<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource BindingContainerColor}" />
+						</MultiTrigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsEnabled" Value="True" />
+								<Condition Property="IsPressed" Value="True" />
+							</MultiTrigger.Conditions>
+							<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource BindingContainerColor}" />
+						</MultiTrigger>
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter Property="Opacity" Value="0.75"/>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<DataTemplate x:Key="ServiceBindingBasicHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingBasicHTTP}">
+		<StackPanel Orientation="Vertical" Margin="3">
+			<StackPanel Orientation="Horizontal">
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/BasicHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
+			</StackPanel>
+			<TextBlock Text="WCF Binding Type: BasicHttpBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
+		</StackPanel>
+	</DataTemplate>
+	<DataTemplate x:Key="ServiceBindingBasicHTTPSItemTemplate" DataType="{x:Type wap:ServiceBindingBasicHTTPS}">
+		<StackPanel Orientation="Vertical" Margin="3">
+			<StackPanel Orientation="Horizontal">
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/BasicHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
+			</StackPanel>
+			<TextBlock Text="WCF Binding Type: BasicHttpsBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
+		</StackPanel>
+	</DataTemplate>
+	<DataTemplate x:Key="ServiceBindingNetHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingNetHTTP}">
+		<StackPanel Orientation="Vertical" Margin="3">
+			<StackPanel Orientation="Horizontal">
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/BasicTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
+			</StackPanel>
+			<TextBlock Text="WCF Binding Type: NetHttpBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
+		</StackPanel>
+	</DataTemplate>
+	<DataTemplate x:Key="ServiceBindingNetHTTPSItemTemplate" DataType="{x:Type wap:ServiceBindingNetHTTPS}">
+		<StackPanel Orientation="Vertical" Margin="3">
+			<StackPanel Orientation="Horizontal">
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/BasicHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
+			</StackPanel>
+			<TextBlock Text="WCF Binding Type: NetHttpsBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
+		</StackPanel>
+	</DataTemplate>
+	<DataTemplate x:Key="ServiceBindingMSMQItemTemplate" DataType="{x:Type wap:ServiceBindingMSMQ}">
+		<StackPanel Orientation="Vertical" Margin="3">
+			<StackPanel Orientation="Horizontal">
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/MSMQ.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
+			</StackPanel>
+			<TextBlock Text="WCF Binding Type: NetMsmqBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
+		</StackPanel>
+	</DataTemplate>
+	<DataTemplate x:Key="ServiceBindingMSMQIntegrationItemTemplate" DataType="{x:Type wap:ServiceBindingMSMQIntegration}">
+		<StackPanel Orientation="Vertical" Margin="3">
+			<StackPanel Orientation="Horizontal">
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/MSMQ.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
+			</StackPanel>
+			<TextBlock Text="WCF Binding Type: MsmqIntegrationBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
+		</StackPanel>
+	</DataTemplate>
+	<DataTemplate x:Key="ServiceBindingNamedPipeItemTemplate" DataType="{x:Type wap:ServiceBindingNamedPipe}">
+		<StackPanel Orientation="Vertical" Margin="3">
+			<StackPanel Orientation="Horizontal">
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/NamedPipe.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
+			</StackPanel>
+			<TextBlock Text="WCF Binding Type: NetNamedPipeBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
+		</StackPanel>
+	</DataTemplate>
+	<DataTemplate x:Key="ServiceBindingPeerTCPItemTemplate" DataType="{x:Type wap:ServiceBindingPeerTCP}">
+		<StackPanel Orientation="Vertical" Margin="3">
+			<StackPanel Orientation="Horizontal">
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/PeerTCP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
+			</StackPanel>
+			<TextBlock Text="WCF Binding Type: NetPeerTcpBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
+		</StackPanel>
+	</DataTemplate>
+	<DataTemplate x:Key="ServiceBindingTCPItemTemplate" DataType="{x:Type wap:ServiceBindingTCP}">
+		<StackPanel Orientation="Vertical" Margin="3">
+			<StackPanel Orientation="Horizontal">
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/TCP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
+			</StackPanel>
+			<TextBlock Text="WCF Binding Type: NetTcpBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
+		</StackPanel>
+	</DataTemplate>
+	<DataTemplate x:Key="ServiceBindingWebHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingWebHTTP}">
+		<StackPanel Orientation="Vertical" Margin="3">
+			<StackPanel Orientation="Horizontal">
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WebHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
+			</StackPanel>
+			<TextBlock Text="WCF Binding Type: WebHttpBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
+		</StackPanel>
+	</DataTemplate>
+	<DataTemplate x:Key="ServiceBindingWSDualHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingWSDualHTTP}">
+		<StackPanel Orientation="Vertical" Margin="3">
+			<StackPanel Orientation="Horizontal">
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSDualHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
+			</StackPanel>
+			<TextBlock Text="WCF Binding Type: WSDualHttpBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
+		</StackPanel>
+	</DataTemplate>
+	<DataTemplate x:Key="ServiceBindingWSFederationHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingWSFederationHTTP}">
+		<StackPanel Orientation="Vertical" Margin="3">
+			<StackPanel Orientation="Horizontal">
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSFederationHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
+			</StackPanel>
+			<TextBlock Text="WCF Binding Type: WSFederationHttpBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
+		</StackPanel>
+	</DataTemplate>
+	<DataTemplate x:Key="ServiceBindingWS2007FederationHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingWS2007FederationHTTP}">
+		<StackPanel Orientation="Vertical" Margin="3">
+			<StackPanel Orientation="Horizontal">
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSFederationHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
+			</StackPanel>
+			<TextBlock Text="WCF Binding Type: WS2007FederationHttpBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
+		</StackPanel>
+	</DataTemplate>
+	<DataTemplate x:Key="ServiceBindingWSHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingWSHTTP}">
+		<StackPanel Orientation="Vertical" Margin="3">
+			<StackPanel Orientation="Horizontal">
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
+			</StackPanel>
+			<TextBlock Text="WCF Binding Type: WSHttpBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
+		</StackPanel>
+	</DataTemplate>
+	<DataTemplate x:Key="ServiceBindingWS2007HTTPItemTemplate" DataType="{x:Type wap:ServiceBindingWS2007HTTP}">
+		<StackPanel Orientation="Vertical" Margin="3">
+			<StackPanel Orientation="Horizontal">
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
+			</StackPanel>
+			<TextBlock Text="WCF Binding Type: WS2007HttpBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
+		</StackPanel>
+	</DataTemplate>
+	<local:ProjectListBindingTemplateSelector x:Key="ProjectListBindingTemplateSelector" BasicHTTPTemplate="{StaticResource ServiceBindingBasicHTTPItemTemplate}" BasicHTTPSTemplate="{StaticResource ServiceBindingBasicHTTPSItemTemplate}" NetHTTPTemplate="{StaticResource ServiceBindingNetHTTPItemTemplate}" 
+	NetHTTPSTemplate="{StaticResource ServiceBindingNetHTTPSItemTemplate}" MSMQTemplate="{StaticResource ServiceBindingMSMQItemTemplate}" MSMQIntegrationTemplate="{StaticResource ServiceBindingMSMQIntegrationItemTemplate}" NamedPipeTemplate="{StaticResource ServiceBindingNamedPipeItemTemplate}" 
+	PeerTCPTemplate="{StaticResource ServiceBindingPeerTCPItemTemplate}" TCPTemplate="{StaticResource ServiceBindingTCPItemTemplate}" WebHTTPTemplate="{StaticResource ServiceBindingWebHTTPItemTemplate}" WSDualHTTPTemplate="{StaticResource ServiceBindingWSDualHTTPItemTemplate}" 
+	WSFederationHTTPTemplate="{StaticResource ServiceBindingWSFederationHTTPItemTemplate}" WSHTTPTemplate="{StaticResource ServiceBindingWSHTTPItemTemplate}" WS2007FederationHTTPTemplate="{StaticResource ServiceBindingWS2007FederationHTTPItemTemplate}" WS2007HTTPTemplate="{StaticResource ServiceBindingWS2007HTTPItemTemplate}" />
+
+	<!-- Host Templates -->
+	<Style x:Key="HostContainerTemplate" TargetType="{x:Type Button}">
+		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
+		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
+		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
+		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
+		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="BorderBrush" Value="{StaticResource DefaultBorderColor}"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="UseLayoutRounding" Value="True" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type Button}">
+					<Border x:Name="PART_Border" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" Padding="5,0,0,0">
+						<ContentPresenter Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+					</Border>
+					<ControlTemplate.Triggers>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsEnabled" Value="True" />
+								<Condition Property="IsMouseOver" Value="True" />
+							</MultiTrigger.Conditions>
+							<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource BindingContainerColor}" />
+						</MultiTrigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsEnabled" Value="True" />
+								<Condition Property="IsPressed" Value="True" />
+							</MultiTrigger.Conditions>
+							<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource BindingContainerColor}" />
+						</MultiTrigger>
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter Property="Opacity" Value="0.75"/>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<DataTemplate x:Key="HostItemTemplate" DataType="{x:Type wap:Host}">
+		<StackPanel Orientation="Vertical" Margin="3">
+			<StackPanel Orientation="Horizontal">
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Host.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
+			</StackPanel>
+			<!--<TextBlock Text="WCF Type: ServiceHost" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />-->
+		</StackPanel>
+	</DataTemplate>
+
 	<!-- Namespace Templates -->
 	<Style x:Key="NamespaceContainerTemplate" TargetType="{x:Type ToggleButton}">
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
@@ -212,7 +448,9 @@
 			<TextBlock Text="{Binding Path=FullName, RelativeSource={RelativeSource TemplatedParent}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" />
 			<local:ProjectList ItemsSource="{Binding Path=Children}" ItemContainerStyle="{StaticResource NamespaceContainerTemplate}" ItemTemplate="{StaticResource NamespaceItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
 			<!-- Need to implement all ItemsControls -->
-			<local:ProjectList ItemsSource="{Binding Path=Security}" ItemContainerStyle="{StaticResource SecurityContainerTemplate}" ItemTemplate="{StaticResource NamespaceItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+			<local:ProjectItemList ItemsSource="{Binding Path=Bindings}" ItemContainerStyle="{StaticResource BindingContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListBindingTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+			<local:ProjectItemList ItemsSource="{Binding Path=Security}" ItemContainerStyle="{StaticResource SecurityContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListSecurityTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+			<local:ProjectList ItemsSource="{Binding Path=Hosts}" ItemContainerStyle="{StaticResource HostContainerTemplate}" ItemTemplate="{StaticResource HostItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
 		</StackPanel>
 		<DataTemplate.Triggers>
 			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}},Path=IsChecked}" Value="True" >
