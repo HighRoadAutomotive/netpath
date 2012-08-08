@@ -295,6 +295,11 @@ namespace WCFArchitect.Projects
 		[IgnoreDataMember()] public bool IsFiltering { get { return false; } set { } }
 		[IgnoreDataMember()] public bool IsFilterMatch { get { return false; } set { } }
 		[IgnoreDataMember()] public bool IsTreeExpanded { get { return false; } set { } }
+		
+		[IgnoreDataMember()] public string Declaration { get { return (string)GetValue(DeclarationProperty); } protected set { SetValue(DeclarationPropertyKey, value); } }
+		private static readonly DependencyPropertyKey DeclarationPropertyKey = DependencyProperty.RegisterReadOnly("Declaration", typeof(string), typeof(Operation), new PropertyMetadata(""));
+		public static readonly DependencyProperty DeclarationProperty = DeclarationPropertyKey.DependencyProperty;
+
 		public Service Owner { get; set; }
 
 		public Operation() { }
@@ -430,6 +435,33 @@ namespace WCFArchitect.Projects
 		}
 	}
 
+	public class Property : Operation
+	{
+		public bool IsReadOnly { get { return (bool)GetValue(IsReadOnlyProperty); } set { SetValue(IsReadOnlyProperty, value); } }
+		public static readonly DependencyProperty IsReadOnlyProperty = DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(Property));
+
+		public Property() : base() { }
+
+		public Property(string Name, Service Owner) : base(Name, Owner)
+		{
+			this.ReturnType = new DataType(PrimitiveTypes.String);
+		}
+
+		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnPropertyChanged(e);
+
+			if (e.Property == OpenableDocument.IsDirtyProperty) return;
+			if (e.Property == Operation.IsSearchingProperty) return;
+			if (e.Property == Operation.IsSearchMatchProperty) return;
+
+			if (Owner != null)
+				Owner.IsDirty = true;
+
+			if (e.Property != Data.DeclarationProperty) Declaration = string.Format("{0} {1} {2}{{ get; {3}}}", ReturnType.ToScopeString(), ReturnType.ToString(), Name, IsReadOnly == true ? "set; " : "");
+		}
+	}
+
 	public abstract class Method : Operation
 	{
 		public bool UseAsyncPattern { get { return (bool)GetValue(UseAsyncPatternProperty); } set { SetValue(UseAsyncPatternProperty, value); } }
@@ -465,6 +497,12 @@ namespace WCFArchitect.Projects
 
 			if (Owner != null)
 				Owner.IsDirty = true;
+
+			StringBuilder sb = new StringBuilder();
+			foreach(MethodParameter p in Parameters)
+				sb.AppendFormat("{0}, ", p.ToString());
+			sb.Remove(sb.Length - 2, 2);
+			if (e.Property != Data.DeclarationProperty) Declaration = string.Format("{0} {1} {2}({3});", ReturnType.ToScopeString(), ReturnType.ToString(), Name, sb.ToString());
 		}
 
 		public override List<FindReplaceResult> FindReplace(FindReplaceInfo Args)
@@ -480,31 +518,6 @@ namespace WCFArchitect.Projects
 		{
 			foreach (MethodParameter mp in Parameters)
 				mp.Replace(Args, Field);
-		}
-	}
-
-	public class Property : Operation
-	{
-		public bool IsReadOnly { get { return (bool)GetValue(IsReadOnlyProperty); } set { SetValue(IsReadOnlyProperty, value); } }
-		public static readonly DependencyProperty IsReadOnlyProperty = DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(Property));
-
-		public Property() : base() { }
-
-		public Property(string Name, Service Owner) : base(Name, Owner)
-		{
-			this.ReturnType = new DataType(PrimitiveTypes.String);
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == OpenableDocument.IsDirtyProperty) return;
-			if (e.Property == Operation.IsSearchingProperty) return;
-			if (e.Property == Operation.IsSearchMatchProperty) return;
-
-			if (Owner != null)
-				Owner.IsDirty = true;
 		}
 	}
 
@@ -538,6 +551,19 @@ namespace WCFArchitect.Projects
 			this.Name = Name;
 			IsHidden = false;
 			this.Owner = Owner;
+		}
+
+		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnPropertyChanged(e);
+
+			if (Owner != null)
+				Owner.IsDirty = true;
+		}
+
+		public override string ToString()
+		{
+			return string.Format("{0} {1}", Type.ToString(), Name);
 		}
 
 		public List<FindReplaceResult> FindReplace(FindReplaceInfo Args)
@@ -638,14 +664,6 @@ namespace WCFArchitect.Projects
 				}
 				Owner.IsActive = ia;
 			}
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-			if (e.Property == OpenableDocument.IsDirtyProperty) return;
-			if (Owner != null)
-				Owner.IsDirty = true;
 		}
 	}
 }

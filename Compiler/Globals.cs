@@ -11,6 +11,10 @@ namespace WCFArchitect.Compiler
 	{
 		public static Project OpenProject { get; set; }
 
+		public static Projects.ProjectNETOutputFramework CurrentNETOutput { get; set; }
+		public static Projects.ProjectSLOutputFramework CurrentSLOutput { get; set; }
+		public static Projects.ProjectRTOutputFramework CurrentRTOutput { get; set; }
+
 		public static string ApplicationTitle { get; set; }
 		public static Version ApplicationVersion { get; set; }
 	}

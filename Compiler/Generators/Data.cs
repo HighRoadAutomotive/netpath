@@ -41,9 +41,9 @@ namespace WCFArchitect.Compiler.Generators
 
 			foreach (Projects.DataElement D in o.Elements)
 			{
-				if (Helpers.RegExs.MatchCodeName.IsMatch(D.Name) == false)
+				if (Helpers.RegExs.MatchCodeName.IsMatch(D.DataType.Name) == false)
 				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS3005", "The data element '" + D.Name + "' in the '" + o.Name + "' data object contains invalid characters in the Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o, D, D.GetType()));
+					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS3005", "The data element '" + D.DataType.Name + "' in the '" + o.Name + "' data object contains invalid characters in the Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o, D, D.GetType()));
 					NoErrors = false;
 				}
 
@@ -352,7 +352,7 @@ namespace WCFArchitect.Compiler.Generators
 		{
 			if (o.IsHidden == true) return "";
 			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t\tprivate {0} m_{1};{2}", DataTypeCSGenerator.GenerateType(o.DataType), o.Name, Environment.NewLine);
+			Code.AppendFormat("\t\tprivate {0} m_{1};{2}", DataTypeCSGenerator.GenerateType(o.DataType), o.DataType.Name, Environment.NewLine);
 			if (o.IsDataMember == true)
 			{
 				Code.Append("\t\t[DataMember(");
@@ -362,7 +362,7 @@ namespace WCFArchitect.Compiler.Generators
 					Code.AppendFormat("IsRequired = true, ");
 				if (o.Order >= 0)
 					Code.AppendFormat("Order = {0}, ", o.Order);
-				Code.AppendFormat("Name = \"{0}\")] ", o.HasContractType ? o.ContractType.Name : o.Name);
+				Code.AppendFormat("Name = \"{0}\")] ", o.HasContractType ? o.ContractType.Name : o.DataType.Name);
 			}
 			else
 			{
@@ -370,8 +370,8 @@ namespace WCFArchitect.Compiler.Generators
 				if (o.Owner.Parent.Owner.ServiceSerializer == ProjectServiceSerializerType.XML) Code.Append("\t\t[XmlIgnore()]");
 				if (o.Owner.Parent.Owner.ServiceSerializer == ProjectServiceSerializerType.Auto) Code.Append("\t\t");
 			}
-			if (o.IsReadOnly == false) Code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} set {{ m_{2} = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.Scope, o.Owner.Parent.Owner.GetType()), DataTypeCSGenerator.GenerateType(o.DataType), o.Name, Environment.NewLine);
-			else Code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} protected set {{ m_{2} = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.Scope, o.Owner.Parent.Owner.GetType()), o.DataType, o.Name, Environment.NewLine);
+			if (o.IsReadOnly == false) Code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} set {{ m_{2} = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope, o.Owner.Parent.Owner.GetType()), DataTypeCSGenerator.GenerateType(o.DataType), o.DataType.Name, Environment.NewLine);
+			else Code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} protected set {{ m_{2} = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope, o.Owner.Parent.Owner.GetType()), o.DataType, o.DataType.Name, Environment.NewLine);
 			return Code.ToString();
 		}
 
@@ -398,7 +398,7 @@ namespace WCFArchitect.Compiler.Generators
 					Code.AppendFormat("IsRequired = true, ");
 				if (o.Order >= 0)
 					Code.AppendFormat("Order = {0}, ", o.Order);
-				Code.AppendFormat("Name = \"{0}\")] ", o.HasContractType ? o.ContractType.Name : o.Name);
+				Code.AppendFormat("Name = \"{0}\")] ", o.HasContractType ? o.ContractType.Name : o.DataType.Name);
 			}
 			else
 			{
@@ -406,8 +406,8 @@ namespace WCFArchitect.Compiler.Generators
 				if (o.Owner.Parent.Owner.ServiceSerializer == ProjectServiceSerializerType.XML) Code.Append("\t\t[XmlIgnore()]");
 				if (o.Owner.Parent.Owner.ServiceSerializer == ProjectServiceSerializerType.Auto) Code.Append("\t\t[IgnoreDataMember()]");
 			}
-			if (o.IsReadOnly == false) Code.AppendFormat("{0} {1} {2} {{ get; set; }}{3}", DataTypeCSGenerator.GenerateScope(o.Scope, o.Owner.Parent.Owner.GetType()), DataTypeCSGenerator.GenerateType(o.DataType), o.Name, Environment.NewLine);
-			else Code.AppendFormat("{0} {1} {2} {{ get; protected set; }}{3}", DataTypeCSGenerator.GenerateScope(o.Scope, o.Owner.Parent.Owner.GetType()), DataTypeCSGenerator.GenerateType(o.DataType), o.Name, Environment.NewLine);
+			if (o.IsReadOnly == false) Code.AppendFormat("{0} {1} {2} {{ get; set; }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope, o.Owner.Parent.Owner.GetType()), DataTypeCSGenerator.GenerateType(o.DataType), o.DataType.Name, Environment.NewLine);
+			else Code.AppendFormat("{0} {1} {2} {{ get; protected set; }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope, o.Owner.Parent.Owner.GetType()), DataTypeCSGenerator.GenerateType(o.DataType), o.DataType.Name, Environment.NewLine);
 			return Code.ToString();
 		}
 
@@ -432,25 +432,25 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.IsDataMember == false) return "";
 			StringBuilder Code = new StringBuilder();
 
-			Code.AppendFormat("\t\t\tFieldInfo fi_{0} = t_DT.GetField(\"{0}Field\", BindingFlags.NonPublic | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-			Code.AppendFormat("\t\t\tif(fi_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+			Code.AppendFormat("\t\t\tFieldInfo fi_{0} = t_DT.GetField(\"{0}Field\", BindingFlags.NonPublic | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+			Code.AppendFormat("\t\t\tif(fi_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 			Code.AppendLine("\t\t\t{");
 			if (o.WPFType.TypeMode == DataTypeMode.Array)
 			{
 				Code.AppendLine("\t\t\t{");
-				Code.AppendFormat("\t\t\t\t{0} v_{1} = fi_{1}.GetValue(Data) as {0};{2}", DataTypeCSGenerator.GenerateType(o.DataType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-				Code.AppendFormat("\t\t\t\tif(v_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+				Code.AppendFormat("\t\t\t\t{0} v_{1} = fi_{1}.GetValue(Data) as {0};{2}", DataTypeCSGenerator.GenerateType(o.DataType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+				Code.AppendFormat("\t\t\t\tif(v_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 				Code.AppendLine("\t\t\t\t{");
 				if (o.Owner.Parent.Owner.CollectionSerializationOverride == ProjectCollectionSerializationOverride.List)
 				{
-					Code.AppendFormat("\t\t\t\t\t{0} tv = new {1}[v_{2}.Count];{3}", DataTypeCSGenerator.GenerateType(o.WPFType), DataTypeCSGenerator.GenerateType(o.WPFType).Replace("[]", ""), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-					Code.AppendFormat("\t\t\t\t\tfor(int i = 0; i < v_{0}.Count; i++) {{ try {{ tv[i] = v_{0}[i]; }} catch {{ continue; }} }}{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\t\t{0} tv = new {1}[v_{2}.Count];{3}", DataTypeCSGenerator.GenerateType(o.WPFType), DataTypeCSGenerator.GenerateType(o.WPFType).Replace("[]", ""), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\t\tfor(int i = 0; i < v_{0}.Count; i++) {{ try {{ tv[i] = v_{0}[i]; }} catch {{ continue; }} }}{1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 					if (o.IsAttached == true) Code.AppendFormat("\t\t\t\t\t{0}.Set{1}(this, tv);{2}", c.HasContractType ? c.ContractType.Name : c.Name, DataTypeCSGenerator.GenerateType(o.WPFType), Environment.NewLine);
 				}
 				else
 				{
-					Code.AppendFormat("\t\t\t\t\t{0} tv = new {1}[v_{2}.GetLength(0)];{3}", DataTypeCSGenerator.GenerateType(o.WPFType), DataTypeCSGenerator.GenerateType(o.WPFType).Replace("[]", ""), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-					Code.AppendFormat("\t\t\t\t\tfor(int i = 0; i < v_{1}.GetLength(0); i++) {{ try {{ tv[i] = v_{1}[i]; }} catch {{ continue; }} }}{2}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\t\t{0} tv = new {1}[v_{2}.GetLength(0)];{3}", DataTypeCSGenerator.GenerateType(o.WPFType), DataTypeCSGenerator.GenerateType(o.WPFType).Replace("[]", ""), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\t\tfor(int i = 0; i < v_{1}.GetLength(0); i++) {{ try {{ tv[i] = v_{1}[i]; }} catch {{ continue; }} }}{2}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 					if (o.IsAttached == true) Code.AppendFormat("\t\t\t\t\t{0}.Set{1}(this, tv);{2}", c.HasContractType ? c.ContractType.Name : c.Name, DataTypeCSGenerator.GenerateType(o.WPFType), Environment.NewLine);
 				}
 				Code.AppendLine("\t\t\t\t}");
@@ -459,11 +459,11 @@ namespace WCFArchitect.Compiler.Generators
 			else if (o.WPFType.TypeMode == DataTypeMode.Collection)
 			{
 				Code.AppendLine("\t\t\t{");
-				Code.AppendFormat("\t\t\t\t{0} v_{1} = fi_{1}.GetValue(Data) as {0};{2}", DataTypeCSGenerator.GenerateType(o.DataType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-				Code.AppendFormat("\t\t\t\tif(v_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+				Code.AppendFormat("\t\t\t\t{0} v_{1} = fi_{1}.GetValue(Data) as {0};{2}", DataTypeCSGenerator.GenerateType(o.DataType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+				Code.AppendFormat("\t\t\t\tif(v_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 				Code.AppendLine("\t\t\t\t{");
 				Code.AppendFormat("\t\t\t\t\t{0} tv = new {0}();{1}", DataTypeCSGenerator.GenerateType(o.WPFType), Environment.NewLine);
-				Code.AppendFormat("\t\t\t\t\tforeach({0} a in v_{1}) {{ tv.Add(a); }}{2}", DataTypeCSGenerator.GenerateTypeGenerics(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+				Code.AppendFormat("\t\t\t\t\tforeach({0} a in v_{1}) {{ tv.Add(a); }}{2}", DataTypeCSGenerator.GenerateTypeGenerics(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 				if (o.IsAttached == true) Code.AppendFormat("\t\t\t\t\t{0}.Set{1}(this, tv);{2}", c.HasContractType ? c.ContractType.Name : c.Name, DataTypeCSGenerator.GenerateType(o.WPFType), Environment.NewLine);
 				Code.AppendLine("\t\t\t\t}");
 				Code.AppendLine("\t\t\t}");
@@ -472,16 +472,16 @@ namespace WCFArchitect.Compiler.Generators
 			{
 				Code.AppendLine("\t\t\t{");
 				Code.AppendFormat("\t\t\t\t{0} tv = new {0}();{1}", DataTypeCSGenerator.GenerateType(o.DataType), Environment.NewLine);
-				Code.AppendFormat("\t\t\t\tDictionary{1} v_{0} = fi_{0}.GetValue(Data) as Dictionary{1};{2}", o.HasContractType ? o.ContractType.Name : o.Name, DataTypeCSGenerator.GenerateTypeGenerics(o.WPFType), Environment.NewLine);
-				Code.AppendFormat("\t\t\t\tif(v_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-				Code.AppendFormat("\t\t\t\t\tforeach(KeyValuePair{0} a in v_{1}) {{ tv.Add(a.Key, a.Value); }}{2}", DataTypeCSGenerator.GenerateTypeGenerics(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+				Code.AppendFormat("\t\t\t\tDictionary{1} v_{0} = fi_{0}.GetValue(Data) as Dictionary{1};{2}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, DataTypeCSGenerator.GenerateTypeGenerics(o.WPFType), Environment.NewLine);
+				Code.AppendFormat("\t\t\t\tif(v_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+				Code.AppendFormat("\t\t\t\t\tforeach(KeyValuePair{0} a in v_{1}) {{ tv.Add(a.Key, a.Value); }}{2}", DataTypeCSGenerator.GenerateTypeGenerics(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 				if (o.IsAttached == true) Code.AppendFormat("\t\t\t\t\t{0}.Set{1}(this, tv);{2}", c.HasContractType ? c.ContractType.Name : c.Name, DataTypeCSGenerator.GenerateType(o.WPFType), Environment.NewLine);
 				Code.AppendLine("\t\t\t}");
 			}
 			else
 			{
-				if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t{2} = ({0})fi_{1}.GetValue(Data){3}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, o.WPFType.Name, Environment.NewLine);
-				else Code.AppendFormat("\t\t\t\t{3}.Set{2}(this, (({0})fi_{1}.GetValue(Data));{4}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, o.WPFType.Name, DataTypeCSGenerator.GenerateType(o.WPFType), Environment.NewLine);
+				if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t{2} = ({0})fi_{1}.GetValue(Data){3}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, o.WPFType.Name, Environment.NewLine);
+				else Code.AppendFormat("\t\t\t\t{3}.Set{2}(this, (({0})fi_{1}.GetValue(Data));{4}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, o.WPFType.Name, DataTypeCSGenerator.GenerateType(o.WPFType), Environment.NewLine);
 			}
 			Code.AppendLine("\t\t\t}");
 
@@ -512,38 +512,38 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.HasWPFType == true)
 			{
 				if (o.IsAttached == false)
-					Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_WPF.GetProperty(\"{0}\", BindingFlags.Public | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_WPF.GetProperty(\"{0}\", BindingFlags.Public | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 			}
 			else
 			{
 				if (o.IsAttached == false)
-					if (o.Scope == DataScope.Public)
-						Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_WPF.GetProperty(\"{0}\", BindingFlags.Public | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+					if (o.DataType.Scope == DataScope.Public)
+						Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_WPF.GetProperty(\"{0}\", BindingFlags.Public | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 					else
-						Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_WPF.GetProperty(\"{0}\", BindingFlags.NonPublic | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+						Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_WPF.GetProperty(\"{0}\", BindingFlags.NonPublic | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 			}
-			Code.AppendFormat("\t\t\tFieldInfo fi_{0} = t_DTO.GetField(\"{0}Field\", BindingFlags.NonPublic | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-			if (o.IsAttached == false) Code.AppendFormat("\t\t\tif(fi_{0} != null && pi_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-			else Code.AppendFormat("\t\t\tif(fi_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+			Code.AppendFormat("\t\t\tFieldInfo fi_{0} = t_DTO.GetField(\"{0}Field\", BindingFlags.NonPublic | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+			if (o.IsAttached == false) Code.AppendFormat("\t\t\tif(fi_{0} != null && pi_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+			else Code.AppendFormat("\t\t\tif(fi_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 			if (o.WPFType.TypeMode == DataTypeMode.Array)
 			{
 				Code.AppendLine("\t\t\t{");
-				Code.AppendFormat("\t\t\t\t{0} v_{1} = fi_{1}.GetValue(Data) as {0};{2}", DataTypeCSGenerator.GenerateType(o.DataType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-				Code.AppendFormat("\t\t\t\tif(v_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+				Code.AppendFormat("\t\t\t\t{0} v_{1} = fi_{1}.GetValue(Data) as {0};{2}", DataTypeCSGenerator.GenerateType(o.DataType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+				Code.AppendFormat("\t\t\t\tif(v_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 				Code.AppendLine("\t\t\t\t{");
 				if (o.Owner.Parent.Owner.CollectionSerializationOverride == ProjectCollectionSerializationOverride.List)
 				{
-					Code.AppendFormat("\t\t\t\t\t{0} wpf_{1} = new {0}[v_{1}.Count];{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t\tpi_{0}.SetValue(WPF, wpf_{0}, null);{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-					else Code.AppendFormat("\t\t\t\t\t{0}.Set{1}(WPF, wpf_{2});{3}", DataTypeCSGenerator.GenerateType(c.WPFType), o.WPFType.Name, o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-					Code.AppendFormat("\t\t\t\t\tfor(int i = 0; i < v_{0}.Count; i++) {{ wpf_{0}[i] = v_{0}[i]; }}{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\t\t{0} wpf_{1} = new {0}[v_{1}.Count];{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t\tpi_{0}.SetValue(WPF, wpf_{0}, null);{1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+					else Code.AppendFormat("\t\t\t\t\t{0}.Set{1}(WPF, wpf_{2});{3}", DataTypeCSGenerator.GenerateType(c.WPFType), o.WPFType.Name, o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\t\tfor(int i = 0; i < v_{0}.Count; i++) {{ wpf_{0}[i] = v_{0}[i]; }}{1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 				}
 				else
 				{
-					Code.AppendFormat("\t\t\t\t\t{1}[] wpf_{0} = new {1}[v_{2}.GetLength(0)];{3}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t\tpi_{0}.SetValue(WPF, wpf_{0}, null);{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-					else Code.AppendFormat("\t\t\t\t\t{0}.Set{1}(WPF, wpf_{2});{3}", DataTypeCSGenerator.GenerateType(c.WPFType), o.WPFType.Name, o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-					Code.AppendFormat("\t\t\t\t\tfor(int i = 0; i < v_{0}.GetLength(0); i++) {{ wpf_{0}[i] = v_{0}[i]; }}{2}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\t\t{1}[] wpf_{0} = new {1}[v_{2}.GetLength(0)];{3}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t\tpi_{0}.SetValue(WPF, wpf_{0}, null);{1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+					else Code.AppendFormat("\t\t\t\t\t{0}.Set{1}(WPF, wpf_{2});{3}", DataTypeCSGenerator.GenerateType(c.WPFType), o.WPFType.Name, o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\t\tfor(int i = 0; i < v_{0}.GetLength(0); i++) {{ wpf_{0}[i] = v_{0}[i]; }}{2}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 				}
 				Code.AppendLine("\t\t\t\t}");
 				Code.AppendLine("\t\t\t}");
@@ -551,30 +551,30 @@ namespace WCFArchitect.Compiler.Generators
 			else if (o.WPFType.TypeMode == DataTypeMode.Collection)
 			{
 				Code.AppendLine("\t\t\t{");
-				Code.AppendFormat("\t\t\t\t{0} v_{1} = fi_{1}.GetValue(Data) as {0};{2}", DataTypeCSGenerator.GenerateType(o.DataType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-				Code.AppendFormat("\t\t\t\tif(v_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+				Code.AppendFormat("\t\t\t\t{0} v_{1} = fi_{1}.GetValue(Data) as {0};{2}", DataTypeCSGenerator.GenerateType(o.DataType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+				Code.AppendFormat("\t\t\t\tif(v_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 				Code.AppendLine("\t\t\t\t{");
-				Code.AppendFormat("\t\t\t\t\t{0} wpf_{1} = new {0}();{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-				if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t\tpi_{0}.SetValue(WPF, wpf_{0}, null);{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-				else Code.AppendFormat("\t\t\t\t\t{0}.Set{1}(WPF, wpf_{2});{3}", DataTypeCSGenerator.GenerateType(c.WPFType), o.WPFType.Name, o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-				Code.AppendFormat("\t\t\t\t\tforeach({1} a in v_{2}) {{ wpf_{0}.Add(a); }}{3}", o.HasContractType ? o.ContractType.Name : o.Name, DataTypeCSGenerator.GenerateType(o.HasContractType ? o.ContractType : o.DataType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+				Code.AppendFormat("\t\t\t\t\t{0} wpf_{1} = new {0}();{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+				if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t\tpi_{0}.SetValue(WPF, wpf_{0}, null);{1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+				else Code.AppendFormat("\t\t\t\t\t{0}.Set{1}(WPF, wpf_{2});{3}", DataTypeCSGenerator.GenerateType(c.WPFType), o.WPFType.Name, o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+				Code.AppendFormat("\t\t\t\t\tforeach({1} a in v_{2}) {{ wpf_{0}.Add(a); }}{3}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, DataTypeCSGenerator.GenerateType(o.HasContractType ? o.ContractType : o.DataType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 				Code.AppendLine("\t\t\t\t}");
 				Code.AppendLine("\t\t\t}");
 			}
 			else if (o.WPFType.TypeMode == DataTypeMode.Dictionary)
 			{
 				Code.AppendLine("\t\t\t{");
-				Code.AppendFormat("\t\t\t\t{0} wpf_{1} = new {0}();{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-				if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t\tpi_{0}.SetValue(WPF, wpf_{0}, null);{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-				else Code.AppendFormat("\t\t\t\t\t{0}.Set{1}(WPF, wpf_{2});{3}", DataTypeCSGenerator.GenerateType(c.WPFType), o.WPFType.Name, o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-				Code.AppendFormat("\t\t\t\t{1} v_{0} = fi_{0}.GetValue(Data) as {1};{2}", o.HasContractType ? o.ContractType.Name : o.Name, DataTypeCSGenerator.GenerateType(o.DataType), Environment.NewLine);
-				Code.AppendFormat("\t\t\t\tif(v_{2} != null) foreach(KeyValuePair{1} a in v_{2}) {{ wpf_{0}.Add(a.Key, a.Value); }}{3}", o.HasContractType ? o.ContractType.Name : o.Name, DataTypeCSGenerator.GenerateTypeGenerics(o.HasContractType ? o.ContractType : o.DataType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+				Code.AppendFormat("\t\t\t\t{0} wpf_{1} = new {0}();{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+				if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t\tpi_{0}.SetValue(WPF, wpf_{0}, null);{1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+				else Code.AppendFormat("\t\t\t\t\t{0}.Set{1}(WPF, wpf_{2});{3}", DataTypeCSGenerator.GenerateType(c.WPFType), o.WPFType.Name, o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+				Code.AppendFormat("\t\t\t\t{1} v_{0} = fi_{0}.GetValue(Data) as {1};{2}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, DataTypeCSGenerator.GenerateType(o.DataType), Environment.NewLine);
+				Code.AppendFormat("\t\t\t\tif(v_{2} != null) foreach(KeyValuePair{1} a in v_{2}) {{ wpf_{0}.Add(a.Key, a.Value); }}{3}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, DataTypeCSGenerator.GenerateTypeGenerics(o.HasContractType ? o.ContractType : o.DataType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 				Code.AppendLine("\t\t\t}");
 			}
 			else
 			{
-				if (o.IsAttached == false) Code.AppendFormat("\t\t\t\tpi_{1}.SetValue(WPF, ({0})fi_{1}.GetValue(Data), null);{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-				else Code.AppendFormat("\t\t\t\t{4}.Set{2}(WPF, ({0})fi_{1}.GetValue(Data));{4}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, o.WPFType.Name, DataTypeCSGenerator.GenerateType(c.WPFType), Environment.NewLine);
+				if (o.IsAttached == false) Code.AppendFormat("\t\t\t\tpi_{1}.SetValue(WPF, ({0})fi_{1}.GetValue(Data), null);{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+				else Code.AppendFormat("\t\t\t\t{4}.Set{2}(WPF, ({0})fi_{1}.GetValue(Data));{4}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, o.WPFType.Name, DataTypeCSGenerator.GenerateType(c.WPFType), Environment.NewLine);
 			}
 
 			return Code.ToString();
@@ -604,79 +604,79 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.HasWPFType == true)
 			{
 				if (o.IsAttached == false)
-					Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_WPF.GetProperty(\"{0}\", BindingFlags.Public | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_WPF.GetProperty(\"{0}\", BindingFlags.Public | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 			}
 			else
 			{
 				if (o.IsAttached == false)
-					if (o.Scope == DataScope.Public)
-						Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_WPF.GetProperty(\"{0}\", BindingFlags.Public | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+					if (o.DataType.Scope == DataScope.Public)
+						Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_WPF.GetProperty(\"{0}\", BindingFlags.Public | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 					else
-						Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_WPF.GetProperty(\"{0}\", BindingFlags.NonPublic | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+						Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_WPF.GetProperty(\"{0}\", BindingFlags.NonPublic | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 			}
-			Code.AppendFormat("\t\t\tFieldInfo fi_{0} = t_DTO.GetField(\"{0}Field\", BindingFlags.NonPublic | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+			Code.AppendFormat("\t\t\tFieldInfo fi_{0} = t_DTO.GetField(\"{0}Field\", BindingFlags.NonPublic | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 			if (o.WPFType.TypeMode == DataTypeMode.Array)
 			{
-				if (o.IsAttached == false) Code.AppendFormat("\t\t\tif(fi_{0} != null && pi_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-				else Code.AppendFormat("\t\t\tif(fi_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+				if (o.IsAttached == false) Code.AppendFormat("\t\t\tif(fi_{0} != null && pi_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+				else Code.AppendFormat("\t\t\tif(fi_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 				Code.AppendLine("\t\t\t{");
 				if (o.Owner.Parent.Owner.CollectionSerializationOverride == ProjectCollectionSerializationOverride.List)
 				{
-					Code.AppendFormat("\t\t\t\t{0} v_{1} = new {0}();{2}", DataTypeCSGenerator.GenerateType(o.HasContractType ? o.ContractType : o.DataType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-					Code.AppendFormat("\t\t\t\tfi_{0}.SetValue(DTO, v_{0});{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t{0} wpf_{1} = pi_{1}.GetValue(Data, null) as {0};{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-					else Code.AppendFormat("\t\t\t\t{0} wpf_{1} = {3}.Get{2}(Data) as {0};{4}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, o.WPFType.Name, DataTypeCSGenerator.GenerateType(c.WPFType), Environment.NewLine);
-					Code.AppendFormat("\t\t\t\tforeach({0} a in wpf_{1}) {{ v_{1}.Add(a); }}{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\t{0} v_{1} = new {0}();{2}", DataTypeCSGenerator.GenerateType(o.HasContractType ? o.ContractType : o.DataType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\tfi_{0}.SetValue(DTO, v_{0});{1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t{0} wpf_{1} = pi_{1}.GetValue(Data, null) as {0};{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+					else Code.AppendFormat("\t\t\t\t{0} wpf_{1} = {3}.Get{2}(Data) as {0};{4}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, o.WPFType.Name, DataTypeCSGenerator.GenerateType(c.WPFType), Environment.NewLine);
+					Code.AppendFormat("\t\t\t\tforeach({0} a in wpf_{1}) {{ v_{1}.Add(a); }}{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 				}
 				else
 				{
-					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t{0} wpf_{1} = pi_{1}.GetValue(Data, null) as {0};{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-					else Code.AppendFormat("\t\t\t\t{0} wpf_{1} = {2}.Get{3}(Data) as {0};{4}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, DataTypeCSGenerator.GenerateType(o.WPFType), o.WPFType.Name, Environment.NewLine);
-					Code.AppendFormat("\t\t\t\t{0}[] v_{1} = new {0}[wpf_{1}.GetLength(0)];{2}", DataTypeCSGenerator.GenerateType(o.DataType).Replace("[]", ""), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-					Code.AppendFormat("\t\t\t\tfor(int i = 0; i < wpf_{0}.GetLength(0); i++) {{ v_{1}[i] = Data.{1}[i]; }}{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-					Code.AppendFormat("\t\t\t\tfi_{0}.SetValue(DTO, v_{0});{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t{0} wpf_{1} = pi_{1}.GetValue(Data, null) as {0};{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+					else Code.AppendFormat("\t\t\t\t{0} wpf_{1} = {2}.Get{3}(Data) as {0};{4}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, DataTypeCSGenerator.GenerateType(o.WPFType), o.WPFType.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\t{0}[] v_{1} = new {0}[wpf_{1}.GetLength(0)];{2}", DataTypeCSGenerator.GenerateType(o.DataType).Replace("[]", ""), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\tfor(int i = 0; i < wpf_{0}.GetLength(0); i++) {{ v_{1}[i] = Data.{1}[i]; }}{1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\tfi_{0}.SetValue(DTO, v_{0});{1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 				}
 				Code.AppendLine("\t\t\t}");
 			}
 			else if (o.WPFType.TypeMode == DataTypeMode.Collection)
 			{
-				if (o.IsAttached == false) Code.AppendFormat("\t\t\tif(fi_{0} != null && pi_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-				else Code.AppendFormat("\t\t\tif(fi_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+				if (o.IsAttached == false) Code.AppendFormat("\t\t\tif(fi_{0} != null && pi_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+				else Code.AppendFormat("\t\t\tif(fi_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 				Code.AppendLine("\t\t\t{");
 				if (o.Owner.Parent.Owner.CollectionSerializationOverride == ProjectCollectionSerializationOverride.List)
 				{
-					Code.AppendFormat("\t\t\t\t{0} v_{1} = new {0}();{2}", DataTypeCSGenerator.GenerateType(o.HasContractType ? o.ContractType : o.DataType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-					Code.AppendFormat("\t\t\t\tfi_{0}.SetValue(DTO, v_{0});{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t{0} wpf_{1} = pi_{1}.GetValue(Data, null) as {0};{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-					else Code.AppendFormat("\t\t\t\t{0} wpf_{1} = {3}.Get{2}(Data) as {0};{4}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, o.WPFType.Name, DataTypeCSGenerator.GenerateType(c.WPFType), Environment.NewLine);
-					Code.AppendFormat("\t\t\t\tforeach({0} a in wpf_{1}) {{ v_{1}.Add(a); }}{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\t{0} v_{1} = new {0}();{2}", DataTypeCSGenerator.GenerateType(o.HasContractType ? o.ContractType : o.DataType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\tfi_{0}.SetValue(DTO, v_{0});{1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t{0} wpf_{1} = pi_{1}.GetValue(Data, null) as {0};{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+					else Code.AppendFormat("\t\t\t\t{0} wpf_{1} = {3}.Get{2}(Data) as {0};{4}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, o.WPFType.Name, DataTypeCSGenerator.GenerateType(c.WPFType), Environment.NewLine);
+					Code.AppendFormat("\t\t\t\tforeach({0} a in wpf_{1}) {{ v_{1}.Add(a); }}{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 				}
 				else
 				{
-					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t{0} wpf_{1} = pi_{1}.GetValue(Data, null) as {0};{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-					else Code.AppendFormat("\t\t\t\t{0} wpf_{1} = {2}.Get{3}(Data) as {0};{4}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, DataTypeCSGenerator.GenerateType(o.WPFType), o.WPFType.Name, Environment.NewLine);
-					Code.AppendFormat("\t\t\t\t{0}[] v_{1} = new {0}[wpf_{1}.GetLength(0)];{2}", DataTypeCSGenerator.GenerateType(o.DataType).Replace("[]", ""), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-					Code.AppendFormat("\t\t\t\tfor(int i = 0; i < wpf_{0}.GetLength(0); i++) {{ v_{1}[i] = Data.{1}[i]; }}{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-					Code.AppendFormat("\t\t\t\tfi_{0}.SetValue(DTO, v_{0});{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t{0} wpf_{1} = pi_{1}.GetValue(Data, null) as {0};{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+					else Code.AppendFormat("\t\t\t\t{0} wpf_{1} = {2}.Get{3}(Data) as {0};{4}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, DataTypeCSGenerator.GenerateType(o.WPFType), o.WPFType.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\t{0}[] v_{1} = new {0}[wpf_{1}.GetLength(0)];{2}", DataTypeCSGenerator.GenerateType(o.DataType).Replace("[]", ""), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\tfor(int i = 0; i < wpf_{0}.GetLength(0); i++) {{ v_{1}[i] = Data.{1}[i]; }}{1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\tfi_{0}.SetValue(DTO, v_{0});{1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 				}
 				Code.AppendLine("\t\t\t}");
 			}
 			else if (o.WPFType.TypeMode == DataTypeMode.Dictionary)
 			{
-				if (o.IsAttached == false) Code.AppendFormat("\t\t\tif(fi_{0} != null && pi_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-				else Code.AppendFormat("\t\t\tif(fi_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+				if (o.IsAttached == false) Code.AppendFormat("\t\t\tif(fi_{0} != null && pi_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+				else Code.AppendFormat("\t\t\tif(fi_{0} != null){1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 				Code.AppendLine("\t\t\t{");
-				Code.AppendFormat("\t\t\t\tDictionary<{0}> v_{1} = new Dictionary<{0}>();{2}", DataTypeCSGenerator.GenerateType(o.DataType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-				Code.AppendFormat("\t\t\t\tfi_{0}.SetValue(DTO, v_{0});{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-				if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t{0} wpf_{1} = pi_{1}.GetValue(Data, null) as {0};{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
-				else Code.AppendFormat("\t\t\t\t{0} wpf_{1} = {3}.Get{2}(Data) as {0};{4}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, o.WPFType.Name, DataTypeCSGenerator.GenerateType(c.WPFType), Environment.NewLine);
-				Code.AppendFormat("\t\t\t\tforeach(KeyValuePair{0} a in wpf_{1}) {{ v_{1}.Add(a.Key, a.Value); }}{2}", DataTypeCSGenerator.GenerateTypeGenerics(o.WPFType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+				Code.AppendFormat("\t\t\t\tDictionary<{0}> v_{1} = new Dictionary<{0}>();{2}", DataTypeCSGenerator.GenerateType(o.DataType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+				Code.AppendFormat("\t\t\t\tfi_{0}.SetValue(DTO, v_{0});{1}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+				if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t{0} wpf_{1} = pi_{1}.GetValue(Data, null) as {0};{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
+				else Code.AppendFormat("\t\t\t\t{0} wpf_{1} = {3}.Get{2}(Data) as {0};{4}", DataTypeCSGenerator.GenerateType(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, o.WPFType.Name, DataTypeCSGenerator.GenerateType(c.WPFType), Environment.NewLine);
+				Code.AppendFormat("\t\t\t\tforeach(KeyValuePair{0} a in wpf_{1}) {{ v_{1}.Add(a.Key, a.Value); }}{2}", DataTypeCSGenerator.GenerateTypeGenerics(o.WPFType), o.HasContractType ? o.ContractType.Name : o.DataType.Name, Environment.NewLine);
 				Code.AppendLine("\t\t\t}");
 			}
 			else
 			{
-				if (o.IsAttached == false) Code.AppendFormat("\t\t\tif(fi_{0} != null && pi_{0} != null) fi_{0}.SetValue(DTO, ({2})pi_{1}.GetValue(Data, null));{3}", o.HasContractType ? o.ContractType.Name : o.Name, DataTypeCSGenerator.GenerateType(o.HasContractType ? o.ContractType : o.DataType), Environment.NewLine);
-				else Code.AppendFormat("\t\t\tif(fi_{1} != null) fi_{1}.SetValue(DTO, ({2}){3}.Get{0}(Data));{4}", o.WPFType.Name, o.HasContractType ? o.ContractType.Name : o.Name, o.DataType, DataTypeCSGenerator.GenerateType(c.WPFType), Environment.NewLine);
+				if (o.IsAttached == false) Code.AppendFormat("\t\t\tif(fi_{0} != null && pi_{0} != null) fi_{0}.SetValue(DTO, ({2})pi_{1}.GetValue(Data, null));{3}", o.HasContractType ? o.ContractType.Name : o.DataType.Name, DataTypeCSGenerator.GenerateType(o.HasContractType ? o.ContractType : o.DataType), Environment.NewLine);
+				else Code.AppendFormat("\t\t\tif(fi_{1} != null) fi_{1}.SetValue(DTO, ({2}){3}.Get{0}(Data));{4}", o.WPFType.Name, o.HasContractType ? o.ContractType.Name : o.DataType.Name, o.DataType, DataTypeCSGenerator.GenerateType(c.WPFType), Environment.NewLine);
 			}
 
 			return Code.ToString();
@@ -754,12 +754,12 @@ namespace WCFArchitect.Compiler.Generators
 				if (o.IsReadOnly == false)
 				{
 					Code.AppendFormat("\t\tprivate {0} m_{1};{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.WPFType.Name, Environment.NewLine);
-					Code.AppendFormat("\t\t{0} {1} {2} {{ get {{ return m_{2}; }} set {{ m_{2} = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.Scope, o.Owner.Parent.Owner.GetType()), DataTypeCSGenerator.GenerateType(o.WPFType), o.WPFType.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t{0} {1} {2} {{ get {{ return m_{2}; }} set {{ m_{2} = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope, o.Owner.Parent.Owner.GetType()), DataTypeCSGenerator.GenerateType(o.WPFType), o.WPFType.Name, Environment.NewLine);
 				}
 				else
 				{
 					Code.AppendFormat("\t\tprivate {0} m_{1};{2}", DataTypeCSGenerator.GenerateType(o.WPFType), o.WPFType.Name, Environment.NewLine);
-					Code.AppendFormat("\t\t{0} {1} {2} {{ get {{ return m_{2}; }} protected set {{ m_{2} = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.Scope, o.Owner.Parent.Owner.GetType()), DataTypeCSGenerator.GenerateType(o.WPFType), o.WPFType.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t{0} {1} {2} {{ get {{ return m_{2}; }} protected set {{ m_{2} = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope, o.Owner.Parent.Owner.GetType()), DataTypeCSGenerator.GenerateType(o.WPFType), o.WPFType.Name, Environment.NewLine);
 				}
 			}
 			return Code.ToString();
@@ -846,11 +846,11 @@ namespace WCFArchitect.Compiler.Generators
 			{
 				if (o.IsReadOnly == false)
 				{
-					Code.AppendFormat("\t\t{0} {1} {2} {{ get; set; }}{3}", DataTypeCSGenerator.GenerateScope(o.Scope, o.Owner.Parent.Owner.GetType()), DataTypeCSGenerator.GenerateType(o.WPFType), o.WPFType.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t{0} {1} {2} {{ get; set; }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope, o.Owner.Parent.Owner.GetType()), DataTypeCSGenerator.GenerateType(o.WPFType), o.WPFType.Name, Environment.NewLine);
 				}
 				else
 				{
-					Code.AppendFormat("\t\t{0} {1} {2} {{ get; protected set; }}{3}", DataTypeCSGenerator.GenerateScope(o.Scope, o.Owner.Parent.Owner.GetType()), DataTypeCSGenerator.GenerateType(o.WPFType), o.WPFType.Name, Environment.NewLine);
+					Code.AppendFormat("\t\t{0} {1} {2} {{ get; protected set; }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope, o.Owner.Parent.Owner.GetType()), DataTypeCSGenerator.GenerateType(o.WPFType), o.WPFType.Name, Environment.NewLine);
 				}
 			}
 			return Code.ToString();

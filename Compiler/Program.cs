@@ -22,7 +22,7 @@ namespace WCFArchitect.Compiler
 			{
 				Console.WriteLine(Globals.ApplicationTitle);
 				Console.WriteLine("Version: {0}", Globals.ApplicationVersion.ToString());
-				Console.WriteLine("Copyright © 2013 Prospective Software Inc.");
+				Console.WriteLine("Copyright © 2012 Prospective Software Inc.");
 				Console.WriteLine();
 			}
 
