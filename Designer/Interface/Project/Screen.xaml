@@ -14,13 +14,24 @@
 			</ResourceDictionary>
 		</Grid.Resources>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="50" />
+			<RowDefinition Height="40" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="280" />
+			<ColumnDefinition Width="280" MinWidth="280" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
+		<StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0">
+			<Button x:Name="NewItem" Background="Transparent" Width="42" Padding="0" Click="NewItem_Click" >
+				<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/NewItem.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" />
+			</Button>
+			<Button x:Name="SaveProject" Background="Transparent" Width="42" Padding="0" Click="SaveProject_Click" >
+				<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/Save.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" />
+			</Button>
+			<Button x:Name="BuildProject" Background="Transparent" Width="42" Padding="0" Click="BuildProject_Click" >
+				<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/BuildSolution.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" />
+			</Button>
+		</StackPanel>
 		<ScrollViewer Grid.Column="0" Grid.Row="1" Margin="0,0,5,0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" DataContext="{Binding Path=Project}" >
 			<StackPanel Orientation="Vertical" DataContext="{Binding Path=Namespace}">
 				<local:ProjectList ItemsSource="{Binding Path=Children}" ItemContainerStyle="{StaticResource NamespaceContainerTemplate}" ItemTemplate="{StaticResource NamespaceItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
