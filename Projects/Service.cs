@@ -272,8 +272,12 @@ namespace WCFArchitect.Projects
 
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value == null ? "" : value, @"")); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(Operation));
+		
+		[IgnoreDataMember()] public bool HasContract { get { return (bool)GetValue(HasContractProperty); } protected set { SetValue(HasContractPropertyKey, value); } }
+		private static readonly DependencyPropertyKey HasContractPropertyKey = DependencyProperty.RegisterReadOnly("HasContract", typeof(bool), typeof(Operation), new PropertyMetadata(false));
+		public static readonly DependencyProperty HasContractProperty = HasContractPropertyKey.DependencyProperty;
 
-		public string ContractName { get { return (string)GetValue(ContractNameProperty); } set { SetValue(ContractNameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value == null ? "" : value, @"")); } }
+		public string ContractName { get { return (string)GetValue(ContractNameProperty); } set { SetValue(ContractNameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value == null ? "" : value, @"")); if (value == "" || value == null) HasContract = false; } }
 		public static readonly DependencyProperty ContractNameProperty = DependencyProperty.Register("ContractName", typeof(string), typeof(Operation));
 
 		public bool IsOneWay { get { return (bool)GetValue(IsOneWayProperty); } set { SetValue(IsOneWayProperty, value); } }
@@ -299,6 +303,10 @@ namespace WCFArchitect.Projects
 		[IgnoreDataMember()] public string Declaration { get { return (string)GetValue(DeclarationProperty); } protected set { SetValue(DeclarationPropertyKey, value); } }
 		private static readonly DependencyPropertyKey DeclarationPropertyKey = DependencyProperty.RegisterReadOnly("Declaration", typeof(string), typeof(Operation), new PropertyMetadata(""));
 		public static readonly DependencyProperty DeclarationProperty = DeclarationPropertyKey.DependencyProperty;
+		
+		[IgnoreDataMember()] public string ContractDeclaration { get { return (string)GetValue(ContractDeclarationProperty); } protected set { SetValue(ContractDeclarationPropertyKey, value); } }
+		private static readonly DependencyPropertyKey ContractDeclarationPropertyKey = DependencyProperty.RegisterReadOnly("ContractDeclaration", typeof(string), typeof(Operation), new PropertyMetadata(""));
+		public static readonly DependencyProperty ContractDeclarationProperty = ContractDeclarationPropertyKey.DependencyProperty;
 
 		public Service Owner { get; set; }
 
@@ -458,11 +466,15 @@ namespace WCFArchitect.Projects
 			if (Owner != null)
 				Owner.IsDirty = true;
 
-			if (e.Property != Data.DeclarationProperty) Declaration = string.Format("{0} {1} {2}{{ get; {3}}}", ReturnType.ToScopeString(), ReturnType.ToString(), Name, IsReadOnly == true ? "set; " : "");
+			if (e.Property != Operation.DeclarationProperty && e.Property != Operation.ContractDeclarationProperty)
+			{
+				Declaration = string.Format("{0} {1} {2}{{ get; {3}}}", ReturnType.ToScopeString(), ReturnType.ToString(), Name, IsReadOnly == true ? "set; " : "");
+				ContractDeclaration = string.Format("{0} {1} {2}{{ get; {3}}}", ReturnType.ToScopeString(), ReturnType.ToString(), ContractName, IsReadOnly == true ? "set; " : "");
+			}
 		}
 	}
 
-	public abstract class Method : Operation
+	public class Method : Operation
 	{
 		public bool UseAsyncPattern { get { return (bool)GetValue(UseAsyncPatternProperty); } set { SetValue(UseAsyncPatternProperty, value); } }
 		public static readonly DependencyProperty UseAsyncPatternProperty = DependencyProperty.Register("UseAsyncPattern", typeof(bool), typeof(Method));
@@ -498,11 +510,15 @@ namespace WCFArchitect.Projects
 			if (Owner != null)
 				Owner.IsDirty = true;
 
-			StringBuilder sb = new StringBuilder();
-			foreach(MethodParameter p in Parameters)
-				sb.AppendFormat("{0}, ", p.ToString());
-			sb.Remove(sb.Length - 2, 2);
-			if (e.Property != Data.DeclarationProperty) Declaration = string.Format("{0} {1} {2}({3});", ReturnType.ToScopeString(), ReturnType.ToString(), Name, sb.ToString());
+			if (e.Property != Operation.DeclarationProperty && e.Property != Operation.ContractDeclarationProperty)
+			{
+				StringBuilder sb = new StringBuilder();
+				foreach(MethodParameter p in Parameters)
+					sb.AppendFormat("{0}, ", p.ToString());
+				sb.Remove(sb.Length - 2, 2);
+				Declaration = string.Format("{0} {1} {2}({3});", ReturnType.ToScopeString(), ReturnType.ToString(), Name, sb.ToString());
+				ContractDeclaration = string.Format("{0} {1} {2}({3});", ReturnType.ToScopeString(), ReturnType.ToString(), ContractName, sb.ToString());
+			}
 		}
 
 		public override List<FindReplaceResult> FindReplace(FindReplaceInfo Args)

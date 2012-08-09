@@ -26,7 +26,7 @@
 				<local:ProjectList ItemsSource="{Binding Path=Children}" ItemContainerStyle="{StaticResource NamespaceContainerTemplate}" ItemTemplate="{StaticResource NamespaceItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
 				<local:ProjectItemList ItemsSource="{Binding Path=Bindings}" ItemContainerStyle="{StaticResource BindingContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListBindingTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
 				<local:ProjectItemList ItemsSource="{Binding Path=Security}" ItemContainerStyle="{StaticResource SecurityContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListSecurityTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
-				<local:ProjectList ItemsSource="{Binding Path=Hosts}" ItemContainerStyle="{StaticResource HostContainerTemplate}" ItemTemplate="{StaticResource HostItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+				<local:ProjectItemList ItemsSource="{Binding Path=Hosts}" ItemContainerStyle="{StaticResource HostContainerTemplate}" ItemTemplate="{StaticResource HostItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
 			</StackPanel>
 		</ScrollViewer>
 		<GridSplitter ResizeDirection="Columns" Grid.Column="0" Grid.Row="1" Width="5" Height="Auto" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0" Background="Transparent" />
