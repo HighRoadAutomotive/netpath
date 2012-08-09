@@ -141,8 +141,13 @@
 				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
 			<TextBlock Text="{Binding Path=FullName, RelativeSource={RelativeSource TemplatedParent}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-			<local:ProjectItemList ItemsSource="{Binding Path=Operations}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListOperationTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+			<local:ProjectItemList x:Name="SubItems" Visibility="Collapsed" ItemsSource="{Binding Path=Operations}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListOperationTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
 		</StackPanel>
+		<DataTemplate.Triggers>
+			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}},Path=IsChecked}" Value="True" >
+				<Setter TargetName="SubItems" Property="Visibility" Value="Visible" />
+			</DataTrigger>
+		</DataTemplate.Triggers>
 	</DataTemplate>
 
 	
@@ -212,8 +217,13 @@
 			<TextBlock Text="{Binding Path=Declaration, StringFormat='Signature: {0}'}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 			<TextBlock Text="{Binding Path=ContractType.Declaration, StringFormat='Contract: {0}'}" Visibility="{Binding Path=HasContractType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 			<TextBlock Text="{Binding Path=WPFType.Declaration, StringFormat='WPF: {0}'}" Visibility="{Binding Path=HasWPFType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-			<local:ProjectItemList ItemsSource="{Binding Path=Elements}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplate="{StaticResource DataElementItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+			<local:ProjectItemList x:Name="SubItems" Visibility="Collapsed" ItemsSource="{Binding Path=Elements}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplate="{StaticResource DataElementItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
 		</StackPanel>
+		<DataTemplate.Triggers>
+			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}},Path=IsChecked}" Value="True" >
+				<Setter TargetName="SubItems" Property="Visibility" Value="Visible" />
+			</DataTrigger>
+		</DataTemplate.Triggers>
 	</DataTemplate>
 
 	
@@ -279,8 +289,13 @@
 			</StackPanel>
 			<TextBlock Text="{Binding Path=Declaration, StringFormat='Server: {0}'}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 			<TextBlock Text="{Binding Path=ContractType.Declaration, StringFormat='Contract: {0}'}" Visibility="{Binding Path=HasContractType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-			<local:ProjectItemList ItemsSource="{Binding Path=Elements}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplate="{StaticResource EnumElementItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+			<local:ProjectItemList x:Name="SubItems" Visibility="Collapsed" ItemsSource="{Binding Path=Elements}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplate="{StaticResource EnumElementItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
 		</StackPanel>
+		<DataTemplate.Triggers>
+			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}},Path=IsChecked}" Value="True" >
+				<Setter TargetName="SubItems" Property="Visibility" Value="Visible" />
+			</DataTrigger>
+		</DataTemplate.Triggers>
 	</DataTemplate>
 		
 	
@@ -596,17 +611,24 @@
 				<TextBlock Text="{TemplateBinding Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
 			<TextBlock Text="{Binding Path=FullName, RelativeSource={RelativeSource TemplatedParent}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-			<local:ProjectList ItemsSource="{Binding Path=Children}" ItemContainerStyle="{StaticResource NamespaceContainerTemplate}" ItemTemplate="{StaticResource NamespaceItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
-			<local:ProjectList ItemsSource="{Binding Path=Services}" ItemContainerStyle="{StaticResource ServiceContainerTemplate}" ItemTemplate="{StaticResource ServiceItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
-			<local:ProjectList ItemsSource="{Binding Path=Data}" ItemContainerStyle="{StaticResource DataContainerTemplate}" ItemTemplate="{StaticResource DataItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
-			<local:ProjectList ItemsSource="{Binding Path=Enums}" ItemContainerStyle="{StaticResource EnumContainerTemplate}" ItemTemplate="{StaticResource EnumItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
-			<local:ProjectItemList ItemsSource="{Binding Path=Bindings}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListBindingTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
-			<local:ProjectItemList ItemsSource="{Binding Path=Security}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListSecurityTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
-			<local:ProjectItemList ItemsSource="{Binding Path=Hosts}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplate="{StaticResource HostItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+			<local:ProjectList x:Name="SubItems1" Visibility="Collapsed" ItemsSource="{Binding Path=Children}" ItemContainerStyle="{StaticResource NamespaceContainerTemplate}" ItemTemplate="{StaticResource NamespaceItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+			<local:ProjectList x:Name="SubItems2" Visibility="Collapsed" ItemsSource="{Binding Path=Services}" ItemContainerStyle="{StaticResource ServiceContainerTemplate}" ItemTemplate="{StaticResource ServiceItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+			<local:ProjectList x:Name="SubItems3" Visibility="Collapsed" ItemsSource="{Binding Path=Data}" ItemContainerStyle="{StaticResource DataContainerTemplate}" ItemTemplate="{StaticResource DataItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+			<local:ProjectList x:Name="SubItems4" Visibility="Collapsed" ItemsSource="{Binding Path=Enums}" ItemContainerStyle="{StaticResource EnumContainerTemplate}" ItemTemplate="{StaticResource EnumItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+			<local:ProjectItemList x:Name="SubItems5" Visibility="Collapsed" ItemsSource="{Binding Path=Bindings}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListBindingTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+			<local:ProjectItemList x:Name="SubItems6" Visibility="Collapsed" ItemsSource="{Binding Path=Security}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListSecurityTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+			<local:ProjectItemList x:Name="SubItems7" Visibility="Collapsed" ItemsSource="{Binding Path=Hosts}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplate="{StaticResource HostItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
 		</StackPanel>
 		<DataTemplate.Triggers>
 			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}},Path=IsChecked}" Value="True" >
 				<Setter TargetName="Icon" Property="Source" Value="pack://application:,,,/WCFArchitect;component/Icons/X16/NamespaceOpen.png" />
+				<Setter TargetName="SubItems1" Property="Visibility" Value="Visible" />
+				<Setter TargetName="SubItems2" Property="Visibility" Value="Visible" />
+				<Setter TargetName="SubItems3" Property="Visibility" Value="Visible" />
+				<Setter TargetName="SubItems4" Property="Visibility" Value="Visible" />
+				<Setter TargetName="SubItems5" Property="Visibility" Value="Visible" />
+				<Setter TargetName="SubItems6" Property="Visibility" Value="Visible" />
+				<Setter TargetName="SubItems7" Property="Visibility" Value="Visible" />
 			</DataTrigger>
 		</DataTemplate.Triggers>
 	</DataTemplate>

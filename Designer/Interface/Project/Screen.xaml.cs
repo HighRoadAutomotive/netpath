@@ -46,6 +46,21 @@ namespace WCFArchitect.Interface.Project
 		{
 			throw new NotImplementedException();
 		}
+
+		private void NewItem_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void SaveProject_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void BuildProject_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
 	}
 
 	public class ProjectList : ItemsControl
