@@ -144,7 +144,7 @@ namespace WCFArchitect.Projects
 
 		public static Project Open(string SolutionPath, string ProjectPath)
 		{
-			string abspath = new Uri(new Uri(System.IO.Path.GetDirectoryName(SolutionPath)), ProjectPath).LocalPath;
+			string abspath = new Uri(new Uri(SolutionPath), ProjectPath).AbsolutePath;
 
 			//Check the file to make sure it exists
 			if (!System.IO.File.Exists(abspath))

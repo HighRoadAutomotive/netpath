@@ -47,11 +47,11 @@ namespace WCFArchitect.Projects
 		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Data));
 
-		public Data()
+		public Data() : base(DataTypeMode.Class)
 		{
 		}
 
-		public Data(string Name, Namespace Parent)
+		public Data(string Name, Namespace Parent) : base(DataTypeMode.Class)
 		{
 			this.Elements = new ObservableCollection<DataElement>();
 			this.ID = Guid.NewGuid();
