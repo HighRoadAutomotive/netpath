@@ -36,6 +36,8 @@
 		<Setter Property="HorizontalContentAlignment" Value="Center" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="UseLayoutRounding" Value="True" />
+		<Setter Property="Command" Value="{x:Static local:Screen.ChangeActivePageCommand}" />
+		<Setter Property="CommandParameter" Value="{Binding Path=Content}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type Button}">
@@ -100,6 +102,8 @@
 		<Setter Property="HorizontalContentAlignment" Value="Center" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="UseLayoutRounding" Value="True" />
+		<Setter Property="Command" Value="{x:Static local:Screen.ChangeActivePageCommand}" />
+		<Setter Property="CommandParameter" Value="{Binding Path=Content}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type ToggleButton}">
@@ -174,6 +178,8 @@
 		<Setter Property="HorizontalContentAlignment" Value="Center" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="UseLayoutRounding" Value="True" />
+		<Setter Property="Command" Value="{x:Static local:Screen.ChangeActivePageCommand}" />
+		<Setter Property="CommandParameter" Value="{Binding Path=Content}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type ToggleButton}">
@@ -247,6 +253,8 @@
 		<Setter Property="HorizontalContentAlignment" Value="Center" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="UseLayoutRounding" Value="True" />
+		<Setter Property="Command" Value="{x:Static local:Screen.ChangeActivePageCommand}" />
+		<Setter Property="CommandParameter" Value="{Binding Path=Content}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type ToggleButton}">
@@ -570,6 +578,8 @@
 		<Setter Property="HorizontalContentAlignment" Value="Center" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="UseLayoutRounding" Value="True" />
+		<Setter Property="Command" Value="{x:Static local:Screen.ChangeActivePageCommand}" />
+		<Setter Property="CommandParameter" Value="{Binding Path=Content}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type ToggleButton}">

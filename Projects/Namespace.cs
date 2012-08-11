@@ -56,7 +56,7 @@ namespace WCFArchitect.Projects
 		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Namespace));
 
-		private Namespace() : base()
+		private Namespace() : base(DataTypeMode.Namespace)
 		{
 			this.Parent = null;
 			this.Children = new ObservableCollection<Namespace>();
@@ -69,7 +69,7 @@ namespace WCFArchitect.Projects
 			this.URI = "";
 		}
 
-		public Namespace(string Name, Namespace Parent, Project Owner) : base()
+		public Namespace(string Name, Namespace Parent, Project Owner) : base(DataTypeMode.Namespace)
 		{
 			this.ID = Guid.NewGuid();
 			this.Name = Name;

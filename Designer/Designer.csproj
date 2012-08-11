@@ -160,6 +160,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Interface\Dialogs\NewItem.xaml.cs">
+      <DependentUpon>NewItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interface\Dialogs\NewProject.xaml.cs">
       <DependentUpon>NewProject.xaml</DependentUpon>
     </Compile>
@@ -179,6 +182,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Globals.cs" />
+    <Page Include="Interface\Dialogs\NewItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Interface\Dialogs\NewProject.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -22,6 +22,21 @@ namespace WCFArchitect.Interface.Project
 
 		public object ActivePage { get { return (object)GetValue(ActivePageProperty); } set { SetValue(ActivePageProperty, value); } }
 		public static readonly DependencyProperty ActivePageProperty = DependencyProperty.Register("ActivePage", typeof(object), typeof(Screen));
+		
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static RoutedCommand ChangeActivePageCommand = new RoutedCommand();
+
+		static Screen()
+		{
+			CommandManager.RegisterClassCommandBinding(typeof(Screen), new CommandBinding(Screen.ChangeActivePageCommand, OnChangeActivePageCommandExecuted));
+		}
+
+		private static void OnChangeActivePageCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			Screen s = e.Source as Screen;
+			if (s == null) return;
+			Projects.OpenableDocument d = e.Parameter as Projects.OpenableDocument;
+			s.OpenProjectItem(d);
+		}
 
 		public Screen()
 		{
@@ -44,22 +59,27 @@ namespace WCFArchitect.Interface.Project
 
 		void Project_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 		{
-			throw new NotImplementedException();
+
 		}
 
 		private void NewItem_Click(object sender, RoutedEventArgs e)
 		{
-
+			Globals.ShowDialogBox(Project, "New Item", new Dialogs.NewItem(Project, new Action<Projects.OpenableDocument>(OpenProjectItem)));
 		}
 
 		private void SaveProject_Click(object sender, RoutedEventArgs e)
 		{
-
+			Projects.Project.Save(Project);
 		}
 
 		private void BuildProject_Click(object sender, RoutedEventArgs e)
 		{
+			//Need the compiler driver for this to work.
+		}
 
+		private void OpenProjectItem(Projects.OpenableDocument Item)
+		{
+			//Need to make all item pages before this function can be completed.
 		}
 	}
 
@@ -170,5 +190,23 @@ namespace WCFArchitect.Interface.Project
 			if (item.GetType() == typeof(Projects.Property)) return PropertyTemplate;
 			return MethodTemplate;
 		}
+	}
+
+	public class NewItemType : DependencyObject
+	{
+		public string ImageSource { get { return (string)GetValue(ImageSourceProperty); } set { SetValue(ImageSourceProperty, value); } }
+		public static readonly DependencyProperty ImageSourceProperty = DependencyProperty.Register("ImageSource", typeof(string), typeof(NewItemType));
+
+		public string Title { get { return (string)GetValue(TitleProperty); } set { SetValue(TitleProperty, value); } }
+		public static readonly DependencyProperty TitleProperty = DependencyProperty.Register("Title", typeof(string), typeof(NewItemType));
+
+		public string Description { get { return (string)GetValue(DescriptionProperty); } set { SetValue(DescriptionProperty, value); } }
+		public static readonly DependencyProperty DescriptionProperty = DependencyProperty.Register("Description", typeof(string), typeof(NewItemType));
+
+		public string Frameworks { get { return (string)GetValue(FrameworksProperty); } set { SetValue(FrameworksProperty, value); } }
+		public static readonly DependencyProperty FrameworksProperty = DependencyProperty.Register("Frameworks", typeof(string), typeof(NewItemType));
+
+		public int DataType { get { return (int)GetValue(DataTypeProperty); } set { SetValue(DataTypeProperty, value); } }
+		public static readonly DependencyProperty DataTypeProperty = DependencyProperty.Register("DataType", typeof(int), typeof(NewItemType));
 	}
 }

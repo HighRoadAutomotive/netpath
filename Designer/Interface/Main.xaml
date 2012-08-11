@@ -58,6 +58,48 @@
 				</Setter.Value>
 			</Setter>					
 		</Style>
+		<Style x:Key="{x:Type local:SolutionItem}" TargetType="{x:Type local:SolutionItem}">
+			<Setter Property="Background" Value="{StaticResource ButtonBackgroundColor}" />
+			<Setter Property="BorderBrush" Value="{StaticResource ButtonBorderColor}" />
+			<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
+			<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
+			<Setter Property="FontSize" Value="13pt" />
+			<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
+			<Setter Property="Padding" Value="15,0" />
+			<Setter Property="VerticalContentAlignment" Value="Center" />
+			<Setter Property="SnapsToDevicePixels" Value="true"/>
+			<Setter Property="UseLayoutRounding" Value="true"/>
+			<Setter Property="OverridesDefaultStyle" Value="true"/>
+			<Setter Property="DataContext" Value="{Binding RelativeSource={RelativeSource Self}}" />
+			<Setter Property="Command" Value="{x:Static local:Main.SelectProjectCommand}" />
+			<Setter Property="CommandParameter" Value="{Binding Path=Content}" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type local:SolutionItem}">
+						<Border x:Name="Border" CornerRadius="0" BorderThickness="0" Background="Transparent" BorderBrush="{TemplateBinding BorderBrush}" Padding="{TemplateBinding Padding}">
+							<StackPanel Orientation="Horizontal" Margin="{TemplateBinding Padding}">
+								<ContentPresenter Content="{TemplateBinding Header}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+								<TextBlock x:Name="NotifyCount" Text="{Binding Path=NotificationCount}" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" FontSize="10pt" FontWeight="Bold" VerticalAlignment="Top" Margin="3,4,0,0" />
+							</StackPanel>
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsKeyboardFocused" Value="true">
+								<Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource ButtonMouseOverColor}" />
+							</Trigger>
+							<Trigger Property="IsMouseOver" Value="true">
+								<Setter TargetName="Border" Property="Background" Value="{StaticResource ButtonMouseOverColor}" />
+							</Trigger>
+							<Trigger Property="IsPressed" Value="true">
+								<Setter TargetName="Border" Property="Background" Value="{StaticResource WindowBorderColor}" />
+							</Trigger>
+							<Trigger Property="IsSelected" Value="true">
+								<Setter TargetName="Border" Property="Background" Value="{StaticResource WindowBorderColor}" />
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
 	</Window.Resources>
 	<Border x:Name="WindowBorder" BorderThickness="0" BorderBrush="{StaticResource WindowBorderColor}" Background="{StaticResource WindowBackground}" Margin="8">
 		<Grid>
@@ -315,38 +357,36 @@
 					</Grid>
 				</Grid>
 			</Border>
-			<Border x:Name="MessageBox" Background="#66000000" Grid.RowSpan="2" Visibility="Hidden">
+			<Border x:Name="MessageBox" Background="#66000000" Grid.RowSpan="2" Visibility="Hidden" IsHitTestVisible="True">
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="*"/>
 						<RowDefinition Height="*"/>
 						<RowDefinition Height="*"/>
 					</Grid.RowDefinitions>
-					<Border Grid.Row="1" Background="{StaticResource WindowBackground}" IsHitTestVisible="True">
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="60"/>
-								<RowDefinition Height="*"/>
-								<RowDefinition Height="55"/>
-							</Grid.RowDefinitions>
-							<TextBlock Grid.Row="0" Margin="10" FontSize="24pt">
-								<TextBlock.Text>
-									<MultiBinding StringFormat="{}{0} - {1}" TargetNullValue="">
-										<Binding Path="MessageProject" />
-										<Binding Path="MessageCaption" />
-									</MultiBinding>
-								</TextBlock.Text>
-							</TextBlock>
-							<ContentControl Content="{Binding Path=Message}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="14pt" Grid.Row="1" Margin="20" />
-							<ItemsControl x:Name="MessageBoxButtons" ItemsSource="{Binding Path=MessageActions}" Grid.Row="2" Margin="5" HorizontalAlignment="Right">
-								<ItemsControl.ItemsPanel>
-									<ItemsPanelTemplate>
-										<StackPanel Orientation="Horizontal" />
-									</ItemsPanelTemplate>
-								</ItemsControl.ItemsPanel>
-							</ItemsControl>
-						</Grid>
-					</Border>
+					<Grid Background="{StaticResource WindowBackground}" Grid.Row="1" >
+						<Grid.RowDefinitions>
+							<RowDefinition Height="60"/>
+							<RowDefinition Height="*"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+						<TextBlock Grid.Row="0" Margin="10" FontSize="24pt">
+							<TextBlock.Text>
+								<MultiBinding StringFormat="{}{0} - {1}" TargetNullValue="">
+									<Binding Path="MessageProject" />
+									<Binding Path="MessageCaption" />
+								</MultiBinding>
+							</TextBlock.Text>
+						</TextBlock>
+						<ContentControl Content="{Binding Path=Message}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="14pt" Grid.Row="1" Margin="{Binding Path=MessagePadding}" />
+						<ItemsControl x:Name="MessageBoxButtons" ItemsSource="{Binding Path=MessageActions}" Grid.Row="2" Margin="5" HorizontalAlignment="Right">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Orientation="Horizontal" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+						</ItemsControl>
+					</Grid>
 				</Grid>
 			</Border>
 		</Grid>

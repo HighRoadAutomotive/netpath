@@ -65,8 +65,6 @@ namespace WCFArchitect
 			if (!Path.IsPathRooted(FilePath)) FilePath = Path.GetFullPath(FilePath);
 			if (!Path.IsPathRooted(BasePath)) BasePath = Path.GetFullPath(BasePath);
 
-			if (!BasePath.EndsWith("\\")) BasePath += "\\";
-
 			Uri t = new Uri("file:///" + FilePath);
 			Uri b = new Uri("file:///" + BasePath);
 			return b.MakeRelativeUri(t).ToString();
@@ -114,6 +112,7 @@ namespace WCFArchitect
 				
 				//Load projects
 				Globals.Projects = new ObservableCollectionSortable<Projects.Project>();
+				Globals.Projects.CollectionChanged += Globals.MainScreen.Projects_CollectionChanged;
 				foreach (string p in Globals.Solution.Projects)
 				{
 					if (System.IO.File.Exists(System.IO.Path.ChangeExtension(p, ".bak")))
@@ -212,13 +211,19 @@ namespace WCFArchitect
 
 		public static void ShowMessageBox(Projects.Project Origin, string Caption, string Message, params MessageAction[] Actions)
 		{
-			Messages.Enqueue(new MessageBox(Origin, Caption, Message, new List<MessageAction>(Actions)));
+			Messages.Enqueue(new MessageBox(Origin, Caption, Message, new List<MessageAction>(Actions), false));
+			Globals.MainScreen.ProcessNextMessage();
+		}
+
+		public static void ShowDialogBox(Projects.Project Origin, string Caption, object Content)
+		{
+			Messages.Enqueue(new MessageBox(Origin, Caption, Content, new List<MessageAction>(), true));
 			Globals.MainScreen.ProcessNextMessage();
 		}
 
 		public static void ShowDialogBox(Projects.Project Origin, string Caption, object Content, params MessageAction[] Actions)
 		{
-			Messages.Enqueue(new MessageBox(Origin, Caption, Content, new List<MessageAction>(Actions)));
+			Messages.Enqueue(new MessageBox(Origin, Caption, Content, new List<MessageAction>(Actions), true));
 			Globals.MainScreen.ProcessNextMessage();
 		}
 	}
@@ -235,13 +240,15 @@ namespace WCFArchitect
 		public static readonly DependencyProperty ActionsProperty = DependencyProperty.Register("Actions", typeof(List<MessageAction>), typeof(MessageBox));
 
 		public Projects.Project Origin { get; private set; }
+		public bool HasDialogContent { get; private set; }
 
-		public MessageBox(Projects.Project Origin, string Caption, object Message, List<MessageAction> Actions)
+		public MessageBox(Projects.Project Origin, string Caption, object Message, List<MessageAction> Actions, bool HasDialogContent)
 		{
 			this.Origin = Origin;
 			this.Caption = Caption;
 			this.Message = Message;
 			this.Actions = Actions;
+			this.HasDialogContent = HasDialogContent;
 		}
 	}
 

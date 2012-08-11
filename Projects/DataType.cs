@@ -12,6 +12,7 @@ namespace WCFArchitect.Projects
 	public enum DataTypeMode
 	{
 		Primitive,
+		Namespace,
 		Enum,
 		Class,
 		Struct,
@@ -105,6 +106,7 @@ namespace WCFArchitect.Projects
 			this.TypeMode = DataTypeMode.Class;
 			this.IsPartial = true;
 			this.Primitive = PrimitiveTypes.None;
+			this.HasContractType = false;
 			InheritedTypes = new ObservableCollection<DataType>();
 		}
 
@@ -116,6 +118,7 @@ namespace WCFArchitect.Projects
 			this.IsPartial = false;
 			if (Mode == DataTypeMode.Class || Mode == DataTypeMode.Struct) this.IsPartial = true;
 			this.Primitive = PrimitiveTypes.None;
+			this.HasContractType = false;
 			InheritedTypes = new ObservableCollection<DataType>();
 		}
 
@@ -125,6 +128,7 @@ namespace WCFArchitect.Projects
 			this.Scope = DataScope.Public;
 			this.Primitive = Primitive;
 			this.IsPartial = false;
+			this.HasContractType = false;
 			this.TypeMode = DataTypeMode.Primitive;
 		}
 
@@ -134,6 +138,7 @@ namespace WCFArchitect.Projects
 			this.Scope = DataScope.Public;
 			this.IsPartial = false;
 			this.TypeMode = DataTypeMode.External;
+			this.HasContractType = false;
 			this.ExternalType = ExternalType;
 		}
 
@@ -172,6 +177,7 @@ namespace WCFArchitect.Projects
 
 		public string ToStorageClassString()
 		{
+			if (TypeMode == DataTypeMode.Namespace) return "namespace";
 			if (TypeMode == DataTypeMode.Class) return "class";
 			if (TypeMode == DataTypeMode.Struct) return "struct";
 			if (TypeMode == DataTypeMode.Enum) return "enum";
@@ -204,6 +210,8 @@ namespace WCFArchitect.Projects
 				if (Primitive == Projects.PrimitiveTypes.Version) return string.Format("{0} Version {1}", ToScopeString(), Name);
 				if (Primitive == Projects.PrimitiveTypes.ByteArray) return string.Format("{0} byte[] {1}", ToScopeString(), Name);
 			}
+			else if (TypeMode == DataTypeMode.Namespace)
+				return Parent == null ? string.Format("namespace {0}", Name) : string.Format("namespace {0}.{1}", Parent.FullName, Name);
 			else if (TypeMode == Projects.DataTypeMode.Class || TypeMode == Projects.DataTypeMode.Struct || TypeMode == Projects.DataTypeMode.Enum)
 				return string.Format("{0} {1}{2}{3} {4}{5}", ToScopeString(), IsPartial == true ? "partial " : "", IsAbstract == true ? "abstract " : "", ToStorageClassString(), Name, ToInheritedString());
 			else if (TypeMode == Projects.DataTypeMode.Array)
@@ -243,6 +251,8 @@ namespace WCFArchitect.Projects
 				if (Primitive == Projects.PrimitiveTypes.Version) return "Version";
 				if (Primitive == Projects.PrimitiveTypes.ByteArray) return "byte[]";
 			}
+			else if (TypeMode == DataTypeMode.Namespace)
+				return Parent == null ? Name : string.Format("{0}.{1}", Parent.FullName, Name);
 			else if (TypeMode == Projects.DataTypeMode.Class || TypeMode == Projects.DataTypeMode.Struct || TypeMode == Projects.DataTypeMode.Enum)
 				return string.Format("{0}.{1}", Parent.FullName, Name);
 			else if (TypeMode == Projects.DataTypeMode.Array)

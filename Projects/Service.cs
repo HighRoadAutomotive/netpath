@@ -44,11 +44,11 @@ namespace WCFArchitect.Projects
 		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Service));
 
-		public Service() : base()
+		public Service() : base(DataTypeMode.Class)
 		{
 		}
 
-		public Service(string Name, Namespace Parent) : base()
+		public Service(string Name, Namespace Parent) : base(DataTypeMode.Class)
 		{
 			this.IsOpen = false;
 			this.IsCallback = false;

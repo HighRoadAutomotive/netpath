@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using WCFArchitect.Interface.Project;
 
 namespace WCFArchitect.Interface
 {
@@ -31,6 +32,9 @@ namespace WCFArchitect.Interface
 
 		public object Message { get { return (object)GetValue(MessageProperty); } set { SetValue(MessageProperty, value); } }
 		public static readonly DependencyProperty MessageProperty = DependencyProperty.Register("Message", typeof(object), typeof(Main));
+
+		public Thickness MessagePadding { get { return (Thickness)GetValue(MessagePaddingProperty); } set { SetValue(MessagePaddingProperty, value); } }
+		public static readonly DependencyProperty MessagePaddingProperty = DependencyProperty.Register("MessagePadding", typeof(Thickness), typeof(Main));
 
 		public ObservableCollection<Button> MessageActions { get { return (ObservableCollection<Button>)GetValue(MessageActionsProperty); } set { SetValue(MessageActionsProperty, value); } }
 		public static readonly DependencyProperty MessageActionsProperty = DependencyProperty.Register("MessageActions", typeof(ObservableCollection<Button>), typeof(Main));
@@ -62,7 +66,6 @@ namespace WCFArchitect.Interface
 			InitializeComponent();
 
 			Globals.MainScreen = this;
-			Globals.Projects.CollectionChanged += Projects_CollectionChanged;
 
 			//Initialize the Home screen.
 			RefreshRecentList();
@@ -195,6 +198,8 @@ namespace WCFArchitect.Interface
 					else MessageProject = "WCF ARCHITECT";
 					MessageCaption = next.Caption;
 					Message = next.Message;
+					if (next.HasDialogContent == true) MessagePadding = new Thickness(5, 0, 5, 0);
+					else MessagePadding = new Thickness(20);
 					foreach (MessageAction a in next.Actions)
 					{
 						Button nb = new Button();
@@ -206,6 +211,15 @@ namespace WCFArchitect.Interface
 					}
 				}
 			}
+		}
+
+		public void CloseActiveMessageBox()
+		{
+			IsProcessingMessage = false;
+			MessageBox.Visibility = System.Windows.Visibility.Hidden;
+
+			if (Globals.Messages.Count > 0)
+				ProcessNextMessage();
 		}
 
 		private void MessageAction_Click(object sender, RoutedEventArgs e)
@@ -277,25 +291,43 @@ namespace WCFArchitect.Interface
 
 		#region - Projects -
 
-		private void Projects_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		internal void Projects_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 		{
 			if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
 			{
-
+				ScreenButtons.Items.Add(new SolutionItem(e.NewItems[0] as Projects.Project));
 			}
 			if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
 			{
+				foreach(SolutionItem pi in ScreenButtons.Items)
+					if(pi.Project == e.OldItems[0])
+						ScreenButtons.Items.Remove(pi);
 			}
 		}
 
 		private static void OnSelectProjectCommandExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
-			ProjectItem t = e.Parameter as ProjectItem;
+			Screen t = e.Parameter as Screen;
 			if (t == null) return;
 			Main s = sender as Main;
 			if (s == null) return;
 
-			s.SelectedProject = t.Content;
+			s.SelectProjectScreen(t);
+		}
+
+		private void SelectProjectScreen(Screen NewScreen)
+		{
+			SelectedProject = NewScreen;
+			ActiveProjectScreen.Visibility = System.Windows.Visibility.Visible;
+			HomeScreen.Visibility = Visibility.Collapsed;
+			OptionsScreen.Visibility = Visibility.Collapsed;
+
+			foreach (SolutionItem pi in ScreenButtons.Items)
+			{
+				pi.IsSelected = false;
+				if (pi.Project == NewScreen.Project)
+					pi.IsSelected = true;
+			}
 		}
 
 		#endregion
@@ -444,25 +476,28 @@ namespace WCFArchitect.Interface
 		public void NewNETProject(string Name, string Path)
 		{
 			Projects.Project NP = new Projects.ProjectNET(Name);
-			Globals.Solution.Projects.Add(Globals.GetRelativePath(System.IO.Path.GetDirectoryName(Globals.SolutionPath), Path));
+			Globals.Solution.Projects.Add(Globals.GetRelativePath(Globals.SolutionPath, Path));
 			Projects.Project.Save(NP, Path);
 			Globals.Projects.Add(Projects.Project.Open(Globals.SolutionPath, Path));
+			Globals.SaveSolution();
 		}
 
 		public void NewSLProject(string Name, string Path)
 		{
 			Projects.Project NP = new Projects.ProjectSL(Name);
-			Globals.Solution.Projects.Add(Globals.GetRelativePath(System.IO.Path.GetDirectoryName(Globals.SolutionPath), Path));
+			Globals.Solution.Projects.Add(Globals.GetRelativePath(Globals.SolutionPath, Path));
 			Projects.Project.Save(NP, Path);
 			Globals.Projects.Add(Projects.Project.Open(Globals.SolutionPath, Path));
+			Globals.SaveSolution();
 		}
 
 		public void NewRTProject(string Name, string Path)
 		{
 			Projects.Project NP = new Projects.ProjectRT(Name);
-			Globals.Solution.Projects.Add(Globals.GetRelativePath(System.IO.Path.GetDirectoryName(Globals.SolutionPath), Path));
+			Globals.Solution.Projects.Add(Globals.GetRelativePath(Globals.SolutionPath, Path));
 			Projects.Project.Save(NP, Path);
 			Globals.Projects.Add(Projects.Project.Open(Globals.SolutionPath, Path));
+			Globals.SaveSolution();
 		}
 
 		public void OpenSolution(string Path)
@@ -500,6 +535,14 @@ namespace WCFArchitect.Interface
 				}
 
 				RefreshRecentList();
+
+				//Select the first screen if any project were loaded.
+				if (Globals.Projects.Count > 0)
+				{
+					SolutionItem t = ScreenButtons.Items[0] as SolutionItem;
+					if (t != null)
+						SelectProjectScreen(t.Content as Screen);
+				}
 
 				AddNETProject.IsEnabled = true;
 				AddSLProject.IsEnabled = true;
@@ -555,17 +598,17 @@ namespace WCFArchitect.Interface
 		#endregion
 	}
 
-	internal partial class ProjectItem : Button
+	internal partial class SolutionItem : Button
 	{
 		public bool IsSelected { get { return (bool)GetValue(IsSelectedProperty); } set { SetValue(IsSelectedProperty, value); } }
-		public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.Register("IsSelected", typeof(bool), typeof(ProjectItem), new PropertyMetadata(false));
+		public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.Register("IsSelected", typeof(bool), typeof(SolutionItem), new PropertyMetadata(false));
 
 		public object Header { get { return (object)GetValue(HeaderProperty); } set { SetValue(HeaderProperty, value); } }
-		public static readonly DependencyProperty HeaderProperty = DependencyProperty.Register("Header", typeof(object), typeof(ProjectItem), new PropertyMetadata(new object()));
+		public static readonly DependencyProperty HeaderProperty = DependencyProperty.Register("Header", typeof(object), typeof(SolutionItem), new PropertyMetadata(new object()));
 
 		internal Projects.Project Project { get; private set; }
 
-		public ProjectItem(Projects.Project Project)
+		public SolutionItem(Projects.Project Project)
 		{
 			this.Project = Project;
 			this.Header = Project.Name.ToUpper();
