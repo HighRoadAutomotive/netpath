@@ -15,24 +15,35 @@
 			</ResourceDictionary>
 		</Grid.Resources>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="40" />
+			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="280" MinWidth="280" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
-		<StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0">
-			<Button x:Name="NewItem" Background="Transparent" Width="42" Padding="0" Click="NewItem_Click" >
-				<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/NewItem.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" />
-			</Button>
-			<Button x:Name="SaveProject" Background="Transparent" Width="42" Padding="0" Click="SaveProject_Click" >
-				<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/Save.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" />
-			</Button>
-			<Button x:Name="BuildProject" Background="Transparent" Width="42" Padding="0" Click="BuildProject_Click" >
-				<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/BuildSolution.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" />
-			</Button>
-		</StackPanel>
+		<Button Grid.Column="0" Grid.Row="0" Padding="2" Margin="0,0,5,0" Background="#22FFFFFF" Style="{StaticResource LeafNodeContainerTemplate}" Command="{x:Static local:Screen.ChangeActivePageCommand}" CommandParameter="{Binding Path=Project}">
+			<StackPanel Orientation="Vertical">
+				<StackPanel Orientation="Horizontal" Margin="0,0,0,3">
+					<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X32/Project.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,5,3" />
+					<TextBlock Text="{Binding Path=Project.Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="16pt" VerticalAlignment="Center" />
+				</StackPanel>
+				<StackPanel Orientation="Horizontal">
+					<Button x:Name="NewItem" Background="Transparent" Width="40" Padding="0" Click="NewItem_Click" >
+						<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/NewItem.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" />
+					</Button>
+					<Button x:Name="SaveProject" Background="Transparent" Width="38" Padding="0" Click="SaveProject_Click" >
+						<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/Save.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" />
+					</Button>
+					<Button x:Name="BuildProject" Background="Transparent" Width="38" Padding="0" Click="BuildProject_Click" >
+						<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/BuildSolution.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" />
+					</Button>
+					<Button x:Name="DeleteProject" Background="Transparent" Width="38" Padding="0" Click="DeleteProject_Click" >
+						<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/Delete.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" />
+					</Button>
+				</StackPanel>
+			</StackPanel>
+		</Button>
 		<ScrollViewer Grid.Column="0" Grid.Row="1" Margin="0,0,5,0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
 			<StackPanel Orientation="Vertical" >
 				<local:ProjectList ItemsSource="{Binding Path=Project.Namespace.Children}" ItemContainerStyle="{StaticResource NamespaceContainerTemplate}" ItemTemplate="{StaticResource NamespaceItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
@@ -45,6 +56,6 @@
 			</StackPanel>
 		</ScrollViewer>
 		<GridSplitter ResizeDirection="Columns" Grid.Column="0" Grid.Row="1" Width="5" Height="Auto" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0" Background="Transparent" />
-		<ContentPresenter Content="{Binding Path=ActivePage}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+		<ContentPresenter Content="{Binding Path=ActivePage}" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 	</Grid>
 </ContentControl>
