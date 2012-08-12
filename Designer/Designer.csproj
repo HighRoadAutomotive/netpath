@@ -591,7 +591,12 @@
     <Resource Include="Icons\X32\FlagImportant.png" />
     <Resource Include="Icons\X32\FlagRecent.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Icons\X16\NetHTTP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\X32\NetHTTP.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

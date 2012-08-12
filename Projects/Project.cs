@@ -70,7 +70,7 @@ namespace WCFArchitect.Projects
 		[IgnoreDataMember()] public bool IsDirty { get { return (bool)GetValue(IsDirtyProperty); } set { if (IsActive == true) SetValue(IsDirtyProperty, value); } }
 		public static readonly DependencyProperty IsDirtyProperty = DependencyProperty.Register("IsDirty", typeof(bool), typeof(OpenableDocument), new UIPropertyMetadata(false));
 
-		public OpenableDocument()
+		public OpenableDocument() : base()
 		{
 			IsActive = false;
 			IsDirty = false;

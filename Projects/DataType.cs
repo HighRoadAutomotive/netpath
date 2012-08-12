@@ -100,7 +100,7 @@ namespace WCFArchitect.Projects
 		public DataTypeMode TypeMode { get; private set; }
 		public PrimitiveTypes Primitive { get; private set; }
 
-		public DataType()
+		public DataType() : base()
 		{
 			this.Scope = DataScope.Public;
 			this.TypeMode = DataTypeMode.Class;
@@ -110,7 +110,7 @@ namespace WCFArchitect.Projects
 			InheritedTypes = new ObservableCollection<DataType>();
 		}
 
-		public DataType(DataTypeMode Mode)
+		public DataType(DataTypeMode Mode) : base()
 		{
 			if (Mode == DataTypeMode.Primitive) throw new ArgumentException("Cannot use DataTypeMode.Primitive without specifying a Primitive. Please use the Primitive constructor.");
 			this.Scope = DataScope.Public;
@@ -122,7 +122,7 @@ namespace WCFArchitect.Projects
 			InheritedTypes = new ObservableCollection<DataType>();
 		}
 
-		public DataType(PrimitiveTypes Primitive)
+		public DataType(PrimitiveTypes Primitive) : base()
 		{
 			if (Primitive == PrimitiveTypes.None) throw new ArgumentException("Cannot set PrimitiveTypes.None using the Primitive DataType constructor. Please use the mode constructor.");
 			this.Scope = DataScope.Public;
@@ -132,7 +132,7 @@ namespace WCFArchitect.Projects
 			this.TypeMode = DataTypeMode.Primitive;
 		}
 
-		public DataType(string External, DataTypeMode ExternalType)
+		public DataType(string External, DataTypeMode ExternalType) : base()
 		{
 			this.Name = External;
 			this.Scope = DataScope.Public;
@@ -186,6 +186,8 @@ namespace WCFArchitect.Projects
 
 		public string ToDeclarationString()
 		{
+			if (Name == null) return "";
+
 			if (TypeMode == Projects.DataTypeMode.Primitive)
 			{
 				if (Primitive == Projects.PrimitiveTypes.Byte) return string.Format("{0} byte {1}", ToScopeString(), Name);
@@ -227,6 +229,8 @@ namespace WCFArchitect.Projects
 
 		public override string ToString()
 		{
+			if (Name == null) return "";
+
 			if (TypeMode == Projects.DataTypeMode.Primitive)
 			{
 				if (Primitive == Projects.PrimitiveTypes.Byte) return "byte";
@@ -254,7 +258,8 @@ namespace WCFArchitect.Projects
 			else if (TypeMode == DataTypeMode.Namespace)
 				return Parent == null ? Name : string.Format("{0}.{1}", Parent.FullName, Name);
 			else if (TypeMode == Projects.DataTypeMode.Class || TypeMode == Projects.DataTypeMode.Struct || TypeMode == Projects.DataTypeMode.Enum)
-				return string.Format("{0}.{1}", Parent.FullName, Name);
+				if (Parent != null) return string.Format("{0}.{1}", Parent.FullName, Name);
+				else return Name;
 			else if (TypeMode == Projects.DataTypeMode.Array)
 				return string.Format("{0}[]", CollectionGenericType.ToString());
 			else if (TypeMode == Projects.DataTypeMode.Collection)

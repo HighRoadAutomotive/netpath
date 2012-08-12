@@ -4,6 +4,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 	xmlns:local="clr-namespace:WCFArchitect.Interface.Project"
+	DataContext="{Binding RelativeSource={RelativeSource Self}}"
 	mc:Ignorable="d" d:DesignHeight="950" d:DesignWidth="1280">
     <Grid>
 		<Grid.Resources>
@@ -32,15 +33,15 @@
 				<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/BuildSolution.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" />
 			</Button>
 		</StackPanel>
-		<ScrollViewer Grid.Column="0" Grid.Row="1" Margin="0,0,5,0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" DataContext="{Binding Path=Project}" >
-			<StackPanel Orientation="Vertical" DataContext="{Binding Path=Namespace}">
-				<local:ProjectList ItemsSource="{Binding Path=Children}" ItemContainerStyle="{StaticResource NamespaceContainerTemplate}" ItemTemplate="{StaticResource NamespaceItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
-				<local:ProjectList ItemsSource="{Binding Path=Services}" ItemContainerStyle="{StaticResource ServiceContainerTemplate}" ItemTemplate="{StaticResource ServiceItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
-				<local:ProjectList ItemsSource="{Binding Path=Data}" ItemContainerStyle="{StaticResource DataContainerTemplate}" ItemTemplate="{StaticResource DataItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
-				<local:ProjectList ItemsSource="{Binding Path=Enums}" ItemContainerStyle="{StaticResource EnumContainerTemplate}" ItemTemplate="{StaticResource EnumItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
-				<local:ProjectItemList ItemsSource="{Binding Path=Bindings}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListBindingTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
-				<local:ProjectItemList ItemsSource="{Binding Path=Security}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListSecurityTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
-				<local:ProjectItemList ItemsSource="{Binding Path=Hosts}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplate="{StaticResource HostItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+		<ScrollViewer Grid.Column="0" Grid.Row="1" Margin="0,0,5,0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
+			<StackPanel Orientation="Vertical" >
+				<local:ProjectList ItemsSource="{Binding Path=Project.Namespace.Children}" ItemContainerStyle="{StaticResource NamespaceContainerTemplate}" ItemTemplate="{StaticResource NamespaceItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+				<local:ProjectList ItemsSource="{Binding Path=Project.Namespace.Services}" ItemContainerStyle="{StaticResource ServiceContainerTemplate}" ItemTemplate="{StaticResource ServiceItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+				<local:ProjectList ItemsSource="{Binding Path=Project.Namespace.Data}" ItemContainerStyle="{StaticResource DataContainerTemplate}" ItemTemplate="{StaticResource DataItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+				<local:ProjectList ItemsSource="{Binding Path=Project.Namespace.Enums}" ItemContainerStyle="{StaticResource EnumContainerTemplate}" ItemTemplate="{StaticResource EnumItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+				<local:ProjectItemList ItemsSource="{Binding Path=Project.Namespace.Bindings}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListBindingTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+				<local:ProjectItemList ItemsSource="{Binding Path=Project.Namespace.Security}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListSecurityTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+				<local:ProjectItemList ItemsSource="{Binding Path=Project.Namespace.Hosts}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplate="{StaticResource HostItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
 			</StackPanel>
 		</ScrollViewer>
 		<GridSplitter ResizeDirection="Columns" Grid.Column="0" Grid.Row="1" Width="5" Height="Auto" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0" Background="Transparent" />

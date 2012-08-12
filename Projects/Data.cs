@@ -19,7 +19,7 @@ namespace WCFArchitect.Projects
 
 	public class Data : DataType
 	{
-		public bool HasWPFType { get { return (bool)GetValue(HasWPFTypeProperty); } set { SetValue(HasWPFTypeProperty, value); if (value == false) { ContractType = null; } else { ContractType = new DataType(DataTypeMode.Class); WPFType.Name = Name + "WPF"; WPFType.Scope = Scope; WPFType.InheritedTypes.Add(new DataType("DependencyObject", DataTypeMode.Class)); } } }
+		public bool HasWPFType { get { return (bool)GetValue(HasWPFTypeProperty); } set { SetValue(HasWPFTypeProperty, value); if (value == false) { WPFType = null; } else { WPFType = new DataType(DataTypeMode.Class); WPFType.Name = Name + "WPF"; WPFType.Scope = Scope; WPFType.InheritedTypes.Add(new DataType("DependencyObject", DataTypeMode.Class)); } } }
 		public static readonly DependencyProperty HasWPFTypeProperty = DependencyProperty.Register("HasWPFType", typeof(bool), typeof(Data));
 
 		public DataType WPFType { get { return (DataType)GetValue(WPFTypeProperty); } set { SetValue(WPFTypeProperty, value); } }
