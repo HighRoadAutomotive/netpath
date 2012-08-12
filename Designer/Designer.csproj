@@ -597,6 +597,9 @@
   <ItemGroup>
     <Resource Include="Icons\X32\NetHTTP.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\X32\Delete.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

@@ -239,6 +239,11 @@ namespace WCFArchitect.Interface
 
 		#region - System Menu -
 
+		public void ShowHomeScreen()
+		{
+			SystemMenuHome_Click(null, null);
+		}
+
 		private void SystemMenuHome_Click(object sender, RoutedEventArgs e)
 		{
 			ActiveProjectScreen.Visibility = System.Windows.Visibility.Collapsed;
@@ -300,8 +305,11 @@ namespace WCFArchitect.Interface
 			if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
 			{
 				foreach(SolutionItem pi in ScreenButtons.Items)
-					if(pi.Project == e.OldItems[0])
+					if (pi.Project == e.OldItems[0])
+					{
 						ScreenButtons.Items.Remove(pi);
+						break;
+					}
 			}
 		}
 
@@ -315,7 +323,7 @@ namespace WCFArchitect.Interface
 			s.SelectProjectScreen(t);
 		}
 
-		private void SelectProjectScreen(Screen NewScreen)
+		internal void SelectProjectScreen(Screen NewScreen)
 		{
 			SelectedProject = NewScreen;
 			ActiveProjectScreen.Visibility = System.Windows.Visibility.Visible;

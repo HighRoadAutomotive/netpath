@@ -62,6 +62,11 @@ namespace WCFArchitect.Interface.Project
 			Projects.Project.Save(Project);
 		}
 
+		private void DeleteProject_Click(object sender, RoutedEventArgs e)
+		{
+			Globals.ShowMessageBox(Project, "Permanently Delete Project?", "This project will be removed from the solution. Would you like to delete it from the disk as well?", new MessageAction("Yes", new Action(() => KillProject())), new MessageAction("No", new Action(() => RemoveProject())));
+		}
+
 		private void BuildProject_Click(object sender, RoutedEventArgs e)
 		{
 			//Need the compiler driver for this to work.
@@ -70,6 +75,28 @@ namespace WCFArchitect.Interface.Project
 		private void OpenProjectItem(Projects.OpenableDocument Item)
 		{
 			//Need to make all item pages before this function can be completed.
+		}
+
+		private void RemoveProject()
+		{
+			Globals.Projects.Remove(Project);
+			Globals.Solution.Projects.Remove(Globals.GetRelativePath(Globals.SolutionPath, Project.AbsolutePath));
+
+			if (Globals.Projects.Count == 0) Globals.MainScreen.ShowHomeScreen();
+			else
+			{
+				SolutionItem t = Globals.MainScreen.ScreenButtons.Items[0] as SolutionItem;
+				if (t != null)
+					Globals.MainScreen.SelectProjectScreen(t.Content as Screen);
+			}
+		}
+
+		private void KillProject()
+		{
+			RemoveProject();
+
+			if(System.IO.File.Exists(Project.AbsolutePath))
+				System.IO.File.Delete(Project.AbsolutePath);
 		}
 	}
 
