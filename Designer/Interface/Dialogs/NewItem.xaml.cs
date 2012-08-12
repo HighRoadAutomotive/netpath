@@ -31,6 +31,78 @@ namespace WCFArchitect.Interface.Dialogs
 
 			this.ActiveProject = Project;
 			this.OpenProjectItem = OpenItemAction;
+#if !WINRT
+			if(ActiveProject.GetType() == typeof(Projects.ProjectNET))
+			{
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png", "Basic HTTP Binding", "A binding that can be used with any web service that conforms to the WS-I Basic Profile.", 1));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png", "Basic HTTPS Binding", "A binding that can be used with any web service that conforms to the WS-I Basic Profile.", 2));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/NetHTTP.png", "Net HTTP Binding", "A binding that can be used with any web service that conforms to the WebSockets Profile.", 3));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/NetHTTP.png", "Net HTTPS Binding", "A binding that can be used with any web service that conforms to the WebSockets Profile.", 4));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png", "TCP Binding", "A binding that provides security and reliability for cross-machine communications.", 5));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/NamedPipe.png", "Named Pipe Binding", "A binding that provides security and reliability for intra-machine communications.", 6));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQ.png", "MSMQ Binding", "A queued binding for cross-machine communications.", 7));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/PeerTCP.png", "Peer TCP Binding", "A secure binding for peer-to-peer applications", 8));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WebHTTP.png", "Web HTTP Binding", "A binding that provides the use of HTTP requests instead SOAP messags.", 9));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQIntegration.png", "MSMQ Integration Binding", "A binding for mapping MSMQ messages to WCF messages.", 10));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png", "WS HTTP Binding", "A binding that supports, security, reliable sessions, and distributed transactions over HTTP.", 11));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png", "WS 2007 HTTP Binding", "A binding that derives from the WS HTTP Binding and provides updated support for Security, Reliable Sessions, and Transaction Flows.", 12));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSDualHTTP.png", "WS Dual HTTP Binding", "A binding that supports duplex contracts over HTTP.", 13));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png", "WS Federation HTTP Binding", "A binding that supports federated security over HTTP.", 14));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png", "WS 2007 Federation HTTP Binding", "A binding that derives from the WS 2007 HTTP Binding and supports federated security.", 15));
+
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png", "Basic HTTP Security", "Security configuration for the Basic HTTP and Net HTTP Bindings.", 1));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png", "Basic HTTPS Security", "Security configuration for the Basic HTTPS and Net HTTPS Bindings.", 2));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png", "TCP Security", "Security configuration for a TCP Binding.", 3));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/NamedPipe.png", "Named Pipe Security", "Security configuration for a Named Pipe Binding.", 4));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQ.png", "MSMQ Security", "Security configuration for an MSMQ Binding.", 5));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/PeerTCP.png", "Peer TCP Security", "Security configuration for a Peer TCP Binding", 6));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WebHTTP.png", "Web HTTP Security", "Security configuration for a Web HTTP Binding.", 7));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQIntegration.png", "MSMQ Integration Security", "Security configuration for an MSMQ Integration Binding", 8));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png", "WS HTTP Security", "Security configuration for a WS HTTP or WS 2007 HTTP Binding.", 9));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSDualHTTP.png", "WS Dual Security", "Security configuration for a WS Dual Binding.", 10));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png", "WS Federation Security", "Security configuration for a WS Federation or WS 2007 Federation Binding.", 11));
+			}
+			if (ActiveProject.GetType() == typeof(Projects.ProjectSL))
+			{
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png", "Basic HTTP Binding", "A binding that can be used with any web service that conforms to the WS-I Basic Profile.", 1));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png", "TCP Binding", "A binding that provides security and reliability for cross-machine communications.", 5));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/NamedPipe.png", "Named Pipe Binding", "A binding that provides security and reliability for intra-machine communications.", 6));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQ.png", "MSMQ Binding", "A queued binding for cross-machine communications.", 7));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/PeerTCP.png", "Peer TCP Binding", "A secure binding for peer-to-peer applications", 8));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WebHTTP.png", "Web HTTP Binding", "A binding that provides the use of HTTP requests instead SOAP messags.", 9));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQIntegration.png", "MSMQ Integration Binding", "A binding for mapping MSMQ messages to WCF messages.", 10));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png", "WS HTTP Binding", "A binding that supports, security, reliable sessions, and distributed transactions over HTTP.", 11));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png", "WS 2007 HTTP Binding", "A binding that derives from the WS HTTP Binding and provides updated support for Security, Reliable Sessions, and Transaction Flows.", 12));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSDualHTTP.png", "WS Dual HTTP Binding", "A binding that supports duplex contracts over HTTP.", 13));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png", "WS Federation HTTP Binding", "A binding that supports federated security over HTTP.", 14));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png", "WS 2007 Federation HTTP Binding", "A binding that derives from the WS 2007 HTTP Binding and supports federated security.", 15));
+
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png", "Basic HTTP Security", "Security configuration for the Basic HTTP and Net HTTP Bindings.", 1));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png", "TCP Security", "Security configuration for a TCP Binding.", 3));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/NamedPipe.png", "Named Pipe Security", "Security configuration for a Named Pipe Binding.", 4));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQ.png", "MSMQ Security", "Security configuration for an MSMQ Binding.", 5));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/PeerTCP.png", "Peer TCP Security", "Security configuration for a Peer TCP Binding", 6));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WebHTTP.png", "Web HTTP Security", "Security configuration for a Web HTTP Binding.", 7));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQIntegration.png", "MSMQ Integration Security", "Security configuration for an MSMQ Integration Binding", 8));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png", "WS HTTP Security", "Security configuration for a WS HTTP or WS 2007 HTTP Binding.", 9));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSDualHTTP.png", "WS Dual Security", "Security configuration for a WS Dual Binding.", 10));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png", "WS Federation Security", "Security configuration for a WS Federation or WS 2007 Federation Binding.", 11));
+			}
+			if (ActiveProject.GetType() == typeof(Projects.ProjectRT))
+			{
+#endif
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png", "Basic HTTP Binding", "A binding that can be used with any web service that conforms to the WS-I Basic Profile.", 1));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png", "Basic HTTPS Binding", "A binding that can be used with any web service that conforms to the WS-I Basic Profile.", 2));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/NetHTTP.png", "Net HTTP Binding", "A binding that can be used with any web service that conforms to the WebSockets Profile.", 3));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/NetHTTP.png", "Net HTTPS Binding", "A binding that can be used with any web service that conforms to the WebSockets Profile.", 4));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png", "TCP Binding", "A binding that provides security and reliability for cross-machine communications.", 5));
+
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png", "Basic HTTP Security", "Security configuration for the Basic HTTP and Net HTTP Bindings.", 1));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png", "Basic HTTPS Security", "Security configuration for the Basic HTTPS and Net HTTPS Bindings.", 2));
+				NewItemSecurityTypesList.Items.Add(new Project.NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png", "TCP Security", "Security configuration for a TCP Binding.", 3));
+#if !WINRT
+			}
+#endif
 		}
 
 		private void NewItemTypesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
