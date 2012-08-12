@@ -196,5 +196,13 @@ namespace WCFArchitect.Interface.Project
 
 		public int DataType { get { return (int)GetValue(DataTypeProperty); } set { SetValue(DataTypeProperty, value); } }
 		public static readonly DependencyProperty DataTypeProperty = DependencyProperty.Register("DataType", typeof(int), typeof(NewItemType));
+
+		public NewItemType(string ImageSource, string Title, string Description, int DataType)
+		{
+			this.ImageSource = ImageSource;
+			this.Title = Title;
+			this.Description = Description;
+			this.DataType = DataType;
+		}
 	}
 }

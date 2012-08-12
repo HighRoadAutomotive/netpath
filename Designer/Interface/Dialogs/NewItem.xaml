@@ -168,41 +168,11 @@
 					<ListBox.Resources>
 						<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
 					</ListBox.Resources>
-					<ListBox.Items>
-						<Root:NewItemType DataType="1" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png" Title="Basic HTTP Binding" Description="A binding that can be used with any web service that conforms to the WS-I Basic Profile." />
-						<Root:NewItemType DataType="2" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png" Title="Basic HTTPS Binding" Description="A binding that can be used with any web service that conforms to the WS-I Basic Profile." />
-						<Root:NewItemType DataType="3" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/NetHTTP.png" Title="Net HTTP Binding" Description="A binding that can be used with any web service that conforms to the WebSockets Profile." />
-						<Root:NewItemType DataType="4" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/NetHTTP.png" Title="Net HTTPS Binding" Description="A binding that can be used with any web service that conforms to the WebSockets Profile." />
-						<Root:NewItemType DataType="5" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png" Title="TCP Binding" Description="A binding that provides security and reliability for cross-machine communications." />
-						<Root:NewItemType DataType="6" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/NamedPipe.png" Title="Named Pipe Binding" Description="A binding that provides security and reliability for intra-machine communications." />
-						<Root:NewItemType DataType="7" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQ.png" Title="MSMQ Binding" Description="A queued binding for cross-machine communications." />
-						<Root:NewItemType DataType="8" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/PeerTCP.png" Title="Peer TCP Binding" Description="A secure binding for peer-to-peer applications" />
-						<Root:NewItemType DataType="9" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WebHTTP.png" Title="Web HTTP Binding" Description="A binding that provides the use of HTTP requests instead SOAP messags." />
-						<Root:NewItemType DataType="10" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQIntegration.png" Title="MSMQ Integration Binding" Description="A binding for mapping MSMQ messages to WCF messages." />
-						<Root:NewItemType DataType="11" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png" Title="WS HTTP Binding" Description="A binding that supports, security, reliable sessions, and distributed transactions over HTTP." />
-						<Root:NewItemType DataType="12" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png" Title="WS 2007 HTTP Binding" Description="A binding that derives from the WS HTTP Binding and provides updated support for Security, Reliable Sessions, and Transaction Flows."/>
-						<Root:NewItemType DataType="13" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSDualHTTP.png" Title="WS Dual HTTP Binding" Description="A binding that supports duplex contracts over HTTP." />
-						<Root:NewItemType DataType="14" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png" Title="WS Federation HTTP Binding" Description="A binding that supports federated security over HTTP." />
-						<Root:NewItemType DataType="15" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png" Title="WS 2007 Federation HTTP Binding" Description="A binding that derives from the WS 2007 HTTP Binding and supports federated security." />
-					</ListBox.Items>
 				</ListBox>
 				<ListBox HorizontalAlignment="Stretch" Margin="2.5,0,2.5,0" Grid.Column="1" Visibility="Collapsed" BorderThickness="0" Background="Transparent" VerticalAlignment="Stretch" Name="NewItemSecurityTypesList" SelectionMode="Single" ItemTemplate="{StaticResource ListBoxItemTemplate}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" SelectionChanged="NewItemSecurityTypesList_SelectionChanged">
 					<ListBox.Resources>
 						<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
 					</ListBox.Resources>
-					<ListBox.Items>
-						<Root:NewItemType DataType="1" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png" Title="Basic HTTP Security" Description="Security configuration for the Basic HTTP and Net HTTP Bindings." />
-						<Root:NewItemType DataType="2" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png" Title="Basic HTTPS Security" Description="Security configuration for the Basic HTTPS and Net HTTPS Bindings." />
-						<Root:NewItemType DataType="3" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png" Title="TCP Security" Description="Security configuration for a TCP Binding." />
-						<Root:NewItemType DataType="4" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/NamedPipe.png" Title="Named Pipe Security" Description="Security configuration for a Named Pipe Binding." />
-						<Root:NewItemType DataType="5" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQ.png" Title="MSMQ Security" Description="Security configuration for an MSMQ Binding." />
-						<Root:NewItemType DataType="6" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/PeerTCP.png" Title="Peer TCP Security" Description="Security configuration for a Peer TCP Binding" />
-						<Root:NewItemType DataType="7" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WebHTTP.png" Title="Web HTTP Security" Description="Security configuration for a Web HTTP Binding." />
-						<Root:NewItemType DataType="8" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQIntegration.png" Title="MSMQ Integration Security" Description="Security configuration for an MSMQ Integration Binding" />
-						<Root:NewItemType DataType="9" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png" Title="WS HTTP Security" Description="Security configuration for a WS HTTP or WS 2007 HTTP Binding." />
-						<Root:NewItemType DataType="10" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSDualHTTP.png" Title="WS Dual Security" Description="Security configuration for a WS Dual Binding." />
-						<Root:NewItemType DataType="11" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png" Title="WS Federation Security" Description="Security configuration for a WS Federation or WS 2007 Federation Binding." />
-					</ListBox.Items>
 				</ListBox>
 				<Border Name="NewItemProjectNamespaces" Margin="2.5,0,2.5,0" Grid.Column="2" Visibility="Collapsed">
 					<Grid>
