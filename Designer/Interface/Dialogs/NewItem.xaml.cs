@@ -20,7 +20,9 @@ namespace WCFArchitect.Interface.Dialogs
 	{
 		private bool IsNamespaceListUpdating { get; set; }
 
-		private Projects.Project ActiveProject { get; set; }
+		public Projects.Project ActiveProject { get { return (Projects.Project)GetValue(ActiveProjectProperty); } set { SetValue(ActiveProjectProperty, value); } }
+		public static readonly DependencyProperty ActiveProjectProperty = DependencyProperty.Register("ActiveProject", typeof(Projects.Project), typeof(NewItem));
+
 		private Action<Projects.OpenableDocument> OpenProjectItem { get; set; }
 
 		public NewItem(Projects.Project Project, Action<Projects.OpenableDocument> OpenItemAction)
@@ -91,12 +93,18 @@ namespace WCFArchitect.Interface.Dialogs
 
 		private void NewItemBindingTypesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			NewItemName.Focus();
+			NewItemProjectNamespaceList.ItemsSource = ActiveProject.Namespace.Children;
+			NewItemProjectNamespaceRoot.IsChecked = true;
+			NewItemProjectNamespaceRoot.Content = ActiveProject.Namespace.Name;
+			NewItemProjectNamespaces.Visibility = System.Windows.Visibility.Visible;
 		}
 
 		private void NewItemSecurityTypesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			NewItemName.Focus();
+			NewItemProjectNamespaceList.ItemsSource = ActiveProject.Namespace.Children;
+			NewItemProjectNamespaceRoot.IsChecked = true;
+			NewItemProjectNamespaceRoot.Content = ActiveProject.Namespace.Name;
+			NewItemProjectNamespaces.Visibility = System.Windows.Visibility.Visible;
 		}
 
 		private void NewItemName_KeyUp(object sender, KeyEventArgs e)
@@ -125,6 +133,7 @@ namespace WCFArchitect.Interface.Dialogs
 					if (NewItemProjectNamespaceRoot.IsChecked == true)
 					{
 						Projects.Namespace NI = new Projects.Namespace(NewItemName.Text, ActiveProject.Namespace, ActiveProject);
+						NI.IsTreeExpanded = true;
 						if (NewItemProjectNamespaceList.SelectedItem == null) ActiveProject.Namespace.Children.Add(NI);
 						else ActiveProject.Namespace.Children.Add(NI);
 						Globals.IsLoading = false;
@@ -134,6 +143,7 @@ namespace WCFArchitect.Interface.Dialogs
 					{
 						Projects.Namespace NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace;
 						Projects.Namespace NI = new Projects.Namespace(NewItemName.Text, NIN, ActiveProject);
+						NI.IsTreeExpanded = true;
 						if (NewItemProjectNamespaceList.SelectedItem == null) ActiveProject.Namespace.Children.Add(NI);
 						else NIN.Children.Add(NI);
 						Globals.IsLoading = false;
@@ -145,6 +155,7 @@ namespace WCFArchitect.Interface.Dialogs
 					if (NewItemProjectNamespaceRoot.IsChecked == true)
 					{
 						Projects.Service NI = new Projects.Service(NewItemName.Text, ActiveProject.Namespace);
+						NI.IsTreeExpanded = true;
 						ActiveProject.Namespace.Services.Add(NI);
 						Globals.IsLoading = false;
 						OpenProjectItem(NI);
@@ -160,6 +171,7 @@ namespace WCFArchitect.Interface.Dialogs
 						}
 
 						Projects.Service NI = new Projects.Service(NewItemName.Text, NIN);
+						NI.IsTreeExpanded = true;
 						NIN.Services.Add(NI);
 						Globals.IsLoading = false;
 						OpenProjectItem(NI);
@@ -170,6 +182,7 @@ namespace WCFArchitect.Interface.Dialogs
 					if (NewItemProjectNamespaceRoot.IsChecked == true)
 					{
 						Projects.Data NI = new Projects.Data(NewItemName.Text, ActiveProject.Namespace);
+						NI.IsTreeExpanded = true;
 						ActiveProject.Namespace.Data.Add(NI);
 						Globals.IsLoading = false;
 						OpenProjectItem(NI);
@@ -185,6 +198,7 @@ namespace WCFArchitect.Interface.Dialogs
 						}
 
 						Projects.Data NI = new Projects.Data(NewItemName.Text, NIN);
+						NI.IsTreeExpanded = true;
 						NIN.Data.Add(NI);
 						Globals.IsLoading = false;
 						OpenProjectItem(NI);
@@ -196,6 +210,7 @@ namespace WCFArchitect.Interface.Dialogs
 					{
 						Projects.Enum NI = new Projects.Enum(NewItemName.Text, ActiveProject.Namespace);
 						ActiveProject.Namespace.Enums.Add(NI);
+						NI.IsTreeExpanded = true;
 						Globals.IsLoading = false;
 						OpenProjectItem(NI);
 					}
@@ -210,6 +225,7 @@ namespace WCFArchitect.Interface.Dialogs
 						}
 
 						Projects.Enum NI = new Projects.Enum(NewItemName.Text, NIN);
+						NI.IsTreeExpanded = true;
 						NIN.Enums.Add(NI);
 						Globals.IsLoading = false;
 						OpenProjectItem(NI);
@@ -223,26 +239,33 @@ namespace WCFArchitect.Interface.Dialogs
 						Prospective.Controls.MessageBox.Show("You must select a Binding Type for this Binding!", "No Binding Type Selected", MessageBoxButton.OK, MessageBoxImage.Error);
 						return;
 					}
-
-					Projects.Namespace NIP = null;
-					if (NewItemProjectNamespaceRoot.IsChecked == true) NIP = ActiveProject.Namespace;
-					else NIP = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace; 
+					Projects.Namespace NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace;
+					if (NewItemProjectNamespaceRoot.IsChecked == true) NIN = ActiveProject.Namespace;
+					if (NIN == null)
+					{
+						if (Prospective.Controls.MessageBox.Show("You must select a select a Namespace from the list or use the Root Namespace to create a new Enum. Would you like to use the Root Namespace?", "No Namespace Selected", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+							NewItemProjectNamespaceRoot.IsChecked = true;
+						return;
+					}
 
 					Projects.ServiceBinding NI = null;
-					if (NBT.DataType == 1) NI = new Projects.ServiceBindingBasicHTTP(NewItemName.Text, NIP);
-					if (NBT.DataType == 2) NI = new Projects.ServiceBindingWSHTTP(NewItemName.Text, NIP);
-					if (NBT.DataType == 3) NI = new Projects.ServiceBindingWS2007HTTP(NewItemName.Text, NIP);
-					if (NBT.DataType == 4) NI = new Projects.ServiceBindingWSDualHTTP(NewItemName.Text, NIP);
-					if (NBT.DataType == 5) NI = new Projects.ServiceBindingWSFederationHTTP(NewItemName.Text, NIP);
-					if (NBT.DataType == 6) NI = new Projects.ServiceBindingWS2007FederationHTTP(NewItemName.Text, NIP);
-					if (NBT.DataType == 7) NI = new Projects.ServiceBindingTCP(NewItemName.Text, NIP);
-					if (NBT.DataType == 8) NI = new Projects.ServiceBindingNamedPipe(NewItemName.Text, NIP);
-					if (NBT.DataType == 9) NI = new Projects.ServiceBindingMSMQ(NewItemName.Text, NIP);
-					if (NBT.DataType == 10) NI = new Projects.ServiceBindingPeerTCP(NewItemName.Text, NIP);
-					if (NBT.DataType == 11) NI = new Projects.ServiceBindingWebHTTP(NewItemName.Text, NIP);
-					if (NBT.DataType == 12) NI = new Projects.ServiceBindingMSMQIntegration(NewItemName.Text, NIP);
+					if (NBT.DataType == 1) NI = new Projects.ServiceBindingBasicHTTP(NewItemName.Text, NIN);
+					if (NBT.DataType == 2) NI = new Projects.ServiceBindingBasicHTTPS(NewItemName.Text, NIN);
+					if (NBT.DataType == 3) NI = new Projects.ServiceBindingNetHTTP(NewItemName.Text, NIN);
+					if (NBT.DataType == 4) NI = new Projects.ServiceBindingNetHTTPS(NewItemName.Text, NIN);
+					if (NBT.DataType == 5) NI = new Projects.ServiceBindingTCP(NewItemName.Text, NIN);
+					if (NBT.DataType == 6) NI = new Projects.ServiceBindingNamedPipe(NewItemName.Text, NIN);
+					if (NBT.DataType == 7) NI = new Projects.ServiceBindingMSMQ(NewItemName.Text, NIN);
+					if (NBT.DataType == 8) NI = new Projects.ServiceBindingPeerTCP(NewItemName.Text, NIN);
+					if (NBT.DataType == 9) NI = new Projects.ServiceBindingWebHTTP(NewItemName.Text, NIN);
+					if (NBT.DataType == 10) NI = new Projects.ServiceBindingMSMQIntegration(NewItemName.Text, NIN);
+					if (NBT.DataType == 11) NI = new Projects.ServiceBindingWSHTTP(NewItemName.Text, NIN);
+					if (NBT.DataType == 12) NI = new Projects.ServiceBindingWS2007HTTP(NewItemName.Text, NIN);
+					if (NBT.DataType == 13) NI = new Projects.ServiceBindingWSDualHTTP(NewItemName.Text, NIN);
+					if (NBT.DataType == 14) NI = new Projects.ServiceBindingWSFederationHTTP(NewItemName.Text, NIN);
+					if (NBT.DataType == 15) NI = new Projects.ServiceBindingWS2007FederationHTTP(NewItemName.Text, NIN);
 
-					ActiveProject.Namespace.Bindings.Add(NI);
+					NIN.Bindings.Add(NI);
 					Globals.IsLoading = false;
 					OpenProjectItem(NI);
 				}
@@ -254,24 +277,29 @@ namespace WCFArchitect.Interface.Dialogs
 						Prospective.Controls.MessageBox.Show("You must select a Security Type for this Binding!", "No Security Type Selected", MessageBoxButton.OK, MessageBoxImage.Error);
 						return;
 					}
-
-					Projects.Namespace NIP = null;
-					if (NewItemProjectNamespaceRoot.IsChecked == true) NIP = ActiveProject.Namespace;
-					else NIP = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace; 
+					Projects.Namespace NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace;
+					if (NewItemProjectNamespaceRoot.IsChecked == true) NIN = ActiveProject.Namespace;
+					if (NIN == null)
+					{
+						if (Prospective.Controls.MessageBox.Show("You must select a select a Namespace from the list or use the Root Namespace to create a new Enum. Would you like to use the Root Namespace?", "No Namespace Selected", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+							NewItemProjectNamespaceRoot.IsChecked = true;
+						return;
+					}
 
 					Projects.BindingSecurity NI = null;
-					if (NBT.DataType == 1) NI = new Projects.BindingSecurityBasicHTTP(NewItemName.Text, NIP);
-					if (NBT.DataType == 2) NI = new Projects.BindingSecurityWSHTTP(NewItemName.Text, NIP);
-					if (NBT.DataType == 3) NI = new Projects.BindingSecurityWSDualHTTP(NewItemName.Text, NIP);
-					if (NBT.DataType == 4) NI = new Projects.BindingSecurityWSFederationHTTP(NewItemName.Text, NIP);
-					if (NBT.DataType == 5) NI = new Projects.BindingSecurityTCP(NewItemName.Text, NIP);
-					if (NBT.DataType == 6) NI = new Projects.BindingSecurityNamedPipe(NewItemName.Text, NIP);
-					if (NBT.DataType == 7) NI = new Projects.BindingSecurityMSMQ(NewItemName.Text, NIP);
-					if (NBT.DataType == 8) NI = new Projects.BindingSecurityPeerTCP(NewItemName.Text, NIP);
-					if (NBT.DataType == 9) NI = new Projects.BindingSecurityWebHTTP(NewItemName.Text, NIP);
-					if (NBT.DataType == 10) NI = new Projects.BindingSecurityMSMQIntegration(NewItemName.Text, NIP);
+					if (NBT.DataType == 1) NI = new Projects.BindingSecurityBasicHTTP(NewItemName.Text, NIN);
+					if (NBT.DataType == 2) NI = new Projects.BindingSecurityBasicHTTPS(NewItemName.Text, NIN);
+					if (NBT.DataType == 3) NI = new Projects.BindingSecurityTCP(NewItemName.Text, NIN);
+					if (NBT.DataType == 4) NI = new Projects.BindingSecurityNamedPipe(NewItemName.Text, NIN);
+					if (NBT.DataType == 5) NI = new Projects.BindingSecurityMSMQ(NewItemName.Text, NIN);
+					if (NBT.DataType == 6) NI = new Projects.BindingSecurityPeerTCP(NewItemName.Text, NIN);
+					if (NBT.DataType == 7) NI = new Projects.BindingSecurityWebHTTP(NewItemName.Text, NIN);
+					if (NBT.DataType == 8) NI = new Projects.BindingSecurityMSMQIntegration(NewItemName.Text, NIN);
+					if (NBT.DataType == 9) NI = new Projects.BindingSecurityWSHTTP(NewItemName.Text, NIN);
+					if (NBT.DataType == 10) NI = new Projects.BindingSecurityWSDualHTTP(NewItemName.Text, NIN);
+					if (NBT.DataType == 11) NI = new Projects.BindingSecurityWSFederationHTTP(NewItemName.Text, NIN);
 
-					NIP.Security.Add(NI);
+					NIN.Security.Add(NI);
 					Globals.IsLoading = false;
 					OpenProjectItem(NI);
 				}

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -32,10 +33,11 @@ namespace WCFArchitect.Interface.Project
 
 		private static void OnChangeActivePageCommandExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
-			Screen s = e.Source as Screen;
+			Screen s = sender as Screen;
 			if (s == null) return;
 			Projects.OpenableDocument d = e.Parameter as Projects.OpenableDocument;
 			s.OpenProjectItem(d);
+			
 		}
 
 		public Screen()
@@ -48,18 +50,6 @@ namespace WCFArchitect.Interface.Project
 			InitializeComponent();
 
 			this.Project = Project;
-			this.Project.Namespace.Children.CollectionChanged += Project_CollectionChanged;
-			this.Project.Namespace.Services.CollectionChanged += Project_CollectionChanged;
-			this.Project.Namespace.Data.CollectionChanged += Project_CollectionChanged;
-			this.Project.Namespace.Enums.CollectionChanged += Project_CollectionChanged;
-			this.Project.Namespace.Bindings.CollectionChanged += Project_CollectionChanged;
-			this.Project.Namespace.Security.CollectionChanged += Project_CollectionChanged;
-			this.Project.Namespace.Hosts.CollectionChanged += Project_CollectionChanged;
-		}
-
-		void Project_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-		{
-
 		}
 
 		private void NewItem_Click(object sender, RoutedEventArgs e)
@@ -192,6 +182,7 @@ namespace WCFArchitect.Interface.Project
 		}
 	}
 
+	[System.Windows.Markup.ContentProperty("Pages")]
 	public class NewItemType : DependencyObject
 	{
 		public string ImageSource { get { return (string)GetValue(ImageSourceProperty); } set { SetValue(ImageSourceProperty, value); } }
@@ -202,9 +193,6 @@ namespace WCFArchitect.Interface.Project
 
 		public string Description { get { return (string)GetValue(DescriptionProperty); } set { SetValue(DescriptionProperty, value); } }
 		public static readonly DependencyProperty DescriptionProperty = DependencyProperty.Register("Description", typeof(string), typeof(NewItemType));
-
-		public string Frameworks { get { return (string)GetValue(FrameworksProperty); } set { SetValue(FrameworksProperty, value); } }
-		public static readonly DependencyProperty FrameworksProperty = DependencyProperty.Register("Frameworks", typeof(string), typeof(NewItemType));
 
 		public int DataType { get { return (int)GetValue(DataTypeProperty); } set { SetValue(DataTypeProperty, value); } }
 		public static readonly DependencyProperty DataTypeProperty = DependencyProperty.Register("DataType", typeof(int), typeof(NewItemType));

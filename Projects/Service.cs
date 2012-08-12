@@ -50,14 +50,14 @@ namespace WCFArchitect.Projects
 
 		public Service(string Name, Namespace Parent) : base(DataTypeMode.Class)
 		{
+			this.Name = Name;
+			this.Parent = Parent;
 			this.IsOpen = false;
 			this.IsCallback = false;
 			this.Operations = new ObservableCollection<Operation>();
 			this.ID = Guid.NewGuid();
-			this.Name = Name;
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.ConfigurationName = "";
-			this.Parent = Parent;
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)

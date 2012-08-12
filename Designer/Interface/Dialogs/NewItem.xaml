@@ -8,28 +8,22 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     mc:Ignorable="d" d:DesignHeight="400" d:DesignWidth="1200" >
 	<Grid.Resources>
+		<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
 		<DataTemplate x:Key="ListBoxItemTemplate">
 			<Border Name="BG" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" CornerRadius="0" >
 				<Grid >
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="40" />
 						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="5" />
 					</Grid.ColumnDefinitions>
 					<Grid.RowDefinitions>
-						<RowDefinition Height="60" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
-					<Image Source="{Binding Path=ImageSource}" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="32" Width="32" Stretch="Uniform" Grid.Column="0"/>
-					<Grid Grid.Column="1">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="*" />
-							<RowDefinition Height="Auto" />
-						</Grid.RowDefinitions>
-						<TextBlock Text="{Binding Path=Title}" Foreground="{StaticResource DefaultFontColor}" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Bottom" Grid.Row="0"/>
-						<TextBlock Text="{Binding Path=Description}" Padding="0,0,0,5" Foreground="{StaticResource DisabledFontColor}" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Top" Grid.Row="1"/>
-					</Grid>
-					<TextBlock Text="{Binding Path=Frameworks}" Foreground="{StaticResource DefaultFontColor}" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Grid.Column="2"/>
+					<Image Source="{Binding Path=ImageSource}" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="32" Width="32" Stretch="Uniform" Grid.Column="0" Grid.RowSpan="2"/>
+					<TextBlock Text="{Binding Path=Title}" Foreground="{StaticResource DefaultFontColor}" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="0"/>
+					<TextBlock Text="{Binding Path=Description}" Padding="0,0,0,5" Foreground="{StaticResource DisabledFontColor}" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
 				</Grid>
 			</Border>
 			<DataTemplate.Triggers>
@@ -153,7 +147,7 @@
 			<Grid Grid.Row="0" Margin="2.5,0">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
 				<ListBox HorizontalAlignment="Stretch" Margin="2.5,0,2.5,0" Grid.Column="0" BorderThickness="0" Background="Transparent" VerticalAlignment="Stretch" Name="NewItemTypesList" SelectionMode="Single" ItemTemplate="{StaticResource ListBoxItemTemplate}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" SelectionChanged="NewItemTypesList_SelectionChanged">
@@ -170,10 +164,50 @@
 						<Root:NewItemType DataType="7" Title="Host" Description="Hosts are used to host WCF Services." ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/Host.png" />
 					</ListBox.Items>
 				</ListBox>
-				<Border Name="NewItemProjectNamespaces" Margin="2.5,0,2.5,0" Grid.Column="1" Visibility="Collapsed">
+				<ListBox HorizontalAlignment="Stretch" Margin="2.5,0,2.5,0" Grid.Column="1" Visibility="Collapsed" BorderThickness="0" Background="Transparent" VerticalAlignment="Stretch" Name="NewItemBindingTypesList" SelectionMode="Single" ItemTemplate="{StaticResource ListBoxItemTemplate}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" SelectionChanged="NewItemBindingTypesList_SelectionChanged">
+					<ListBox.Resources>
+						<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+					</ListBox.Resources>
+					<ListBox.Items>
+						<Root:NewItemType DataType="1" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png" Title="Basic HTTP Binding" Description="A binding that can be used with any web service that conforms to the WS-I Basic Profile." />
+						<Root:NewItemType DataType="2" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png" Title="Basic HTTPS Binding" Description="A binding that can be used with any web service that conforms to the WS-I Basic Profile." />
+						<Root:NewItemType DataType="3" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/NetHTTP.png" Title="Net HTTP Binding" Description="A binding that can be used with any web service that conforms to the WebSockets Profile." />
+						<Root:NewItemType DataType="4" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/NetHTTP.png" Title="Net HTTPS Binding" Description="A binding that can be used with any web service that conforms to the WebSockets Profile." />
+						<Root:NewItemType DataType="5" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png" Title="TCP Binding" Description="A binding that provides security and reliability for cross-machine communications." />
+						<Root:NewItemType DataType="6" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/NamedPipe.png" Title="Named Pipe Binding" Description="A binding that provides security and reliability for intra-machine communications." />
+						<Root:NewItemType DataType="7" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQ.png" Title="MSMQ Binding" Description="A queued binding for cross-machine communications." />
+						<Root:NewItemType DataType="8" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/PeerTCP.png" Title="Peer TCP Binding" Description="A secure binding for peer-to-peer applications" />
+						<Root:NewItemType DataType="9" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WebHTTP.png" Title="Web HTTP Binding" Description="A binding that provides the use of HTTP requests instead SOAP messags." />
+						<Root:NewItemType DataType="10" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQIntegration.png" Title="MSMQ Integration Binding" Description="A binding for mapping MSMQ messages to WCF messages." />
+						<Root:NewItemType DataType="11" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png" Title="WS HTTP Binding" Description="A binding that supports, security, reliable sessions, and distributed transactions over HTTP." />
+						<Root:NewItemType DataType="12" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png" Title="WS 2007 HTTP Binding" Description="A binding that derives from the WS HTTP Binding and provides updated support for Security, Reliable Sessions, and Transaction Flows."/>
+						<Root:NewItemType DataType="13" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSDualHTTP.png" Title="WS Dual HTTP Binding" Description="A binding that supports duplex contracts over HTTP." />
+						<Root:NewItemType DataType="14" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png" Title="WS Federation HTTP Binding" Description="A binding that supports federated security over HTTP." />
+						<Root:NewItemType DataType="15" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png" Title="WS 2007 Federation HTTP Binding" Description="A binding that derives from the WS 2007 HTTP Binding and supports federated security." />
+					</ListBox.Items>
+				</ListBox>
+				<ListBox HorizontalAlignment="Stretch" Margin="2.5,0,2.5,0" Grid.Column="1" Visibility="Collapsed" BorderThickness="0" Background="Transparent" VerticalAlignment="Stretch" Name="NewItemSecurityTypesList" SelectionMode="Single" ItemTemplate="{StaticResource ListBoxItemTemplate}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" SelectionChanged="NewItemSecurityTypesList_SelectionChanged">
+					<ListBox.Resources>
+						<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+					</ListBox.Resources>
+					<ListBox.Items>
+						<Root:NewItemType DataType="1" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png" Title="Basic HTTP Security" Description="Security configuration for the Basic HTTP and Net HTTP Bindings." />
+						<Root:NewItemType DataType="2" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png" Title="Basic HTTPS Security" Description="Security configuration for the Basic HTTPS and Net HTTPS Bindings." />
+						<Root:NewItemType DataType="3" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png" Title="TCP Security" Description="Security configuration for a TCP Binding." />
+						<Root:NewItemType DataType="4" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/NamedPipe.png" Title="Named Pipe Security" Description="Security configuration for a Named Pipe Binding." />
+						<Root:NewItemType DataType="5" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQ.png" Title="MSMQ Security" Description="Security configuration for an MSMQ Binding." />
+						<Root:NewItemType DataType="6" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/PeerTCP.png" Title="Peer TCP Security" Description="Security configuration for a Peer TCP Binding" />
+						<Root:NewItemType DataType="7" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WebHTTP.png" Title="Web HTTP Security" Description="Security configuration for a Web HTTP Binding." />
+						<Root:NewItemType DataType="8" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQIntegration.png" Title="MSMQ Integration Security" Description="Security configuration for an MSMQ Integration Binding" />
+						<Root:NewItemType DataType="9" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png" Title="WS HTTP Security" Description="Security configuration for a WS HTTP or WS 2007 HTTP Binding." />
+						<Root:NewItemType DataType="10" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSDualHTTP.png" Title="WS Dual Security" Description="Security configuration for a WS Dual Binding." />
+						<Root:NewItemType DataType="11" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png" Title="WS Federation Security" Description="Security configuration for a WS Federation or WS 2007 Federation Binding." />
+					</ListBox.Items>
+				</ListBox>
+				<Border Name="NewItemProjectNamespaces" Margin="2.5,0,2.5,0" Grid.Column="2" Visibility="Collapsed">
 					<Grid>
 						<ToggleButton Name="NewItemProjectNamespaceRoot" Margin="0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="30" Checked="NewItemProjectNamespaceRoot_Checked" />
-						<TreeView Name="NewItemProjectNamespaceList" BorderThickness="1" Margin="0,35,0,0" ItemContainerStyle="{StaticResource NamespaceTreeViewItemStyle}" HorizontalContentAlignment="Stretch" SelectedItemChanged="NewItemProjectNamespaceRoot_SelectedItemChanged">
+						<TreeView Name="NewItemProjectNamespaceList" Background="Transparent" BorderThickness="0" Margin="0,35,0,0" ItemContainerStyle="{StaticResource NamespaceTreeViewItemStyle}" HorizontalContentAlignment="Stretch" SelectedItemChanged="NewItemProjectNamespaceRoot_SelectedItemChanged">
 							<TreeView.ItemTemplate>
 								<HierarchicalDataTemplate DataType="{x:Type Projects:Namespace}" ItemsSource="{Binding Path=Children}">
 									<Grid>
@@ -182,7 +216,7 @@
 											<ColumnDefinition Width="*" />
 										</Grid.ColumnDefinitions>
 										<Image Name="ItemImage" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Namespace.png" HorizontalAlignment="Right" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Margin="0,1" Stretch="Uniform" Visibility="Visible" Grid.Column="0"/>
-										<TextBlock Name="ItemTitle" Grid.Column="1" Text="{Binding Path=Name}" ToolTip="{Binding Path=URI}" Padding="3,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+										<TextBlock Name="ItemTitle" Grid.Column="1" Text="{Binding Path=Name}" ToolTip="{Binding Path=URI}" Padding="3,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 									</Grid>
 									<HierarchicalDataTemplate.Triggers>
 										<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TreeViewItem}},Path=IsExpanded}" Value="True">
@@ -194,42 +228,6 @@
 						</TreeView>
 					</Grid>
 				</Border>
-				<ListBox HorizontalAlignment="Stretch" Margin="2.5,0,2.5,0" Grid.Column="2" Visibility="Collapsed" BorderThickness="0" Background="Transparent" VerticalAlignment="Stretch" Name="NewItemBindingTypesList" SelectionMode="Single" ItemTemplate="{StaticResource ListBoxItemTemplate}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" SelectionChanged="NewItemBindingTypesList_SelectionChanged">
-					<ListBox.Resources>
-						<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
-					</ListBox.Resources>
-					<ListBox.Items>
-						<Root:NewItemType DataType="1" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png" Title="Basic HTTP Binding" Description="A binding that can be used with any web service that conforms to the WS-I Basic Profile." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
-						<Root:NewItemType DataType="2" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png" Title="WS HTTP Binding" Description="A binding that supports, security, reliable sessions, and distributed transactions over HTTP." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
-						<Root:NewItemType DataType="3" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png" Title="WS 2007 HTTP Binding" Description="A binding that derives from the WS HTTP Binding and provides updated support for Security, Reliable Sessions, and Transaction Flows." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
-						<Root:NewItemType DataType="4" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSDualHTTP.png" Title="WS Dual HTTP Binding" Description="A binding that supports duplex contracts over HTTP." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
-						<Root:NewItemType DataType="5" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png" Title="WS Federation HTTP Binding" Description="A binding that supports federated security over HTTP." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
-						<Root:NewItemType DataType="6" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png" Title="WS 2007 Federation HTTP Binding" Description="A binding that derives from the WS 2007 HTTP Binding and supports federated security." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
-						<Root:NewItemType DataType="7" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png" Title="TCP Binding" Description="A binding that provides security and reliability for cross-machine communications." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
-						<Root:NewItemType DataType="8" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/NamedPipe.png" Title="Named Pipe Binding" Description="A binding that provides security and reliability for intra-machine communications." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
-						<Root:NewItemType DataType="8" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQ.png" Title="MSMQ Binding" Description="A queued binding for cross-machine communications." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
-						<Root:NewItemType DataType="10" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/PeerTCP.png" Title="Peer TCP Binding" Description="A secure binding for peer-to-peer applications" Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
-						<Root:NewItemType DataType="11" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WebHTTP.png" Title="Web HTTP Binding" Description="A binding that provides the use of HTTP requests instead SOAP messags." Frameworks="3.5, 3.5 Client, 4.0" />
-						<Root:NewItemType DataType="12" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQIntegration.png" Title="MSMQ Integration Binding" Description="A binding for mapping MSMQ messages to WCF messages." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
-					</ListBox.Items>
-				</ListBox>
-				<ListBox HorizontalAlignment="Stretch" Margin="2.5,0,2.5,0" Grid.Column="2" Visibility="Collapsed" BorderThickness="0" Background="Transparent" VerticalAlignment="Stretch" Name="NewItemSecurityTypesList" SelectionMode="Single" ItemTemplate="{StaticResource ListBoxItemTemplate}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" SelectionChanged="NewItemSecurityTypesList_SelectionChanged">
-					<ListBox.Resources>
-						<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
-					</ListBox.Resources>
-					<ListBox.Items>
-						<Root:NewItemType DataType="1" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png" Title="Basic HTTP Security" Description="Security configuration for a Basic HTTP Binding." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
-						<Root:NewItemType DataType="2" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png" Title="WS HTTP Security" Description="Security configuration for a WS HTTP or WS 2007 HTTP Binding." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
-						<Root:NewItemType DataType="3" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSDualHTTP.png" Title="WS Dual Security" Description="Security configuration for a WS Dual Binding." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
-						<Root:NewItemType DataType="4" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png" Title="WS Federation Security" Description="Security configuration for a WS Federation or WS 2007 Federation Binding." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
-						<Root:NewItemType DataType="5" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png" Title="TCP Security" Description="Security configuration for a TCP Binding." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
-						<Root:NewItemType DataType="6" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/NamedPipe.png" Title="Named Pipe Security" Description="Security configuration for a Named Pipe Binding." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
-						<Root:NewItemType DataType="7" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQ.png" Title="MSMQ Security" Description="Security configuration for an MSMQ Binding." Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
-						<Root:NewItemType DataType="8" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/PeerTCP.png" Title="Peer TCP Security" Description="Security configuration for a Peer TCP Binding" Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
-						<Root:NewItemType DataType="9" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/WebHTTP.png" Title="Web HTTP Security" Description="Security configuration for a Web HTTP Binding." Frameworks="3.5, 3.5 Client, 4.0" />
-						<Root:NewItemType DataType="10" ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQIntegration.png" Title="MSMQ Integration Security" Description="Security configuration for an MSMQ Integration Binding" Frameworks="3.0, 3.5, 3.5 Client, 4.0, 4.0 Client" />
-					</ListBox.Items>
-				</ListBox>
 			</Grid>
 			<Grid Margin="5" Grid.Row="1">
 				<TextBox Name="NewItemName" Margin="60,0,0,0" HorizontalAlignment="Stretch" KeyUp="NewItemName_KeyUp" TextChanged="NewItemName_TextChanged" />
