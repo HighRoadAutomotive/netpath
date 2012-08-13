@@ -1,16 +1,16 @@
-﻿<ContentControl x:Class="WCFArchitect.Interface.Project.Screen"
+﻿<ContentControl x:Class="WCFArchitect.Interface.Navigator"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-	xmlns:local="clr-namespace:WCFArchitect.Interface.Project"
+	xmlns:local="clr-namespace:WCFArchitect.Interface"
 	DataContext="{Binding RelativeSource={RelativeSource Self}}"
 	mc:Ignorable="d" d:DesignHeight="950" d:DesignWidth="1280">
     <Grid>
 		<Grid.Resources>
 			<ResourceDictionary>
 				<ResourceDictionary.MergedDictionaries>
-					<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Interface/Project/ProjectListItemTemplates.xaml" />
+					<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/ProjectListItemTemplates.xaml" />
 				</ResourceDictionary.MergedDictionaries>
 			</ResourceDictionary>
 		</Grid.Resources>
@@ -22,7 +22,7 @@
 			<ColumnDefinition Width="280" MinWidth="280" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
-		<Button Grid.Column="0" Grid.Row="0" Padding="2" Margin="0,0,5,0" Background="#22FFFFFF" Style="{StaticResource LeafNodeContainerTemplate}" Command="{x:Static local:Screen.ChangeActivePageCommand}" CommandParameter="{Binding Path=Project}">
+		<Button Grid.Column="0" Grid.Row="0" Padding="2" Margin="0,0,5,0" Background="#22FFFFFF" Style="{StaticResource LeafNodeContainerTemplate}" Command="{x:Static local:Navigator.ChangeActivePageCommand}" CommandParameter="{Binding Path=Project}">
 			<StackPanel Orientation="Vertical">
 				<StackPanel Orientation="Horizontal" Margin="0,0,0,3">
 					<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X32/Project.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,5,3" />
@@ -55,7 +55,7 @@
 				<local:ProjectItemList ItemsSource="{Binding Path=Project.Namespace.Hosts}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplate="{StaticResource HostItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
 			</StackPanel>
 		</ScrollViewer>
-		<GridSplitter ResizeDirection="Columns" Grid.Column="0" Grid.Row="1" Width="5" Height="Auto" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0" Background="Transparent" />
+		<GridSplitter ResizeDirection="Columns" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Width="5" Height="Auto" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0" Background="Transparent" />
 		<ContentPresenter Content="{Binding Path=ActivePage}" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 	</Grid>
 </ContentControl>

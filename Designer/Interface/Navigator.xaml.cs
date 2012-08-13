@@ -14,38 +14,38 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace WCFArchitect.Interface.Project
+namespace WCFArchitect.Interface
 {
-	public partial class Screen : ContentControl
+	public partial class Navigator : ContentControl
 	{
 		public Projects.Project Project { get { return (Projects.Project)GetValue(ProjectProperty); } set { SetValue(ProjectProperty, value); } }
-		public static readonly DependencyProperty ProjectProperty = DependencyProperty.Register("Project", typeof(Projects.Project), typeof(Screen));
+		public static readonly DependencyProperty ProjectProperty = DependencyProperty.Register("Project", typeof(Projects.Project), typeof(Navigator));
 
 		public object ActivePage { get { return (object)GetValue(ActivePageProperty); } set { SetValue(ActivePageProperty, value); } }
-		public static readonly DependencyProperty ActivePageProperty = DependencyProperty.Register("ActivePage", typeof(object), typeof(Screen));
+		public static readonly DependencyProperty ActivePageProperty = DependencyProperty.Register("ActivePage", typeof(object), typeof(Navigator));
 		
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static RoutedCommand ChangeActivePageCommand = new RoutedCommand();
 
-		static Screen()
+		static Navigator()
 		{
-			CommandManager.RegisterClassCommandBinding(typeof(Screen), new CommandBinding(Screen.ChangeActivePageCommand, OnChangeActivePageCommandExecuted));
+			CommandManager.RegisterClassCommandBinding(typeof(Navigator), new CommandBinding(Navigator.ChangeActivePageCommand, OnChangeActivePageCommandExecuted));
 		}
 
 		private static void OnChangeActivePageCommandExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
-			Screen s = sender as Screen;
+			Navigator s = sender as Navigator;
 			if (s == null) return;
 			Projects.OpenableDocument d = e.Parameter as Projects.OpenableDocument;
 			s.OpenProjectItem(d);
 			
 		}
 
-		public Screen()
+		public Navigator()
 		{
 			InitializeComponent();
 		}
 
-		public Screen(Projects.Project Project)
+		public Navigator(Projects.Project Project)
 		{
 			InitializeComponent();
 
@@ -87,7 +87,7 @@ namespace WCFArchitect.Interface.Project
 			{
 				SolutionItem t = Globals.MainScreen.ScreenButtons.Items[0] as SolutionItem;
 				if (t != null)
-					Globals.MainScreen.SelectProjectScreen(t.Content as Screen);
+					Globals.MainScreen.SelectProjectScreen(t.Content as Navigator);
 			}
 		}
 
