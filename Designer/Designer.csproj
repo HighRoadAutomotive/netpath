@@ -172,8 +172,8 @@
     <Compile Include="Interface\Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Interface\Project\Screen.xaml.cs">
-      <DependentUpon>Screen.xaml</DependentUpon>
+    <Compile Include="Interface\Project.xaml.cs">
+      <DependentUpon>Project.xaml</DependentUpon>
     </Compile>
     <Compile Include="Options\Licensing.cs" />
     <Compile Include="Options\UserProfile.cs" />
@@ -198,17 +198,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Interface\Project\ProjectListItemTemplates.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Interface\Project.xaml">
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Project\Screen.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\C1NumericBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\ProjectListItemTemplates.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Resource Include="Themes\C1TimeEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -599,6 +599,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\X32\Delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Interface\Project\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

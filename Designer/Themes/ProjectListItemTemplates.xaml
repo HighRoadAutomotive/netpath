@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:wap="clr-namespace:WCFArchitect.Projects;assembly=WCFArchitect.Projects"
 					xmlns:pc="http://schemas.propsectivesoftware.com/pc"
-					xmlns:local="clr-namespace:WCFArchitect.Interface.Project">
+					xmlns:local="clr-namespace:WCFArchitect.Interface">
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="pack://application:,,,/Prospective.Controls;component/Themes/Defaults.xaml" />
 	</ResourceDictionary.MergedDictionaries>
@@ -37,7 +37,7 @@
 		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="UseLayoutRounding" Value="True" />
-		<Setter Property="Command" Value="{x:Static local:Screen.ChangeActivePageCommand}" />
+		<Setter Property="Command" Value="{x:Static local:Navigator.ChangeActivePageCommand}" />
 		<Setter Property="CommandParameter" Value="{Binding}" />
 		<Setter Property="Padding" Value="5,0,0,0" />
 		<Setter Property="Template">
@@ -106,7 +106,7 @@
 		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="UseLayoutRounding" Value="True" />
-		<Setter Property="Command" Value="{x:Static local:Screen.ChangeActivePageCommand}" />
+		<Setter Property="Command" Value="{x:Static local:Navigator.ChangeActivePageCommand}" />
 		<Setter Property="CommandParameter" Value="{Binding}" />
 		<Setter Property="Template">
 			<Setter.Value>
@@ -185,7 +185,7 @@
 		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="UseLayoutRounding" Value="True" />
-		<Setter Property="Command" Value="{x:Static local:Screen.ChangeActivePageCommand}" />
+		<Setter Property="Command" Value="{x:Static local:Navigator.ChangeActivePageCommand}" />
 		<Setter Property="CommandParameter" Value="{Binding}" />
 		<Setter Property="Template">
 			<Setter.Value>
@@ -262,7 +262,7 @@
 		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="UseLayoutRounding" Value="True" />
-		<Setter Property="Command" Value="{x:Static local:Screen.ChangeActivePageCommand}" />
+		<Setter Property="Command" Value="{x:Static local:Navigator.ChangeActivePageCommand}" />
 		<Setter Property="CommandParameter" Value="{Binding}" />
 		<Setter Property="Template">
 			<Setter.Value>
@@ -589,7 +589,7 @@
 		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="UseLayoutRounding" Value="True" />
-		<Setter Property="Command" Value="{x:Static local:Screen.ChangeActivePageCommand}" />
+		<Setter Property="Command" Value="{x:Static local:Navigator.ChangeActivePageCommand}" />
 		<Setter Property="CommandParameter" Value="{Binding}" />
 		<Setter Property="Template">
 			<Setter.Value>

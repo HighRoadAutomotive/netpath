@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Diagnostics;
-using WCFArchitect.Interface.Project;
+using WCFArchitect.Interface;
 
 namespace WCFArchitect.Interface
 {
@@ -315,7 +315,7 @@ namespace WCFArchitect.Interface
 
 		private static void OnSelectProjectCommandExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
-			Screen t = e.Parameter as Screen;
+			Navigator t = e.Parameter as Navigator;
 			if (t == null) return;
 			Main s = sender as Main;
 			if (s == null) return;
@@ -323,7 +323,7 @@ namespace WCFArchitect.Interface
 			s.SelectProjectScreen(t);
 		}
 
-		internal void SelectProjectScreen(Screen NewScreen)
+		internal void SelectProjectScreen(Navigator NewScreen)
 		{
 			SelectedProject = NewScreen;
 			ActiveProjectScreen.Visibility = System.Windows.Visibility.Visible;
@@ -549,7 +549,7 @@ namespace WCFArchitect.Interface
 				{
 					SolutionItem t = ScreenButtons.Items[0] as SolutionItem;
 					if (t != null)
-						SelectProjectScreen(t.Content as Screen);
+						SelectProjectScreen(t.Content as Navigator);
 				}
 
 				AddNETProject.IsEnabled = true;
@@ -620,7 +620,7 @@ namespace WCFArchitect.Interface
 		{
 			this.Project = Project;
 			this.Header = Project.Name.ToUpper();
-			this.Content = new Project.Screen(Project);
+			this.Content = new Navigator(Project);
 		}
 	}
 
