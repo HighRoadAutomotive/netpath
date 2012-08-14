@@ -38,6 +38,15 @@ namespace WCFArchitect.Projects
 		public bool Client { get { return (bool)GetValue(ClientProperty); } set { SetValue(ClientProperty, value); } }
 		public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("Client", typeof(bool), typeof(ProjectUsingNamespace));
 
+		public bool NET { get { return (bool)GetValue(NETProperty); } set { SetValue(NETProperty, value); } }
+		public static readonly DependencyProperty NETProperty = DependencyProperty.Register("NET", typeof(bool), typeof(ProjectUsingNamespace));
+
+		public bool SL { get { return (bool)GetValue(SLProperty); } set { SetValue(SLProperty, value); } }
+		public static readonly DependencyProperty SLProperty = DependencyProperty.Register("SL", typeof(bool), typeof(ProjectUsingNamespace));
+
+		public bool RT { get { return (bool)GetValue(RTProperty); } set { SetValue(RTProperty, value); } }
+		public static readonly DependencyProperty RTProperty = DependencyProperty.Register("RT", typeof(bool), typeof(ProjectUsingNamespace));
+
 		public ProjectUsingNamespace()
 		{
 		}
@@ -49,15 +58,21 @@ namespace WCFArchitect.Projects
 			this.IsFullFrameworkOnly = false;
 			this.Server = true;
 			this.Client = true;
+			this.NET = true;
+			this.SL = false;
+			this.RT = false;
 		}
 
-		public ProjectUsingNamespace(string Namespace, bool Server, bool Client)
+		public ProjectUsingNamespace(string Namespace, bool Server, bool Client, bool NET, bool SL, bool RT)
 		{
 			this.ID = Guid.NewGuid();
 			this.Namespace = Namespace;
 			this.IsFullFrameworkOnly = false;
 			this.Server = Server;
 			this.Client = Client;
+			this.NET = NET;
+			this.SL = SL;
+			this.RT = RT;
 		}
 	}
 
@@ -77,7 +92,7 @@ namespace WCFArchitect.Projects
 		}
 	}
 
-	public abstract partial class Project : OpenableDocument
+	public partial class Project : OpenableDocument
 	{
 		public Guid ID { get; set; }
 		[IgnoreDataMember()] public string AbsolutePath { get; private set; }
@@ -106,6 +121,12 @@ namespace WCFArchitect.Projects
 		public ObservableCollection<DependencyProject> DependencyProjects { get { return (ObservableCollection<DependencyProject>)GetValue(DependencyProjectsProperty); } set { SetValue(DependencyProjectsProperty, value); } }
 		public static readonly DependencyProperty DependencyProjectsProperty = DependencyProperty.Register("DependencyProjects", typeof(ObservableCollection<DependencyProject>), typeof(Project));
 
+		public ObservableCollection<ProjectGenerationTarget> ServerGenerationTargets { get { return (ObservableCollection<ProjectGenerationTarget>)GetValue(ServerGenerationTargetsProperty); } set { SetValue(ServerGenerationTargetsProperty, value); } }
+		public static readonly DependencyProperty ServerGenerationTargetsProperty = DependencyProperty.Register("ServerGenerationTargets", typeof(ObservableCollection<ProjectGenerationTarget>), typeof(Project));
+
+		public ObservableCollection<ProjectGenerationTarget> ClientGenerationTargets { get { return (ObservableCollection<ProjectGenerationTarget>)GetValue(ClientGenerationTargetsProperty); } set { SetValue(ClientGenerationTargetsProperty, value); } }
+		public static readonly DependencyProperty ClientGenerationTargetsProperty = DependencyProperty.Register("ClientGenerationTargets", typeof(ObservableCollection<ProjectGenerationTarget>), typeof(Project));
+
 		//Internal Use - Searching / Filtering
 		[IgnoreDataMember()] public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
 		public static readonly DependencyProperty IsSearchingProperty = DependencyProperty.Register("IsSearching", typeof(bool), typeof(Project));
@@ -126,6 +147,42 @@ namespace WCFArchitect.Projects
 		{
 			this.DependencyProjects = new ObservableCollection<DependencyProject>();
 			this.UsingNamespaces = new ObservableCollection<ProjectUsingNamespace>();
+
+			this.ServerGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
+			this.ClientGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
+		}
+
+		public Project(string Name) : base()
+		{
+			this.DependencyProjects = new ObservableCollection<DependencyProject>();
+			this.UsingNamespaces = new ObservableCollection<ProjectUsingNamespace>();
+
+			this.ServerGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
+			this.ClientGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
+
+			this.Namespace = new Namespace(Helpers.RegExs.ReplaceSpaces.Replace(Name, "."), null, this);
+			this.Namespace.URI = "http://tempuri.org/" + Namespace.Name.Replace(".", "/") + "/";
+			this.Name = Name;
+
+			//Default Using Namespaces
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System"));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections"));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections.Generic"));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections.ObjectModel"));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections.Specialized"));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.ComponentModel"));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Net"));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Net.Security"));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Text"));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Reflection"));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Resources"));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Runtime.CompilerServices"));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Runtime.InteropServices"));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Runtime.Serialization"));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.ServiceModel"));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.ServiceModel.Description"));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Windows", false, true, true, true, false));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("Windows.UI.Xaml", false, true, false, false, true));
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -163,6 +220,18 @@ namespace WCFArchitect.Projects
 		public static void Save(Project Data, string Path)
 		{
 			Storage.Save<Project>(Path, Data);
+		}
+
+		public bool HasGenerationFramework(ProjectGenerationFramework Framework)
+		{
+			foreach (ProjectGenerationTarget t in ServerGenerationTargets)
+				if (t.Framework == Framework)
+					return true;
+			foreach (ProjectGenerationTarget t in ClientGenerationTargets)
+				if (t.Framework == Framework)
+					return true;
+
+			return false;
 		}
 
 		public void Search(string Value)
@@ -310,7 +379,7 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty ProjectProperty = DependencyProperty.Register("Project", typeof(Project), typeof(DependencyProject));
 	}
 
-	public enum ProjectNETOutputFramework
+	public enum ProjectGenerationFramework
 	{
 		NET30,
 		NET35,
@@ -318,211 +387,33 @@ namespace WCFArchitect.Projects
 		NET40,
 		NET40Client,
 		NET45,
-	}
-
-	public enum ProjectSLOutputFramework
-	{
 		SL40,
 		SL50,
-	}
-
-	public enum ProjectRTOutputFramework
-	{
 		WIN8,
 	}
 
-	public class ProjectNETOutputPath : DependencyObject
+	public class ProjectGenerationTarget : DependencyObject
 	{
 		public Guid ProjectID { get; protected set; }
 		public Guid ID { get; set; }
 
 		public bool IsEnabled { get { return (bool)GetValue(IsEnabledProperty); } set { SetValue(IsEnabledProperty, value); } }
-		public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register("IsEnabled", typeof(bool), typeof(ProjectNETOutputPath), new UIPropertyMetadata(true));
+		public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register("IsEnabled", typeof(bool), typeof(ProjectGenerationTarget), new UIPropertyMetadata(true));
 
 		public string Path { get { return (string)GetValue(PathProperty); } set { SetValue(PathProperty, value); } }
-		public static readonly DependencyProperty PathProperty = DependencyProperty.Register("Path", typeof(string), typeof(ProjectNETOutputPath));
+		public static readonly DependencyProperty PathProperty = DependencyProperty.Register("Path", typeof(string), typeof(ProjectGenerationTarget));
 
-		public ProjectNETOutputFramework Framework { get { return (ProjectNETOutputFramework)GetValue(FrameworkProperty); } set { SetValue(FrameworkProperty, value); } }
-		public static readonly DependencyProperty FrameworkProperty = DependencyProperty.Register("Framework", typeof(ProjectNETOutputFramework), typeof(ProjectNETOutputPath));
+		public ProjectGenerationFramework Framework { get { return (ProjectGenerationFramework)GetValue(FrameworkProperty); } set { SetValue(FrameworkProperty, value); } }
+		public static readonly DependencyProperty FrameworkProperty = DependencyProperty.Register("Framework", typeof(ProjectGenerationFramework), typeof(ProjectGenerationTarget), new UIPropertyMetadata(ProjectGenerationFramework.NET45));
 
-		public ProjectNETOutputPath() { }
+		public ProjectGenerationTarget() { }
 
-		public ProjectNETOutputPath(Guid ProjectID, string Path)
+		public ProjectGenerationTarget(Guid ProjectID, string Path)
 		{
 			this.ID = Guid.NewGuid();
 			this.ProjectID = ProjectID;
 			this.Path = Path;
-			this.Framework = ProjectNETOutputFramework.NET45;
-		}
-	}
-
-	public class ProjectSLOutputPath : DependencyObject
-	{
-		public Guid ProjectID { get; protected set; }
-		public Guid ID { get; set; }
-
-		public bool IsEnabled { get { return (bool)GetValue(IsEnabledProperty); } set { SetValue(IsEnabledProperty, value); } }
-		public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register("IsEnabled", typeof(bool), typeof(ProjectSLOutputPath), new UIPropertyMetadata(true));
-
-		public string Path { get { return (string)GetValue(PathProperty); } set { SetValue(PathProperty, value); } }
-		public static readonly DependencyProperty PathProperty = DependencyProperty.Register("Path", typeof(string), typeof(ProjectSLOutputPath));
-
-		public ProjectSLOutputFramework Framework { get { return (ProjectSLOutputFramework)GetValue(FrameworkProperty); } set { SetValue(FrameworkProperty, value); } }
-		public static readonly DependencyProperty FrameworkProperty = DependencyProperty.Register("Framework", typeof(ProjectSLOutputFramework), typeof(ProjectSLOutputPath));
-
-		public ProjectSLOutputPath() { }
-
-		public ProjectSLOutputPath(Guid ProjectID, string Path)
-		{
-			this.ID = Guid.NewGuid();
-			this.ProjectID = ProjectID;
-			this.Path = Path;
-			this.Framework = ProjectSLOutputFramework.SL50;
-		}
-	}
-
-	public class ProjectRTOutputPath : DependencyObject
-	{
-		public Guid ProjectID { get; protected set; }
-		public Guid ID { get; set; }
-
-		public bool IsEnabled { get { return (bool)GetValue(IsEnabledProperty); } set { SetValue(IsEnabledProperty, value); } }
-		public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register("IsEnabled", typeof(bool), typeof(ProjectRTOutputPath), new UIPropertyMetadata(true));
-
-		public string Path { get { return (string)GetValue(PathProperty); } set { SetValue(PathProperty, value); } }
-		public static readonly DependencyProperty PathProperty = DependencyProperty.Register("Path", typeof(string), typeof(ProjectRTOutputPath));
-
-		public ProjectRTOutputFramework Framework { get { return (ProjectRTOutputFramework)GetValue(FrameworkProperty); } set { SetValue(FrameworkProperty, value); } }
-		public static readonly DependencyProperty FrameworkProperty = DependencyProperty.Register("Framework", typeof(ProjectRTOutputFramework), typeof(ProjectRTOutputPath));
-
-		public ProjectRTOutputPath() { }
-
-		public ProjectRTOutputPath(Guid ProjectID, string Path)
-		{
-			this.ID = Guid.NewGuid();
-			this.ProjectID = ProjectID;
-			this.Path = Path;
-			this.Framework = ProjectRTOutputFramework.WIN8;
-		}
-	}
-
-	public class ProjectNET : Project
-	{
-		public ObservableCollection<ProjectNETOutputPath> ServerOutputPaths { get { return (ObservableCollection<ProjectNETOutputPath>)GetValue(ServerOutputPathsProperty); } set { SetValue(ServerOutputPathsProperty, value); } }
-		public static readonly DependencyProperty ServerOutputPathsProperty = DependencyProperty.Register("ServerOutputPaths", typeof(ObservableCollection<ProjectNETOutputPath>), typeof(ProjectNET));
-
-		public ObservableCollection<ProjectNETOutputPath> ClientOutputPaths { get { return (ObservableCollection<ProjectNETOutputPath>)GetValue(ClientOutputPathsProperty); } set { SetValue(ClientOutputPathsProperty, value); } }
-		public static readonly DependencyProperty ClientOutputPathsProperty = DependencyProperty.Register("ClientOutputPaths", typeof(ObservableCollection<ProjectNETOutputPath>), typeof(ProjectNET));
-
-		public ProjectNET() : base() { }
-
-		public ProjectNET(string Name) : base()
-		{
-			this.ServerOutputPaths = new ObservableCollection<ProjectNETOutputPath>();
-			this.ClientOutputPaths = new ObservableCollection<ProjectNETOutputPath>();
-
-			this.Namespace = new Namespace(Helpers.RegExs.ReplaceSpaces.Replace(Name, "."), null, this);
-			this.Namespace.URI = "http://tempuri.org/" + Namespace.Name.Replace(".", "/") + "/";
-			this.Name = Name;
-
-			//Default Using Namespaces
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections.Generic"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections.ObjectModel"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections.Specialized"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.ComponentModel"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Net"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Net.Security"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Text"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Reflection"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Resources"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Runtime.CompilerServices"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Runtime.InteropServices"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Runtime.Serialization"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.ServiceModel"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.ServiceModel.Description"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Windows", false, true));
-		}
-	}
-
-	public class ProjectSL : Project
-	{
-		public ObservableCollection<ProjectSLOutputPath> ServerOutputPaths { get { return (ObservableCollection<ProjectSLOutputPath>)GetValue(ServerOutputPathsProperty); } set { SetValue(ServerOutputPathsProperty, value); } }
-		public static readonly DependencyProperty ServerOutputPathsProperty = DependencyProperty.Register("ServerOutputPaths", typeof(ObservableCollection<ProjectSLOutputPath>), typeof(ProjectSL));
-
-		public ObservableCollection<ProjectSLOutputPath> ClientOutputPaths { get { return (ObservableCollection<ProjectSLOutputPath>)GetValue(ClientOutputPathsProperty); } set { SetValue(ClientOutputPathsProperty, value); } }
-		public static readonly DependencyProperty ClientOutputPathsProperty = DependencyProperty.Register("ClientOutputPaths", typeof(ObservableCollection<ProjectSLOutputPath>), typeof(ProjectSL));
-
-		public ProjectSL() : base() { }
-
-		public ProjectSL(string Name) : base()
-		{
-			this.ServerOutputPaths = new ObservableCollection<ProjectSLOutputPath>();
-			this.ClientOutputPaths = new ObservableCollection<ProjectSLOutputPath>();
-
-			this.Namespace = new Namespace(Helpers.RegExs.ReplaceSpaces.Replace(Name, "."), null, this);
-			this.Namespace.URI = "http://tempuri.org/" + Namespace.Name.Replace(".", "/") + "/";
-			this.Name = Name;
-
-			//Default Using Namespaces
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections.Generic"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections.ObjectModel"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections.Specialized"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.ComponentModel"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Net"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Net.Security"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Text"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Reflection"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Resources"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Runtime.CompilerServices"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Runtime.InteropServices"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Runtime.Serialization"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.ServiceModel"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.ServiceModel.Description"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Windows", false, true));
-		}
-	}
-
-	public class ProjectRT : Project
-	{
-		public ObservableCollection<ProjectRTOutputPath> ServerOutputPaths { get { return (ObservableCollection<ProjectRTOutputPath>)GetValue(ServerOutputPathsProperty); } set { SetValue(ServerOutputPathsProperty, value); } }
-		public static readonly DependencyProperty ServerOutputPathsProperty = DependencyProperty.Register("ServerOutputPaths", typeof(ObservableCollection<ProjectRTOutputPath>), typeof(ProjectRT));
-
-		public ObservableCollection<ProjectRTOutputPath> ClientOutputPaths { get { return (ObservableCollection<ProjectRTOutputPath>)GetValue(ClientOutputPathsProperty); } set { SetValue(ClientOutputPathsProperty, value); } }
-		public static readonly DependencyProperty ClientOutputPathsProperty = DependencyProperty.Register("ClientOutputPaths", typeof(ObservableCollection<ProjectRTOutputPath>), typeof(ProjectRT));
-
-		public ProjectRT() : base() { }
-
-
-		public ProjectRT(string Name) : base()
-		{
-			this.ServerOutputPaths = new ObservableCollection<ProjectRTOutputPath>();
-			this.ClientOutputPaths = new ObservableCollection<ProjectRTOutputPath>();
-
-			this.Namespace = new Namespace(Helpers.RegExs.ReplaceSpaces.Replace(Name, "."), null, this);
-			this.Namespace.URI = "http://tempuri.org/" + Namespace.Name.Replace(".", "/") + "/";
-			this.Name = Name;
-
-			//Default Using Namespaces
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections.Generic"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections.ObjectModel"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections.Specialized"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.ComponentModel"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Net"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Text"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Reflection"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Resources"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Runtime.CompilerServices"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Runtime.InteropServices"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Runtime.Serialization"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.ServiceModel"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.ServiceModel.Description"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("Windows.UI.Xaml", false, true));
+			this.Framework = ProjectGenerationFramework.NET45;
 		}
 	}
 }

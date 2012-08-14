@@ -47,12 +47,7 @@ namespace WCFArchitect.Interface.Dialogs
 
 		internal void Create()
 		{
-			if(ProjectType == typeof(Projects.ProjectNET))
-				Globals.MainScreen.NewNETProject(NewProjectName.Text, FileName);
-			if (ProjectType == typeof(Projects.ProjectSL))
-				Globals.MainScreen.NewSLProject(NewProjectName.Text, FileName);
-			if (ProjectType == typeof(Projects.ProjectRT))
-				Globals.MainScreen.NewRTProject(NewProjectName.Text, FileName);
+				Globals.MainScreen.NewProject(NewProjectName.Text, FileName);
 		}
 	}
 }

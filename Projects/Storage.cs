@@ -18,7 +18,7 @@ namespace WCFArchitect.Projects
 				throw new System.IO.FileNotFoundException("Unable to locate file '" + Path + "'");
 
 			List<Type> kt = new List<Type>(new Type[] { 
-				typeof(Solution), typeof(Project), typeof(ProjectNET), typeof(ProjectRT), typeof(ProjectSL), typeof(ProjectNETOutputPath), typeof(ProjectRTOutputPath), typeof(ProjectSLOutputPath), typeof(DataType), typeof(Namespace),
+				typeof(Solution), typeof(Project), typeof(ProjectGenerationTarget), typeof(DataType), typeof(Namespace),
 				typeof(BindingSecurity), typeof(BindingSecurityBasicHTTP), typeof(BindingSecurityMSMQ), typeof(BindingSecurityMSMQIntegration), typeof(BindingSecurityNamedPipe), typeof(BindingSecurityPeerTCP), typeof(BindingSecurityTCP), typeof(BindingSecurityWebHTTP), typeof(BindingSecurityWSDualHTTP), typeof(BindingSecurityWSFederationHTTP), typeof(BindingSecurityWSHTTP),
 				typeof(ServiceBinding), typeof(ServiceBindingBasicHTTP), typeof(ServiceBindingMSMQ), typeof(ServiceBindingMSMQIntegration), typeof(ServiceBindingNamedPipe), typeof(ServiceBindingNetHTTP), typeof(ServiceBindingPeerTCP), typeof(ServiceBindingTCP), typeof(ServiceBindingWebHTTP), typeof(ServiceBindingWS2007FederationHTTP), typeof(ServiceBindingWS2007HTTP), typeof(ServiceBindingWSDualHTTP), typeof(ServiceBindingWSFederationHTTP), typeof(ServiceBindingWSHTTP),
 				typeof(Host), typeof(HostBehavior), typeof(HostCredentials), typeof(HostDebugBehavior), typeof(HostEndpoint), typeof(HostEndpointAddressHeader), typeof(HostMetadataBehavior), typeof(HostThrottlingBehavior),
@@ -47,7 +47,7 @@ namespace WCFArchitect.Projects
 			}
 
 			List<Type> kt = new List<Type>(new Type[] { 
-				typeof(Solution), typeof(Project), typeof(ProjectNET), typeof(ProjectRT), typeof(ProjectSL), typeof(ProjectNETOutputPath), typeof(ProjectRTOutputPath), typeof(ProjectSLOutputPath), typeof(DataType), typeof(Namespace),
+				typeof(Solution), typeof(Project), typeof(ProjectGenerationTarget), typeof(DataType), typeof(Namespace),
 				typeof(BindingSecurity), typeof(BindingSecurityBasicHTTP), typeof(BindingSecurityMSMQ), typeof(BindingSecurityMSMQIntegration), typeof(BindingSecurityNamedPipe), typeof(BindingSecurityPeerTCP), typeof(BindingSecurityTCP), typeof(BindingSecurityWebHTTP), typeof(BindingSecurityWSDualHTTP), typeof(BindingSecurityWSFederationHTTP), typeof(BindingSecurityWSHTTP),
 				typeof(ServiceBinding), typeof(ServiceBindingBasicHTTP), typeof(ServiceBindingMSMQ), typeof(ServiceBindingMSMQIntegration), typeof(ServiceBindingNamedPipe), typeof(ServiceBindingNetHTTP), typeof(ServiceBindingPeerTCP), typeof(ServiceBindingTCP), typeof(ServiceBindingWebHTTP), typeof(ServiceBindingWS2007FederationHTTP), typeof(ServiceBindingWS2007HTTP), typeof(ServiceBindingWSDualHTTP), typeof(ServiceBindingWSFederationHTTP), typeof(ServiceBindingWSHTTP),
 				typeof(Host), typeof(HostBehavior), typeof(HostCredentials), typeof(HostDebugBehavior), typeof(HostEndpoint), typeof(HostEndpointAddressHeader), typeof(HostMetadataBehavior), typeof(HostThrottlingBehavior),

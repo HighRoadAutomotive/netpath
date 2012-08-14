@@ -348,22 +348,10 @@ namespace WCFArchitect.Interface
 			Globals.ShowDialogBox(null, "New Solution", np, new MessageAction("Create", new Action(() => np.Create())), new MessageAction("Cancel", new Action(() => { return; })));
 		}
 
-		private void AddNETProject_Click(object sender, RoutedEventArgs e)
+		private void AddProject_Click(object sender, RoutedEventArgs e)
 		{
-			Dialogs.NewProject np = new Dialogs.NewProject(typeof(Projects.ProjectNET));
-			Globals.ShowDialogBox(null, "New .NET Framework Project", np, new MessageAction("Create", new Action(() => np.Create())), new MessageAction("Cancel", new Action(() => { return; })));
-		}
-
-		private void AddSLProject_Click(object sender, RoutedEventArgs e)
-		{
-			Dialogs.NewProject np = new Dialogs.NewProject(typeof(Projects.ProjectNET));
-			Globals.ShowDialogBox(null, "New Silverlight Project", np, new MessageAction("Create", new Action(() => np.Create())), new MessageAction("Cancel", new Action(() => { return; })));
-		}
-
-		private void AddRTProject_Click(object sender, RoutedEventArgs e)
-		{
-			Dialogs.NewProject np = new Dialogs.NewProject(typeof(Projects.ProjectNET));
-			Globals.ShowDialogBox(null, "New Windows Runtime Project", np, new MessageAction("Create", new Action(() => np.Create())), new MessageAction("Cancel", new Action(() => { return; })));
+			Dialogs.NewProject np = new Dialogs.NewProject(typeof(Projects.Project));
+			Globals.ShowDialogBox(null, "New Project", np, new MessageAction("Create", new Action(() => np.Create())), new MessageAction("Cancel", new Action(() => { return; })));
 		}
 
 		private void UpdateYes_Click(object sender, RoutedEventArgs e)
@@ -481,27 +469,9 @@ namespace WCFArchitect.Interface
 			return true;
 		}
 
-		public void NewNETProject(string Name, string Path)
+		public void NewProject(string Name, string Path)
 		{
-			Projects.Project NP = new Projects.ProjectNET(Name);
-			Globals.Solution.Projects.Add(Globals.GetRelativePath(Globals.SolutionPath, Path));
-			Projects.Project.Save(NP, Path);
-			Globals.Projects.Add(Projects.Project.Open(Globals.SolutionPath, Path));
-			Globals.SaveSolution();
-		}
-
-		public void NewSLProject(string Name, string Path)
-		{
-			Projects.Project NP = new Projects.ProjectSL(Name);
-			Globals.Solution.Projects.Add(Globals.GetRelativePath(Globals.SolutionPath, Path));
-			Projects.Project.Save(NP, Path);
-			Globals.Projects.Add(Projects.Project.Open(Globals.SolutionPath, Path));
-			Globals.SaveSolution();
-		}
-
-		public void NewRTProject(string Name, string Path)
-		{
-			Projects.Project NP = new Projects.ProjectRT(Name);
+			Projects.Project NP = new Projects.Project(Name);
 			Globals.Solution.Projects.Add(Globals.GetRelativePath(Globals.SolutionPath, Path));
 			Projects.Project.Save(NP, Path);
 			Globals.Projects.Add(Projects.Project.Open(Globals.SolutionPath, Path));
@@ -552,9 +522,7 @@ namespace WCFArchitect.Interface
 						SelectProjectScreen(t.Content as Navigator);
 				}
 
-				AddNETProject.IsEnabled = true;
-				AddSLProject.IsEnabled = true;
-				AddRTProject.IsEnabled = true;
+				AddProject.IsEnabled = true;
 				SystemMenuSave.IsEnabled = true;
 				SystemMenuSaveAs.IsEnabled = true;
 				SystemMenuClose.IsEnabled = true;
@@ -586,9 +554,7 @@ namespace WCFArchitect.Interface
 			}
 
 			Globals.SolutionInfo = null;
-			AddNETProject.IsEnabled = false;
-			AddSLProject.IsEnabled = false;
-			AddRTProject.IsEnabled = false;
+			AddProject.IsEnabled = false;
 			SystemMenuSave.IsEnabled = false;
 			SystemMenuSaveAs.IsEnabled = false;
 			SystemMenuClose.IsEnabled = false;

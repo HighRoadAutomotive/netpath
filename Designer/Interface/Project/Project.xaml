@@ -1,0 +1,171 @@
+﻿<Grid x:Class="WCFArchitect.Interface.Project.Project" x:ClassModifier="internal"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+	xmlns:sys="clr-namespace:System;assembly=mscorlib"
+	xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" 
+	xmlns:Project="clr-namespace:WCFArchitect.Interface.Project"
+	xmlns:InRoot="clr-namespace:WCFArchitect.Interface"
+	xmlns:pc="clr-namespace:Prospective.Controls;assembly=Prospective.Controls"
+	d:DesignHeight="950" d:DesignWidth="1000" DataContext="{Binding RelativeSource={RelativeSource Self}}" >
+	<Grid.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Colors.xaml" />
+				<ResourceDictionary>
+					<Project:ProjectCollectionSerializationOverrideConverter x:Key="ProjectCollectionTypeConverter" />
+					<Project:ProjectServiceSerializerTypeConverter x:Key="ProjectServiceSerializerTypeConverter" />
+				</ResourceDictionary>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Grid.Resources>
+	<Grid.ColumnDefinitions>
+		<ColumnDefinition Width="*" />
+		<ColumnDefinition Width="*" />
+	</Grid.ColumnDefinitions>
+	<Grid.RowDefinitions>
+		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
+		<RowDefinition Height="*" />
+		<RowDefinition Height="*" />
+	</Grid.RowDefinitions>
+	<Grid Grid.Row="0" Grid.ColumnSpan="2">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="100" />
+		</Grid.RowDefinitions>
+		<Label Content="Project Name:" Height="Auto" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" />
+		<pc:TextBox Height="23" Margin="190,11,10,0" Name="ProjectName" Text="{Binding Path=Settings.Name}" VerticalAlignment="Top" />
+		<Label Content="Project Namespace:" Height="Auto" HorizontalAlignment="Left" Margin="5,41,0,0" VerticalAlignment="Top" />
+		<pc:TextBox Height="23" Margin="190,42,10,0" Name="txtProjectNamespace" VerticalAlignment="Top" Text="{Binding Path=Settings.Namespace.Name}" />
+		<Label Content="Project Namespace URI:" Height="Auto" HorizontalAlignment="Left" Margin="5,72,0,0" VerticalAlignment="Top" />
+		<pc:TextBox Height="23" Margin="190,73,10,0" Name="txtProjectNamespaceURI" VerticalAlignment="Top" Text="{Binding Path=Settings.Namespace.URI}" />
+	</Grid>
+	<GroupBox Name="ProjectGenerationOptionsGroup" Header="Project Generation Options" Margin="5" Grid.Row="1" Grid.ColumnSpan="2">
+		<Grid Margin="5,0">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width=".5*" />
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+			<CheckBox Content="Use Serializer for Faults" IsChecked="{Binding Path=Settings.ServiceSerializerFaultsMethods}" Margin="0,2,0,0" VerticalAlignment="Center" Grid.Column="0" />
+			<Label Content="Serializer:" Height="Auto" HorizontalAlignment="Left" Margin="0,2,0,0" VerticalAlignment="Top" Grid.Column="1" />
+			<ComboBox Grid.Column="1" Height="23" Margin="82,4,5,0" VerticalAlignment="Top" SelectedIndex="{Binding Path=Settings.ServiceSerializer, Converter={StaticResource ProjectServiceSerializerTypeConverter}}" >
+				<ComboBox.Items>
+					<ComboBoxItem>Auto</ComboBoxItem>
+					<ComboBoxItem>Data Contract</ComboBoxItem>
+					<ComboBoxItem>XML</ComboBoxItem>
+				</ComboBox.Items>
+			</ComboBox>
+			<Label Content="Collection Type:" Height="Auto" HorizontalAlignment="Left" Margin="0,2,0,0" VerticalAlignment="Top" Grid.Column="2" />
+			<ComboBox Grid.Column="2" Height="23" Margin="127,4,0,0" VerticalAlignment="Top" SelectedIndex="{Binding Path=Settings.ServiceCollectionType, Converter={StaticResource ProjectCollectionTypeConverter}}" >
+				<ComboBox.Items>
+					<ComboBoxItem>Auto</ComboBoxItem>
+					<ComboBoxItem>List</ComboBoxItem>
+					<ComboBoxItem>Array</ComboBoxItem>
+				</ComboBox.Items>
+			</ComboBox>
+		</Grid>
+	</GroupBox>
+	<GroupBox Name="DependenciesGroup" Header="Dependency Projects" Margin="5" IsEnabled="True" Grid.Column="0" Grid.Row="2">
+		<Grid>
+			<ListView IsSynchronizedWithCurrentItem="False" HorizontalAlignment="Stretch" BorderThickness="0" Background="Transparent" VerticalAlignment="Stretch" x:Name="DependencyItems" SelectionMode="Single" AlternationCount="1" ItemContainerStyle="{StaticResource ListViewItemContainerStyle}" >
+				<ListView.View>
+					<GridView>
+						<GridViewColumn Header="ID" Width="0" DisplayMemberBinding="{Binding Path=ID}" />
+						<GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding Path=Name}"/>
+						<GridViewColumn Header="Namespace" Width="Auto" DisplayMemberBinding="{Binding Path=Namespace.Name}"/>
+						<GridViewColumn Header="Namespace URI" Width="Auto" DisplayMemberBinding="{Binding Path=Namespace.URI}"/>
+					</GridView>
+				</ListView.View>
+			</ListView>
+			<Button Content="Add" Height="23" HorizontalAlignment="Right" Margin="0,0,102,5" Name="DependencyAdd" VerticalAlignment="Bottom" Width="90" Click="DependencyAdd_Click" />
+			<Button Content="Remove" Height="23" HorizontalAlignment="Right" Margin="0,0,6,5" Name="DependencyRemove" VerticalAlignment="Bottom" Width="90" Click="DependencyRemove_Click" />
+		</Grid>
+	</GroupBox>
+	<GroupBox Name="UsingGroup" Header="Using Namespaces" Margin="5" IsEnabled="True" Grid.Column="0" Grid.Row="3">
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<Label Content="Namespace:" Height="Auto" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="Auto" Grid.RowSpan="2" />
+			<TextBox Name="UsingNamespace" Height="23" Margin="110,7,66,0" VerticalAlignment="Top" KeyUp="UsingNamespace_KeyUp" />
+			<Button Grid.Row="0" Content="Add" Height="23" Margin="0,7,5,0" Name="AddUsingNamespace" VerticalAlignment="Top" HorizontalAlignment="Right" Width="55" Click="AddUsingNamespace_Click" />
+			<ListBox x:Name="UsingList" Grid.Row="1" Margin="0,5,0,0" SelectionMode="Single" ItemContainerStyle="{StaticResource StretchedContainerStyle}" BorderThickness="0" Background="Transparent" >
+				<ListBox.Resources>
+					<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+				</ListBox.Resources>
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<Border Name="BG" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="0">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" MinWidth="230" />
+									<ColumnDefinition Width="150" />
+									<ColumnDefinition Width="20" />
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="20" />
+								</Grid.RowDefinitions>
+								<TextBlock Text="{Binding Path=Namespace}" Grid.Column="0" Margin="3,0,0,0" VerticalAlignment="Center" Foreground="Black" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
+								<CheckBox Grid.Column="1" Margin="0" Content="Full Framework Only" VerticalAlignment="Center" IsChecked="{Binding Path=IsFullFrameworkOnly}" />
+								<Button Name="DeleteSelectedUsingItem" Grid.Column="2" Margin="0" Click="DeleteSelectedUsingItem_Click" Padding="0" Visibility="Hidden" Background="Transparent">
+									<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+								</Button>
+							</Grid>
+						</Border>
+						<DataTemplate.Triggers>
+							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
+								<Setter TargetName="BG" Property="Background" Value="{StaticResource ItemHoverBackground}" />
+								<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource ItemHoverBorder}" />
+								<Setter TargetName="DeleteSelectedUsingItem" Property="Visibility" Value="Visible" />
+							</DataTrigger>
+							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
+								<Setter TargetName="BG" Property="Background" Value="{StaticResource ItemSelectedBackground}" />
+								<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource ItemHoverBorder}" />
+								<Setter TargetName="DeleteSelectedUsingItem" Property="Visibility" Value="Visible" />
+							</DataTrigger>
+							<MultiDataTrigger>
+								<MultiDataTrigger.Conditions>
+									<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="False" />
+									<Condition Binding="{Binding ElementName=DeleteSelectedUsingItem, Path=IsMouseOver}" Value="True" />
+								</MultiDataTrigger.Conditions>
+								<Setter TargetName="BG" Property="Background" Value="White" />
+							</MultiDataTrigger>
+						</DataTemplate.Triggers>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</Grid>
+	</GroupBox>
+	<GroupBox Header="Server Generation Targets" Margin="5" Grid.Column="1" Grid.Row="2">
+		<Grid>
+			<Label Content="File Name:" Height="Auto" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" />
+			<TextBox Height="23" Margin="95,7,5,0" Name="ServerAssemblyName" VerticalAlignment="Top" Text="{Binding Path=Settings.ServerAssemblyName}"/>
+			<Label Content="Path:" Height="Auto" HorizontalAlignment="Left" Margin="5,35,0,0" VerticalAlignment="Top" />
+			<TextBox Height="23" Margin="95,36,167,0" Name="ServerOutputPath" VerticalAlignment="Top" ToolTip="{Binding ElementName=ServerOutputPath, Path=Text}"  />
+			<Button Content="Browse..." Height="23" HorizontalAlignment="Right" Margin="0,36,86,0" Name="ServerOutputBrowse" VerticalAlignment="Top" Width="75" Click="ServerOutputBrowse_Click"/>
+			<Button Content="Add" Height="23" HorizontalAlignment="Right" Margin="0,36,5,0" Name="ServerOutputAdd" VerticalAlignment="Top" Width="75" Click="ServerOutputAdd_Click"/>
+			<ScrollViewer Margin="0,70,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+				<StackPanel Name="ServerOutputPathsList" Orientation="Vertical" />
+			</ScrollViewer>
+		</Grid>
+	</GroupBox>
+	<GroupBox  Header="Client Generation Targets" Margin="5" Grid.Column="1" Grid.Row="3">
+		<Grid>
+			<Label Content="File Name:" Height="Auto" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" />
+			<TextBox Height="23" Margin="95,7,5,0" Name="ClientAssemblyName" VerticalAlignment="Top" Text="{Binding Path=Settings.ClientAssemblyName}"/>
+			<Label Content="Path:" Height="Auto" HorizontalAlignment="Left" Margin="5,35,0,0" VerticalAlignment="Top" />
+			<TextBox Height="23" Margin="95,36,167,0" Name="ClientOutputPath" VerticalAlignment="Top" ToolTip="{Binding ElementName=ClientOutputPath, Path=Text}"/>
+			<Button Content="Browse..." Height="23" HorizontalAlignment="Right" Margin="0,36,86,0" Name="ClientOutputBrowse" VerticalAlignment="Top" Width="75" Click="ClientOutputBrowse_Click"/>
+			<Button Content="Add" Height="23" HorizontalAlignment="Right" Margin="0,36,5,0" Name="ClientOutputAdd" VerticalAlignment="Top" Width="75" Click="ClientOutputAdd_Click"/>
+			<ScrollViewer Margin="0,70,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+				<StackPanel Name="ClientOutputPathsList" Orientation="Vertical" />
+			</ScrollViewer>
+		</Grid>
+	</GroupBox>
+</Grid>

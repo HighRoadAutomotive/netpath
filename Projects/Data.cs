@@ -255,6 +255,12 @@ namespace WCFArchitect.Projects
 		public bool IsReadOnly { get { return (bool)GetValue(IsReadOnlyProperty); } set { SetValue(IsReadOnlyProperty, value); } }
 		public static readonly DependencyProperty IsReadOnlyProperty = DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(DataElement));
 
+		public bool GenerateWinFormsSupport { get { return (bool)GetValue(GenerateWinFormsSupportProperty); } set { SetValue(GenerateWinFormsSupportProperty, value); } }
+		public static readonly DependencyProperty GenerateWinFormsSupportProperty = DependencyProperty.Register("GenerateWinFormsSupport", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
+
+		public bool MarkSerializable { get { return (bool)GetValue(MarkSerializableProperty); } set { SetValue(MarkSerializableProperty, value); } }
+		public static readonly DependencyProperty MarkSerializableProperty = DependencyProperty.Register("MarkSerializable", typeof(bool), typeof(Data), new PropertyMetadata(false));
+
 		//DataMember Settings
 		public bool IsDataMember { get { return (bool)GetValue(IsDataMemberProperty); } set { SetValue(IsDataMemberProperty, value); } }
 		public static readonly DependencyProperty IsDataMemberProperty = DependencyProperty.Register("IsDataMember", typeof(bool), typeof(DataElement), new UIPropertyMetadata(true));
