@@ -172,7 +172,13 @@
     <Compile Include="Interface\Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Interface\Project.xaml.cs">
+    <Compile Include="Interface\Navigator.xaml.cs">
+      <DependentUpon>Navigator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Project\GenerationTarget.xaml.cs">
+      <DependentUpon>GenerationTarget.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Project\Project.xaml.cs">
       <DependentUpon>Project.xaml</DependentUpon>
     </Compile>
     <Compile Include="Options\Licensing.cs" />
@@ -198,7 +204,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Interface\Project.xaml">
+    <Page Include="Interface\Navigator.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Project\GenerationTarget.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Project\Project.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -600,9 +614,7 @@
   <ItemGroup>
     <Resource Include="Icons\X32\Delete.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interface\Project\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

@@ -212,7 +212,7 @@
 									</StackPanel>
 								</Grid>
 							</Button>
-							<Button x:Name="AddNETProject" Grid.Row="0" Margin="0,10,0,0" IsEnabled="False" HorizontalContentAlignment="Left" Click="AddNETProject_Click" >
+							<Button x:Name="AddProject" Grid.Row="0" Margin="0,10,0,0" IsEnabled="False" HorizontalContentAlignment="Left" Click="AddProject_Click" >
 								<Grid>
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition Width="Auto" />
@@ -220,34 +220,8 @@
 									</Grid.ColumnDefinitions>
 									<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X64/Project.png" Margin="10,5" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="64" Width="64" Stretch="None" Grid.Column="0" />
 									<StackPanel Grid.Column="1" Margin="10">
-										<Label Content="Add .NET Framework Project" Foreground="Gray" FontSize="14pt" FontWeight="Bold" Padding="0"/>
-										<TextBlock Text="Add a project supporting the .NET Framework to the solution." Padding="0" TextWrapping="Wrap" />
-									</StackPanel>
-								</Grid>
-							</Button>
-							<Button x:Name="AddSLProject" Grid.Row="0" Margin="0,10,0,0" IsEnabled="False" HorizontalContentAlignment="Left" Click="AddSLProject_Click" >
-								<Grid>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="Auto" />
-										<ColumnDefinition Width="*" />
-									</Grid.ColumnDefinitions>
-									<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X64/Project.png" Margin="10,5" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="64" Width="64" Stretch="None" Grid.Column="0" />
-									<StackPanel Grid.Column="1" Margin="10">
-										<Label Content="Add Silverlight Project" Foreground="Gray" FontSize="14pt" FontWeight="Bold" Padding="0"/>
-										<Label Content="Add a project supporting Silverlight 4.0 and 5.0 to the solution." Padding="0" />
-									</StackPanel>
-								</Grid>
-							</Button>
-							<Button x:Name="AddRTProject" Grid.Row="0" Margin="0,10,0,0" IsEnabled="False" HorizontalContentAlignment="Left" Click="AddRTProject_Click" >
-								<Grid>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="Auto" />
-										<ColumnDefinition Width="*" />
-									</Grid.ColumnDefinitions>
-									<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X64/Project.png" Margin="10,5" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="64" Width="64" Stretch="None" Grid.Column="0" />
-									<StackPanel Grid.Column="1" Margin="10">
-										<Label Content="Add Windows Runtime Project" Foreground="Gray" FontSize="14pt" FontWeight="Bold" Padding="0"/>
-										<Label Content="Add a project supporting the Windows Runtime to the solution." Padding="0" />
+										<Label Content="Add Project" Foreground="Gray" FontSize="14pt" FontWeight="Bold" Padding="0"/>
+										<TextBlock Text="Add a project to the current solution." Padding="0" TextWrapping="Wrap" />
 									</StackPanel>
 								</Grid>
 							</Button>
