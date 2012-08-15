@@ -66,7 +66,7 @@ namespace WCFArchitect.Interface
 
 		private void DeleteProject_Click(object sender, RoutedEventArgs e)
 		{
-			Globals.ShowMessageBox(Project, "Permanently Delete Project?", "This project will be removed from the solution. Would you like to delete it from the disk as well?", new MessageAction("Yes", new Action(() => KillProject())), new MessageAction("No", new Action(() => RemoveProject())));
+			Globals.ShowMessageBox(Project, "Permanently Delete Project?", "This project will be removed from the solution. Would you like to delete it from the disk as well?", new MessageAction("Yes", new Action(() => KillProject())), new MessageAction("No", new Action(() => RemoveProject()), true));
 		}
 
 		private void BuildProject_Click(object sender, RoutedEventArgs e)

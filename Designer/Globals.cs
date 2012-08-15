@@ -255,12 +255,24 @@ namespace WCFArchitect
 	public class MessageAction
 	{
 		public string Title { get; private set; }
+		public bool IsDefault { get; private set; }
+		public bool IsCancel { get; private set; }
 		public Action Action { get; private set; }
 		public object Owner { get; internal set; }
 
-		public MessageAction(string Title, Action Action)
+		public MessageAction(string Title)
 		{
 			this.Title = Title;
+			this.IsDefault = false;
+			this.IsCancel = true;
+			this.Action = Action;
+			this.Owner = null;
+		}
+
+		public MessageAction(string Title, Action Action, bool IsDefault = false)
+		{
+			this.Title = Title;
+			this.IsDefault = IsDefault;
 			this.Action = Action;
 			this.Owner = null;
 		}
