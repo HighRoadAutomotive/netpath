@@ -458,15 +458,15 @@ namespace WCFArchitect.Interface
 
 		#region - Solutions - 
 		
-		public bool NewSolution(string Name, string Path)
+		public void NewSolution(string Name, string Path)
 		{
-			if (CloseSolution(true) == false) return false;
-
-			Projects.Solution.Save(new Projects.Solution(Name), Path);
-
-			OpenSolution(Path);
-
-			return true;
+			if (Globals.Solution != null)
+				CloseSolution(true, false, new Action(() => { Projects.Solution.Save(new Projects.Solution(Name), Path); Globals.OpenSolution(Path, OpenSolutionFinished); }), new Action(() => { Projects.Solution.Save(new Projects.Solution(Name), Path); Globals.OpenSolution(Path, OpenSolutionFinished); }));
+			else
+			{
+				Projects.Solution.Save(new Projects.Solution(Name), Path); 
+				Globals.OpenSolution(Path, OpenSolutionFinished);
+			}
 		}
 
 		public void NewProject(string Name, string Path)
@@ -480,57 +480,57 @@ namespace WCFArchitect.Interface
 
 		public void OpenSolution(string Path)
 		{
-			if (CloseSolution(true) == false) return;
-
-			Globals.OpenSolution(Path, OpenSolutionFinished);
+			if (Globals.Solution != null)
+				CloseSolution(true, false, new Action(() => { Globals.OpenSolution(Path, OpenSolutionFinished); }), new Action(() => { Globals.OpenSolution(Path, OpenSolutionFinished); }));
+			else
+				Globals.OpenSolution(Path, OpenSolutionFinished);
 		}
 
 		public void OpenSolutionFinished(bool Success)
 		{
-			if (Success == true)
+			if (Success == false) return;
+
+			//Determine if there is already a recent entry. Create one if false. Update the current one if true.
+			bool ProjectHasRecentEntry = false;
+			foreach (WCFArchitect.Options.RecentSolution RP in Globals.UserProfile.ImportantProjects)
+				if (RP.Path == Globals.SolutionPath)
+				{
+					ProjectHasRecentEntry = true;
+					RP.LastAccessed = DateTime.Now;
+					Globals.SolutionInfo = RP;
+				}
+			foreach (WCFArchitect.Options.RecentSolution RP in Globals.UserProfile.RecentProjects)
+				if (RP.Path == Globals.SolutionPath)
+				{
+					ProjectHasRecentEntry = true;
+					RP.LastAccessed = DateTime.Now;
+					Globals.SolutionInfo = RP;
+				}
+			if (ProjectHasRecentEntry == false)
 			{
-				//Determine if there is already a recent entry. Create one if false. Update the current one if true.
-				bool ProjectHasRecentEntry = false;
-				foreach (WCFArchitect.Options.RecentSolution RP in Globals.UserProfile.ImportantProjects)
-					if (RP.Path == Globals.SolutionPath)
-					{
-						ProjectHasRecentEntry = true;
-						RP.LastAccessed = DateTime.Now;
-						Globals.SolutionInfo = RP;
-					}
-				foreach (WCFArchitect.Options.RecentSolution RP in Globals.UserProfile.RecentProjects)
-					if (RP.Path == Globals.SolutionPath)
-					{
-						ProjectHasRecentEntry = true;
-						RP.LastAccessed = DateTime.Now;
-						Globals.SolutionInfo = RP;
-					}
-				if (ProjectHasRecentEntry == false)
-				{
-					Options.RecentSolution NRP = new Options.RecentSolution(Globals.Solution.Name, Globals.SolutionPath);
-					Globals.UserProfile.RecentProjects.Add(NRP);
-					Globals.SolutionInfo = NRP;
-				}
-
-				RefreshRecentList();
-
-				//Select the first screen if any project were loaded.
-				if (Globals.Projects.Count > 0)
-				{
-					SolutionItem t = ScreenButtons.Items[0] as SolutionItem;
-					if (t != null)
-						SelectProjectScreen(t.Content as Navigator);
-				}
-
-				AddProject.IsEnabled = true;
-				SystemMenuSave.IsEnabled = true;
-				SystemMenuSaveAs.IsEnabled = true;
-				SystemMenuClose.IsEnabled = true;
-				this.Title = Globals.Solution.Name + " - Prospective Software WCF Architect";
+				Options.RecentSolution NRP = new Options.RecentSolution(Globals.Solution.Name, Globals.SolutionPath);
+				Globals.UserProfile.RecentProjects.Add(NRP);
+				Globals.SolutionInfo = NRP;
 			}
+
+			RefreshRecentList();
+
+			//Select the first screen if any project were loaded.
+			if (Globals.Projects.Count > 0)
+			{
+				SolutionItem t = ScreenButtons.Items[0] as SolutionItem;
+				if (t != null)
+					SelectProjectScreen(t.Content as Navigator);
+			}
+
+			AddProject.IsEnabled = true;
+			SystemMenuSave.IsEnabled = true;
+			SystemMenuSaveAs.IsEnabled = true;
+			SystemMenuClose.IsEnabled = true;
+			this.Title = Globals.Solution.Name + " - Prospective Software WCF Architect";
 		}
 
-		public bool CloseSolution(bool AskBeforeClose = false, bool Closing = false)
+		public void CloseSolution(bool AskBeforeClose = false, bool Closing = false, Action ContinueYes = null, Action ContinueNo = null)
 		{
 			Globals.IsClosing = true;
 
@@ -538,21 +538,25 @@ namespace WCFArchitect.Interface
 			{
 				if (AskBeforeClose == true)
 				{
-					Globals.ShowMessageBox(null, "Continue?", "In order to perform the requested action, the current project will be saved and closed. Would you like to continue?", new MessageAction("Yes", new Action(() => Globals.CloseSolution(true))), new MessageAction("No", new Action(() => Globals.CloseSolution(false))), new MessageAction("Cancel", new Action(() => {return;})));
+					Globals.ShowMessageBox(null, "Continue?", "In order to perform the requested action, the current project will be saved and closed. Would you like to continue?", new MessageAction("Yes", new Action(() => { Globals.CloseSolution(true); CloseSolutionFinished(); if (ContinueYes != null) ContinueYes(); })), new MessageAction("No", new Action(() => { Globals.CloseSolution(false); CloseSolutionFinished(); if (ContinueYes != null) ContinueNo(); })), new MessageAction("Cancel", new Action(() => { return; })));
 				}
 				else
 				{
 					if (Closing == true)
 					{
-						Globals.ShowMessageBox(null, "Save Solution?", "Would you like to save your work?", new MessageAction("Yes", new Action(() => Globals.CloseSolution(true))), new MessageAction("No", new Action(() => Globals.CloseSolution(false))), new MessageAction("Cancel", new Action(() => { return; })));
+						Globals.ShowMessageBox(null, "Save Solution?", "Would you like to save your work?", new MessageAction("Yes", new Action(() => { Globals.CloseSolution(true); CloseSolutionFinished(); if (ContinueYes != null) ContinueYes(); })), new MessageAction("No", new Action(() => { Globals.CloseSolution(false); CloseSolutionFinished(); if (ContinueYes != null) ContinueNo(); })), new MessageAction("Cancel", new Action(() => { return; })));
 					}
 					else
 					{
 						Globals.CloseSolution(true);
+						CloseSolutionFinished();
 					}
 				}
 			}
+		}
 
+		public void CloseSolutionFinished()
+		{
 			Globals.SolutionInfo = null;
 			AddProject.IsEnabled = false;
 			SystemMenuSave.IsEnabled = false;
@@ -566,7 +570,6 @@ namespace WCFArchitect.Interface
 			Globals.Solution = null;
 
 			Globals.IsClosing = false;
-			return true;
 		}
 
 		#endregion

@@ -50,6 +50,8 @@ namespace WCFArchitect.Interface
 			InitializeComponent();
 
 			this.Project = Project;
+
+			OpenProjectItem(this.Project);
 		}
 
 		private void NewItem_Click(object sender, RoutedEventArgs e)
@@ -74,6 +76,9 @@ namespace WCFArchitect.Interface
 
 		private void OpenProjectItem(Projects.OpenableDocument Item)
 		{
+			if (Item.GetType() == typeof(Projects.Project))
+				ActivePage = new Project.Project(Item as Projects.Project);
+
 			//Need to make all item pages before this function can be completed.
 		}
 

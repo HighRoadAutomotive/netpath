@@ -258,8 +258,8 @@ namespace WCFArchitect.Projects
 		public bool GenerateWinFormsSupport { get { return (bool)GetValue(GenerateWinFormsSupportProperty); } set { SetValue(GenerateWinFormsSupportProperty, value); } }
 		public static readonly DependencyProperty GenerateWinFormsSupportProperty = DependencyProperty.Register("GenerateWinFormsSupport", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
 
-		public bool MarkSerializable { get { return (bool)GetValue(MarkSerializableProperty); } set { SetValue(MarkSerializableProperty, value); } }
-		public static readonly DependencyProperty MarkSerializableProperty = DependencyProperty.Register("MarkSerializable", typeof(bool), typeof(Data), new PropertyMetadata(false));
+		public bool Serializable { get { return (bool)GetValue(SerializableProperty); } set { SetValue(SerializableProperty, value); } }
+		public static readonly DependencyProperty SerializableProperty = DependencyProperty.Register("Serializable", typeof(bool), typeof(Data), new PropertyMetadata(false));
 
 		//DataMember Settings
 		public bool IsDataMember { get { return (bool)GetValue(IsDataMemberProperty); } set { SetValue(IsDataMemberProperty, value); } }

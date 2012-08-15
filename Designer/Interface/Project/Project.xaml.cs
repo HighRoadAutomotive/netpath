@@ -184,8 +184,8 @@ namespace WCFArchitect.Interface.Project
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			int lt = (int)value;
-			if (lt == 0) return Projects.ProjectCollectionSerializationOverride.List;
-			if (lt == 5) return Projects.ProjectCollectionSerializationOverride.Array;
+			if (lt == 1) return Projects.ProjectCollectionSerializationOverride.List;
+			if (lt == 2) return Projects.ProjectCollectionSerializationOverride.Array;
 			return Projects.ProjectCollectionSerializationOverride.None;
 		}
 	}
