@@ -61,7 +61,7 @@
 				</ComboBox.Items>
 			</ComboBox>
 			<Label Content="Collection Type:" Height="Auto" HorizontalAlignment="Left" Margin="0,4,0,0" VerticalAlignment="Top" Grid.Column="2" />
-			<ComboBox Grid.Column="2" Height="23" Margin="127,5,0,5" VerticalAlignment="Top" SelectedIndex="{Binding Path=Settings.ServiceCollectionType, Converter={StaticResource ProjectCollectionTypeConverter}}" >
+			<ComboBox Grid.Column="2" Height="23" Margin="127,5,0,5" VerticalAlignment="Top" SelectedIndex="{Binding Path=Settings.CollectionSerializationOverride, Converter={StaticResource ProjectCollectionTypeConverter}}" >
 				<ComboBox.Items>
 					<ComboBoxItem>Auto</ComboBoxItem>
 					<ComboBoxItem>List</ComboBoxItem>
@@ -72,7 +72,7 @@
 	</GroupBox>
 	<GroupBox Name="DependenciesGroup" Header="Dependency Projects" Margin="5" IsEnabled="True" Grid.Column="0" Grid.Row="2">
 		<Grid>
-			<ListView ItemsSource="{Binding Path=Settings.DependencyProjects}" IsSynchronizedWithCurrentItem="False" HorizontalAlignment="Stretch" BorderThickness="0" Background="Transparent" x:Name="DependencyItems" SelectionMode="Single" AlternationCount="1" ItemContainerStyle="{StaticResource ListViewItemContainerStyle}" Margin="0,33,0,0" >
+			<ListView ItemsSource="{Binding Path=Settings.DependencyProjects}" IsSynchronizedWithCurrentItem="False" HorizontalAlignment="Stretch" BorderThickness="0" Background="Transparent" x:Name="DependencyItems" SelectionMode="Single" AlternationCount="1" Margin="0,33,0,0" >
 				<ListView.View>
 					<GridView ColumnHeaderContainerStyle="{StaticResource ListViewHeaderContainerStyle}">
 						<GridViewColumn Header="ID" Width="0" DisplayMemberBinding="{Binding Path=Project.ID}" />
@@ -82,8 +82,8 @@
 					</GridView>
 				</ListView.View>
 			</ListView>
-			<Button Content="Add" Height="23" HorizontalAlignment="Right" Margin="0,5,101,5" Name="DependencyAdd" VerticalAlignment="Top" Width="90" Click="DependencyAdd_Click" />
-			<Button Content="Remove" Height="23" HorizontalAlignment="Right" Margin="0,5,5,5" Name="DependencyRemove" VerticalAlignment="Top" Width="90" Click="DependencyRemove_Click" />
+			<Button Content="Add" Height="23" HorizontalAlignment="Left" Margin="5" Name="DependencyAdd" VerticalAlignment="Top" Width="90" Click="DependencyAdd_Click" />
+			<Button Content="Remove" Height="23" HorizontalAlignment="Right" Margin="5" Name="DependencyRemove" VerticalAlignment="Top" Width="90" Click="DependencyRemove_Click" />
 		</Grid>
 	</GroupBox>
 	<GroupBox Name="UsingGroup" Header="Using Namespaces" Margin="5" IsEnabled="True" Grid.Column="1" Grid.Row="2">
