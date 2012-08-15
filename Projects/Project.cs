@@ -112,6 +112,9 @@ namespace WCFArchitect.Projects
 		public string ClientOutputFile { get { return (string)GetValue(ClientOutputFileProperty); } set { SetValue(ClientOutputFileProperty, value); } }
 		public static readonly DependencyProperty ClientOutputFileProperty = DependencyProperty.Register("ClientOutputName", typeof(string), typeof(Project), new PropertyMetadata("Client"));
 
+		public bool ServiceSerializeFaults { get { return (bool)GetValue(ServiceSerializeFaultsProperty); } set { SetValue(ServiceSerializeFaultsProperty, value); } }
+		public static readonly DependencyProperty ServiceSerializeFaultsProperty = DependencyProperty.Register("ServiceSerializeFaults", typeof(bool), typeof(Project), new PropertyMetadata(false));
+
 		public ProjectServiceSerializerType ServiceSerializer { get { return (ProjectServiceSerializerType)GetValue(ServiceSerializerProperty); } set { SetValue(ServiceSerializerProperty, value); } }
 		public static readonly DependencyProperty ServiceSerializerProperty = DependencyProperty.Register("ServiceSerializer", typeof(ProjectServiceSerializerType), typeof(Project));
 

@@ -35,11 +35,11 @@
 			<RowDefinition Height="100" />
 		</Grid.RowDefinitions>
 		<Label Content="Project Name:" Height="Auto" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" />
-		<pc:TextBox Height="23" Margin="190,11,10,0" Name="ProjectName" Text="{Binding Path=Settings.Name}" VerticalAlignment="Top" />
+		<TextBox Height="23" Margin="190,11,10,0" Name="ProjectName" Text="{Binding Path=Settings.Name}" VerticalAlignment="Top" />
 		<Label Content="Project Namespace:" Height="Auto" HorizontalAlignment="Left" Margin="5,41,0,0" VerticalAlignment="Top" />
-		<pc:TextBox Height="23" Margin="190,42,10,0" Name="txtProjectNamespace" VerticalAlignment="Top" Text="{Binding Path=Settings.Namespace.Name}" />
+		<TextBox Height="23" Margin="190,42,10,0" Name="txtProjectNamespace" VerticalAlignment="Top" Text="{Binding Path=Settings.Namespace.Name}" />
 		<Label Content="Project Namespace URI:" Height="Auto" HorizontalAlignment="Left" Margin="5,72,0,0" VerticalAlignment="Top" />
-		<pc:TextBox Height="23" Margin="190,73,10,0" Name="txtProjectNamespaceURI" VerticalAlignment="Top" Text="{Binding Path=Settings.Namespace.URI}" />
+		<TextBox Height="23" Margin="190,73,10,0" Name="txtProjectNamespaceURI" VerticalAlignment="Top" Text="{Binding Path=Settings.Namespace.URI}" />
 	</Grid>
 	<GroupBox Name="ProjectGenerationOptionsGroup" Header="Project Generation Options" Margin="5" Grid.Row="1" Grid.ColumnSpan="2">
 		<Grid Margin="5,0">
@@ -51,17 +51,17 @@
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
-			<CheckBox Content="Use Serializer for Faults" IsChecked="{Binding Path=Settings.ServiceSerializerFaultsMethods}" Margin="0,2,0,0" VerticalAlignment="Center" Grid.Column="0" />
-			<Label Content="Serializer:" Height="Auto" HorizontalAlignment="Left" Margin="0,2,0,0" VerticalAlignment="Top" Grid.Column="1" />
-			<ComboBox Grid.Column="1" Height="23" Margin="82,4,5,0" VerticalAlignment="Top" SelectedIndex="{Binding Path=Settings.ServiceSerializer, Converter={StaticResource ProjectServiceSerializerTypeConverter}}" >
+			<CheckBox Content="Use Serializer for Faults" IsChecked="{Binding Path=Settings.ServiceSerializeFaults}" Margin="0,1,0,0" VerticalAlignment="Center" Grid.Column="0" />
+			<Label Content="Serializer:" Height="Auto" HorizontalAlignment="Left" Margin="0,4,0,0" VerticalAlignment="Top" Grid.Column="1" />
+			<ComboBox Grid.Column="1" Height="23" Margin="82,5,5,4" VerticalAlignment="Top" SelectedIndex="{Binding Path=Settings.ServiceSerializer, Converter={StaticResource ProjectServiceSerializerTypeConverter}}" >
 				<ComboBox.Items>
 					<ComboBoxItem>Auto</ComboBoxItem>
 					<ComboBoxItem>Data Contract</ComboBoxItem>
 					<ComboBoxItem>XML</ComboBoxItem>
 				</ComboBox.Items>
 			</ComboBox>
-			<Label Content="Collection Type:" Height="Auto" HorizontalAlignment="Left" Margin="0,2,0,0" VerticalAlignment="Top" Grid.Column="2" />
-			<ComboBox Grid.Column="2" Height="23" Margin="127,4,0,0" VerticalAlignment="Top" SelectedIndex="{Binding Path=Settings.ServiceCollectionType, Converter={StaticResource ProjectCollectionTypeConverter}}" >
+			<Label Content="Collection Type:" Height="Auto" HorizontalAlignment="Left" Margin="0,4,0,0" VerticalAlignment="Top" Grid.Column="2" />
+			<ComboBox Grid.Column="2" Height="23" Margin="127,5,0,5" VerticalAlignment="Top" SelectedIndex="{Binding Path=Settings.ServiceCollectionType, Converter={StaticResource ProjectCollectionTypeConverter}}" >
 				<ComboBox.Items>
 					<ComboBoxItem>Auto</ComboBoxItem>
 					<ComboBoxItem>List</ComboBoxItem>
@@ -72,21 +72,21 @@
 	</GroupBox>
 	<GroupBox Name="DependenciesGroup" Header="Dependency Projects" Margin="5" IsEnabled="True" Grid.Column="0" Grid.Row="2">
 		<Grid>
-			<ListView IsSynchronizedWithCurrentItem="False" HorizontalAlignment="Stretch" BorderThickness="0" Background="Transparent" VerticalAlignment="Stretch" x:Name="DependencyItems" SelectionMode="Single" AlternationCount="1" ItemContainerStyle="{StaticResource ListViewItemContainerStyle}" >
+			<ListView ItemsSource="{Binding Path=Settings.DependencyProjects}" IsSynchronizedWithCurrentItem="False" HorizontalAlignment="Stretch" BorderThickness="0" Background="Transparent" x:Name="DependencyItems" SelectionMode="Single" AlternationCount="1" ItemContainerStyle="{StaticResource ListViewItemContainerStyle}" Margin="0,33,0,0" >
 				<ListView.View>
-					<GridView>
-						<GridViewColumn Header="ID" Width="0" DisplayMemberBinding="{Binding Path=ID}" />
-						<GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding Path=Name}"/>
-						<GridViewColumn Header="Namespace" Width="Auto" DisplayMemberBinding="{Binding Path=Namespace.Name}"/>
-						<GridViewColumn Header="Namespace URI" Width="Auto" DisplayMemberBinding="{Binding Path=Namespace.URI}"/>
+					<GridView ColumnHeaderContainerStyle="{StaticResource ListViewHeaderContainerStyle}">
+						<GridViewColumn Header="ID" Width="0" DisplayMemberBinding="{Binding Path=Project.ID}" />
+						<GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding Path=Project.Name}" />
+						<GridViewColumn Header="Namespace" Width="Auto" DisplayMemberBinding="{Binding Path=Project.Namespace.Name}" />
+						<GridViewColumn Header="Namespace URI" Width="Auto" DisplayMemberBinding="{Binding Path=Project.Namespace.URI}" />
 					</GridView>
 				</ListView.View>
 			</ListView>
-			<Button Content="Add" Height="23" HorizontalAlignment="Right" Margin="0,0,102,5" Name="DependencyAdd" VerticalAlignment="Bottom" Width="90" Click="DependencyAdd_Click" />
-			<Button Content="Remove" Height="23" HorizontalAlignment="Right" Margin="0,0,6,5" Name="DependencyRemove" VerticalAlignment="Bottom" Width="90" Click="DependencyRemove_Click" />
+			<Button Content="Add" Height="23" HorizontalAlignment="Right" Margin="0,5,101,5" Name="DependencyAdd" VerticalAlignment="Top" Width="90" Click="DependencyAdd_Click" />
+			<Button Content="Remove" Height="23" HorizontalAlignment="Right" Margin="0,5,5,5" Name="DependencyRemove" VerticalAlignment="Top" Width="90" Click="DependencyRemove_Click" />
 		</Grid>
 	</GroupBox>
-	<GroupBox Name="UsingGroup" Header="Using Namespaces" Margin="5" IsEnabled="True" Grid.Column="0" Grid.Row="3">
+	<GroupBox Name="UsingGroup" Header="Using Namespaces" Margin="5" IsEnabled="True" Grid.Column="1" Grid.Row="2">
 		<Grid>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
@@ -120,13 +120,11 @@
 						</Border>
 						<DataTemplate.Triggers>
 							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
-								<Setter TargetName="BG" Property="Background" Value="{StaticResource ItemHoverBackground}" />
-								<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource ItemHoverBorder}" />
+								<Setter TargetName="BG" Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
 								<Setter TargetName="DeleteSelectedUsingItem" Property="Visibility" Value="Visible" />
 							</DataTrigger>
 							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
-								<Setter TargetName="BG" Property="Background" Value="{StaticResource ItemSelectedBackground}" />
-								<Setter TargetName="BG" Property="BorderBrush" Value="{StaticResource ItemHoverBorder}" />
+								<Setter TargetName="BG" Property="Background" Value="{StaticResource DefaultSelectionColor}" />
 								<Setter TargetName="DeleteSelectedUsingItem" Property="Visibility" Value="Visible" />
 							</DataTrigger>
 							<MultiDataTrigger>
@@ -134,7 +132,7 @@
 									<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="False" />
 									<Condition Binding="{Binding ElementName=DeleteSelectedUsingItem, Path=IsMouseOver}" Value="True" />
 								</MultiDataTrigger.Conditions>
-								<Setter TargetName="BG" Property="Background" Value="White" />
+								<Setter TargetName="BG" Property="Background" Value="Transparent" />
 							</MultiDataTrigger>
 						</DataTemplate.Triggers>
 					</DataTemplate>
@@ -142,7 +140,7 @@
 			</ListBox>
 		</Grid>
 	</GroupBox>
-	<GroupBox Header="Server Generation Targets" Margin="5" Grid.Column="1" Grid.Row="2">
+	<GroupBox Header="Server Generation Targets" Margin="5" Grid.Column="0" Grid.Row="3">
 		<Grid>
 			<Label Content="File Name:" Height="Auto" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" />
 			<TextBox Height="23" Margin="95,7,5,0" Name="ServerAssemblyName" VerticalAlignment="Top" Text="{Binding Path=Settings.ServerAssemblyName}"/>
