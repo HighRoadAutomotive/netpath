@@ -180,6 +180,7 @@ namespace WCFArchitect.Interface
 			if (IsProcessingMessage == true) return;
 			IsProcessingMessage = true;
 			MessageBox.Visibility = System.Windows.Visibility.Visible;
+			MessageBox.Focus();
 			MessageActions.Clear();
 
 			if (Globals.Messages.Count > 0)
@@ -208,6 +209,7 @@ namespace WCFArchitect.Interface
 						nb.Margin = new Thickness(5);
 						nb.Click += MessageAction_Click;
 						MessageActions.Add(nb);
+						if (next.HasDialogContent == false) nb.IsDefault = a.IsDefault;
 					}
 				}
 			}
@@ -226,7 +228,7 @@ namespace WCFArchitect.Interface
 		{
 			Button b = sender as Button;
 			Action a = b.Tag as Action;
-			a.Invoke();
+			if (a != null) a();
 
 			IsProcessingMessage = false;
 			MessageBox.Visibility = System.Windows.Visibility.Hidden;
@@ -345,13 +347,13 @@ namespace WCFArchitect.Interface
 		private void NewSolution_Click(object sender, RoutedEventArgs e)
 		{
 			Dialogs.NewSolution np = new Dialogs.NewSolution();
-			Globals.ShowDialogBox(null, "New Solution", np, new MessageAction("Create", new Action(() => np.Create())), new MessageAction("Cancel", new Action(() => { return; })));
+			Globals.ShowDialogBox(null, "New Solution", np, new MessageAction("Create", new Action(() => np.Create()), true), new MessageAction("Cancel", new Action(() => { return; })));
 		}
 
 		private void AddProject_Click(object sender, RoutedEventArgs e)
 		{
 			Dialogs.NewProject np = new Dialogs.NewProject(typeof(Projects.Project));
-			Globals.ShowDialogBox(null, "New Project", np, new MessageAction("Create", new Action(() => np.Create())), new MessageAction("Cancel", new Action(() => { return; })));
+			Globals.ShowDialogBox(null, "New Project", np, new MessageAction("Create", new Action(() => np.Create()), true), new MessageAction("Cancel", new Action(() => { return; })));
 		}
 
 		private void UpdateYes_Click(object sender, RoutedEventArgs e)
@@ -538,13 +540,13 @@ namespace WCFArchitect.Interface
 			{
 				if (AskBeforeClose == true)
 				{
-					Globals.ShowMessageBox(null, "Continue?", "In order to perform the requested action, the current project will be saved and closed. Would you like to continue?", new MessageAction("Yes", new Action(() => { Globals.CloseSolution(true); CloseSolutionFinished(); if (ContinueYes != null) ContinueYes(); })), new MessageAction("No", new Action(() => { Globals.CloseSolution(false); CloseSolutionFinished(); if (ContinueYes != null) ContinueNo(); })), new MessageAction("Cancel", new Action(() => { return; })));
+					Globals.ShowMessageBox(null, "Continue?", "In order to perform the requested action, the current project will be saved and closed. Would you like to continue?", new MessageAction("Yes", new Action(() => { Globals.CloseSolution(true); CloseSolutionFinished(); if (ContinueYes != null) ContinueYes(); }), true), new MessageAction("No", new Action(() => { Globals.CloseSolution(false); CloseSolutionFinished(); if (ContinueYes != null) ContinueNo(); })), new MessageAction("Cancel"));
 				}
 				else
 				{
 					if (Closing == true)
 					{
-						Globals.ShowMessageBox(null, "Save Solution?", "Would you like to save your work?", new MessageAction("Yes", new Action(() => { Globals.CloseSolution(true); CloseSolutionFinished(); if (ContinueYes != null) ContinueYes(); })), new MessageAction("No", new Action(() => { Globals.CloseSolution(false); CloseSolutionFinished(); if (ContinueYes != null) ContinueNo(); })), new MessageAction("Cancel", new Action(() => { return; })));
+						Globals.ShowMessageBox(null, "Save Solution?", "Would you like to save your work?", new MessageAction("Yes", new Action(() => { Globals.CloseSolution(true); CloseSolutionFinished(); if (ContinueYes != null) ContinueYes(); }), true), new MessageAction("No", new Action(() => { Globals.CloseSolution(false); CloseSolutionFinished(); if (ContinueYes != null) ContinueNo(); })), new MessageAction("Cancel"));
 					}
 					else
 					{
