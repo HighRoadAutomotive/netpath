@@ -53,7 +53,7 @@ namespace WCFArchitect.Projects
 	{
 		public Guid ID { get; set; }
 
-		public bool HasContractType { get { return (bool)GetValue(HasContractTypeProperty); } set { SetValue(HasContractTypeProperty, value); if (value == false) { ContractType = null; } else { ContractType = new DataType(DataTypeMode.Class); ContractType.Name = Name; ContractType.Scope = Scope; } } }
+		public bool HasContractType { get { return (bool)GetValue(HasContractTypeProperty); } set { SetValue(HasContractTypeProperty, value); if (value == false) { ContractType = null; } else { ContractType = new DataType(TypeMode); ContractType.Name = Name; ContractType.Scope = Scope; } } }
 		public static readonly DependencyProperty HasContractTypeProperty = DependencyProperty.Register("HasContractType", typeof(bool), typeof(Data));
 
 		public DataType ContractType { get { return (DataType)GetValue(ContractTypeProperty); } set { SetValue(ContractTypeProperty, value); } }
