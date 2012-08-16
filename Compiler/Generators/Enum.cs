@@ -123,7 +123,7 @@ namespace WCFArchitect.Compiler.Generators
 			Code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
 			Code.AppendLine(")]");
 			if (o.IsFlags == true) Code.AppendLine("[Flags]");
-			Code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
+			Code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o.Scope), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
 			Code.AppendLine("\t{");
 			int FV = 0;
 			foreach (EnumElement EE in o.Elements)
@@ -156,7 +156,7 @@ namespace WCFArchitect.Compiler.Generators
 			Code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
 			Code.AppendLine(")]");
 			if (o.IsFlags == true) Code.AppendLine("\t[Flags]");
-			Code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
+			Code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o.Scope), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
 			Code.AppendLine("\t{");
 			int FV = 0;
 			foreach (EnumElement EE in o.Elements)
@@ -212,7 +212,7 @@ namespace WCFArchitect.Compiler.Generators
 			Code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
 			Code.AppendLine(")]");
 			if (o.IsFlags == true) Code.AppendLine("[Flags]");
-			Code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
+			Code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o.Scope), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
 			Code.AppendLine("\t{");
 			int FV = 0;
 			foreach (EnumElement EE in o.Elements)
@@ -245,7 +245,7 @@ namespace WCFArchitect.Compiler.Generators
 			Code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
 			Code.AppendLine(")]");
 			if (o.IsFlags == true) Code.AppendLine("\t[Flags]");
-			Code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
+			Code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o.Scope), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
 			Code.AppendLine("\t{");
 			int FV = 0;
 			foreach (EnumElement EE in o.Elements)

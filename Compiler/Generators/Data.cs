@@ -370,8 +370,8 @@ namespace WCFArchitect.Compiler.Generators
 				if (o.Owner.Parent.Owner.ServiceSerializer == ProjectServiceSerializerType.XML) Code.Append("\t\t[XmlIgnore()]");
 				if (o.Owner.Parent.Owner.ServiceSerializer == ProjectServiceSerializerType.Auto) Code.Append("\t\t");
 			}
-			if (o.IsReadOnly == false) Code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} set {{ m_{2} = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope, o.Owner.Parent.Owner.GetType()), DataTypeCSGenerator.GenerateType(o.DataType), o.DataName, Environment.NewLine);
-			else Code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} protected set {{ m_{2} = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope, o.Owner.Parent.Owner.GetType()), o.DataType, o.DataName, Environment.NewLine);
+			if (o.IsReadOnly == false) Code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} set {{ m_{2} = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.DataType), o.DataName, Environment.NewLine);
+			else Code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} protected set {{ m_{2} = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope), o.DataType, o.DataName, Environment.NewLine);
 			return Code.ToString();
 		}
 
@@ -406,8 +406,8 @@ namespace WCFArchitect.Compiler.Generators
 				if (o.Owner.Parent.Owner.ServiceSerializer == ProjectServiceSerializerType.XML) Code.Append("\t\t[XmlIgnore()]");
 				if (o.Owner.Parent.Owner.ServiceSerializer == ProjectServiceSerializerType.Auto) Code.Append("\t\t[IgnoreDataMember()]");
 			}
-			if (o.IsReadOnly == false) Code.AppendFormat("{0} {1} {2} {{ get; set; }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope, o.Owner.Parent.Owner.GetType()), DataTypeCSGenerator.GenerateType(o.DataType), o.DataName, Environment.NewLine);
-			else Code.AppendFormat("{0} {1} {2} {{ get; protected set; }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope, o.Owner.Parent.Owner.GetType()), DataTypeCSGenerator.GenerateType(o.DataType), o.DataName, Environment.NewLine);
+			if (o.IsReadOnly == false) Code.AppendFormat("{0} {1} {2} {{ get; set; }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.DataType), o.DataName, Environment.NewLine);
+			else Code.AppendFormat("{0} {1} {2} {{ get; protected set; }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.DataType), o.DataName, Environment.NewLine);
 			return Code.ToString();
 		}
 
@@ -754,12 +754,12 @@ namespace WCFArchitect.Compiler.Generators
 				if (o.IsReadOnly == false)
 				{
 					Code.AppendFormat("\t\tprivate {0} m_{1};{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.XAMLName, Environment.NewLine);
-					Code.AppendFormat("\t\t{0} {1} {2} {{ get {{ return m_{2}; }} set {{ m_{2} = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope, o.Owner.Parent.Owner.GetType()), DataTypeCSGenerator.GenerateType(o.XAMLType), o.XAMLName, Environment.NewLine);
+					Code.AppendFormat("\t\t{0} {1} {2} {{ get {{ return m_{2}; }} set {{ m_{2} = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.XAMLType), o.XAMLName, Environment.NewLine);
 				}
 				else
 				{
 					Code.AppendFormat("\t\tprivate {0} m_{1};{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.XAMLName, Environment.NewLine);
-					Code.AppendFormat("\t\t{0} {1} {2} {{ get {{ return m_{2}; }} protected set {{ m_{2} = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope, o.Owner.Parent.Owner.GetType()), DataTypeCSGenerator.GenerateType(o.XAMLType), o.XAMLName, Environment.NewLine);
+					Code.AppendFormat("\t\t{0} {1} {2} {{ get {{ return m_{2}; }} protected set {{ m_{2} = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.XAMLType), o.XAMLName, Environment.NewLine);
 				}
 			}
 			return Code.ToString();
@@ -846,11 +846,11 @@ namespace WCFArchitect.Compiler.Generators
 			{
 				if (o.IsReadOnly == false)
 				{
-					Code.AppendFormat("\t\t{0} {1} {2} {{ get; set; }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope, o.Owner.Parent.Owner.GetType()), DataTypeCSGenerator.GenerateType(o.XAMLType), o.XAMLName, Environment.NewLine);
+					Code.AppendFormat("\t\t{0} {1} {2} {{ get; set; }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.XAMLType), o.XAMLName, Environment.NewLine);
 				}
 				else
 				{
-					Code.AppendFormat("\t\t{0} {1} {2} {{ get; protected set; }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope, o.Owner.Parent.Owner.GetType()), DataTypeCSGenerator.GenerateType(o.XAMLType), o.XAMLName, Environment.NewLine);
+					Code.AppendFormat("\t\t{0} {1} {2} {{ get; protected set; }}{3}", DataTypeCSGenerator.GenerateScope(o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.XAMLType), o.XAMLName, Environment.NewLine);
 				}
 			}
 			return Code.ToString();

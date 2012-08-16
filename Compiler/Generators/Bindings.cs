@@ -41,12 +41,8 @@ namespace WCFArchitect.Compiler.Generators
 			else if (t == typeof(Projects.ServiceBindingNetHTTP))
 			{
 				Projects.ServiceBindingNetHTTP b = o as Projects.ServiceBindingNetHTTP;
-				if (b.Parent.Owner.GetType() == typeof(Projects.ProjectNET))
-				{
-					Projects.ProjectNET p = b.Parent.Owner as Projects.ProjectNET;
-					if (Globals.CurrentNETOutput == Projects.ProjectNETOutputFramework.NET45 && p != null)
-						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS6001", "The binding '" + o.Name + "' in the '" + o.Parent.Name + "' project cannot be used with any other target framework level than 4.5. Please select .NET Framework 4.5 as your Target Framework in the Project page or remove this binding.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
-				}
+				if ((Globals.CurrentGenerationTarget == Projects.ProjectGenerationFramework.NET45 || Globals.CurrentGenerationTarget == Projects.ProjectGenerationFramework.WIN8) && b.Parent.Owner != null)
+					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS6001", "The binding '" + o.Name + "' in the '" + o.Parent.Name + "' project cannot be used with any other target framework level than 4.5. Please select .NET Framework 4.5 or Windows Runtime as your Target Framework in the Project page or remove this binding.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
 				if (b.Security == null)
 					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS6003", "The Security for the '" + b.Name + "' Net HTTP Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", WCFArchitect.Compiler.CompileMessageSeverity.Warning, b.Parent, b, b.GetType()));
 				if (b.ProxyAddress != "" && b.ProxyAddress != null)

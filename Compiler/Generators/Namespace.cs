@@ -550,7 +550,7 @@ namespace WCFArchitect.Compiler.Generators
 				foreach (Data DE in o.Data)
 				{
 					Code.AppendLine(DataCSGenerator.GenerateProxyCode30(DE));
-					Code.AppendLine(DataCSGenerator.GenerateWPFCode30(DE));
+					Code.AppendLine(DataCSGenerator.GenerateXAMLCode30(DE));
 				}
 				Code.AppendLine();
 			}
@@ -634,7 +634,7 @@ namespace WCFArchitect.Compiler.Generators
 				foreach (Data DE in o.Data)
 				{
 					Code.AppendLine(DataCSGenerator.GenerateProxyCode35(DE));
-					Code.AppendLine(DataCSGenerator.GenerateWPFCode35(DE));
+					Code.AppendLine(DataCSGenerator.GenerateXAMLCode35(DE));
 				}
 				Code.AppendLine();
 			}
@@ -718,7 +718,7 @@ namespace WCFArchitect.Compiler.Generators
 				foreach (Data DE in o.Data)
 				{
 					Code.AppendLine(DataCSGenerator.GenerateProxyCode35(DE));
-					Code.AppendLine(DataCSGenerator.GenerateWPFCode35(DE));
+					Code.AppendLine(DataCSGenerator.GenerateXAMLCode35(DE));
 				}
 				Code.AppendLine();
 			}
@@ -802,7 +802,7 @@ namespace WCFArchitect.Compiler.Generators
 				foreach (Data DE in o.Data)
 				{
 					Code.AppendLine(DataCSGenerator.GenerateProxyCode40(DE));
-					Code.AppendLine(DataCSGenerator.GenerateWPFCode40(DE));
+					Code.AppendLine(DataCSGenerator.GenerateXAMLCode40(DE));
 				}
 				Code.AppendLine();
 			}
@@ -886,7 +886,7 @@ namespace WCFArchitect.Compiler.Generators
 				foreach (Data DE in o.Data)
 				{
 					Code.AppendLine(DataCSGenerator.GenerateProxyCode40(DE));
-					Code.AppendLine(DataCSGenerator.GenerateWPFCode40(DE));
+					Code.AppendLine(DataCSGenerator.GenerateXAMLCode40(DE));
 				}
 				Code.AppendLine();
 			}
@@ -972,7 +972,7 @@ namespace WCFArchitect.Compiler.Generators
 				foreach (Data DE in o.Data)
 				{
 					Code.AppendLine(DataCSGenerator.GenerateProxyCode45(DE));
-					Code.AppendLine(DataCSGenerator.GenerateWPFCode45(DE));
+					Code.AppendLine(DataCSGenerator.GenerateXAMLCode45(DE));
 				}
 				Code.AppendLine();
 			}

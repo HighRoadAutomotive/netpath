@@ -119,7 +119,7 @@ namespace WCFArchitect.Compiler.Generators
 				Code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
 				Code.AppendLine(")]");
 			}
-			Code.AppendFormat("\t{0} interface I{1}{2}", DataTypeCSGenerator.GenerateScope(o), o.Name, Environment.NewLine);
+			Code.AppendFormat("\t{0} interface I{1}{2}", DataTypeCSGenerator.GenerateScope(o.Scope), o.Name, Environment.NewLine);
 			Code.AppendLine("\t{");
 			foreach (Property P in o.Operations)
 				Code.Append(GeneratePropertyServerCode45(P));
@@ -146,7 +146,7 @@ namespace WCFArchitect.Compiler.Generators
 
 			//Generate the Client interface
 			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.AppendFormat("\t{0} interface {1}{2}", o.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.ContractType) : DataTypeCSGenerator.GenerateScope(o), o.HasContractType == true ? o.ContractType.Name : o.Name, Environment.NewLine);
+			Code.AppendFormat("\t{0} interface {1}{2}", o.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.ContractType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasContractType == true ? o.ContractType.Name : o.Name, Environment.NewLine);
 			Code.AppendLine("\t{");
 			foreach (Method M in o.Operations)
 				Code.AppendLine(GenerateOperationInterfaceCode40(M));
@@ -156,7 +156,7 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.Callback != null)
 			{
 				Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-				Code.AppendFormat("\t{0} interface {1}{2}", o.Callback.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.Callback.ContractType) : DataTypeCSGenerator.GenerateScope(o.Callback), o.Callback.HasContractType == true ? o.Callback.ContractType.Name : o.Callback.Name, Environment.NewLine);
+				Code.AppendFormat("\t{0} interface {1}{2}", o.Callback.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.Callback.ContractType.Scope) : DataTypeCSGenerator.GenerateScope(o.Callback.Scope), o.Callback.HasContractType == true ? o.Callback.ContractType.Name : o.Callback.Name, Environment.NewLine);
 				Code.AppendLine("\t{");
 				foreach (Method M in o.Callback.Operations)
 					Code.AppendLine(GenerateOperationInterfaceCode40(M));
@@ -165,13 +165,13 @@ namespace WCFArchitect.Compiler.Generators
 			}
 			//Generate Channel Interface
 			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.AppendFormat("\t{0} interface {1}Channel : {2}, System.ServiceModel.IClientChannel{3}", o.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.ContractType) : DataTypeCSGenerator.GenerateScope(o), o.HasContractType == true ? o.ContractType.Name : o.Name, o.HasContractType == true ? DataTypeCSGenerator.GenerateType(o.ContractType) : DataTypeCSGenerator.GenerateType(o), Environment.NewLine);
+			Code.AppendFormat("\t{0} interface {1}Channel : {2}, System.ServiceModel.IClientChannel{3}", o.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.ContractType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasContractType == true ? o.ContractType.Name : o.Name, o.HasContractType == true ? DataTypeCSGenerator.GenerateType(o.ContractType) : DataTypeCSGenerator.GenerateType(o), Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendLine("\t}");
 			Code.AppendLine();
 			//Generate the Proxy Class
 			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.AppendFormat("\t{0} partial class {1}Client : System.ServiceModel.ClientBase<{1}>, {1}{3}", o.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.ContractType) : DataTypeCSGenerator.GenerateScope(o), o.HasContractType == true ? o.ContractType.Name : o.Name, Environment.NewLine);
+			Code.AppendFormat("\t{0} partial class {1}Client : System.ServiceModel.ClientBase<{1}>, {1}{3}", o.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.ContractType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasContractType == true ? o.ContractType.Name : o.Name, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Host H = o.Parent.Owner.Namespace.GetServiceHost(o);
 			if (H != null)
@@ -192,7 +192,7 @@ namespace WCFArchitect.Compiler.Generators
 
 			//Generate the Client interface
 			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.AppendFormat("\t{0} interface {1}{2}", o.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.ContractType) : DataTypeCSGenerator.GenerateScope(o), o.HasContractType == true ? o.ContractType.Name : o.Name, Environment.NewLine);
+			Code.AppendFormat("\t{0} interface {1}{2}", o.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.ContractType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasContractType == true ? o.ContractType.Name : o.Name, Environment.NewLine);
 			Code.AppendLine("\t{");
 			foreach (Method M in o.Operations)
 				Code.AppendLine(GenerateOperationInterfaceCode45(M));
@@ -202,7 +202,7 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.Callback != null)
 			{
 				Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-				Code.AppendFormat("\t{0} interface {1}{2}", o.Callback.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.Callback.ContractType) : DataTypeCSGenerator.GenerateScope(o.Callback), o.Callback.HasContractType == true ? o.Callback.ContractType.Name : o.Callback.Name, Environment.NewLine);
+				Code.AppendFormat("\t{0} interface {1}{2}", o.Callback.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.Callback.ContractType.Scope) : DataTypeCSGenerator.GenerateScope(o.Callback.Scope), o.Callback.HasContractType == true ? o.Callback.ContractType.Name : o.Callback.Name, Environment.NewLine);
 				Code.AppendLine("\t{");
 				foreach (Method M in o.Callback.Operations)
 					Code.AppendLine(GenerateOperationInterfaceCode45(M));
@@ -211,13 +211,13 @@ namespace WCFArchitect.Compiler.Generators
 			}
 			//Generate Channel Interface
 			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.AppendFormat("\t{0} interface {1}Channel : {2}, System.ServiceModel.IClientChannel{3}", o.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.ContractType) : DataTypeCSGenerator.GenerateScope(o), o.HasContractType == true ? o.ContractType.Name : o.Name, o.HasContractType == true ? DataTypeCSGenerator.GenerateType(o.ContractType) : DataTypeCSGenerator.GenerateType(o), Environment.NewLine);
+			Code.AppendFormat("\t{0} interface {1}Channel : {2}, System.ServiceModel.IClientChannel{3}", o.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.ContractType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasContractType == true ? o.ContractType.Name : o.Name, o.HasContractType == true ? DataTypeCSGenerator.GenerateType(o.ContractType) : DataTypeCSGenerator.GenerateType(o), Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendLine("\t}");
 			Code.AppendLine();
 			//Generate the Proxy Class
 			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.AppendFormat("\t{0} partial class {1}Client : System.ServiceModel.ClientBase<{1}>, {1}{3}", o.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.ContractType) : DataTypeCSGenerator.GenerateScope(o), o.HasContractType == true ? o.ContractType.Name : o.Name, Environment.NewLine);
+			Code.AppendFormat("\t{0} partial class {1}Client : System.ServiceModel.ClientBase<{1}>, {1}{3}", o.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.ContractType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasContractType == true ? o.ContractType.Name : o.Name, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Host H = o.Parent.Owner.Namespace.GetServiceHost(o);
 				if (H != null)
