@@ -8,22 +8,10 @@ namespace WCFArchitect.Compiler.Generators
 {
 	internal static class DataTypeCSGenerator
 	{
-		public static string GenerateScope(Projects.DataType o)
+		public static string GenerateScope(Projects.DataScope o, bool IsSilverlight = false)
 		{
-			if (o.Parent.Owner.GetType() == typeof(Projects.ProjectSL) && o.Scope == Projects.DataScope.Public) return "public";
-			if (o.Parent.Owner.GetType() == typeof(Projects.ProjectSL) && o.Scope != Projects.DataScope.Public) return "internal";
-			if (o.Scope == Projects.DataScope.Internal) return "internal";
-			if (o.Scope == Projects.DataScope.Private) return "private";
-			if (o.Scope == Projects.DataScope.Protected) return "protected";
-			if (o.Scope == Projects.DataScope.ProtectedInternal) return "protected internal";
-			if (o.Scope == Projects.DataScope.Public) return "public";
-			return "private";
-		}
-
-		public static string GenerateScope(Projects.DataScope o, Type ProjectType)
-		{
-			if (ProjectType == typeof(Projects.ProjectSL) && o == Projects.DataScope.Public) return "public";
-			if (ProjectType == typeof(Projects.ProjectSL) && o != Projects.DataScope.Public) return "internal";
+			if (IsSilverlight == true && o == Projects.DataScope.Public) return "public";
+			if (IsSilverlight == true && o != Projects.DataScope.Public) return "internal";
 			if (o == Projects.DataScope.Internal) return "internal";
 			if (o== Projects.DataScope.Private) return "private";
 			if (o== Projects.DataScope.Protected) return "protected";
@@ -76,7 +64,7 @@ namespace WCFArchitect.Compiler.Generators
 			StringBuilder sb = new StringBuilder();
 			if (o.TypeMode == Projects.DataTypeMode.Class)
 			{
-				sb.AppendFormat("{0}{1} class {2}", GenerateScope(o), o.IsPartial ? " partial" : "", o.Name);
+				sb.AppendFormat("{0}{1}{2} class {3}", GenerateScope(o.Scope), o.IsPartial ? " partial" : "", GenerateScope(o.Scope), o.IsAbstract ? " abstract" : "", o.Name);
 				if (o.InheritedTypes.Count() > 0)
 				{
 					sb.Append(" : ");
@@ -89,7 +77,7 @@ namespace WCFArchitect.Compiler.Generators
 			}
 			else if (o.TypeMode == Projects.DataTypeMode.Struct)
 			{
-				sb.AppendFormat("{0}{1} struct {2}", GenerateScope(o), o.IsPartial ? " partial" : "", o.Name);
+				sb.AppendFormat("{0}{1} struct {3}", GenerateScope(o.Scope), o.IsPartial ? " partial" : "", o.Name);
 				if (o.InheritedTypes.Count() > 0)
 				{
 					sb.Append(" : ");
@@ -102,7 +90,7 @@ namespace WCFArchitect.Compiler.Generators
 			}
 			else if (o.TypeMode == Projects.DataTypeMode.Enum)
 			{
-				return string.Format("{0} enum {1}", GenerateScope(o), o.Name);
+				return string.Format("{0} enum {1}", GenerateScope(o.Scope), o.Name);
 			}
 			else
 				return "";
@@ -129,22 +117,10 @@ namespace WCFArchitect.Compiler.Generators
 
 	internal static class DataTypeVBGenerator
 	{
-		public static string GenerateScope(Projects.DataType o)
+		public static string GenerateScope(Projects.DataScope o, bool IsSilverlight = false)
 		{
-			if (o.Parent.Owner.GetType() == typeof(Projects.ProjectSL) && o.Scope == Projects.DataScope.Public) return "Public";
-			if (o.Parent.Owner.GetType() == typeof(Projects.ProjectSL) && o.Scope != Projects.DataScope.Public) return "Friend";
-			if (o.Scope == Projects.DataScope.Internal) return "Friend";
-			if (o.Scope == Projects.DataScope.Private) return "Private";
-			if (o.Scope == Projects.DataScope.Protected) return "Protected";
-			if (o.Scope == Projects.DataScope.ProtectedInternal) return "ProtectedFriend";
-			if (o.Scope == Projects.DataScope.Public) return "Public";
-			return "Private";
-		}
-
-		public static string GenerateScope(Projects.DataScope o, Type ProjectType)
-		{
-			if (ProjectType == typeof(Projects.ProjectSL) && o == Projects.DataScope.Public) return "Public";
-			if (ProjectType == typeof(Projects.ProjectSL) && o != Projects.DataScope.Public) return "Friend";
+			if (IsSilverlight == true && o == Projects.DataScope.Public) return "Public";
+			if (IsSilverlight == true && o != Projects.DataScope.Public) return "Friend";
 			if (o == Projects.DataScope.Internal) return "Friend";
 			if (o == Projects.DataScope.Private) return "Private";
 			if (o == Projects.DataScope.Protected) return "Protected";
@@ -198,7 +174,7 @@ namespace WCFArchitect.Compiler.Generators
 			StringBuilder sb = new StringBuilder();
 			if (o.TypeMode == Projects.DataTypeMode.Class)
 			{
-				sb.AppendFormat("{0} class {1}", GenerateScope(o), o.Name);
+				sb.AppendFormat("{0}{1}{2} Class {3}", GenerateScope(o.Scope), o.IsPartial ? " Partial" : "", GenerateScope(o.Scope), o.IsAbstract ? " MustInherit" : "", o.Name);
 				if (o.InheritedTypes.Count() > 0)
 				{
 					sb.Append(" : ");
@@ -211,7 +187,7 @@ namespace WCFArchitect.Compiler.Generators
 			}
 			else if (o.TypeMode == Projects.DataTypeMode.Struct)
 			{
-				sb.AppendFormat("{0} struct {1}", GenerateScope(o), o.Name);
+				sb.AppendFormat("{0}{1} Structure {3}", GenerateScope(o.Scope), o.IsPartial ? " Partial" : "", o.Name);
 				if (o.InheritedTypes.Count() > 0)
 				{
 					sb.Append(" : ");
@@ -224,7 +200,7 @@ namespace WCFArchitect.Compiler.Generators
 			}
 			else if (o.TypeMode == Projects.DataTypeMode.Enum)
 			{
-				return string.Format("{0} enum {1}", GenerateScope(o), o.Name);
+				return string.Format("{0} Enum {1}", GenerateScope(o.Scope), o.Name);
 			}
 			else
 				return "";
