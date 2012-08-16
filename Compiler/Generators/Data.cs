@@ -57,7 +57,7 @@ namespace WCFArchitect.Compiler.Generators
 				if (D.HasXAMLType == true)
 					if (Helpers.RegExs.MatchCodeName.IsMatch(D.XAMLType.Name) == false)
 					{
-						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS3003", "The data object '" + D.XAMLType.Name + "' in the '" + o.Name + "' namespace contains invalid characters in the WPF Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
+						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS3003", "The data object '" + D.XAMLType.Name + "' in the '" + o.Name + "' namespace contains invalid characters in the XAML Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
 						NoErrors = false;
 					}
 			}
@@ -156,20 +156,20 @@ namespace WCFArchitect.Compiler.Generators
 			return Code.ToString();
 		}
 
-		public static string GenerateWPFCode30(Data o)
+		public static string GenerateXAMLCode30(Data o)
 		{
 			if (o.HasXAMLType == false) return "";
-			bool HasWPF = false;
+			bool HasXAML = false;
 			foreach (DataElement DE in o.Elements)
 				if (DE.HasXAMLType == true)
 				{
-					HasWPF = true;
+					HasXAML = true;
 					break;
 				}
-			if (HasWPF == false) return "";
+			if (HasXAML == false) return "";
 
-			//This is a shim to ensure there is ALWAYS a WPF name.
-			if (o.XAMLType.Name == "" || o.XAMLType.Name == null) o.XAMLType.Name = o.Name + "WPF";
+			//This is a shim to ensure there is ALWAYS a XAML name.
+			if (o.XAMLType.Name == "" || o.XAMLType.Name == null) o.XAMLType.Name = o.Name + "XAML";
 
 			StringBuilder Code = new StringBuilder();
 			Code.AppendFormat("\t//XAML Integration Object for the {0} DTO{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
@@ -179,7 +179,7 @@ namespace WCFArchitect.Compiler.Generators
 
 			Code.AppendLine("\t\t//Properties");
 			foreach (DataElement DE in o.Elements)
-				Code.Append(GenerateElementWPFCode30(DE));
+				Code.Append(GenerateElementXAMLCode30(DE));
 			Code.AppendLine();
 
 			Code.AppendLine("\t\t//Implicit Conversion");
@@ -188,11 +188,11 @@ namespace WCFArchitect.Compiler.Generators
 			Code.AppendLine("\t\t\tif (Data == null) return null;");
 			Code.AppendLine("\t\t\tif(Application.Current.Dispatcher.CheckAccess() == true)");
 			Code.AppendLine("\t\t\t{");
-			Code.AppendFormat("\t\t\t\treturn {0}.ConvertFromWPFObject(Data);{1}", o.XAMLType.Name, Environment.NewLine);
+			Code.AppendFormat("\t\t\t\treturn {0}.ConvertFromXAMLObject(Data);{1}", o.XAMLType.Name, Environment.NewLine);
 			Code.AppendLine("\t\t\t}");
 			Code.AppendLine("\t\t\telse");
 			Code.AppendLine("\t\t\t{");
-			Code.AppendFormat("\t\t\t\treturn ({0})Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new System.Windows.Threading.DispatcherOperationCallback(delegate(object ignore){{ return {1}.ConvertFromWPFObject(Data); }}), null);{2}", o.HasContractType ? o.ContractType.Name : o.Name, DataTypeCSGenerator.GenerateType(o.XAMLType), Environment.NewLine);
+			Code.AppendFormat("\t\t\t\treturn ({0})Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new System.Windows.Threading.DispatcherOperationCallback(delegate(object ignore){{ return {1}.ConvertFromXAMLObject(Data); }}), null);{2}", o.HasContractType ? o.ContractType.Name : o.Name, DataTypeCSGenerator.GenerateType(o.XAMLType), Environment.NewLine);
 			Code.AppendLine("\t\t\t}");
 			Code.AppendLine("\t\t}");
 			Code.AppendFormat("\t\tpublic static implicit operator {0}({1} Data){2}", o.XAMLType.Name, DataTypeCSGenerator.GenerateType(o.HasContractType ? o.ContractType : o), Environment.NewLine);
@@ -200,11 +200,11 @@ namespace WCFArchitect.Compiler.Generators
 			Code.AppendLine("\t\t\tif (Data == null) return null;");
 			Code.AppendLine("\t\t\tif(Application.Current.Dispatcher.CheckAccess() == true)");
 			Code.AppendLine("\t\t\t{");
-			Code.AppendFormat("\t\t\t\treturn {0}.ConvertToWPFObject(Data);{1}", o.XAMLType.Name, Environment.NewLine);
+			Code.AppendFormat("\t\t\t\treturn {0}.ConvertToXAMLObject(Data);{1}", o.XAMLType.Name, Environment.NewLine);
 			Code.AppendLine("\t\t\t}");
 			Code.AppendLine("\t\t\telse");
 			Code.AppendLine("\t\t\t{");
-			Code.AppendFormat("\t\t\t\treturn ({0})Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new System.Windows.Threading.DispatcherOperationCallback(delegate(object ignore){{ return {0}.ConvertToWPFObject(Data); }}), null);{1}", DataTypeCSGenerator.GenerateType(o.XAMLType), Environment.NewLine);
+			Code.AppendFormat("\t\t\t\treturn ({0})Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, new System.Windows.Threading.DispatcherOperationCallback(delegate(object ignore){{ return {0}.ConvertToXAMLObject(Data); }}), null);{1}", DataTypeCSGenerator.GenerateType(o.XAMLType), Environment.NewLine);
 			Code.AppendLine("\t\t\t}");
 			Code.AppendLine("\t\t}");
 			Code.AppendLine();
@@ -214,7 +214,7 @@ namespace WCFArchitect.Compiler.Generators
 			Code.AppendLine("\t\t{");
 			Code.AppendLine("\t\t\tType t_DT = Data.GetType();");
 			foreach (DataElement DE in o.Elements)
-				Code.Append(GenerateElementWPFConstructorCode30(DE, o));
+				Code.Append(GenerateElementXAMLConstructorCode30(DE, o));
 			Code.AppendLine("\t\t}");
 			Code.AppendLine();
 			Code.AppendFormat("\t\tpublic {0}(){1}", o.XAMLType.Name, Environment.NewLine);
@@ -222,55 +222,55 @@ namespace WCFArchitect.Compiler.Generators
 			Code.AppendLine("\t\t}");
 			Code.AppendLine();
 
-			Code.AppendLine("\t\t//WPF/DTO Conversion Functions");
-			Code.AppendFormat("\t\tpublic static {0} ConvertFromWPFObject({1} Data){2}", o.HasContractType ? o.ContractType.Name : o.Name, DataTypeCSGenerator.GenerateType(o.XAMLType), Environment.NewLine);
+			Code.AppendLine("\t\t//XAML/DTO Conversion Functions");
+			Code.AppendFormat("\t\tpublic static {0} ConvertFromXAMLObject({1} Data){2}", o.HasContractType ? o.ContractType.Name : o.Name, DataTypeCSGenerator.GenerateType(o.XAMLType), Environment.NewLine);
 			Code.AppendLine("\t\t{");
 			Code.AppendFormat("\t\t\t{0} DTO = new {0}();{1}", DataTypeCSGenerator.GenerateType(o.HasContractType ? o.ContractType : o), Environment.NewLine);
-			Code.AppendLine("\t\t\tType t_WPF = Data.GetType();");
+			Code.AppendLine("\t\t\tType t_XAML = Data.GetType();");
 			Code.AppendLine("\t\t\tType t_DTO = DTO.GetType();");
 			foreach (DataElement DE in o.Elements)
-				Code.Append(GenerateElementWPFConversionFromWPF30(DE, o));
+				Code.Append(GenerateElementXAMLConversionFromXAML30(DE, o));
 			Code.AppendLine("\t\t\treturn DTO;");
 			Code.AppendLine("\t\t}");
 			Code.AppendLine();
-			Code.AppendFormat("\t\tpublic static {0} ConvertToWPFObject({1} Data){2}", o.XAMLType.Name, DataTypeCSGenerator.GenerateType(o.HasContractType ? o.ContractType : o), Environment.NewLine);
+			Code.AppendFormat("\t\tpublic static {0} ConvertToXAMLObject({1} Data){2}", o.XAMLType.Name, DataTypeCSGenerator.GenerateType(o.HasContractType ? o.ContractType : o), Environment.NewLine);
 			Code.AppendLine("\t\t{");
-			Code.AppendFormat("\t\t\t{0} WPF = new {0}();{1}", DataTypeCSGenerator.GenerateType(o.XAMLType), Environment.NewLine);
+			Code.AppendFormat("\t\t\t{0} XAML = new {0}();{1}", DataTypeCSGenerator.GenerateType(o.XAMLType), Environment.NewLine);
 			Code.AppendLine("\t\t\tType t_DTO = Data.GetType();");
-			Code.AppendLine("\t\t\tType t_WPF = WPF.GetType();");
+			Code.AppendLine("\t\t\tType t_XAML = XAML.GetType();");
 			foreach (DataElement DE in o.Elements)
-				Code.Append(GenerateElementWPFConversionToWPF30(DE, o));
-			Code.AppendLine("\t\t\treturn WPF;");
+				Code.Append(GenerateElementXAMLConversionToXAML30(DE, o));
+			Code.AppendLine("\t\t\treturn XAML;");
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 
 			return Code.ToString();
 		}
 
-		public static string GenerateWPFCode35(Data o)
+		public static string GenerateXAMLCode35(Data o)
 		{
-			return GenerateWPFCode40(o);
+			return GenerateXAMLCode40(o);
 		}
 
-		public static string GenerateWPFCode40(Data o)
+		public static string GenerateXAMLCode40(Data o)
 		{
-			return GenerateWPFCode45(o);
+			return GenerateXAMLCode45(o);
 		}
 
-		public static string GenerateWPFCode45(Data o)
+		public static string GenerateXAMLCode45(Data o)
 		{
 			if (o.HasXAMLType == false) return "";
-			bool HasWPF = false;
+			bool HasXAML = false;
 			foreach (DataElement DE in o.Elements)
 				if (DE.HasXAMLType == true)
 				{
-					HasWPF = true;
+					HasXAML = true;
 					break;
 				}
-			if (HasWPF == false) return "";
+			if (HasXAML == false) return "";
 
-			//This is a shim to ensure there is ALWAYS a WPF name.
-			if (o.XAMLType.Name == "" || o.XAMLType.Name == null) o.XAMLType.Name = o.Name + "WPF";
+			//This is a shim to ensure there is ALWAYS a XAML name.
+			if (o.XAMLType.Name == "" || o.XAMLType.Name == null) o.XAMLType.Name = o.Name + "XAML";
 
 			StringBuilder Code = new StringBuilder();
 			Code.AppendFormat("\t//XAML Integration Object for the {0} DTO{1}", o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
@@ -280,7 +280,7 @@ namespace WCFArchitect.Compiler.Generators
 
 			Code.AppendLine("\t\t//Properties");
 			foreach (DataElement DE in o.Elements)
-				Code.Append(GenerateElementWPFCode45(DE));
+				Code.Append(GenerateElementXAMLCode45(DE));
 			Code.AppendLine();
 
 			Code.AppendLine("\t\t//Implicit Conversion");
@@ -289,11 +289,11 @@ namespace WCFArchitect.Compiler.Generators
 			Code.AppendLine("\t\t\tif (Data == null) return null;");
 			Code.AppendLine("\t\t\tif(Application.Current.Dispatcher.CheckAccess() == true)");
 			Code.AppendLine("\t\t\t{");
-			Code.AppendFormat("\t\t\t\treturn {0}.ConvertFromWPFObject(Data);{1}", o.XAMLType.Name, Environment.NewLine);
+			Code.AppendFormat("\t\t\t\treturn {0}.ConvertFromXAMLObject(Data);{1}", o.XAMLType.Name, Environment.NewLine);
 			Code.AppendLine("\t\t\t}");
 			Code.AppendLine("\t\t\telse");
 			Code.AppendLine("\t\t\t{");
-			Code.AppendFormat("\t\t\t\treturn ({0})Application.Current.Dispatcher.Invoke(new Func<{0}>(() => {1}.ConvertFromWPFObject(Data)), System.Windows.Threading.DispatcherPriority.Normal);{2}", DataTypeCSGenerator.GenerateType(o.HasContractType ? o.ContractType : o), DataTypeCSGenerator.GenerateType(o.XAMLType), Environment.NewLine);
+			Code.AppendFormat("\t\t\t\treturn ({0})Application.Current.Dispatcher.Invoke(new Func<{0}>(() => {1}.ConvertFromXAMLObject(Data)), System.Windows.Threading.DispatcherPriority.Normal);{2}", DataTypeCSGenerator.GenerateType(o.HasContractType ? o.ContractType : o), DataTypeCSGenerator.GenerateType(o.XAMLType), Environment.NewLine);
 			Code.AppendLine("\t\t\t}");
 			Code.AppendLine("\t\t}");
 			Code.AppendFormat("\t\tpublic static implicit operator {1}({0} Data){2}", o.XAMLType.Name, DataTypeCSGenerator.GenerateType(o.HasContractType ? o.ContractType : o), Environment.NewLine);
@@ -301,11 +301,11 @@ namespace WCFArchitect.Compiler.Generators
 			Code.AppendLine("\t\t\tif (Data == null) return null;");
 			Code.AppendLine("\t\t\tif(Application.Current.Dispatcher.CheckAccess() == true)");
 			Code.AppendLine("\t\t\t{");
-			Code.AppendFormat("\t\t\t\treturn {0}.ConvertToWPFObject(Data);{1}", o.XAMLType.Name, Environment.NewLine);
+			Code.AppendFormat("\t\t\t\treturn {0}.ConvertToXAMLObject(Data);{1}", o.XAMLType.Name, Environment.NewLine);
 			Code.AppendLine("\t\t\t}");
 			Code.AppendLine("\t\t\telse");
 			Code.AppendLine("\t\t\t{");
-			Code.AppendFormat("\t\t\t\treturn ({0})Application.Current.Dispatcher.Invoke(new Func<{1}>(() => {0}.ConvertToWPFObject(Data)), System.Windows.Threading.DispatcherPriority.Normal);{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
+			Code.AppendFormat("\t\t\t\treturn ({0})Application.Current.Dispatcher.Invoke(new Func<{1}>(() => {0}.ConvertToXAMLObject(Data)), System.Windows.Threading.DispatcherPriority.Normal);{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractType.Name : o.Name, Environment.NewLine);
 			Code.AppendLine("\t\t\t}");
 			Code.AppendLine("\t\t}");
 			Code.AppendLine();
@@ -315,7 +315,7 @@ namespace WCFArchitect.Compiler.Generators
 			Code.AppendLine("\t\t{");
 			Code.AppendLine("\t\t\tType t_DT = Data.GetType();");
 			foreach (DataElement DE in o.Elements)
-				Code.Append(GenerateElementWPFConstructorCode45(DE, o));
+				Code.Append(GenerateElementXAMLConstructorCode45(DE, o));
 			Code.AppendLine("\t\t}");
 			Code.AppendLine();
 			Code.AppendFormat("\t\tpublic {0}(){1}", o.XAMLType.Name, Environment.NewLine);
@@ -323,25 +323,25 @@ namespace WCFArchitect.Compiler.Generators
 			Code.AppendLine("\t\t}");
 			Code.AppendLine();
 
-			Code.AppendLine("\t\t//WPF/DTO Conversion Functions");
-			Code.AppendFormat("\t\tpublic static {0} ConvertFromWPFObject({1} Data){2}", o.HasContractType ? o.ContractType.Name : o.Name, DataTypeCSGenerator.GenerateType(o.XAMLType), Environment.NewLine);
+			Code.AppendLine("\t\t//XAML/DTO Conversion Functions");
+			Code.AppendFormat("\t\tpublic static {0} ConvertFromXAMLObject({1} Data){2}", o.HasContractType ? o.ContractType.Name : o.Name, DataTypeCSGenerator.GenerateType(o.XAMLType), Environment.NewLine);
 			Code.AppendLine("\t\t{");
 			Code.AppendFormat("\t\t\t{0} DTO = new {0}();{1}", DataTypeCSGenerator.GenerateType(o.HasContractType ? o.ContractType : o), Environment.NewLine);
-			Code.AppendLine("\t\t\tType t_WPF = Data.GetType();");
+			Code.AppendLine("\t\t\tType t_XAML = Data.GetType();");
 			Code.AppendLine("\t\t\tType t_DTO = DTO.GetType();");
 			foreach (DataElement DE in o.Elements)
-				Code.Append(GenerateElementWPFConversionFromWPF45(DE, o));
+				Code.Append(GenerateElementXAMLConversionFromXAML45(DE, o));
 			Code.AppendLine("\t\t\treturn DTO;");
 			Code.AppendLine("\t\t}");
 			Code.AppendLine();
-			Code.AppendFormat("\t\tpublic static {0} ConvertToWPFObject({1} Data){2}", o.XAMLType.Name, DataTypeCSGenerator.GenerateType(o.HasContractType ? o.ContractType : o), Environment.NewLine);
+			Code.AppendFormat("\t\tpublic static {0} ConvertToXAMLObject({1} Data){2}", o.XAMLType.Name, DataTypeCSGenerator.GenerateType(o.HasContractType ? o.ContractType : o), Environment.NewLine);
 			Code.AppendLine("\t\t{");
-			Code.AppendFormat("\t\t\t{0} WPF = new {0}();{1}", DataTypeCSGenerator.GenerateType(o.XAMLType), Environment.NewLine);
+			Code.AppendFormat("\t\t\t{0} XAML = new {0}();{1}", DataTypeCSGenerator.GenerateType(o.XAMLType), Environment.NewLine);
 			Code.AppendLine("\t\t\tType t_DTO = Data.GetType();");
-			Code.AppendLine("\t\t\tType t_WPF = WPF.GetType();");
+			Code.AppendLine("\t\t\tType t_XAML = XAML.GetType();");
 			foreach (DataElement DE in o.Elements)
-				Code.Append(GenerateElementWPFConversionToWPF45(DE, o));
-			Code.AppendLine("\t\t\treturn WPF;");
+				Code.Append(GenerateElementXAMLConversionToXAML45(DE, o));
+			Code.AppendLine("\t\t\treturn XAML;");
 			Code.AppendLine("\t\t}");
 			Code.AppendLine("\t}");
 
@@ -411,22 +411,22 @@ namespace WCFArchitect.Compiler.Generators
 			return Code.ToString();
 		}
 
-		private static string GenerateElementWPFConstructorCode30(DataElement o, Data c)
+		private static string GenerateElementXAMLConstructorCode30(DataElement o, Data c)
 		{
-			return GenerateElementWPFConstructorCode35(o, c);
+			return GenerateElementXAMLConstructorCode35(o, c);
 		}
 
-		private static string GenerateElementWPFConstructorCode35(DataElement o, Data c)
+		private static string GenerateElementXAMLConstructorCode35(DataElement o, Data c)
 		{
-			return GenerateElementWPFConstructorCode40(o, c);
+			return GenerateElementXAMLConstructorCode40(o, c);
 		}
 
-		private static string GenerateElementWPFConstructorCode40(DataElement o, Data c)
+		private static string GenerateElementXAMLConstructorCode40(DataElement o, Data c)
 		{
-			return GenerateElementWPFConstructorCode45(o, c);
+			return GenerateElementXAMLConstructorCode45(o, c);
 		}
 
-		private static string GenerateElementWPFConstructorCode45(DataElement o, Data c)
+		private static string GenerateElementXAMLConstructorCode45(DataElement o, Data c)
 		{
 			if (o.IsHidden == true) return "";
 			if (o.IsDataMember == false) return "";
@@ -488,22 +488,22 @@ namespace WCFArchitect.Compiler.Generators
 			return Code.ToString();
 		}
 
-		private static string GenerateElementWPFConversionToWPF30(DataElement o, Data c)
+		private static string GenerateElementXAMLConversionToXAML30(DataElement o, Data c)
 		{
-			return GenerateElementWPFConversionToWPF35(o, c);
+			return GenerateElementXAMLConversionToXAML35(o, c);
 		}
 
-		private static string GenerateElementWPFConversionToWPF35(DataElement o, Data c)
+		private static string GenerateElementXAMLConversionToXAML35(DataElement o, Data c)
 		{
-			return GenerateElementWPFConversionToWPF40(o, c);
+			return GenerateElementXAMLConversionToXAML40(o, c);
 		}
 
-		private static string GenerateElementWPFConversionToWPF40(DataElement o, Data c)
+		private static string GenerateElementXAMLConversionToXAML40(DataElement o, Data c)
 		{
-			return GenerateElementWPFConversionToWPF45(o, c);
+			return GenerateElementXAMLConversionToXAML45(o, c);
 		}
 
-		private static string GenerateElementWPFConversionToWPF45(DataElement o, Data c)
+		private static string GenerateElementXAMLConversionToXAML45(DataElement o, Data c)
 		{
 			if (o.IsHidden == true) return "";
 			if (o.IsDataMember == false) return "";
@@ -512,15 +512,15 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.HasXAMLType == true)
 			{
 				if (o.IsAttached == false)
-					Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_WPF.GetProperty(\"{0}\", BindingFlags.Public | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+					Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_XAML.GetProperty(\"{0}\", BindingFlags.Public | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 			}
 			else
 			{
 				if (o.IsAttached == false)
 					if (o.DataType.Scope == DataScope.Public)
-						Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_WPF.GetProperty(\"{0}\", BindingFlags.Public | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+						Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_XAML.GetProperty(\"{0}\", BindingFlags.Public | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 					else
-						Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_WPF.GetProperty(\"{0}\", BindingFlags.NonPublic | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+						Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_XAML.GetProperty(\"{0}\", BindingFlags.NonPublic | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 			}
 			Code.AppendFormat("\t\t\tFieldInfo fi_{0} = t_DTO.GetField(\"{0}Field\", BindingFlags.NonPublic | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 			if (o.IsAttached == false) Code.AppendFormat("\t\t\tif(fi_{0} != null && pi_{0} != null){1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
@@ -533,17 +533,17 @@ namespace WCFArchitect.Compiler.Generators
 				Code.AppendLine("\t\t\t\t{");
 				if (o.Owner.Parent.Owner.CollectionSerializationOverride == ProjectCollectionSerializationOverride.List)
 				{
-					Code.AppendFormat("\t\t\t\t\t{0} wpf_{1} = new {0}[v_{1}.Count];{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
-					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t\tpi_{0}.SetValue(WPF, wpf_{0}, null);{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
-					else Code.AppendFormat("\t\t\t\t\t{0}.Set{1}(WPF, wpf_{2});{3}", DataTypeCSGenerator.GenerateType(c.XAMLType), o.XAMLName, o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
-					Code.AppendFormat("\t\t\t\t\tfor(int i = 0; i < v_{0}.Count; i++) {{ wpf_{0}[i] = v_{0}[i]; }}{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\t\t{0} XAML_{1} = new {0}[v_{1}.Count];{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t\tpi_{0}.SetValue(XAML, XAML_{0}, null);{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+					else Code.AppendFormat("\t\t\t\t\t{0}.Set{1}(XAML, XAML_{2});{3}", DataTypeCSGenerator.GenerateType(c.XAMLType), o.XAMLName, o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\t\tfor(int i = 0; i < v_{0}.Count; i++) {{ XAML_{0}[i] = v_{0}[i]; }}{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 				}
 				else
 				{
-					Code.AppendFormat("\t\t\t\t\t{1}[] wpf_{0} = new {1}[v_{2}.GetLength(0)];{3}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
-					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t\tpi_{0}.SetValue(WPF, wpf_{0}, null);{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
-					else Code.AppendFormat("\t\t\t\t\t{0}.Set{1}(WPF, wpf_{2});{3}", DataTypeCSGenerator.GenerateType(c.XAMLType), o.XAMLName, o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
-					Code.AppendFormat("\t\t\t\t\tfor(int i = 0; i < v_{0}.GetLength(0); i++) {{ wpf_{0}[i] = v_{0}[i]; }}{2}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\t\t{1}[] XAML_{0} = new {1}[v_{2}.GetLength(0)];{3}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t\tpi_{0}.SetValue(XAML, XAML_{0}, null);{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+					else Code.AppendFormat("\t\t\t\t\t{0}.Set{1}(XAML, XAML_{2});{3}", DataTypeCSGenerator.GenerateType(c.XAMLType), o.XAMLName, o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\t\tfor(int i = 0; i < v_{0}.GetLength(0); i++) {{ XAML_{0}[i] = v_{0}[i]; }}{2}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 				}
 				Code.AppendLine("\t\t\t\t}");
 				Code.AppendLine("\t\t\t}");
@@ -554,48 +554,48 @@ namespace WCFArchitect.Compiler.Generators
 				Code.AppendFormat("\t\t\t\t{0} v_{1} = fi_{1}.GetValue(Data) as {0};{2}", DataTypeCSGenerator.GenerateType(o.DataType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 				Code.AppendFormat("\t\t\t\tif(v_{0} != null){1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 				Code.AppendLine("\t\t\t\t{");
-				Code.AppendFormat("\t\t\t\t\t{0} wpf_{1} = new {0}();{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
-				if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t\tpi_{0}.SetValue(WPF, wpf_{0}, null);{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
-				else Code.AppendFormat("\t\t\t\t\t{0}.Set{1}(WPF, wpf_{2});{3}", DataTypeCSGenerator.GenerateType(c.XAMLType), o.XAMLName, o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
-				Code.AppendFormat("\t\t\t\t\tforeach({1} a in v_{2}) {{ wpf_{0}.Add(a); }}{3}", o.HasContractType ? o.ContractName : o.DataName, DataTypeCSGenerator.GenerateType(o.HasContractType ? o.ContractType : o.DataType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+				Code.AppendFormat("\t\t\t\t\t{0} XAML_{1} = new {0}();{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+				if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t\tpi_{0}.SetValue(XAML, XAML_{0}, null);{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+				else Code.AppendFormat("\t\t\t\t\t{0}.Set{1}(XAML, XAML_{2});{3}", DataTypeCSGenerator.GenerateType(c.XAMLType), o.XAMLName, o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+				Code.AppendFormat("\t\t\t\t\tforeach({1} a in v_{2}) {{ XAML_{0}.Add(a); }}{3}", o.HasContractType ? o.ContractName : o.DataName, DataTypeCSGenerator.GenerateType(o.HasContractType ? o.ContractType : o.DataType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 				Code.AppendLine("\t\t\t\t}");
 				Code.AppendLine("\t\t\t}");
 			}
 			else if (o.XAMLType.TypeMode == DataTypeMode.Dictionary)
 			{
 				Code.AppendLine("\t\t\t{");
-				Code.AppendFormat("\t\t\t\t{0} wpf_{1} = new {0}();{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
-				if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t\tpi_{0}.SetValue(WPF, wpf_{0}, null);{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
-				else Code.AppendFormat("\t\t\t\t\t{0}.Set{1}(WPF, wpf_{2});{3}", DataTypeCSGenerator.GenerateType(c.XAMLType), o.XAMLName, o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+				Code.AppendFormat("\t\t\t\t{0} XAML_{1} = new {0}();{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+				if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t\tpi_{0}.SetValue(XAML, XAML_{0}, null);{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+				else Code.AppendFormat("\t\t\t\t\t{0}.Set{1}(XAML, XAML_{2});{3}", DataTypeCSGenerator.GenerateType(c.XAMLType), o.XAMLName, o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 				Code.AppendFormat("\t\t\t\t{1} v_{0} = fi_{0}.GetValue(Data) as {1};{2}", o.HasContractType ? o.ContractName : o.DataName, DataTypeCSGenerator.GenerateType(o.DataType), Environment.NewLine);
-				Code.AppendFormat("\t\t\t\tif(v_{2} != null) foreach(KeyValuePair{1} a in v_{2}) {{ wpf_{0}.Add(a.Key, a.Value); }}{3}", o.HasContractType ? o.ContractName : o.DataName, DataTypeCSGenerator.GenerateTypeGenerics(o.HasContractType ? o.ContractType : o.DataType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+				Code.AppendFormat("\t\t\t\tif(v_{2} != null) foreach(KeyValuePair{1} a in v_{2}) {{ XAML_{0}.Add(a.Key, a.Value); }}{3}", o.HasContractType ? o.ContractName : o.DataName, DataTypeCSGenerator.GenerateTypeGenerics(o.HasContractType ? o.ContractType : o.DataType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 				Code.AppendLine("\t\t\t}");
 			}
 			else
 			{
-				if (o.IsAttached == false) Code.AppendFormat("\t\t\t\tpi_{1}.SetValue(WPF, ({0})fi_{1}.GetValue(Data), null);{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
-				else Code.AppendFormat("\t\t\t\t{4}.Set{2}(WPF, ({0})fi_{1}.GetValue(Data));{4}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, o.XAMLName, DataTypeCSGenerator.GenerateType(c.XAMLType), Environment.NewLine);
+				if (o.IsAttached == false) Code.AppendFormat("\t\t\t\tpi_{1}.SetValue(XAML, ({0})fi_{1}.GetValue(Data), null);{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+				else Code.AppendFormat("\t\t\t\t{4}.Set{2}(XAML, ({0})fi_{1}.GetValue(Data));{4}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, o.XAMLName, DataTypeCSGenerator.GenerateType(c.XAMLType), Environment.NewLine);
 			}
 
 			return Code.ToString();
 		}
 
-		private static string GenerateElementWPFConversionFromWPF30(DataElement o, Data c)
+		private static string GenerateElementXAMLConversionFromXAML30(DataElement o, Data c)
 		{
-			return GenerateElementWPFConversionFromWPF35(o, c);
+			return GenerateElementXAMLConversionFromXAML35(o, c);
 		}
 
-		private static string GenerateElementWPFConversionFromWPF35(DataElement o, Data c)
+		private static string GenerateElementXAMLConversionFromXAML35(DataElement o, Data c)
 		{
-			return GenerateElementWPFConversionFromWPF40(o, c);
+			return GenerateElementXAMLConversionFromXAML40(o, c);
 		}
 
-		private static string GenerateElementWPFConversionFromWPF40(DataElement o, Data c)
+		private static string GenerateElementXAMLConversionFromXAML40(DataElement o, Data c)
 		{
-			return GenerateElementWPFConversionFromWPF45(o, c);
+			return GenerateElementXAMLConversionFromXAML45(o, c);
 		}
 
-		private static string GenerateElementWPFConversionFromWPF45(DataElement o, Data c)
+		private static string GenerateElementXAMLConversionFromXAML45(DataElement o, Data c)
 		{
 			if (o.IsHidden == true) return "";
 			if (o.IsDataMember == false) return "";
@@ -604,15 +604,15 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.HasXAMLType == true)
 			{
 				if (o.IsAttached == false)
-					Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_WPF.GetProperty(\"{0}\", BindingFlags.Public | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+					Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_XAML.GetProperty(\"{0}\", BindingFlags.Public | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 			}
 			else
 			{
 				if (o.IsAttached == false)
 					if (o.DataType.Scope == DataScope.Public)
-						Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_WPF.GetProperty(\"{0}\", BindingFlags.Public | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+						Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_XAML.GetProperty(\"{0}\", BindingFlags.Public | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 					else
-						Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_WPF.GetProperty(\"{0}\", BindingFlags.NonPublic | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+						Code.AppendFormat("\t\t\tPropertyInfo pi_{0} = t_XAML.GetProperty(\"{0}\", BindingFlags.NonPublic | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 			}
 			Code.AppendFormat("\t\t\tFieldInfo fi_{0} = t_DTO.GetField(\"{0}Field\", BindingFlags.NonPublic | BindingFlags.Instance);{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 			if (o.XAMLType.TypeMode == DataTypeMode.Array)
@@ -624,16 +624,16 @@ namespace WCFArchitect.Compiler.Generators
 				{
 					Code.AppendFormat("\t\t\t\t{0} v_{1} = new {0}();{2}", DataTypeCSGenerator.GenerateType(o.HasContractType ? o.ContractType : o.DataType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 					Code.AppendFormat("\t\t\t\tfi_{0}.SetValue(DTO, v_{0});{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
-					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t{0} wpf_{1} = pi_{1}.GetValue(Data, null) as {0};{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
-					else Code.AppendFormat("\t\t\t\t{0} wpf_{1} = {3}.Get{2}(Data) as {0};{4}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, o.XAMLName, DataTypeCSGenerator.GenerateType(c.XAMLType), Environment.NewLine);
-					Code.AppendFormat("\t\t\t\tforeach({0} a in wpf_{1}) {{ v_{1}.Add(a); }}{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t{0} XAML_{1} = pi_{1}.GetValue(Data, null) as {0};{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+					else Code.AppendFormat("\t\t\t\t{0} XAML_{1} = {3}.Get{2}(Data) as {0};{4}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, o.XAMLName, DataTypeCSGenerator.GenerateType(c.XAMLType), Environment.NewLine);
+					Code.AppendFormat("\t\t\t\tforeach({0} a in XAML_{1}) {{ v_{1}.Add(a); }}{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 				}
 				else
 				{
-					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t{0} wpf_{1} = pi_{1}.GetValue(Data, null) as {0};{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
-					else Code.AppendFormat("\t\t\t\t{0} wpf_{1} = {2}.Get{3}(Data) as {0};{4}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, DataTypeCSGenerator.GenerateType(o.XAMLType), o.XAMLName, Environment.NewLine);
-					Code.AppendFormat("\t\t\t\t{0}[] v_{1} = new {0}[wpf_{1}.GetLength(0)];{2}", DataTypeCSGenerator.GenerateType(o.DataType).Replace("[]", ""), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
-					Code.AppendFormat("\t\t\t\tfor(int i = 0; i < wpf_{0}.GetLength(0); i++) {{ v_{1}[i] = Data.{1}[i]; }}{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t{0} XAML_{1} = pi_{1}.GetValue(Data, null) as {0};{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+					else Code.AppendFormat("\t\t\t\t{0} XAML_{1} = {2}.Get{3}(Data) as {0};{4}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, DataTypeCSGenerator.GenerateType(o.XAMLType), o.XAMLName, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\t{0}[] v_{1} = new {0}[XAML_{1}.GetLength(0)];{2}", DataTypeCSGenerator.GenerateType(o.DataType).Replace("[]", ""), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\tfor(int i = 0; i < XAML_{0}.GetLength(0); i++) {{ v_{1}[i] = Data.{1}[i]; }}{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 					Code.AppendFormat("\t\t\t\tfi_{0}.SetValue(DTO, v_{0});{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 				}
 				Code.AppendLine("\t\t\t}");
@@ -647,16 +647,16 @@ namespace WCFArchitect.Compiler.Generators
 				{
 					Code.AppendFormat("\t\t\t\t{0} v_{1} = new {0}();{2}", DataTypeCSGenerator.GenerateType(o.HasContractType ? o.ContractType : o.DataType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 					Code.AppendFormat("\t\t\t\tfi_{0}.SetValue(DTO, v_{0});{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
-					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t{0} wpf_{1} = pi_{1}.GetValue(Data, null) as {0};{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
-					else Code.AppendFormat("\t\t\t\t{0} wpf_{1} = {3}.Get{2}(Data) as {0};{4}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, o.XAMLName, DataTypeCSGenerator.GenerateType(c.XAMLType), Environment.NewLine);
-					Code.AppendFormat("\t\t\t\tforeach({0} a in wpf_{1}) {{ v_{1}.Add(a); }}{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t{0} XAML_{1} = pi_{1}.GetValue(Data, null) as {0};{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+					else Code.AppendFormat("\t\t\t\t{0} XAML_{1} = {3}.Get{2}(Data) as {0};{4}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, o.XAMLName, DataTypeCSGenerator.GenerateType(c.XAMLType), Environment.NewLine);
+					Code.AppendFormat("\t\t\t\tforeach({0} a in XAML_{1}) {{ v_{1}.Add(a); }}{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 				}
 				else
 				{
-					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t{0} wpf_{1} = pi_{1}.GetValue(Data, null) as {0};{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
-					else Code.AppendFormat("\t\t\t\t{0} wpf_{1} = {2}.Get{3}(Data) as {0};{4}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, DataTypeCSGenerator.GenerateType(o.XAMLType), o.XAMLName, Environment.NewLine);
-					Code.AppendFormat("\t\t\t\t{0}[] v_{1} = new {0}[wpf_{1}.GetLength(0)];{2}", DataTypeCSGenerator.GenerateType(o.DataType).Replace("[]", ""), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
-					Code.AppendFormat("\t\t\t\tfor(int i = 0; i < wpf_{0}.GetLength(0); i++) {{ v_{1}[i] = Data.{1}[i]; }}{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+					if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t{0} XAML_{1} = pi_{1}.GetValue(Data, null) as {0};{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+					else Code.AppendFormat("\t\t\t\t{0} XAML_{1} = {2}.Get{3}(Data) as {0};{4}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, DataTypeCSGenerator.GenerateType(o.XAMLType), o.XAMLName, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\t{0}[] v_{1} = new {0}[XAML_{1}.GetLength(0)];{2}", DataTypeCSGenerator.GenerateType(o.DataType).Replace("[]", ""), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+					Code.AppendFormat("\t\t\t\tfor(int i = 0; i < XAML_{0}.GetLength(0); i++) {{ v_{1}[i] = Data.{1}[i]; }}{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 					Code.AppendFormat("\t\t\t\tfi_{0}.SetValue(DTO, v_{0});{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 				}
 				Code.AppendLine("\t\t\t}");
@@ -668,9 +668,9 @@ namespace WCFArchitect.Compiler.Generators
 				Code.AppendLine("\t\t\t{");
 				Code.AppendFormat("\t\t\t\tDictionary<{0}> v_{1} = new Dictionary<{0}>();{2}", DataTypeCSGenerator.GenerateType(o.DataType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 				Code.AppendFormat("\t\t\t\tfi_{0}.SetValue(DTO, v_{0});{1}", o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
-				if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t{0} wpf_{1} = pi_{1}.GetValue(Data, null) as {0};{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
-				else Code.AppendFormat("\t\t\t\t{0} wpf_{1} = {3}.Get{2}(Data) as {0};{4}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, o.XAMLName, DataTypeCSGenerator.GenerateType(c.XAMLType), Environment.NewLine);
-				Code.AppendFormat("\t\t\t\tforeach(KeyValuePair{0} a in wpf_{1}) {{ v_{1}.Add(a.Key, a.Value); }}{2}", DataTypeCSGenerator.GenerateTypeGenerics(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+				if (o.IsAttached == false) Code.AppendFormat("\t\t\t\t{0} XAML_{1} = pi_{1}.GetValue(Data, null) as {0};{2}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
+				else Code.AppendFormat("\t\t\t\t{0} XAML_{1} = {3}.Get{2}(Data) as {0};{4}", DataTypeCSGenerator.GenerateType(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, o.XAMLName, DataTypeCSGenerator.GenerateType(c.XAMLType), Environment.NewLine);
+				Code.AppendFormat("\t\t\t\tforeach(KeyValuePair{0} a in XAML_{1}) {{ v_{1}.Add(a.Key, a.Value); }}{2}", DataTypeCSGenerator.GenerateTypeGenerics(o.XAMLType), o.HasContractType ? o.ContractName : o.DataName, Environment.NewLine);
 				Code.AppendLine("\t\t\t}");
 			}
 			else
@@ -682,7 +682,7 @@ namespace WCFArchitect.Compiler.Generators
 			return Code.ToString();
 		}
 
-		private static string GenerateElementWPFCode30(DataElement o)
+		private static string GenerateElementXAMLCode30(DataElement o)
 		{
 			if (o.IsHidden == true) return "";
 			if (o.IsDataMember == false) return "";
@@ -765,17 +765,17 @@ namespace WCFArchitect.Compiler.Generators
 			return Code.ToString();
 		}
 
-		private static string GenerateElementWPFCode35(DataElement o)
+		private static string GenerateElementXAMLCode35(DataElement o)
 		{
-			return GenerateElementWPFCode40(o);
+			return GenerateElementXAMLCode40(o);
 		}
 
-		private static string GenerateElementWPFCode40(DataElement o)
+		private static string GenerateElementXAMLCode40(DataElement o)
 		{
-			return GenerateElementWPFCode45(o);
+			return GenerateElementXAMLCode45(o);
 		}
 
-		private static string GenerateElementWPFCode45(DataElement o)
+		private static string GenerateElementXAMLCode45(DataElement o)
 		{
 			if (o.IsHidden == true) return "";
 			if (o.IsDataMember == false) return "";
