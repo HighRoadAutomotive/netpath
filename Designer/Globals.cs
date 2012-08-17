@@ -28,8 +28,6 @@ namespace WCFArchitect
 		public static ObjectSpace UserProfileSpace { get; set; }
 		public static string UserProfilePath { get; set; }
 
-		public static ConcurrentQueue<MessageBox> Messages { get; set; }
-
 		public enum WindowsVersion
 		{
 			WinVista = 60,
@@ -54,11 +52,6 @@ namespace WCFArchitect
 
 		public static T GetVisualParent<T>(object childObject) where T : Visual { DependencyObject child = childObject as DependencyObject; while ((child != null) && !(child is T)) { child = VisualTreeHelper.GetParent(child); } return child as T; }
 		public static T GetVisualChild<T>(Visual parent) where T : Visual { T child = default(T); int numVisuals = VisualTreeHelper.GetChildrenCount(parent); for (int i = 0; i < numVisuals; i++) { Visual v = (Visual)VisualTreeHelper.GetChild(parent, i); child = v as T; if (child == null) { child = GetVisualChild<T>(v); } if (child != null) { break; } } return child; }
-
-		static Globals()
-		{
-			Messages = new ConcurrentQueue<MessageBox>();
-		}
 
 		public static string GetRelativePath(string BasePath, string FilePath)
 		{
@@ -207,74 +200,6 @@ namespace WCFArchitect
 
 			foreach (WCFArchitect.Projects.Project p in Globals.Projects)
 				WCFArchitect.Projects.Project.Save(p);
-		}
-
-		public static void ShowMessageBox(Projects.Project Origin, string Caption, string Message, params MessageAction[] Actions)
-		{
-			Messages.Enqueue(new MessageBox(Origin, Caption, Message, new List<MessageAction>(Actions), false));
-			Globals.MainScreen.ProcessNextMessage();
-		}
-
-		public static void ShowDialogBox(Projects.Project Origin, string Caption, object Content)
-		{
-			Messages.Enqueue(new MessageBox(Origin, Caption, Content, new List<MessageAction>(), true));
-			Globals.MainScreen.ProcessNextMessage();
-		}
-
-		public static void ShowDialogBox(Projects.Project Origin, string Caption, object Content, params MessageAction[] Actions)
-		{
-			Messages.Enqueue(new MessageBox(Origin, Caption, Content, new List<MessageAction>(Actions), true));
-			Globals.MainScreen.ProcessNextMessage();
-		}
-	}
-
-	internal class MessageBox : DependencyObject
-	{
-		public string Caption { get { return (string)GetValue(CaptionProperty); } set { SetValue(CaptionProperty, value); } }
-		public static readonly DependencyProperty CaptionProperty = DependencyProperty.Register("Caption", typeof(string), typeof(MessageBox), new PropertyMetadata(""));
-
-		public object Message { get { return (object)GetValue(MessageProperty); } set { SetValue(MessageProperty, value); } }
-		public static readonly DependencyProperty MessageProperty = DependencyProperty.Register("Message", typeof(object), typeof(MessageBox), new PropertyMetadata(new object()));
-
-		public List<MessageAction> Actions { get { return (List<MessageAction>)GetValue(ActionsProperty); } set { SetValue(ActionsProperty, value); } }
-		public static readonly DependencyProperty ActionsProperty = DependencyProperty.Register("Actions", typeof(List<MessageAction>), typeof(MessageBox));
-
-		public Projects.Project Origin { get; private set; }
-		public bool HasDialogContent { get; private set; }
-
-		public MessageBox(Projects.Project Origin, string Caption, object Message, List<MessageAction> Actions, bool HasDialogContent)
-		{
-			this.Origin = Origin;
-			this.Caption = Caption;
-			this.Message = Message;
-			this.Actions = Actions;
-			this.HasDialogContent = HasDialogContent;
-		}
-	}
-
-	public class MessageAction
-	{
-		public string Title { get; private set; }
-		public bool IsDefault { get; private set; }
-		public bool IsCancel { get; private set; }
-		public Action Action { get; private set; }
-		public object Owner { get; internal set; }
-
-		public MessageAction(string Title)
-		{
-			this.Title = Title;
-			this.IsDefault = false;
-			this.IsCancel = true;
-			this.Action = Action;
-			this.Owner = null;
-		}
-
-		public MessageAction(string Title, Action Action, bool IsDefault = false)
-		{
-			this.Title = Title;
-			this.IsDefault = IsDefault;
-			this.Action = Action;
-			this.Owner = null;
 		}
 	}
 }

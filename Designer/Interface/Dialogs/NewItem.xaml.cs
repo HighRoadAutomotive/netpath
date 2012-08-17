@@ -388,7 +388,7 @@ namespace WCFArchitect.Interface.Dialogs
 
 		private void NewItemCancel_Click(object sender, RoutedEventArgs e)
 		{
-			Globals.MainScreen.CloseActiveMessageBox();
+			Prospective.Controls.Dialogs.DialogService.CloseActiveMessageBox();
 		}
 	}
 }

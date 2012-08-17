@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Prospective.Controls.Dialogs;
 
 namespace WCFArchitect.Interface
 {
@@ -56,7 +57,7 @@ namespace WCFArchitect.Interface
 
 		private void NewItem_Click(object sender, RoutedEventArgs e)
 		{
-			Globals.ShowDialogBox(Project, "New Item", new Dialogs.NewItem(Project, new Action<Projects.OpenableDocument>(OpenProjectItem)));
+			DialogService.ShowContentDialog(Project, "New Item", new Dialogs.NewItem(Project, new Action<Projects.OpenableDocument>(OpenProjectItem)));
 		}
 
 		private void SaveProject_Click(object sender, RoutedEventArgs e)
@@ -66,7 +67,7 @@ namespace WCFArchitect.Interface
 
 		private void DeleteProject_Click(object sender, RoutedEventArgs e)
 		{
-			Globals.ShowMessageBox(Project, "Permanently Delete Project?", "This project will be removed from the solution. Would you like to delete it from the disk as well?", new MessageAction("Yes", new Action(() => KillProject())), new MessageAction("No", new Action(() => RemoveProject()), true));
+			DialogService.ShowMessageDialog(Project, "Permanently Delete Project?", "This project will be removed from the solution. Would you like to delete it from the disk as well?", new DialogAction("Yes", new Action(() => KillProject())), new DialogAction("No", new Action(() => RemoveProject()), true));
 		}
 
 		private void BuildProject_Click(object sender, RoutedEventArgs e)
