@@ -331,38 +331,7 @@
 					</Grid>
 				</Grid>
 			</Border>
-			<Border x:Name="MessageBox" Background="#66000000" Grid.RowSpan="2" Visibility="Hidden" IsHitTestVisible="True" >
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="*"/>
-					</Grid.RowDefinitions>
-					<Grid Background="{StaticResource WindowBackground}" Grid.Row="1" >
-						<Grid.RowDefinitions>
-							<RowDefinition Height="60"/>
-							<RowDefinition Height="*"/>
-							<RowDefinition Height="Auto"/>
-						</Grid.RowDefinitions>
-						<TextBlock Grid.Row="0" Margin="10" FontSize="24pt">
-							<TextBlock.Text>
-								<MultiBinding StringFormat="{}{0} - {1}" TargetNullValue="">
-									<Binding Path="MessageProject" />
-									<Binding Path="MessageCaption" />
-								</MultiBinding>
-							</TextBlock.Text>
-						</TextBlock>
-						<ContentControl Content="{Binding Path=Message}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="14pt" Grid.Row="1" Margin="{Binding Path=MessagePadding}" />
-						<ItemsControl x:Name="MessageBoxButtons" ItemsSource="{Binding Path=MessageActions}" Grid.Row="2" Margin="5" HorizontalAlignment="Right">
-							<ItemsControl.ItemsPanel>
-								<ItemsPanelTemplate>
-									<StackPanel Orientation="Horizontal" />
-								</ItemsPanelTemplate>
-							</ItemsControl.ItemsPanel>
-						</ItemsControl>
-					</Grid>
-				</Grid>
-			</Border>
+			<pc:DialogViewer x:Name="DialogViewer" Grid.RowSpan="2" />
 		</Grid>
 	</Border>
 </Window>

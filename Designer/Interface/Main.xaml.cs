@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Diagnostics;
 using WCFArchitect.Interface;
+using Prospective.Controls.Dialogs;
 
 namespace WCFArchitect.Interface
 {
@@ -23,22 +24,6 @@ namespace WCFArchitect.Interface
 		public object SelectedProject { get { return (object)GetValue(SelectedProjectProperty); } set { SetValue(SelectedProjectProperty, value); } }
 		public static readonly DependencyProperty SelectedProjectProperty = DependencyProperty.Register("SelectedProject", typeof(object), typeof(Main));
 		
-		//Message Box Properties
-		public string MessageProject { get { return (string)GetValue(MessageProjectProperty); } set { SetValue(MessageProjectProperty, value); } }
-		public static readonly DependencyProperty MessageProjectProperty = DependencyProperty.Register("MessageProject", typeof(string), typeof(Main));
-
-		public string MessageCaption { get { return (string)GetValue(MessageCaptionProperty); } set { SetValue(MessageCaptionProperty, value); } }
-		public static readonly DependencyProperty MessageCaptionProperty = DependencyProperty.Register("MessageCaption", typeof(string), typeof(Main));
-
-		public object Message { get { return (object)GetValue(MessageProperty); } set { SetValue(MessageProperty, value); } }
-		public static readonly DependencyProperty MessageProperty = DependencyProperty.Register("Message", typeof(object), typeof(Main));
-
-		public Thickness MessagePadding { get { return (Thickness)GetValue(MessagePaddingProperty); } set { SetValue(MessagePaddingProperty, value); } }
-		public static readonly DependencyProperty MessagePaddingProperty = DependencyProperty.Register("MessagePadding", typeof(Thickness), typeof(Main));
-
-		public ObservableCollection<Button> MessageActions { get { return (ObservableCollection<Button>)GetValue(MessageActionsProperty); } set { SetValue(MessageActionsProperty, value); } }
-		public static readonly DependencyProperty MessageActionsProperty = DependencyProperty.Register("MessageActions", typeof(ObservableCollection<Button>), typeof(Main));
-
 		//Options Properties
 		public Prospective.Server.Licensing.LicenseInfoWPF LicenseInfo { get { return (Prospective.Server.Licensing.LicenseInfoWPF)GetValue(LicenseInfoProperty); } set { SetValue(LicenseInfoProperty, value); } }
 		public static readonly DependencyProperty LicenseInfoProperty = DependencyProperty.Register("LicenseInfo", typeof(Prospective.Server.Licensing.LicenseInfoWPF), typeof(Main));
@@ -46,8 +31,6 @@ namespace WCFArchitect.Interface
 		public WCFArchitect.Options.UserProfile UserProfile { get { return (WCFArchitect.Options.UserProfile)GetValue(UserProfileProperty); } set { SetValue(UserProfileProperty, value); } }
 		public static readonly DependencyProperty UserProfileProperty = DependencyProperty.Register("UserProfile", typeof(WCFArchitect.Options.UserProfile), typeof(Main));
 
-		public bool IsProcessingMessage { get; private set; }
-		
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static RoutedCommand SelectProjectCommand = new RoutedCommand();
 
 		static Main()
@@ -61,9 +44,9 @@ namespace WCFArchitect.Interface
 			if (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor == 1) Globals.WindowsLevel = Globals.WindowsVersion.WinSeven;
 			if (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor == 2) Globals.WindowsLevel = Globals.WindowsVersion.WinEight;
 
-			MessageActions = new ObservableCollection<Button>();
-			
 			InitializeComponent();
+
+			DialogService.Initialize("WCF ARCHITECT", DialogViewer);
 
 			Globals.MainScreen = this;
 
@@ -161,80 +144,6 @@ namespace WCFArchitect.Interface
 		private void RestoreWindow_Click(object sender, RoutedEventArgs e)
 		{
 			this.WindowState = System.Windows.WindowState.Normal;
-		}
-
-		#endregion
-
-		#region - Dialog Box -
-
-		public async void ProcessNextMessage()
-		{
-			if (Application.Current.Dispatcher.CheckAccess() == true)
-				InternalProcessNextMessage();
-			else
-				await Application.Current.Dispatcher.InvokeAsync(() => InternalProcessNextMessage(), System.Windows.Threading.DispatcherPriority.Normal);
-		}
-
-		private void InternalProcessNextMessage()
-		{
-			if (IsProcessingMessage == true) return;
-			IsProcessingMessage = true;
-			MessageBox.Visibility = System.Windows.Visibility.Visible;
-			MessageBox.Focus();
-			MessageActions.Clear();
-
-			if (Globals.Messages.Count > 0)
-			{
-				MessageBox next = null;
-				if (Globals.Messages.TryDequeue(out next) == false)
-				{
-					IsProcessingMessage = false;
-					MessageBox.Visibility = System.Windows.Visibility.Hidden;
-					return;
-				}
-
-				if (next != null)
-				{
-					if (next.Origin != null) MessageProject = next.Origin.Name.ToUpper();
-					else MessageProject = "WCF ARCHITECT";
-					MessageCaption = next.Caption;
-					Message = next.Message;
-					if (next.HasDialogContent == true) MessagePadding = new Thickness(5, 0, 5, 0);
-					else MessagePadding = new Thickness(20);
-					foreach (MessageAction a in next.Actions)
-					{
-						Button nb = new Button();
-						nb.Content = a.Title;
-						nb.Tag = a.Action;
-						nb.Margin = new Thickness(5);
-						nb.Click += MessageAction_Click;
-						MessageActions.Add(nb);
-						if (next.HasDialogContent == false) nb.IsDefault = a.IsDefault;
-					}
-				}
-			}
-		}
-
-		public void CloseActiveMessageBox()
-		{
-			IsProcessingMessage = false;
-			MessageBox.Visibility = System.Windows.Visibility.Hidden;
-
-			if (Globals.Messages.Count > 0)
-				ProcessNextMessage();
-		}
-
-		private void MessageAction_Click(object sender, RoutedEventArgs e)
-		{
-			Button b = sender as Button;
-			Action a = b.Tag as Action;
-			if (a != null) a();
-
-			IsProcessingMessage = false;
-			MessageBox.Visibility = System.Windows.Visibility.Hidden;
-
-			if (Globals.Messages.Count > 0)
-				ProcessNextMessage();
 		}
 
 		#endregion
@@ -347,13 +256,13 @@ namespace WCFArchitect.Interface
 		private void NewSolution_Click(object sender, RoutedEventArgs e)
 		{
 			Dialogs.NewSolution np = new Dialogs.NewSolution();
-			Globals.ShowDialogBox(null, "New Solution", np, new MessageAction("Create", new Action(() => np.Create()), true), new MessageAction("Cancel", new Action(() => { return; })));
+			DialogService.ShowContentDialog(null, "New Solution", np, new DialogAction("Create", new Action(() => np.Create()), true), new DialogAction("Cancel", false, true));
 		}
 
 		private void AddProject_Click(object sender, RoutedEventArgs e)
 		{
 			Dialogs.NewProject np = new Dialogs.NewProject(typeof(Projects.Project));
-			Globals.ShowDialogBox(null, "New Project", np, new MessageAction("Create", new Action(() => np.Create()), true), new MessageAction("Cancel", new Action(() => { return; })));
+			DialogService.ShowContentDialog(null, "New Project", np, new DialogAction("Create", new Action(() => np.Create()), true), new DialogAction("Cancel", false, true));
 		}
 
 		private void UpdateYes_Click(object sender, RoutedEventArgs e)
@@ -540,13 +449,13 @@ namespace WCFArchitect.Interface
 			{
 				if (AskBeforeClose == true)
 				{
-					Globals.ShowMessageBox(null, "Continue?", "In order to perform the requested action, the current project will be saved and closed. Would you like to continue?", new MessageAction("Yes", new Action(() => { Globals.CloseSolution(true); CloseSolutionFinished(); if (ContinueYes != null) ContinueYes(); }), true), new MessageAction("No", new Action(() => { Globals.CloseSolution(false); CloseSolutionFinished(); if (ContinueYes != null) ContinueNo(); })), new MessageAction("Cancel"));
+					DialogService.ShowMessageDialog(null, "Continue?", "In order to perform the requested action, the current project will be saved and closed. Would you like to continue?", new DialogAction("Yes", new Action(() => { Globals.CloseSolution(true); CloseSolutionFinished(); if (ContinueYes != null) ContinueYes(); }), true), new DialogAction("No", new Action(() => { Globals.CloseSolution(false); CloseSolutionFinished(); if (ContinueYes != null) ContinueNo(); })), new DialogAction("Cancel", false, true));
 				}
 				else
 				{
 					if (Closing == true)
 					{
-						Globals.ShowMessageBox(null, "Save Solution?", "Would you like to save your work?", new MessageAction("Yes", new Action(() => { Globals.CloseSolution(true); CloseSolutionFinished(); if (ContinueYes != null) ContinueYes(); }), true), new MessageAction("No", new Action(() => { Globals.CloseSolution(false); CloseSolutionFinished(); if (ContinueYes != null) ContinueNo(); })), new MessageAction("Cancel"));
+						DialogService.ShowMessageDialog(null, "Save Solution?", "Would you like to save your work?", new DialogAction("Yes", new Action(() => { Globals.CloseSolution(true); CloseSolutionFinished(); if (ContinueYes != null) ContinueYes(); }), true), new DialogAction("No", new Action(() => { Globals.CloseSolution(false); CloseSolutionFinished(); if (ContinueYes != null) ContinueNo(); })), new DialogAction("Cancel", false, true));
 					}
 					else
 					{
