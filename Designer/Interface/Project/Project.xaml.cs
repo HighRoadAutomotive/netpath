@@ -39,6 +39,25 @@ namespace WCFArchitect.Interface.Project
 
 		private void DependencyAdd_Click(object sender, RoutedEventArgs e)
 		{
+			string openpath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+			if (!(Settings.AbsolutePath == "" || Settings.AbsolutePath == null)) openpath = System.IO.Path.GetDirectoryName(Settings.AbsolutePath);
+
+			//Select the project
+			Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog ofd = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog("Select Poject");
+			ofd.AllowNonFileSystemItems = false;
+			ofd.EnsurePathExists = true;
+			ofd.IsFolderPicker = false;
+			ofd.InitialDirectory = openpath;
+			ofd.Multiselect = false;
+			ofd.ShowPlacesList = true;
+			if (ofd.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel) return;
+
+			//Load the project and add it to the dependency projects list.
+			Projects.Project op = Projects.Project.Open(Globals.SolutionPath, Globals.GetRelativePath(Globals.SolutionPath, ofd.FileName));
+			Projects.DependencyProject ndp = new Projects.DependencyProject();
+			ndp.Path = Globals.GetRelativePath(Globals.SolutionPath, ofd.FileName);
+			ndp.Project = op;
+			Settings.DependencyProjects.Add(ndp);
 		}
 
 		private void DependencyRemove_Click(object sender, RoutedEventArgs e)
@@ -98,7 +117,7 @@ namespace WCFArchitect.Interface.Project
 			ofd.ShowPlacesList = true;
 			if (ofd.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel) return;
 
-			ServerOutputPath.Text = ofd.FileName + "\\";
+			ServerOutputPath.Text = Globals.GetRelativePath(Globals.SolutionPath, ofd.FileName + "\\");
 		}
 
 		private void ServerOutputAdd_Click(object sender, RoutedEventArgs e)
@@ -128,7 +147,7 @@ namespace WCFArchitect.Interface.Project
 			ofd.ShowPlacesList = true;
 			if (ofd.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel) return;
 
-			ClientOutputPath.Text = ofd.FileName + "\\";
+			ClientOutputPath.Text = Globals.GetRelativePath(Globals.SolutionPath, ofd.FileName + "\\");
 		}
 
 		private void ClientOutputAdd_Click(object sender, RoutedEventArgs e)

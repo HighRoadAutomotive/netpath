@@ -72,9 +72,9 @@
 	</GroupBox>
 	<GroupBox Name="DependenciesGroup" Header="Dependency Projects" Margin="5" IsEnabled="True" Grid.Column="0" Grid.Row="2">
 		<Grid>
-			<ListView ItemsSource="{Binding Path=Settings.DependencyProjects}" IsSynchronizedWithCurrentItem="False" HorizontalAlignment="Stretch" BorderThickness="0" Background="Transparent" x:Name="DependencyItems" SelectionMode="Single" AlternationCount="1" Margin="0,33,0,0" >
+			<ListView ItemsSource="{Binding Path=Settings.DependencyProjects}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" IsSynchronizedWithCurrentItem="False" HorizontalAlignment="Stretch" BorderThickness="0" Background="Transparent" x:Name="DependencyItems" SelectionMode="Single" AlternationCount="1" Margin="2,33,2,0" ItemContainerStyle="{StaticResource ListViewItemContainerStyle}" >
 				<ListView.View>
-					<GridView ColumnHeaderContainerStyle="{StaticResource ListViewHeaderContainerStyle}">
+					<GridView ColumnHeaderContainerStyle="{StaticResource ListViewHeaderContainerStyle}" >
 						<GridViewColumn Header="ID" Width="0" DisplayMemberBinding="{Binding Path=Project.ID}" />
 						<GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding Path=Project.Name}" />
 						<GridViewColumn Header="Namespace" Width="Auto" DisplayMemberBinding="{Binding Path=Project.Namespace.Name}" />
@@ -105,18 +105,17 @@
 							<Grid>
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="*" MinWidth="230" />
-									<ColumnDefinition Width="150" />
 									<ColumnDefinition Width="20" />
 								</Grid.ColumnDefinitions>
 								<Grid.RowDefinitions>
 									<RowDefinition Height="22" />
 									<RowDefinition Height="Auto" />
 								</Grid.RowDefinitions>
-								<TextBlock Text="{Binding Path=Namespace}" Grid.Column="0" Margin="3,0,0,0" VerticalAlignment="Center" Foreground="Black" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
-								<Button Name="DeleteSelectedUsingItem" Grid.Column="2" Margin="0" Click="DeleteSelectedUsingItem_Click" Padding="0" Visibility="Hidden" Background="Transparent">
+								<TextBlock Text="{Binding Path=Namespace}" Grid.Column="0" Margin="3,0,0,0" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
+								<Button Name="DeleteSelectedUsingItem" Grid.Column="1" Grid.RowSpan="2" Margin="0" Click="DeleteSelectedUsingItem_Click" Padding="0" Visibility="Hidden" Background="Transparent">
 									<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
 								</Button>
-								<Border x:Name="UsingDetails" Grid.Row="1" Visibility="Collapsed">
+								<Border x:Name="UsingDetails" Margin="5" Grid.Row="1" Grid.Column="0" Visibility="Collapsed">
 									<Grid>
 										<Grid.ColumnDefinitions>
 											<ColumnDefinition Width="*" />
@@ -127,9 +126,11 @@
 											<RowDefinition Height="Auto" />
 											<RowDefinition Height="Auto" />
 										</Grid.RowDefinitions>
-										<CheckBox Grid.Column="0" Margin="0" Content="Server" VerticalAlignment="Center" IsChecked="{Binding Path=Server}" />
-										<CheckBox Grid.Column="1" Margin="0" Content="Client" VerticalAlignment="Center" IsChecked="{Binding Path=Client}" />
-										<CheckBox Grid.Column="2" Margin="0" Content="Requires Full Framework" VerticalAlignment="Center" IsChecked="{Binding Path=IsFullFrameworkOnly}" />
+										<CheckBox Grid.Column="0" Grid.Row="0" Margin="2" Content="Server" VerticalAlignment="Center" IsChecked="{Binding Path=Server}" />
+										<CheckBox Grid.Column="1" Grid.Row="0" Margin="2" Content="Client" VerticalAlignment="Center" IsChecked="{Binding Path=Client}" />
+										<CheckBox Grid.Column="2" Grid.Row="0" Margin="2" Content="Requires Full Framework" VerticalAlignment="Center" IsChecked="{Binding Path=IsFullFrameworkOnly}" />
+										<CheckBox Grid.Column="0" Grid.Row="1" Margin="2" Content=".NET Framework" VerticalAlignment="Center" IsChecked="{Binding Path=NET}" />
+										<CheckBox Grid.Column="1" Grid.Row="1" Margin="2" Content="Windows Runtime" VerticalAlignment="Center" IsChecked="{Binding Path=RT}" />
 									</Grid>
 								</Border>
 							</Grid>
@@ -142,14 +143,8 @@
 							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
 								<Setter TargetName="BG" Property="Background" Value="{StaticResource DefaultSelectionColor}" />
 								<Setter TargetName="DeleteSelectedUsingItem" Property="Visibility" Value="Visible" />
+								<Setter TargetName="UsingDetails" Property="Visibility" Value="Visible" />
 							</DataTrigger>
-							<MultiDataTrigger>
-								<MultiDataTrigger.Conditions>
-									<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="False" />
-									<Condition Binding="{Binding ElementName=DeleteSelectedUsingItem, Path=IsMouseOver}" Value="True" />
-								</MultiDataTrigger.Conditions>
-								<Setter TargetName="BG" Property="Background" Value="Transparent" />
-							</MultiDataTrigger>
 						</DataTemplate.Triggers>
 					</DataTemplate>
 				</ListBox.ItemTemplate>

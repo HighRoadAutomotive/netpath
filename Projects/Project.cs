@@ -168,22 +168,22 @@ namespace WCFArchitect.Projects
 			this.Name = Name;
 
 			//Default Using Namespaces
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections.Generic"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections.ObjectModel"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections.Specialized"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.ComponentModel"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Net"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Net.Security"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Text"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Reflection"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Resources"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Runtime.CompilerServices"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Runtime.InteropServices"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Runtime.Serialization"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.ServiceModel"));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.ServiceModel.Description"));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System", true, true, true, true, true));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections", true, true, true, true, true));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections.Generic", true, true, true, true, true));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections.ObjectModel", true, true, true, true, true));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections.Specialized", true, true, true, true, true));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.ComponentModel", true, true, true, true, true));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Net", true, true, true, true, true));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Net.Security", true, true, true, true, false));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Reflection", true, true, true, true, true));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Resources", true, true, true, true, true));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Runtime.CompilerServices", true, true, true, true, true));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Runtime.InteropServices", true, true, true, true, true));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Runtime.Serialization", true, true, true, true, true));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.ServiceModel", true, true, true, true, true));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.ServiceModel.Description", true, true, true, true, true));
+			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Text", true, true, true, true, true));
 			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Windows", false, true, true, true, false));
 			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("Windows.UI.Xaml", false, true, false, false, true));
 		}
@@ -381,7 +381,7 @@ namespace WCFArchitect.Projects
 	public class DependencyProject : DependencyObject
 	{
 		public string Path { get { return (string)GetValue(PathProperty); } set { SetValue(PathProperty, value); } }
-		public static readonly DependencyProperty PathProperty = DependencyProperty.Register("Path", typeof(string), typeof(DependencyProject), new PropertyMetadata(0));
+		public static readonly DependencyProperty PathProperty = DependencyProperty.Register("Path", typeof(string), typeof(DependencyProject), new PropertyMetadata(""));
 
 		[IgnoreDataMember()] public Project Project { get { return (Project)GetValue(ProjectProperty); } set { SetValue(ProjectProperty, value); } }
 		public static readonly DependencyProperty ProjectProperty = DependencyProperty.Register("Project", typeof(Project), typeof(DependencyProject));
