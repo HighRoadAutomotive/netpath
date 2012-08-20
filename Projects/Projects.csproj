@@ -109,9 +109,7 @@
     <Compile Include="Storage.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Project.kvtmodel" />
     <None Include="Projects.cd" />
-    <EmbeddedResource Include="Solution.kvtmodel" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
