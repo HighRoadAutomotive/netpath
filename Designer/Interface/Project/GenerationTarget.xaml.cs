@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Win32;
+using Prospective.Controls.Dialogs;
 
 namespace WCFArchitect.Interface.Project
 {
@@ -42,11 +43,8 @@ namespace WCFArchitect.Interface.Project
 
 		private void Delete_Click(object sender, RoutedEventArgs e)
 		{
-			if (Prospective.Controls.MessageBox.Show("Are you sure you want to delete the generation target: " + Path.Path, "Confirm Generation Target Deletion", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No, MessageBoxOptions.None) == MessageBoxResult.Yes)
-			{
-				Project.ServerGenerationTargets.Remove(Path);
-				Project.ClientGenerationTargets.Remove(Path);
-			}
+			DialogService.ShowMessageDialog(Project, "Confirm Generation Target Deletion", "Are you sure you want to delete the generation target: " + Path.Path,
+				new DialogAction("Yes", new Action(() => { Project.ServerGenerationTargets.Remove(Path); Project.ClientGenerationTargets.Remove(Path); }), true), new DialogAction("No", false, true));
 		}
 
 		private void OutputBrowse_Click(object sender, RoutedEventArgs e)

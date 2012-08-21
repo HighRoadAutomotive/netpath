@@ -30,6 +30,9 @@ namespace WCFArchitect.Interface.Dialogs
 
 			this.ActiveProject = Project;
 			this.OpenProjectItem = OpenItemAction;
+
+			EnableAddItem();
+
 #if !WINRT
 			if (ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET30) || 
 				ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET35) || 
@@ -49,7 +52,7 @@ namespace WCFArchitect.Interface.Dialogs
 				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/NamedPipe.png", "Named Pipe Binding", "A binding that provides security and reliability for intra-machine communications.", 6));
 				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQ.png", "MSMQ Binding", "A queued binding for cross-machine communications.", 7));
 				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/PeerTCP.png", "Peer TCP Binding", "A secure binding for peer-to-peer applications", 8));
-				if(ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET35) || ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET35Client)|| ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET40))
+				if (ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET35) || ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET35Client) || ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET40) || ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET45))
 					NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WebHTTP.png", "Web HTTP Binding", "A binding that provides the use of HTTP requests instead SOAP messags.", 9));
 				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQIntegration.png", "MSMQ Integration Binding", "A binding for mapping MSMQ messages to WCF messages.", 10));
 				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png", "WS HTTP Binding", "A binding that supports, security, reliable sessions, and distributed transactions over HTTP.", 11));
@@ -65,7 +68,7 @@ namespace WCFArchitect.Interface.Dialogs
 				NewItemSecurityTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/NamedPipe.png", "Named Pipe Security", "Security configuration for a Named Pipe Binding.", 4));
 				NewItemSecurityTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQ.png", "MSMQ Security", "Security configuration for an MSMQ Binding.", 5));
 				NewItemSecurityTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/PeerTCP.png", "Peer TCP Security", "Security configuration for a Peer TCP Binding", 6));
-				if (ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET35) || ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET35Client) || ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET40))
+				if (ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET35) || ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET35Client) || ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET40) || ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET45))
 					NewItemSecurityTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WebHTTP.png", "Web HTTP Security", "Security configuration for a Web HTTP Binding.", 7));
 				NewItemSecurityTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQIntegration.png", "MSMQ Integration Security", "Security configuration for an MSMQ Integration Binding", 8));
 				NewItemSecurityTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png", "WS HTTP Security", "Security configuration for a WS HTTP or WS 2007 HTTP Binding.", 9));
@@ -95,6 +98,18 @@ namespace WCFArchitect.Interface.Dialogs
 #if !WINRT
 			}
 #endif
+		}
+
+		public void EnableAddItem()
+		{
+			NewItemAdd.IsEnabled = false;
+
+			if (NewItemTypesList.SelectedItem == null) return;
+			if (NewItemBindingTypesList.SelectedItem == null && NewItemSecurityTypesList.SelectedItem == null) return;
+			if (NewItemProjectNamespaceList.SelectedItem == null && NewItemProjectNamespaceRoot.IsChecked == false) return;
+			if (NewItemName.Text == "") return;
+
+			NewItemAdd.IsEnabled = true;
 		}
 
 		private void NewItemTypesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -147,12 +162,16 @@ namespace WCFArchitect.Interface.Dialogs
 		{
 			if (IsNamespaceListUpdating == true) return;
 			NewItemProjectNamespaceList.ItemsSource = null;
+
+			EnableAddItem();
 		}
 
 		private void NewItemProjectNamespaceRoot_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
 		{
 			if (NewItemProjectNamespaceList.SelectedItem != null) NewItemProjectNamespaceRoot.IsChecked = false;
 			NewItemName.Focus();
+
+			EnableAddItem();
 		}
 
 		private void NewItemBindingTypesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -161,6 +180,8 @@ namespace WCFArchitect.Interface.Dialogs
 			NewItemProjectNamespaceRoot.IsChecked = true;
 			NewItemProjectNamespaceRoot.Content = ActiveProject.Namespace.Name;
 			NewItemProjectNamespaces.Visibility = System.Windows.Visibility.Visible;
+
+			EnableAddItem();
 		}
 
 		private void NewItemSecurityTypesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -169,6 +190,8 @@ namespace WCFArchitect.Interface.Dialogs
 			NewItemProjectNamespaceRoot.IsChecked = true;
 			NewItemProjectNamespaceRoot.Content = ActiveProject.Namespace.Name;
 			NewItemProjectNamespaces.Visibility = System.Windows.Visibility.Visible;
+
+			EnableAddItem();
 		}
 
 		private void NewItemName_KeyUp(object sender, KeyEventArgs e)
@@ -179,8 +202,7 @@ namespace WCFArchitect.Interface.Dialogs
 
 		private void NewItemName_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			if (NewItemName.Text == "") NewItemAdd.IsEnabled = false;
-			else NewItemAdd.IsEnabled = true;
+			EnableAddItem();
 		}
 
 		private void NewItemAdd_Click(object sender, RoutedEventArgs e)
@@ -228,11 +250,7 @@ namespace WCFArchitect.Interface.Dialogs
 					{
 						Projects.Namespace NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace;
 						if (NIN == null)
-						{
-							if (Prospective.Controls.MessageBox.Show("You must select a select a Namespace from the list or use the Root Namespace to create a new Service. Would you like to use the Root Namespace?", "No Namespace Selected", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
-								NewItemProjectNamespaceRoot.IsChecked = true;
-							return;
-						}
+							NewItemProjectNamespaceRoot.IsChecked = true;
 
 						Projects.Service NI = new Projects.Service(NewItemName.Text, NIN);
 						NI.IsTreeExpanded = true;
@@ -255,11 +273,7 @@ namespace WCFArchitect.Interface.Dialogs
 					{
 						Projects.Namespace NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace;
 						if (NIN == null)
-						{
-							if (Prospective.Controls.MessageBox.Show("You must select a select a Namespace from the list or use the Root Namespace to create a new Data Object. Would you like to use the Root Namespace?", "No Namespace Selected", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
-								NewItemProjectNamespaceRoot.IsChecked = true;
-							return;
-						}
+							NewItemProjectNamespaceRoot.IsChecked = true;
 
 						Projects.Data NI = new Projects.Data(NewItemName.Text, NIN);
 						NI.IsTreeExpanded = true;
@@ -282,11 +296,7 @@ namespace WCFArchitect.Interface.Dialogs
 					{
 						Projects.Namespace NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace;
 						if (NIN == null)
-						{
-							if (Prospective.Controls.MessageBox.Show("You must select a select a Namespace from the list or use the Root Namespace to create a new Enum. Would you like to use the Root Namespace?", "No Namespace Selected", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
-								NewItemProjectNamespaceRoot.IsChecked = true;
-							return;
-						}
+							NewItemProjectNamespaceRoot.IsChecked = true;
 
 						Projects.Enum NI = new Projects.Enum(NewItemName.Text, NIN);
 						NI.IsTreeExpanded = true;
@@ -298,19 +308,11 @@ namespace WCFArchitect.Interface.Dialogs
 				else if (NIT.DataType == 5)
 				{
 					NewItemType NBT = NewItemBindingTypesList.SelectedItem as NewItemType;
-					if (NBT == null)
-					{
-						Prospective.Controls.MessageBox.Show("You must select a Binding Type for this Binding!", "No Binding Type Selected", MessageBoxButton.OK, MessageBoxImage.Error);
-						return;
-					}
+					if (NBT == null) return;
 					Projects.Namespace NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace;
 					if (NewItemProjectNamespaceRoot.IsChecked == true) NIN = ActiveProject.Namespace;
 					if (NIN == null)
-					{
-						if (Prospective.Controls.MessageBox.Show("You must select a select a Namespace from the list or use the Root Namespace to create a new Enum. Would you like to use the Root Namespace?", "No Namespace Selected", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
-							NewItemProjectNamespaceRoot.IsChecked = true;
-						return;
-					}
+						NewItemProjectNamespaceRoot.IsChecked = true;
 
 					Projects.ServiceBinding NI = null;
 					if (NBT.DataType == 1) NI = new Projects.ServiceBindingBasicHTTP(NewItemName.Text, NIN);
@@ -336,19 +338,11 @@ namespace WCFArchitect.Interface.Dialogs
 				else if (NIT.DataType == 6)
 				{
 					NewItemType NBT = NewItemSecurityTypesList.SelectedItem as NewItemType;
-					if (NBT == null)
-					{
-						Prospective.Controls.MessageBox.Show("You must select a Security Type for this Binding!", "No Security Type Selected", MessageBoxButton.OK, MessageBoxImage.Error);
-						return;
-					}
+					if (NBT == null) return;
 					Projects.Namespace NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace;
 					if (NewItemProjectNamespaceRoot.IsChecked == true) NIN = ActiveProject.Namespace;
 					if (NIN == null)
-					{
-						if (Prospective.Controls.MessageBox.Show("You must select a select a Namespace from the list or use the Root Namespace to create a new Enum. Would you like to use the Root Namespace?", "No Namespace Selected", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
-							NewItemProjectNamespaceRoot.IsChecked = true;
-						return;
-					}
+						NewItemProjectNamespaceRoot.IsChecked = true;
 
 					Projects.BindingSecurity NI = null;
 					if (NBT.DataType == 1) NI = new Projects.BindingSecurityBasicHTTP(NewItemName.Text, NIN);

@@ -598,9 +598,8 @@ namespace WCFArchitect.Interface
 		{
 			if (!System.IO.File.Exists(Data.Path))
 			{
-				if (Prospective.Controls.MessageBox.Show("Unable to located the requested file, would you like to remove this project from the list?", "Unable to Locate Project File.", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-					if (IsImportant == true) { Globals.UserProfile.ImportantProjects.Remove(Data); } else { Globals.UserProfile.RecentProjects.Remove(Data); }
-				Globals.MainScreen.RefreshRecentList();
+				DialogService.ShowMessageDialog(null, "Unable to Locate Project File.", "Unable to located the requested file, would you like to remove this project from the list?",
+					new DialogAction("Yes", new Action(() => { if (IsImportant == true) { Globals.UserProfile.ImportantProjects.Remove(Data); } else { Globals.UserProfile.RecentProjects.Remove(Data); } Globals.MainScreen.RefreshRecentList(); }), true, false), new DialogAction("No", false, true));
 				return;
 			}
 

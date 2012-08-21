@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Win32;
+using Prospective.Controls.Dialogs;
 
 namespace WCFArchitect.Interface.Project
 {
@@ -57,6 +58,19 @@ namespace WCFArchitect.Interface.Project
 			Projects.DependencyProject ndp = new Projects.DependencyProject();
 			ndp.Path = Globals.GetRelativePath(Globals.SolutionPath, ofd.FileName);
 			ndp.Project = op;
+
+			if (Settings.ID == ndp.ProjectID)
+			{
+				DialogService.ShowMessageDialog(Settings, "Invalid Project Selected.", "You cannot add a project as a dependency of itself.");
+				return;
+			}
+
+			if (Settings.HasDependencyProject(ndp.ProjectID) == true)
+			{
+				DialogService.ShowMessageDialog(Settings, "Invalid Project Selected.", "The project you selected cannot be added. It is already available as a dependency project.");
+				return;
+			}
+
 			Settings.DependencyProjects.Add(ndp);
 		}
 
@@ -93,10 +107,7 @@ namespace WCFArchitect.Interface.Project
 			ListBoxItem clickedListBoxItem = Globals.GetVisualParent<ListBoxItem>(sender);
 			if (clickedListBoxItem != null) { TO = clickedListBoxItem.Content as Projects.ProjectUsingNamespace; }
 
-			if (Prospective.Controls.MessageBox.Show("Are you sure you want to delete the '" + TO.Namespace + "' Namespace?", "Delete Using Namespace", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-			{
-				Settings.UsingNamespaces.Remove(TO);
-			}
+			DialogService.ShowMessageDialog(Settings, "Delete Using Namespace", "Are you sure you want to delete the '" + TO.Namespace + "' Namespace?", new DialogAction("Yes", new Action(() => Settings.UsingNamespaces.Remove(TO)), true), new DialogAction("No", false, true));
 		}
 
 		#endregion

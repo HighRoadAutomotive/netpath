@@ -148,6 +148,7 @@ namespace WCFArchitect.Projects
 
 		public Project() : base()
 		{
+			this.ID = Guid.NewGuid();
 			this.DependencyProjects = new ObservableCollection<DependencyProject>();
 			this.UsingNamespaces = new ObservableCollection<ProjectUsingNamespace>();
 
@@ -157,6 +158,7 @@ namespace WCFArchitect.Projects
 
 		public Project(string Name) : base()
 		{
+			this.ID = Guid.NewGuid();
 			this.DependencyProjects = new ObservableCollection<DependencyProject>();
 			this.UsingNamespaces = new ObservableCollection<ProjectUsingNamespace>();
 
@@ -239,6 +241,10 @@ namespace WCFArchitect.Projects
 
 		public bool HasDependencyProject(Guid ID)
 		{
+			foreach (DependencyProject dp in DependencyProjects)
+				if (dp.ProjectID == ID) return true;
+				else if (dp.Project.HasDependencyProject(ID)== true) return true;
+
 			return false;
 		}
 
@@ -388,8 +394,10 @@ namespace WCFArchitect.Projects
 		public string Path { get { return (string)GetValue(PathProperty); } set { SetValue(PathProperty, value); } }
 		public static readonly DependencyProperty PathProperty = DependencyProperty.Register("Path", typeof(string), typeof(DependencyProject), new PropertyMetadata(""));
 
-		[IgnoreDataMember()] public Project Project { get { return (Project)GetValue(ProjectProperty); } set { SetValue(ProjectProperty, value); } }
+		[IgnoreDataMember()] public Project Project { get { return (Project)GetValue(ProjectProperty); } set { SetValue(ProjectProperty, value); if (value != null) ProjectID = Project.ID; } }
 		public static readonly DependencyProperty ProjectProperty = DependencyProperty.Register("Project", typeof(Project), typeof(DependencyProject));
+
+		public Guid ProjectID { get; private set; }
 	}
 
 	public enum ProjectGenerationFramework
