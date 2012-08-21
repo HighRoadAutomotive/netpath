@@ -237,6 +237,11 @@ namespace WCFArchitect.Projects
 			return false;
 		}
 
+		public bool HasDependencyProject(Guid ID)
+		{
+			return false;
+		}
+
 		public void Search(string Value)
 		{
 			Namespace.Search(Value);
