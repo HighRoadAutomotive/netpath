@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using MP.Karvonite;
+using Prospective.Controls.Dialogs;
 
 namespace WCFArchitect
 {
@@ -76,15 +77,8 @@ namespace WCFArchitect
 					System.IO.FileInfo bfi = new System.IO.FileInfo(System.IO.Path.ChangeExtension(Path, ".bak"));
 					if (fi.LastWriteTime < bfi.LastWriteTime)
 					{
-						if (Prospective.Controls.MessageBox.Show("WCF Architect has detected that the solution '" + Path + "' was not properly closed. A newer backup exists. Would you like to use this backup?", "Open Error", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.Yes)
-						{
-							System.IO.File.Delete(Path);
-							System.IO.File.Move(System.IO.Path.ChangeExtension(Path, ".bak"), Path);
-						}
-						else
-						{
-							System.IO.File.Delete(System.IO.Path.ChangeExtension(Path, ".bak"));
-						}
+						DialogService.ShowMessageDialog(null, "Solution Load Error", "WCF Architect has detected that the solution '" + Path + "' was not properly closed. A newer backup exists. Would you like to use this backup?",
+							new DialogAction("Yes", new Action(() => { System.IO.File.Delete(Path); System.IO.File.Move(System.IO.Path.ChangeExtension(Path, ".bak"), Path); }), true), new DialogAction("No", new Action(() => System.IO.File.Delete(System.IO.Path.ChangeExtension(Path, ".bak"))), false, true));
 					}
 					else
 					{
@@ -98,8 +92,7 @@ namespace WCFArchitect
 				}
 				catch (Exception ex)
 				{
-					Prospective.Controls.MessageBox.Show(ex.Message, "Solution Load Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-					FinishedAction(false);
+					DialogService.ShowMessageDialog(null, "Solution Load Error", ex.Message, new DialogAction("Ok", new Action(() => FinishedAction(false)), true, true));
 					return;
 				}
 				
@@ -114,15 +107,8 @@ namespace WCFArchitect
 						System.IO.FileInfo bfi = new System.IO.FileInfo(System.IO.Path.ChangeExtension(p, ".bak"));
 						if (fi.LastWriteTime < bfi.LastWriteTime)
 						{
-							if (Prospective.Controls.MessageBox.Show("WCF Architect has detected that the solution '" + p + "' was not properly closed. A newer backup exists. Would you like to use this backup?", "Open Error", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.Yes)
-							{
-								System.IO.File.Delete(p);
-								System.IO.File.Move(System.IO.Path.ChangeExtension(p, ".bak"), p);
-							}
-							else
-							{
-								System.IO.File.Delete(System.IO.Path.ChangeExtension(p, ".bak"));
-							}
+							DialogService.ShowMessageDialog(null, "Project Load Error", "WCF Architect has detected that the solution '" + Path + "' was not properly closed. A newer backup exists. Would you like to use this backup?",
+								new DialogAction("Yes", new Action(() => { System.IO.File.Delete(Path); System.IO.File.Move(System.IO.Path.ChangeExtension(Path, ".bak"), Path); }), true), new DialogAction("No", new Action(() => System.IO.File.Delete(System.IO.Path.ChangeExtension(Path, ".bak"))), false, true));
 						}
 						else
 						{
@@ -137,8 +123,7 @@ namespace WCFArchitect
 					}
 					catch (Exception ex)
 					{
-						Prospective.Controls.MessageBox.Show(ex.Message, "Project Load Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-						FinishedAction(false);
+						DialogService.ShowMessageDialog(null, "Project Load Error", ex.Message, new DialogAction("Ok", new Action(() => FinishedAction(false)), true, true));
 						return;
 					}
 				}

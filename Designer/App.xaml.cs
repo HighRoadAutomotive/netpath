@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using MP.Karvonite;
 using System.IO;
+using Prospective.Controls.Dialogs;
 
 namespace WCFArchitect
 {
@@ -96,8 +97,9 @@ namespace WCFArchitect
 
 		private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
 		{
-			if (e.Exception.Source != "PresentationFramework")
-				Prospective.Controls.MessageBox.Show("The following exception was caught by WCF Architect. Please report the error using the Bug Report Page link in the About section of the Options page." + Environment.NewLine + Environment.NewLine + e.Exception.ToString(), "Exception", MessageBoxButton.OK, MessageBoxImage.Error, true);
+			//TODO: Add reporting functionality when the licensing integration is built.
+			DialogService.ShowMessageDialog(null,"We've Encountered an Unknown Problem.", "The following exception was caught by WCF Architect. Please report the error using the Bug Report Page link in the About section of the Options page." + Environment.NewLine + Environment.NewLine + e.Exception.ToString(),
+				new DialogAction("Report", new Action(() => {}), true), new DialogAction("Dismiss", false, true));
 			e.Handled = true;
 		}
 	}
