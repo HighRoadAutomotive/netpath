@@ -16,6 +16,7 @@ namespace WCFArchitect.Projects
 		Enum,
 		Class,
 		Struct,
+		Interface,
 		Array,
 		Collection,
 		Dictionary,
@@ -62,14 +63,17 @@ namespace WCFArchitect.Projects
 		public DataScope Scope { get { return (DataScope)GetValue(ScopeProperty); } set { SetValue(ScopeProperty, value); } }
 		public static readonly DependencyProperty ScopeProperty = DependencyProperty.Register("Scope", typeof(DataScope), typeof(DataType), new PropertyMetadata(DataScope.Public));
 
-		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value == null ? "" : value, @"")); } }
-		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(DataType));
-
 		public bool IsPartial { get { return (bool)GetValue(IsPartialProperty); } set { SetValue(IsPartialProperty, value); } }
 		public static readonly DependencyProperty IsPartialProperty = DependencyProperty.Register("IsPartial", typeof(bool), typeof(DataType));
 
 		public bool IsAbstract { get { return (bool)GetValue(IsAbstractProperty); } set { SetValue(IsAbstractProperty, value); } }
 		public static readonly DependencyProperty IsAbstractProperty = DependencyProperty.Register("IsAbstract", typeof(bool), typeof(DataType));
+
+		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value == null ? "" : value, @"")); } }
+		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(DataType));
+
+		public ObservableCollection<DataType> InheritedTypes { get { return (ObservableCollection<DataType>)GetValue(InheritedTypesProperty); } set { SetValue(InheritedTypesProperty, value); } }
+		public static readonly DependencyProperty InheritedTypesProperty = DependencyProperty.Register("InheritedTypes", typeof(ObservableCollection<DataType>), typeof(DataType));
 
 		public DataType CollectionGenericType { get { return (DataType)GetValue(CollectionGenericTypeProperty); } set { SetValue(CollectionGenericTypeProperty, value); } }
 		public static readonly DependencyProperty CollectionGenericTypeProperty = DependencyProperty.Register("CollectionGenericType", typeof(DataType), typeof(DataType));
@@ -83,9 +87,6 @@ namespace WCFArchitect.Projects
 		public DataTypeMode ExternalType { get { return (DataTypeMode)GetValue(ExternalTypeProperty); } set { SetValue(ExternalTypeProperty, value); } }
 		public static readonly DependencyProperty ExternalTypeProperty = DependencyProperty.Register("ExternalType", typeof(DataTypeMode), typeof(DataType));
 
-		public ObservableCollection<DataType> InheritedTypes { get { return (ObservableCollection<DataType>)GetValue(InheritedTypesProperty); } set { SetValue(InheritedTypesProperty, value); } }
-		public static readonly DependencyProperty InheritedTypesProperty = DependencyProperty.Register("InheritedTypes", typeof(ObservableCollection<DataType>), typeof(DataType));
-
 		public Namespace Parent { get { return (Namespace)GetValue(ParentProperty); } set { SetValue(ParentProperty, value); } }
 		public static readonly DependencyProperty ParentProperty = DependencyProperty.Register("Parent", typeof(Namespace), typeof(DataType));
 
@@ -97,7 +98,7 @@ namespace WCFArchitect.Projects
 		private static readonly DependencyPropertyKey DeclarationPropertyKey = DependencyProperty.RegisterReadOnly("Declaration", typeof(string), typeof(DataType), new PropertyMetadata(""));
 		public static readonly DependencyProperty DeclarationProperty = DeclarationPropertyKey.DependencyProperty;
 
-		public DataTypeMode TypeMode { get; private set; }
+		public DataTypeMode TypeMode { get; set; }
 		public PrimitiveTypes Primitive { get; private set; }
 
 		public DataType() : base()

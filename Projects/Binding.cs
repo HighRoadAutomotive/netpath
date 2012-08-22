@@ -335,7 +335,7 @@ namespace WCFArchitect.Projects
 			: base()
 		{
 			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
-			this.InheritedTypes.Add(new DataType("System.ServiceModel.BasicHttpBinding", DataTypeMode.Class));
+			this.InheritedTypes.Add(new DataType("System.ServiceModel.BasicHttpsBinding", DataTypeMode.Class));
 			this.ID = Guid.NewGuid();
 			this.Name = r.Replace(Name, @"");
 			this.Parent = Parent;
