@@ -7,7 +7,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" 
 	xmlns:Project="clr-namespace:WCFArchitect.Interface.Project"
 	xmlns:InRoot="clr-namespace:WCFArchitect.Interface"
-	xmlns:pc="clr-namespace:Prospective.Controls;assembly=Prospective.Controls"
+	xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 	d:DesignHeight="950" d:DesignWidth="1000" DataContext="{Binding RelativeSource={RelativeSource Self}}" >
 	<Grid.Resources>
 		<ResourceDictionary>
