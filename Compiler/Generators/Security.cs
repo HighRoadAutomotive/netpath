@@ -188,6 +188,75 @@ namespace WCFArchitect.Compiler.Generators
 
 	#endregion
 
+	#region - BindingSecurityBasicHTTPS Class -
+
+	public static class SecurityBasicHTTPSCSGenerator
+	{
+		public static bool VerifyCode(Projects.BindingSecurityBasicHTTPS o)
+		{
+			bool NoErrors = true;
+
+			//Nothing to do here
+
+			return NoErrors;
+		}
+
+		public static string GenerateCode30(Projects.BindingSecurityBasicHTTPS o)
+		{
+			return "";
+		}
+
+		public static string GenerateCode35(Projects.BindingSecurityBasicHTTPS o)
+		{
+			return "";
+		}
+
+		public static string GenerateCode40(Projects.BindingSecurityBasicHTTPS o)
+		{
+			return "";
+		}
+
+		public static string GenerateCode45(Projects.BindingSecurityBasicHTTPS o)
+		{
+			StringBuilder Code = new System.Text.StringBuilder();
+			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
+			Code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
+			Code.AppendLine("\t{");
+			Code.AppendFormat("\t\tpublic {0}(){1}", o.Name, Environment.NewLine);
+			Code.AppendLine("\t\t{");
+			Code.AppendFormat("\t\t\tthis.Mode = BasicHttpSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpSecurityMode), o.Mode), Environment.NewLine);
+			Code.AppendFormat("\t\t\tthis.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(Projects.BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
+			Code.AppendFormat("\t\t\tthis.Message.ClientCredentialType = BasicHttpMessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpMessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
+			Code.AppendFormat("\t\t\tthis.Transport.ClientCredentialType = HttpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
+			Code.AppendFormat("\t\t\tthis.Transport.ProxyCredentialType = HttpProxyCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpProxyCredentialType), o.TransportProxyCredentialType), Environment.NewLine);
+			Code.AppendFormat("\t\t\tthis.Transport.Realm = \"{0}\";{1}", o.TransportRealm, Environment.NewLine);
+			Code.AppendLine("\t\t}");
+			Code.AppendLine("\t\tpublic static void SetSecurity(BasicHttpSecurity sec)");
+			Code.AppendLine("\t\t{");
+			Code.AppendFormat("\t\t\tsec.Mode = BasicHttpSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpSecurityMode), o.Mode), Environment.NewLine);
+			Code.AppendFormat("\t\t\tsec.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(Projects.BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
+			Code.AppendFormat("\t\t\tsec.Message.ClientCredentialType = BasicHttpMessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpMessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
+			Code.AppendFormat("\t\t\tsec.Transport.ClientCredentialType = HttpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
+			Code.AppendFormat("\t\t\tsec.Transport.ProxyCredentialType = HttpProxyCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpProxyCredentialType), o.TransportProxyCredentialType), Environment.NewLine);
+			Code.AppendFormat("\t\t\tsec.Transport.Realm = \"{0}\";{1}", o.TransportRealm, Environment.NewLine);
+			Code.AppendLine("\t\t}");
+			Code.AppendLine("\t}");
+			return Code.ToString();
+		}
+
+		public static string GenerateCode35Client(Projects.BindingSecurityBasicHTTPS o)
+		{
+			return "";
+		}
+
+		public static string GenerateCode40Client(Projects.BindingSecurityBasicHTTPS o)
+		{
+			return "";
+		}
+	}
+
+	#endregion
+
 	#region - BindingSecurityWSHTTP Class -
 
 	public static class SecurityWSHTTPCSGenerator
