@@ -163,6 +163,9 @@
     <Compile Include="Interface\Data\TypeEditor.xaml.cs">
       <DependentUpon>TypeEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interface\Data\TypeSelector.xaml.cs">
+      <DependentUpon>TypeSelector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interface\Dialogs\NewItem.xaml.cs">
       <DependentUpon>NewItem.xaml</DependentUpon>
     </Compile>
@@ -192,6 +195,10 @@
     </Compile>
     <Compile Include="Globals.cs" />
     <Page Include="Interface\Data\TypeEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Interface\Data\TypeSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
