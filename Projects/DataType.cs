@@ -264,9 +264,9 @@ namespace WCFArchitect.Projects
 			else if (TypeMode == Projects.DataTypeMode.Array)
 				return string.Format("{0}[]", CollectionGenericType.ToString());
 			else if (TypeMode == Projects.DataTypeMode.Collection)
-				return string.Format("{0}<{1}>", Name, CollectionGenericType.ToString());
+				return string.Format("{0}<{1}>", Name, CollectionGenericType != null ? CollectionGenericType.ToString() : "");
 			else if (TypeMode == Projects.DataTypeMode.Dictionary)
-				return string.Format("{0}<{1}, {2}>", Name, DictionaryKeyGenericType.ToString(), DictionaryValueGenericType.ToString());
+				return string.Format("{0}<{1}, {2}>", Name, DictionaryKeyGenericType != null ? DictionaryKeyGenericType.ToString() : "", DictionaryValueGenericType != null ? DictionaryValueGenericType.ToString() : "");
 			else if (TypeMode == Projects.DataTypeMode.External)
 				return Name;
 			return Name;

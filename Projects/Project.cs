@@ -92,6 +92,13 @@ namespace WCFArchitect.Projects
 		}
 	}
 
+	public enum ProjectTypeSearchMode
+	{
+		All,
+		Data,
+		Enum
+	}
+
 	public partial class Project : OpenableDocument
 	{
 		public Guid ID { get; set; }
@@ -146,6 +153,8 @@ namespace WCFArchitect.Projects
 		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Project), new UIPropertyMetadata(true));
 
+		public List<DataType> DefaultTypes { get; private set; }
+
 		public Project() : base()
 		{
 			this.ID = Guid.NewGuid();
@@ -154,6 +163,48 @@ namespace WCFArchitect.Projects
 
 			this.ServerGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
 			this.ClientGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
+
+			//Add the default types
+			this.DefaultTypes = new List<DataType>();
+			//Primitive Types
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Void));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Byte));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.SByte));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Short));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Int));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Long));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.UShort));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.UInt));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.ULong));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Float));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Double));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Decimal));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Bool));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Char));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.String));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.DateTime));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.DateTimeOffset));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.TimeSpan));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.URI));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.GUID));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Version));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.ByteArray));
+			//System.Collections.Generic Types
+			this.DefaultTypes.Add(new DataType("LinkedList", DataTypeMode.Collection));
+			this.DefaultTypes.Add(new DataType("List", DataTypeMode.Collection));
+			this.DefaultTypes.Add(new DataType("HashSet", DataTypeMode.Collection));
+			this.DefaultTypes.Add(new DataType("Queue", DataTypeMode.Collection));
+			this.DefaultTypes.Add(new DataType("SortedSet", DataTypeMode.Collection));
+			this.DefaultTypes.Add(new DataType("Stack", DataTypeMode.Collection));
+			this.DefaultTypes.Add(new DataType("SynchronizedCollection", DataTypeMode.Collection));
+			this.DefaultTypes.Add(new DataType("Dictionary", DataTypeMode.Dictionary));
+			this.DefaultTypes.Add(new DataType("SortedDictionary", DataTypeMode.Dictionary));
+			this.DefaultTypes.Add(new DataType("SortedList", DataTypeMode.Dictionary));
+			this.DefaultTypes.Add(new DataType("SynchronizedKeyedCollection", DataTypeMode.Dictionary));
+			//System.Collections.ObjectModel Tpyes
+			this.DefaultTypes.Add(new DataType("Collection", DataTypeMode.Collection));
+			this.DefaultTypes.Add(new DataType("ObservableCollection", DataTypeMode.Collection));
+			this.DefaultTypes.Add(new DataType("KeyedCollection", DataTypeMode.Dictionary));
 		}
 
 		public Project(string Name) : base()
@@ -168,6 +219,48 @@ namespace WCFArchitect.Projects
 			this.Namespace = new Namespace(Helpers.RegExs.ReplaceSpaces.Replace(Name, "."), null, this);
 			this.Namespace.URI = "http://tempuri.org/" + Namespace.Name.Replace(".", "/") + "/";
 			this.Name = Name;
+
+			//Add the default types
+			this.DefaultTypes = new List<DataType>();
+			//Primitive Types
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Void));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Byte));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.SByte));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Short));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Int));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Long));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.UShort));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.UInt));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.ULong));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Float));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Double));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Decimal));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Bool));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Char));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.String));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.DateTime));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.DateTimeOffset));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.TimeSpan));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.URI));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.GUID));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Version));
+			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.ByteArray));
+			//System.Collections.Generic Types
+			this.DefaultTypes.Add(new DataType("LinkedList", DataTypeMode.Collection));
+			this.DefaultTypes.Add(new DataType("List", DataTypeMode.Collection));
+			this.DefaultTypes.Add(new DataType("HashSet", DataTypeMode.Collection));
+			this.DefaultTypes.Add(new DataType("Queue", DataTypeMode.Collection));
+			this.DefaultTypes.Add(new DataType("SortedSet", DataTypeMode.Collection));
+			this.DefaultTypes.Add(new DataType("Stack", DataTypeMode.Collection));
+			this.DefaultTypes.Add(new DataType("SynchronizedCollection", DataTypeMode.Collection));
+			this.DefaultTypes.Add(new DataType("Dictionary", DataTypeMode.Dictionary));
+			this.DefaultTypes.Add(new DataType("SortedDictionary", DataTypeMode.Dictionary));
+			this.DefaultTypes.Add(new DataType("SortedList", DataTypeMode.Dictionary));
+			this.DefaultTypes.Add(new DataType("SynchronizedKeyedCollection", DataTypeMode.Dictionary));
+			//System.Collections.ObjectModel Tpyes
+			this.DefaultTypes.Add(new DataType("Collection", DataTypeMode.Collection));
+			this.DefaultTypes.Add(new DataType("ObservableCollection", DataTypeMode.Collection));
+			this.DefaultTypes.Add(new DataType("KeyedCollection", DataTypeMode.Dictionary));
 
 			//Default Using Namespaces
 			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System", true, true, true, true, true));
@@ -225,6 +318,19 @@ namespace WCFArchitect.Projects
 		public static void Save(Project Data, string Path)
 		{
 			Storage.Save<Project>(Path, Data);
+		}
+
+		public List<DataType> SearchTypes(string Search, bool DataOnly = false, bool IsDependency = false)
+		{
+			if(Search == null || Search == "") return new List<DataType>();
+
+			List<DataType> results = new List<DataType>();
+
+			if (DataOnly == false)
+				if (IsDependency == false) results.AddRange(from a in DefaultTypes where a.Name.Contains(Search) select a);
+			results.AddRange(Namespace.SearchTypes(Search, DataOnly));
+
+			return results;
 		}
 
 		public bool HasGenerationFramework(ProjectGenerationFramework Framework)

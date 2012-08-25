@@ -99,6 +99,26 @@ namespace WCFArchitect.Projects
 			IsDirty = true;
 		}
 
+		public List<DataType> SearchTypes(string Search, bool DataOnly = false)
+		{
+			List<DataType> results = new List<DataType>();
+
+			if (DataOnly == false)
+			{
+				results.AddRange(from a in Enums where a.Name.Contains(Search) select a);
+				results.AddRange(from a in Data where a.Name.Contains(Search) select a);
+			}
+			else
+			{
+				results.AddRange(from a in Data where a.Name.Contains(Search) select a);
+			}
+
+			foreach(Namespace n in Children)
+				results.AddRange(n.SearchTypes(Search, DataOnly));
+
+			return results;
+		}
+
 		public void Search(string Value)
 		{
 			if (Value != "")
