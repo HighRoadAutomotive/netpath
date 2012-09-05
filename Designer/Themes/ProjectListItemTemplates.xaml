@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:wap="clr-namespace:WCFArchitect.Projects;assembly=WCFArchitect.Projects"
+					xmlns:Data="clr-namespace:WCFArchitect.Interface.Data"
 					xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 					xmlns:local="clr-namespace:WCFArchitect.Interface">
 	<ResourceDictionary.MergedDictionaries>
@@ -8,6 +9,7 @@
 	</ResourceDictionary.MergedDictionaries>
 
 	<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
+	<Data:DataScopeNameConverter x:Key="DataScopeNameConverter" />
 	
 	<SolidColorBrush x:Key="MouseOverContainerColor" Color="#33FFFFFF" />
 	<SolidColorBrush x:Key="PressedContainerColor" Color="#33000000" />
@@ -78,8 +80,8 @@
 				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Operation.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
-			<TextBlock Text="{Binding Path=Declaration, StringFormat='Signature: {0}'}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-			<TextBlock Text="{Binding Path=ContractDeclaration, StringFormat='Contract: {0}'}" Visibility="{Binding Path=HasContract, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="{Binding Path=Declaration, StringFormat='Server: {0}'}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="{Binding Path=ClientDeclaration, StringFormat='Client: {0}'}" Visibility="{Binding Path=HasContract, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 		</StackPanel>
 	</DataTemplate>	
 	<DataTemplate x:Key="PropertyItemTemplate" DataType="{x:Type wap:Property}">
@@ -88,8 +90,8 @@
 				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Property.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
-			<TextBlock Text="{Binding Path=Declaration, StringFormat='Signature: {0}'}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-			<TextBlock Text="{Binding Path=ContractDeclaration, StringFormat='Contract: {0}'}" Visibility="{Binding Path=HasContract, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="{Binding Path=Declaration, StringFormat='Server: {0}'}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="{Binding Path=ClientDeclaration, StringFormat='Client: {0}'}" Visibility="{Binding Path=HasContract, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 		</StackPanel>
 	</DataTemplate>
 	<local:ProjectListOperationTemplateSelector x:Key="ProjectListOperationTemplateSelector" MethodTemplate="{StaticResource MethodItemTemplate}" PropertyTemplate="{StaticResource PropertyItemTemplate}" />
@@ -99,7 +101,7 @@
 		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>
-		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="Background" Value="{StaticResource ServiceContainerColor}"/>
 		<Setter Property="BorderBrush" Value="{StaticResource DefaultBorderColor}"/>
 		<Setter Property="IsChecked" Value="{Binding Path=IsTreeExpanded}" />
 		<Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -117,9 +119,6 @@
 						</Border>
 					</Border>
 					<ControlTemplate.Triggers>
-						<Trigger Property="IsChecked" Value="True">
-							<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource ServiceContainerColor}" />
-						</Trigger>
 						<MultiTrigger>
 							<MultiTrigger.Conditions>
 								<Condition Property="IsEnabled" Value="True" />
@@ -149,7 +148,7 @@
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
 			<TextBlock Text="{Binding Path=Declaration, StringFormat='Server: {0}'}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-			<TextBlock Text="{Binding Path=ContractType.Declaration, StringFormat='Contract: {0}'}" Visibility="{Binding Path=HasContractType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="{Binding Path=ClientType.Declaration, StringFormat='Contract: {0}'}" Visibility="{Binding Path=HasClientType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 			<local:ProjectItemList x:Name="SubItems" Visibility="Collapsed" ItemsSource="{Binding Path=Operations}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListOperationTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
 		</StackPanel>
 		<DataTemplate.Triggers>
@@ -165,11 +164,35 @@
 		<StackPanel Orientation="Vertical" Margin="3">
 			<StackPanel Orientation="Horizontal">
 				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Property.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
-				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
+				<TextBlock Text="{Binding Path=DataName}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
-			<TextBlock Text="{Binding Path=DataType.Declaration, StringFormat='Server: {0}'}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-			<TextBlock Text="{Binding Path=ContractType.Declaration, StringFormat='Contract: {0}'}" Visibility="{Binding Path=HasContractType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-			<TextBlock Text="{Binding Path=WPFType.Declaration, StringFormat='WPF: {0}'}" Visibility="{Binding Path=HasWPFType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" >
+				<TextBlock.Text>
+					<MultiBinding StringFormat="Server: {0} {1} {2}">
+						<Binding Path="DataScope" Converter="{StaticResource DataScopeNameConverter}" ConverterParameter='True' />
+						<Binding Path="DataType.TypeName" />
+						<Binding Path="DataName" />
+					</MultiBinding>
+				</TextBlock.Text>
+			</TextBlock>
+			<TextBlock Visibility="{Binding Path=HasClientType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" >
+				<TextBlock.Text>
+					<MultiBinding StringFormat="Client: {0} {1} {2}">
+						<Binding Path="ClientScope" Converter="{StaticResource DataScopeNameConverter}" ConverterParameter='True' />
+						<Binding Path="ClientType.TypeName" />
+						<Binding Path="ClientName" />
+					</MultiBinding>
+				</TextBlock.Text>
+			</TextBlock>
+			<TextBlock Visibility="{Binding Path=HasXAMLType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" >
+				<TextBlock.Text>
+					<MultiBinding StringFormat="XAML: {0} {1} {2}">
+						<Binding Path="XAMLScope" Converter="{StaticResource DataScopeNameConverter}" ConverterParameter='True' />
+						<Binding Path="XAMLType.TypeName" />
+						<Binding Path="XAMLName" />
+					</MultiBinding>
+				</TextBlock.Text>
+			</TextBlock>
 		</StackPanel>
 	</DataTemplate>
 	<Style x:Key="DataContainerTemplate" TargetType="{x:Type ToggleButton}">
@@ -178,7 +201,7 @@
 		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>
-		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="Background" Value="{StaticResource DataContainerColor}"/>
 		<Setter Property="BorderBrush" Value="{StaticResource DefaultBorderColor}"/>
 		<Setter Property="IsChecked" Value="{Binding Path=IsTreeExpanded}" />
 		<Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -196,9 +219,6 @@
 						</Border>
 					</Border>
 					<ControlTemplate.Triggers>
-						<Trigger Property="IsChecked" Value="True">
-							<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource DataContainerColor}" />
-						</Trigger>
 						<MultiTrigger>
 							<MultiTrigger.Conditions>
 								<Condition Property="IsEnabled" Value="True" />
@@ -227,9 +247,9 @@
 				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Data.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
-			<TextBlock Text="{Binding Path=Declaration, StringFormat='Signature: {0}'}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-			<TextBlock Text="{Binding Path=ContractType.Declaration, StringFormat='Contract: {0}'}" Visibility="{Binding Path=HasContractType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-			<TextBlock Text="{Binding Path=WPFType.Declaration, StringFormat='WPF: {0}'}" Visibility="{Binding Path=HasWPFType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="{Binding Path=Declaration, StringFormat='Server: {0}'}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="{Binding Path=ClientType.Declaration, StringFormat='Client: {0}'}" Visibility="{Binding Path=HasClientType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="{Binding Path=XAMLType.Declaration, StringFormat='XAML: {0}'}" Visibility="{Binding Path=HasXAMLType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 			<local:ProjectItemList x:Name="SubItems" Visibility="Collapsed" ItemsSource="{Binding Path=Elements}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplate="{StaticResource DataElementItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
 		</StackPanel>
 		<DataTemplate.Triggers>
@@ -255,7 +275,7 @@
 		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>
-		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="Background" Value="{StaticResource EnumContainerColor}"/>
 		<Setter Property="BorderBrush" Value="{StaticResource DefaultBorderColor}"/>
 		<Setter Property="IsChecked" Value="{Binding Path=IsTreeExpanded}" />
 		<Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -273,9 +293,6 @@
 						</Border>
 					</Border>
 					<ControlTemplate.Triggers>
-						<Trigger Property="IsChecked" Value="True">
-							<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource EnumContainerColor}" />
-						</Trigger>
 						<MultiTrigger>
 							<MultiTrigger.Conditions>
 								<Condition Property="IsEnabled" Value="True" />
@@ -305,7 +322,7 @@
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
 			<TextBlock Text="{Binding Path=Declaration, StringFormat='Server: {0}'}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-			<TextBlock Text="{Binding Path=ContractType.Declaration, StringFormat='Contract: {0}'}" Visibility="{Binding Path=HasContractType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="{Binding Path=ClientType.Declaration, StringFormat='Client: {0}'}" Visibility="{Binding Path=HasClientType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 			<local:ProjectItemList x:Name="SubItems" Visibility="Collapsed" ItemsSource="{Binding Path=Elements}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplate="{StaticResource EnumElementItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
 		</StackPanel>
 		<DataTemplate.Triggers>

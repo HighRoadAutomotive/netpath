@@ -45,9 +45,9 @@
 										<MenuItem Header="Remove From List" Command="{x:Static local:RecentProjectItem.RemoveCommand}" CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}" CommandTarget="{Binding Path=PlacementTarget,RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}" />
 									</ContextMenu>
 								</Button.ContextMenu>
-								<StackPanel Margin="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-									<TextBlock Text="{TemplateBinding ItemTitle}" Height="Auto" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left"/>
-									<TextBlock Text="{TemplateBinding ItemPath}" Height="Auto" Foreground="Gray" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left"/>
+								<StackPanel Margin="4" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+									<TextBlock Text="{TemplateBinding ItemTitle}" FontSize="14pt" Height="Auto" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left"/>
+									<TextBlock Text="{TemplateBinding ItemPath}" FontSize="12pt" Height="Auto" Foreground="{StaticResource DisabledFontColor}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left"/>
 								</StackPanel>
 							</Button>
 							<Button Grid.Column="1" Command="{x:Static local:RecentProjectItem.FlagCommand}" CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" >

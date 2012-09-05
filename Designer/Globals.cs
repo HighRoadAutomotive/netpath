@@ -51,16 +51,16 @@ namespace WCFArchitect
 		public static bool IsClosing { get; set; }
 		public static Interface.Main MainScreen { get; set; }
 
-		public static T GetVisualParent<T>(object childObject) where T : Visual { DependencyObject child = childObject as DependencyObject; while ((child != null) && !(child is T)) { child = VisualTreeHelper.GetParent(child); } return child as T; }
-		public static T GetVisualChild<T>(Visual parent) where T : Visual { T child = default(T); int numVisuals = VisualTreeHelper.GetChildrenCount(parent); for (int i = 0; i < numVisuals; i++) { Visual v = (Visual)VisualTreeHelper.GetChild(parent, i); child = v as T; if (child == null) { child = GetVisualChild<T>(v); } if (child != null) { break; } } return child; }
+		public static T GetVisualParent<T>(object childObject) where T : Visual { var child = childObject as DependencyObject; while ((child != null) && !(child is T)) { child = VisualTreeHelper.GetParent(child); } return child as T; }
+		public static T GetVisualChild<T>(Visual parent) where T : Visual { T child = default(T); int numVisuals = VisualTreeHelper.GetChildrenCount(parent); for (int i = 0; i < numVisuals; i++) { var v = (Visual)VisualTreeHelper.GetChild(parent, i); child = v as T; if (child == null) { child = GetVisualChild<T>(v); } if (child != null) { break; } } return child; }
 
 		public static string GetRelativePath(string BasePath, string FilePath)
 		{
 			if (!Path.IsPathRooted(FilePath)) FilePath = Path.GetFullPath(FilePath);
 			if (!Path.IsPathRooted(BasePath)) BasePath = Path.GetFullPath(BasePath);
 
-			Uri t = new Uri("file:///" + FilePath);
-			Uri b = new Uri("file:///" + BasePath);
+			var t = new Uri("file:///" + FilePath);
+			var b = new Uri("file:///" + BasePath);
 			return b.MakeRelativeUri(t).ToString();
 		}
 
@@ -71,10 +71,10 @@ namespace WCFArchitect
 				IsLoading = true;
 
 				//Check for backups and open the solution.
-				if (System.IO.File.Exists(System.IO.Path.ChangeExtension(Path, ".bak")))
+				if (File.Exists(System.IO.Path.ChangeExtension(Path, ".bak")))
 				{
-					System.IO.FileInfo fi = new System.IO.FileInfo(Path);
-					System.IO.FileInfo bfi = new System.IO.FileInfo(System.IO.Path.ChangeExtension(Path, ".bak"));
+					var fi = new FileInfo(Path);
+					var bfi = new FileInfo(System.IO.Path.ChangeExtension(Path, ".bak"));
 					if (fi.LastWriteTime < bfi.LastWriteTime)
 					{
 						DialogService.ShowMessageDialog(null, "Solution Load Error", "WCF Architect has detected that the solution '" + Path + "' was not properly closed. A newer backup exists. Would you like to use this backup?",
@@ -123,7 +123,7 @@ namespace WCFArchitect
 					}
 					catch (Exception ex)
 					{
-						DialogService.ShowMessageDialog(null, "Project Load Error", ex.Message, new DialogAction("Ok", new Action(() => FinishedAction(false)), true, true));
+						DialogService.ShowMessageDialog(null, "Project Load Error", ex.ToString(), new DialogAction("Ok", new Action(() => FinishedAction(false)), true, true));
 						return;
 					}
 				}

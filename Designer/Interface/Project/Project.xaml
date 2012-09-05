@@ -154,7 +154,7 @@
 	<GroupBox Header="Server Generation Targets" Margin="5" Grid.Column="0" Grid.Row="3">
 		<Grid>
 			<Label Content="File Name:" Height="Auto" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" />
-			<TextBox Height="23" Margin="95,7,5,0" Name="ServerAssemblyName" VerticalAlignment="Top" Text="{Binding Path=Settings.ServerAssemblyName}"/>
+			<TextBox Height="23" Margin="95,7,5,0" Name="ServerAssemblyName" VerticalAlignment="Top" Text="{Binding Path=Settings.ServerOutputFile}"/>
 			<Label Content="Path:" Height="Auto" HorizontalAlignment="Left" Margin="5,35,0,0" VerticalAlignment="Top" />
 			<TextBox Height="23" Margin="95,36,167,0" Name="ServerOutputPath" VerticalAlignment="Top" ToolTip="{Binding ElementName=ServerOutputPath, Path=Text}"  />
 			<Button Content="Browse..." Height="23" HorizontalAlignment="Right" Margin="0,36,86,0" Name="ServerOutputBrowse" VerticalAlignment="Top" Width="75" Click="ServerOutputBrowse_Click"/>
@@ -167,7 +167,7 @@
 	<GroupBox  Header="Client Generation Targets" Margin="5" Grid.Column="1" Grid.Row="3">
 		<Grid>
 			<Label Content="File Name:" Height="Auto" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top" />
-			<TextBox Height="23" Margin="95,7,5,0" Name="ClientAssemblyName" VerticalAlignment="Top" Text="{Binding Path=Settings.ClientAssemblyName}"/>
+			<TextBox Height="23" Margin="95,7,5,0" Name="ClientAssemblyName" VerticalAlignment="Top" Text="{Binding Path=Settings.ClientOutputFile}"/>
 			<Label Content="Path:" Height="Auto" HorizontalAlignment="Left" Margin="5,35,0,0" VerticalAlignment="Top" />
 			<TextBox Height="23" Margin="95,36,167,0" Name="ClientOutputPath" VerticalAlignment="Top" ToolTip="{Binding ElementName=ClientOutputPath, Path=Text}"/>
 			<Button Content="Browse..." Height="23" HorizontalAlignment="Right" Margin="0,36,86,0" Name="ClientOutputBrowse" VerticalAlignment="Top" Width="75" Click="ClientOutputBrowse_Click"/>

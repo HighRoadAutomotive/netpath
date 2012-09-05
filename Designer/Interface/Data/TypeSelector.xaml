@@ -1,32 +1,43 @@
-﻿<ContentControl x:Class="WCFArchitect.Interface.Data.TypeSelector"
+﻿<ContentControl x:Class="WCFArchitect.Interface.Data.TypeSelector" x:ClassModifier="internal"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+	xmlns:pc="http://schemas.propsectivesoftware.com/pc"
+	xmlns:Projects="clr-namespace:WCFArchitect.Projects;assembly=WCFArchitect.Projects" 
+	xmlns:Data="clr-namespace:WCFArchitect.Interface.Data"
 	MinHeight="24" MinWidth="100"
     mc:Ignorable="d" d:DesignHeight="24" d:DesignWidth="300"
 	UseLayoutRounding="True"
 	Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}"
-	DataContext="{Binding RelativeSource={RelativeSource Self}}" >
+	LostFocus="ContentControl_LostFocus">
+	<ContentControl.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/Prospective.Controls;component/Themes/Generic.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+			<Data:DataTypeModeConverter x:Key="DataTypeModeConverter" />
+		</ResourceDictionary>
+	</ContentControl.Resources>
 	<Grid Name="BG">
-		<TextBox x:Name="TypeName" Text="{Binding Path=Type}" TextChanged="TypeName_TextChanged" KeyUp="TypeName_KeyUp" />
-		<Popup PlacementTarget="{Binding ElementName=BG}" x:Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" IsOpen="{Binding HasResults}" Margin="0" MaxHeight="200" MinWidth="250" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom" UseLayoutRounding="{Binding UseLayoutRounding}">
-			<Border x:Name="DropDownBorder" Width="{Binding ActualWidth}" BorderThickness="0" Background="{Binding Background}" Padding="1" HorizontalAlignment="Stretch" UseLayoutRounding="{Binding UseLayoutRounding}">
-				<ListBox x:Name="TypesList" ItemsSource="{Binding Path=Results}" Padding="0" BorderThickness="0" BorderBrush="Transparent" Background="{StaticResource ItemSelectorBackgroundColor}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" KeyboardNavigation.DirectionalNavigation="Contained" KeyUp="TypesList_KeyUp" >
+		<pc:TextBox x:Name="TypeName" Text="{Binding Path=OpenType, Mode=OneWay}" LabelText="{Binding Path=LabelText}" TextChanged="TypeName_TextChanged" KeyUp="TypeName_KeyUp" />
+		<Popup PlacementTarget="{Binding ElementName=BG}" x:Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" IsOpen="{Binding HasResults}" Margin="0" MaxHeight="200" MinWidth="250" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom" UseLayoutRounding="{Binding UseLayoutRounding}" >
+			<Border x:Name="DropDownBorder" Width="{Binding ActualWidth}" BorderThickness="0" Background="{Binding Background}" HorizontalAlignment="Stretch" UseLayoutRounding="{Binding UseLayoutRounding}">
+				<ListBox x:Name="TypesList" ItemsSource="{Binding Path=Results}" Padding="0" BorderThickness="0" BorderBrush="Transparent" Background="{StaticResource ItemSelectorBackgroundColor}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" KeyUp="TypesList_KeyUp" MouseUp="TypesList_MouseUp" >
+					<ListBox.Resources>
+						<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+					</ListBox.Resources>
 					<ListBox.ItemTemplate>
-						<DataTemplate DataType="Projects:DataType">
-							<Border Name="BG" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="0">
+						<DataTemplate DataType="{x:Type Projects:DataType}">
+							<Border Name="BG" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" CornerRadius="0" Padding="2">
 								<StackPanel Orientation="Horizontal">
-									<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+									<Image Source="{Binding Converter={StaticResource DataTypeModeConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
 									<TextBlock Name="DataTypeName" Text="{Binding}" Grid.Column="0" Margin="3,0,0,0" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 								</StackPanel>
 							</Border>
 							<DataTemplate.Triggers>
 								<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
 									<Setter TargetName="BG" Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
-								</DataTrigger>
-								<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
-									<Setter TargetName="BG" Property="Background" Value="{StaticResource DefaultSelectionColor}" />
 								</DataTrigger>
 							</DataTemplate.Triggers>
 						</DataTemplate>

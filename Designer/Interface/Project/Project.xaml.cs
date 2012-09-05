@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 using Prospective.Controls.Dialogs;
+using WCFArchitect.Projects;
 
 namespace WCFArchitect.Interface.Project
 {
@@ -41,23 +42,23 @@ namespace WCFArchitect.Interface.Project
 		private void DependencyAdd_Click(object sender, RoutedEventArgs e)
 		{
 			string openpath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			if (!(Settings.AbsolutePath == "" || Settings.AbsolutePath == null)) openpath = System.IO.Path.GetDirectoryName(Settings.AbsolutePath);
+			if (!string.IsNullOrEmpty(Settings.AbsolutePath)) openpath = System.IO.Path.GetDirectoryName(Settings.AbsolutePath);
 
 			//Select the project
-			Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog ofd = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog("Select Poject");
-			ofd.AllowNonFileSystemItems = false;
-			ofd.EnsurePathExists = true;
-			ofd.IsFolderPicker = false;
-			ofd.InitialDirectory = openpath;
-			ofd.Multiselect = false;
-			ofd.ShowPlacesList = true;
+			var ofd = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog("Select Project")
+				          {
+					          AllowNonFileSystemItems = false,
+					          EnsurePathExists = true,
+					          IsFolderPicker = false,
+					          InitialDirectory = openpath,
+					          Multiselect = false,
+					          ShowPlacesList = true
+				          };
 			if (ofd.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel) return;
 
 			//Load the project and add it to the dependency projects list.
 			Projects.Project op = Projects.Project.Open(Globals.SolutionPath, Globals.GetRelativePath(Globals.SolutionPath, ofd.FileName));
-			Projects.DependencyProject ndp = new Projects.DependencyProject();
-			ndp.Path = Globals.GetRelativePath(Globals.SolutionPath, ofd.FileName);
-			ndp.Project = op;
+			var ndp = new DependencyProject {Path = Globals.GetRelativePath(Globals.SolutionPath, ofd.FileName), Project = op};
 
 			if (Settings.ID == ndp.ProjectID)
 			{
@@ -65,7 +66,7 @@ namespace WCFArchitect.Interface.Project
 				return;
 			}
 
-			if (Settings.HasDependencyProject(ndp.ProjectID) == true)
+			if (Settings.HasDependencyProject(ndp.ProjectID))
 			{
 				DialogService.ShowMessageDialog(Settings, "Invalid Project Selected.", "The project you selected cannot be added. It is already available as a dependency project.");
 				return;
@@ -76,16 +77,10 @@ namespace WCFArchitect.Interface.Project
 
 		private void DependencyRemove_Click(object sender, RoutedEventArgs e)
 		{
-			List<Projects.DependencyProject> Delete = new List<Projects.DependencyProject>();
-			foreach (Projects.DependencyProject R in DependencyItems.SelectedItems)
-			{
-				Delete.Add(R);
-			}
-			foreach (Projects.DependencyProject R in Delete)
-			{
-				Settings.DependencyProjects.Remove(R);
-			}
-			Delete.Clear();
+			var delete = DependencyItems.SelectedItems.Cast<DependencyProject>().ToList();
+			foreach (DependencyProject r in delete)
+				Settings.DependencyProjects.Remove(r);
+			delete.Clear();
 		}
 
 		private void UsingNamespace_KeyUp(object sender, KeyEventArgs e)
@@ -96,18 +91,19 @@ namespace WCFArchitect.Interface.Project
 
 		private void AddUsingNamespace_Click(object sender, RoutedEventArgs e)
 		{
-			Projects.ProjectUsingNamespace NPUN = new Projects.ProjectUsingNamespace(UsingNamespace.Text);
-			Settings.UsingNamespaces.Add(NPUN);
+			var npun = new ProjectUsingNamespace(UsingNamespace.Text);
+			Settings.UsingNamespaces.Add(npun);
 			UsingNamespace.Text = "";
 		}
 
 		private void DeleteSelectedUsingItem_Click(object sender, RoutedEventArgs e)
 		{
-			Projects.ProjectUsingNamespace TO = null;
-			ListBoxItem clickedListBoxItem = Globals.GetVisualParent<ListBoxItem>(sender);
-			if (clickedListBoxItem != null) { TO = clickedListBoxItem.Content as Projects.ProjectUsingNamespace; }
+			ProjectUsingNamespace to = null;
+			var clickedListBoxItem = Globals.GetVisualParent<ListBoxItem>(sender);
+			if (clickedListBoxItem != null) { to = clickedListBoxItem.Content as ProjectUsingNamespace; }
 
-			DialogService.ShowMessageDialog(Settings, "Delete Using Namespace", "Are you sure you want to delete the '" + TO.Namespace + "' Namespace?", new DialogAction("Yes", new Action(() => Settings.UsingNamespaces.Remove(TO)), true), new DialogAction("No", false, true));
+			if (to == null) return;
+			DialogService.ShowMessageDialog(Settings, "Delete Using Namespace", "Are you sure you want to delete the '" + to.Namespace + "' Namespace?", new DialogAction("Yes", new Action(() => Settings.UsingNamespaces.Remove(to)), true), new DialogAction("No", false, true));
 		}
 
 		#endregion
@@ -117,15 +113,17 @@ namespace WCFArchitect.Interface.Project
 		private void ServerOutputBrowse_Click(object sender, RoutedEventArgs e)
 		{
 			string openpath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			if (!(Settings.AbsolutePath == "" || Settings.AbsolutePath == null)) openpath = System.IO.Path.GetDirectoryName(Settings.AbsolutePath);
+			if (!string.IsNullOrEmpty(Settings.AbsolutePath)) openpath = System.IO.Path.GetDirectoryName(Settings.AbsolutePath);
 
-			Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog ofd = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog("Select an Output Path");
-			ofd.AllowNonFileSystemItems = false;
-			ofd.EnsurePathExists = true;
-			ofd.IsFolderPicker = true;
-			ofd.InitialDirectory = openpath;
-			ofd.Multiselect = false;
-			ofd.ShowPlacesList = true;
+			var ofd = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog("Select an Output Path")
+				          {
+					          AllowNonFileSystemItems = false,
+					          EnsurePathExists = true,
+					          IsFolderPicker = true,
+					          InitialDirectory = openpath,
+					          Multiselect = false,
+					          ShowPlacesList = true
+				          };
 			if (ofd.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel) return;
 
 			ServerOutputPath.Text = Globals.GetRelativePath(Globals.SolutionPath, ofd.FileName + "\\");
@@ -133,29 +131,31 @@ namespace WCFArchitect.Interface.Project
 
 		private void ServerOutputAdd_Click(object sender, RoutedEventArgs e)
 		{
-			Settings.ServerGenerationTargets.Add(new Projects.ProjectGenerationTarget(Settings.ID, ServerOutputPath.Text));
+			Settings.ServerGenerationTargets.Add(new ProjectGenerationTarget(Settings.ID, ServerOutputPath.Text));
 			ServerOutputPath.Text = "";
 		}
 
 		private void ServerOutputPaths_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 		{
 			ServerOutputPathsList.Children.Clear();
-			foreach (Projects.ProjectGenerationTarget POP in Settings.ServerGenerationTargets)
-				ServerOutputPathsList.Children.Add(new GenerationTarget(Settings, POP));
+			foreach (ProjectGenerationTarget pop in Settings.ServerGenerationTargets)
+				ServerOutputPathsList.Children.Add(new GenerationTarget(Settings, pop));
 		}
 
 		private void ClientOutputBrowse_Click(object sender, RoutedEventArgs e)
 		{
 			string openpath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			if (!(Settings.AbsolutePath == "" || Settings.AbsolutePath == null)) openpath = Settings.AbsolutePath;
+			if (!string.IsNullOrEmpty(Settings.AbsolutePath)) openpath = Settings.AbsolutePath;
 
-			Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog ofd = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog("Select an Output Path");
-			ofd.AllowNonFileSystemItems = false;
-			ofd.EnsurePathExists = true;
-			ofd.IsFolderPicker = true;
-			ofd.InitialDirectory = openpath;
-			ofd.Multiselect = false;
-			ofd.ShowPlacesList = true;
+			var ofd = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog("Select an Output Path")
+				          {
+					          AllowNonFileSystemItems = false,
+					          EnsurePathExists = true,
+					          IsFolderPicker = true,
+					          InitialDirectory = openpath,
+					          Multiselect = false,
+					          ShowPlacesList = true
+				          };
 			if (ofd.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel) return;
 
 			ClientOutputPath.Text = Globals.GetRelativePath(Globals.SolutionPath, ofd.FileName + "\\");
@@ -163,60 +163,60 @@ namespace WCFArchitect.Interface.Project
 
 		private void ClientOutputAdd_Click(object sender, RoutedEventArgs e)
 		{
-			Settings.ClientGenerationTargets.Add(new Projects.ProjectGenerationTarget(Settings.ID, ClientOutputPath.Text));
+			Settings.ClientGenerationTargets.Add(new ProjectGenerationTarget(Settings.ID, ClientOutputPath.Text));
 			ClientOutputPath.Text = "";
 		}
 
 		private void ClientOutputPaths_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 		{
 			ClientOutputPathsList.Children.Clear();
-			foreach (Projects.ProjectGenerationTarget POP in Settings.ClientGenerationTargets)
-				ClientOutputPathsList.Children.Add(new GenerationTarget(Settings, POP));
+			foreach (ProjectGenerationTarget pop in Settings.ClientGenerationTargets)
+				ClientOutputPathsList.Children.Add(new GenerationTarget(Settings, pop));
 		}
 
 		#endregion
 
 	}
 
-	[ValueConversion(typeof(Projects.ProjectServiceSerializerType), typeof(int))]
+	[ValueConversion(typeof(ProjectServiceSerializerType), typeof(int))]
 	public class ProjectServiceSerializerTypeConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			Projects.ProjectServiceSerializerType lt = (Projects.ProjectServiceSerializerType)value;
-			if (lt == Projects.ProjectServiceSerializerType.Auto) return 0;
-			if (lt == Projects.ProjectServiceSerializerType.DataContract) return 1;
-			if (lt == Projects.ProjectServiceSerializerType.XML) return 2;
+			var lt = (ProjectServiceSerializerType)value;
+			if (lt == ProjectServiceSerializerType.Auto) return 0;
+			if (lt == ProjectServiceSerializerType.DataContract) return 1;
+			if (lt == ProjectServiceSerializerType.XML) return 2;
 			return 0;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			int lt = (int)value;
-			if (lt == 0) return Projects.ProjectServiceSerializerType.Auto;
-			if (lt == 1) return Projects.ProjectServiceSerializerType.DataContract;
-			if (lt == 2) return Projects.ProjectServiceSerializerType.XML;
-			return Projects.ProjectServiceSerializerType.Auto;
+			var lt = (int)value;
+			if (lt == 0) return ProjectServiceSerializerType.Auto;
+			if (lt == 1) return ProjectServiceSerializerType.DataContract;
+			if (lt == 2) return ProjectServiceSerializerType.XML;
+			return ProjectServiceSerializerType.Auto;
 		}
 	}
 
-	[ValueConversion(typeof(Projects.ProjectCollectionSerializationOverride), typeof(int))]
+	[ValueConversion(typeof(ProjectCollectionSerializationOverride), typeof(int))]
 	public class ProjectCollectionSerializationOverrideConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			Projects.ProjectCollectionSerializationOverride lt = (Projects.ProjectCollectionSerializationOverride)value;
-			if (lt == Projects.ProjectCollectionSerializationOverride.List) return 1;
-			if (lt == Projects.ProjectCollectionSerializationOverride.Array) return 2;
+			var lt = (ProjectCollectionSerializationOverride)value;
+			if (lt == ProjectCollectionSerializationOverride.List) return 1;
+			if (lt == ProjectCollectionSerializationOverride.Array) return 2;
 			return 0;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			int lt = (int)value;
-			if (lt == 1) return Projects.ProjectCollectionSerializationOverride.List;
-			if (lt == 2) return Projects.ProjectCollectionSerializationOverride.Array;
-			return Projects.ProjectCollectionSerializationOverride.None;
+			var lt = (int)value;
+			if (lt == 1) return ProjectCollectionSerializationOverride.List;
+			if (lt == 2) return ProjectCollectionSerializationOverride.Array;
+			return ProjectCollectionSerializationOverride.None;
 		}
 	}
 }

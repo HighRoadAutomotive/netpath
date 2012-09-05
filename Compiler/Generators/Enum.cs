@@ -21,14 +21,14 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				if (Helpers.RegExs.MatchCodeName.IsMatch(o.Name) == false)
 				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS4001", "The enumeration '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Contract Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
+					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS4001", "The enumeration '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
 					NoErrors = false;
 				}
 
-			if (o.HasContractType == true)
-				if (Helpers.RegExs.MatchCodeName.IsMatch(o.ContractType.Name) == false)
+			if (o.HasClientType == true)
+				if (Helpers.RegExs.MatchCodeName.IsMatch(o.ClientType.Name) == false)
 				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS4002", "The enumeration '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Contract Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
+					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS4002", "The enumeration '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
 					NoErrors = false;
 				}
 
@@ -119,7 +119,7 @@ namespace WCFArchitect.Compiler.Generators
 			StringBuilder Code = new StringBuilder();
 			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
 			Code.Append("\t[DataContract(");
-			if (o.HasContractType == true) Code.AppendFormat("Name = \"{0}\", ", o.ContractType.Name);
+			if (o.HasClientType == true) Code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
 			Code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
 			Code.AppendLine(")]");
 			if (o.IsFlags == true) Code.AppendLine("[Flags]");
@@ -152,7 +152,7 @@ namespace WCFArchitect.Compiler.Generators
 			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
 			Code.Append("\t[DataContract(");
 			if (o.IsReference == true) Code.AppendFormat("IsReference = true ");
-			if (o.HasContractType == true) Code.AppendFormat("Name = \"{0}\", ", o.ContractType.Name);
+			if (o.HasClientType == true) Code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
 			Code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
 			Code.AppendLine(")]");
 			if (o.IsFlags == true) Code.AppendLine("\t[Flags]");
@@ -208,7 +208,7 @@ namespace WCFArchitect.Compiler.Generators
 			StringBuilder Code = new StringBuilder();
 			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
 			Code.Append("\t[DataContract(");
-			if (o.HasContractType == true) Code.AppendFormat("Name = \"{0}\", ", o.ContractType.Name);
+			if (o.HasClientType == true) Code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
 			Code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
 			Code.AppendLine(")]");
 			if (o.IsFlags == true) Code.AppendLine("[Flags]");
@@ -241,7 +241,7 @@ namespace WCFArchitect.Compiler.Generators
 			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
 			Code.Append("\t[DataContract(");
 			if (o.IsReference == true) Code.AppendFormat("IsReference = true ");
-			if (o.HasContractType == true) Code.AppendFormat("Name = \"{0}\", ", o.ContractType.Name);
+			if (o.HasClientType == true) Code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
 			Code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
 			Code.AppendLine(")]");
 			if (o.IsFlags == true) Code.AppendLine("\t[Flags]");

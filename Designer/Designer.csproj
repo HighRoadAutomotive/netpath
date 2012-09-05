@@ -160,6 +160,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Interface\Data\Data.xaml.cs">
+      <DependentUpon>Data.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interface\Data\TypeEditor.xaml.cs">
       <DependentUpon>TypeEditor.xaml</DependentUpon>
     </Compile>
@@ -194,6 +197,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Globals.cs" />
+    <Compile Include="RegExs.cs" />
+    <Compile Include="Themes\DragAdorner.cs" />
+    <Page Include="Interface\Data\Data.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Interface\Data\TypeEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -628,7 +637,10 @@
   <ItemGroup>
     <Resource Include="Icons\X32\Delete.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Icons\X16\Collection.png" />
+    <Resource Include="Icons\X16\External.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

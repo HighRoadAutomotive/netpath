@@ -25,10 +25,10 @@ namespace WCFArchitect.Compiler.Generators
 					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS2001", "The service '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Code Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
 					NoErrors = false;
 				}
-			if (o.HasContractType == true) { }
-				if (Helpers.RegExs.MatchCodeName.IsMatch(o.ContractType.Name) == false)
+			if (o.HasClientType == true) { }
+				if (Helpers.RegExs.MatchCodeName.IsMatch(o.ClientType.Name) == false)
 				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS2002", "The service '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Contract Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
+					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS2002", "The service '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
 					NoErrors = false;
 				}
 
@@ -45,10 +45,10 @@ namespace WCFArchitect.Compiler.Generators
 						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS2005", "The operation '" + O.Name + "' in the '" + o.Name + "' service contains invalid characters in the Code Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o, O, O.GetType()));
 						NoErrors = false;
 					}
-				if (O.ContractName == "" || O.ContractName == null)
-					if (Helpers.RegExs.MatchCodeName.IsMatch(O.ContractName) == false)
+				if (O.ClientName == "" || O.ClientName == null)
+					if (Helpers.RegExs.MatchCodeName.IsMatch(O.ClientName) == false)
 					{
-						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS2006", "The operation '" + O.Name + "' in the '" + o.Name + "' service contains invalid characters in the Contract Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o, O, O.GetType()));
+						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS2006", "The operation '" + O.Name + "' in the '" + o.Name + "' service contains invalid characters in the Client Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o, O, O.GetType()));
 						NoErrors = false;
 					}
 				if (O.ReturnType == null)
@@ -114,8 +114,8 @@ namespace WCFArchitect.Compiler.Generators
 				if (o.ProtectionLevel != System.Net.Security.ProtectionLevel.None)
 					Code.AppendFormat("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}, ", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.ProtectionLevel));
 				Code.AppendFormat("SessionMode = System.ServiceModel.SessionMode.{0}, ", System.Enum.GetName(typeof(System.ServiceModel.SessionMode), o.SessionMode));
-				if (o.HasContractType == true)
-					Code.AppendFormat("Name = \"{0}\", ", o.ContractType.Name);
+				if (o.HasClientType == true)
+					Code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
 				Code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
 				Code.AppendLine(")]");
 			}
@@ -146,7 +146,7 @@ namespace WCFArchitect.Compiler.Generators
 
 			//Generate the Client interface
 			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.AppendFormat("\t{0} interface {1}{2}", o.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.ContractType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasContractType == true ? o.ContractType.Name : o.Name, Environment.NewLine);
+			Code.AppendFormat("\t{0} interface {1}{2}", o.HasClientType == true ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType == true ? o.ClientType.Name : o.Name, Environment.NewLine);
 			Code.AppendLine("\t{");
 			foreach (Method M in o.Operations)
 				Code.AppendLine(GenerateOperationInterfaceCode40(M));
@@ -156,7 +156,7 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.Callback != null)
 			{
 				Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-				Code.AppendFormat("\t{0} interface {1}{2}", o.Callback.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.Callback.ContractType.Scope) : DataTypeCSGenerator.GenerateScope(o.Callback.Scope), o.Callback.HasContractType == true ? o.Callback.ContractType.Name : o.Callback.Name, Environment.NewLine);
+				Code.AppendFormat("\t{0} interface {1}{2}", o.Callback.HasClientType == true ? DataTypeCSGenerator.GenerateScope(o.Callback.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Callback.Scope), o.Callback.HasClientType == true ? o.Callback.ClientType.Name : o.Callback.Name, Environment.NewLine);
 				Code.AppendLine("\t{");
 				foreach (Method M in o.Callback.Operations)
 					Code.AppendLine(GenerateOperationInterfaceCode40(M));
@@ -165,13 +165,13 @@ namespace WCFArchitect.Compiler.Generators
 			}
 			//Generate Channel Interface
 			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.AppendFormat("\t{0} interface {1}Channel : {2}, System.ServiceModel.IClientChannel{3}", o.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.ContractType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasContractType == true ? o.ContractType.Name : o.Name, o.HasContractType == true ? DataTypeCSGenerator.GenerateType(o.ContractType) : DataTypeCSGenerator.GenerateType(o), Environment.NewLine);
+			Code.AppendFormat("\t{0} interface {1}Channel : {2}, System.ServiceModel.IClientChannel{3}", o.HasClientType == true ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType == true ? o.ClientType.Name : o.Name, o.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ClientType) : DataTypeCSGenerator.GenerateType(o), Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendLine("\t}");
 			Code.AppendLine();
 			//Generate the Proxy Class
 			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.AppendFormat("\t{0} partial class {1}Client : System.ServiceModel.ClientBase<{1}>, {1}{3}", o.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.ContractType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasContractType == true ? o.ContractType.Name : o.Name, Environment.NewLine);
+			Code.AppendFormat("\t{0} partial class {1}Client : System.ServiceModel.ClientBase<{1}>, {1}{3}", o.HasClientType == true ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType == true ? o.ClientType.Name : o.Name, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Host H = o.Parent.Owner.Namespace.GetServiceHost(o);
 			if (H != null)
@@ -192,7 +192,7 @@ namespace WCFArchitect.Compiler.Generators
 
 			//Generate the Client interface
 			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.AppendFormat("\t{0} interface {1}{2}", o.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.ContractType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasContractType == true ? o.ContractType.Name : o.Name, Environment.NewLine);
+			Code.AppendFormat("\t{0} interface {1}{2}", o.HasClientType == true ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType == true ? o.ClientType.Name : o.Name, Environment.NewLine);
 			Code.AppendLine("\t{");
 			foreach (Method M in o.Operations)
 				Code.AppendLine(GenerateOperationInterfaceCode45(M));
@@ -202,7 +202,7 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.Callback != null)
 			{
 				Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-				Code.AppendFormat("\t{0} interface {1}{2}", o.Callback.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.Callback.ContractType.Scope) : DataTypeCSGenerator.GenerateScope(o.Callback.Scope), o.Callback.HasContractType == true ? o.Callback.ContractType.Name : o.Callback.Name, Environment.NewLine);
+				Code.AppendFormat("\t{0} interface {1}{2}", o.Callback.HasClientType == true ? DataTypeCSGenerator.GenerateScope(o.Callback.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Callback.Scope), o.Callback.HasClientType == true ? o.Callback.ClientType.Name : o.Callback.Name, Environment.NewLine);
 				Code.AppendLine("\t{");
 				foreach (Method M in o.Callback.Operations)
 					Code.AppendLine(GenerateOperationInterfaceCode45(M));
@@ -211,13 +211,13 @@ namespace WCFArchitect.Compiler.Generators
 			}
 			//Generate Channel Interface
 			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.AppendFormat("\t{0} interface {1}Channel : {2}, System.ServiceModel.IClientChannel{3}", o.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.ContractType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasContractType == true ? o.ContractType.Name : o.Name, o.HasContractType == true ? DataTypeCSGenerator.GenerateType(o.ContractType) : DataTypeCSGenerator.GenerateType(o), Environment.NewLine);
+			Code.AppendFormat("\t{0} interface {1}Channel : {2}, System.ServiceModel.IClientChannel{3}", o.HasClientType == true ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType == true ? o.ClientType.Name : o.Name, o.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ClientType) : DataTypeCSGenerator.GenerateType(o), Environment.NewLine);
 			Code.AppendLine("\t{");
 			Code.AppendLine("\t}");
 			Code.AppendLine();
 			//Generate the Proxy Class
 			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.AppendFormat("\t{0} partial class {1}Client : System.ServiceModel.ClientBase<{1}>, {1}{3}", o.HasContractType == true ? DataTypeCSGenerator.GenerateScope(o.ContractType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasContractType == true ? o.ContractType.Name : o.Name, Environment.NewLine);
+			Code.AppendFormat("\t{0} partial class {1}Client : System.ServiceModel.ClientBase<{1}>, {1}{3}", o.HasClientType == true ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType == true ? o.ClientType.Name : o.Name, Environment.NewLine);
 			Code.AppendLine("\t{");
 			Host H = o.Parent.Owner.Namespace.GetServiceHost(o);
 				if (H != null)
@@ -259,8 +259,8 @@ namespace WCFArchitect.Compiler.Generators
 				Code.Append("IsOneWay = true, ");
 			if (o.ProtectionLevel != System.Net.Security.ProtectionLevel.None)
 				Code.AppendFormat("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}, ", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.ProtectionLevel));
-			if (o.ContractName == "" || o.ContractName == null)
-				Code.AppendFormat("Name = \"{0}\", ", o.ContractName);
+			if (o.ClientName == "" || o.ClientName == null)
+				Code.AppendFormat("Name = \"{0}\", ", o.ClientName);
 			if (Code.Length > 21) Code.Remove(Code.Length - 2, 2);
 			Code.AppendFormat(")] {0} {1}(", DataTypeCSGenerator.GenerateType(o.ReturnType), o.Name);
 			foreach (MethodParameter OP in o.Parameters)
@@ -279,8 +279,8 @@ namespace WCFArchitect.Compiler.Generators
 					Code.Append("IsOneWay = true, ");
 				if (o.ProtectionLevel != System.Net.Security.ProtectionLevel.None)
 					Code.AppendFormat("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}, ", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.ProtectionLevel));
-				if (o.ContractName == "" || o.ContractName == null)
-					Code.AppendFormat("Name = \"{0}\", ", o.ContractName);
+				if (o.ClientName == "" || o.ClientName == null)
+					Code.AppendFormat("Name = \"{0}\", ", o.ClientName);
 				if (Code.Length > 21) Code.Remove(Code.Length - 2, 2);
 				Code.AppendFormat(")] IAsyncResult Begin{0}(", o.Name);
 				foreach (MethodParameter OP in o.Parameters)
@@ -312,7 +312,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				Code.AppendFormat("Action = \"{0}/{1}/{2}\", ReplyAction = \"{0}/{1}/{2}Response\"");
 			Code.AppendLine(")]");
-			Code.AppendFormat("\t\t{0} {1}(", o.ReturnType.HasContractType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ContractType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationContractName(o) == true ? o.ContractName : o.Name);
+			Code.AppendFormat("\t\t{0} {1}(", o.ReturnType.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) == true ? o.ClientName : o.Name);
 			foreach (MethodParameter OP in o.Parameters)
 				Code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(OP));
 			if (o.Parameters.Count > 0) Code.Remove(Code.Length - 2, 2);
@@ -326,11 +326,11 @@ namespace WCFArchitect.Compiler.Generators
 				else
 					Code.AppendFormat("Action = \"{0}/{1}/{2}\", ReplyAction = \"{0}/{1}/{2}Response\"");
 				Code.AppendLine(")]");
-				Code.AppendFormat("\t\tIAsyncResult {0}(", UseOperationContractName(o) == true ? o.ContractName : o.Name);
+				Code.AppendFormat("\t\tIAsyncResult {0}(", UseOperationClientName(o) == true ? o.ClientName : o.Name);
 				foreach (MethodParameter OP in o.Parameters)
 					Code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(OP));
 				Code.AppendLine("AsyncCallback Callback, object AsyncState);");
-				Code.AppendFormat("\t\t{0} End{1}(IAsyncResult result);{2}", o.ReturnType.HasContractType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ContractType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationContractName(o) == true ? o.ContractName : o.Name, Environment.NewLine);
+				Code.AppendFormat("\t\t{0} End{1}(IAsyncResult result);{2}", o.ReturnType.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) == true ? o.ClientName : o.Name, Environment.NewLine);
 			}
 
 			return Code.ToString();
@@ -346,7 +346,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				Code.AppendFormat("Action = \"{0}/{1}/{2}\", ReplyAction = \"{0}/{1}/{2}Response\"");
 			Code.AppendLine(")]");
-			Code.AppendFormat("\t\t{0} {1}(", o.ReturnType.HasContractType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ContractType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationContractName(o) == true ? o.ContractName : o.Name);
+			Code.AppendFormat("\t\t{0} {1}(", o.ReturnType.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) == true ? o.ClientName : o.Name);
 			foreach (MethodParameter OP in o.Parameters)
 				Code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(OP));
 			if (o.Parameters.Count > 0) Code.Remove(Code.Length - 2, 2);
@@ -360,8 +360,8 @@ namespace WCFArchitect.Compiler.Generators
 				else
 					Code.AppendFormat("Action = \"{0}/{1}/{2}\", ReplyAction = \"{0}/{1}/{2}Response\"");
 				Code.AppendLine(")]");
-				if (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) Code.AppendFormat("\t\tSystem.Threading.Tasks.Task {0}(", UseOperationContractName(o) == true ? o.ContractName : o.Name);
-				else Code.AppendFormat("\t\tSystem.Threading.Tasks.Task<{0}> {1}Async(", o.ReturnType.HasContractType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ContractType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationContractName(o) == true ? o.ContractName : o.Name);
+				if (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) Code.AppendFormat("\t\tSystem.Threading.Tasks.Task {0}(", UseOperationClientName(o) == true ? o.ClientName : o.Name);
+				else Code.AppendFormat("\t\tSystem.Threading.Tasks.Task<{0}> {1}Async(", o.ReturnType.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) == true ? o.ClientName : o.Name);
 				foreach (MethodParameter OP in o.Parameters)
 					Code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(OP));
 				if (o.Parameters.Count > 0) Code.Remove(Code.Length - 2, 2);
@@ -376,11 +376,11 @@ namespace WCFArchitect.Compiler.Generators
 				else
 					Code.AppendFormat("Action = \"{0}/{1}/{2}\", ReplyAction = \"{0}/{1}/{2}Response\"");
 				Code.AppendLine(")]");
-				Code.AppendFormat("\t\tIAsyncResult {0}(", UseOperationContractName(o) == true ? o.ContractName : o.Name);
+				Code.AppendFormat("\t\tIAsyncResult {0}(", UseOperationClientName(o) == true ? o.ClientName : o.Name);
 				foreach (MethodParameter OP in o.Parameters)
 					Code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(OP));
 				Code.AppendLine("AsyncCallback Callback, object AsyncState);");
-				Code.AppendFormat("\t\t{0} End{1}(IAsyncResult result);{2}", o.ReturnType.HasContractType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ContractType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationContractName(o) == true ? o.ContractName : o.Name, Environment.NewLine);
+				Code.AppendFormat("\t\t{0} End{1}(IAsyncResult result);{2}", o.ReturnType.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) == true ? o.ClientName : o.Name, Environment.NewLine);
 			}
 
 			return Code.ToString();
@@ -400,13 +400,13 @@ namespace WCFArchitect.Compiler.Generators
 		{
 			StringBuilder Code = new StringBuilder();
 
-			Code.AppendFormat("\t\t{0} {1}(", o.ReturnType.HasContractType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ContractType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationContractName(o) == true ? o.ContractName : o.Name);
+			Code.AppendFormat("\t\t{0} {1}(", o.ReturnType.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) == true ? o.ClientName : o.Name);
 			foreach (MethodParameter OP in o.Parameters)
 				Code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(OP));
 			if (o.Parameters.Count > 0) Code.Remove(Code.Length - 2, 2);
 			Code.AppendLine(")");
 			Code.AppendLine("\t\t{");
-			Code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationContractName(o) == true ? o.ContractName : o.Name);
+			Code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationClientName(o) == true ? o.ClientName : o.Name);
 			foreach (MethodParameter op in o.Parameters)
 				Code.AppendFormat("{0}, ", op.Name);
 			if (o.Parameters.Count > 0) Code.Remove(Code.Length - 2, 2);
@@ -415,19 +415,19 @@ namespace WCFArchitect.Compiler.Generators
 
 			if (o.UseAsyncPattern == true)
 			{
-				Code.AppendFormat("\t\tIAsyncResult {0}(", UseOperationContractName(o) == true ? o.ContractName : UseOperationContractName(o) == true ? o.ContractName : o.Name);
+				Code.AppendFormat("\t\tIAsyncResult {0}(", UseOperationClientName(o) == true ? o.ClientName : UseOperationClientName(o) == true ? o.ClientName : o.Name);
 				foreach (MethodParameter OP in o.Parameters)
 					Code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(OP));
 				Code.AppendLine("AsyncCallback Callback, object AsyncState)");
 				Code.AppendLine("\t\t{");
-				Code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationContractName(o) == true ? o.ContractName : UseOperationContractName(o) == true ? o.ContractName : o.Name);
+				Code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationClientName(o) == true ? o.ClientName : UseOperationClientName(o) == true ? o.ClientName : o.Name);
 				foreach (MethodParameter op in o.Parameters)
 					Code.AppendFormat("{0}, ", op.Name);
 				Code.AppendLine("Callback, AsyncState);");
 				Code.AppendLine("\t\t}");
-				Code.AppendFormat("\t\t{0} End{1}(IAsyncResult result){2}", o.ReturnType.HasContractType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ContractType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationContractName(o) == true ? o.ContractName : UseOperationContractName(o) == true ? o.ContractName : o.Name, Environment.NewLine);
+				Code.AppendFormat("\t\t{0} End{1}(IAsyncResult result){2}", o.ReturnType.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) == true ? o.ClientName : UseOperationClientName(o) == true ? o.ClientName : o.Name, Environment.NewLine);
 				Code.AppendLine("\t\t{");
-				Code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationContractName(o) == true ? o.ContractName : UseOperationContractName(o) == true ? o.ContractName : o.Name);
+				Code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationClientName(o) == true ? o.ClientName : UseOperationClientName(o) == true ? o.ClientName : o.Name);
 				foreach (MethodParameter op in o.Parameters)
 					Code.AppendFormat("{0}, ", op.Name);
 				Code.AppendLine("Callback, AsyncState);");
@@ -441,13 +441,13 @@ namespace WCFArchitect.Compiler.Generators
 		{
 			StringBuilder Code = new StringBuilder();
 
-			Code.AppendFormat("\t\t{0} {1}(", o.ReturnType.HasContractType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ContractType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationContractName(o) == true ? o.ContractName : o.Name);
+			Code.AppendFormat("\t\t{0} {1}(", o.ReturnType.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) == true ? o.ClientName : o.Name);
 			foreach (MethodParameter OP in o.Parameters)
 				Code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(OP));
 			if (o.Parameters.Count > 0) Code.Remove(Code.Length - 2, 2);
 			Code.AppendLine(")");
 			Code.AppendLine("\t\t{");
-			Code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationContractName(o) == true ? o.ContractName : o.Name);
+			Code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationClientName(o) == true ? o.ClientName : o.Name);
 			foreach (MethodParameter op in o.Parameters)
 				Code.AppendFormat("{0}, ", op.Name);
 			if (o.Parameters.Count > 0) Code.Remove(Code.Length - 2, 2);
@@ -456,14 +456,14 @@ namespace WCFArchitect.Compiler.Generators
 
 			if (o.UseAwaitPattern == true)
 			{
-				if (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) Code.AppendFormat("\t\tSystem.Threading.Tasks.Task {0}(", UseOperationContractName(o) == true ? o.ContractName : UseOperationContractName(o) == true ? o.ContractName : o.Name);
-				else Code.AppendFormat("\t\tSystem.Threading.Tasks.Task<{0}> {1}(", o.ReturnType.HasContractType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ContractType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationContractName(o) == true ? o.ContractName : UseOperationContractName(o) == true ? o.ContractName : o.Name);
+				if (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) Code.AppendFormat("\t\tSystem.Threading.Tasks.Task {0}(", UseOperationClientName(o) == true ? o.ClientName : UseOperationClientName(o) == true ? o.ClientName : o.Name);
+				else Code.AppendFormat("\t\tSystem.Threading.Tasks.Task<{0}> {1}(", o.ReturnType.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) == true ? o.ClientName : UseOperationClientName(o) == true ? o.ClientName : o.Name);
 				foreach (MethodParameter OP in o.Parameters)
 					Code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(OP));
 				if (o.Parameters.Count > 0) Code.Remove(Code.Length - 2, 2);
 				Code.AppendLine(");");
 				Code.AppendLine("\t\t{");
-				Code.AppendFormat("\t\t\treturn base.Channel.{0}Async(", UseOperationContractName(o) == true ? o.ContractName : UseOperationContractName(o) == true ? o.ContractName : o.Name);
+				Code.AppendFormat("\t\t\treturn base.Channel.{0}Async(", UseOperationClientName(o) == true ? o.ClientName : UseOperationClientName(o) == true ? o.ClientName : o.Name);
 				foreach (MethodParameter op in o.Parameters)
 					Code.AppendFormat("{0}, ", op.Name);
 				if (o.Parameters.Count > 0) Code.Remove(Code.Length - 2, 2);
@@ -473,19 +473,19 @@ namespace WCFArchitect.Compiler.Generators
 
 			if (o.UseAsyncPattern == true)
 			{
-				Code.AppendFormat("\t\tIAsyncResult {0}(", UseOperationContractName(o) == true ? o.ContractName : UseOperationContractName(o) == true ? o.ContractName : o.Name);
+				Code.AppendFormat("\t\tIAsyncResult {0}(", UseOperationClientName(o) == true ? o.ClientName : UseOperationClientName(o) == true ? o.ClientName : o.Name);
 				foreach (MethodParameter OP in o.Parameters)
 					Code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(OP));
 				Code.AppendLine("AsyncCallback Callback, object AsyncState)");
 				Code.AppendLine("\t\t{");
-				Code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationContractName(o) == true ? o.ContractName : UseOperationContractName(o) == true ? o.ContractName : o.Name);
+				Code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationClientName(o) == true ? o.ClientName : UseOperationClientName(o) == true ? o.ClientName : o.Name);
 				foreach (MethodParameter op in o.Parameters)
 					Code.AppendFormat("{0}, ", op.Name);
 				Code.AppendLine("Callback, AsyncState);");
 				Code.AppendLine("\t\t}");
-				Code.AppendFormat("\t\t{0} End{1}(IAsyncResult result){2}", o.ReturnType.HasContractType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ContractType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationContractName(o) == true ? o.ContractName : UseOperationContractName(o) == true ? o.ContractName : o.Name, Environment.NewLine);
+				Code.AppendFormat("\t\t{0} End{1}(IAsyncResult result){2}", o.ReturnType.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) == true ? o.ClientName : UseOperationClientName(o) == true ? o.ClientName : o.Name, Environment.NewLine);
 				Code.AppendLine("\t\t{");
-				Code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationContractName(o) == true ? o.ContractName : UseOperationContractName(o) == true ? o.ContractName : o.Name);
+				Code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationClientName(o) == true ? o.ClientName : UseOperationClientName(o) == true ? o.ClientName : o.Name);
 				foreach (MethodParameter op in o.Parameters)
 					Code.AppendFormat("{0}, ", op.Name);
 				Code.AppendLine("Callback, AsyncState);");
@@ -508,25 +508,25 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.Type.TypeMode == DataTypeMode.Class)
 			{
 				Data ptype = o.Type as Data;
-				return string.Format("{0} {1}", ptype.HasContractType == true ? DataTypeCSGenerator.GenerateType(ptype.ContractType) : DataTypeCSGenerator.GenerateType(o.Type), o.Name);
+				return string.Format("{0} {1}", ptype.HasClientType == true ? DataTypeCSGenerator.GenerateType(ptype.ClientType) : DataTypeCSGenerator.GenerateType(o.Type), o.Name);
 			}
 			else if (o.Type.TypeMode == DataTypeMode.Struct)
 			{
 				Data ptype = o.Type as Data;
-				return string.Format("{0} {1}", ptype.HasContractType == true ? DataTypeCSGenerator.GenerateType(ptype.ContractType) : DataTypeCSGenerator.GenerateType(o.Type), o.Name);
+				return string.Format("{0} {1}", ptype.HasClientType == true ? DataTypeCSGenerator.GenerateType(ptype.ClientType) : DataTypeCSGenerator.GenerateType(o.Type), o.Name);
 			}
 			else if (o.Type.TypeMode == DataTypeMode.Enum)
 			{
 				Projects.Enum ptype = o.Type as Projects.Enum;
-				return string.Format("{0} {1}", ptype.HasContractType == true ? DataTypeCSGenerator.GenerateType(ptype.ContractType) : DataTypeCSGenerator.GenerateType(o.Type), o.Name);
+				return string.Format("{0} {1}", ptype.HasClientType == true ? DataTypeCSGenerator.GenerateType(ptype.ClientType) : DataTypeCSGenerator.GenerateType(o.Type), o.Name);
 			}
 			else
 				return string.Format("{0} {1}", DataTypeCSGenerator.GenerateType(o.Type), o.Name);
 		}
 
-		public static bool UseOperationContractName(Operation o)
+		public static bool UseOperationClientName(Operation o)
 		{
-			if (o.ContractName == null || o.ContractName == "") return false;
+			if (o.ClientName == null || o.ClientName == "") return false;
 			return true;
 		}
 
