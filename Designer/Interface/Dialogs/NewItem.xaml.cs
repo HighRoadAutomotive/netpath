@@ -105,7 +105,9 @@ namespace WCFArchitect.Interface.Dialogs
 			NewItemAdd.IsEnabled = false;
 
 			if (NewItemTypesList.SelectedItem == null) return;
-			if (NewItemBindingTypesList.SelectedItem == null && NewItemSecurityTypesList.SelectedItem == null) return;
+			NewItemType NIT = NewItemTypesList.SelectedItem as NewItemType;
+			if (NewItemBindingTypesList.SelectedItem == null && NIT.DataType == 5) return;
+			if (NewItemSecurityTypesList.SelectedItem == null && NIT.DataType == 6) return;
 			if (NewItemProjectNamespaceList.SelectedItem == null && NewItemProjectNamespaceRoot.IsChecked == false) return;
 			if (NewItemName.Text == "") return;
 
@@ -153,7 +155,10 @@ namespace WCFArchitect.Interface.Dialogs
 			}
 			if (NIT.DataType == 7)
 			{
-				NewItemName.Focus();
+				NewItemProjectNamespaceList.ItemsSource = ActiveProject.Namespace.Children;
+				NewItemProjectNamespaceRoot.IsChecked = true;
+				NewItemProjectNamespaceRoot.Content = ActiveProject.Namespace.Name;
+				NewItemProjectNamespaces.Visibility = System.Windows.Visibility.Visible;
 			}
 			IsNamespaceListUpdating = false;
 		}

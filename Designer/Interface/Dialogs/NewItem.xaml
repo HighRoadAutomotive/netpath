@@ -19,11 +19,12 @@
 					</Grid.ColumnDefinitions>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
 					<Image Source="{Binding Path=ImageSource}" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="32" Width="32" Stretch="Uniform" Grid.Column="0" Grid.RowSpan="2"/>
-					<TextBlock Text="{Binding Path=Title}" Foreground="{StaticResource DefaultFontColor}" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="0"/>
-					<TextBlock Text="{Binding Path=Description}" Padding="0,0,0,5" Foreground="{StaticResource DisabledFontColor}" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+					<StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="0,2,0,0">
+						<TextBlock Text="{Binding Path=Title}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="14pt" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" Grid.Row="0"/>
+						<TextBlock Text="{Binding Path=Description}" Padding="0,0,0,5" Foreground="{StaticResource DisabledFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="12pt" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Grid.Row="1"/>
+					</StackPanel>
 				</Grid>
 			</Border>
 			<DataTemplate.Triggers>

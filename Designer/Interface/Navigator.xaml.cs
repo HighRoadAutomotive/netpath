@@ -77,8 +77,15 @@ namespace WCFArchitect.Interface
 
 		private void OpenProjectItem(Projects.OpenableDocument Item)
 		{
+			if (Item == null) return;
+
 			if (Item.GetType() == typeof(Projects.Project))
 				ActivePage = new Project.Project(Item as Projects.Project);
+
+			//Open Service Page Here
+
+			if (Item.GetType() == typeof(Projects.Data))
+				ActivePage = new Data.Data(Item as Projects.Data);
 
 			//Need to make all item pages before this function can be completed.
 		}

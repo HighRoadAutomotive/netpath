@@ -184,7 +184,7 @@ namespace WCFArchitect.Compiler.Generators
 			foreach (Projects.ProjectUsingNamespace PUN in o.UsingNamespaces)
 				if (PUN.Client == true) Code.AppendFormat("using {0};{1}", PUN.Namespace, Environment.NewLine);
 			Code.AppendLine();
-			Code.AppendFormat("[assembly: System.Runtime.Serialization.ContractNamespaceAttribute(\"{0}\", ClrNamespace=\"{1}\")]{2}", o.Namespace.URI, o.Namespace.FullName, Environment.NewLine);
+			Code.AppendFormat("[assembly: System.Runtime.Serialization.ClientNamespaceAttribute(\"{0}\", ClrNamespace=\"{1}\")]{2}", o.Namespace.URI, o.Namespace.FullName, Environment.NewLine);
 			Code.AppendLine(NamespaceCSGenerator.GenerateClientCode30(o.Namespace));
 			Code.AppendLine();
 			return Code.ToString();
@@ -205,7 +205,7 @@ namespace WCFArchitect.Compiler.Generators
 			foreach (Projects.ProjectUsingNamespace PUN in o.UsingNamespaces)
 				if (PUN.Client == true) Code.AppendFormat("using {0};{1}", PUN.Namespace, Environment.NewLine);
 			Code.AppendLine();
-			Code.AppendFormat("[assembly: System.Runtime.Serialization.ContractNamespaceAttribute(\"{0}\", ClrNamespace=\"{1}\")]{2}", o.Namespace.URI, o.Namespace.FullName, Environment.NewLine);
+			Code.AppendFormat("[assembly: System.Runtime.Serialization.ClientNamespaceAttribute(\"{0}\", ClrNamespace=\"{1}\")]{2}", o.Namespace.URI, o.Namespace.FullName, Environment.NewLine);
 			Code.AppendLine(NamespaceCSGenerator.GenerateClientCode35(o.Namespace));
 			Code.AppendLine();
 			return Code.ToString();
@@ -226,7 +226,7 @@ namespace WCFArchitect.Compiler.Generators
 				if (PUN.IsFullFrameworkOnly == false)
 					if (PUN.Client == true) Code.AppendFormat("using {0};{1}", PUN.Namespace, Environment.NewLine);
 			Code.AppendLine();
-			Code.AppendFormat("[assembly: System.Runtime.Serialization.ContractNamespaceAttribute(\"{0}\", ClrNamespace=\"{1}\")]{2}", o.Namespace.URI, o.Namespace.FullName, Environment.NewLine);
+			Code.AppendFormat("[assembly: System.Runtime.Serialization.ClientNamespaceAttribute(\"{0}\", ClrNamespace=\"{1}\")]{2}", o.Namespace.URI, o.Namespace.FullName, Environment.NewLine);
 			Code.AppendLine(NamespaceCSGenerator.GenerateClientCode35(o.Namespace));
 			Code.AppendLine();
 			return Code.ToString();
@@ -246,7 +246,7 @@ namespace WCFArchitect.Compiler.Generators
 			foreach (Projects.ProjectUsingNamespace PUN in o.UsingNamespaces)
 				if (PUN.Client == true) Code.AppendFormat("using {0};{1}", PUN.Namespace, Environment.NewLine);
 			Code.AppendLine();
-			Code.AppendFormat("[assembly: System.Runtime.Serialization.ContractNamespaceAttribute(\"{0}\", ClrNamespace=\"{1}\")]{2}", o.Namespace.URI, o.Namespace.FullName, Environment.NewLine);
+			Code.AppendFormat("[assembly: System.Runtime.Serialization.ClientNamespaceAttribute(\"{0}\", ClrNamespace=\"{1}\")]{2}", o.Namespace.URI, o.Namespace.FullName, Environment.NewLine);
 			Code.AppendLine(NamespaceCSGenerator.GenerateClientCode40(o.Namespace));
 			Code.AppendLine();
 			return Code.ToString();
@@ -267,7 +267,7 @@ namespace WCFArchitect.Compiler.Generators
 				if (PUN.IsFullFrameworkOnly == false)
 					if (PUN.Client == true) Code.AppendFormat("using {0};{1}", PUN.Namespace, Environment.NewLine);
 			Code.AppendLine();
-			Code.AppendFormat("[assembly: System.Runtime.Serialization.ContractNamespaceAttribute(\"{0}\", ClrNamespace=\"{1}\")]{2}", o.Namespace.URI, o.Namespace.FullName, Environment.NewLine);
+			Code.AppendFormat("[assembly: System.Runtime.Serialization.ClientNamespaceAttribute(\"{0}\", ClrNamespace=\"{1}\")]{2}", o.Namespace.URI, o.Namespace.FullName, Environment.NewLine);
 			Code.AppendLine(NamespaceCSGenerator.GenerateClientCode40(o.Namespace));
 			Code.AppendLine();
 			return Code.ToString();
@@ -287,7 +287,7 @@ namespace WCFArchitect.Compiler.Generators
 			foreach (Projects.ProjectUsingNamespace PUN in o.UsingNamespaces)
 				if (PUN.Client == true) Code.AppendFormat("using {0};{1}", PUN.Namespace, Environment.NewLine);
 			Code.AppendLine();
-			Code.AppendFormat("[assembly: System.Runtime.Serialization.ContractNamespaceAttribute(\"{0}\", ClrNamespace=\"{1}\")]{2}", o.Namespace.URI, o.Namespace.FullName, Environment.NewLine);
+			Code.AppendFormat("[assembly: System.Runtime.Serialization.ClientNamespaceAttribute(\"{0}\", ClrNamespace=\"{1}\")]{2}", o.Namespace.URI, o.Namespace.FullName, Environment.NewLine);
 			Code.AppendLine(NamespaceCSGenerator.GenerateClientCode45(o.Namespace));
 			Code.AppendLine();
 			return Code.ToString();

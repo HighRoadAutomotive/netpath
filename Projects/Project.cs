@@ -155,144 +155,149 @@ namespace WCFArchitect.Projects
 
 		public List<DataType> DefaultTypes { get; private set; }
 
-		public Project() : base()
+		public Project()
 		{
-			this.ID = Guid.NewGuid();
-			this.DependencyProjects = new ObservableCollection<DependencyProject>();
-			this.UsingNamespaces = new ObservableCollection<ProjectUsingNamespace>();
+			ID = Guid.NewGuid();
+			DependencyProjects = new ObservableCollection<DependencyProject>();
+			UsingNamespaces = new ObservableCollection<ProjectUsingNamespace>();
 
-			this.ServerGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
-			this.ClientGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
+			ServerGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
+			ClientGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
 
 			//Add the default types
-			this.DefaultTypes = new List<DataType>();
-			//Primitive Types
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Void));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Byte));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.SByte));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Short));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Int));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Long));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.UShort));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.UInt));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.ULong));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Float));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Double));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Decimal));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Bool));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Char));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.String));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.DateTime));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.DateTimeOffset));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.TimeSpan));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.URI));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.GUID));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Version));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.ByteArray));
-			//System.Collections.Generic Types
-			this.DefaultTypes.Add(new DataType("LinkedList", DataTypeMode.Collection));
-			this.DefaultTypes.Add(new DataType("List", DataTypeMode.Collection));
-			this.DefaultTypes.Add(new DataType("HashSet", DataTypeMode.Collection));
-			this.DefaultTypes.Add(new DataType("Queue", DataTypeMode.Collection));
-			this.DefaultTypes.Add(new DataType("SortedSet", DataTypeMode.Collection));
-			this.DefaultTypes.Add(new DataType("Stack", DataTypeMode.Collection));
-			this.DefaultTypes.Add(new DataType("SynchronizedCollection", DataTypeMode.Collection));
-			this.DefaultTypes.Add(new DataType("Dictionary", DataTypeMode.Dictionary));
-			this.DefaultTypes.Add(new DataType("SortedDictionary", DataTypeMode.Dictionary));
-			this.DefaultTypes.Add(new DataType("SortedList", DataTypeMode.Dictionary));
-			this.DefaultTypes.Add(new DataType("SynchronizedKeyedCollection", DataTypeMode.Dictionary));
-			//System.Collections.ObjectModel Tpyes
-			this.DefaultTypes.Add(new DataType("Collection", DataTypeMode.Collection));
-			this.DefaultTypes.Add(new DataType("ObservableCollection", DataTypeMode.Collection));
-			this.DefaultTypes.Add(new DataType("KeyedCollection", DataTypeMode.Dictionary));
+			DefaultTypes = new List<DataType>
+				                    {
+										//Primitive Types
+					                    new DataType(PrimitiveTypes.Void),
+					                    new DataType(PrimitiveTypes.Byte),
+					                    new DataType(PrimitiveTypes.SByte),
+					                    new DataType(PrimitiveTypes.Short),
+					                    new DataType(PrimitiveTypes.Int),
+					                    new DataType(PrimitiveTypes.Long),
+					                    new DataType(PrimitiveTypes.UShort),
+					                    new DataType(PrimitiveTypes.UInt),
+					                    new DataType(PrimitiveTypes.ULong),
+					                    new DataType(PrimitiveTypes.Float),
+					                    new DataType(PrimitiveTypes.Double),
+					                    new DataType(PrimitiveTypes.Decimal),
+					                    new DataType(PrimitiveTypes.Bool),
+					                    new DataType(PrimitiveTypes.Char),
+					                    new DataType(PrimitiveTypes.String),
+					                    new DataType(PrimitiveTypes.DateTime),
+					                    new DataType(PrimitiveTypes.DateTimeOffset),
+					                    new DataType(PrimitiveTypes.TimeSpan),
+					                    new DataType(PrimitiveTypes.URI),
+					                    new DataType(PrimitiveTypes.GUID),
+					                    new DataType(PrimitiveTypes.Version),
+					                    new DataType(PrimitiveTypes.ByteArray),
+										//System.Collections.Generic Types
+					                    new DataType("LinkedList", DataTypeMode.Collection),
+					                    new DataType("List", DataTypeMode.Collection),
+					                    new DataType("HashSet", DataTypeMode.Collection),
+					                    new DataType("Queue", DataTypeMode.Collection),
+					                    new DataType("SortedSet", DataTypeMode.Collection),
+					                    new DataType("Stack", DataTypeMode.Collection),
+					                    new DataType("SynchronizedCollection", DataTypeMode.Collection),
+					                    new DataType("Dictionary", DataTypeMode.Dictionary),
+					                    new DataType("SortedDictionary", DataTypeMode.Dictionary),
+					                    new DataType("SortedList", DataTypeMode.Dictionary),
+					                    new DataType("SynchronizedKeyedCollection", DataTypeMode.Dictionary),
+										//System.Collections.ObjectModel Types
+					                    new DataType("Collection", DataTypeMode.Collection),
+					                    new DataType("ObservableCollection", DataTypeMode.Collection),
+					                    new DataType("KeyedCollection", DataTypeMode.Dictionary)
+				                    };
 		}
 
-		public Project(string Name) : base()
+		public Project(string Name)
 		{
-			this.ID = Guid.NewGuid();
-			this.DependencyProjects = new ObservableCollection<DependencyProject>();
-			this.UsingNamespaces = new ObservableCollection<ProjectUsingNamespace>();
+			ID = Guid.NewGuid();
+			DependencyProjects = new ObservableCollection<DependencyProject>();
 
-			this.ServerGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
-			this.ClientGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
+			ServerGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
+			ClientGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
 
-			this.Namespace = new Namespace(Helpers.RegExs.ReplaceSpaces.Replace(Name, "."), null, this);
-			this.Namespace.URI = "http://tempuri.org/" + Namespace.Name.Replace(".", "/") + "/";
+			Namespace = new Namespace(Helpers.RegExs.ReplaceSpaces.Replace(Name, "."), null, this) {URI = "http://tempuri.org/" + Namespace.Name.Replace(".", "/") + "/"};
 			this.Name = Name;
 
 			//Add the default types
-			this.DefaultTypes = new List<DataType>();
-			//Primitive Types
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Void));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Byte));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.SByte));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Short));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Int));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Long));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.UShort));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.UInt));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.ULong));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Float));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Double));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Decimal));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Bool));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Char));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.String));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.DateTime));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.DateTimeOffset));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.TimeSpan));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.URI));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.GUID));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.Version));
-			this.DefaultTypes.Add(new DataType(Projects.PrimitiveTypes.ByteArray));
-			//System.Collections.Generic Types
-			this.DefaultTypes.Add(new DataType("LinkedList", DataTypeMode.Collection));
-			this.DefaultTypes.Add(new DataType("List", DataTypeMode.Collection));
-			this.DefaultTypes.Add(new DataType("HashSet", DataTypeMode.Collection));
-			this.DefaultTypes.Add(new DataType("Queue", DataTypeMode.Collection));
-			this.DefaultTypes.Add(new DataType("SortedSet", DataTypeMode.Collection));
-			this.DefaultTypes.Add(new DataType("Stack", DataTypeMode.Collection));
-			this.DefaultTypes.Add(new DataType("SynchronizedCollection", DataTypeMode.Collection));
-			this.DefaultTypes.Add(new DataType("Dictionary", DataTypeMode.Dictionary));
-			this.DefaultTypes.Add(new DataType("SortedDictionary", DataTypeMode.Dictionary));
-			this.DefaultTypes.Add(new DataType("SortedList", DataTypeMode.Dictionary));
-			this.DefaultTypes.Add(new DataType("SynchronizedKeyedCollection", DataTypeMode.Dictionary));
-			//System.Collections.ObjectModel Tpyes
-			this.DefaultTypes.Add(new DataType("Collection", DataTypeMode.Collection));
-			this.DefaultTypes.Add(new DataType("ObservableCollection", DataTypeMode.Collection));
-			this.DefaultTypes.Add(new DataType("KeyedCollection", DataTypeMode.Dictionary));
+			DefaultTypes = new List<DataType>
+				                    {
+										//Primitive Types
+					                    new DataType(PrimitiveTypes.Void),
+					                    new DataType(PrimitiveTypes.Byte),
+					                    new DataType(PrimitiveTypes.SByte),
+					                    new DataType(PrimitiveTypes.Short),
+					                    new DataType(PrimitiveTypes.Int),
+					                    new DataType(PrimitiveTypes.Long),
+					                    new DataType(PrimitiveTypes.UShort),
+					                    new DataType(PrimitiveTypes.UInt),
+					                    new DataType(PrimitiveTypes.ULong),
+					                    new DataType(PrimitiveTypes.Float),
+					                    new DataType(PrimitiveTypes.Double),
+					                    new DataType(PrimitiveTypes.Decimal),
+					                    new DataType(PrimitiveTypes.Bool),
+					                    new DataType(PrimitiveTypes.Char),
+					                    new DataType(PrimitiveTypes.String),
+					                    new DataType(PrimitiveTypes.DateTime),
+					                    new DataType(PrimitiveTypes.DateTimeOffset),
+					                    new DataType(PrimitiveTypes.TimeSpan),
+					                    new DataType(PrimitiveTypes.URI),
+					                    new DataType(PrimitiveTypes.GUID),
+					                    new DataType(PrimitiveTypes.Version),
+					                    new DataType(PrimitiveTypes.ByteArray),
+										//System.Collections.Generic Types
+					                    new DataType("LinkedList", DataTypeMode.Collection),
+					                    new DataType("List", DataTypeMode.Collection),
+					                    new DataType("HashSet", DataTypeMode.Collection),
+					                    new DataType("Queue", DataTypeMode.Collection),
+					                    new DataType("SortedSet", DataTypeMode.Collection),
+					                    new DataType("Stack", DataTypeMode.Collection),
+					                    new DataType("SynchronizedCollection", DataTypeMode.Collection),
+					                    new DataType("Dictionary", DataTypeMode.Dictionary),
+					                    new DataType("SortedDictionary", DataTypeMode.Dictionary),
+					                    new DataType("SortedList", DataTypeMode.Dictionary),
+					                    new DataType("SynchronizedKeyedCollection", DataTypeMode.Dictionary),
+										//System.Collections.ObjectModel Types
+					                    new DataType("Collection", DataTypeMode.Collection),
+					                    new DataType("ObservableCollection", DataTypeMode.Collection),
+					                    new DataType("KeyedCollection", DataTypeMode.Dictionary)
+				                    };
 
 			//Default Using Namespaces
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System", true, true, true, true, true));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections", true, true, true, true, true));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections.Generic", true, true, true, true, true));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections.ObjectModel", true, true, true, true, true));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Collections.Specialized", true, true, true, true, true));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.ComponentModel", true, true, true, true, true));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Net", true, true, true, true, true));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Net.Security", true, true, true, true, false));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Reflection", true, true, true, true, true));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Resources", true, true, true, true, true));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Runtime.CompilerServices", true, true, true, true, true));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Runtime.InteropServices", true, true, true, true, true));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Runtime.Serialization", true, true, true, true, true));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.ServiceModel", true, true, true, true, true));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.ServiceModel.Description", true, true, true, true, true));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Text", true, true, true, true, true));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("System.Windows", false, true, true, true, false));
-			UsingNamespaces.Add(new Projects.ProjectUsingNamespace("Windows.UI.Xaml", false, true, false, false, true));
+			UsingNamespaces = new ObservableCollection<ProjectUsingNamespace>
+				                  {
+					                  new ProjectUsingNamespace("System", true, true, true, true, true),
+					                  new ProjectUsingNamespace("System.Collections", true, true, true, true, true),
+					                  new ProjectUsingNamespace("System.Collections.Generic", true, true, true, true, true),
+					                  new ProjectUsingNamespace("System.Collections.ObjectModel", true, true, true, true, true),
+					                  new ProjectUsingNamespace("System.Collections.Specialized", true, true, true, true, true),
+					                  new ProjectUsingNamespace("System.ComponentModel", true, true, true, true, true),
+					                  new ProjectUsingNamespace("System.Net", true, true, true, true, true),
+					                  new ProjectUsingNamespace("System.Net.Security", true, true, true, true, false),
+					                  new ProjectUsingNamespace("System.Reflection", true, true, true, true, true),
+					                  new ProjectUsingNamespace("System.Resources", true, true, true, true, true),
+					                  new ProjectUsingNamespace("System.Runtime.CompilerServices", true, true, true, true, true),
+					                  new ProjectUsingNamespace("System.Runtime.InteropServices", true, true, true, true, true),
+					                  new ProjectUsingNamespace("System.Runtime.Serialization", true, true, true, true, true),
+					                  new ProjectUsingNamespace("System.ServiceModel", true, true, true, true, true),
+					                  new ProjectUsingNamespace("System.ServiceModel.Description", true, true, true, true, true),
+					                  new ProjectUsingNamespace("System.Text", true, true, true, true, true),
+					                  new ProjectUsingNamespace("System.Windows", false, true, true, true, false),
+					                  new ProjectUsingNamespace("Windows.UI.Xaml", false, true, false, false, true)
+				                  };
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.Property == OpenableDocument.IsDirtyProperty) return;
-			if (e.Property == Project.IsSearchingProperty) return;
-			if (e.Property == Project.IsSearchMatchProperty) return;
-			if (e.Property == Project.IsFilteringProperty) return;
-			if (e.Property == Project.IsFilterMatchProperty) return;
-			if (e.Property == Project.IsTreeExpandedProperty) return;
+			if (e.Property == IsDirtyProperty) return;
+			if (e.Property == IsSearchingProperty) return;
+			if (e.Property == IsSearchMatchProperty) return;
+			if (e.Property == IsFilteringProperty) return;
+			if (e.Property == IsFilterMatchProperty) return;
+			if (e.Property == IsTreeExpandedProperty) return;
 
 			IsDirty = true;
 		}
@@ -305,7 +310,7 @@ namespace WCFArchitect.Projects
 			if (!System.IO.File.Exists(abspath))
 				throw new System.IO.FileNotFoundException("Unable to locate the Project file '" + abspath + "'");
 
-			Project t = Storage.Open<Project>(abspath);
+			var t = Storage.Open<Project>(abspath);
 			t.AbsolutePath = abspath;
 			return t;
 		}
@@ -322,12 +327,12 @@ namespace WCFArchitect.Projects
 
 		public List<DataType> SearchTypes(string Search, bool DataOnly = false, bool IsDependency = false)
 		{
-			if(Search == null || Search == "") return new List<DataType>();
+			if(string.IsNullOrEmpty(Search)) return new List<DataType>();
 
-			List<DataType> results = new List<DataType>();
+			var results = new List<DataType>();
 
 			if (DataOnly == false)
-				if (IsDependency == false) results.AddRange(from a in DefaultTypes where a.Name.Contains(Search) select a);
+				if (IsDependency == false) results.AddRange(from a in DefaultTypes where a.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0 select a);
 			results.AddRange(Namespace.SearchTypes(Search, DataOnly));
 
 			return results;
@@ -335,14 +340,7 @@ namespace WCFArchitect.Projects
 
 		public bool HasGenerationFramework(ProjectGenerationFramework Framework)
 		{
-			foreach (ProjectGenerationTarget t in ServerGenerationTargets)
-				if (t.Framework == Framework)
-					return true;
-			foreach (ProjectGenerationTarget t in ClientGenerationTargets)
-				if (t.Framework == Framework)
-					return true;
-
-			return false;
+			return ServerGenerationTargets.Any(t => t.Framework == Framework) || ClientGenerationTargets.Any(t => t.Framework == Framework);
 		}
 
 		public bool HasDependencyProject(Guid ID)
@@ -387,7 +385,7 @@ namespace WCFArchitect.Projects
 						{
 							if (Name != null && Name != "") if (Name.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Name", Name, this, this));
 							if (Namespace.Name != null && Namespace.Name != "") if (Namespace.Name.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Namespace", Namespace.Name, this, this));
-							if (Namespace.URI != null && Namespace.URI != "") if (Namespace.URI.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("ContractName", Namespace.URI, this, this));
+							if (Namespace.URI != null && Namespace.URI != "") if (Namespace.URI.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("ClientName", Namespace.URI, this, this));
 						}
 					}
 				}
