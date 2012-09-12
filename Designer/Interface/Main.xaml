@@ -290,7 +290,7 @@
 									</StackPanel>
 									<StackPanel Grid.Row="2">
 										<Label Content="Licensed To:" Foreground="DodgerBlue" Padding="4,0" />
-										<Label Name="LicenseName" Content="{Binding Path=LicenseInfo.LicenseeName}" Padding="4,0" />
+										<Label Name="LicenseName" Content="" Padding="4,0" />
 										<Label Name="LicenseCompany" Content="Prospective Software" Padding="4,0" />
 									</StackPanel>
 								</Grid>

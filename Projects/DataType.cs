@@ -87,7 +87,7 @@ namespace WCFArchitect.Projects
 			var t = o as DataType;
 			if (t == null) return;
 
-			t.Name = Helpers.RegExs.ReplaceSpaces.Replace(Convert.ToString(e.NewValue) ?? "", @"");
+			t.Name = Helpers.RegExs.ReplaceSpaces.Replace(Convert.ToString(e.NewValue), @"");
 			t.TypeName = t.ToString();
 			t.Declaration = t.ToDeclarationString();
 		}

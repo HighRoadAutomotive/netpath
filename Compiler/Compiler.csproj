@@ -45,7 +45,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="Prospective.Utilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Prospective\Prospective.Utilities\Build\Prospective.Utilities.dll</HintPath>
+      <HintPath>..\..\..\Prospective\Utilities\Build\Prospective.Utilities.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
