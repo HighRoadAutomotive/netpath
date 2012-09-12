@@ -208,7 +208,7 @@ namespace WCFArchitect.Projects
 		public Guid ID { get; set; }
 
 		//Basic
-		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value == null ? "" : value, @"")); } }
+		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value ?? "", @"")); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(EnumElement));
 
 		public bool IsExcluded { get { return (bool)GetValue(IsExcludedProperty); } set { SetValue(IsExcludedProperty, value); } }
@@ -270,6 +270,11 @@ namespace WCFArchitect.Projects
 
 			if (Owner != null)
 				Owner.IsDirty = true;
+		}
+
+		public override string ToString()
+		{
+			return Name;
 		}
 
 		public List<FindReplaceResult> FindReplace(FindReplaceInfo Args)

@@ -12,24 +12,24 @@ namespace WCFArchitect.Compiler.Generators
 		{
 			bool NoErrors = true;
 
-			if (o.Name == "" || o.Name == null)
+			if (string.IsNullOrEmpty(o.Name))
 			{
-				Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5000", "A host in the '" + o.Parent.Name + "' project has a blank Code Name. A Code Name MUST be specified.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
+				Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5000", "A host in the '" + o.Parent.Name + "' project has a blank Code Name. A Code Name MUST be specified.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 				NoErrors = false;
 			}
 			else
 				if (Helpers.RegExs.MatchCodeName.IsMatch(o.Name) == false)
 				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5001", "The host '" + o.Name + "' in the '" + o.Parent.Name + "' project contains invalid characters in the Code Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
+					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5001", "The host '" + o.Name + "' in the '" + o.Parent.Name + "' project contains invalid characters in the Code Name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 					NoErrors = false;
 				}
-			if (o.Namespace == "" || o.Namespace == null) { }
+			if (string.IsNullOrEmpty(o.Namespace)) { }
 			else
 				if (Helpers.RegExs.MatchHTTPURI.IsMatch(o.Namespace) == false)
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5002", "The Namespace URI '" + o.Namespace + "' for the '" + o.Name + "' host in the '" + o.Parent.Name + "' project is not a valid URI.", WCFArchitect.Compiler.CompileMessageSeverity.Warning, o.Parent, o, o.GetType()));
+					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5002", "The Namespace URI '" + o.Namespace + "' for the '" + o.Name + "' host in the '" + o.Parent.Name + "' project is not a valid URI.", WCFArchitect.Compiler.CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 
 			if (o.Service == null)
-				Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5003", "The host '" + o.Name + "' in the '" + o.Parent.Name + "' project has no Service associated with it and will not be generated. A Service must be associated with this Host for it be generated.", WCFArchitect.Compiler.CompileMessageSeverity.Warning, o.Parent, o, o.GetType()));
+				Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5003", "The host '" + o.Name + "' in the '" + o.Parent.Name + "' project has no Service associated with it and will not be generated. A Service must be associated with this Host for it be generated.", WCFArchitect.Compiler.CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 
 			foreach (string BA in o.BaseAddresses)
 			{
@@ -41,26 +41,26 @@ namespace WCFArchitect.Compiler.Generators
 				if (Helpers.RegExs.MatchMSMQURI.IsMatch(BA) == true) BAValid = true;
 				if (BAValid == true)
 				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5003", "The URI '" + BA + "' for the '" + o.Name + "' host in the '" + o.Parent.Name + "' project is not a valid URI. Any associated services and data may not function properly.", WCFArchitect.Compiler.CompileMessageSeverity.Warning, o.Parent, o, o.GetType()));
+					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5003", "The URI '" + BA + "' for the '" + o.Name + "' host in the '" + o.Parent.Name + "' project is not a valid URI. Any associated services and data may not function properly.", WCFArchitect.Compiler.CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 				}
 			}
 
 			foreach (Projects.HostEndpoint HE in o.Endpoints)
 			{
-				if (HE.Name == "" || HE.Name == null)
+				if (string.IsNullOrEmpty(HE.Name))
 				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5004", "A host in the endpoint '" + HE.Parent.Name + "' project has a blank Code Name. A Code Name MUST be spcified.", WCFArchitect.Compiler.CompileMessageSeverity.Error, HE.Parent, HE, HE.GetType()));
+					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5004", "A host in the endpoint '" + HE.Parent.Name + "' project has a blank Code Name. A Code Name MUST be specified.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, HE.Parent, HE, HE.GetType(), HE.Parent.ID, HE.ID));
 					NoErrors = false;
 				}
 				else
 					if (Helpers.RegExs.MatchCodeName.IsMatch(HE.Name) == false)
 					{
-						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5005", "The host endpoint '" + HE.Name + "' in the '" + HE.Parent.Name + "' project contains invalid characters in the Code Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, HE.Parent, HE, HE.GetType()));
+						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5005", "The host endpoint '" + HE.Name + "' in the '" + HE.Parent.Name + "' project contains invalid characters in the Code Name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, HE.Parent, HE, HE.GetType(), HE.Parent.ID, HE.ID));
 						NoErrors = false;
 					}
 				if (HE.Binding == null)
 				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5006", "The host endpoint'" + HE.Name + "' in the '" + HE.Parent.Name + "' must have a Binding. Please specify a Binding", WCFArchitect.Compiler.CompileMessageSeverity.Error, HE.Parent, HE, HE.GetType()));
+					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5006", "The host endpoint'" + HE.Name + "' in the '" + HE.Parent.Name + "' must have a Binding. Please specify a Binding", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, HE.Parent, HE, HE.GetType(), HE.Parent.ID, HE.ID));
 					NoErrors = false;
 				}
 			}
@@ -72,17 +72,17 @@ namespace WCFArchitect.Compiler.Generators
 				{
 					Projects.HostDebugBehavior b = HB as Projects.HostDebugBehavior;
 					if (Helpers.RegExs.MatchHTTPURI.IsMatch(b.HttpHelpPageUrl) == false)
-						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5007", "The HTTP Help Page URL '" + b.HttpHelpPageUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", WCFArchitect.Compiler.CompileMessageSeverity.Warning, b.Parent, b, b.GetType()));
+						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5007", "The HTTP Help Page URL '" + b.HttpHelpPageUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", WCFArchitect.Compiler.CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 					if (Helpers.RegExs.MatchHTTPURI.IsMatch(b.HttpsHelpPageUrl) == false)
-						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5008", "The HTTPS Help Page URL '" + b.HttpsHelpPageUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", WCFArchitect.Compiler.CompileMessageSeverity.Warning, b.Parent, b, b.GetType()));
+						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5008", "The HTTPS Help Page URL '" + b.HttpsHelpPageUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", WCFArchitect.Compiler.CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				}
 				else if (t == typeof(Projects.HostMetadataBehavior))
 				{
 					Projects.HostMetadataBehavior b = HB as Projects.HostMetadataBehavior;
 					if (Helpers.RegExs.MatchHTTPURI.IsMatch(b.HttpGetUrl) == false)
-						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5009", "The HTTP Get URL '" + b.HttpGetUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", WCFArchitect.Compiler.CompileMessageSeverity.Warning, b.Parent, b, b.GetType()));
+						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5009", "The HTTP Get URL '" + b.HttpGetUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", WCFArchitect.Compiler.CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 					if (Helpers.RegExs.MatchHTTPURI.IsMatch(b.HttpsGetUrl) == false)
-						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5010", "The HTTPS Get URL '" + b.HttpsGetUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", WCFArchitect.Compiler.CompileMessageSeverity.Warning, b.Parent, b, b.GetType()));
+						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS5010", "The HTTPS Get URL '" + b.HttpsGetUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", WCFArchitect.Compiler.CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				}
 				else if (t == typeof(Projects.HostThrottlingBehavior))
 				{

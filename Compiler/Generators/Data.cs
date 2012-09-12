@@ -15,27 +15,27 @@ namespace WCFArchitect.Compiler.Generators
 
 			if (o.Name == "" || o.Name == null)
 			{
-				Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS3000", "The data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace has a blank Code Name. A Code Name MUST be specified.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
+				Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS3000", "The data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace has a blank Code Name. A Code Name MUST be specified.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 				NoErrors = false;
 			}
 			else
 				if (Helpers.RegExs.MatchCodeName.IsMatch(o.Name) == false)
 				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS3001", "The data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
+					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS3001", "The data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 					NoErrors = false;
 				}
 
 			if (o.HasClientType == true)
 				if (Helpers.RegExs.MatchCodeName.IsMatch(o.ClientType.Name) == false)
 				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS3002", "The data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
+					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS3002", "The data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 					NoErrors = false;
 				}
 
 			if (o.HasXAMLType == true)
 				if (Helpers.RegExs.MatchCodeName.IsMatch(o.XAMLType.Name) == false)
 				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS3003", "The data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
+					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS3003", "The data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 					NoErrors = false;
 				}
 
@@ -43,21 +43,21 @@ namespace WCFArchitect.Compiler.Generators
 			{
 				if (Helpers.RegExs.MatchCodeName.IsMatch(D.DataType.Name) == false)
 				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS3005", "The data element '" + D.DataType.Name + "' in the '" + o.Name + "' data object contains invalid characters in the Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o, D, D.GetType()));
+					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS3005", "The data element '" + D.DataType.Name + "' in the '" + o.Name + "' data object contains invalid characters in the Name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o, D, D.GetType(), o.ID, D.ID));
 					NoErrors = false;
 				}
 
 				if (D.HasClientType == true)
 					if (Helpers.RegExs.MatchCodeName.IsMatch(D.ClientType.Name) == false)
 					{
-						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS3002", "The data object '" + D.ClientType.Name + "' in the '" + o.Name + "' namespace contains invalid characters in the Client Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
+						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS3002", "The data object '" + D.ClientType.Name + "' in the '" + o.Name + "' namespace contains invalid characters in the Client Name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 						NoErrors = false;
 					}
 
 				if (D.HasXAMLType == true)
 					if (Helpers.RegExs.MatchCodeName.IsMatch(D.XAMLType.Name) == false)
 					{
-						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS3003", "The data object '" + D.XAMLType.Name + "' in the '" + o.Name + "' namespace contains invalid characters in the XAML Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
+						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS3003", "The data object '" + D.XAMLType.Name + "' in the '" + o.Name + "' namespace contains invalid characters in the XAML Name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 						NoErrors = false;
 					}
 			}
