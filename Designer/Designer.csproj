@@ -114,11 +114,9 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Karvonite40">
+    <Reference Include="Karvonite40, Version=4.0.600.250, Culture=neutral, PublicKeyToken=a250635ee744b9fb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\Karvonite 4\Bin\Karvonite40.dll</HintPath>
-    </Reference>
-    <Reference Include="Licensing, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\Prospective\Prospective Server\Build\Licensing.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.WindowsAPICodePack">
@@ -133,7 +131,8 @@
       <HintPath>..\..\..\Prospective\Controls\Build\Prospective.Controls.dll</HintPath>
     </Reference>
     <Reference Include="Prospective.Utilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\Prospective\Prospective.Utilities\Build\Prospective.Utilities.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Prospective\Utilities\Build\Prospective.Utilities.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -190,7 +189,6 @@
     <Compile Include="Interface\Project\Project.xaml.cs">
       <DependentUpon>Project.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Options\Licensing.cs" />
     <Compile Include="Options\UserProfile.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -257,7 +255,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Options\License.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -277,7 +274,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.config" />
-    <EmbeddedResource Include="Options\LicenseKey.kvtmodel" />
     <EmbeddedResource Include="Options\UserProfile.kvtmodel" />
     <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">

@@ -24,10 +24,6 @@ namespace WCFArchitect.Interface
 		public object SelectedProject { get { return (object)GetValue(SelectedProjectProperty); } set { SetValue(SelectedProjectProperty, value); } }
 		public static readonly DependencyProperty SelectedProjectProperty = DependencyProperty.Register("SelectedProject", typeof(object), typeof(Main));
 		
-		//Options Properties
-		public Prospective.Server.Licensing.LicenseInfoWPF LicenseInfo { get { return (Prospective.Server.Licensing.LicenseInfoWPF)GetValue(LicenseInfoProperty); } set { SetValue(LicenseInfoProperty, value); } }
-		public static readonly DependencyProperty LicenseInfoProperty = DependencyProperty.Register("LicenseInfo", typeof(Prospective.Server.Licensing.LicenseInfoWPF), typeof(Main));
-
 		public WCFArchitect.Options.UserProfile UserProfile { get { return (WCFArchitect.Options.UserProfile)GetValue(UserProfileProperty); } set { SetValue(UserProfileProperty, value); } }
 		public static readonly DependencyProperty UserProfileProperty = DependencyProperty.Register("UserProfile", typeof(WCFArchitect.Options.UserProfile), typeof(Main));
 

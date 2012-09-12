@@ -19,7 +19,6 @@ namespace WCFArchitect
 			//Get executable data. 
 			Globals.ApplicationPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\";
 			Globals.ApplicationVersion = new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo(Globals.ApplicationPath + "WCFArchitect.exe").FileVersion);
-			Prospective.Server.Licensing.LicenseClient.ExeFile = Globals.ApplicationPath + "WCFArchitect.exe";
 
 			//Check to see if the License Key path exists and make a folder if it does not.
 			Globals.LicenseKeyPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\Prospective Software\\WCF Architect\\key.dat";
@@ -66,11 +65,6 @@ namespace WCFArchitect
 			{
 				Globals.UserProfile = new Options.UserProfile(Environment.UserDomainName + "\\" + Environment.UserName);
 				uos.Add(Globals.UserProfile);
-			}
-
-			if (Options.Licensing.Validate() == false)
-			{
-				this.Shutdown(0);
 			}
 		}
 
