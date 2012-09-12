@@ -14,29 +14,29 @@ namespace WCFArchitect.Compiler.Generators
 
 			if ((o.ServerOutputFile == "" || o.ServerOutputFile == null))
 			{
-				Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS0003", "The '" + o.Name + "' project does not have a Server Assembly Name. You must specify a Server Assembly Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, null, o, o.GetType()));
+				Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS0003", "The '" + o.Name + "' project does not have a Server Assembly Name. You must specify a Server Assembly Name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, null, o, o.GetType(), Guid.Empty, o.ID));
 				NoErrors = false;
 			}
 			else
 				if (Helpers.RegExs.MatchFileName.IsMatch(o.ServerOutputFile) == false)
 				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS0004", "The Server Assembly Name in '" + o.Name + "' project is not set or contains invalid characters. You must specify a valid Windows file name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, null, o, o.GetType()));
+					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS0004", "The Server Assembly Name in '" + o.Name + "' project is not set or contains invalid characters. You must specify a valid Windows file name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, null, o, o.GetType(), Guid.Empty, o.ID));
 					NoErrors = false;
 				}
 			if ((o.ClientOutputFile == "" || o.ClientOutputFile == null))
 			{
-				Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS0005", "The '" + o.Name + "' project does not have a Client Assembly Name. You must specify a Client Assembly Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, null, o, o.GetType()));
+				Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS0005", "The '" + o.Name + "' project does not have a Client Assembly Name. You must specify a Client Assembly Name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, null, o, o.GetType(), Guid.Empty, o.ID));
 				NoErrors = false;
 			}
 			else
 				if (Helpers.RegExs.MatchFileName.IsMatch(o.ClientOutputFile) == false)
 				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS0006", "The Client Assembly Name in '" + o.Name + "' project is not set or contains invalid characters. You must specify a valid Windows file name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, null, o, o.GetType()));
+					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS0006", "The Client Assembly Name in '" + o.Name + "' project is not set or contains invalid characters. You must specify a valid Windows file name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, null, o, o.GetType(), Guid.Empty, o.ID));
 					NoErrors = false;
 				}
 			if ((o.ServerOutputFile == o.ClientOutputFile))
 			{
-				Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS0007", "The '" + o.Name + "' project Client and Server Assembly Names are the same. You must specify a different Server or Client Assembly Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, null, o, o.GetType()));
+				Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS0007", "The '" + o.Name + "' project Client and Server Assembly Names are the same. You must specify a different Server or Client Assembly Name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, null, o, o.GetType(), Guid.Empty, o.ID));
 				NoErrors = false;
 			}
 

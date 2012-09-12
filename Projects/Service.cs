@@ -333,6 +333,11 @@ namespace WCFArchitect.Projects
 				Owner.IsDirty = true;
 		}
 
+		public override string ToString()
+		{
+			return Name;
+		}
+
 		public virtual List<FindReplaceResult> FindReplace(FindReplaceInfo Args)
 		{
 			List<FindReplaceResult> results = new List<FindReplaceResult>();

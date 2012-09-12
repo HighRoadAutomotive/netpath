@@ -428,6 +428,11 @@ namespace WCFArchitect.Projects
 				Owner.IsDirty = true;
 		}
 
+		public override string ToString()
+		{
+			return DataName;
+		}
+
 		public List<FindReplaceResult> FindReplace(FindReplaceInfo Args)
 		{
 			List<FindReplaceResult> results = new List<FindReplaceResult>();

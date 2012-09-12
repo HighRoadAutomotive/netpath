@@ -260,6 +260,11 @@ namespace WCFArchitect.Projects
 					Parent.Parent.IsDirty = true;
 		}
 
+		public override string ToString()
+		{
+			return Name;
+		}
+
 		public List<FindReplaceResult> FindReplace(FindReplaceInfo Args)
 		{
 			List<FindReplaceResult> results = new List<FindReplaceResult>();
@@ -397,6 +402,11 @@ namespace WCFArchitect.Projects
 			this.Name = Name;
 			this.Namespace = Namespace;
 		}
+
+		public override string ToString()
+		{
+			return Name;
+		}
 	}
 
 	public class HostCredentials : DependencyObject
@@ -512,6 +522,11 @@ namespace WCFArchitect.Projects
 				if (Owner.Parent != null)
 					Owner.Parent.IsDirty = true;
 		}
+
+		public override string ToString()
+		{
+			return Owner.Name + "Credentials";
+		}
 	}
 
 	public abstract class HostBehavior : DependencyObject
@@ -528,6 +543,11 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty ParentProperty =  DependencyProperty.Register("Parent", typeof(Host), typeof(HostBehavior));
 
 		public HostBehavior() { }
+
+		public override string ToString()
+		{
+			return Name;
+		}
 
 		public List<FindReplaceResult> FindReplace(FindReplaceInfo Args)
 		{

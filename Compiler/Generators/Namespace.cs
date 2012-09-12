@@ -15,12 +15,12 @@ namespace WCFArchitect.Compiler.Generators
 
 			if (o.URI == null || o.URI == "")
 			{
-				Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS1000", "The '" + o.Name + "' namespace in the '" + o.Owner.Name + "' project does not have a URI. Namespaces MUST have a URI.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
+				Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS1000", "The '" + o.Name + "' namespace in the '" + o.Owner.Name + "' project does not have a URI. Namespaces MUST have a URI.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 				NoErrors = false;
 			}
 			else
 				if (Helpers.RegExs.MatchHTTPURI.IsMatch(o.URI) == false)
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS1001", "The URI '" + o.URI + "' for the '" + o.Name + "' namespace in the '" + o.Owner.Name + "' project is not a valid URI. Any associated services and data may not function properly.", WCFArchitect.Compiler.CompileMessageSeverity.Warning, o.Parent, o, o.GetType()));
+					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS1001", "The URI '" + o.URI + "' for the '" + o.Name + "' namespace in the '" + o.Owner.Name + "' project is not a valid URI. Any associated services and data may not function properly.", WCFArchitect.Compiler.CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 
 			foreach (Projects.Enum EE in o.Enums)
 				if (EnumCSGenerator.VerifyCode(EE) == false) NoErrors = false;

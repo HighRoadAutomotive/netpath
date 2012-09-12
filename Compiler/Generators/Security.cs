@@ -14,13 +14,13 @@ namespace WCFArchitect.Compiler.Generators
 
 			if (o.Name == "" || o.Name == null)
 			{
-				Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS7000", "A binding security element in the '" + o.Parent.Name + "' project has a blank Code Name. A Code Name MUST be specified.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
+				Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS7000", "A binding security element in the '" + o.Parent.Name + "' project has a blank Code Name. A Code Name MUST be specified.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 				NoErrors = false;
 			}
 			else
 				if (Helpers.RegExs.MatchCodeName.IsMatch(o.Name) == false)
 				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS7001", "The binding security element '" + o.Name + "' in the '" + o.Parent.Name + "' project contains invalid characters in the Code Name.", WCFArchitect.Compiler.CompileMessageSeverity.Error, o.Parent, o, o.GetType()));
+					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS7001", "The binding security element '" + o.Name + "' in the '" + o.Parent.Name + "' project contains invalid characters in the Code Name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 					NoErrors = false;
 				}
 
