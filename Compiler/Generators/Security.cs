@@ -8,23 +8,13 @@ namespace WCFArchitect.Compiler.Generators
 {
 	internal static class SecurityCSGenerator
 	{
-		public static bool VerifyCode(Projects.BindingSecurity o)
+		public static void VerifyCode(Projects.BindingSecurity o)
 		{
-			bool NoErrors = true;
-
-			if (o.Name == "" || o.Name == null)
-			{
-				Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS7000", "A binding security element in the '" + o.Parent.Name + "' project has a blank Code Name. A Code Name MUST be specified.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-				NoErrors = false;
-			}
+			if (string.IsNullOrEmpty(o.Name))
+				Program.AddMessage(new CompileMessage("GS7000", "A binding security element in the '" + o.Parent.Name + "' project has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 			else
 				if (Helpers.RegExs.MatchCodeName.IsMatch(o.Name) == false)
-				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS7001", "The binding security element '" + o.Name + "' in the '" + o.Parent.Name + "' project contains invalid characters in the Code Name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-					NoErrors = false;
-				}
-
-			return NoErrors;
+					Program.AddMessage(new CompileMessage("GS7001", "The binding security element '" + o.Name + "' in the '" + o.Parent.Name + "' project contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 		}
 
 		public static string GenerateCode30(Projects.BindingSecurity o)
