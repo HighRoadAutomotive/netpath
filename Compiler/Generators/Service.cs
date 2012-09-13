@@ -10,79 +10,43 @@ namespace WCFArchitect.Compiler.Generators
 	internal static class ServiceCSGenerator
 	{
 
-		public static bool VerifyCode(Service o)
+		public static void VerifyCode(Service o)
 		{
-			bool NoErrors = true;
-
-			if (o.Name == "" || o.Name == null)
-			{
-				Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS2000", "An service in the '" + o.Parent.Name + "' namespace has a blank Code Name. A Code Name MUST be specified.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-				NoErrors = false;
-			}
+			if (string.IsNullOrEmpty(o.Name))
+				Program.AddMessage(new CompileMessage("GS2000", "An service in the '" + o.Parent.Name + "' namespace has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 			else
 				if (Helpers.RegExs.MatchCodeName.IsMatch(o.Name) == false)
-				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS2001", "The service '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Code Name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-					NoErrors = false;
-				}
+					Program.AddMessage(new CompileMessage("GS2001", "The service '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 			if (o.HasClientType == true) { }
 				if (Helpers.RegExs.MatchCodeName.IsMatch(o.ClientType.Name) == false)
-				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS2002", "The service '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-					NoErrors = false;
-				}
+					Program.AddMessage(new CompileMessage("GS2002", "The service '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 
-			foreach (Method O in o.Operations)
+			foreach (Method m in o.Operations)
 			{
-				if (O.Name == "" || O.Name == null)
-				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS2004", "An operation in the '" + o.Name + "' service has a blank Code Name. A Code Name MUST be specified.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o, O, O.GetType(), o.ID, O.ID));
-					NoErrors = false;
-				}
+				if (string.IsNullOrEmpty(m.Name))
+					Program.AddMessage(new CompileMessage("GS2004", "An operation in the '" + o.Name + "' service has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
 				else
-					if (Helpers.RegExs.MatchCodeName.IsMatch(O.Name) == false)
-					{
-						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS2005", "The operation '" + O.Name + "' in the '" + o.Name + "' service contains invalid characters in the Code Name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o, O, O.GetType(), o.ID, O.ID));
-						NoErrors = false;
-					}
-				if (O.ClientName == "" || O.ClientName == null)
-					if (Helpers.RegExs.MatchCodeName.IsMatch(O.ClientName) == false)
-					{
-						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS2006", "The operation '" + O.Name + "' in the '" + o.Name + "' service contains invalid characters in the Client Name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o, O, O.GetType(), o.ID, O.ID));
-						NoErrors = false;
-					}
-				if (O.ReturnType == null)
-				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS2007", "The operation '" + O.Name + "' in the '" + o.Name + "' service has a blank Return Type. A Return Type MUST be specified.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o, O, O.GetType(), o.ID, O.ID));
-					NoErrors = false;
-				}
+					if (Helpers.RegExs.MatchCodeName.IsMatch(m.Name) == false)
+						Program.AddMessage(new CompileMessage("GS2005", "The operation '" + m.Name + "' in the '" + o.Name + "' service contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
+				if (string.IsNullOrEmpty(m.ClientName))
+					if (Helpers.RegExs.MatchCodeName.IsMatch(m.ClientName) == false)
+						Program.AddMessage(new CompileMessage("GS2006", "The operation '" + m.Name + "' in the '" + o.Name + "' service contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
+				if (m.ReturnType == null)
+					Program.AddMessage(new CompileMessage("GS2007", "The operation '" + m.Name + "' in the '" + o.Name + "' service has a blank Return Type. A Return Type MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
 
-				foreach (MethodParameter OP in O.Parameters)
-				{
-					if (OP.Name == "" || OP.Name == null)
-					{
-						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS2008", "The operation '" + O.Name + "' in the '" + o.Name + "' service has a parameter with a blank name. A Parameter Name MUST be specified.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o, O, O.GetType(), o.ID, O.ID));
-						NoErrors = false;
-					}
-				}
+				foreach (MethodParameter mp in m.Parameters)
+					if (string.IsNullOrEmpty(mp.Name))
+						Program.AddMessage(new CompileMessage("GS2008", "The operation '" + m.Name + "' in the '" + o.Name + "' service has a parameter with a blank name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
 			}
 
-			foreach (Property P in o.Operations)
+			foreach (Property p in o.Operations)
 			{
-				if (P.Name == "" || P.Name == null)
-				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS2010", "A property in the '" + o.Name + "' service has a blank Code Name. A Code Name MUST be specified.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o, P, P.GetType(), o.ID, P.ID));
-					NoErrors = false;
-				}
+				if (string.IsNullOrEmpty(p.Name))
+					Program.AddMessage(new CompileMessage("GS2010", "A property in the '" + o.Name + "' service has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o, p, p.GetType(), o.ID, p.ID));
 				else
-					if (Helpers.RegExs.MatchCodeName.IsMatch(P.Name) == false)
-					{
-						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS2011", "The Property '" + P.Name + "' in the '" + o.Name + "' service contains invalid characters in the Code Name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o, P, P.GetType(), o.ID, P.ID));
-						NoErrors = false;
-					}
+					if (Helpers.RegExs.MatchCodeName.IsMatch(p.Name) == false)
+						Program.AddMessage(new CompileMessage("GS2011", "The Property '" + p.Name + "' in the '" + o.Name + "' service contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, o, p, p.GetType(), o.ID, p.ID));
 			}
-
-			return NoErrors;
 		}
 
 		public static string GenerateServerCode30(Service o)

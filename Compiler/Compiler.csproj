@@ -61,8 +61,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Compiler-old.cs" />
-    <None Include="CompilerManager-old.cs" />
+    <Compile Include="Generator.cs" />
     <Compile Include="CompilerMessages.cs" />
     <Compile Include="Generators\Bindings.cs" />
     <Compile Include="Generators\Data.cs" />
@@ -70,7 +69,6 @@
     <Compile Include="Generators\Enum.cs" />
     <Compile Include="Generators\Host.cs" />
     <Compile Include="Generators\Namespace.cs" />
-    <Compile Include="Generators\Project.cs" />
     <Compile Include="Generators\Security.cs" />
     <Compile Include="Generators\Service.cs" />
     <Compile Include="Globals.cs" />

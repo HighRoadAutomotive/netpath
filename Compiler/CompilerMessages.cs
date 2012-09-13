@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace WCFArchitect.Compiler
 {
-	internal enum CompileMessageSeverity
+	public enum CompileMessageSeverity
 	{
 		INFO,
 		WARN,
 		ERROR,
 	}
 
-	internal class CompileMessage
+	public class CompileMessage
 	{
 		public string Code { get; private set; }
 		public string Description { get; private set; }

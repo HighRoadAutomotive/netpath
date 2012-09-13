@@ -310,19 +310,25 @@ namespace WCFArchitect.Projects
 			if (!System.IO.File.Exists(abspath))
 				throw new System.IO.FileNotFoundException("Unable to locate the Project file '" + abspath + "'");
 
+			//Open the project
 			var t = Storage.Open<Project>(abspath);
 			t.AbsolutePath = abspath;
+
+			// Open the project's dependencies
+			foreach(DependencyProject dp in t.DependencyProjects)
+				dp.Project = Open(SolutionPath, dp.Path);
+
 			return t;
 		}
 
 		public static void Save(Project Data)
 		{
-			Storage.Save<Project>(Data.AbsolutePath, Data);
+			Storage.Save(Data.AbsolutePath, Data);
 		}
 
 		public static void Save(Project Data, string Path)
 		{
-			Storage.Save<Project>(Path, Data);
+			Storage.Save(Path, Data);
 		}
 
 		public List<DataType> SearchTypes(string Search, bool DataOnly = false, bool IsDependency = false)
@@ -334,6 +340,9 @@ namespace WCFArchitect.Projects
 			if (DataOnly == false)
 				if (IsDependency == false) results.AddRange(from a in DefaultTypes where a.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0 select a);
 			results.AddRange(Namespace.SearchTypes(Search, DataOnly));
+
+			foreach(DependencyProject dp in DependencyProjects)
+				results.AddRange(dp.Project.SearchTypes(Search, true));
 
 			return results;
 		}
@@ -347,7 +356,7 @@ namespace WCFArchitect.Projects
 		{
 			foreach (DependencyProject dp in DependencyProjects)
 				if (dp.ProjectID == ID) return true;
-				else if (dp.Project.HasDependencyProject(ID)== true) return true;
+				else if (dp.Project.HasDependencyProject(ID)) return true;
 
 			return false;
 		}
@@ -531,14 +540,18 @@ namespace WCFArchitect.Projects
 		public ProjectGenerationFramework Framework { get { return (ProjectGenerationFramework)GetValue(FrameworkProperty); } set { SetValue(FrameworkProperty, value); } }
 		public static readonly DependencyProperty FrameworkProperty = DependencyProperty.Register("Framework", typeof(ProjectGenerationFramework), typeof(ProjectGenerationTarget), new UIPropertyMetadata(ProjectGenerationFramework.NET45));
 
+		public bool IsServerPath { get { return (bool)GetValue(IsServerPathProperty); } set { SetValue(IsServerPathProperty, value); } }
+		public static readonly DependencyProperty IsServerPathProperty = DependencyProperty.Register("IsServerPath", typeof(bool), typeof(ProjectGenerationTarget), new PropertyMetadata(true));
+
 		public ProjectGenerationTarget() { }
 
-		public ProjectGenerationTarget(Guid ProjectID, string Path)
+		public ProjectGenerationTarget(Guid ProjectID, string Path, bool IsServerPath)
 		{
 			this.ID = Guid.NewGuid();
 			this.ProjectID = ProjectID;
 			this.Path = Path;
 			this.Framework = ProjectGenerationFramework.NET45;
+			this.IsServerPath = IsServerPath;
 		}
 	}
 }

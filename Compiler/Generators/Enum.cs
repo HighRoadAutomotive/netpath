@@ -9,109 +9,84 @@ namespace WCFArchitect.Compiler.Generators
 {
 	internal static class EnumCSGenerator
 	{
-		public static bool VerifyCode(Projects.Enum o)
+		public static void VerifyCode(Projects.Enum o)
 		{
-			bool NoErrors = true;
-
-			if (o.Name == "" || o.Name == null)
-			{
-				Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS4000", "The enumeration '" + o.Name + "' in the '" + o.Parent.Name + "' namespace has a blank Code Name. A Code Name MUST be specified.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-				NoErrors = false;
-			}
+			if (string.IsNullOrEmpty(o.Name))
+				Program.AddMessage(new CompileMessage("GS4000", "The enumeration '" + o.Name + "' in the '" + o.Parent.Name + "' namespace has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 			else
 				if (Helpers.RegExs.MatchCodeName.IsMatch(o.Name) == false)
-				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS4001", "The enumeration '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-					NoErrors = false;
-				}
+					Program.AddMessage(new CompileMessage("GS4001", "The enumeration '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 
-			if (o.HasClientType == true)
+			if (o.HasClientType)
 				if (Helpers.RegExs.MatchCodeName.IsMatch(o.ClientType.Name) == false)
-				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS4002", "The enumeration '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-					NoErrors = false;
-				}
+					Program.AddMessage(new CompileMessage("GS4002", "The enumeration '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 
-			foreach (EnumElement E in o.Elements)
+			foreach (EnumElement e in o.Elements)
 			{
-				if (E.Name == "" || E.Name == null)
-				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS4003", "The enumeration '" + o.Name + "' in the '" + o.Parent.Name + "' namespace has an enumeration element with a blank Name. A Name MUST be specified.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o, E, E.GetType(), o.ID, E.ID));
-					NoErrors = false;
-				}
+				if (string.IsNullOrEmpty(e.Name))
+					Program.AddMessage(new CompileMessage("GS4003", "The enumeration '" + o.Name + "' in the '" + o.Parent.Name + "' namespace has an enumeration element with a blank Name. A Name MUST be specified.", CompileMessageSeverity.ERROR, o, e, e.GetType(), o.ID, e.ID));
 				else
-					if (Helpers.RegExs.MatchCodeName.IsMatch(E.Name) == false)
-					{
-						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS4004", "The enumeration element '" + E.Name + "' in the '" + o.Name + "' enumeration contains invalid characters in the Name.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o, E, E.GetType(), o.ID, E.ID));
-						NoErrors = false;
-					}
+					if (Helpers.RegExs.MatchCodeName.IsMatch(e.Name) == false)
+						Program.AddMessage(new CompileMessage("GS4004", "The enumeration element '" + e.Name + "' in the '" + o.Name + "' enumeration contains invalid characters in the Name.", CompileMessageSeverity.ERROR, o, e, e.GetType(), o.ID, e.ID));
 
 				if (o.IsFlags == false)
 				{
-					bool BadValue = false;
-					if (o.Primitive == Projects.PrimitiveTypes.Int)
-						try { Convert.ToInt32(E.Value); }
-						catch { BadValue = true; }
-					else if (o.Primitive == Projects.PrimitiveTypes.SByte)
-						try { Convert.ToSByte(E.Value); }
-						catch { BadValue = true; }
-					else if (o.Primitive == Projects.PrimitiveTypes.Byte)
-						try { Convert.ToByte(E.Value); }
-						catch { BadValue = true; }
-					else if (o.Primitive == Projects.PrimitiveTypes.UShort)
-						try { Convert.ToUInt16(E.Value); }
-						catch { BadValue = true; }
-					else if (o.Primitive == Projects.PrimitiveTypes.Short)
-						try { Convert.ToInt16(E.Value); }
-						catch { BadValue = true; }
-					else if (o.Primitive == Projects.PrimitiveTypes.UInt)
-						try { Convert.ToUInt32(E.Value); }
-						catch { BadValue = true; }
-					else if (o.Primitive == Projects.PrimitiveTypes.Long)
-						try { Convert.ToInt64(E.Value); }
-						catch { BadValue = true; }
-					else if (o.Primitive == Projects.PrimitiveTypes.ULong)
-						try { Convert.ToUInt64(E.Value); }
-						catch { BadValue = true; }
+					bool badValue = false;
+					if (o.Primitive == PrimitiveTypes.Int)
+						try { Convert.ToInt32(e.Value); }
+						catch { badValue = true; }
+					else if (o.Primitive == PrimitiveTypes.SByte)
+						try { Convert.ToSByte(e.Value); }
+						catch { badValue = true; }
+					else if (o.Primitive == PrimitiveTypes.Byte)
+						try { Convert.ToByte(e.Value); }
+						catch { badValue = true; }
+					else if (o.Primitive == PrimitiveTypes.UShort)
+						try { Convert.ToUInt16(e.Value); }
+						catch { badValue = true; }
+					else if (o.Primitive == PrimitiveTypes.Short)
+						try { Convert.ToInt16(e.Value); }
+						catch { badValue = true; }
+					else if (o.Primitive == PrimitiveTypes.UInt)
+						try { Convert.ToUInt32(e.Value); }
+						catch { badValue = true; }
+					else if (o.Primitive == PrimitiveTypes.Long)
+						try { Convert.ToInt64(e.Value); }
+						catch { badValue = true; }
+					else if (o.Primitive == PrimitiveTypes.ULong)
+						try { Convert.ToUInt64(e.Value); }
+						catch { badValue = true; }
 
-					if (E.Value == "") BadValue = false;
+					if (e.Value == "") badValue = false;
 
-					if (BadValue == true)
-					{
-						Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS4005", "The enumeration element '" + E.Name + "' in the '" + o.Name + "' enumeration contains an invalid value.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o, E, E.GetType(), o.ID, E.ID));
-						NoErrors = false;
-					}
+					if (badValue)
+						Program.AddMessage(new CompileMessage("GS4005", "The enumeration element '" + e.Name + "' in the '" + o.Name + "' enumeration contains an invalid value.", CompileMessageSeverity.ERROR, o, e, e.GetType(), o.ID, e.ID));
 				}
 			}
 
-			if (o.IsFlags == true)
+			if (o.IsFlags)
 			{
-				if (o.Primitive == Projects.PrimitiveTypes.Short && o.Elements.Count() > 14) Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS4006", "The number of elements in the Enumeration '" + o.Name + "' exceeds the maximum number of elements (14) supported by the 'short' data type. Any elements above this limit will not be generated.", WCFArchitect.Compiler.CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-				if (o.Primitive == Projects.PrimitiveTypes.UShort && o.Elements.Count() > 15) Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS4006", "The number of elements in the Enumeration '" + o.Name + "' exceeds the maximum number of elements (15) supported by the 'unsigned short' data type. Any elements above this limit will not be generated.", WCFArchitect.Compiler.CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-				if (o.Primitive == Projects.PrimitiveTypes.Int && o.Elements.Count() > 30) Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS4006", "The number of elements in the Enumeration '" + o.Name + "' exceeds the maximum number of elements (30) supported by the 'int' data type. Any elements above this limit will not be generated.", WCFArchitect.Compiler.CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-				if (o.Primitive == Projects.PrimitiveTypes.UInt && o.Elements.Count() > 31) Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS4006", "The number of elements in the Enumeration '" + o.Name + "' exceeds the maximum number of elements (31) supported by the 'unsigned int' data type. Any elements above this limit will not be generated.", WCFArchitect.Compiler.CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-				if (o.Primitive == Projects.PrimitiveTypes.Long && o.Elements.Count() > 62) Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS4006", "The number of elements in the Enumeration '" + o.Name + "' exceeds the maximum number of elements (62) supported by the 'long' data type. Any elements above this limit will not be generated.", WCFArchitect.Compiler.CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-				if (o.Primitive == Projects.PrimitiveTypes.ULong && o.Elements.Count() > 63) Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS4006", "The number of elements in the Enumeration '" + o.Name + "' exceeds the maximum number of elements (63) supported by the 'unsigned long' data type. Any elements above this limit will not be generated.", WCFArchitect.Compiler.CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
+				if (o.Primitive == PrimitiveTypes.Short && o.Elements.Count() > 14) Program.AddMessage(new CompileMessage("GS4006", "The number of elements in the Enumeration '" + o.Name + "' exceeds the maximum number of elements (14) supported by the 'short' data type. Any elements above this limit will not be generated.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
+				if (o.Primitive == PrimitiveTypes.UShort && o.Elements.Count() > 15) Program.AddMessage(new CompileMessage("GS4006", "The number of elements in the Enumeration '" + o.Name + "' exceeds the maximum number of elements (15) supported by the 'unsigned short' data type. Any elements above this limit will not be generated.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
+				if (o.Primitive == PrimitiveTypes.Int && o.Elements.Count() > 30) Program.AddMessage(new CompileMessage("GS4006", "The number of elements in the Enumeration '" + o.Name + "' exceeds the maximum number of elements (30) supported by the 'int' data type. Any elements above this limit will not be generated.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
+				if (o.Primitive == PrimitiveTypes.UInt && o.Elements.Count() > 31) Program.AddMessage(new CompileMessage("GS4006", "The number of elements in the Enumeration '" + o.Name + "' exceeds the maximum number of elements (31) supported by the 'unsigned int' data type. Any elements above this limit will not be generated.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
+				if (o.Primitive == PrimitiveTypes.Long && o.Elements.Count() > 62) Program.AddMessage(new CompileMessage("GS4006", "The number of elements in the Enumeration '" + o.Name + "' exceeds the maximum number of elements (62) supported by the 'long' data type. Any elements above this limit will not be generated.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
+				if (o.Primitive == PrimitiveTypes.ULong && o.Elements.Count() > 63) Program.AddMessage(new CompileMessage("GS4006", "The number of elements in the Enumeration '" + o.Name + "' exceeds the maximum number of elements (63) supported by the 'unsigned long' data type. Any elements above this limit will not be generated.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 			}
 
-			if (o.IsFlags == true)
+			if (o.IsFlags)
 			{
-				bool BadValue = true;
-				if (o.Primitive == Projects.PrimitiveTypes.Int) BadValue = false;
-				else if (o.Primitive == Projects.PrimitiveTypes.UShort) BadValue = false;
-				else if (o.Primitive == Projects.PrimitiveTypes.Short) BadValue = false;
-				else if (o.Primitive == Projects.PrimitiveTypes.UInt) BadValue = false;
-				else if (o.Primitive == Projects.PrimitiveTypes.Long) BadValue = false;
-				else if (o.Primitive == Projects.PrimitiveTypes.ULong) BadValue = false;
+				bool badValue = true;
+				if (o.Primitive == PrimitiveTypes.Int) badValue = false;
+				else if (o.Primitive == PrimitiveTypes.UShort) badValue = false;
+				else if (o.Primitive == PrimitiveTypes.Short) badValue = false;
+				else if (o.Primitive == PrimitiveTypes.UInt) badValue = false;
+				else if (o.Primitive == PrimitiveTypes.Long) badValue = false;
+				else if (o.Primitive == PrimitiveTypes.ULong) badValue = false;
 
-				if (BadValue == true)
-				{
-					Compiler.Program.AddMessage(new WCFArchitect.Compiler.CompileMessage("GS4007", "The flags enumeration '" + o.Name + "' must be one of the following types: short, ushort, int, uint, long, ulong.", WCFArchitect.Compiler.CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-					NoErrors = false;
-				}
+				if (badValue)
+					Program.AddMessage(new CompileMessage("GS4007", "The flags enumeration '" + o.Name + "' must be one of the following types: short, ushort, int, uint, long, ulong.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 			}
-
-			return NoErrors;
 		}
 
 		public static string GenerateServerCode30(Projects.Enum o)

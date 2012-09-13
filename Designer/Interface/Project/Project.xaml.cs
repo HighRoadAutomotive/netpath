@@ -126,12 +126,12 @@ namespace WCFArchitect.Interface.Project
 				          };
 			if (ofd.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel) return;
 
-			ServerOutputPath.Text = Globals.GetRelativePath(Globals.SolutionPath, ofd.FileName + "\\");
+			ServerOutputPath.Text = Globals.GetRelativePath(Settings.AbsolutePath, ofd.FileName + "\\");
 		}
 
 		private void ServerOutputAdd_Click(object sender, RoutedEventArgs e)
 		{
-			Settings.ServerGenerationTargets.Add(new ProjectGenerationTarget(Settings.ID, ServerOutputPath.Text));
+			Settings.ServerGenerationTargets.Add(new ProjectGenerationTarget(Settings.ID, ServerOutputPath.Text, true));
 			ServerOutputPath.Text = "";
 		}
 
@@ -158,12 +158,12 @@ namespace WCFArchitect.Interface.Project
 				          };
 			if (ofd.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel) return;
 
-			ClientOutputPath.Text = Globals.GetRelativePath(Globals.SolutionPath, ofd.FileName + "\\");
+			ClientOutputPath.Text = Globals.GetRelativePath(Settings.AbsolutePath, ofd.FileName + "\\");
 		}
 
 		private void ClientOutputAdd_Click(object sender, RoutedEventArgs e)
 		{
-			Settings.ClientGenerationTargets.Add(new ProjectGenerationTarget(Settings.ID, ClientOutputPath.Text));
+			Settings.ClientGenerationTargets.Add(new ProjectGenerationTarget(Settings.ID, ClientOutputPath.Text, false));
 			ClientOutputPath.Text = "";
 		}
 

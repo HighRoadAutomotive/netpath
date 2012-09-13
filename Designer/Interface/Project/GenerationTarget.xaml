@@ -1,7 +1,7 @@
 ﻿<Grid x:Class="WCFArchitect.Interface.Project.GenerationTarget" x:ClassModifier="internal"
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:pc="clr-namespace:Prospective.Controls;assembly=Prospective.Controls"
+		xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 		xmlns:Project="clr-namespace:WCFArchitect.Interface.Project"
 		MinWidth="475" DataContext="{Binding RelativeSource={RelativeSource Self}}" >
 	<Grid.Resources>
@@ -9,6 +9,7 @@
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Colors.xaml" />
 				<ResourceDictionary>
+					<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
 					<Project:ProjectGenerationTargetFrameworkConverter x:Key="ProjectOutputPathFrameworkConverter" />
 					<Project:ProjectGenerationTargetFrameworkNameConverter x:Key="ProjectOutputPathFrameworkNameConverter" />
 				</ResourceDictionary>
@@ -36,10 +37,10 @@
 			<Button Content="Browse..." Height="23" HorizontalAlignment="Right" Margin="0,6,5,0" Name="OutputBrowse" VerticalAlignment="Top" Width="75" Click="OutputBrowse_Click" />
 			<Label Content="Framework:" Height="28" HorizontalAlignment="Left" Margin="5,3,0,0" VerticalAlignment="Top" Grid.Column="0" Grid.Row="1" />
 			<ComboBox Height="Auto" Grid.Row="1" Margin="95,5,5,5" SelectedIndex="{Binding Path=Path.Framework, Converter={StaticResource ProjectOutputPathFrameworkConverter}}" VerticalAlignment="Center" ToolTip="{Binding Path=Path.Framework, Converter={StaticResource ProjectOutputPathFrameworkNameConverter}}" >
-				<ComboBoxItem Content="Windows 8 Runtime" />
+				<ComboBoxItem Visibility="{Binding Path.IsServerPath, Converter={StaticResource BoolVisibilityConverter}}" Content="Windows 8 Runtime" />
 				<!-- Uncomment for Silverlight Support
-				<ComboBoxItem Content="Silverlight 5.0" />
-				<ComboBoxItem Content="Silverlight 4.0" /> -->
+				<ComboBoxItem Visibility="{Binding Path.IsServerPath, Converter={StaticResource BoolVisibilityConverter}}" Content="Silverlight 5.0" />
+				<ComboBoxItem Visibility="{Binding Path.IsServerPath, Converter={StaticResource BoolVisibilityConverter}}" Content="Silverlight 4.0" /> -->
 				<ComboBoxItem Content=".NET Framework 4.5" />
 				<ComboBoxItem Content=".NET Framework 4.0" />
 				<ComboBoxItem Content=".NET Framework 4.0 Client Profile" />
