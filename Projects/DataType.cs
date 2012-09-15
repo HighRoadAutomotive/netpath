@@ -120,6 +120,7 @@ namespace WCFArchitect.Projects
 
 		public bool IsExternalType { get; private set; }
 		public PrimitiveTypes Primitive { get; private set; }
+		public bool IsReference { get; private set; }
 
 		private static void DataTypePropertyChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
 		{
@@ -337,7 +338,7 @@ namespace WCFArchitect.Projects
 			if (TypeMode == DataTypeMode.Primitive)
 				return new DataType(Primitive);
 			if (TypeMode == DataTypeMode.Array)
-				return new DataType(DataTypeMode.Array) {CollectionGenericType = CollectionGenericType};
+				return new DataType(DataTypeMode.Array) { CollectionGenericType = CollectionGenericType };
 			if (TypeMode == DataTypeMode.Collection)
 				return new DataType(Name, DataTypeMode.Collection) { CollectionGenericType = CollectionGenericType };
 			if (TypeMode == DataTypeMode.Dictionary)
@@ -345,6 +346,15 @@ namespace WCFArchitect.Projects
 			if (IsExternalType)
 				return new DataType(Name, TypeMode);
 			return this;
+		}
+
+		public DataType Reference()
+		{
+			if (string.IsNullOrEmpty(Name)) return null;
+
+			if (TypeMode == DataTypeMode.Class || TypeMode == DataTypeMode.Struct || TypeMode == DataTypeMode.Enum)
+				return new DataType(TypeMode) { ID = ID, IsReference = true, Name = string.Format("{0}.{1}", Parent.FullName, Name) };
+			return null;
 		}
 	}
 }

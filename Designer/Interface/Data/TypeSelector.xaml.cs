@@ -260,6 +260,7 @@ namespace WCFArchitect.Interface.Data
 			if (TypesList.SelectedItem == null) return;
 			var sdt = TypesList.SelectedItem as DataType;
 			if (sdt == null) return;
+			if (sdt.Parent != null && sdt.Parent.Owner != null && sdt.Parent.Owner.ID != IntProject.ID) sdt = sdt.Reference() ?? sdt;		//If the owner project of sdt is NOT the same as IntProject, create a reference link to it.
 			IsSettingType = true;
 
 			if (OpenType != null)
@@ -296,7 +297,6 @@ namespace WCFArchitect.Interface.Data
 						OpenType.DictionaryKeyGenericType = sdt;
 					if (SelectDictionaryType)
 						OpenType.DictionaryValueGenericType = sdt;
-
 				}
 				else
 					OpenType = sdt;
