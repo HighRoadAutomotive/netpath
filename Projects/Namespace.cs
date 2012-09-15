@@ -41,16 +41,16 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty HostsProperty = DependencyProperty.Register("Hosts", typeof(ObservableCollection<Host>), typeof(Namespace));
 
 		//Internal Use - Searching / Filtering
-		[IgnoreDataMember()] public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
+		[IgnoreDataMember] public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
 		public static readonly DependencyProperty IsSearchingProperty = DependencyProperty.Register("IsSearching", typeof(bool), typeof(Namespace));
 
-		[IgnoreDataMember()] public bool IsSearchMatch { get { return (bool)GetValue(IsSearchMatchProperty); } set { SetValue(IsSearchMatchProperty, value); } }
+		[IgnoreDataMember] public bool IsSearchMatch { get { return (bool)GetValue(IsSearchMatchProperty); } set { SetValue(IsSearchMatchProperty, value); } }
 		public static readonly DependencyProperty IsSearchMatchProperty = DependencyProperty.Register("IsSearchMatch", typeof(bool), typeof(Namespace));
 
-		[IgnoreDataMember()] public bool IsFiltering { get { return (bool)GetValue(IsFilteringProperty); } set { SetValue(IsFilteringProperty, value); } }
+		[IgnoreDataMember] public bool IsFiltering { get { return (bool)GetValue(IsFilteringProperty); } set { SetValue(IsFilteringProperty, value); } }
 		public static readonly DependencyProperty IsFilteringProperty = DependencyProperty.Register("IsFiltering", typeof(bool), typeof(Namespace));
 
-		[IgnoreDataMember()] public bool IsFilterMatch { get { return (bool)GetValue(IsFilterMatchProperty); } set { SetValue(IsFilterMatchProperty, value); } }
+		[IgnoreDataMember] public bool IsFilterMatch { get { return (bool)GetValue(IsFilterMatchProperty); } set { SetValue(IsFilterMatchProperty, value); } }
 		public static readonly DependencyProperty IsFilterMatchProperty = DependencyProperty.Register("IsFilterMatch", typeof(bool), typeof(Namespace));
 
 		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
@@ -58,50 +58,50 @@ namespace WCFArchitect.Projects
 
 		private Namespace() : base(DataTypeMode.Namespace)
 		{
-			this.Parent = null;
-			this.Children = new ObservableCollection<Namespace>();
-			this.Enums = new ObservableCollection<Enum>();
-			this.Data = new ObservableCollection<Data>();
-			this.Services = new ObservableCollection<Service>();
-			this.Bindings = new ObservableCollection<ServiceBinding>();
-			this.Security = new ObservableCollection<BindingSecurity>();
-			this.Hosts = new ObservableCollection<Host>();
-			this.URI = "";
+			Parent = null;
+			Children = new ObservableCollection<Namespace>();
+			Enums = new ObservableCollection<Enum>();
+			Data = new ObservableCollection<Data>();
+			Services = new ObservableCollection<Service>();
+			Bindings = new ObservableCollection<ServiceBinding>();
+			Security = new ObservableCollection<BindingSecurity>();
+			Hosts = new ObservableCollection<Host>();
+			URI = "";
 		}
 
 		public Namespace(string Name, Namespace Parent, Project Owner) : base(DataTypeMode.Namespace)
 		{
-			this.ID = Guid.NewGuid();
+			ID = Guid.NewGuid();
 			this.Name = Name;
 			this.Parent = Parent;
 			this.Owner = Owner;
-			this.Children = new ObservableCollection<Namespace>();
-			this.Enums = new ObservableCollection<Enum>();
-			this.Data = new ObservableCollection<Data>();
-			this.Services = new ObservableCollection<Service>();
-			this.Bindings = new ObservableCollection<ServiceBinding>();
-			this.Security = new ObservableCollection<BindingSecurity>();
-			this.Hosts = new ObservableCollection<Host>();
-			this.URI = "";
+			Children = new ObservableCollection<Namespace>();
+			Enums = new ObservableCollection<Enum>();
+			Data = new ObservableCollection<Data>();
+			Services = new ObservableCollection<Service>();
+			Bindings = new ObservableCollection<ServiceBinding>();
+			Security = new ObservableCollection<BindingSecurity>();
+			Hosts = new ObservableCollection<Host>();
+			URI = "";
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.Property == OpenableDocument.IsDirtyProperty) return;
-			if (e.Property == Namespace.IsSearchingProperty) return;
-			if (e.Property == Namespace.IsSearchMatchProperty) return;
-			if (e.Property == Namespace.IsFilteringProperty) return;
-			if (e.Property == Namespace.IsFilterMatchProperty) return;
-			if (e.Property == Namespace.IsTreeExpandedProperty) return;
+			if (e.Property == IsDirtyProperty) return;
+			if (e.Property == IsSearchingProperty) return;
+			if (e.Property == IsSearchMatchProperty) return;
+			if (e.Property == IsFilteringProperty) return;
+			if (e.Property == IsFilterMatchProperty) return;
+			if (e.Property == IsTreeExpandedProperty) return;
 
 			IsDirty = true;
 		}
 
 		public List<DataType> SearchTypes(string Search, bool DataOnly = false)
 		{
-			List<DataType> results = new List<DataType>();
+			var results = new List<DataType>();
 
 			if (DataOnly == false)
 			{
@@ -144,19 +144,19 @@ namespace WCFArchitect.Projects
 					if (T.Name != "" && T.Name.IndexOf(Value, StringComparison.InvariantCultureIgnoreCase) < 0) T.IsSearchMatch = false;
 					T.Search(Value);
 				}
-				foreach (Projects.ServiceBinding T in Bindings)
+				foreach (ServiceBinding T in Bindings)
 				{
 					T.IsSearching = true;
 					T.IsSearchMatch = T.Name.Contains(Value);
 					if (T.Name != "" && T.Name.IndexOf(Value, StringComparison.InvariantCultureIgnoreCase) < 0) T.IsSearchMatch = false;
 				}
-				foreach (Projects.BindingSecurity T in Security)
+				foreach (BindingSecurity T in Security)
 				{
 					T.IsSearching = true;
 					T.IsSearchMatch = T.Name.Contains(Value);
 					if (T.Name != "" && T.Name.IndexOf(Value, StringComparison.InvariantCultureIgnoreCase) < 0) T.IsSearchMatch = false;
 				}
-				foreach (Projects.Host T in Hosts)
+				foreach (Host T in Hosts)
 				{
 					T.IsSearching = true;
 					T.IsSearchMatch = T.Name.Contains(Value);
@@ -188,19 +188,19 @@ namespace WCFArchitect.Projects
 					if (T.Name != "" && T.Name.IndexOf(Value, StringComparison.InvariantCultureIgnoreCase) < 0) T.IsSearchMatch = false;
 					T.Search(Value);
 				}
-				foreach (Projects.ServiceBinding T in Bindings)
+				foreach (ServiceBinding T in Bindings)
 				{
 					T.IsSearching = false;
 					T.IsSearchMatch = false;
 					if (T.Name != "" && T.Name.IndexOf(Value, StringComparison.InvariantCultureIgnoreCase) < 0) T.IsSearchMatch = false;
 				}
-				foreach (Projects.BindingSecurity T in Security)
+				foreach (BindingSecurity T in Security)
 				{
 					T.IsSearching = false;
 					T.IsSearchMatch = false;
 					if (T.Name != "" && T.Name.IndexOf(Value, StringComparison.InvariantCultureIgnoreCase) < 0) T.IsSearchMatch = false;
 				}
-				foreach (Projects.Host T in Hosts)
+				foreach (Host T in Hosts)
 				{
 					T.IsSearching = false;
 					T.IsSearchMatch = false;
@@ -217,19 +217,19 @@ namespace WCFArchitect.Projects
 			{
 				T.IsFiltering = !FilterAll;
 				T.IsFilterMatch = false;
-				if (FilterServices == true) T.IsFilterMatch = true;
+				if (FilterServices) T.IsFilterMatch = true;
 			}
 			foreach (Data T in Data)
 			{
 				T.IsFiltering = !FilterAll;
 				T.IsFilterMatch = false;
-				if (FilterData == true) T.IsFilterMatch = true;
+				if (FilterData) T.IsFilterMatch = true;
 			}
 			foreach (Enum T in Enums)
 			{
 				T.IsFiltering = !FilterAll;
 				T.IsFilterMatch = false;
-				if (FilterEnums == true) T.IsFilterMatch = true;
+				if (FilterEnums) T.IsFilterMatch = true;
 			}
 			foreach (Namespace T in Children)
 				T.Filter(FilterAll, FilterNamespaces, FilterServices, FilterData, FilterEnums);
@@ -237,7 +237,7 @@ namespace WCFArchitect.Projects
 
 		public List<FindReplaceResult> FindReplace(FindReplaceInfo Args)
 		{
-			List<FindReplaceResult> results = new List<FindReplaceResult>();
+			var results = new List<FindReplaceResult>();
 
 			if (Args.Items == FindItems.Namespace || Args.Items == FindItems.Any)
 			{
@@ -247,18 +247,18 @@ namespace WCFArchitect.Projects
 					{
 						if (Args.IsDataType == false)
 						{
-							if (Name != null && Name != "") if (Name.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner, this));
-							if (FullName != null && FullName != "") if (FullName.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Full Name", FullName, Owner, this));
-							if (URI != null && URI != "") if (URI.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("URI", URI, Owner, this));
+							if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner, this));
+							if (!string.IsNullOrEmpty(FullName)) if (FullName.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Full Name", FullName, Owner, this));
+							if (!string.IsNullOrEmpty(URI)) if (URI.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("URI", URI, Owner, this));
 						}
 					}
 					else
 					{
 						if (Args.IsDataType == false)
 						{
-							if (Name != null && Name != "") if (Name.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner, this));
-							if (FullName != null && FullName != "") if (FullName.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Full Name", FullName, Owner, this));
-							if (URI != null && URI != "") if (URI.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("URI", URI, Owner, this));
+							if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner, this));
+							if (!string.IsNullOrEmpty(FullName)) if (FullName.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Full Name", FullName, Owner, this));
+							if (!string.IsNullOrEmpty(URI)) if (URI.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("URI", URI, Owner, this));
 						}
 					}
 				}
@@ -266,9 +266,9 @@ namespace WCFArchitect.Projects
 				{
 					if (Args.IsDataType == false)
 					{
-						if (Name != null && Name != "") if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, Owner, this));
-						if (FullName != null && FullName != "") if (Args.RegexSearch.IsMatch(FullName)) results.Add(new FindReplaceResult("Full Name", FullName, Owner, this));
-						if (URI != null && URI != "") if (Args.RegexSearch.IsMatch(URI)) results.Add(new FindReplaceResult("URI", URI, Owner, this));
+						if (!string.IsNullOrEmpty(Name)) if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, Owner, this));
+						if (!string.IsNullOrEmpty(FullName)) if (Args.RegexSearch.IsMatch(FullName)) results.Add(new FindReplaceResult("Full Name", FullName, Owner, this));
+						if (!string.IsNullOrEmpty(URI)) if (Args.RegexSearch.IsMatch(URI)) results.Add(new FindReplaceResult("URI", URI, Owner, this));
 					}
 				}
 
@@ -282,16 +282,16 @@ namespace WCFArchitect.Projects
 						{
 							if (Args.IsDataType == false)
 							{
-								if (Name != null && Name != "") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-								if (URI != null && URI != "") URI = Microsoft.VisualBasic.Strings.Replace(URI, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+								if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+								if (!string.IsNullOrEmpty(URI)) URI = Microsoft.VisualBasic.Strings.Replace(URI, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 							}
 						}
 						else
 						{
 							if (Args.IsDataType == false)
 							{
-								if (Name != null && Name != "") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-								if (URI != null && URI != "") URI = Microsoft.VisualBasic.Strings.Replace(URI, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
+								if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
+								if (!string.IsNullOrEmpty(URI)) URI = Microsoft.VisualBasic.Strings.Replace(URI, Args.Search, Args.Replace);
 							}
 						}
 					}
@@ -299,84 +299,80 @@ namespace WCFArchitect.Projects
 					{
 						if (Args.IsDataType == false)
 						{
-							if (Name != null && Name != "") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-							if (URI != null && URI != "") URI = Args.RegexSearch.Replace(URI, Args.Replace);
+							if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
+							if (!string.IsNullOrEmpty(URI)) URI = Args.RegexSearch.Replace(URI, Args.Replace);
 						}
 					}
 					IsActive = ia;
 				}
 			}
 
-			foreach (Service S in Services)
-				results.AddRange(S.FindReplace(Args));
+			foreach (Service s in Services)
+				results.AddRange(s.FindReplace(Args));
 
-			foreach (Data S in Data)
-				results.AddRange(S.FindReplace(Args));
+			foreach (Data s in Data)
+				results.AddRange(s.FindReplace(Args));
 
-			foreach (Enum S in Enums)
-				results.AddRange(S.FindReplace(Args));
+			foreach (Enum s in Enums)
+				results.AddRange(s.FindReplace(Args));
 
-			foreach (Namespace S in Children)
-				results.AddRange(S.FindReplace(Args));
+			foreach (Namespace s in Children)
+				results.AddRange(s.FindReplace(Args));
 
 			return results;
 		}
 
 		public void Replace(FindReplaceInfo Args, string Field)
 		{
-			if (Args.ReplaceAll == true)
+			if (!Args.ReplaceAll) return;
+
+			bool ia = IsActive;
+			IsActive = true;
+			if (Args.UseRegex == false)
 			{
-				bool ia = IsActive;
-				IsActive = true;
-				if (Args.UseRegex == false)
+				if (Args.MatchCase == false)
 				{
-					if (Args.MatchCase == false)
+					if (Args.IsDataType == false)
 					{
-						if (Args.IsDataType == false)
-						{
-							if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-							if (Field == "URI") URI = Microsoft.VisualBasic.Strings.Replace(URI, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-						}
-					}
-					else
-					{
-						if (Args.IsDataType == false)
-						{
-							if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-							if (Field == "URI") URI = Microsoft.VisualBasic.Strings.Replace(URI, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-						}
+						if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+						if (Field == "URI") URI = Microsoft.VisualBasic.Strings.Replace(URI, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 					}
 				}
 				else
 				{
 					if (Args.IsDataType == false)
 					{
-						if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-						if (Field == "URI") URI = Args.RegexSearch.Replace(URI, Args.Replace);
+						if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
+						if (Field == "URI") URI = Microsoft.VisualBasic.Strings.Replace(URI, Args.Search, Args.Replace);
 					}
 				}
-				IsActive = ia;
 			}
+			else
+			{
+				if (Args.IsDataType == false)
+				{
+					if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
+					if (Field == "URI") URI = Args.RegexSearch.Replace(URI, Args.Replace);
+				}
+			}
+			IsActive = ia;
 		}
 
-		public void ChangeOwners(Projects.Namespace NewOwner)
+		public void ChangeOwners(Namespace NewOwner)
 		{
-			foreach (Projects.Service S in Services)
+			foreach (Service s in Services)
 			{
-				foreach (Projects.Host H in Hosts)
+				foreach (Host h in Hosts.Where(h => Equals(h.Service, s)))
 				{
-					if (H.Service == S)
-					{
-						Hosts.Remove(H);
-						NewOwner.Hosts.Add(H);
-						foreach (Projects.HostEndpoint HE in H.Endpoints) HE.Binding = HE.Binding.Copy(H.Name, NewOwner);
-						break;
-					}
+					Hosts.Remove(h);
+					NewOwner.Hosts.Add(h);
+					foreach (HostEndpoint he in h.Endpoints) he.Binding = he.Binding.Copy(h.Name, NewOwner);
+					break;
 				}
 			}
 
-			foreach (Namespace N in Children)
-				N.ChangeOwners(NewOwner);
+			foreach (Namespace n in Children)
+				n.ChangeOwners(NewOwner);
 		}
 
 		private string GetNamespaceString()
@@ -400,29 +396,26 @@ namespace WCFArchitect.Projects
 
 				return ns;
 			}
-			else
-			{
-				return Name;
-			}
+			return Name;
 		}
 
 		public void UpdateFullNamespace()
 		{
 			FullName = GetNamespaceString();
-			foreach (Namespace N in Children)
-				N.UpdateFullNamespace();
+			foreach (Namespace n in Children)
+				n.UpdateFullNamespace();
 		}
 
 		public bool HasServices()
 		{
-			bool HN = false;
+			bool hn = false;
 
-			foreach (Namespace N in Children)
-				if (N.HasServices() == true) HN = true;
+			foreach (Namespace n in Children.Where(n => n.HasServices()))
+				hn = true;
 
-			if (Services.Count > 0) HN = true;
+			if (Services.Count > 0) hn = true;
 
-			return HN;
+			return hn;
 		}
 
 		public Host GetServiceHost(Service s)
@@ -430,12 +423,7 @@ namespace WCFArchitect.Projects
 			foreach (Host h in Hosts)
 				if (h.Service == s)
 					return h;
-			foreach (Namespace n in Children)
-			{
-				Host t = n.GetServiceHost(s);
-				if (t != null) return t;
-			}
-			return null;
+			return Children.Select(n => n.GetServiceHost(s)).FirstOrDefault(t => t != null);
 		}
 	}
 }

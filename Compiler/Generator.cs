@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using WCFArchitect.Projects;
 using WCFArchitect.Compiler.Generators;
 
@@ -76,10 +75,7 @@ namespace WCFArchitect.Compiler
 					if (pun.NET && (Framework == ProjectGenerationFramework.NET30 || Framework == ProjectGenerationFramework.NET35 || Framework == ProjectGenerationFramework.NET40 || Framework == ProjectGenerationFramework.NET45))
 						code.AppendFormat("using {0};{1}", pun.Namespace, Environment.NewLine);
 					else if (pun.NET && (Framework == ProjectGenerationFramework.NET35Client || Framework == ProjectGenerationFramework.NET40Client))
-					{
-						if (!pun.IsFullFrameworkOnly)
-							code.AppendFormat("using {0};{1}", pun.Namespace, Environment.NewLine);
-					}
+						if (!pun.IsFullFrameworkOnly) code.AppendFormat("using {0};{1}", pun.Namespace, Environment.NewLine);
 					if (pun.SL && (Framework == ProjectGenerationFramework.SL40 || Framework == ProjectGenerationFramework.SL50))
 						code.AppendFormat("using {0};{1}", pun.Namespace, Environment.NewLine);
 					else if (pun.RT && Framework == ProjectGenerationFramework.WIN8)
@@ -88,6 +84,12 @@ namespace WCFArchitect.Compiler
 			}
 			code.AppendLine();
 
+			//Scan and generate references
+			var refs = new List<DataType>(ReferenceScan(Project.Namespace));
+			foreach (DataType dt in refs)
+				code.AppendLine(ReferenceGenerate(dt));
+
+			//Generate project
 			if (Server)
 			{
 				if (Framework == ProjectGenerationFramework.NET30) code.AppendLine(NamespaceCSGenerator.GenerateServerCode30(Project.Namespace));
@@ -106,17 +108,119 @@ namespace WCFArchitect.Compiler
 				if (Framework == ProjectGenerationFramework.NET40Client) code.AppendLine(NamespaceCSGenerator.GenerateClientCode40Client(Project.Namespace));
 				if (Framework == ProjectGenerationFramework.NET45 || Framework == ProjectGenerationFramework.WIN8) code.AppendLine(NamespaceCSGenerator.GenerateClientCode45(Project.Namespace));
 			}
-			code.AppendLine();
 
 			System.IO.File.WriteAllText(new Uri(new Uri(Project.AbsolutePath), OutputDirectory).AbsolutePath, code.ToString());
 		}
 
-		private IEnumerable<ProjectUsingNamespace> GetUsingNamespaces(Project CurProject)
+		private static IEnumerable<DataType> ReferenceScan(Namespace Scan)
+		{
+			var refs = new List<DataType>();
+
+			foreach (DataElement de in Scan.Data.SelectMany(d => d.Elements))
+			{
+				if(de.DataType.IsReference) refs.Add(de.DataType);
+				if(de.ClientType != null && de.ClientType.IsReference) refs.Add(de.ClientType);
+				if(de.XAMLType != null && de.XAMLType.IsReference) refs.Add(de.XAMLType);
+			}
+
+			foreach (Service s in Scan.Services)
+			{
+				foreach (Method m in s.Operations)
+				{
+					if (m.ReturnType.IsReference) refs.Add(m.ReturnType);
+					refs.AddRange(from mp in m.Parameters where mp.Type.IsReference select mp.Type);
+				}
+				refs.AddRange(from Property p in s.Operations where p.ReturnType.IsReference select p.ReturnType);
+			}
+
+			foreach(Namespace n in Scan.Children)
+				refs.AddRange(ReferenceScan(n));
+
+			return new List<DataType>(refs.Distinct(new ReferenceComparer()));
+		}
+
+		private static DataType ReferenceRetrieve(Project Project, Namespace Namesapce, Guid TypeID)
+		{
+			var d = Namesapce.Data.FirstOrDefault(a => a.ID == TypeID);
+			if (d != null) return d;
+			var e = Namesapce.Enums.FirstOrDefault(a => a.ID == TypeID);
+			if (e != null) return e;
+
+			foreach (Namespace n in Namesapce.Children)
+			{
+				var t = ReferenceRetrieve(Project, n, TypeID);
+				if (t != null) return t;
+			}
+
+			if(!Equals(Namesapce, Project.Namespace)) return null;
+			foreach(DependencyProject dp in Project.DependencyProjects)
+			{
+				var t = ReferenceRetrieve(dp.Project, dp.Project.Namespace, TypeID);
+				if (t != null) return t;
+			}
+
+			return null;
+		}
+
+		private string ReferenceGenerate(DataType Reference)
+		{
+			//Get the referenced type
+			DataType typeref = ReferenceRetrieve(Project, Project.Namespace, Reference.ID);
+			if(typeref == null)
+			{
+				Program.AddMessage(new CompileMessage("GS0008", string.Format("Unable to locate type '{0}'. Please ensure that you have added the project containing this type to the Dependency Projects list and that it has not been renamed or removed from the project.", Reference.Name), CompileMessageSeverity.ERROR, null, Project, Project.GetType(), Reference.ID, Project.ID));
+				return "";
+			}
+			Type rt = typeref.GetType();
+
+			//Generate a namespace wrapper for the type then generate the type inside the namespace
+			var code = new StringBuilder();
+			code.AppendFormat("namespace {0}{1}", typeref.Parent.FullName, Environment.NewLine);
+			code.AppendLine("{");
+			if (Server && rt == typeof(Data))
+			{
+				if (Framework == ProjectGenerationFramework.NET30) code.AppendLine(DataCSGenerator.GenerateServerCode30(typeref as Data));
+				if (Framework == ProjectGenerationFramework.NET35 || Framework == ProjectGenerationFramework.NET35Client) code.AppendLine(DataCSGenerator.GenerateServerCode35(typeref as Data));
+				if (Framework == ProjectGenerationFramework.NET40 || Framework == ProjectGenerationFramework.NET40Client) code.AppendLine(DataCSGenerator.GenerateServerCode40(typeref as Data));
+				if (Framework == ProjectGenerationFramework.NET45) code.AppendLine(DataCSGenerator.GenerateServerCode45(typeref as Data));
+			}
+			else if (!Server && rt == typeof(Data))
+			{
+				if (Framework == ProjectGenerationFramework.NET30) code.AppendLine(DataCSGenerator.GenerateProxyCode30(typeref as Data));
+				if (Framework == ProjectGenerationFramework.NET35 || Framework == ProjectGenerationFramework.NET35Client) code.AppendLine(DataCSGenerator.GenerateProxyCode35(typeref as Data));
+				if (Framework == ProjectGenerationFramework.NET40 || Framework == ProjectGenerationFramework.NET40Client) code.AppendLine(DataCSGenerator.GenerateProxyCode40(typeref as Data));
+				if (Framework == ProjectGenerationFramework.NET45 || Framework == ProjectGenerationFramework.WIN8) code.AppendLine(DataCSGenerator.GenerateProxyCode45(typeref as Data));
+				code.AppendLine();
+				if (Framework == ProjectGenerationFramework.NET30) code.AppendLine(DataCSGenerator.GenerateXAMLCode30(typeref as Data));
+				if (Framework == ProjectGenerationFramework.NET35 || Framework == ProjectGenerationFramework.NET35Client) code.AppendLine(DataCSGenerator.GenerateXAMLCode35(typeref as Data));
+				if (Framework == ProjectGenerationFramework.NET40 || Framework == ProjectGenerationFramework.NET40Client) code.AppendLine(DataCSGenerator.GenerateXAMLCode40(typeref as Data));
+				if (Framework == ProjectGenerationFramework.NET45 || Framework == ProjectGenerationFramework.WIN8) code.AppendLine(DataCSGenerator.GenerateXAMLCode45(typeref as Data));
+			}
+			else if (Server && rt == typeof(Projects.Enum))
+			{
+				if (Framework == ProjectGenerationFramework.NET30) code.AppendLine(EnumCSGenerator.GenerateServerCode30(typeref as Projects.Enum));
+				if (Framework == ProjectGenerationFramework.NET35 || Framework == ProjectGenerationFramework.NET35Client) code.AppendLine(EnumCSGenerator.GenerateServerCode35(typeref as Projects.Enum));
+				if (Framework == ProjectGenerationFramework.NET40 || Framework == ProjectGenerationFramework.NET40Client) code.AppendLine(EnumCSGenerator.GenerateServerCode40(typeref as Projects.Enum));
+				if (Framework == ProjectGenerationFramework.NET45) code.AppendLine(EnumCSGenerator.GenerateServerCode45(typeref as Projects.Enum));
+			}
+			else if (!Server && rt == typeof(Projects.Enum))
+			{
+				if (Framework == ProjectGenerationFramework.NET30) code.AppendLine(EnumCSGenerator.GenerateProxyCode30(typeref as Projects.Enum));
+				if (Framework == ProjectGenerationFramework.NET35 || Framework == ProjectGenerationFramework.NET35Client) code.AppendLine(EnumCSGenerator.GenerateProxyCode35(typeref as Projects.Enum));
+				if (Framework == ProjectGenerationFramework.NET40 || Framework == ProjectGenerationFramework.NET40Client) code.AppendLine(EnumCSGenerator.GenerateProxyCode40(typeref as Projects.Enum));
+				if (Framework == ProjectGenerationFramework.NET45 || Framework == ProjectGenerationFramework.WIN8) code.AppendLine(EnumCSGenerator.GenerateProxyCode45(typeref as Projects.Enum));
+			}
+			code.AppendLine("}");
+
+			return code.ToString();
+		}
+
+		private static IEnumerable<ProjectUsingNamespace> GetUsingNamespaces(Project CurProject)
 		{
 			var puns = new List<ProjectUsingNamespace>(CurProject.UsingNamespaces);
 
 			foreach (DependencyProject dp in CurProject.DependencyProjects)
-				puns.AddRange(dp.Project.UsingNamespaces);
+				puns.AddRange(GetUsingNamespaces(dp.Project));
 
 			return new List<ProjectUsingNamespace>(puns.Distinct(new UsingNamespaceComparer()));
 		}
@@ -126,11 +230,23 @@ namespace WCFArchitect.Compiler
 	{
 		public bool Equals(ProjectUsingNamespace x, ProjectUsingNamespace y)
 		{
-			if (x.Namespace == y.Namespace) return true;
-			return false;
+			return x.Namespace == y.Namespace;
 		}
 
 		public int GetHashCode(ProjectUsingNamespace obj)
+		{
+			return obj.GetHashCode();
+		}
+	}
+
+	public class ReferenceComparer : IEqualityComparer<DataType>
+	{
+		public bool Equals(DataType x, DataType y)
+		{
+			return x.ID.CompareTo(y.ID) == 0;
+		}
+
+		public int GetHashCode(DataType obj)
 		{
 			return obj.GetHashCode();
 		}
