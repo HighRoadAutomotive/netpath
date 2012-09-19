@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.IO;
 using System.Windows;
 using System.Runtime.Serialization;
 
@@ -79,10 +79,10 @@ namespace WCFArchitect.Projects
 	public class OpenableDocument : DependencyObject
 	{
 		//Open document handling
-		[IgnoreDataMember()] public bool IsActive { get; set; }
-		[IgnoreDataMember()] public bool IsOpen { get; set; }
+		[IgnoreDataMember] public bool IsActive { get; set; }
+		[IgnoreDataMember] public bool IsOpen { get; set; }
 
-		[IgnoreDataMember()] public bool IsDirty { get { return (bool)GetValue(IsDirtyProperty); } set { if (IsActive == true) SetValue(IsDirtyProperty, value); } }
+		[IgnoreDataMember] public bool IsDirty { get { return (bool)GetValue(IsDirtyProperty); } set { if (IsActive) SetValue(IsDirtyProperty, value); } }
 		public static readonly DependencyProperty IsDirtyProperty = DependencyProperty.Register("IsDirty", typeof(bool), typeof(OpenableDocument), new UIPropertyMetadata(false));
 
 		public OpenableDocument() : base()
@@ -102,7 +102,8 @@ namespace WCFArchitect.Projects
 	public partial class Project : OpenableDocument
 	{
 		public Guid ID { get; set; }
-		[IgnoreDataMember()] public string AbsolutePath { get; private set; }
+		[IgnoreDataMember] public string AbsolutePath { get; private set; }
+		public string SolutionPath { get; private set; }
 
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(Project));
@@ -138,16 +139,16 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty ClientGenerationTargetsProperty = DependencyProperty.Register("ClientGenerationTargets", typeof(ObservableCollection<ProjectGenerationTarget>), typeof(Project));
 
 		//Internal Use - Searching / Filtering
-		[IgnoreDataMember()] public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
+		[IgnoreDataMember] public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
 		public static readonly DependencyProperty IsSearchingProperty = DependencyProperty.Register("IsSearching", typeof(bool), typeof(Project));
 
-		[IgnoreDataMember()] public bool IsSearchMatch { get { return (bool)GetValue(IsSearchMatchProperty); } set { SetValue(IsSearchMatchProperty, value); } }
+		[IgnoreDataMember] public bool IsSearchMatch { get { return (bool)GetValue(IsSearchMatchProperty); } set { SetValue(IsSearchMatchProperty, value); } }
 		public static readonly DependencyProperty IsSearchMatchProperty = DependencyProperty.Register("IsSearchMatch", typeof(bool), typeof(Project));
 
-		[IgnoreDataMember()] public bool IsFiltering { get { return (bool)GetValue(IsFilteringProperty); } set { SetValue(IsFilteringProperty, value); } }
+		[IgnoreDataMember] public bool IsFiltering { get { return (bool)GetValue(IsFilteringProperty); } set { SetValue(IsFilteringProperty, value); } }
 		public static readonly DependencyProperty IsFilteringProperty = DependencyProperty.Register("IsFiltering", typeof(bool), typeof(Project));
 
-		[IgnoreDataMember()] public bool IsFilterMatch { get { return (bool)GetValue(IsFilterMatchProperty); } set { SetValue(IsFilterMatchProperty, value); } }
+		[IgnoreDataMember] public bool IsFilterMatch { get { return (bool)GetValue(IsFilterMatchProperty); } set { SetValue(IsFilterMatchProperty, value); } }
 		public static readonly DependencyProperty IsFilterMatchProperty = DependencyProperty.Register("IsFilterMatch", typeof(bool), typeof(Project));
 
 		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
@@ -302,13 +303,23 @@ namespace WCFArchitect.Projects
 			IsDirty = true;
 		}
 
+		private static string GetRelativePath(string BasePath, string FilePath)
+		{
+			if (!Path.IsPathRooted(FilePath)) FilePath = Path.GetFullPath(FilePath);
+			if (!Path.IsPathRooted(BasePath)) BasePath = Path.GetFullPath(BasePath);
+
+			var t = new Uri("file:///" + FilePath);
+			var b = new Uri("file:///" + BasePath);
+			return b.MakeRelativeUri(t).ToString();
+		}
+
 		public static Project Open(string SolutionPath, string ProjectPath)
 		{
 			string abspath = new Uri(new Uri(SolutionPath), ProjectPath).AbsolutePath;
-
+			SolutionPath = GetRelativePath(abspath, SolutionPath);
 			//Check the file to make sure it exists
-			if (!System.IO.File.Exists(abspath))
-				throw new System.IO.FileNotFoundException("Unable to locate the Project file '" + abspath + "'");
+			if (!File.Exists(abspath))
+				throw new FileNotFoundException("Unable to locate the Project file '" + abspath + "'");
 
 			//Open the project
 			var t = Storage.Open<Project>(abspath);
@@ -317,6 +328,23 @@ namespace WCFArchitect.Projects
 			// Open the project's dependencies
 			foreach(DependencyProject dp in t.DependencyProjects)
 				dp.Project = Open(SolutionPath, dp.Path);
+
+			return t;
+		}
+
+		public static Project Open(string ProjectPath)
+		{
+			//Check the file to make sure it exists
+			if (!File.Exists(ProjectPath))
+				throw new FileNotFoundException("Unable to locate the Project file '" + ProjectPath + "'");
+
+			//Open the project
+			var t = Storage.Open<Project>(ProjectPath);
+			t.AbsolutePath = ProjectPath;
+
+			// Open the project's dependencies
+			foreach (DependencyProject dp in t.DependencyProjects)
+				dp.Project = Open(t.SolutionPath, dp.Path);
 
 			return t;
 		}
@@ -373,7 +401,7 @@ namespace WCFArchitect.Projects
 
 		public List<FindReplaceResult> FindReplace(FindReplaceInfo Args)
 		{
-			List<FindReplaceResult> results = new List<FindReplaceResult>();
+			var results = new List<FindReplaceResult>();
 
 			if (Args.Items == FindItems.Project || Args.Items == FindItems.Any)
 			{
@@ -383,18 +411,18 @@ namespace WCFArchitect.Projects
 					{
 						if (Args.IsDataType == false)
 						{
-							if (Name != null && Name != "") if (Name.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, this, this));
-							if (Namespace.Name != null && Namespace.Name != "") if (Namespace.Name.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Namespace", Namespace.Name, this, this));
-							if (Namespace.URI != null && Namespace.URI != "") if (Namespace.URI.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Namespace URI", Namespace.URI, this, this));
+							if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, this, this));
+							if (!string.IsNullOrEmpty(Namespace.Name)) if (Namespace.Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Namespace", Namespace.Name, this, this));
+							if (!string.IsNullOrEmpty(Namespace.URI)) if (Namespace.URI.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Namespace URI", Namespace.URI, this, this));
 						}
 					}
 					else
 					{
 						if (Args.IsDataType == false)
 						{
-							if (Name != null && Name != "") if (Name.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Name", Name, this, this));
-							if (Namespace.Name != null && Namespace.Name != "") if (Namespace.Name.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Namespace", Namespace.Name, this, this));
-							if (Namespace.URI != null && Namespace.URI != "") if (Namespace.URI.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("ClientName", Namespace.URI, this, this));
+							if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, this, this));
+							if (!string.IsNullOrEmpty(Namespace.Name)) if (Namespace.Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Namespace", Namespace.Name, this, this));
+							if (!string.IsNullOrEmpty(Namespace.URI)) if (Namespace.URI.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("ClientName", Namespace.URI, this, this));
 						}
 					}
 				}
@@ -402,13 +430,13 @@ namespace WCFArchitect.Projects
 				{
 					if (Args.IsDataType == false)
 					{
-						if (Name != null && Name != "") if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, this, this));
-						if (Namespace.Name != null && Namespace.Name != "") if (Args.RegexSearch.IsMatch(Namespace.Name)) results.Add(new FindReplaceResult("Namespace", Namespace.Name, this, this));
-						if (Namespace.URI != null && Namespace.URI != "") if (Args.RegexSearch.IsMatch(Namespace.URI)) results.Add(new FindReplaceResult("Namespace URI", Namespace.URI, this, this));
+						if (!string.IsNullOrEmpty(Name)) if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, this, this));
+						if (!string.IsNullOrEmpty(Namespace.Name)) if (Args.RegexSearch.IsMatch(Namespace.Name)) results.Add(new FindReplaceResult("Namespace", Namespace.Name, this, this));
+						if (!string.IsNullOrEmpty(Namespace.URI)) if (Args.RegexSearch.IsMatch(Namespace.URI)) results.Add(new FindReplaceResult("Namespace URI", Namespace.URI, this, this));
 					}
 				}
 
-				if (Args.ReplaceAll == true)
+				if (Args.ReplaceAll)
 				{
 					bool ia = IsActive;
 					IsActive = true;
@@ -418,18 +446,18 @@ namespace WCFArchitect.Projects
 						{
 							if (Args.IsDataType == false)
 							{
-								if (Name != null && Name != "") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-								if (Namespace.Name != null && Namespace.Name != "") Namespace.Name = Microsoft.VisualBasic.Strings.Replace(Namespace.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-								if (Namespace.URI != null && Namespace.URI != "") Namespace.URI = Microsoft.VisualBasic.Strings.Replace(Namespace.URI, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+								if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+								if (!string.IsNullOrEmpty(Namespace.Name)) Namespace.Name = Microsoft.VisualBasic.Strings.Replace(Namespace.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+								if (!string.IsNullOrEmpty(Namespace.URI)) Namespace.URI = Microsoft.VisualBasic.Strings.Replace(Namespace.URI, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 							}
 						}
 						else
 						{
 							if (Args.IsDataType == false)
 							{
-								if (Name != null && Name != "") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-								if (Namespace.Name != null && Namespace.Name != "") Namespace.Name = Microsoft.VisualBasic.Strings.Replace(Namespace.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-								if (Namespace.URI != null && Namespace.URI != "") Namespace.URI = Microsoft.VisualBasic.Strings.Replace(Namespace.URI, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
+								if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
+								if (!string.IsNullOrEmpty(Namespace.Name)) Namespace.Name = Microsoft.VisualBasic.Strings.Replace(Namespace.Name, Args.Search, Args.Replace);
+								if (!string.IsNullOrEmpty(Namespace.URI)) Namespace.URI = Microsoft.VisualBasic.Strings.Replace(Namespace.URI, Args.Search, Args.Replace);
 							}
 						}
 					}
@@ -437,9 +465,9 @@ namespace WCFArchitect.Projects
 					{
 						if (Args.IsDataType == false)
 						{
-							if (Name != null && Name != "") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-							if (Namespace.Name != null && Namespace.Name != "") Namespace.Name = Args.RegexSearch.Replace(Namespace.Name, Args.Replace);
-							if (Namespace.URI != null && Namespace.URI != "") Namespace.URI = Args.RegexSearch.Replace(Namespace.URI, Args.Replace);
+							if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
+							if (!string.IsNullOrEmpty(Namespace.Name)) Namespace.Name = Args.RegexSearch.Replace(Namespace.Name, Args.Replace);
+							if (!string.IsNullOrEmpty(Namespace.URI)) Namespace.URI = Args.RegexSearch.Replace(Namespace.URI, Args.Replace);
 						}
 					}
 					IsActive = ia;
@@ -451,49 +479,45 @@ namespace WCFArchitect.Projects
 
 		public void Replace(FindReplaceInfo Args, string Field)
 		{
-			if (Args.ReplaceAll == true)
+			if (!Args.ReplaceAll) return;
+			bool ia = IsActive;
+			IsActive = true;
+			if (Args.UseRegex == false)
 			{
-				bool ia = IsActive;
-				IsActive = true;
-				if (Args.UseRegex == false)
+				if (Args.MatchCase == false)
 				{
-					if (Args.MatchCase == false)
+					if (Args.IsDataType == false)
 					{
-						if (Args.IsDataType == false)
-						{
-							if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-							if (Field == "Namespace") Namespace.Name = Microsoft.VisualBasic.Strings.Replace(Namespace.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-							if (Field == "Namespace URI") Namespace.URI = Microsoft.VisualBasic.Strings.Replace(Namespace.URI, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-						}
-					}
-					else
-					{
-						if (Args.IsDataType == false)
-						{
-							if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-							if (Field == "Namespace") Namespace.Name = Microsoft.VisualBasic.Strings.Replace(Namespace.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-							if (Field == "Namespace URI") Namespace.URI = Microsoft.VisualBasic.Strings.Replace(Namespace.URI, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-						}
+						if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+						if (Field == "Namespace") Namespace.Name = Microsoft.VisualBasic.Strings.Replace(Namespace.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+						if (Field == "Namespace URI") Namespace.URI = Microsoft.VisualBasic.Strings.Replace(Namespace.URI, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 					}
 				}
 				else
 				{
 					if (Args.IsDataType == false)
 					{
-						if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-						if (Field == "Namespace") Namespace.Name = Args.RegexSearch.Replace(Namespace.Name, Args.Replace);
-						if (Field == "Namespace URI") Namespace.URI = Args.RegexSearch.Replace(Namespace.URI, Args.Replace);
+						if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
+						if (Field == "Namespace") Namespace.Name = Microsoft.VisualBasic.Strings.Replace(Namespace.Name, Args.Search, Args.Replace);
+						if (Field == "Namespace URI") Namespace.URI = Microsoft.VisualBasic.Strings.Replace(Namespace.URI, Args.Search, Args.Replace);
 					}
 				}
-				IsActive = ia;
 			}
+			else
+			{
+				if (Args.IsDataType == false)
+				{
+					if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
+					if (Field == "Namespace") Namespace.Name = Args.RegexSearch.Replace(Namespace.Name, Args.Replace);
+					if (Field == "Namespace URI") Namespace.URI = Args.RegexSearch.Replace(Namespace.URI, Args.Replace);
+				}
+			}
+			IsActive = ia;
 		}
 
 		public bool ProjectHasServices()
 		{
-			if (Namespace.HasServices() == true) return true;
-
-			return false;
+			return Namespace.HasServices();
 		}
 
 		public override string ToString()
