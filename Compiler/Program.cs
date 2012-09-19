@@ -4,17 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
-using MS.Internal.Xml.XPath;
 using WCFArchitect.Projects;
 
 namespace WCFArchitect.Compiler
 {
-	public class Program
+	public static class Program
 	{
 
-		public static string SolutionPath { get; private set; }
 		public static string ProjectPath { get; private set; }
 		public static Project OpenProject { get; set; }
 		public static Dictionary<string, ProjectGenerationFramework> OverrideServerOutput { get; private set; }
@@ -42,7 +39,7 @@ namespace WCFArchitect.Compiler
 
 			ErrorStream = Console.OpenStandardError();
 
-			OpenProject = Project.Open(SolutionPath, ProjectPath);
+			OpenProject = Project.Open(ProjectPath);
 
 			//Build generators for the server and client
 			var serverGenerators = new List<Generator>(OverrideServerOutput.Count == 0 ? OpenProject.ServerGenerationTargets.Select(pgt => new Generator(OpenProject, pgt.Framework, pgt.Path, pgt.IsServerPath)) : OverrideServerOutput.Select(osc => new Generator(OpenProject, osc.Value, osc.Key)));
@@ -86,8 +83,8 @@ namespace WCFArchitect.Compiler
 
 			//Write a serialized version of the message to the error stream
 			if (NoStdError) return;
-			var dcs = new DataContractSerializer(typeof(CompileMessage), new DataContractSerializerSettings() { MaxItemsInObjectGraph = Int32.MaxValue, IgnoreExtensionDataObject = true, SerializeReadOnlyTypes = true, PreserveObjectReferences = true });
-			var xw = XmlWriter.Create(ErrorStream, new XmlWriterSettings() { Encoding = Encoding.UTF8, NewLineChars = Environment.NewLine, NewLineHandling = NewLineHandling.Entitize, CloseOutput = true, WriteEndDocumentOnClose = true, Indent = true, Async = false });
+			var dcs = new DataContractSerializer(typeof(CompileMessage), new DataContractSerializerSettings { MaxItemsInObjectGraph = Int32.MaxValue, IgnoreExtensionDataObject = true, SerializeReadOnlyTypes = true, PreserveObjectReferences = true });
+			var xw = XmlWriter.Create(ErrorStream, new XmlWriterSettings { Encoding = Encoding.UTF8, NewLineChars = Environment.NewLine, NewLineHandling = NewLineHandling.Entitize, CloseOutput = true, WriteEndDocumentOnClose = true, Indent = true, Async = false });
 			dcs.WriteObject(xw, Message);
 			xw.Flush();
 		}
@@ -97,7 +94,7 @@ namespace WCFArchitect.Compiler
 			Quiet = false;
 			PrintHeader();
 
-			Console.WriteLine("Usage: wasc <soltuion file> <project file> [options]");
+			Console.WriteLine("Usage: wasc <project file> [options]");
 			Console.WriteLine();
 			Console.WriteLine("-os\tOverrides all server output targets and directories in the project.");
 			Console.WriteLine("\tTargets: NET30|NET35|NET35Client|NET40|NET40Client|NET45");
@@ -107,8 +104,7 @@ namespace WCFArchitect.Compiler
 			Console.WriteLine("\tTargets: NET30|NET35|NET35Client|NET40|NET40Client|NET45|WIN8");
 			Console.WriteLine("\tCan be specified multiple times. Usage: -oc <target> \"<directory>\".");
 			Console.WriteLine();
-			Console.WriteLine("-log\tSave the output to a log file.");
-			Console.WriteLine("\tUsage: -log \"<directory>\".");
+			Console.WriteLine("-log\tSave the output to a log file. Usage: -log \"<directory>\".");
 			Console.WriteLine();
 			Console.WriteLine("-nostderr\tSupresses ALL stderr output.");
 			Console.WriteLine();
@@ -128,29 +124,20 @@ namespace WCFArchitect.Compiler
 			Console.WriteLine("Copyright © 2012-2013 Prospective Software Inc.");
 			Console.WriteLine();
 
-			if(LogFile != null)
-			{
-				LogFile.WriteLine(Globals.ApplicationTitle);
-				LogFile.WriteLine("Version: {0}", Globals.ApplicationVersion);
-				LogFile.WriteLine("Copyright © 2012-2013 Prospective Software Inc.");
-				LogFile.WriteLine();
-			}
+			if (LogFile == null) return;
+			LogFile.WriteLine(Globals.ApplicationTitle);
+			LogFile.WriteLine("Version: {0}", Globals.ApplicationVersion);
+			LogFile.WriteLine("Copyright © 2012-2013 Prospective Software Inc.");
+			LogFile.WriteLine();
 		}
 
 		public static void ParseOptions(List<string> args)
 		{
-			SolutionPath = args[0];
-			ProjectPath = args[1];
+			ProjectPath = args[0];
 			OverrideServerOutput = new Dictionary<string, ProjectGenerationFramework>();
 			OverrideClientOutput = new Dictionary<string, ProjectGenerationFramework>();
 			Messages = new List<CompileMessage>();
 			HighestSeverity = CompileMessageSeverity.INFO;
-
-			if (!File.Exists(SolutionPath))
-			{
-				Console.WriteLine("Unable to locate solution file: " + ProjectPath);
-				Environment.Exit(1);
-			}
 
 			if(!File.Exists(ProjectPath))
 			{
@@ -158,7 +145,7 @@ namespace WCFArchitect.Compiler
 				Environment.Exit(1);
 			}
 
-			for(int i=2;i<args.Count;i++)
+			for(int i=1;i<args.Count;i++)
 			{
 				if(args[i]=="-q")
 					Quiet = true;
@@ -175,7 +162,7 @@ namespace WCFArchitect.Compiler
 						continue;
 					}
 					string op = args[++i];
-					if(!System.IO.Directory.Exists(op))
+					if(!Directory.Exists(op))
 					{
 						Console.WriteLine("Unable to locate directory: " + op);
 						continue;
