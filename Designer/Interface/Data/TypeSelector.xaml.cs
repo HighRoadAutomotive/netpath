@@ -173,7 +173,7 @@ namespace WCFArchitect.Interface.Data
 					//Edit the collection generic type
 					if (cp > go && cp <= gc)
 					{
-						Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(go, gc - go).Replace("<", "").Replace(">", "").Trim()));
+						Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(go, gc - go).Replace("<", "").Replace(">", "").Trim(), false));		//Search for results without collections, the compiler does not support nested collections.
 						SelectCollectionType = true;
 					}
 				}
@@ -193,14 +193,14 @@ namespace WCFArchitect.Interface.Data
 					//Edit the dictionary key type
 					if (cp > go && cp <= gs)
 					{
-						Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(go, gs - go).Replace("<", "").Replace(",", "").Replace(">", "").Trim()));
+						Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(go, gs - go).Replace("<", "").Replace(",", "").Replace(">", "").Trim(), false));		//Search for results without collections, the compiler does not support nested collections.
 						SelectDictionaryKey = true;
 					}
 
 					//Edit the dictionary value type
 					if (cp > gs && cp <= gc)
 					{
-						Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(gs, gc - gs).Replace("<", "").Replace(",", "").Replace(">", "").Trim()));
+						Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(gs, gc - gs).Replace("<", "").Replace(",", "").Replace(">", "").Trim(), false));		//Search for results without collections, the compiler does not support nested collections.
 						SelectDictionaryType = true;
 					}
 				}
@@ -224,7 +224,7 @@ namespace WCFArchitect.Interface.Data
 			if (OpenType != null && ((TypeName.Text.Contains("[") || TypeName.Text.Contains("]")) && (OpenType.TypeMode == DataTypeMode.Collection || OpenType.TypeMode == DataTypeMode.Dictionary)))
 				TypeName.Text = TypeName.Text.Replace("[", "").Replace("]", "");
 
-			if (TypeName.Text.EndsWith("[]"))
+			if (OpenType != null && TypeName.Text.EndsWith("[]") && OpenType.TypeMode != DataTypeMode.Array)
 				OpenType = new DataType(DataTypeMode.Array) {CollectionGenericType = OpenType};
 
 		}

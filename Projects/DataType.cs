@@ -333,12 +333,13 @@ namespace WCFArchitect.Projects
 
 		public DataType Copy()
 		{
-			if (string.IsNullOrEmpty(Name)) return null;
-
 			if (TypeMode == DataTypeMode.Primitive)
 				return new DataType(Primitive);
 			if (TypeMode == DataTypeMode.Array)
 				return new DataType(DataTypeMode.Array) { CollectionGenericType = CollectionGenericType };
+
+			if (string.IsNullOrEmpty(Name)) return null;
+
 			if (TypeMode == DataTypeMode.Collection)
 				return new DataType(Name, DataTypeMode.Collection) { CollectionGenericType = CollectionGenericType };
 			if (TypeMode == DataTypeMode.Dictionary)

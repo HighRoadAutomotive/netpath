@@ -45,7 +45,7 @@ namespace WCFArchitect.Compiler
 
 			//Build generators for the server and client
 			var serverGenerators = new List<Generator>(OverrideServerOutput.Count == 0 ? OpenProject.ServerGenerationTargets.Select(pgt => new Generator(OpenProject, pgt.Framework, pgt.Path, pgt.IsServerPath)) : OverrideServerOutput.Select(osc => new Generator(OpenProject, osc.Value, osc.Key)));
-			var clientGenerators = new List<Generator>(OverrideClientOutput.Count == 0 ? OpenProject.ClientGenerationTargets.Select(pgt => new Generator(OpenProject, pgt.Framework, pgt.Path, pgt.IsServerPath)) : OverrideClientOutput.Select(osc => new Generator(OpenProject, osc.Value, osc.Key)));
+			var clientGenerators = new List<Generator>(OverrideClientOutput.Count == 0 ? OpenProject.ClientGenerationTargets.Select(pgt => new Generator(OpenProject, pgt.Framework, pgt.Path, pgt.IsServerPath)) : OverrideClientOutput.Select(osc => new Generator(OpenProject, osc.Value, osc.Key, false)));
 
 			//Run project verification
 			foreach(Generator g in serverGenerators)
