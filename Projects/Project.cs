@@ -218,7 +218,7 @@ namespace WCFArchitect.Projects
 			ServerGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
 			ClientGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
 
-			Namespace = new Namespace(Helpers.RegExs.ReplaceSpaces.Replace(Name, "."), null, this) {URI = "http://tempuri.org/" + Namespace.Name.Replace(".", "/") + "/"};
+			Namespace = new Namespace(Helpers.RegExs.ReplaceSpaces.Replace(Name, "."), null, this) {URI = "http://tempuri.org/" + Name.Replace(".", "/") + "/"};
 			this.Name = Name;
 
 			//Add the default types

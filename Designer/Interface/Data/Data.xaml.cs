@@ -45,6 +45,11 @@ namespace WCFArchitect.Interface.Data
 			InitializeComponent();
 		}
 
+		private void AddMemberType_ValidationChanged(object Sender, RoutedEventArgs E)
+		{
+			AddMember.IsEnabled = (!string.IsNullOrEmpty(AddMemberName.Text) && !AddMemberName.IsInvalid && AddMemberType.IsValid);
+		}
+
 		private void AddMemberType_Selected(object sender, RoutedEventArgs e)
 		{
 			AddMemberName.Focus();
@@ -53,10 +58,10 @@ namespace WCFArchitect.Interface.Data
 		private void AddMemberName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
 		{
 			e.IsValid = true;
-			if (AddMemberName.Text == "" || AddMemberName == null) return;
+			if (string.IsNullOrEmpty(AddMemberName.Text)) return;
 
 			e.IsValid = Helpers.RegExs.MatchCodeName.IsMatch(AddMemberName.Text);
-			AddMember.IsEnabled = e.IsValid;
+			AddMember.IsEnabled = (!string.IsNullOrEmpty(AddMemberName.Text) &&  e.IsValid && AddMemberType.IsValid);
 		}
 
 		private void AddMemberName_KeyUp(object sender, KeyEventArgs e)
@@ -376,7 +381,6 @@ namespace WCFArchitect.Interface.Data
 		}
 
 		#endregion
-
 	}
 
 	[ValueConversion(typeof(Projects.DataScope), typeof(int))]

@@ -105,12 +105,12 @@ namespace WCFArchitect.Projects
 
 			if (DataOnly == false)
 			{
-				results.AddRange(from a in Enums where a.Name.Contains(Search) select a);
-				results.AddRange(from a in Data where a.Name.Contains(Search) select a);
+				results.AddRange(from a in Enums where a.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0 select a);
+				results.AddRange(from a in Data where a.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0 select a);
 			}
 			else
 			{
-				results.AddRange(from a in Data where a.Name.Contains(Search) select a);
+				results.AddRange(from a in Data where a.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0 select a);
 			}
 
 			foreach(Namespace n in Children)

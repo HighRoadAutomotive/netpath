@@ -10,7 +10,7 @@
     mc:Ignorable="d" d:DesignHeight="24" d:DesignWidth="300"
 	UseLayoutRounding="True"
 	Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}"
-	LostFocus="ContentControl_LostFocus">
+	LostFocus="ContentControl_LostFocus" GotFocus="ContentControl_GotFocus">
 	<ContentControl.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
@@ -23,7 +23,7 @@
 		<pc:TextBox x:Name="TypeName" Text="{Binding Path=OpenType, Mode=OneWay}" LabelText="{Binding Path=LabelText}" TextChanged="TypeName_TextChanged" KeyUp="TypeName_KeyUp" />
 		<Popup PlacementTarget="{Binding ElementName=BG}" x:Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" IsOpen="{Binding HasResults}" Margin="0" MaxHeight="200" MinWidth="250" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom" UseLayoutRounding="{Binding UseLayoutRounding}" >
 			<Border x:Name="DropDownBorder" Width="{Binding ActualWidth}" BorderThickness="0" Background="{Binding Background}" HorizontalAlignment="Stretch" UseLayoutRounding="{Binding UseLayoutRounding}">
-				<ListBox x:Name="TypesList" ItemsSource="{Binding Path=Results}" Padding="0" BorderThickness="0" BorderBrush="Transparent" Background="{StaticResource ItemSelectorBackgroundColor}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" KeyUp="TypesList_KeyUp" MouseUp="TypesList_MouseUp" >
+				<ListBox x:Name="TypesList" ItemsSource="{Binding Path=Results}" Padding="0" BorderThickness="0" BorderBrush="Transparent" Background="{StaticResource ItemSelectorBackgroundColor}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" VirtualizingPanel.IsVirtualizing="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" KeyUp="TypesList_KeyUp" MouseUp="TypesList_MouseUp" >
 					<ListBox.Resources>
 						<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
 					</ListBox.Resources>
@@ -38,6 +38,9 @@
 							<DataTemplate.Triggers>
 								<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
 									<Setter TargetName="BG" Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
+								</DataTrigger>
+								<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
+									<Setter TargetName="BG" Property="Background" Value="{StaticResource DefaultSelectionColor}" />
 								</DataTrigger>
 							</DataTemplate.Triggers>
 						</DataTemplate>
