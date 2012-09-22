@@ -109,7 +109,7 @@ namespace WCFArchitect.Compiler
 				if (Framework == ProjectGenerationFramework.NET45 || Framework == ProjectGenerationFramework.WIN8) code.AppendLine(NamespaceCSGenerator.GenerateClientCode45(Project.Namespace));
 			}
 
-			System.IO.File.WriteAllText(new Uri(new Uri(Project.AbsolutePath), OutputDirectory).AbsolutePath, code.ToString());
+			System.IO.File.WriteAllText(Server ? new Uri(new Uri(Project.AbsolutePath), System.IO.Path.Combine(OutputDirectory, Project.ServerOutputFile + ".cs")).LocalPath : new Uri(new Uri(Project.AbsolutePath), System.IO.Path.Combine(OutputDirectory, Project.ClientOutputFile + ".cs")).LocalPath, code.ToString());
 		}
 
 		private static IEnumerable<DataType> ReferenceScan(Namespace Scan)

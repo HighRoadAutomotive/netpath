@@ -90,8 +90,14 @@ namespace WCFArchitect.Interface.Data
 		public string LabelText { get { return (string)GetValue(LabelTextProperty); } set { SetValue(LabelTextProperty, value); } }
 		public static readonly DependencyProperty LabelTextProperty = DependencyProperty.Register("LabelText", typeof(string), typeof(TypeSelector), new PropertyMetadata(""));
 
+		public bool IsValid { get { return (bool)GetValue(IsValidProperty); } set { SetValue(IsValidProperty, value); } }
+		public static readonly DependencyProperty IsValidProperty = DependencyProperty.Register("IsValid", typeof(bool), typeof(TypeSelector), new PropertyMetadata(false));
+
 		public static readonly RoutedEvent SelectedEvent = EventManager.RegisterRoutedEvent("Selected", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TypeSelector));
 		public event RoutedEventHandler Selected { add { AddHandler(SelectedEvent, value); } remove { RemoveHandler(SelectedEvent, value); } }
+
+		public static readonly RoutedEvent ValidationChangedEvent = EventManager.RegisterRoutedEvent("ValidationChanged", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TypeSelector));
+		public event RoutedEventHandler ValidationChanged { add { AddHandler(ValidationChangedEvent, value); } remove { RemoveHandler(ValidationChangedEvent, value); } }
 
 		private bool IsInitializing { get; set; }
 		private bool IsSettingType { get; set; }
@@ -141,6 +147,8 @@ namespace WCFArchitect.Interface.Data
 			SelectDictionaryKey = false;
 			SelectDictionaryType = false;
 
+			string sstr = TypeName.Text;
+
 			if (OpenType != null && (OpenType.TypeMode == DataTypeMode.Collection || OpenType.TypeMode == DataTypeMode.Dictionary))
 			{
 				if (OpenType.TypeMode == DataTypeMode.Collection)
@@ -160,15 +168,14 @@ namespace WCFArchitect.Interface.Data
 
 					//Edit the current collection type
 					if (cp <= go)
-						Results = new ObservableCollection<DataType>(IntProject.SearchTypes(TypeName.Text.Substring(0, go).Replace("<", "").Replace(">", "")));
+						Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(0, go).Replace("<", "").Replace(">", "").Trim()));
 
 					//Edit the collection generic type
 					if (cp > go && cp <= gc)
 					{
-						Results = new ObservableCollection<DataType>(IntProject.SearchTypes(TypeName.Text.Substring(go, gc - go).Replace("<", "").Replace(">", "")));
+						Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(go, gc - go).Replace("<", "").Replace(">", "").Trim()));
 						SelectCollectionType = true;
 					}
-
 				}
 				else if (OpenType.TypeMode == DataTypeMode.Dictionary)
 				{
@@ -181,19 +188,19 @@ namespace WCFArchitect.Interface.Data
 
 					//Edit the current dictionary type
 					if (cp <= go)
-						Results = new ObservableCollection<DataType>(IntProject.SearchTypes(TypeName.Text.Substring(0, go).Replace("<", "").Replace(",", "").Replace(">", "")));
+						Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(0, go).Replace("<", "").Replace(",", "").Replace(">", "").Trim()));
 
 					//Edit the dictionary key type
 					if (cp > go && cp <= gs)
 					{
-						Results = new ObservableCollection<DataType>(IntProject.SearchTypes(TypeName.Text.Substring(go, gs - go).Replace("<", "").Replace(",", "").Replace(">", "")));
+						Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(go, gs - go).Replace("<", "").Replace(",", "").Replace(">", "").Trim()));
 						SelectDictionaryKey = true;
 					}
 
 					//Edit the dictionary value type
 					if (cp > gs && cp <= gc)
 					{
-						Results = new ObservableCollection<DataType>(IntProject.SearchTypes(TypeName.Text.Substring(gs, gc - gs).Replace("<", "").Replace(",", "").Replace(">", "")));
+						Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(gs, gc - gs).Replace("<", "").Replace(",", "").Replace(">", "").Trim()));
 						SelectDictionaryType = true;
 					}
 				}
@@ -201,19 +208,23 @@ namespace WCFArchitect.Interface.Data
 			else
 				Results = new ObservableCollection<DataType>(IntProject.SearchTypes(TypeName.Text.Replace("[", "").Replace("]", "")));
 
-			if (Results.Count == 1)
+			if (Results.Count >= 1)
 			{
-				TypesList.SelectedIndex = 0;
-				SelectType();
+				foreach (DataType dt in Results.Where(dt => dt.Name.Equals(sstr, StringComparison.CurrentCultureIgnoreCase)))
+				{
+					TypesList.SelectedItem = dt;
+					SelectType();
+					return;
+				}
 			}
-			else if (Results.Count > 1)
-				TypesList.SelectedIndex = 0;
+
+			TypesList.SelectedIndex = 0;
 
 			//Handle arrays
 			if (OpenType != null && ((TypeName.Text.Contains("[") || TypeName.Text.Contains("]")) && (OpenType.TypeMode == DataTypeMode.Collection || OpenType.TypeMode == DataTypeMode.Dictionary)))
 				TypeName.Text = TypeName.Text.Replace("[", "").Replace("]", "");
 
-			if (TypeName.Text.Contains("[]"))
+			if (TypeName.Text.EndsWith("[]"))
 				OpenType = new DataType(DataTypeMode.Array) {CollectionGenericType = OpenType};
 
 		}
@@ -222,7 +233,6 @@ namespace WCFArchitect.Interface.Data
 		{
 			if (e.Key == Key.Enter)
 			{
-				TypesList.SelectedIndex = 0;
 				SelectType();
 			}
 			if (Results != null && Results.Count > 1)
@@ -251,12 +261,15 @@ namespace WCFArchitect.Interface.Data
 
 		private void TypesList_MouseUp(object sender, MouseButtonEventArgs e)
 		{
+			var lbi = Globals.GetVisualParent<ListBoxItem>(VisualTreeHelper.HitTest(TypesList, e.GetPosition(TypesList)).VisualHit);
+			TypesList.SelectedItem = lbi.Content;
 			SelectType();
-			TypeName.Focus();
 		}
 
 		private void SelectType()
 		{
+			int tnss = -1;
+
 			if (TypesList.SelectedItem == null) return;
 			var sdt = TypesList.SelectedItem as DataType;
 			if (sdt == null) return;
@@ -294,7 +307,10 @@ namespace WCFArchitect.Interface.Data
 					if (SelectCollectionType)
 						OpenType.CollectionGenericType = sdt;
 					if (SelectDictionaryKey)
+					{
 						OpenType.DictionaryKeyGenericType = sdt;
+						tnss = TypeName.Text.IndexOf(">", StringComparison.OrdinalIgnoreCase);
+					}
 					if (SelectDictionaryType)
 						OpenType.DictionaryValueGenericType = sdt;
 				}
@@ -307,30 +323,50 @@ namespace WCFArchitect.Interface.Data
 				{
 					OpenType = new DataType(sdt.Name, sdt.TypeMode);
 
-					HasResults = false;
-					SelectCollectionType = false;
-					SelectDictionaryKey = false;
-					SelectDictionaryType = false;
-
-					TypeName.SelectionStart = TypeName.Text.IndexOf("<", StringComparison.Ordinal) + 1;
-
-					IsSettingType = false;
-					return;
+					if (sdt.TypeMode == DataTypeMode.Collection) tnss = TypeName.Text.IndexOf("<", StringComparison.OrdinalIgnoreCase) + 1;
+					if (sdt.TypeMode == DataTypeMode.Dictionary) tnss = TypeName.Text.IndexOf("<", StringComparison.OrdinalIgnoreCase) + 1;
+					if (OpenType.TypeMode == DataTypeMode.Dictionary && SelectDictionaryKey) tnss = TypeName.Text.IndexOf(">", StringComparison.OrdinalIgnoreCase);
 				}
-
-				OpenType = sdt;
+				else
+					OpenType = sdt;
 			}
 
 			var bindingExpression = TypeName.GetBindingExpression(TextBox.TextProperty);
 			if (bindingExpression != null) bindingExpression.UpdateTarget();
 
+			TypeName.Focus();
+			TypeName.SelectionStart = tnss == -1 ? OpenType.TypeName.Length : tnss;
+
 			HasResults = false;
 			SelectCollectionType = false;
 			SelectDictionaryKey = false;
 			SelectDictionaryType = false;
-
 			IsSettingType = false;
-			RaiseEvent(new RoutedEventArgs(SelectedEvent, this));
+
+			if (OpenType.TypeMode == DataTypeMode.Collection && OpenType.CollectionGenericType != null)
+			{
+				IsValid = true;
+				RaiseEvent(new RoutedEventArgs(SelectedEvent, this));
+			}
+			else if (OpenType.TypeMode == DataTypeMode.Dictionary && OpenType.DictionaryKeyGenericType != null && OpenType.DictionaryValueGenericType != null)
+			{
+				IsValid = true;
+				RaiseEvent(new RoutedEventArgs(SelectedEvent, this));
+			}
+			else if (OpenType.TypeMode != DataTypeMode.Collection && OpenType.TypeMode != DataTypeMode.Dictionary)
+			{
+				IsValid = true;
+				RaiseEvent(new RoutedEventArgs(SelectedEvent, this));
+			}
+			else
+				IsValid = false;
+
+			RaiseEvent(new RoutedEventArgs(ValidationChangedEvent, this));
+		}
+
+		private void ContentControl_GotFocus(object sender, RoutedEventArgs e)
+		{
+			TypeName.Focus();
 		}
 
 		private void ContentControl_LostFocus(object sender, RoutedEventArgs e)

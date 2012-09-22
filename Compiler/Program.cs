@@ -30,6 +30,8 @@ namespace WCFArchitect.Compiler
 			Globals.ApplicationVersion = new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo(appPath + "wasc.exe").FileVersion);
 			Globals.ApplicationTitle = "WCF Architect Service Compiler";
 
+			if (args.GetLongLength(0) == 0) Environment.Exit(0);
+
 			if(args.Contains("-?"))
 				PrintHelp();
 
@@ -161,7 +163,7 @@ namespace WCFArchitect.Compiler
 						Console.WriteLine("Unrecognized Target: " + args[i]);
 						continue;
 					}
-					string op = args[++i];
+					string op = args[++i].Replace("\"", "");
 					if(!Directory.Exists(op))
 					{
 						Console.WriteLine("Unable to locate directory: " + op);

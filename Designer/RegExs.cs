@@ -28,7 +28,7 @@ namespace WCFArchitect.Helpers
 			MatchP2PURI = new Regex(@"^(net\.p2p)\://[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;%\$#\=~])*$", RegexOptions.Compiled);
 			MatchPipeURI = new Regex(@"^(net\.pipe)\://[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;%\$#\=~])*$", RegexOptions.Compiled);
 			MatchMSMQURI = new Regex(@"^(net\.msmq)\://[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;%\$#\=~])*$", RegexOptions.Compiled);
-			MatchCodeName = new Regex(@"^[A-Za-z][A-Za-z0-9]+", RegexOptions.Compiled);
+			MatchCodeName = new Regex(@"^[A-Za-z][A-Za-z0-9]+$", RegexOptions.Compiled);
 			MatchIPv4 = new Regex(@"^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9]{1,2})){3}$", RegexOptions.Compiled);
 			MatchIPv6 = new Regex(@"^([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}$", RegexOptions.Compiled);
 		}
