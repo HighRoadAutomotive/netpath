@@ -359,18 +359,22 @@ namespace WCFArchitect.Projects
 			Storage.Save(Path, Data);
 		}
 
-		public List<DataType> SearchTypes(string Search, bool DataOnly = false, bool IsDependency = false)
+		public List<DataType> SearchTypes(string Search, bool IncludeCollections = true, bool DataOnly = false)
 		{
 			if(string.IsNullOrEmpty(Search)) return new List<DataType>();
 
 			var results = new List<DataType>();
 
 			if (DataOnly == false)
-				if (IsDependency == false) results.AddRange(from a in DefaultTypes where a.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0 select a);
+			{
+				//Decide whether or not we want to include collections and dictionaries in the results.
+				if (IncludeCollections) results.AddRange(from a in DefaultTypes where a.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0 select a);
+				else results.AddRange(from a in DefaultTypes where a.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0 && a.TypeMode != DataTypeMode.Collection && a.TypeMode != DataTypeMode.Dictionary select a);
+			}
 			results.AddRange(Namespace.SearchTypes(Search, DataOnly));
 
 			foreach(DependencyProject dp in DependencyProjects)
-				results.AddRange(dp.Project.SearchTypes(Search, true));
+				results.AddRange(dp.Project.SearchTypes(Search, false, true));
 
 			return results;
 		}
