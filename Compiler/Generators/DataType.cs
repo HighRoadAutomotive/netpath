@@ -67,19 +67,9 @@ namespace WCFArchitect.Compiler.Generators
 
 		public static string GenerateTypeGenerics(DataType o)
 		{
-			var s = new StringBuilder("<");
-			if (o.TypeMode == DataTypeMode.Collection)
-			{
-				s.Append(GenerateType(o.CollectionGenericType));
-			}
-			else if (o.TypeMode == DataTypeMode.Dictionary)
-			{
-				s.AppendFormat("{0}, {1}", GenerateType(o.DictionaryKeyGenericType), GenerateType(o.DictionaryValueGenericType));
-			}
-			else
-				return "";
-			s.Append(">");
-			return s.ToString();
+			if (o.TypeMode == DataTypeMode.Collection || o.TypeMode == DataTypeMode.Array)
+				return GenerateType(o.CollectionGenericType);
+			return o.TypeMode == DataTypeMode.Dictionary ? string.Format("{0}, {1}", GenerateType(o.DictionaryKeyGenericType), GenerateType(o.DictionaryValueGenericType)) : "";
 		}
 	}
 
