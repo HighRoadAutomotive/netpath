@@ -118,19 +118,19 @@ namespace WCFArchitect.Compiler
 
 			foreach (DataElement de in Scan.Data.SelectMany(d => d.Elements))
 			{
-				if(de.DataType.IsReference) refs.Add(de.DataType);
-				if(de.ClientType != null && de.ClientType.IsReference) refs.Add(de.ClientType);
-				if(de.XAMLType != null && de.XAMLType.IsReference) refs.Add(de.XAMLType);
+				if(de.DataType.IsTypeReference) refs.Add(de.DataType);
+				if(de.ClientType != null && de.ClientType.IsTypeReference) refs.Add(de.ClientType);
+				if(de.XAMLType != null && de.XAMLType.IsTypeReference) refs.Add(de.XAMLType);
 			}
 
 			foreach (Service s in Scan.Services)
 			{
 				foreach (Method m in s.Operations)
 				{
-					if (m.ReturnType.IsReference) refs.Add(m.ReturnType);
-					refs.AddRange(from mp in m.Parameters where mp.Type.IsReference select mp.Type);
+					if (m.ReturnType.IsTypeReference) refs.Add(m.ReturnType);
+					refs.AddRange(from mp in m.Parameters where mp.Type.IsTypeReference select mp.Type);
 				}
-				refs.AddRange(from Property p in s.Operations where p.ReturnType.IsReference select p.ReturnType);
+				refs.AddRange(from Property p in s.Operations where p.ReturnType.IsTypeReference select p.ReturnType);
 			}
 
 			foreach(Namespace n in Scan.Children)
