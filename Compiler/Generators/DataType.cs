@@ -26,13 +26,13 @@ namespace WCFArchitect.Compiler.Generators
 			return o.ToString();
 		}
 
-		public static string GenerateTypeDeclaration(DataType o)
+		public static string GenerateTypeDeclaration(DataType o, bool ImpliedExtensionData = false, bool HasWinFormsDatabinding = false)
 		{
 			var sb = new StringBuilder();
 			if (o.TypeMode == DataTypeMode.Class)
 			{
 				sb.AppendFormat("{0} {1}{2}{3}class {4}", GenerateScope(o.Scope), o.Partial ? "partial " : "", o.Abstract ? "abstract " : "", o.Sealed ? "sealed " : "", o.Name);
-				if (o.InheritedTypes.Any())
+				if (o.InheritedTypes.Any() || ImpliedExtensionData || HasWinFormsDatabinding)
 				{
 					sb.Append(" : ");
 					for (int i = 0; i < o.InheritedTypes.Count; i++)
@@ -40,13 +40,15 @@ namespace WCFArchitect.Compiler.Generators
 						sb.Append(GenerateType(o.InheritedTypes[i]));
 						if ((i + 1) > o.InheritedTypes.Count) sb.Append(", ");
 					}
+					if (ImpliedExtensionData) sb.Append(o.InheritedTypes.Count > 0 ? ", System.Runtime.Serialization.IExtensibleDataObject" : "System.Runtime.Serialization.IExtensibleDataObject");
+					if (HasWinFormsDatabinding) sb.Append(o.InheritedTypes.Count > 0 || ImpliedExtensionData ? ", System.ComponentModel.INotifyPropertyChanged" : "System.ComponentModel.INotifyPropertyChanged");
 				}
 			}
 			else if (o.TypeMode == DataTypeMode.Struct)
 			{
 				sb.AppendFormat("{0} {1}struct {2}", GenerateScope(o.Scope), o.Partial ? "partial " : "", o.Name);
 				var dataTypes = (from a in o.InheritedTypes where a.TypeMode == DataTypeMode.Interface select a).ToList();
-				if (dataTypes.Any())
+				if (dataTypes.Any() || ImpliedExtensionData || HasWinFormsDatabinding)
 				{
 					sb.Append(" : ");
 					for (int i = 0; i < dataTypes.Count(); i++)
@@ -54,12 +56,12 @@ namespace WCFArchitect.Compiler.Generators
 						sb.Append(GenerateType(dataTypes[i]));
 						if ((i + 1) > dataTypes.Count) sb.Append(", ");
 					}
+					if (ImpliedExtensionData) sb.Append(o.InheritedTypes.Count > 0 ? ", System.Runtime.Serialization.IExtensibleDataObject" : "System.Runtime.Serialization.IExtensibleDataObject");
+					if (HasWinFormsDatabinding) sb.Append(o.InheritedTypes.Count > 0 || ImpliedExtensionData ? ", System.ComponentModel.INotifyPropertyChanged" : "System.ComponentModel.INotifyPropertyChanged");
 				}
 			}
 			else if (o.TypeMode == DataTypeMode.Enum)
-			{
 				return string.Format("{0} enum {1}", GenerateScope(o.Scope), o.Name);
-			}
 			else
 				return "";
 			return sb.ToString();

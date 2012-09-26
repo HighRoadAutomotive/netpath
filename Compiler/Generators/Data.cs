@@ -82,10 +82,24 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute]");
 			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t[DataContract(Name = \"{0}\", Namespace = \"{1}\")]{2}", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI, Environment.NewLine);
-			code.AppendFormat("\t{0} : System.Runtime.Serialization.IExtensibleDataObject{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o), Environment.NewLine);
+			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, o.HasImpliedExtensionData, o.HasWinFormsBindings), Environment.NewLine);
 			code.AppendLine("\t{");
-			code.AppendLine("\t\tprivate System.Runtime.Serialization.ExtensionDataObject extensionDataField;");
-			code.AppendLine("\t\tpublic System.Runtime.Serialization.ExtensionDataObject ExtensionData { get { return extensionDataField; } set { extensionDataField = value; } }");
+			if (o.HasExtensionData || o.HasImpliedExtensionData)
+			{
+				code.AppendLine("\t\tprivate System.Runtime.Serialization.ExtensionDataObject extensionDataField;");
+				code.AppendLine("\t\tpublic System.Runtime.Serialization.ExtensionDataObject ExtensionData { get { return extensionDataField; } set { extensionDataField = value; } }");
+				code.AppendLine();
+			}
+			if(o.HasWinFormsBindings)
+			{
+				code.AppendLine("\t\tpublic event PropertyChangedEventHandler PropertyChanged;");
+				code.AppendLine("\t\tprivate void NotifyPropertyChanged(string propertyName)");
+				code.AppendLine("\t\t{");
+				code.AppendLine("\t\t\tif (PropertyChanged != null)");
+				code.AppendLine("\t\t\t\tPropertyChanged(this, new PropertyChangedEventArgs(propertyName));");
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+			}
 			foreach (DataElement de in o.Elements)
 				code.Append(GenerateElementProxyCode30(de));
 			code.AppendLine("\t}");
@@ -99,7 +113,31 @@ namespace WCFArchitect.Compiler.Generators
 
 		public static string GenerateProxyCode40(Data o)
 		{
-			return GenerateProxyCode45(o);
+			var code = new StringBuilder();
+			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute]");
+			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+			code.AppendFormat("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]{3}", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI, Environment.NewLine);
+			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, o.HasImpliedExtensionData, o.HasWinFormsBindings), Environment.NewLine);
+			code.AppendLine("\t{");
+			if (o.HasExtensionData || o.HasImpliedExtensionData)
+			{
+				code.AppendLine("\t\tpublic System.Runtime.Serialization.ExtensionDataObject ExtensionData { get; set; }");
+				code.AppendLine();
+			}
+			if (o.HasWinFormsBindings)
+			{
+				code.AppendLine("\t\tpublic event PropertyChangedEventHandler PropertyChanged;");
+				code.AppendLine("\t\tprivate void NotifyPropertyChanged(string propertyName)");
+				code.AppendLine("\t\t{");
+				code.AppendLine("\t\t\tif (PropertyChanged != null)");
+				code.AppendLine("\t\t\t\tPropertyChanged(this, new PropertyChangedEventArgs(propertyName));");
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+			}
+			foreach (DataElement de in o.Elements)
+				code.Append(GenerateElementProxyCode40(de));
+			code.AppendLine("\t}");
+			return code.ToString();
 		}
 
 		public static string GenerateProxyCode45(Data o)
@@ -108,9 +146,23 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute]");
 			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]{3}", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name , o.Parent.URI, Environment.NewLine);
-			code.AppendFormat("\t{0} : System.Runtime.Serialization.IExtensibleDataObject{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o), Environment.NewLine);
+			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, o.HasImpliedExtensionData, o.HasWinFormsBindings), Environment.NewLine);
 			code.AppendLine("\t{");
-			code.AppendLine("\t\tpublic System.Runtime.Serialization.ExtensionDataObject ExtensionData { get; set; }");
+			if (o.HasExtensionData || o.HasImpliedExtensionData)
+			{
+				code.AppendLine("\t\tpublic System.Runtime.Serialization.ExtensionDataObject ExtensionData { get; set; }");
+				code.AppendLine();
+			}
+			if (o.HasWinFormsBindings)
+			{
+				code.AppendLine("\t\tpublic event PropertyChangedEventHandler PropertyChanged;");
+				code.AppendLine("\t\tprivate void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberNameAttribute] string propertyName = \"\")");
+				code.AppendLine("\t\t{");
+				code.AppendLine("\t\t\tif (PropertyChanged != null)");
+				code.AppendLine("\t\t\t\tPropertyChanged(this, new PropertyChangedEventArgs(propertyName));");
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+			}
 			foreach (DataElement de in o.Elements)
 				code.Append(GenerateElementProxyCode45(de));
 			code.AppendLine("\t}");
@@ -342,8 +394,16 @@ namespace WCFArchitect.Compiler.Generators
 				if (o.Owner.Parent.Owner.ServiceSerializer == ProjectServiceSerializerType.XML) code.Append("\t\t[XmlIgnore()]");
 				if (o.Owner.Parent.Owner.ServiceSerializer == ProjectServiceSerializerType.Auto) code.Append("\t\t");
 			}
-			if (o.IsReadOnly == false) code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} set {{ m_{2} = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
-			else code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} protected set {{ m_{2} = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+			if (!o.GenerateWinFormsSupport)
+			{
+				if (o.IsReadOnly == false) code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} set {{ m_{2} = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+				else code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} protected set {{ m_{2} = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+			}
+			else
+			{
+				if (o.IsReadOnly == false) code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} set {{ if (value != m_{2}) {{ m_{2} = value; NotifyPropertyChanged(\"{2}\"); }} }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+				else code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} protected set {{ if (value != m_{2}) {{ m_{2} = value; NotifyPropertyChanged(\"{2}\"); }} }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+			}
 			return code.ToString();
 		}
 
@@ -354,13 +414,9 @@ namespace WCFArchitect.Compiler.Generators
 
 		private static string GenerateElementProxyCode40(DataElement o)
 		{
-			return GenerateElementProxyCode45(o);
-		}
-
-		private static string GenerateElementProxyCode45(DataElement o)
-		{
 			if (o.IsHidden) return "";
 			var code = new StringBuilder();
+			if(o.GenerateWinFormsSupport) code.AppendFormat("\t\tprivate {0} m_{1};{2}", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.DataName, Environment.NewLine);
 			if (o.IsDataMember)
 			{
 				code.AppendFormat("\t\t[DataMember({0}{1}{2}Name = \"{3}\")] ", o.EmitDefaultValue ? "EmitDefaultValue = false, " : "", o.IsRequired ? "IsRequired = true, " : "", o.Order >= 0 ? string.Format("Order = {0}, ", o.Order) : "", o.HasClientType ? o.ClientName : o.DataName);
@@ -371,7 +427,38 @@ namespace WCFArchitect.Compiler.Generators
 				if (o.Owner.Parent.Owner.ServiceSerializer == ProjectServiceSerializerType.XML) code.Append("\t\t[XmlIgnore()]");
 				if (o.Owner.Parent.Owner.ServiceSerializer == ProjectServiceSerializerType.Auto) code.Append("\t\t[IgnoreDataMember()]");
 			}
-			code.AppendFormat(o.IsReadOnly == false ? "{0} {1} {2} {{ get; set; }}{3}" : "{0} {1} {2} {{ get; protected set; }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+			if (!o.GenerateWinFormsSupport)
+				code.AppendFormat(o.IsReadOnly == false ? "{0} {1} {2} {{ get; set; }}{3}" : "{0} {1} {2} {{ get; protected set; }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+			else
+			{
+				if (o.IsReadOnly == false) code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} set {{ if (value != m_{2}) {{ m_{2} = value; NotifyPropertyChanged(\"{2}\"); }} }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+				else code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} protected set {{ if (value != m_{2}) {{ m_{2} = value; NotifyPropertyChanged(\"{2}\"); }} }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+			}
+			return code.ToString();
+		}
+
+		private static string GenerateElementProxyCode45(DataElement o)
+		{
+			if (o.IsHidden) return "";
+			var code = new StringBuilder();
+			if (o.GenerateWinFormsSupport) code.AppendFormat("\t\tprivate {0} m_{1};{2}", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.DataName, Environment.NewLine);
+			if (o.IsDataMember)
+			{
+				code.AppendFormat("\t\t[DataMember({0}{1}{2}Name = \"{3}\")] ", o.EmitDefaultValue ? "EmitDefaultValue = false, " : "", o.IsRequired ? "IsRequired = true, " : "", o.Order >= 0 ? string.Format("Order = {0}, ", o.Order) : "", o.HasClientType ? o.ClientName : o.DataName);
+			}
+			else
+			{
+				if (o.Owner.Parent.Owner.ServiceSerializer == ProjectServiceSerializerType.DataContract) code.Append("\t\t[IgnoreDataMember()]");
+				if (o.Owner.Parent.Owner.ServiceSerializer == ProjectServiceSerializerType.XML) code.Append("\t\t[XmlIgnore()]");
+				if (o.Owner.Parent.Owner.ServiceSerializer == ProjectServiceSerializerType.Auto) code.Append("\t\t[IgnoreDataMember()]");
+			}
+			if (!o.GenerateWinFormsSupport)
+				code.AppendFormat(o.IsReadOnly == false ? "{0} {1} {2} {{ get; set; }}{3}" : "{0} {1} {2} {{ get; protected set; }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+			else
+			{
+				if (o.IsReadOnly == false) code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} set {{ if (value != m_{2}) {{ m_{2} = value; NotifyPropertyChanged(); }} }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+				else code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} protected set {{ if (value != m_{2}) {{ m_{2} = value; NotifyPropertyChanged(); }} }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+			}
 			return code.ToString();
 		}
 

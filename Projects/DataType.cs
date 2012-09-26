@@ -61,7 +61,10 @@ namespace WCFArchitect.Projects
 			var t = o as DataType;
 			if (t == null) return;
 
-			t.ClientType = Convert.ToBoolean(e.NewValue) == false ? null : new DataType(t.TypeMode) {Name = t.Name, Scope = t.Scope};
+			if (t.ClientType != null) return;
+			t.ClientType = Convert.ToBoolean(e.NewValue) == false ? null : new DataType(t.TypeMode) {ID = t.ID, Name = t.Name, Scope = t.Scope, Partial = t.Partial, Abstract = t.Abstract, Sealed = t.Sealed};
+			if (t.ClientType != null)
+				t.ClientType.InheritedTypes.Add(new DataType("System.Runtime.Serialization.IExtensibleDataObject", DataTypeMode.Interface));
 		}
 
 		public DataType ClientType { get { return (DataType)GetValue(ClientTypeProperty); } set { SetValue(ClientTypeProperty, value); } }
@@ -120,8 +123,11 @@ namespace WCFArchitect.Projects
 
 		public bool IsExternalType { get; private set; }
 		public PrimitiveTypes Primitive { get; private set; }
-		public bool IsReference { get; private set; }
+		public bool IsTypeReference { get; private set; }
 
+		[IgnoreDataMember] public bool HasExtensionData { get { return HasClientType && (ClientType.InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0)); } }
+		[IgnoreDataMember] public bool HasImpliedExtensionData { get { return !HasClientType; } }
+		
 		private static void DataTypePropertyChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
 		{
 			var t = o as DataType;
@@ -354,7 +360,7 @@ namespace WCFArchitect.Projects
 			if (string.IsNullOrEmpty(Name)) return null;
 
 			if (TypeMode == DataTypeMode.Class || TypeMode == DataTypeMode.Struct || TypeMode == DataTypeMode.Enum)
-				return new DataType(TypeMode) { ID = ID, IsReference = true, Name = string.Format("{0}.{1}", Parent.FullName, Name) };
+				return new DataType(TypeMode) { ID = ID, IsTypeReference = true, Name = string.Format("{0}.{1}", Parent.FullName, Name) };
 			return null;
 		}
 	}
