@@ -236,7 +236,7 @@ namespace WCFArchitect.Interface.Data
 			{
 				string sstr = TypeName.Text.Replace("<", "").Replace(",", "").Replace(">", "").Replace("[", "").Replace("]", "").Trim();
 
-				Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr, false, false, true));
+				Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr, false, true, true));
 
 				if (Results.Count >= 1)
 				{

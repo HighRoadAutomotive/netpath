@@ -385,6 +385,8 @@ namespace WCFArchitect.Projects
 			foreach(DependencyProject dp in DependencyProjects)
 				results.AddRange(dp.Project.SearchTypes(Search, false, true));
 
+			if (IncludeInheritable) results.RemoveAll(a => a.GetType() == typeof(Enum));
+
 			return results;
 		}
 
