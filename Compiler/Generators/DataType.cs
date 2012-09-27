@@ -38,7 +38,7 @@ namespace WCFArchitect.Compiler.Generators
 					for (int i = 0; i < o.InheritedTypes.Count; i++)
 					{
 						sb.Append(GenerateType(o.InheritedTypes[i]));
-						if ((i + 1) > o.InheritedTypes.Count) sb.Append(", ");
+						if (i < o.InheritedTypes.Count - 1) sb.Append(", ");
 					}
 					if (ImpliedExtensionData) sb.Append(o.InheritedTypes.Count > 0 ? ", System.Runtime.Serialization.IExtensibleDataObject" : "System.Runtime.Serialization.IExtensibleDataObject");
 					if (HasWinFormsDatabinding) sb.Append(o.InheritedTypes.Count > 0 || ImpliedExtensionData ? ", System.ComponentModel.INotifyPropertyChanged" : "System.ComponentModel.INotifyPropertyChanged");
@@ -54,7 +54,7 @@ namespace WCFArchitect.Compiler.Generators
 					for (int i = 0; i < dataTypes.Count(); i++)
 					{
 						sb.Append(GenerateType(dataTypes[i]));
-						if ((i + 1) > dataTypes.Count) sb.Append(", ");
+						if (i < dataTypes.Count - 1) sb.Append(", ");
 					}
 					if (ImpliedExtensionData) sb.Append(o.InheritedTypes.Count > 0 ? ", System.Runtime.Serialization.IExtensibleDataObject" : "System.Runtime.Serialization.IExtensibleDataObject");
 					if (HasWinFormsDatabinding) sb.Append(o.InheritedTypes.Count > 0 || ImpliedExtensionData ? ", System.ComponentModel.INotifyPropertyChanged" : "System.ComponentModel.INotifyPropertyChanged");

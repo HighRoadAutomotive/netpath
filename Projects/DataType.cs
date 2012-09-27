@@ -61,10 +61,16 @@ namespace WCFArchitect.Projects
 			var t = o as DataType;
 			if (t == null) return;
 
-			if (t.ClientType != null) return;
-			t.ClientType = Convert.ToBoolean(e.NewValue) == false ? null : new DataType(t.TypeMode) {ID = t.ID, Name = t.Name, Scope = t.Scope, Partial = t.Partial, Abstract = t.Abstract, Sealed = t.Sealed};
-			if (t.ClientType != null)
-				t.ClientType.InheritedTypes.Add(new DataType("System.Runtime.Serialization.IExtensibleDataObject", DataTypeMode.Interface));
+			if (Convert.ToBoolean(e.NewValue) == false)
+				t.ClientType = null;
+			else
+			{
+				if (t.ClientType == null)
+				{
+					t.ClientType = Convert.ToBoolean(e.NewValue) == false ? null : new DataType(t.TypeMode) { ID = t.ID, Parent = t.Parent, Name = t.Name, Scope = t.Scope, Partial = t.Partial, Abstract = t.Abstract, Sealed = t.Sealed };
+					if (t.ClientType != null) t.ClientType.InheritedTypes.Add(new DataType("System.Runtime.Serialization.IExtensibleDataObject", DataTypeMode.Interface));
+				}
+			}
 		}
 
 		public DataType ClientType { get { return (DataType)GetValue(ClientTypeProperty); } set { SetValue(ClientTypeProperty, value); } }
@@ -125,9 +131,10 @@ namespace WCFArchitect.Projects
 		public PrimitiveTypes Primitive { get; private set; }
 		public bool IsTypeReference { get; private set; }
 
-		[IgnoreDataMember] public bool HasExtensionData { get { return HasClientType && (ClientType.InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0)); } }
-		[IgnoreDataMember] public bool HasImpliedExtensionData { get { return !HasClientType; } }
-		
+		[IgnoreDataMember] public bool DataHasExtensionData { get { return InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0); } }
+		[IgnoreDataMember] public bool ClientHasExtensionData { get { return HasClientType && (ClientType.InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0)); } }
+		[IgnoreDataMember] public bool ClientHasImpliedExtensionData { get { return !HasClientType; } }
+
 		private static void DataTypePropertyChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
 		{
 			var t = o as DataType;

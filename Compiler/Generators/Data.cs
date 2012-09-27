@@ -27,17 +27,27 @@ namespace WCFArchitect.Compiler.Generators
 
 			foreach (DataElement d in o.Elements)
 			{
-				if (Helpers.RegExs.MatchCodeName.IsMatch(d.DataType.Name) == false)
-					Program.AddMessage(new CompileMessage("GS3005", "The data element '" + d.DataType.Name + "' in the '" + o.Name + "' data object contains invalid characters in the Name.", CompileMessageSeverity.ERROR, o, d, d.GetType(), o.ID, d.ID));
+				if (Helpers.RegExs.MatchCodeName.IsMatch(d.DataType.Name) == false && d.DataType.TypeMode != DataTypeMode.Array)
+					Program.AddMessage(new CompileMessage("GS3001", "The data element '" + d.DataType.Name + "' in the '" + o.Name + "' data object contains invalid characters in the Name.", CompileMessageSeverity.ERROR, o, d, d.GetType(), o.ID, d.ID));
 
 				if (d.HasClientType)
-					if (Helpers.RegExs.MatchCodeName.IsMatch(d.ClientType.Name) == false)
+					if (Helpers.RegExs.MatchCodeName.IsMatch(d.ClientType.Name) == false && d.DataType.TypeMode != DataTypeMode.Array)
 						Program.AddMessage(new CompileMessage("GS3002", "The data object '" + d.ClientType.Name + "' in the '" + o.Name + "' namespace contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 
 				if (d.HasXAMLType)
-					if (Helpers.RegExs.MatchCodeName.IsMatch(d.XAMLType.Name) == false)
+					if (Helpers.RegExs.MatchCodeName.IsMatch(d.XAMLType.Name) == false && d.DataType.TypeMode != DataTypeMode.Array)
 						Program.AddMessage(new CompileMessage("GS3003", "The data object '" + d.XAMLType.Name + "' in the '" + o.Name + "' namespace contains invalid characters in the XAML Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 			}
+
+			if (o.InheritedTypes.Any(a => a.Name.IndexOf("INotifyPropertyChanged", StringComparison.CurrentCultureIgnoreCase) >= 0))
+				Program.AddMessage(new CompileMessage("GS3005", "The server data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace is unable to inherit from INotifyPropertyChanged.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
+			if (o.HasXAMLType && o.XAMLType.InheritedTypes.Any(a => a.Name.IndexOf("INotifyPropertyChanged", StringComparison.CurrentCultureIgnoreCase) >= 0))
+				Program.AddMessage(new CompileMessage("GS3006", "The XAML integration object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace is unable to inherit from INotifyPropertyChanged.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
+
+			if (o.InheritedTypes.Any(a => a.Name.IndexOf("DependencyObject", StringComparison.CurrentCultureIgnoreCase) >= 0))
+				Program.AddMessage(new CompileMessage("GS3007", "The server data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace is unable to inherit from DependencyObject.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
+			if (o.HasClientType && o.ClientType.InheritedTypes.Any(a => a.Name.IndexOf("DependencyObject", StringComparison.CurrentCultureIgnoreCase) >= 0))
+				Program.AddMessage(new CompileMessage("GS3008", "The client data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace is unable to inherit from DependencyObject.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 		}
 
 		public static string GenerateServerCode30(Data o)
@@ -47,6 +57,14 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendFormat("\t[DataContract(Name = \"{0}\", Namespace = \"{1}\")]{2}", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
 			code.AppendLine("\t{");
+
+			if (o.DataHasExtensionData)
+			{
+				code.AppendLine("\t\tprivate System.Runtime.Serialization.ExtensionDataObject extensionDataField;");
+				code.AppendLine("\t\tpublic System.Runtime.Serialization.ExtensionDataObject ExtensionData { get { return extensionDataField; } set { extensionDataField = value; } }");
+				code.AppendLine();
+			}
+
 			foreach (DataElement de in o.Elements)
 				code.Append(GenerateElementServerCode30(de));
 			code.AppendLine("\t}");
@@ -70,6 +88,13 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendFormat("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]{3}", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
 			code.AppendLine("\t{");
+	
+			if (o.DataHasExtensionData)
+			{
+				code.AppendLine("\t\tpublic System.Runtime.Serialization.ExtensionDataObject ExtensionData { get; set; }");
+				code.AppendLine();
+			}
+
 			foreach (DataElement de in o.Elements)
 				code.Append(GenerateElementServerCode45(de));
 			code.AppendLine("\t}");
@@ -82,9 +107,9 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute]");
 			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t[DataContract(Name = \"{0}\", Namespace = \"{1}\")]{2}", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI, Environment.NewLine);
-			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, o.HasImpliedExtensionData, o.HasWinFormsBindings), Environment.NewLine);
+			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, o.ClientHasImpliedExtensionData, o.HasWinFormsBindings), Environment.NewLine);
 			code.AppendLine("\t{");
-			if (o.HasExtensionData || o.HasImpliedExtensionData)
+			if (o.ClientHasExtensionData || o.ClientHasImpliedExtensionData)
 			{
 				code.AppendLine("\t\tprivate System.Runtime.Serialization.ExtensionDataObject extensionDataField;");
 				code.AppendLine("\t\tpublic System.Runtime.Serialization.ExtensionDataObject ExtensionData { get { return extensionDataField; } set { extensionDataField = value; } }");
@@ -117,9 +142,9 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute]");
 			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]{3}", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI, Environment.NewLine);
-			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, o.HasImpliedExtensionData, o.HasWinFormsBindings), Environment.NewLine);
+			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, o.ClientHasImpliedExtensionData, o.HasWinFormsBindings), Environment.NewLine);
 			code.AppendLine("\t{");
-			if (o.HasExtensionData || o.HasImpliedExtensionData)
+			if (o.ClientHasExtensionData || o.ClientHasImpliedExtensionData)
 			{
 				code.AppendLine("\t\tpublic System.Runtime.Serialization.ExtensionDataObject ExtensionData { get; set; }");
 				code.AppendLine();
@@ -146,9 +171,9 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute]");
 			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]{3}", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name , o.Parent.URI, Environment.NewLine);
-			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, o.HasImpliedExtensionData, o.HasWinFormsBindings), Environment.NewLine);
+			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, o.ClientHasImpliedExtensionData, o.HasWinFormsBindings), Environment.NewLine);
 			code.AppendLine("\t{");
-			if (o.HasExtensionData || o.HasImpliedExtensionData)
+			if (o.ClientHasExtensionData || o.ClientHasImpliedExtensionData)
 			{
 				code.AppendLine("\t\tpublic System.Runtime.Serialization.ExtensionDataObject ExtensionData { get; set; }");
 				code.AppendLine();
@@ -182,6 +207,13 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o.XAMLType), Environment.NewLine);
 			code.AppendLine("\t{");
+
+			if (o.XAMLHasExtensionData)
+			{
+				code.AppendLine("\t\tprivate System.Runtime.Serialization.ExtensionDataObject extensionDataField;");
+				code.AppendLine("\t\tpublic System.Runtime.Serialization.ExtensionDataObject ExtensionData { get { return extensionDataField; } set { extensionDataField = value; } }");
+				code.AppendLine();
+			}
 
 			code.AppendLine("\t\t//Properties");
 			foreach (DataElement de in o.Elements)
@@ -268,6 +300,12 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o.XAMLType), Environment.NewLine);
 			code.AppendLine("\t{");
+
+			if (o.XAMLHasExtensionData)
+			{
+				code.AppendLine("\t\tpublic System.Runtime.Serialization.ExtensionDataObject ExtensionData { get; set; }");
+				code.AppendLine();
+			}
 
 			code.AppendLine("\t\t//Properties");
 			foreach (DataElement de in o.Elements)
@@ -383,7 +421,7 @@ namespace WCFArchitect.Compiler.Generators
 		{
 			if (o.IsHidden) return "";
 			var code = new StringBuilder();
-			code.AppendFormat("\t\tprivate {0} m_{1};{2}", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.DataName, Environment.NewLine);
+			code.AppendFormat("\t\tprivate {0} {1}Field;{2}", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.DataName, Environment.NewLine);
 			if (o.IsDataMember)
 			{
 				code.AppendFormat("\t\t[DataMember({0}{1}{2}Name = \"{3}\")] ", o.EmitDefaultValue ? "EmitDefaultValue = false, " : "", o.IsRequired ? "IsRequired = true, " : "", o.Order >= 0 ? string.Format("Order = {0}, ", o.Order) : "", o.HasClientType ? o.ClientName : o.DataName);
@@ -396,13 +434,13 @@ namespace WCFArchitect.Compiler.Generators
 			}
 			if (!o.GenerateWinFormsSupport)
 			{
-				if (o.IsReadOnly == false) code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} set {{ m_{2} = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
-				else code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} protected set {{ m_{2} = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+				if (o.IsReadOnly == false) code.AppendFormat("{0} {1} {2} {{ get {{ return {2}Field; }} set {{ {2}Field = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+				else code.AppendFormat("{0} {1} {2} {{ get {{ return {2}Field; }} protected set {{ {2}Field = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
 			}
 			else
 			{
-				if (o.IsReadOnly == false) code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} set {{ if (value != m_{2}) {{ m_{2} = value; NotifyPropertyChanged(\"{2}\"); }} }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
-				else code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} protected set {{ if (value != m_{2}) {{ m_{2} = value; NotifyPropertyChanged(\"{2}\"); }} }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+				if (o.IsReadOnly == false) code.AppendFormat("{0} {1} {2} {{ get {{ return {2}Field; }} set {{ if (value != {2}Field) {{ {2}Field = value; NotifyPropertyChanged(\"{2}\"); }} }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+				else code.AppendFormat("{0} {1} {2} {{ get {{ return {2}Field; }} protected set {{ if (value != {2}Field) {{ {2}Field = value; NotifyPropertyChanged(\"{2}\"); }} }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
 			}
 			return code.ToString();
 		}
@@ -416,7 +454,7 @@ namespace WCFArchitect.Compiler.Generators
 		{
 			if (o.IsHidden) return "";
 			var code = new StringBuilder();
-			if(o.GenerateWinFormsSupport) code.AppendFormat("\t\tprivate {0} m_{1};{2}", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.DataName, Environment.NewLine);
+			code.AppendFormat("\t\tprivate {0} {1}Field;{2}", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.DataName, Environment.NewLine);
 			if (o.IsDataMember)
 			{
 				code.AppendFormat("\t\t[DataMember({0}{1}{2}Name = \"{3}\")] ", o.EmitDefaultValue ? "EmitDefaultValue = false, " : "", o.IsRequired ? "IsRequired = true, " : "", o.Order >= 0 ? string.Format("Order = {0}, ", o.Order) : "", o.HasClientType ? o.ClientName : o.DataName);
@@ -428,11 +466,14 @@ namespace WCFArchitect.Compiler.Generators
 				if (o.Owner.Parent.Owner.ServiceSerializer == ProjectServiceSerializerType.Auto) code.Append("\t\t[IgnoreDataMember()]");
 			}
 			if (!o.GenerateWinFormsSupport)
-				code.AppendFormat(o.IsReadOnly == false ? "{0} {1} {2} {{ get; set; }}{3}" : "{0} {1} {2} {{ get; protected set; }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+			{
+				if (o.IsReadOnly == false) code.AppendFormat("{0} {1} {2} {{ get {{ return {2}Field; }} set {{ {2}Field = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+				else code.AppendFormat("{0} {1} {2} {{ get {{ return {2}Field; }} protected set {{ {2}Field = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+			}
 			else
 			{
-				if (o.IsReadOnly == false) code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} set {{ if (value != m_{2}) {{ m_{2} = value; NotifyPropertyChanged(\"{2}\"); }} }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
-				else code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} protected set {{ if (value != m_{2}) {{ m_{2} = value; NotifyPropertyChanged(\"{2}\"); }} }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+				if (o.IsReadOnly == false) code.AppendFormat("{0} {1} {2} {{ get {{ return {2}Field; }} set {{ if (value != {2}Field) {{ {2}Field = value; NotifyPropertyChanged(\"{2}\"); }} }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+				else code.AppendFormat("{0} {1} {2} {{ get {{ return {2}Field; }} protected set {{ if (value != {2}Field) {{ {2}Field = value; NotifyPropertyChanged(\"{2}\"); }} }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
 			}
 			return code.ToString();
 		}
@@ -441,7 +482,7 @@ namespace WCFArchitect.Compiler.Generators
 		{
 			if (o.IsHidden) return "";
 			var code = new StringBuilder();
-			if (o.GenerateWinFormsSupport) code.AppendFormat("\t\tprivate {0} m_{1};{2}", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.DataName, Environment.NewLine);
+			code.AppendFormat("\t\tprivate {0} {1}Field;{2}", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.DataName, Environment.NewLine);
 			if (o.IsDataMember)
 			{
 				code.AppendFormat("\t\t[DataMember({0}{1}{2}Name = \"{3}\")] ", o.EmitDefaultValue ? "EmitDefaultValue = false, " : "", o.IsRequired ? "IsRequired = true, " : "", o.Order >= 0 ? string.Format("Order = {0}, ", o.Order) : "", o.HasClientType ? o.ClientName : o.DataName);
@@ -453,11 +494,14 @@ namespace WCFArchitect.Compiler.Generators
 				if (o.Owner.Parent.Owner.ServiceSerializer == ProjectServiceSerializerType.Auto) code.Append("\t\t[IgnoreDataMember()]");
 			}
 			if (!o.GenerateWinFormsSupport)
-				code.AppendFormat(o.IsReadOnly == false ? "{0} {1} {2} {{ get; set; }}{3}" : "{0} {1} {2} {{ get; protected set; }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+			{
+				if (o.IsReadOnly == false) code.AppendFormat("{0} {1} {2} {{ get {{ return {2}Field; }} set {{ {2}Field = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+				else code.AppendFormat("{0} {1} {2} {{ get {{ return {2}Field; }} protected set {{ {2}Field = value; }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+			}
 			else
 			{
-				if (o.IsReadOnly == false) code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} set {{ if (value != m_{2}) {{ m_{2} = value; NotifyPropertyChanged(); }} }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
-				else code.AppendFormat("{0} {1} {2} {{ get {{ return m_{2}; }} protected set {{ if (value != m_{2}) {{ m_{2} = value; NotifyPropertyChanged(); }} }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+				if (o.IsReadOnly == false) code.AppendFormat("{0} {1} {2} {{ get {{ return {2}Field; }} set {{ if (value != {2}Field) {{ {2}Field = value; NotifyPropertyChanged(); }} }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
+				else code.AppendFormat("{0} {1} {2} {{ get {{ return {2}Field; }} protected set {{ if (value != {2}Field) {{ {2}Field = value; NotifyPropertyChanged(); }} }} }}{3}", DataTypeCSGenerator.GenerateScope(o.HasClientType ? o.ClientType.Scope : o.DataType.Scope), DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, Environment.NewLine);
 			}
 			return code.ToString();
 		}

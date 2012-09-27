@@ -18,7 +18,7 @@ namespace WCFArchitect.Compiler
 		public static Dictionary<string, ProjectGenerationFramework> OverrideClientOutput { get; private set; }
 		public static StreamWriter LogFile { get; private set; }
 		public static Stream ErrorStream { get; private set; }
-		public static bool NoStdError { get; private set; }
+		public static bool StdError { get; private set; }
 		public static bool Quiet { get; private set; }
 
 		private static List<CompileMessage> Messages { get; set; }
@@ -84,7 +84,7 @@ namespace WCFArchitect.Compiler
 			Console.WriteLine(mstr);
 
 			//Write a serialized version of the message to the error stream
-			if (NoStdError) return;
+			if (!StdError) return;
 			var dcs = new DataContractSerializer(typeof(CompileMessage), new DataContractSerializerSettings { MaxItemsInObjectGraph = Int32.MaxValue, IgnoreExtensionDataObject = true, SerializeReadOnlyTypes = true, PreserveObjectReferences = true });
 			var xw = XmlWriter.Create(ErrorStream, new XmlWriterSettings { Encoding = Encoding.UTF8, NewLineChars = Environment.NewLine, NewLineHandling = NewLineHandling.Entitize, CloseOutput = true, WriteEndDocumentOnClose = true, Indent = true, Async = false });
 			dcs.WriteObject(xw, Message);
@@ -108,7 +108,7 @@ namespace WCFArchitect.Compiler
 			Console.WriteLine();
 			Console.WriteLine("-log\tSave the output to a log file. Usage: -log \"<directory>\".");
 			Console.WriteLine();
-			Console.WriteLine("-nostderr\tSupresses ALL stderr output.");
+			Console.WriteLine("-stderr\tEnables stderr output.");
 			Console.WriteLine();
 			Console.WriteLine("-q\tSupresses informational output.");
 			Console.WriteLine();
@@ -151,8 +151,8 @@ namespace WCFArchitect.Compiler
 			{
 				if(args[i]=="-q")
 					Quiet = true;
-				if (args[i] == "-nostderr")
-					NoStdError = true;
+				if (args[i] == "-stderr")
+					StdError = true;
 				if (args[i] == "-log")
 					LogFile = File.CreateText(args[i++]);
 				if (args[i] == "-os")
