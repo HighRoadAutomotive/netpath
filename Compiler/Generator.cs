@@ -36,6 +36,8 @@ namespace WCFArchitect.Compiler
 					Program.AddMessage(new CompileMessage("GS0006", "The Client Assembly Name in '" + Project.Name + "' project is not set or contains invalid characters. You must specify a valid Windows file name.", CompileMessageSeverity.ERROR, null, Project, Project.GetType(), Guid.Empty, Project.ID));
 			if ((Project.ServerOutputFile == Project.ClientOutputFile))
 				Program.AddMessage(new CompileMessage("GS0007", "The '" + Project.Name + "' project Client and Server Assembly Names are the same. You must specify a different Server or Client Assembly Name.", CompileMessageSeverity.ERROR, null, Project, Project.GetType(), Guid.Empty, Project.ID));
+
+			NamespaceCSGenerator.VerifyCode(Project.Namespace);
 		}
 
 		public void Generate()
@@ -84,8 +86,12 @@ namespace WCFArchitect.Compiler
 			}
 			code.AppendLine();
 
-			//Scan and generate references
+			//Scan, verify, and generate references
 			var refs = new List<DataType>(ReferenceScan(Project.Namespace));
+			foreach(Projects.Enum e in refs)
+				EnumCSGenerator.VerifyCode(e);
+			foreach(Data d in refs)
+				DataCSGenerator.VerifyCode(d);
 			foreach (DataType dt in refs)
 				code.AppendLine(ReferenceGenerate(dt));
 

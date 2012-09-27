@@ -155,6 +155,7 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Project), new UIPropertyMetadata(true));
 
 		public List<DataType> DefaultTypes { get; private set; }
+		public List<DataType> InheritableTypes { get; private set; } 
 
 		public Project()
 		{
@@ -208,6 +209,9 @@ namespace WCFArchitect.Projects
 					                    new DataType("ObservableCollection", DataTypeMode.Collection),
 					                    new DataType("KeyedCollection", DataTypeMode.Dictionary)
 				                    };
+
+			//Add the default inheritable types.
+			InheritableTypes = new List<DataType>() {new DataType("System.Windows.DependencyObject", DataTypeMode.Class), new DataType("System.Runtime.Serialization.IExtensibleDataObject", DataTypeMode.Interface), new DataType("System.ComponentModel.INotifyPropertyChanged", DataTypeMode.Interface)};
 		}
 
 		public Project(string Name)
@@ -264,6 +268,9 @@ namespace WCFArchitect.Projects
 					                    new DataType("ObservableCollection", DataTypeMode.Collection),
 					                    new DataType("KeyedCollection", DataTypeMode.Dictionary)
 				                    };
+
+			//Add the default inheritable types.
+			InheritableTypes = new List<DataType>() { new DataType("System.Windows.DependencyObject", DataTypeMode.Class), new DataType("System.Runtime.Serialization.IExtensibleDataObject", DataTypeMode.Interface), new DataType("System.ComponentModel.INotifyPropertyChanged", DataTypeMode.Interface) };
 
 			//Default Using Namespaces
 			UsingNamespaces = new ObservableCollection<ProjectUsingNamespace>
@@ -359,11 +366,13 @@ namespace WCFArchitect.Projects
 			Storage.Save(Path, Data);
 		}
 
-		public List<DataType> SearchTypes(string Search, bool IncludeCollections = true, bool DataOnly = false)
+		public List<DataType> SearchTypes(string Search, bool IncludeCollections = true, bool DataOnly = false, bool IncludeInheritable = false)
 		{
 			if(string.IsNullOrEmpty(Search)) return new List<DataType>();
 
 			var results = new List<DataType>();
+
+			if (IncludeInheritable) results.AddRange(from a in InheritableTypes where a.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0 select a);
 
 			if (DataOnly == false)
 			{

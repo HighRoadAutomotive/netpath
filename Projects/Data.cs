@@ -33,8 +33,8 @@ namespace WCFArchitect.Projects
 			{
 				if (t.XAMLType == null)
 				{
-					t.XAMLType = Convert.ToBoolean(e.NewValue) == false ? null : new DataType(t.TypeMode) {ID = t.ID, Name = t.Name, Scope = t.Scope, Partial = t.Partial, Abstract = t.Abstract, Sealed = t.Sealed};
-					if (t.XAMLType != null) t.XAMLType.InheritedTypes.Add(new DataType("DependencyObject", DataTypeMode.Class));
+					t.XAMLType = Convert.ToBoolean(e.NewValue) == false ? null : new DataType(t.TypeMode) {ID = t.ID, Parent = t.Parent, Name = t.Name + "XAML", Scope = t.Scope, Partial = t.Partial, Abstract = t.Abstract, Sealed = t.Sealed};
+					if (t.XAMLType != null) t.XAMLType.InheritedTypes.Add(new DataType("System.Windows.DependencyObject", DataTypeMode.Class));
 				}
 			}
 		}
@@ -65,6 +65,7 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Data));
 
 		[IgnoreDataMember] public bool HasWinFormsBindings { get { return Elements.Any(a => a.GenerateWinFormsSupport); } }
+		[IgnoreDataMember] public bool XAMLHasExtensionData { get { return HasXAMLType && (XAMLType.InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0)); } }
 
 		public Data() : base(DataTypeMode.Class)
 		{

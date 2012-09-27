@@ -5,7 +5,7 @@
 	xmlns:Projects="clr-namespace:WCFArchitect.Projects;assembly=WCFArchitect.Projects"
 	xmlns:Data="clr-namespace:WCFArchitect.Interface.Data"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" d:DesignWidth="1000" >
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" d:DesignWidth="1000" IsKeyboardFocusWithinChanged="ContentControl_IsKeyboardFocusWithinChanged" >
 	<ContentControl.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
@@ -26,10 +26,10 @@
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="Auto" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="34" />
+			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<ComboBox x:Name="Scope" Grid.Column="0" Margin="5" Width="120" SelectedIndex="{Binding Path=OpenType.Scope, Converter={StaticResource DataScopeConverter}, FallbackValue='-1', TargetNullValue='-1'}" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" >
@@ -45,11 +45,21 @@
 		<RadioButton IsChecked="{Binding Path=OpenType.TypeMode, Converter={StaticResource ClassTypeConverter}}" Grid.Column="4" Content="Class" Margin="5" Visibility="{Binding Path=CanSetType, Converter={StaticResource BoolVisibilityConverter}, ConverterParameter='True'}" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" Checked="ClassType_Checked" />
 		<RadioButton IsChecked="{Binding Path=OpenType.TypeMode, Converter={StaticResource StructTypeConverter}}" Grid.Column="5" Content="Struct" Margin="5" Visibility="{Binding Path=CanSetType, Converter={StaticResource BoolVisibilityConverter}, ConverterParameter='True'}" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" Checked="StructType_Checked" />
 		<pc:TextBox Text="{Binding Path=OpenType.Name, FallbackValue='', UpdateSourceTrigger=PropertyChanged}" Grid.Column="6" LabelText="Name" Margin="5" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" />
-		<Button Content="Add Inherited Type" Grid.Column="7" Margin="5" Visibility="{Binding Path=IsKeyboardFocusWithin, Converter={StaticResource BoolVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" Click="AddInheritedType_Click" />
-		<ListBox x:Name="InheritedTypes" Grid.Row="1" Grid.ColumnSpan="8" ItemsSource="{Binding Path=OpenType.InheritedTypes}" Margin="5" Padding="0" Background="Transparent" BorderBrush="{StaticResource DefaultBorderColor}" Visibility="{Binding Path=IsKeyboardFocusWithin, Converter={StaticResource BoolVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled"> 
+		<Grid Grid.Row="1" Grid.ColumnSpan="7" Visibility="{Binding Path=IsKeyboardFocusWithin, Converter={StaticResource BoolVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" >
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+			<Data:TypeSelector x:Name="SelectInheritedType" LabelText="Select Inherited Type" Grid.Column="0" Grid.Row="1" Margin="5" IsInheriting="True" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" />
+			<Button Content="Add Inherited Type" Grid.Column="1" Margin="5" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" Click="AddInheritedType_Click" />
+		</Grid>
+		<ListBox x:Name="InheritedTypes" Grid.Row="2" Grid.ColumnSpan="7" ItemsSource="{Binding Path=OpenType.InheritedTypes}" Margin="5" Padding="0" Background="Transparent" BorderBrush="{StaticResource DefaultBorderColor}" Visibility="Collapsed" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled"> 
 			<ListBox.ItemsPanel>
 				<ItemsPanelTemplate>
-					<StackPanel Orientation="Horizontal" IsItemsHost="True" />
+					<WrapPanel Orientation="Horizontal" IsItemsHost="True" />
 				</ItemsPanelTemplate>
 			</ListBox.ItemsPanel>
 			<ListBox.ItemTemplate>

@@ -33,9 +33,11 @@ namespace WCFArchitect.Interface.Data
 
 			if (tdt == null)
 			{
+				t.SelectInheritedType.Project = null;
 				t.IsEnabled = false;
 				return;
-			} 
+			}
+			t.SelectInheritedType.Project = tdt.Parent.Owner;
 			t.IsEnabled = true;
 		}
 
@@ -86,14 +88,32 @@ namespace WCFArchitect.Interface.Data
 
 		private void AddInheritedType_Click(object sender, RoutedEventArgs e)
 		{
+			if(SelectInheritedType.OpenType != null)
+				OpenType.InheritedTypes.Add(SelectInheritedType.OpenType);
 
+			SelectInheritedType.OpenType = null;
+
+			if (OpenType.InheritedTypes.Count == 0)
+				InheritedTypes.Visibility = Visibility.Collapsed;
 		}
 
 		private void DeleteSelectedInheritedType_Click(object sender, RoutedEventArgs e)
 		{
-			if (InheritedTypes.SelectedItem == null) return;
+			if (sender == null) return;
+			var lbi = Globals.GetVisualParent<ListBoxItem>(sender);
+			if (lbi == null) return;
+			OpenType.InheritedTypes.Remove(lbi.Content as DataType);
 
-			OpenType.InheritedTypes.Remove(InheritedTypes.SelectedItem as DataType);
+			if (OpenType.InheritedTypes.Count == 0)
+				InheritedTypes.Visibility = Visibility.Collapsed;
+		}
+
+		private void ContentControl_IsKeyboardFocusWithinChanged(object sender, DependencyPropertyChangedEventArgs e)
+		{
+			if (IsKeyboardFocusWithin && OpenType.InheritedTypes.Count > 0)
+				InheritedTypes.Visibility = Visibility.Visible;
+			else
+				InheritedTypes.Visibility = Visibility.Collapsed;
 		}
 	}
 

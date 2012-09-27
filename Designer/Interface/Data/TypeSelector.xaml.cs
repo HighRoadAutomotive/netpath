@@ -99,6 +99,9 @@ namespace WCFArchitect.Interface.Data
 		public static readonly RoutedEvent ValidationChangedEvent = EventManager.RegisterRoutedEvent("ValidationChanged", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TypeSelector));
 		public event RoutedEventHandler ValidationChanged { add { AddHandler(ValidationChangedEvent, value); } remove { RemoveHandler(ValidationChangedEvent, value); } }
 
+		public bool IsInheriting { get { return (bool)GetValue(IsInheritingProperty); } set { SetValue(IsInheritingProperty, value); } }
+		public static readonly DependencyProperty IsInheritingProperty = DependencyProperty.Register("IsInheriting", typeof(bool), typeof(TypeSelector), new PropertyMetadata(false));
+
 		private bool IsInitializing { get; set; }
 		private bool IsSettingType { get; set; }
 
@@ -147,86 +150,104 @@ namespace WCFArchitect.Interface.Data
 			SelectDictionaryKey = false;
 			SelectDictionaryType = false;
 
-			string sstr = TypeName.Text;
-
-			if (OpenType != null && (OpenType.TypeMode == DataTypeMode.Collection || OpenType.TypeMode == DataTypeMode.Dictionary))
+			if (!IsInheriting)
 			{
-				if (OpenType.TypeMode == DataTypeMode.Collection)
+				string sstr = TypeName.Text;
+
+				if (OpenType != null && (OpenType.TypeMode == DataTypeMode.Collection || OpenType.TypeMode == DataTypeMode.Dictionary))
 				{
-					int go = TypeName.Text.IndexOf("<", StringComparison.Ordinal);	//Generic Open Bracket
-					int gc = TypeName.Text.IndexOf(">", StringComparison.Ordinal);	//Generic Close Bracket
-					int cp = TypeName.SelectionStart;								//Caret Position
-
-					if (go < 0 || gc < 0) return;
-
-					//Ensure that there are no comma's as collections can only have one generic type.
-					if(TypeName.Text.IndexOf(",", StringComparison.Ordinal) > -1)
+					if (OpenType.TypeMode == DataTypeMode.Collection)
 					{
-						TypeName.Text = TypeName.Text.Replace(",", "");
+						int go = TypeName.Text.IndexOf("<", StringComparison.Ordinal); //Generic Open Bracket
+						int gc = TypeName.Text.IndexOf(">", StringComparison.Ordinal); //Generic Close Bracket
+						int cp = TypeName.SelectionStart; //Caret Position
+
+						if (go < 0 || gc < 0) return;
+
+						//Ensure that there are no comma's as collections can only have one generic type.
+						if (TypeName.Text.IndexOf(",", StringComparison.Ordinal) > -1)
+						{
+							TypeName.Text = TypeName.Text.Replace(",", "");
+							return;
+						}
+
+						//Edit the current collection type
+						if (cp <= go)
+							Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(0, go).Replace("<", "").Replace(">", "").Trim()));
+
+						//Edit the collection generic type
+						if (cp > go && cp <= gc)
+						{
+							Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(go, gc - go).Replace("<", "").Replace(">", "").Trim(), false)); //Search for results without collections, the compiler does not support nested collections.
+							SelectCollectionType = true;
+						}
+					}
+					else if (OpenType.TypeMode == DataTypeMode.Dictionary)
+					{
+						int go = TypeName.Text.IndexOf("<", StringComparison.Ordinal); //Generic Open Bracket
+						int gs = TypeName.Text.IndexOf(",", StringComparison.Ordinal); //Generic Separator
+						int gc = TypeName.Text.IndexOf(">", StringComparison.Ordinal); //Generic Close Bracket
+						int cp = TypeName.SelectionStart; //Caret Position
+
+						if (go < 0 || gs < 0 || gc < 0) return;
+
+						//Edit the current dictionary type
+						if (cp <= go)
+							Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(0, go).Replace("<", "").Replace(",", "").Replace(">", "").Trim()));
+
+						//Edit the dictionary key type
+						if (cp > go && cp <= gs)
+						{
+							Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(go, gs - go).Replace("<", "").Replace(",", "").Replace(">", "").Trim(), false)); //Search for results without collections, the compiler does not support nested collections.
+							SelectDictionaryKey = true;
+						}
+
+						//Edit the dictionary value type
+						if (cp > gs && cp <= gc)
+						{
+							Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(gs, gc - gs).Replace("<", "").Replace(",", "").Replace(">", "").Trim(), false)); //Search for results without collections, the compiler does not support nested collections.
+							SelectDictionaryType = true;
+						}
+					}
+				}
+				else
+					Results = new ObservableCollection<DataType>(IntProject.SearchTypes(TypeName.Text.Replace("[", "").Replace("]", "")));
+
+				if (Results.Count >= 1)
+				{
+					foreach (DataType dt in Results.Where(dt => dt.Name.Equals(sstr, StringComparison.CurrentCultureIgnoreCase)))
+					{
+						TypesList.SelectedItem = dt;
+						SelectType();
 						return;
 					}
-
-					//Edit the current collection type
-					if (cp <= go)
-						Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(0, go).Replace("<", "").Replace(">", "").Trim()));
-
-					//Edit the collection generic type
-					if (cp > go && cp <= gc)
-					{
-						Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(go, gc - go).Replace("<", "").Replace(">", "").Trim(), false));		//Search for results without collections, the compiler does not support nested collections.
-						SelectCollectionType = true;
-					}
 				}
-				else if (OpenType.TypeMode == DataTypeMode.Dictionary)
-				{
-					int go = TypeName.Text.IndexOf("<", StringComparison.Ordinal);	//Generic Open Bracket
-					int gs = TypeName.Text.IndexOf(",", StringComparison.Ordinal);	//Generic Separator
-					int gc = TypeName.Text.IndexOf(">", StringComparison.Ordinal);	//Generic Close Bracket
-					int cp = TypeName.SelectionStart;								//Caret Position
 
-					if (go < 0 || gs < 0 || gc < 0) return;
+				TypesList.SelectedIndex = 0;
 
-					//Edit the current dictionary type
-					if (cp <= go)
-						Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(0, go).Replace("<", "").Replace(",", "").Replace(">", "").Trim()));
+				//Handle arrays
+				if (OpenType != null && ((TypeName.Text.Contains("[") || TypeName.Text.Contains("]")) && (OpenType.TypeMode == DataTypeMode.Collection || OpenType.TypeMode == DataTypeMode.Dictionary)))
+					TypeName.Text = TypeName.Text.Replace("[", "").Replace("]", "");
 
-					//Edit the dictionary key type
-					if (cp > go && cp <= gs)
-					{
-						Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(go, gs - go).Replace("<", "").Replace(",", "").Replace(">", "").Trim(), false));		//Search for results without collections, the compiler does not support nested collections.
-						SelectDictionaryKey = true;
-					}
-
-					//Edit the dictionary value type
-					if (cp > gs && cp <= gc)
-					{
-						Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(gs, gc - gs).Replace("<", "").Replace(",", "").Replace(">", "").Trim(), false));		//Search for results without collections, the compiler does not support nested collections.
-						SelectDictionaryType = true;
-					}
-				}
+				if (OpenType != null && TypeName.Text.EndsWith("[]") && OpenType.TypeMode != DataTypeMode.Array)
+					OpenType = new DataType(DataTypeMode.Array) {CollectionGenericType = OpenType};
 			}
 			else
-				Results = new ObservableCollection<DataType>(IntProject.SearchTypes(TypeName.Text.Replace("[", "").Replace("]", "")));
-
-			if (Results.Count >= 1)
 			{
-				foreach (DataType dt in Results.Where(dt => dt.Name.Equals(sstr, StringComparison.CurrentCultureIgnoreCase)))
+				string sstr = TypeName.Text.Replace("<", "").Replace(",", "").Replace(">", "").Replace("[", "").Replace("]", "").Trim();
+
+				Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr, false, false, true));
+
+				if (Results.Count >= 1)
 				{
-					TypesList.SelectedItem = dt;
-					SelectType();
-					return;
+					foreach (DataType dt in Results.Where(dt => dt.Name.Equals(sstr, StringComparison.CurrentCultureIgnoreCase)))
+					{
+						TypesList.SelectedItem = dt;
+						SelectType();
+						return;
+					}
 				}
 			}
-
-			TypesList.SelectedIndex = 0;
-
-			//Handle arrays
-			if (OpenType != null && ((TypeName.Text.Contains("[") || TypeName.Text.Contains("]")) && (OpenType.TypeMode == DataTypeMode.Collection || OpenType.TypeMode == DataTypeMode.Dictionary)))
-				TypeName.Text = TypeName.Text.Replace("[", "").Replace("]", "");
-
-			if (OpenType != null && TypeName.Text.EndsWith("[]") && OpenType.TypeMode != DataTypeMode.Array)
-				OpenType = new DataType(DataTypeMode.Array) {CollectionGenericType = OpenType};
-
 		}
 
 		private void TypeName_KeyUp(object sender, KeyEventArgs e)

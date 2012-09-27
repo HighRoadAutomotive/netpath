@@ -25,6 +25,8 @@ namespace WCFArchitect.Compiler
 		public Guid OwnerID { get; private set; }
 		public Guid ObjectID { get; private set; }
 
+		public CompileMessage() { }
+
 		public CompileMessage(string Code, string Description, CompileMessageSeverity Severity, object Owner, object ErrorObject, Type ErrorObjectType, Guid OwnerID, Guid ObjectID)
 		{
 			this.Code = Code;
