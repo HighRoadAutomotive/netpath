@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Text.RegularExpressions;
 
 namespace WCFArchitect.Projects
@@ -21,7 +17,6 @@ namespace WCFArchitect.Projects
 	{
 		EntireSolution,
 		CurrentProject,
-		OpenDocuments,
 	}
 
 	public class FindReplaceInfo
@@ -37,38 +32,33 @@ namespace WCFArchitect.Projects
 		//Replace parameters
 		public bool ReplaceAll { get; protected set; }
 		public string Replace { get; protected set; }
-		public bool IsDataType { get; protected set; }
 
-		public FindReplaceInfo(FindItems Items, FindLocations Location, string Search, bool MatchCase, bool UseRegex, bool IsDataType = false)
+		public FindReplaceInfo(FindItems Items, FindLocations Location, string Search, bool MatchCase, bool UseRegex)
 		{
 			this.Items = Items;
 			this.Location = Location;
 			this.Search = Search;
 			this.MatchCase = MatchCase;
 			this.UseRegex = UseRegex;
-			if (UseRegex == true)
-				if (MatchCase == true) RegexSearch = new Regex(this.Search, RegexOptions.None);
-				else RegexSearch = new Regex(this.Search, RegexOptions.IgnoreCase);
+			if (UseRegex)
+				RegexSearch = MatchCase ? new Regex(this.Search, RegexOptions.None) : new Regex(this.Search, RegexOptions.IgnoreCase);
 
-			this.ReplaceAll = false;
-			this.Replace = "";
-			this.IsDataType = IsDataType;
+			ReplaceAll = false;
+			Replace = "";
 		}
 
-		public FindReplaceInfo(FindItems Items, FindLocations Location, string Search, bool MatchCase, bool UseRegex, string Replace, bool IsDataType = false)
+		public FindReplaceInfo(FindItems Items, FindLocations Location, string Search, bool MatchCase, bool UseRegex, string Replace)
 		{
 			this.Items = Items;
 			this.Location = Location;
 			this.Search = Search;
 			this.MatchCase = MatchCase;
 			this.UseRegex = UseRegex;
-			if (UseRegex == true)
-				if (MatchCase == true) RegexSearch = new Regex(this.Search, RegexOptions.None);
-				else RegexSearch = new Regex(this.Search, RegexOptions.IgnoreCase);
+			if (UseRegex)
+				RegexSearch = MatchCase ? new Regex(this.Search, RegexOptions.None) : new Regex(this.Search, RegexOptions.IgnoreCase);
 
-			this.ReplaceAll = true;
+			ReplaceAll = true;
 			this.Replace = Replace;
-			this.IsDataType = IsDataType;
 		}
 	}
 

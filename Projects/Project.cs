@@ -138,19 +138,6 @@ namespace WCFArchitect.Projects
 		public ObservableCollection<ProjectGenerationTarget> ClientGenerationTargets { get { return (ObservableCollection<ProjectGenerationTarget>)GetValue(ClientGenerationTargetsProperty); } set { SetValue(ClientGenerationTargetsProperty, value); } }
 		public static readonly DependencyProperty ClientGenerationTargetsProperty = DependencyProperty.Register("ClientGenerationTargets", typeof(ObservableCollection<ProjectGenerationTarget>), typeof(Project));
 
-		//Internal Use - Searching / Filtering
-		[IgnoreDataMember] public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
-		public static readonly DependencyProperty IsSearchingProperty = DependencyProperty.Register("IsSearching", typeof(bool), typeof(Project));
-
-		[IgnoreDataMember] public bool IsSearchMatch { get { return (bool)GetValue(IsSearchMatchProperty); } set { SetValue(IsSearchMatchProperty, value); } }
-		public static readonly DependencyProperty IsSearchMatchProperty = DependencyProperty.Register("IsSearchMatch", typeof(bool), typeof(Project));
-
-		[IgnoreDataMember] public bool IsFiltering { get { return (bool)GetValue(IsFilteringProperty); } set { SetValue(IsFilteringProperty, value); } }
-		public static readonly DependencyProperty IsFilteringProperty = DependencyProperty.Register("IsFiltering", typeof(bool), typeof(Project));
-
-		[IgnoreDataMember] public bool IsFilterMatch { get { return (bool)GetValue(IsFilterMatchProperty); } set { SetValue(IsFilterMatchProperty, value); } }
-		public static readonly DependencyProperty IsFilterMatchProperty = DependencyProperty.Register("IsFilterMatch", typeof(bool), typeof(Project));
-
 		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Project), new UIPropertyMetadata(true));
 
@@ -301,10 +288,6 @@ namespace WCFArchitect.Projects
 			base.OnPropertyChanged(e);
 
 			if (e.Property == IsDirtyProperty) return;
-			if (e.Property == IsSearchingProperty) return;
-			if (e.Property == IsSearchMatchProperty) return;
-			if (e.Property == IsFilteringProperty) return;
-			if (e.Property == IsFilterMatchProperty) return;
 			if (e.Property == IsTreeExpandedProperty) return;
 
 			IsDirty = true;
@@ -404,17 +387,7 @@ namespace WCFArchitect.Projects
 			return false;
 		}
 
-		public void Search(string Value)
-		{
-			Namespace.Search(Value);
-		}
-
-		public void Filter(bool FilterAll, bool FilterNamespaces, bool FilterServices, bool FilterData, bool FilterEnums)
-		{
-			Namespace.Filter(FilterAll, FilterNamespaces, FilterServices, FilterData, FilterEnums);
-		}
-
-		public List<FindReplaceResult> FindReplace(FindReplaceInfo Args)
+		public IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
 		{
 			var results = new List<FindReplaceResult>();
 
@@ -424,31 +397,22 @@ namespace WCFArchitect.Projects
 				{
 					if (Args.MatchCase == false)
 					{
-						if (Args.IsDataType == false)
-						{
-							if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, this, this));
-							if (!string.IsNullOrEmpty(Namespace.Name)) if (Namespace.Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Namespace", Namespace.Name, this, this));
-							if (!string.IsNullOrEmpty(Namespace.URI)) if (Namespace.URI.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Namespace URI", Namespace.URI, this, this));
-						}
+						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, this, this));
+						if (!string.IsNullOrEmpty(Namespace.Name)) if (Namespace.Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Namespace", Namespace.Name, this, this));
+						if (!string.IsNullOrEmpty(Namespace.URI)) if (Namespace.URI.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Namespace URI", Namespace.URI, this, this));
 					}
 					else
 					{
-						if (Args.IsDataType == false)
-						{
-							if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, this, this));
-							if (!string.IsNullOrEmpty(Namespace.Name)) if (Namespace.Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Namespace", Namespace.Name, this, this));
-							if (!string.IsNullOrEmpty(Namespace.URI)) if (Namespace.URI.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("ClientName", Namespace.URI, this, this));
-						}
+						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Name", Name, this, this));
+						if (!string.IsNullOrEmpty(Namespace.Name)) if (Namespace.Name.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Namespace", Namespace.Name, this, this));
+						if (!string.IsNullOrEmpty(Namespace.URI)) if (Namespace.URI.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("ClientName", Namespace.URI, this, this));
 					}
 				}
 				else
 				{
-					if (Args.IsDataType == false)
-					{
-						if (!string.IsNullOrEmpty(Name)) if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, this, this));
-						if (!string.IsNullOrEmpty(Namespace.Name)) if (Args.RegexSearch.IsMatch(Namespace.Name)) results.Add(new FindReplaceResult("Namespace", Namespace.Name, this, this));
-						if (!string.IsNullOrEmpty(Namespace.URI)) if (Args.RegexSearch.IsMatch(Namespace.URI)) results.Add(new FindReplaceResult("Namespace URI", Namespace.URI, this, this));
-					}
+					if (!string.IsNullOrEmpty(Name)) if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, this, this));
+					if (!string.IsNullOrEmpty(Namespace.Name)) if (Args.RegexSearch.IsMatch(Namespace.Name)) results.Add(new FindReplaceResult("Namespace", Namespace.Name, this, this));
+					if (!string.IsNullOrEmpty(Namespace.URI)) if (Args.RegexSearch.IsMatch(Namespace.URI)) results.Add(new FindReplaceResult("Namespace URI", Namespace.URI, this, this));
 				}
 
 				if (Args.ReplaceAll)
@@ -459,35 +423,28 @@ namespace WCFArchitect.Projects
 					{
 						if (Args.MatchCase == false)
 						{
-							if (Args.IsDataType == false)
-							{
-								if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-								if (!string.IsNullOrEmpty(Namespace.Name)) Namespace.Name = Microsoft.VisualBasic.Strings.Replace(Namespace.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-								if (!string.IsNullOrEmpty(Namespace.URI)) Namespace.URI = Microsoft.VisualBasic.Strings.Replace(Namespace.URI, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-							}
+							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+							if (!string.IsNullOrEmpty(Namespace.Name)) Namespace.Name = Microsoft.VisualBasic.Strings.Replace(Namespace.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+							if (!string.IsNullOrEmpty(Namespace.URI)) Namespace.URI = Microsoft.VisualBasic.Strings.Replace(Namespace.URI, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 						}
 						else
 						{
-							if (Args.IsDataType == false)
-							{
-								if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
-								if (!string.IsNullOrEmpty(Namespace.Name)) Namespace.Name = Microsoft.VisualBasic.Strings.Replace(Namespace.Name, Args.Search, Args.Replace);
-								if (!string.IsNullOrEmpty(Namespace.URI)) Namespace.URI = Microsoft.VisualBasic.Strings.Replace(Namespace.URI, Args.Search, Args.Replace);
-							}
+							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
+							if (!string.IsNullOrEmpty(Namespace.Name)) Namespace.Name = Microsoft.VisualBasic.Strings.Replace(Namespace.Name, Args.Search, Args.Replace);
+							if (!string.IsNullOrEmpty(Namespace.URI)) Namespace.URI = Microsoft.VisualBasic.Strings.Replace(Namespace.URI, Args.Search, Args.Replace);
 						}
 					}
 					else
 					{
-						if (Args.IsDataType == false)
-						{
-							if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
-							if (!string.IsNullOrEmpty(Namespace.Name)) Namespace.Name = Args.RegexSearch.Replace(Namespace.Name, Args.Replace);
-							if (!string.IsNullOrEmpty(Namespace.URI)) Namespace.URI = Args.RegexSearch.Replace(Namespace.URI, Args.Replace);
-						}
+						if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
+						if (!string.IsNullOrEmpty(Namespace.Name)) Namespace.Name = Args.RegexSearch.Replace(Namespace.Name, Args.Replace);
+						if (!string.IsNullOrEmpty(Namespace.URI)) Namespace.URI = Args.RegexSearch.Replace(Namespace.URI, Args.Replace);
 					}
 					IsActive = ia;
 				}
 			}
+
+			results.AddRange(Namespace.FindReplace(Args));
 
 			return results;
 		}
@@ -501,33 +458,26 @@ namespace WCFArchitect.Projects
 			{
 				if (Args.MatchCase == false)
 				{
-					if (Args.IsDataType == false)
-					{
-						if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-						if (Field == "Namespace") Namespace.Name = Microsoft.VisualBasic.Strings.Replace(Namespace.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-						if (Field == "Namespace URI") Namespace.URI = Microsoft.VisualBasic.Strings.Replace(Namespace.URI, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-					}
+					if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+					if (Field == "Namespace") Namespace.Name = Microsoft.VisualBasic.Strings.Replace(Namespace.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+					if (Field == "Namespace URI") Namespace.URI = Microsoft.VisualBasic.Strings.Replace(Namespace.URI, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 				}
 				else
 				{
-					if (Args.IsDataType == false)
-					{
-						if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
-						if (Field == "Namespace") Namespace.Name = Microsoft.VisualBasic.Strings.Replace(Namespace.Name, Args.Search, Args.Replace);
-						if (Field == "Namespace URI") Namespace.URI = Microsoft.VisualBasic.Strings.Replace(Namespace.URI, Args.Search, Args.Replace);
-					}
+					if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
+					if (Field == "Namespace") Namespace.Name = Microsoft.VisualBasic.Strings.Replace(Namespace.Name, Args.Search, Args.Replace);
+					if (Field == "Namespace URI") Namespace.URI = Microsoft.VisualBasic.Strings.Replace(Namespace.URI, Args.Search, Args.Replace);
 				}
 			}
 			else
 			{
-				if (Args.IsDataType == false)
-				{
-					if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-					if (Field == "Namespace") Namespace.Name = Args.RegexSearch.Replace(Namespace.Name, Args.Replace);
-					if (Field == "Namespace URI") Namespace.URI = Args.RegexSearch.Replace(Namespace.URI, Args.Replace);
-				}
+				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
+				if (Field == "Namespace") Namespace.Name = Args.RegexSearch.Replace(Namespace.Name, Args.Replace);
+				if (Field == "Namespace URI") Namespace.URI = Args.RegexSearch.Replace(Namespace.URI, Args.Replace);
 			}
 			IsActive = ia;
+
+			Namespace.Replace(Args, Field);
 		}
 
 		public bool ProjectHasServices()

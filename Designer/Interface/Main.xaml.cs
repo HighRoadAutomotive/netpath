@@ -15,23 +15,24 @@ using System.Windows.Shapes;
 using System.Diagnostics;
 using WCFArchitect.Interface;
 using Prospective.Controls.Dialogs;
+using WCFArchitect.Options;
 
 namespace WCFArchitect.Interface
 {
 	public partial class Main : Window
 	{
 		//Project Properties
-		public object SelectedProject { get { return (object)GetValue(SelectedProjectProperty); } set { SetValue(SelectedProjectProperty, value); } }
+		public object SelectedProject { get { return GetValue(SelectedProjectProperty); } set { SetValue(SelectedProjectProperty, value); } }
 		public static readonly DependencyProperty SelectedProjectProperty = DependencyProperty.Register("SelectedProject", typeof(object), typeof(Main));
 		
-		public WCFArchitect.Options.UserProfile UserProfile { get { return (WCFArchitect.Options.UserProfile)GetValue(UserProfileProperty); } set { SetValue(UserProfileProperty, value); } }
-		public static readonly DependencyProperty UserProfileProperty = DependencyProperty.Register("UserProfile", typeof(WCFArchitect.Options.UserProfile), typeof(Main));
+		public Options.UserProfile UserProfile { get { return (Options.UserProfile)GetValue(UserProfileProperty); } set { SetValue(UserProfileProperty, value); } }
+		public static readonly DependencyProperty UserProfileProperty = DependencyProperty.Register("UserProfile", typeof(Options.UserProfile), typeof(Main));
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static RoutedCommand SelectProjectCommand = new RoutedCommand();
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static readonly RoutedCommand SelectProjectCommand = new RoutedCommand();
 
 		static Main()
 		{
-			CommandManager.RegisterClassCommandBinding(typeof(Main), new CommandBinding(Main.SelectProjectCommand, OnSelectProjectCommandExecuted));
+			CommandManager.RegisterClassCommandBinding(typeof(Main), new CommandBinding(SelectProjectCommand, OnSelectProjectCommandExecuted));
 		}
 
 		public Main()
@@ -51,8 +52,8 @@ namespace WCFArchitect.Interface
 
 			//Initialize the Options screen.
 			UserProfile = Globals.UserProfile;
-			if (Globals.UserProfile.AutomaticBackupsEnabled == true) AutomaticBackupsEnabled.Content = "Yes";
-			AboutVersion.Content = "Version " + System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).FileVersion;
+			if (Globals.UserProfile.AutomaticBackupsEnabled) AutomaticBackupsEnabled.Content = "Yes";
+			AboutVersion.Content = "Version " + FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).FileVersion;
 #if TRIAL
 			ProductTitle.Content = "Prospective Software WCF Architect Trial Edition";
 #elif WINRT
@@ -64,7 +65,7 @@ namespace WCFArchitect.Interface
 #endif
 
 			//Set the logo in the options screen.
-			BitmapImage logo = new BitmapImage();
+			var logo = new BitmapImage();
 			logo.BeginInit();
 #if TRIAL
 			logo.UriSource = new Uri("pack://application:,,,/WCFArchitect;component/Icons/Odd/FullLogoTrial.png");
@@ -87,7 +88,7 @@ namespace WCFArchitect.Interface
 
 		private void Main_StateChanged(object sender, EventArgs e)
 		{
-			if (this.WindowState == System.Windows.WindowState.Maximized)
+			if (WindowState == WindowState.Maximized)
 			{
 				if (Globals.WindowsLevel == Globals.WindowsVersion.WinVista || Globals.WindowsLevel == Globals.WindowsVersion.WinSeven)
 				{
@@ -98,16 +99,15 @@ namespace WCFArchitect.Interface
 					WindowBorder.Margin = new Thickness(8);
 				}
 				WindowBorder.BorderThickness = new Thickness(0);
-				MaximizeWindow.Visibility = System.Windows.Visibility.Collapsed;
-				RestoreWindow.Visibility = System.Windows.Visibility.Visible;
+				MaximizeWindow.Visibility = Visibility.Collapsed;
+				RestoreWindow.Visibility = Visibility.Visible;
 			}
-			if (this.WindowState == System.Windows.WindowState.Normal)
-			{
-				WindowBorder.Margin = new Thickness(0);
-				WindowBorder.BorderThickness = new Thickness(1);
-				MaximizeWindow.Visibility = System.Windows.Visibility.Visible;
-				RestoreWindow.Visibility = System.Windows.Visibility.Collapsed;
-			}
+			
+			if (WindowState != WindowState.Normal) return;
+			WindowBorder.Margin = new Thickness(0);
+			WindowBorder.BorderThickness = new Thickness(1);
+			MaximizeWindow.Visibility = Visibility.Visible;
+			RestoreWindow.Visibility = Visibility.Collapsed;
 		}
 
 		private void Main_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -124,22 +124,22 @@ namespace WCFArchitect.Interface
 
 		private void CloseWindow_Click(object sender, RoutedEventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		private void MinimizeWindow_Click(object sender, RoutedEventArgs e)
 		{
-			this.WindowState = System.Windows.WindowState.Minimized;
+			WindowState = WindowState.Minimized;
 		}
 
 		private void MaximizeWindow_Click(object sender, RoutedEventArgs e)
 		{
-			this.WindowState = System.Windows.WindowState.Maximized;
+			WindowState = WindowState.Maximized;
 		}
 
 		private void RestoreWindow_Click(object sender, RoutedEventArgs e)
 		{
-			this.WindowState = System.Windows.WindowState.Normal;
+			WindowState = WindowState.Normal;
 		}
 
 		#endregion
@@ -153,9 +153,9 @@ namespace WCFArchitect.Interface
 
 		private void SystemMenuHome_Click(object sender, RoutedEventArgs e)
 		{
-			ActiveProjectScreen.Visibility = System.Windows.Visibility.Collapsed;
-			HomeScreen.Visibility = System.Windows.Visibility.Visible;
-			OptionsScreen.Visibility = System.Windows.Visibility.Collapsed;
+			ActiveProjectScreen.Visibility = Visibility.Collapsed;
+			HomeScreen.Visibility = Visibility.Visible;
+			OptionsScreen.Visibility = Visibility.Collapsed;
 		}
 
 		private void SystemMenu_Click(object sender, RoutedEventArgs e)
@@ -185,9 +185,9 @@ namespace WCFArchitect.Interface
 
 		private void SystemMenuOptions_Click(object sender, RoutedEventArgs e)
 		{
-			ActiveProjectScreen.Visibility = System.Windows.Visibility.Collapsed;
-			HomeScreen.Visibility = System.Windows.Visibility.Collapsed;
-			OptionsScreen.Visibility = System.Windows.Visibility.Visible;
+			ActiveProjectScreen.Visibility = Visibility.Collapsed;
+			HomeScreen.Visibility = Visibility.Collapsed;
+			OptionsScreen.Visibility = Visibility.Visible;
 		}
 
 		private void SystemMenuHelp_Click(object sender, RoutedEventArgs e)
@@ -196,7 +196,7 @@ namespace WCFArchitect.Interface
 
 		private void SystemMenuExit_Click(object sender, RoutedEventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		#endregion
@@ -211,20 +211,19 @@ namespace WCFArchitect.Interface
 			}
 			if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
 			{
-				foreach(SolutionItem pi in ScreenButtons.Items)
-					if (pi.Project == e.OldItems[0])
-					{
-						ScreenButtons.Items.Remove(pi);
-						break;
-					}
+				foreach (SolutionItem pi in ScreenButtons.Items.Cast<SolutionItem>().Where(pi => Equals(pi.Project, e.OldItems[0])))
+				{
+					ScreenButtons.Items.Remove(pi);
+					break;
+				}
 			}
 		}
 
 		private static void OnSelectProjectCommandExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
-			Navigator t = e.Parameter as Navigator;
+			var t = e.Parameter as Navigator;
 			if (t == null) return;
-			Main s = sender as Main;
+			var s = sender as Main;
 			if (s == null) return;
 
 			s.SelectProjectScreen(t);
@@ -233,16 +232,12 @@ namespace WCFArchitect.Interface
 		internal void SelectProjectScreen(Navigator NewScreen)
 		{
 			SelectedProject = NewScreen;
-			ActiveProjectScreen.Visibility = System.Windows.Visibility.Visible;
+			ActiveProjectScreen.Visibility = Visibility.Visible;
 			HomeScreen.Visibility = Visibility.Collapsed;
 			OptionsScreen.Visibility = Visibility.Collapsed;
 
 			foreach (SolutionItem pi in ScreenButtons.Items)
-			{
-				pi.IsSelected = false;
-				if (pi.Project == NewScreen.Project)
-					pi.IsSelected = true;
-			}
+				pi.IsSelected = Equals(pi.Project, NewScreen.Project);
 		}
 
 		#endregion
@@ -251,46 +246,46 @@ namespace WCFArchitect.Interface
 
 		private void NewSolution_Click(object sender, RoutedEventArgs e)
 		{
-			Dialogs.NewSolution np = new Dialogs.NewSolution();
-			DialogService.ShowContentDialog(null, "New Solution", np, new DialogAction("Create", new Action(() => np.Create()), true), new DialogAction("Cancel", false, true));
+			var np = new Dialogs.NewSolution();
+			DialogService.ShowContentDialog(null, "New Solution", np, new DialogAction("Create", np.Create, true), new DialogAction("Cancel", false, true));
 		}
 
 		private void AddProject_Click(object sender, RoutedEventArgs e)
 		{
-			Dialogs.NewProject np = new Dialogs.NewProject(typeof(Projects.Project));
-			DialogService.ShowContentDialog(null, "New Project", np, new DialogAction("Create", new Action(() => np.Create()), true), new DialogAction("Cancel", false, true));
+			var np = new Dialogs.NewProject(typeof(Projects.Project));
+			DialogService.ShowContentDialog(null, "New Project", np, new DialogAction("Create", np.Create, true), new DialogAction("Cancel", false, true));
 		}
 
 		private void UpdateYes_Click(object sender, RoutedEventArgs e)
 		{
-			System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(Globals.NewVersionPath));
+			Process.Start(new ProcessStartInfo(Globals.NewVersionPath));
 			Application.Current.Shutdown(0);
 		}
 
 		private void UpdateNo_Click(object sender, RoutedEventArgs e)
 		{
-			UpdateAvailable.Visibility = System.Windows.Visibility.Collapsed;
+			UpdateAvailable.Visibility = Visibility.Collapsed;
 		}
 
 		public void RefreshRecentList()
 		{
-			if (Globals.UserProfile.ImportantProjects.Count > 0) Globals.UserProfile.ImportantProjects.Sort(delegate(WCFArchitect.Options.RecentSolution p1, WCFArchitect.Options.RecentSolution p2) { return p2.LastAccessed.CompareTo(p1.LastAccessed); });
-			if (Globals.UserProfile.RecentProjects.Count > 0) Globals.UserProfile.RecentProjects.Sort(delegate(WCFArchitect.Options.RecentSolution p1, WCFArchitect.Options.RecentSolution p2) { return p2.LastAccessed.CompareTo(p1.LastAccessed); });
+			if (Globals.UserProfile.ImportantProjects.Count > 0) Globals.UserProfile.ImportantProjects.Sort((p1, p2) => p2.LastAccessed.CompareTo(p1.LastAccessed));
+			if (Globals.UserProfile.RecentProjects.Count > 0) Globals.UserProfile.RecentProjects.Sort((p1, p2) => p2.LastAccessed.CompareTo(p1.LastAccessed));
 
-			ImportantProjectsBlock.Visibility = System.Windows.Visibility.Collapsed;
+			ImportantProjectsBlock.Visibility = Visibility.Collapsed;
 			ImportantProjectsList.Children.Clear();
 			RecentProjectsList.Children.Clear();
 
-			foreach (WCFArchitect.Options.RecentSolution RP in Globals.UserProfile.ImportantProjects)
+			foreach (RecentSolution rp in Globals.UserProfile.ImportantProjects)
 			{
-				ImportantProjectsBlock.Visibility = System.Windows.Visibility.Visible;
-				RecentProjectItem NRPI = new RecentProjectItem(RP, true);
-				ImportantProjectsList.Children.Add(NRPI);
+				ImportantProjectsBlock.Visibility = Visibility.Visible;
+				var nrpi = new RecentProjectItem(rp, true);
+				ImportantProjectsList.Children.Add(nrpi);
 			}
-			foreach (WCFArchitect.Options.RecentSolution RP in Globals.UserProfile.RecentProjects)
+			foreach (RecentSolution rp in Globals.UserProfile.RecentProjects)
 			{
-				RecentProjectItem NRPI = new RecentProjectItem(RP, false);
-				RecentProjectsList.Children.Add(NRPI);
+				var nrpi = new RecentProjectItem(rp, false);
+				RecentProjectsList.Children.Add(nrpi);
 			}
 		}
 
@@ -301,9 +296,9 @@ namespace WCFArchitect.Interface
 		private void DefaultProjectFolderBrowse_Click(object sender, RoutedEventArgs e)
 		{
 			string openpath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			if (!(Globals.UserProfile.DefaultProjectFolder == "" || Globals.UserProfile.DefaultProjectFolder == null)) openpath = Globals.UserProfile.DefaultProjectFolder;
+			if (!string.IsNullOrEmpty(Globals.UserProfile.DefaultProjectFolder)) openpath = Globals.UserProfile.DefaultProjectFolder;
 
-			Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog ofd = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog("Select Default Project Directory");
+			var ofd = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog("Select Default Project Directory");
 			ofd.AllowNonFileSystemItems = false;
 			ofd.EnsurePathExists = true;
 			ofd.IsFolderPicker = true;
@@ -358,7 +353,7 @@ namespace WCFArchitect.Interface
 			if (e.NewValue.Value.TotalMinutes < 1) { UserProfile.AutomaticBackupsInterval = new TimeSpan(0, 1, 0); return; }
 			UserProfile.AutomaticBackupsInterval = e.NewValue.Value;
 			Globals.BackupTimer.Dispose();
-			Globals.BackupTimer = new System.Threading.Timer(new System.Threading.TimerCallback(Globals.BackupSolution), null, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds);
+			Globals.BackupTimer = new System.Threading.Timer(Globals.BackupSolution, null, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds);
 		}
 
 		#endregion
@@ -368,7 +363,7 @@ namespace WCFArchitect.Interface
 		public void NewSolution(string Name, string Path)
 		{
 			if (Globals.Solution != null)
-				CloseSolution(true, false, new Action(() => { Projects.Solution.Save(new Projects.Solution(Name), Path); Globals.OpenSolution(Path, OpenSolutionFinished); }), new Action(() => { Projects.Solution.Save(new Projects.Solution(Name), Path); Globals.OpenSolution(Path, OpenSolutionFinished); }));
+				CloseSolution(true, false, () => { Projects.Solution.Save(new Projects.Solution(Name), Path); Globals.OpenSolution(Path, OpenSolutionFinished); }, () => { Projects.Solution.Save(new Projects.Solution(Name), Path); Globals.OpenSolution(Path, OpenSolutionFinished); });
 			else
 			{
 				Projects.Solution.Save(new Projects.Solution(Name), Path); 
@@ -378,7 +373,7 @@ namespace WCFArchitect.Interface
 
 		public void NewProject(string Name, string Path)
 		{
-			Projects.Project NP = new Projects.Project(Name);
+			var NP = new Projects.Project(Name);
 			Globals.Solution.Projects.Add(Globals.GetRelativePath(Globals.SolutionPath, Path));
 			Projects.Project.Save(NP, Path);
 			Globals.Projects.Add(Projects.Project.Open(Globals.SolutionPath, Path));
@@ -388,7 +383,7 @@ namespace WCFArchitect.Interface
 		public void OpenSolution(string Path)
 		{
 			if (Globals.Solution != null)
-				CloseSolution(true, false, new Action(() => { Globals.OpenSolution(Path, OpenSolutionFinished); }), new Action(() => { Globals.OpenSolution(Path, OpenSolutionFinished); }));
+				CloseSolution(true, false, () => Globals.OpenSolution(Path, OpenSolutionFinished), () => Globals.OpenSolution(Path, OpenSolutionFinished));
 			else
 				Globals.OpenSolution(Path, OpenSolutionFinished);
 		}
@@ -398,26 +393,24 @@ namespace WCFArchitect.Interface
 			if (Success == false) return;
 
 			//Determine if there is already a recent entry. Create one if false. Update the current one if true.
-			bool ProjectHasRecentEntry = false;
-			foreach (WCFArchitect.Options.RecentSolution RP in Globals.UserProfile.ImportantProjects)
-				if (RP.Path == Globals.SolutionPath)
-				{
-					ProjectHasRecentEntry = true;
-					RP.LastAccessed = DateTime.Now;
-					Globals.SolutionInfo = RP;
-				}
-			foreach (WCFArchitect.Options.RecentSolution RP in Globals.UserProfile.RecentProjects)
-				if (RP.Path == Globals.SolutionPath)
-				{
-					ProjectHasRecentEntry = true;
-					RP.LastAccessed = DateTime.Now;
-					Globals.SolutionInfo = RP;
-				}
-			if (ProjectHasRecentEntry == false)
+			bool projectHasRecentEntry = false;
+			foreach (RecentSolution rp in Globals.UserProfile.ImportantProjects.Where(Rp => Rp.Path == Globals.SolutionPath))
 			{
-				Options.RecentSolution NRP = new Options.RecentSolution(Globals.Solution.Name, Globals.SolutionPath);
-				Globals.UserProfile.RecentProjects.Add(NRP);
-				Globals.SolutionInfo = NRP;
+				projectHasRecentEntry = true;
+				rp.LastAccessed = DateTime.Now;
+				Globals.SolutionInfo = rp;
+			}
+			foreach (RecentSolution rp in Globals.UserProfile.RecentProjects.Where(Rp => Rp.Path == Globals.SolutionPath))
+			{
+				projectHasRecentEntry = true;
+				rp.LastAccessed = DateTime.Now;
+				Globals.SolutionInfo = rp;
+			}
+			if (projectHasRecentEntry == false)
+			{
+				var nrp = new RecentSolution(Globals.Solution.Name, Globals.SolutionPath);
+				Globals.UserProfile.RecentProjects.Add(nrp);
+				Globals.SolutionInfo = nrp;
 			}
 
 			RefreshRecentList();
@@ -425,7 +418,7 @@ namespace WCFArchitect.Interface
 			//Select the first screen if any project were loaded.
 			if (Globals.Projects.Count > 0)
 			{
-				SolutionItem t = ScreenButtons.Items[0] as SolutionItem;
+				var t = ScreenButtons.Items[0] as SolutionItem;
 				if (t != null)
 					SelectProjectScreen(t.Content as Navigator);
 			}
@@ -434,30 +427,28 @@ namespace WCFArchitect.Interface
 			SystemMenuSave.IsEnabled = true;
 			SystemMenuSaveAs.IsEnabled = true;
 			SystemMenuClose.IsEnabled = true;
-			this.Title = Globals.Solution.Name + " - Prospective Software WCF Architect";
+			Title = Globals.Solution.Name + " - Prospective Software WCF Architect";
 		}
 
 		public void CloseSolution(bool AskBeforeClose = false, bool Closing = false, Action ContinueYes = null, Action ContinueNo = null)
 		{
 			Globals.IsClosing = true;
 
-			if (Globals.Solution != null)
+			if (Globals.Solution == null) return;
+			if (AskBeforeClose)
 			{
-				if (AskBeforeClose == true)
+				DialogService.ShowMessageDialog(null, "Continue?", "In order to perform the requested action, the current project will be saved and closed. Would you like to continue?", new DialogAction("Yes", () => { Globals.CloseSolution(true); CloseSolutionFinished(); if (ContinueYes != null) ContinueYes(); }, true), new DialogAction("No", () => { Globals.CloseSolution(false); CloseSolutionFinished(); if (ContinueYes != null) ContinueNo(); }), new DialogAction("Cancel", false, true));
+			}
+			else
+			{
+				if (Closing)
 				{
-					DialogService.ShowMessageDialog(null, "Continue?", "In order to perform the requested action, the current project will be saved and closed. Would you like to continue?", new DialogAction("Yes", new Action(() => { Globals.CloseSolution(true); CloseSolutionFinished(); if (ContinueYes != null) ContinueYes(); }), true), new DialogAction("No", new Action(() => { Globals.CloseSolution(false); CloseSolutionFinished(); if (ContinueYes != null) ContinueNo(); })), new DialogAction("Cancel", false, true));
+					DialogService.ShowMessageDialog(null, "Save Solution?", "Would you like to save your work?", new DialogAction("Yes", () => { Globals.CloseSolution(true); CloseSolutionFinished(); if (ContinueYes != null) ContinueYes(); }, true), new DialogAction("No", () => { Globals.CloseSolution(false); CloseSolutionFinished(); if (ContinueYes != null) ContinueNo(); }), new DialogAction("Cancel", false, true));
 				}
 				else
 				{
-					if (Closing == true)
-					{
-						DialogService.ShowMessageDialog(null, "Save Solution?", "Would you like to save your work?", new DialogAction("Yes", new Action(() => { Globals.CloseSolution(true); CloseSolutionFinished(); if (ContinueYes != null) ContinueYes(); }), true), new DialogAction("No", new Action(() => { Globals.CloseSolution(false); CloseSolutionFinished(); if (ContinueYes != null) ContinueNo(); })), new DialogAction("Cancel", false, true));
-					}
-					else
-					{
-						Globals.CloseSolution(true);
-						CloseSolutionFinished();
-					}
+					Globals.CloseSolution(true);
+					CloseSolutionFinished();
 				}
 			}
 		}
@@ -469,9 +460,9 @@ namespace WCFArchitect.Interface
 			SystemMenuSave.IsEnabled = false;
 			SystemMenuSaveAs.IsEnabled = false;
 			SystemMenuClose.IsEnabled = false;
-			this.Title = "Prospective Software WCF Architect";
+			Title = "Prospective Software WCF Architect";
 
-			if (!(Globals.SolutionPath == null || Globals.SolutionPath == ""))
+			if (!string.IsNullOrEmpty(Globals.SolutionPath))
 				System.IO.File.Delete(System.IO.Path.ChangeExtension(Globals.SolutionPath, ".bak"));
 
 			Globals.Solution = null;

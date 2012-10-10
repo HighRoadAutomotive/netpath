@@ -11,12 +11,19 @@
 			<ResourceDictionary>
 				<ResourceDictionary.MergedDictionaries>
 					<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/ProjectListItemTemplates.xaml" />
+					<ResourceDictionary>
+						<local:CompileMessageSeverityImageConverter x:Key="CompileMessageSeverityImageConverter" />
+						<local:ErrorObjectNameConverter x:Key="ErrorObjectNameConverter" />
+						<local:ErrorObjectOwnerNameConverter x:Key="ErrorObjectOwnerNameConverter" />
+						<local:DocumentTypeImage16Converter x:Key="DocumentTypeImage16Converter" />
+					</ResourceDictionary>
 				</ResourceDictionary.MergedDictionaries>
 			</ResourceDictionary>
 		</Grid.Resources>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
+			<RowDefinition Height="30" />
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="280" MinWidth="280" />
@@ -57,5 +64,198 @@
 		</ScrollViewer>
 		<GridSplitter ResizeDirection="Columns" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Width="5" Height="Auto" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0" Background="Transparent" />
 		<ContentPresenter Content="{Binding Path=ActivePage}" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+		<Grid x:Name="OutputGrid" Background="#DD222222" Grid.ColumnSpan="2" Grid.RowSpan="2" IsHitTestVisible="True" Visibility="Collapsed">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<TextBlock Text="OUTPUT" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="10,5" Grid.Row="0" />
+			<RichTextBox Name="OutputBox" BorderThickness="0" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Grid.Row="1" Background="Transparent" Foreground="{StaticResource DefaultFontColor}" />
+		</Grid>
+		<Grid x:Name="ErrorGrid" Background="#DD222222" Grid.ColumnSpan="2" Grid.RowSpan="2" IsHitTestVisible="True" Visibility="Collapsed" >
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<TextBlock Text="ERRORS" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="10,5" Grid.Row="0" />
+			<StackPanel Orientation="Horizontal" Background="#FF222222" Grid.Row="1">
+				<ToggleButton x:Name="ErrorShowErrors" Content="ERRORS" Background="#44FF0000" Width="175" FontSize="12pt" IsChecked="True" Checked="ErrorShowErrors_Checked" Unchecked="ErrorShowErrors_Unchecked" />
+				<ToggleButton x:Name="ErrorShowWarnings" Content="WARNINGS" Background="#44FF8800" Width="175" FontSize="12pt" IsChecked="True" Checked="ErrorShowWarnings_Checked" Unchecked="ErrorShowWarnings_Unchecked" />
+				<ToggleButton x:Name="ErrorShowInfo" Content="INFORMATION" Background="#440000FF" Width="175" FontSize="12pt" IsChecked="False" Checked="ErrorShowInfo_Checked" Unchecked="ErrorShowInfo_Unchecked" />
+			</StackPanel>
+			<Grid UseLayoutRounding="True" Background="#FF222222" Grid.Row="2" Margin="0,10,0,0" >
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Name="ItemsGridCD1" Width="24" />
+					<ColumnDefinition Name="ItemsGridCD2" Width="75" />
+					<ColumnDefinition Name="ItemsGridCD3" Width="*" />
+					<ColumnDefinition Name="ItemsGridCD4" Width="50" />
+					<ColumnDefinition Name="ItemsGridCD5" Width="125" />
+					<ColumnDefinition Name="ItemsGridCD6" Width="125" />
+					<ColumnDefinition Width="15" />
+				</Grid.ColumnDefinitions>
+				<TextBlock Text="Code" Grid.Column="1" Margin="5" FontSize="10pt" />
+				<TextBlock Text="Description" Grid.Column="2" Margin="5" FontSize="10pt" />
+				<TextBlock Text="Line" Grid.Column="3" Margin="5" FontSize="10pt" />
+				<TextBlock Text="Item" Grid.Column="4" Margin="5" FontSize="10pt" />
+				<TextBlock Text="Project" Grid.Column="5" Margin="5" FontSize="10pt" />
+			</Grid>
+			<ListBox x:Name="ErrorList" Grid.Row="3" Background="Transparent" BorderThickness="0" Margin="0">
+				<ListBox.Resources>
+					<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+				</ListBox.Resources>
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<Border Name="BG" Background="Transparent" Margin="-1,-1,-1,0"  >
+							<Grid Grid.Column="0">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="{Binding ElementName=ItemsGridCD1, Path=Width}" />
+									<ColumnDefinition Width="{Binding ElementName=ItemsGridCD2, Path=Width}" />
+									<ColumnDefinition Width="{Binding ElementName=ItemsGridCD3, Path=Width}" />
+									<ColumnDefinition Width="{Binding ElementName=ItemsGridCD4, Path=Width}" />
+									<ColumnDefinition Width="{Binding ElementName=ItemsGridCD5, Path=Width}" />
+									<ColumnDefinition Width="{Binding ElementName=ItemsGridCD6, Path=Width}" />
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="20" />
+								</Grid.RowDefinitions>
+								<Image Source="{Binding Path=Severity, Converter={StaticResource CompileMessageSeverityImageConverter}}" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Stretch="Uniform"/>
+								<TextBlock Text="{Binding Path=Code}" Grid.Column="1" Padding="3,1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Foreground="Black" />
+								<TextBlock Text="{Binding Path=Description}" Grid.Column="2" Padding="3,1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Foreground="Black" />
+								<TextBlock Text="{Binding Path=Line}" Grid.Column="3" Padding="3,1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Foreground="Black" />
+								<TextBlock Text="{Binding Path=ErrorObject, Converter={StaticResource ErrorObjectNameConverter}}" Grid.Column="4" Padding="3,1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Foreground="Black" />
+								<TextBlock Text="{Binding Path=Owner, Converter={StaticResource ErrorObjectOwnerNameConverter}}" Grid.Column="5" Padding="3,1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Foreground="Black" />
+							</Grid>
+						</Border>
+						<DataTemplate.Triggers>
+							<MultiDataTrigger>
+								<MultiDataTrigger.Conditions>
+									<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True" />
+									<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="False" />
+								</MultiDataTrigger.Conditions>
+								<Setter TargetName="BG" Property="Background" Value="{StaticResource DefaultSelectionColor}" />
+							</MultiDataTrigger>
+							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True" >
+								<Setter TargetName="BG" Property="Background" Value="{StaticResource DefaultSelectionColor}" />
+							</DataTrigger>
+						</DataTemplate.Triggers>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</Grid>
+		<Grid x:Name="FindReplaceGrid" Background="#DD222222" Grid.ColumnSpan="2" Grid.RowSpan="2" IsHitTestVisible="True" Visibility="Collapsed" >
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<TextBlock Text="FIND &amp; REPLACE" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="10,5" Grid.Row="0" />
+			<Grid UseLayoutRounding="True" Background="#FF222222" Grid.Row="1">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="62" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+				<Label Content="Find What:" HorizontalAlignment="Left" Margin="10,5,0,0" Height="Auto" VerticalAlignment="Top" />
+				<TextBox Name="FindValue" Margin="105,6,611,0" Height="23" VerticalAlignment="Top" />
+				<Label Content="Replace With:" HorizontalAlignment="Left" Margin="10,34,0,0" Height="Auto" VerticalAlignment="Top" />
+				<TextBox Name="FindReplaceValue" Height="23" Margin="105,35,611,0" VerticalAlignment="Top" />
+				<Label Content="Type:" HorizontalAlignment="Right" Margin="0,4,565,0" Height="Auto" VerticalAlignment="Top" />
+				<ComboBox Height="23" HorizontalAlignment="Right" Margin="0,6,415,0" Name="FindItem" VerticalAlignment="Top" Width="130" >
+					<ComboBoxItem Content="Any" IsSelected="True" />
+					<ComboBoxItem Content="Project" />
+					<ComboBoxItem Content="Namespace" />
+					<ComboBoxItem Content="Service" />
+					<ComboBoxItem Content="Data" />
+					<ComboBoxItem Content="Enum" />
+				</ComboBox>
+				<Label Content="Look In:" HorizontalAlignment="Right" Margin="0,34,550,0" Height="Auto" VerticalAlignment="Top" />
+				<ComboBox Height="23" HorizontalAlignment="Right" Margin="0,35,415,0" Name="FindLocation" VerticalAlignment="Top" Width="130" >
+					<ComboBoxItem Content="Entire Solution" IsSelected="True" />
+					<ComboBoxItem Content="Current Project" />
+				</ComboBox>
+				<CheckBox Content="Use Regular Expressions" Height="16" HorizontalAlignment="Right" Margin="0,9,231,0" Name="FindUseRegex" VerticalAlignment="Top" />
+				<CheckBox Content="Match Case" Height="16" HorizontalAlignment="Right" Margin="0,37,305,0" Name="FindMatchCase" VerticalAlignment="Top" />
+				<Button Content="Find Next" Name="FindNext" Width="100" Height="23" Margin="0,5,111,0" HorizontalAlignment="Right" Click="FindNext_Click" VerticalAlignment="Top" />
+				<Button Content="Replace" Name="FindReplace" Width="100" Height="23" Margin="0,34,111,0" HorizontalAlignment="Right" Click="FindReplace_Click" VerticalAlignment="Top" />
+				<Button Content="Find All" Name="FindAll" Width="100" Height="23" Margin="0,5,5,0" HorizontalAlignment="Right" Click="FindAll_Click" VerticalAlignment="Top" />
+				<Button Content="Replace All" Name="FindReplaceAll" Width="100" Height="23" Margin="0,34,5,0" HorizontalAlignment="Right" Click="FindReplaceAll_Click" VerticalAlignment="Top" />
+			</Grid>
+			<Grid UseLayoutRounding="True" Background="#FF222222" Grid.Row="2" Margin="0,10,0,0" >
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Name="ItemsGridCD7" Width="200" />
+					<ColumnDefinition Name="ItemsGridCD8" Width="*" />
+					<ColumnDefinition Name="ItemsGridCD9" Width="200" />
+					<ColumnDefinition Name="ItemsGridCD10" Width="175" />
+				</Grid.ColumnDefinitions>
+				<TextBlock Text="Field" Grid.Column="0" Margin="5" FontSize="10pt" />
+				<TextBlock Text="Value" Grid.Column="1" Margin="5" FontSize="10pt" />
+				<TextBlock Text="Item" Grid.Column="2" Margin="5" FontSize="10pt" />
+				<TextBlock Text="Project" Grid.Column="3" Margin="5" FontSize="10pt" />
+			</Grid>
+			<ListBox x:Name="FindList" ItemsSource="{Binding Path=FindResults}" Grid.Row="3" Background="Transparent" ItemContainerStyle="{StaticResource StretchedContainerStyle}" BorderThickness="0" Margin="0" SelectionChanged="FindList_SelectionChanged">
+				<ListBox.Resources>
+					<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+				</ListBox.Resources>
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<Border Name="BG" Background="Transparent" Margin="-1,-1,-1,0"  >
+							<Grid Grid.Column="0">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="{Binding ElementName=ItemsGridCD7, Path=Width}" />
+									<ColumnDefinition Width="{Binding ElementName=ItemsGridCD8, Path=Width}" />
+									<ColumnDefinition Width="{Binding ElementName=ItemsGridCD9, Path=Width}" />
+									<ColumnDefinition Width="{Binding ElementName=ItemsGridCD10, Path=Width}" />
+									<ColumnDefinition Width="15" />
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="20" />
+								</Grid.RowDefinitions>
+								<TextBlock Text="{Binding Path=Field}" Grid.Column="0" Padding="3,1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+								<TextBlock Text="{Binding Path=Value}" Grid.Column="1" Padding="3,1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+								<Grid UseLayoutRounding="True" Grid.Column="2" >
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="20" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+									<Image Source="{Binding Path=Item, Converter={StaticResource DocumentTypeImage16Converter}}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="16" Stretch="Uniform"/>
+									<TextBlock Grid.Column="1" Text="{Binding Path=Item, Converter={StaticResource ErrorObjectNameConverter}}" Padding="3,1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+								</Grid>
+								<TextBlock Text="{Binding Path=Project, Converter={StaticResource ErrorObjectOwnerNameConverter}}" Grid.Column="3" Padding="3,1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+							</Grid>
+						</Border>
+						<DataTemplate.Triggers>
+							<MultiDataTrigger>
+								<MultiDataTrigger.Conditions>
+									<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True" />
+									<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="False" />
+								</MultiDataTrigger.Conditions>
+								<Setter TargetName="BG" Property="Background" Value="{StaticResource DefaultSelectionColor}" />
+							</MultiDataTrigger>
+							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True" >
+								<Setter TargetName="BG" Property="Background" Value="{StaticResource DefaultSelectionColor}" />
+							</DataTrigger>
+						</DataTemplate.Triggers>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</Grid>
+		<StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="2" Margin="0" HorizontalAlignment="Right" >
+			<Button x:Name="ShowProject" Content="PROJECT" Width="200" FontSize="12pt" Click="ShowProject_Click" />
+			<ToggleButton x:Name="ShowFindReplace" Background="#4400FF00" Width="200" FontSize="12pt" Checked="ShowFindReplace_Checked" >
+				<StackPanel Orientation="Horizontal">
+					<TextBlock Text="FIND &amp; REPLACE" />
+					<TextBlock Text="{Binding Path=FindResultsCount, TargetNullValue=''}" FontSize="9pt" Margin="2,0,0,0" />
+				</StackPanel>
+			</ToggleButton>
+			<ToggleButton x:Name="ShowErrors" Background="#44FF0000" Width="200" FontSize="12pt" Checked="ShowErrors_Checked" >
+				<StackPanel Orientation="Horizontal">
+					<TextBlock Text="ERRORS" />
+					<TextBlock Text="{Binding Path=ErrorCount, TargetNullValue=''}" FontSize="9pt" Margin="2,0,0,0" />
+				</StackPanel>
+			</ToggleButton>
+			<ToggleButton x:Name="ShowOutput" Content="OUTPUT" Background="#440000FF" Width="200" FontSize="12pt" Checked="ShowOutput_Checked" />
+		</StackPanel>
 	</Grid>
 </ContentControl>

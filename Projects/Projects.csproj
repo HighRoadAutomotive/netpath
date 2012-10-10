@@ -94,6 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Binding.cs" />
+    <Compile Include="CompilerMessages.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="DataType.cs" />
     <Compile Include="Enum.cs" />

@@ -73,14 +73,10 @@ namespace WCFArchitect
 					var fi = new FileInfo(Path);
 					var bfi = new FileInfo(System.IO.Path.ChangeExtension(Path, ".bak"));
 					if (fi.LastWriteTime < bfi.LastWriteTime)
-					{
 						DialogService.ShowMessageDialog(null, "Solution Load Error", "WCF Architect has detected that the solution '" + Path + "' was not properly closed. A newer backup exists. Would you like to use this backup?",
 							new DialogAction("Yes", () => { File.Delete(Path); File.Move(System.IO.Path.ChangeExtension(Path, ".bak"), Path); }, true), new DialogAction("No", () => File.Delete(System.IO.Path.ChangeExtension(Path, ".bak")), false, true));
-					}
 					else
-					{
 						File.Delete(System.IO.Path.ChangeExtension(Path, ".bak"));
-					}
 				}
 				try
 				{
