@@ -49,24 +49,14 @@ namespace WCFArchitect.Projects
 		public TimeSpan SendTimeout { get { return (TimeSpan)GetValue(SendTimeoutProperty); } set { SetValue(SendTimeoutProperty, value); } }
 		public static readonly DependencyProperty SendTimeoutProperty = DependencyProperty.Register("SendTimeout", typeof(TimeSpan), typeof(ServiceBinding));
 
-		//Internal Use - Searching / Filtering
-		[IgnoreDataMember()] public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
-		public static readonly DependencyProperty IsSearchingProperty = DependencyProperty.Register("IsSearching", typeof(bool), typeof(ServiceBinding));
-
-		[IgnoreDataMember()] public bool IsSearchMatch { get { return (bool)GetValue(IsSearchMatchProperty); } set { SetValue(IsSearchMatchProperty, value); } }
-		public static readonly DependencyProperty IsSearchMatchProperty = DependencyProperty.Register("IsSearchMatch", typeof(bool), typeof(ServiceBinding));
-
-		[IgnoreDataMember()] public bool IsFiltering { get { return false; } set { } }
-		[IgnoreDataMember()] public bool IsFilterMatch { get { return false; } set { } }
-
 		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(ServiceBinding), new UIPropertyMetadata(false));
 
 		public ServiceBinding() : base(DataTypeMode.Class) { }
 
-		public List<FindReplaceResult> FindReplace(FindReplaceInfo Args)
+		public IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
 		{
-			List<FindReplaceResult> results = new List<FindReplaceResult>();
+			var results = new List<FindReplaceResult>();
 
 			if (Args.Items == FindItems.Project || Args.Items == FindItems.Any)
 			{
@@ -74,31 +64,22 @@ namespace WCFArchitect.Projects
 				{
 					if (Args.MatchCase == false)
 					{
-						if (Args.IsDataType == false)
-						{
-							if (Name != null && Name != "") if (Name.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
-							if (Namespace != null && Namespace != "") if (Namespace.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Namespace", Namespace, Parent.Owner, this));
-						}
+						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
+						if (!string.IsNullOrEmpty(Namespace)) if (Namespace.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Namespace", Namespace, Parent.Owner, this));
 					}
 					else
 					{
-						if (Args.IsDataType == false)
-						{
-							if (Name != null && Name != "") if (Name.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
-							if (Namespace != null && Namespace != "") if (Namespace.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Namespace", Namespace, Parent.Owner, this));
-						}
+						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
+						if (!string.IsNullOrEmpty(Namespace)) if (Namespace.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Namespace", Namespace, Parent.Owner, this));
 					}
 				}
 				else
 				{
-					if (Args.IsDataType == false)
-					{
-						if (Name != null && Name != "") if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
-						if (Namespace != null && Namespace != "") if (Args.RegexSearch.IsMatch(Namespace)) results.Add(new FindReplaceResult("Namespace", Namespace, Parent.Owner, this));
-					}
+					if (!string.IsNullOrEmpty(Name)) if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
+					if (!string.IsNullOrEmpty(Namespace)) if (Args.RegexSearch.IsMatch(Namespace)) results.Add(new FindReplaceResult("Namespace", Namespace, Parent.Owner, this));
 				}
 
-				if (Args.ReplaceAll == true)
+				if (Args.ReplaceAll)
 				{
 					bool ia = Parent.IsActive;
 					Parent.IsActive = true;
@@ -106,28 +87,19 @@ namespace WCFArchitect.Projects
 					{
 						if (Args.MatchCase == false)
 						{
-							if (Args.IsDataType == false)
-							{
-								if (Name != null && Name != "") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-								if (Namespace != null && Namespace != "") Namespace = Microsoft.VisualBasic.Strings.Replace(Namespace, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-							}
+							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+							if (!string.IsNullOrEmpty(Namespace)) Namespace = Microsoft.VisualBasic.Strings.Replace(Namespace, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 						}
 						else
 						{
-							if (Args.IsDataType == false)
-							{
-								if (Name != null && Name != "") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-								if (Namespace != null && Namespace != "") Namespace = Microsoft.VisualBasic.Strings.Replace(Namespace, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-							}
+							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
+							if (!string.IsNullOrEmpty(Namespace)) Namespace = Microsoft.VisualBasic.Strings.Replace(Namespace, Args.Search, Args.Replace);
 						}
 					}
 					else
 					{
-						if (Args.IsDataType == false)
-						{
-							if (Name != null && Name != "") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-							if (Namespace != null && Namespace != "") Namespace = Args.RegexSearch.Replace(Namespace, Args.Replace);
-						}
+						if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
+						if (!string.IsNullOrEmpty(Namespace)) Namespace = Args.RegexSearch.Replace(Namespace, Args.Replace);
 					}
 					Parent.IsActive = ia;
 				}
@@ -138,39 +110,28 @@ namespace WCFArchitect.Projects
 
 		public void Replace(FindReplaceInfo Args, string Field)
 		{
-			if (Args.ReplaceAll == true)
+			if (!Args.ReplaceAll) return;
+			bool ia = Parent.IsActive;
+			Parent.IsActive = true;
+			if (Args.UseRegex == false)
 			{
-				bool ia = Parent.IsActive;
-				Parent.IsActive = true;
-				if (Args.UseRegex == false)
+				if (Args.MatchCase == false)
 				{
-					if (Args.MatchCase == false)
-					{
-						if (Args.IsDataType == false)
-						{
-							if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-							if (Field == "Namespace") Namespace = Microsoft.VisualBasic.Strings.Replace(Namespace, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-						}
-					}
-					else
-					{
-						if (Args.IsDataType == false)
-						{
-							if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-							if (Field == "Namespace") Namespace = Microsoft.VisualBasic.Strings.Replace(Namespace, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-						}
-					}
+					if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+					if (Field == "Namespace") Namespace = Microsoft.VisualBasic.Strings.Replace(Namespace, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 				}
 				else
 				{
-					if (Args.IsDataType == false)
-					{
-						if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-						if (Field == "Namespace") Namespace = Args.RegexSearch.Replace(Namespace, Args.Replace);
-					}
+					if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
+					if (Field == "Namespace") Namespace = Microsoft.VisualBasic.Strings.Replace(Namespace, Args.Search, Args.Replace);
 				}
-				Parent.IsActive = ia;
 			}
+			else
+			{
+				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
+				if (Field == "Namespace") Namespace = Args.RegexSearch.Replace(Namespace, Args.Replace);
+			}
+			Parent.IsActive = ia;
 		}
 
 		public abstract ServiceBinding Copy(string HostName, Namespace Parent);
@@ -220,36 +181,34 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingBasicHTTP(string Name, Namespace Parent) : base()
 		{
-			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
-			this.InheritedTypes.Add(new DataType("System.ServiceModel.BasicHttpBinding", DataTypeMode.Class));
-			this.ID = Guid.NewGuid();
+			var r = new System.Text.RegularExpressions.Regex(@"\W+");
+			InheritedTypes.Add(new DataType("System.ServiceModel.BasicHttpBinding", DataTypeMode.Class));
+			ID = Guid.NewGuid();
 			this.Name = r.Replace(Name, @"");
 			this.Parent = Parent;
 
-			this.CloseTimeout = new TimeSpan(0, 1, 0);
-			this.OpenTimeout = new TimeSpan(0, 1, 0);
-			this.ReceiveTimeout = new TimeSpan(0, 10, 0);
-			this.SendTimeout = new TimeSpan(0, 1, 0);
+			CloseTimeout = new TimeSpan(0, 1, 0);
+			OpenTimeout = new TimeSpan(0, 1, 0);
+			ReceiveTimeout = new TimeSpan(0, 10, 0);
+			SendTimeout = new TimeSpan(0, 1, 0);
 
-			this.AllowCookies = false;
-			this.BypassProxyOnLocal = false;
-			this.HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			this.MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			this.MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
-			this.MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
-			this.MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
-			this.TextEncoding = ServiceBindingTextEncoding.UTF8;
-			this.TransferMode = System.ServiceModel.TransferMode.Buffered;
-			this.UseDefaultWebProxy = true;
+			AllowCookies = false;
+			BypassProxyOnLocal = false;
+			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
+			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
+			MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
+			TextEncoding = ServiceBindingTextEncoding.UTF8;
+			TransferMode = System.ServiceModel.TransferMode.Buffered;
+			UseDefaultWebProxy = true;
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.Property == ServiceBinding.IsSearchingProperty) return;
-			if (e.Property == ServiceBinding.IsSearchMatchProperty) return;
-			if (e.Property == ServiceBinding.IsTreeExpandedProperty) return;
+			if (e.Property == IsTreeExpandedProperty) return;
 
 			if (Parent != null)
 				Parent.IsDirty = true;
@@ -257,33 +216,33 @@ namespace WCFArchitect.Projects
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
-			if (Parent == this.Parent) return this;
+			if (Equals(Parent, this.Parent)) return this;
 
-			ServiceBindingBasicHTTP BD = new ServiceBindingBasicHTTP(Name + HostName, Parent);
-			BD.Namespace = Namespace;
-			BD.EndpointAddress = EndpointAddress;
-			BD.ListenAddress = ListenAddress;
-			BD.CloseTimeout = CloseTimeout;
-			BD.OpenTimeout = OpenTimeout;
-			BD.ReceiveTimeout = ReceiveTimeout;
-			BD.SendTimeout = SendTimeout;
-			BD.Security = (BindingSecurityBasicHTTP)Security.Copy(HostName, Parent);
+			var bd = new ServiceBindingBasicHTTP(Name + HostName, Parent);
+			bd.Namespace = Namespace;
+			bd.EndpointAddress = EndpointAddress;
+			bd.ListenAddress = ListenAddress;
+			bd.CloseTimeout = CloseTimeout;
+			bd.OpenTimeout = OpenTimeout;
+			bd.ReceiveTimeout = ReceiveTimeout;
+			bd.SendTimeout = SendTimeout;
+			bd.Security = (BindingSecurityBasicHTTP)Security.Copy(HostName, Parent);
 
-			BD.AllowCookies = AllowCookies;
-			BD.BypassProxyOnLocal = BypassProxyOnLocal;
-			BD.HostNameComparisonMode = HostNameComparisonMode;
-			BD.MaxBufferPoolSize = MaxBufferPoolSize;
-			BD.MaxBufferSize = MaxBufferSize;
-			BD.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			BD.MessageEncoding = MessageEncoding;
-			BD.ProxyAddress = ProxyAddress;
-			BD.TextEncoding = TextEncoding;
-			BD.TransferMode = TransferMode;
-			BD.UseDefaultWebProxy = UseDefaultWebProxy;
+			bd.AllowCookies = AllowCookies;
+			bd.BypassProxyOnLocal = BypassProxyOnLocal;
+			bd.HostNameComparisonMode = HostNameComparisonMode;
+			bd.MaxBufferPoolSize = MaxBufferPoolSize;
+			bd.MaxBufferSize = MaxBufferSize;
+			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
+			bd.MessageEncoding = MessageEncoding;
+			bd.ProxyAddress = ProxyAddress;
+			bd.TextEncoding = TextEncoding;
+			bd.TransferMode = TransferMode;
+			bd.UseDefaultWebProxy = UseDefaultWebProxy;
 
-			Parent.Bindings.Add(BD);
+			Parent.Bindings.Add(bd);
 
-			return BD;
+			return bd;
 		}
 	}
 
@@ -331,39 +290,36 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingBasicHTTPS() : base() { }
 
-		public ServiceBindingBasicHTTPS(string Name, Namespace Parent)
-			: base()
+		public ServiceBindingBasicHTTPS(string Name, Namespace Parent) : base()
 		{
-			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
-			this.InheritedTypes.Add(new DataType("System.ServiceModel.BasicHttpsBinding", DataTypeMode.Class));
-			this.ID = Guid.NewGuid();
+			var r = new System.Text.RegularExpressions.Regex(@"\W+");
+			InheritedTypes.Add(new DataType("System.ServiceModel.BasicHttpsBinding", DataTypeMode.Class));
+			ID = Guid.NewGuid();
 			this.Name = r.Replace(Name, @"");
 			this.Parent = Parent;
 
-			this.CloseTimeout = new TimeSpan(0, 1, 0);
-			this.OpenTimeout = new TimeSpan(0, 1, 0);
-			this.ReceiveTimeout = new TimeSpan(0, 10, 0);
-			this.SendTimeout = new TimeSpan(0, 1, 0);
+			CloseTimeout = new TimeSpan(0, 1, 0);
+			OpenTimeout = new TimeSpan(0, 1, 0);
+			ReceiveTimeout = new TimeSpan(0, 10, 0);
+			SendTimeout = new TimeSpan(0, 1, 0);
 
-			this.AllowCookies = false;
-			this.BypassProxyOnLocal = false;
-			this.HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			this.MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			this.MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
-			this.MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
-			this.MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
-			this.TextEncoding = ServiceBindingTextEncoding.UTF8;
-			this.TransferMode = System.ServiceModel.TransferMode.Buffered;
-			this.UseDefaultWebProxy = true;
+			AllowCookies = false;
+			BypassProxyOnLocal = false;
+			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
+			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
+			MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
+			TextEncoding = ServiceBindingTextEncoding.UTF8;
+			TransferMode = System.ServiceModel.TransferMode.Buffered;
+			UseDefaultWebProxy = true;
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.Property == ServiceBinding.IsSearchingProperty) return;
-			if (e.Property == ServiceBinding.IsSearchMatchProperty) return;
-			if (e.Property == ServiceBinding.IsTreeExpandedProperty) return;
+			if (e.Property == IsTreeExpandedProperty) return;
 
 			if (Parent != null)
 				Parent.IsDirty = true;
@@ -371,9 +327,9 @@ namespace WCFArchitect.Projects
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
-			if (Parent == this.Parent) return this;
+			if (Equals(Parent, this.Parent)) return this;
 
-			ServiceBindingBasicHTTPS BD = new ServiceBindingBasicHTTPS(Name + HostName, Parent);
+			var BD = new ServiceBindingBasicHTTPS(Name + HostName, Parent);
 			BD.Namespace = Namespace;
 			BD.EndpointAddress = EndpointAddress;
 			BD.ListenAddress = ListenAddress;
@@ -474,46 +430,43 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingNetHTTP() : base() { }
 
-		public ServiceBindingNetHTTP(string Name, Namespace Parent)
-			: base()
+		public ServiceBindingNetHTTP(string Name, Namespace Parent) : base()
 		{
-			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
-			this.InheritedTypes.Add(new DataType("System.ServiceModel.NetHTTPBinding", DataTypeMode.Class));
-			this.ID = Guid.NewGuid();
+			var r = new System.Text.RegularExpressions.Regex(@"\W+");
+			InheritedTypes.Add(new DataType("System.ServiceModel.NetHTTPBinding", DataTypeMode.Class));
+			ID = Guid.NewGuid();
 			this.Name = r.Replace(Name, @"");
 			this.Parent = Parent;
 
-			this.CloseTimeout = new TimeSpan(0, 1, 0);
-			this.OpenTimeout = new TimeSpan(0, 1, 0);
-			this.ReceiveTimeout = new TimeSpan(0, 10, 0);
-			this.SendTimeout = new TimeSpan(0, 1, 0);
+			CloseTimeout = new TimeSpan(0, 1, 0);
+			OpenTimeout = new TimeSpan(0, 1, 0);
+			ReceiveTimeout = new TimeSpan(0, 10, 0);
+			SendTimeout = new TimeSpan(0, 1, 0);
 
-			this.AllowCookies = false;
-			this.BypassProxyOnLocal = false;
-			this.HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			this.MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			this.MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
-			this.MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
-			this.MessageEncoding = System.ServiceModel.NetHttpMessageEncoding.Text;
-			this.TextEncoding = ServiceBindingTextEncoding.UTF8;
-			this.TransferMode = System.ServiceModel.TransferMode.Buffered;
-			this.UseDefaultWebProxy = true;
-			this.CreateNotificationOnConnection = false;
-			this.DisablePayloadMasking = false;
-			this.MaxPendingConnections = 32;
-			this.TransportUsage = System.ServiceModel.Channels.WebSocketTransportUsage.WhenDuplex;
-			this.ReliableSessionEnabled = false;
-			this.ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
-			this.ReliableSessionsOrdered = false;
+			AllowCookies = false;
+			BypassProxyOnLocal = false;
+			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
+			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
+			MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MessageEncoding = System.ServiceModel.NetHttpMessageEncoding.Text;
+			TextEncoding = ServiceBindingTextEncoding.UTF8;
+			TransferMode = System.ServiceModel.TransferMode.Buffered;
+			UseDefaultWebProxy = true;
+			CreateNotificationOnConnection = false;
+			DisablePayloadMasking = false;
+			MaxPendingConnections = 32;
+			TransportUsage = System.ServiceModel.Channels.WebSocketTransportUsage.WhenDuplex;
+			ReliableSessionEnabled = false;
+			ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
+			ReliableSessionsOrdered = false;
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.Property == ServiceBinding.IsSearchingProperty) return;
-			if (e.Property == ServiceBinding.IsSearchMatchProperty) return;
-			if (e.Property == ServiceBinding.IsTreeExpandedProperty) return;
+			if (e.Property == IsTreeExpandedProperty) return;
 
 			if (Parent != null)
 				Parent.IsDirty = true;
@@ -521,41 +474,41 @@ namespace WCFArchitect.Projects
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
-			if (Parent == this.Parent) return this;
+			if (Equals(Parent, this.Parent)) return this;
 
-			ServiceBindingNetHTTP BD = new ServiceBindingNetHTTP(Name + HostName, Parent);
-			BD.Namespace = Namespace;
-			BD.EndpointAddress = EndpointAddress;
-			BD.ListenAddress = ListenAddress;
-			BD.CloseTimeout = CloseTimeout;
-			BD.OpenTimeout = OpenTimeout;
-			BD.ReceiveTimeout = ReceiveTimeout;
-			BD.SendTimeout = SendTimeout;
-			BD.Security = (BindingSecurityBasicHTTP)Security.Copy(HostName, Parent);
+			var bd = new ServiceBindingNetHTTP(Name + HostName, Parent);
+			bd.Namespace = Namespace;
+			bd.EndpointAddress = EndpointAddress;
+			bd.ListenAddress = ListenAddress;
+			bd.CloseTimeout = CloseTimeout;
+			bd.OpenTimeout = OpenTimeout;
+			bd.ReceiveTimeout = ReceiveTimeout;
+			bd.SendTimeout = SendTimeout;
+			bd.Security = (BindingSecurityBasicHTTP)Security.Copy(HostName, Parent);
 
-			BD.AllowCookies = AllowCookies;
-			BD.BypassProxyOnLocal = BypassProxyOnLocal;
-			BD.HostNameComparisonMode = HostNameComparisonMode;
-			BD.MaxBufferPoolSize = MaxBufferPoolSize;
-			BD.MaxBufferSize = MaxBufferSize;
-			BD.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			BD.MessageEncoding = MessageEncoding;
-			BD.ProxyAddress = ProxyAddress;
-			BD.TextEncoding = TextEncoding;
-			BD.TransferMode = TransferMode;
-			BD.CreateNotificationOnConnection = CreateNotificationOnConnection;
-			BD.DisablePayloadMasking = DisablePayloadMasking;
-			BD.MaxPendingConnections = MaxPendingConnections;
-			BD.SubProtocol = SubProtocol;
-			BD.TransportUsage = TransportUsage;
-			BD.UseDefaultWebProxy = UseDefaultWebProxy;
-			BD.ReliableSessionEnabled = ReliableSessionEnabled;
-			BD.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
-			BD.ReliableSessionsOrdered = ReliableSessionsOrdered;
+			bd.AllowCookies = AllowCookies;
+			bd.BypassProxyOnLocal = BypassProxyOnLocal;
+			bd.HostNameComparisonMode = HostNameComparisonMode;
+			bd.MaxBufferPoolSize = MaxBufferPoolSize;
+			bd.MaxBufferSize = MaxBufferSize;
+			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
+			bd.MessageEncoding = MessageEncoding;
+			bd.ProxyAddress = ProxyAddress;
+			bd.TextEncoding = TextEncoding;
+			bd.TransferMode = TransferMode;
+			bd.CreateNotificationOnConnection = CreateNotificationOnConnection;
+			bd.DisablePayloadMasking = DisablePayloadMasking;
+			bd.MaxPendingConnections = MaxPendingConnections;
+			bd.SubProtocol = SubProtocol;
+			bd.TransportUsage = TransportUsage;
+			bd.UseDefaultWebProxy = UseDefaultWebProxy;
+			bd.ReliableSessionEnabled = ReliableSessionEnabled;
+			bd.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
+			bd.ReliableSessionsOrdered = ReliableSessionsOrdered;
 
-			Parent.Bindings.Add(BD);
+			Parent.Bindings.Add(bd);
 
-			return BD;
+			return bd;
 		}
 	}
 
@@ -632,46 +585,43 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingNetHTTPS() : base() { }
 
-		public ServiceBindingNetHTTPS(string Name, Namespace Parent)
-			: base()
+		public ServiceBindingNetHTTPS(string Name, Namespace Parent) : base()
 		{
-			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
-			this.InheritedTypes.Add(new DataType("System.ServiceModel.NetHTTPBinding", DataTypeMode.Class));
-			this.ID = Guid.NewGuid();
+			var r = new System.Text.RegularExpressions.Regex(@"\W+");
+			InheritedTypes.Add(new DataType("System.ServiceModel.NetHTTPBinding", DataTypeMode.Class));
+			ID = Guid.NewGuid();
 			this.Name = r.Replace(Name, @"");
 			this.Parent = Parent;
 
-			this.CloseTimeout = new TimeSpan(0, 1, 0);
-			this.OpenTimeout = new TimeSpan(0, 1, 0);
-			this.ReceiveTimeout = new TimeSpan(0, 10, 0);
-			this.SendTimeout = new TimeSpan(0, 1, 0);
+			CloseTimeout = new TimeSpan(0, 1, 0);
+			OpenTimeout = new TimeSpan(0, 1, 0);
+			ReceiveTimeout = new TimeSpan(0, 10, 0);
+			SendTimeout = new TimeSpan(0, 1, 0);
 
-			this.AllowCookies = false;
-			this.BypassProxyOnLocal = false;
-			this.HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			this.MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			this.MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
-			this.MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
-			this.MessageEncoding = System.ServiceModel.NetHttpMessageEncoding.Text;
-			this.TextEncoding = ServiceBindingTextEncoding.UTF8;
-			this.TransferMode = System.ServiceModel.TransferMode.Buffered;
-			this.UseDefaultWebProxy = true;
-			this.CreateNotificationOnConnection = false;
-			this.DisablePayloadMasking = false;
-			this.MaxPendingConnections = 32;
-			this.TransportUsage = System.ServiceModel.Channels.WebSocketTransportUsage.WhenDuplex;
-			this.ReliableSessionEnabled = false;
-			this.ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
-			this.ReliableSessionsOrdered = false;
+			AllowCookies = false;
+			BypassProxyOnLocal = false;
+			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
+			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
+			MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MessageEncoding = System.ServiceModel.NetHttpMessageEncoding.Text;
+			TextEncoding = ServiceBindingTextEncoding.UTF8;
+			TransferMode = System.ServiceModel.TransferMode.Buffered;
+			UseDefaultWebProxy = true;
+			CreateNotificationOnConnection = false;
+			DisablePayloadMasking = false;
+			MaxPendingConnections = 32;
+			TransportUsage = System.ServiceModel.Channels.WebSocketTransportUsage.WhenDuplex;
+			ReliableSessionEnabled = false;
+			ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
+			ReliableSessionsOrdered = false;
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.Property == ServiceBinding.IsSearchingProperty) return;
-			if (e.Property == ServiceBinding.IsSearchMatchProperty) return;
-			if (e.Property == ServiceBinding.IsTreeExpandedProperty) return;
+			if (e.Property == IsTreeExpandedProperty) return;
 
 			if (Parent != null)
 				Parent.IsDirty = true;
@@ -679,9 +629,9 @@ namespace WCFArchitect.Projects
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
-			if (Parent == this.Parent) return this;
+			if (Equals(Parent, this.Parent)) return this;
 
-			ServiceBindingNetHTTPS BD = new ServiceBindingNetHTTPS(Name + HostName, Parent);
+			var BD = new ServiceBindingNetHTTPS(Name + HostName, Parent);
 			BD.Namespace = Namespace;
 			BD.EndpointAddress = EndpointAddress;
 			BD.ListenAddress = ListenAddress;
@@ -769,70 +719,68 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingWSHTTP(string Name, Namespace Parent) : base()
 		{
-			this.ID = Guid.NewGuid();
+			ID = Guid.NewGuid();
 			this.Parent = Parent;
-			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
+			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
-			this.InheritedTypes.Add(new DataType("System.ServiceModel.WSHttpBinding", DataTypeMode.Class));
+			InheritedTypes.Add(new DataType("System.ServiceModel.WSHttpBinding", DataTypeMode.Class));
 
-			this.CloseTimeout = new TimeSpan(0, 1, 0);
-			this.OpenTimeout = new TimeSpan(0, 1, 0);
-			this.ReceiveTimeout = new TimeSpan(0, 10, 0);
-			this.SendTimeout = new TimeSpan(0, 1, 0);
+			CloseTimeout = new TimeSpan(0, 1, 0);
+			OpenTimeout = new TimeSpan(0, 1, 0);
+			ReceiveTimeout = new TimeSpan(0, 10, 0);
+			SendTimeout = new TimeSpan(0, 1, 0);
 
-			this.AllowCookies = false;
-			this.BypassProxyOnLocal = false;
-			this.HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			this.MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			this.MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
-			this.MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
-			this.ReliableSessionEnabled = false;
-			this.ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
-			this.ReliableSessionsOrdered = false;
-			this.TextEncoding = ServiceBindingTextEncoding.UTF8;
-			this.TransactionFlow = true;
-			this.UseDefaultWebProxy = true;
+			AllowCookies = false;
+			BypassProxyOnLocal = false;
+			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
+			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
+			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
+			ReliableSessionEnabled = false;
+			ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
+			ReliableSessionsOrdered = false;
+			TextEncoding = ServiceBindingTextEncoding.UTF8;
+			TransactionFlow = true;
+			UseDefaultWebProxy = true;
 		}
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
-			if (Parent == this.Parent) return this;
+			if (Equals(Parent, this.Parent)) return this;
 
-			ServiceBindingWSHTTP BD = new ServiceBindingWSHTTP(Name + HostName, Parent);
-			BD.Namespace = Namespace;
-			BD.EndpointAddress = EndpointAddress;
-			BD.ListenAddress = ListenAddress;
-			BD.CloseTimeout = CloseTimeout;
-			BD.OpenTimeout = OpenTimeout;
-			BD.ReceiveTimeout = ReceiveTimeout;
-			BD.SendTimeout = SendTimeout;
-			BD.Security = (BindingSecurityWSHTTP)Security.Copy(HostName, Parent);
+			var bd = new ServiceBindingWSHTTP(Name + HostName, Parent);
+			bd.Namespace = Namespace;
+			bd.EndpointAddress = EndpointAddress;
+			bd.ListenAddress = ListenAddress;
+			bd.CloseTimeout = CloseTimeout;
+			bd.OpenTimeout = OpenTimeout;
+			bd.ReceiveTimeout = ReceiveTimeout;
+			bd.SendTimeout = SendTimeout;
+			bd.Security = (BindingSecurityWSHTTP)Security.Copy(HostName, Parent);
 
-			BD.AllowCookies = AllowCookies;
-			BD.BypassProxyOnLocal = BypassProxyOnLocal;
-			BD.HostNameComparisonMode = HostNameComparisonMode;
-			BD.ReliableSessionEnabled = ReliableSessionEnabled;
-			BD.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
-			BD.ReliableSessionsOrdered = ReliableSessionsOrdered;
-			BD.MaxBufferPoolSize = MaxBufferPoolSize;
-			BD.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			BD.MessageEncoding = MessageEncoding;
-			BD.ProxyAddress = ProxyAddress;
-			BD.TextEncoding = TextEncoding;
-			BD.UseDefaultWebProxy = UseDefaultWebProxy;
+			bd.AllowCookies = AllowCookies;
+			bd.BypassProxyOnLocal = BypassProxyOnLocal;
+			bd.HostNameComparisonMode = HostNameComparisonMode;
+			bd.ReliableSessionEnabled = ReliableSessionEnabled;
+			bd.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
+			bd.ReliableSessionsOrdered = ReliableSessionsOrdered;
+			bd.MaxBufferPoolSize = MaxBufferPoolSize;
+			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
+			bd.MessageEncoding = MessageEncoding;
+			bd.ProxyAddress = ProxyAddress;
+			bd.TextEncoding = TextEncoding;
+			bd.UseDefaultWebProxy = UseDefaultWebProxy;
 
-			Parent.Bindings.Add(BD);
+			Parent.Bindings.Add(bd);
 
-			return BD;
+			return bd;
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.Property == ServiceBinding.IsSearchingProperty) return;
-			if (e.Property == ServiceBinding.IsSearchMatchProperty) return;
-			if (e.Property == ServiceBinding.IsTreeExpandedProperty) return;
+			if (e.Property == IsTreeExpandedProperty) return;
 
 			if (Parent != null)
 				Parent.IsDirty = true;
@@ -891,38 +839,36 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingWS2007HTTP(string Name, Namespace Parent) : base()
 		{
-			this.ID = Guid.NewGuid();
+			ID = Guid.NewGuid();
 			this.Parent = Parent;
-			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
+			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
-			this.InheritedTypes.Add(new DataType("System.ServiceModel.WS2007HttpBinding", DataTypeMode.Class));
+			InheritedTypes.Add(new DataType("System.ServiceModel.WS2007HttpBinding", DataTypeMode.Class));
 
-			this.CloseTimeout = new TimeSpan(0, 1, 0);
-			this.OpenTimeout = new TimeSpan(0, 1, 0);
-			this.ReceiveTimeout = new TimeSpan(0, 10, 0);
-			this.SendTimeout = new TimeSpan(0, 1, 0);
+			CloseTimeout = new TimeSpan(0, 1, 0);
+			OpenTimeout = new TimeSpan(0, 1, 0);
+			ReceiveTimeout = new TimeSpan(0, 10, 0);
+			SendTimeout = new TimeSpan(0, 1, 0);
 
-			this.AllowCookies = false;
-			this.BypassProxyOnLocal = false;
-			this.HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			this.MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			this.MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
-			this.MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
-			this.ReliableSessionEnabled = false;
-			this.ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
-			this.ReliableSessionsOrdered = false;
-			this.TextEncoding = ServiceBindingTextEncoding.UTF8;
-			this.TransactionFlow = true;
-			this.UseDefaultWebProxy = true;
+			AllowCookies = false;
+			BypassProxyOnLocal = false;
+			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
+			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
+			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
+			ReliableSessionEnabled = false;
+			ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
+			ReliableSessionsOrdered = false;
+			TextEncoding = ServiceBindingTextEncoding.UTF8;
+			TransactionFlow = true;
+			UseDefaultWebProxy = true;
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.Property == ServiceBinding.IsSearchingProperty) return;
-			if (e.Property == ServiceBinding.IsSearchMatchProperty) return;
-			if (e.Property == ServiceBinding.IsTreeExpandedProperty) return;
+			if (e.Property == IsTreeExpandedProperty) return;
 
 			if (Parent != null)
 				Parent.IsDirty = true;
@@ -930,34 +876,34 @@ namespace WCFArchitect.Projects
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
-			if (Parent == this.Parent) return this;
+			if (Equals(Parent, this.Parent)) return this;
 
-			ServiceBindingWS2007HTTP BD = new ServiceBindingWS2007HTTP(Name + HostName, Parent);
-			BD.Namespace = Namespace;
-			BD.EndpointAddress = EndpointAddress;
-			BD.ListenAddress = ListenAddress;
-			BD.CloseTimeout = CloseTimeout;
-			BD.OpenTimeout = OpenTimeout;
-			BD.ReceiveTimeout = ReceiveTimeout;
-			BD.SendTimeout = SendTimeout;
-			BD.Security = (BindingSecurityWSHTTP)Security.Copy(HostName, Parent);
+			var bd = new ServiceBindingWS2007HTTP(Name + HostName, Parent);
+			bd.Namespace = Namespace;
+			bd.EndpointAddress = EndpointAddress;
+			bd.ListenAddress = ListenAddress;
+			bd.CloseTimeout = CloseTimeout;
+			bd.OpenTimeout = OpenTimeout;
+			bd.ReceiveTimeout = ReceiveTimeout;
+			bd.SendTimeout = SendTimeout;
+			bd.Security = (BindingSecurityWSHTTP)Security.Copy(HostName, Parent);
 
-			BD.AllowCookies = AllowCookies;
-			BD.BypassProxyOnLocal = BypassProxyOnLocal;
-			BD.HostNameComparisonMode = HostNameComparisonMode;
-			BD.ReliableSessionEnabled = ReliableSessionEnabled;
-			BD.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
-			BD.ReliableSessionsOrdered = ReliableSessionsOrdered;
-			BD.MaxBufferPoolSize = MaxBufferPoolSize;
-			BD.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			BD.MessageEncoding = MessageEncoding;
-			BD.ProxyAddress = ProxyAddress;
-			BD.TextEncoding = TextEncoding;
-			BD.UseDefaultWebProxy = UseDefaultWebProxy;
+			bd.AllowCookies = AllowCookies;
+			bd.BypassProxyOnLocal = BypassProxyOnLocal;
+			bd.HostNameComparisonMode = HostNameComparisonMode;
+			bd.ReliableSessionEnabled = ReliableSessionEnabled;
+			bd.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
+			bd.ReliableSessionsOrdered = ReliableSessionsOrdered;
+			bd.MaxBufferPoolSize = MaxBufferPoolSize;
+			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
+			bd.MessageEncoding = MessageEncoding;
+			bd.ProxyAddress = ProxyAddress;
+			bd.TextEncoding = TextEncoding;
+			bd.UseDefaultWebProxy = UseDefaultWebProxy;
 
-			Parent.Bindings.Add(BD);
+			Parent.Bindings.Add(bd);
 
-			return BD;
+			return bd;
 		}
 	}
 
@@ -1010,36 +956,34 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingWSDualHTTP(string Name, Namespace Parent) : base()
 		{
-			this.ID = Guid.NewGuid();
+			ID = Guid.NewGuid();
 			this.Parent = Parent;
-			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
+			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
-			this.InheritedTypes.Add(new DataType("System.ServiceModel.WSDualHttpBinding", DataTypeMode.Class));
+			InheritedTypes.Add(new DataType("System.ServiceModel.WSDualHttpBinding", DataTypeMode.Class));
 
-			this.CloseTimeout = new TimeSpan(0, 1, 0);
-			this.OpenTimeout = new TimeSpan(0, 1, 0);
-			this.ReceiveTimeout = new TimeSpan(0, 10, 0);
-			this.SendTimeout = new TimeSpan(0, 1, 0);
+			CloseTimeout = new TimeSpan(0, 1, 0);
+			OpenTimeout = new TimeSpan(0, 1, 0);
+			ReceiveTimeout = new TimeSpan(0, 10, 0);
+			SendTimeout = new TimeSpan(0, 1, 0);
 
-			this.BypassProxyOnLocal = false;
-			this.HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			this.MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			this.MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
-			this.MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
-			this.ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
-			this.ReliableSessionsOrdered = false;
-			this.TextEncoding = ServiceBindingTextEncoding.UTF8;
-			this.TransactionFlow = true;
-			this.UseDefaultWebProxy = true;
+			BypassProxyOnLocal = false;
+			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
+			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
+			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
+			ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
+			ReliableSessionsOrdered = false;
+			TextEncoding = ServiceBindingTextEncoding.UTF8;
+			TransactionFlow = true;
+			UseDefaultWebProxy = true;
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.Property == ServiceBinding.IsSearchingProperty) return;
-			if (e.Property == ServiceBinding.IsSearchMatchProperty) return;
-			if (e.Property == ServiceBinding.IsTreeExpandedProperty) return;
+			if (e.Property == IsTreeExpandedProperty) return;
 
 			if (Parent != null)
 				Parent.IsDirty = true;
@@ -1047,33 +991,33 @@ namespace WCFArchitect.Projects
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
-			if (Parent == this.Parent) return this;
+			if (Equals(Parent, this.Parent)) return this;
 
-			ServiceBindingWSDualHTTP BD = new ServiceBindingWSDualHTTP(Name + HostName, Parent);
-			BD.Namespace = Namespace;
-			BD.EndpointAddress = EndpointAddress;
-			BD.ListenAddress = ListenAddress;
-			BD.CloseTimeout = CloseTimeout;
-			BD.OpenTimeout = OpenTimeout;
-			BD.ReceiveTimeout = ReceiveTimeout;
-			BD.SendTimeout = SendTimeout;
-			BD.Security = (BindingSecurityWSDualHTTP)Security.Copy(HostName, Parent);
+			var bd = new ServiceBindingWSDualHTTP(Name + HostName, Parent);
+			bd.Namespace = Namespace;
+			bd.EndpointAddress = EndpointAddress;
+			bd.ListenAddress = ListenAddress;
+			bd.CloseTimeout = CloseTimeout;
+			bd.OpenTimeout = OpenTimeout;
+			bd.ReceiveTimeout = ReceiveTimeout;
+			bd.SendTimeout = SendTimeout;
+			bd.Security = (BindingSecurityWSDualHTTP)Security.Copy(HostName, Parent);
 
-			BD.BypassProxyOnLocal = BypassProxyOnLocal;
-			BD.HostNameComparisonMode = HostNameComparisonMode;
-			BD.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
-			BD.ReliableSessionsOrdered = ReliableSessionsOrdered;
-			BD.MaxBufferPoolSize = MaxBufferPoolSize;
-			BD.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			BD.MessageEncoding = MessageEncoding;
-			BD.ProxyAddress = ProxyAddress;
-			BD.TextEncoding = TextEncoding;
-			BD.UseDefaultWebProxy = UseDefaultWebProxy;
-			BD.TransactionFlow = TransactionFlow;
+			bd.BypassProxyOnLocal = BypassProxyOnLocal;
+			bd.HostNameComparisonMode = HostNameComparisonMode;
+			bd.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
+			bd.ReliableSessionsOrdered = ReliableSessionsOrdered;
+			bd.MaxBufferPoolSize = MaxBufferPoolSize;
+			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
+			bd.MessageEncoding = MessageEncoding;
+			bd.ProxyAddress = ProxyAddress;
+			bd.TextEncoding = TextEncoding;
+			bd.UseDefaultWebProxy = UseDefaultWebProxy;
+			bd.TransactionFlow = TransactionFlow;
 
-			Parent.Bindings.Add(BD);
+			Parent.Bindings.Add(bd);
 
-			return BD;
+			return bd;
 		}
 	}
 
@@ -1132,37 +1076,35 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingWSFederationHTTP(string Name, Namespace Parent) : base()
 		{
-			this.ID = Guid.NewGuid();
+			ID = Guid.NewGuid();
 			this.Parent = Parent;
-			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
+			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
-			this.InheritedTypes.Add(new DataType("System.ServiceModel.WSFederationHttpBinding", DataTypeMode.Class));
+			InheritedTypes.Add(new DataType("System.ServiceModel.WSFederationHttpBinding", DataTypeMode.Class));
 
-			this.CloseTimeout = new TimeSpan(0, 1, 0);
-			this.OpenTimeout = new TimeSpan(0, 1, 0);
-			this.ReceiveTimeout = new TimeSpan(0, 10, 0);
-			this.SendTimeout = new TimeSpan(0, 1, 0);
+			CloseTimeout = new TimeSpan(0, 1, 0);
+			OpenTimeout = new TimeSpan(0, 1, 0);
+			ReceiveTimeout = new TimeSpan(0, 10, 0);
+			SendTimeout = new TimeSpan(0, 1, 0);
 
-			this.BypassProxyOnLocal = false;
-			this.HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			this.MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			this.MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
-			this.MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
-			this.ReliableSessionEnabled = false;
-			this.ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
-			this.ReliableSessionsOrdered = false;
-			this.TextEncoding = ServiceBindingTextEncoding.UTF8;
-			this.TransactionFlow = true;
-			this.UseDefaultWebProxy = true;
+			BypassProxyOnLocal = false;
+			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
+			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
+			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
+			ReliableSessionEnabled = false;
+			ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
+			ReliableSessionsOrdered = false;
+			TextEncoding = ServiceBindingTextEncoding.UTF8;
+			TransactionFlow = true;
+			UseDefaultWebProxy = true;
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.Property == ServiceBinding.IsSearchingProperty) return;
-			if (e.Property == ServiceBinding.IsSearchMatchProperty) return;
-			if (e.Property == ServiceBinding.IsTreeExpandedProperty) return;
+			if (e.Property == IsTreeExpandedProperty) return;
 
 			if (Parent != null)
 				Parent.IsDirty = true;
@@ -1170,36 +1112,36 @@ namespace WCFArchitect.Projects
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
-			if (Parent == this.Parent) return this;
+			if (Equals(Parent, this.Parent)) return this;
 
-			ServiceBindingWSFederationHTTP BD = new ServiceBindingWSFederationHTTP(Name + HostName, Parent);
-			BD.Namespace = Namespace;
-			BD.EndpointAddress = EndpointAddress;
-			BD.ListenAddress = ListenAddress;
-			BD.CloseTimeout = CloseTimeout;
-			BD.OpenTimeout = OpenTimeout;
-			BD.ReceiveTimeout = ReceiveTimeout;
-			BD.SendTimeout = SendTimeout;
-			BD.Security = (BindingSecurityWSFederationHTTP)Security.Copy(HostName, Parent);
+			var bd = new ServiceBindingWSFederationHTTP(Name + HostName, Parent);
+			bd.Namespace = Namespace;
+			bd.EndpointAddress = EndpointAddress;
+			bd.ListenAddress = ListenAddress;
+			bd.CloseTimeout = CloseTimeout;
+			bd.OpenTimeout = OpenTimeout;
+			bd.ReceiveTimeout = ReceiveTimeout;
+			bd.SendTimeout = SendTimeout;
+			bd.Security = (BindingSecurityWSFederationHTTP)Security.Copy(HostName, Parent);
 
-			BD.BypassProxyOnLocal = BypassProxyOnLocal;
-			BD.HostNameComparisonMode = HostNameComparisonMode;
-			BD.ReliableSessionEnabled = ReliableSessionEnabled;
-			BD.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
-			BD.ReliableSessionsOrdered = ReliableSessionsOrdered;
-			BD.MaxBufferPoolSize = MaxBufferPoolSize;
-			BD.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			BD.MessageEncoding = MessageEncoding;
-			BD.ProxyAddress = ProxyAddress;
-			BD.TextEncoding = TextEncoding;
-			BD.UseDefaultWebProxy = UseDefaultWebProxy;
-			BD.PrivacyNoticeAt = PrivacyNoticeAt;
-			BD.PrivacyNoticeVersion = PrivacyNoticeVersion;
-			BD.TransactionFlow = TransactionFlow;
+			bd.BypassProxyOnLocal = BypassProxyOnLocal;
+			bd.HostNameComparisonMode = HostNameComparisonMode;
+			bd.ReliableSessionEnabled = ReliableSessionEnabled;
+			bd.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
+			bd.ReliableSessionsOrdered = ReliableSessionsOrdered;
+			bd.MaxBufferPoolSize = MaxBufferPoolSize;
+			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
+			bd.MessageEncoding = MessageEncoding;
+			bd.ProxyAddress = ProxyAddress;
+			bd.TextEncoding = TextEncoding;
+			bd.UseDefaultWebProxy = UseDefaultWebProxy;
+			bd.PrivacyNoticeAt = PrivacyNoticeAt;
+			bd.PrivacyNoticeVersion = PrivacyNoticeVersion;
+			bd.TransactionFlow = TransactionFlow;
 
-			Parent.Bindings.Add(BD);
+			Parent.Bindings.Add(bd);
 
-			return BD;
+			return bd;
 		}
 	}
 
@@ -1258,37 +1200,35 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingWS2007FederationHTTP(string Name, Namespace Parent) : base()
 		{
-			this.ID = Guid.NewGuid();
+			ID = Guid.NewGuid();
 			this.Parent = Parent;
-			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
+			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
-			this.InheritedTypes.Add(new DataType("System.ServiceModel.WS2007FederationHttpBinding", DataTypeMode.Class));
+			InheritedTypes.Add(new DataType("System.ServiceModel.WS2007FederationHttpBinding", DataTypeMode.Class));
 
-			this.CloseTimeout = new TimeSpan(0, 1, 0);
-			this.OpenTimeout = new TimeSpan(0, 1, 0);
-			this.ReceiveTimeout = new TimeSpan(0, 10, 0);
-			this.SendTimeout = new TimeSpan(0, 1, 0);
+			CloseTimeout = new TimeSpan(0, 1, 0);
+			OpenTimeout = new TimeSpan(0, 1, 0);
+			ReceiveTimeout = new TimeSpan(0, 10, 0);
+			SendTimeout = new TimeSpan(0, 1, 0);
 
-			this.BypassProxyOnLocal = false;
-			this.HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			this.MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			this.MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
-			this.MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
-			this.ReliableSessionEnabled = false;
-			this.ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
-			this.ReliableSessionsOrdered = false;
-			this.TextEncoding = ServiceBindingTextEncoding.UTF8;
-			this.TransactionFlow = true;
-			this.UseDefaultWebProxy = true;
+			BypassProxyOnLocal = false;
+			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
+			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
+			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
+			ReliableSessionEnabled = false;
+			ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
+			ReliableSessionsOrdered = false;
+			TextEncoding = ServiceBindingTextEncoding.UTF8;
+			TransactionFlow = true;
+			UseDefaultWebProxy = true;
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.Property == ServiceBinding.IsSearchingProperty) return;
-			if (e.Property == ServiceBinding.IsSearchMatchProperty) return;
-			if (e.Property == ServiceBinding.IsTreeExpandedProperty) return;
+			if (e.Property == IsTreeExpandedProperty) return;
 
 			if (Parent != null)
 				Parent.IsDirty = true;
@@ -1296,36 +1236,36 @@ namespace WCFArchitect.Projects
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
-			if (Parent == this.Parent) return this;
+			if (Equals(Parent, this.Parent)) return this;
 
-			ServiceBindingWS2007FederationHTTP BD = new ServiceBindingWS2007FederationHTTP(Name + HostName, Parent);
-			BD.Namespace = Namespace;
-			BD.EndpointAddress = EndpointAddress;
-			BD.ListenAddress = ListenAddress;
-			BD.CloseTimeout = CloseTimeout;
-			BD.OpenTimeout = OpenTimeout;
-			BD.ReceiveTimeout = ReceiveTimeout;
-			BD.SendTimeout = SendTimeout;
-			BD.Security = (BindingSecurityWSFederationHTTP)Security.Copy(HostName, Parent);
+			var bd = new ServiceBindingWS2007FederationHTTP(Name + HostName, Parent);
+			bd.Namespace = Namespace;
+			bd.EndpointAddress = EndpointAddress;
+			bd.ListenAddress = ListenAddress;
+			bd.CloseTimeout = CloseTimeout;
+			bd.OpenTimeout = OpenTimeout;
+			bd.ReceiveTimeout = ReceiveTimeout;
+			bd.SendTimeout = SendTimeout;
+			bd.Security = (BindingSecurityWSFederationHTTP)Security.Copy(HostName, Parent);
 
-			BD.BypassProxyOnLocal = BypassProxyOnLocal;
-			BD.HostNameComparisonMode = HostNameComparisonMode;
-			BD.ReliableSessionEnabled = ReliableSessionEnabled;
-			BD.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
-			BD.ReliableSessionsOrdered = ReliableSessionsOrdered;
-			BD.MaxBufferPoolSize = MaxBufferPoolSize;
-			BD.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			BD.MessageEncoding = MessageEncoding;
-			BD.ProxyAddress = ProxyAddress;
-			BD.TextEncoding = TextEncoding;
-			BD.UseDefaultWebProxy = UseDefaultWebProxy;
-			BD.PrivacyNoticeAt = PrivacyNoticeAt;
-			BD.PrivacyNoticeVersion = PrivacyNoticeVersion;
-			BD.TransactionFlow = TransactionFlow;
+			bd.BypassProxyOnLocal = BypassProxyOnLocal;
+			bd.HostNameComparisonMode = HostNameComparisonMode;
+			bd.ReliableSessionEnabled = ReliableSessionEnabled;
+			bd.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
+			bd.ReliableSessionsOrdered = ReliableSessionsOrdered;
+			bd.MaxBufferPoolSize = MaxBufferPoolSize;
+			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
+			bd.MessageEncoding = MessageEncoding;
+			bd.ProxyAddress = ProxyAddress;
+			bd.TextEncoding = TextEncoding;
+			bd.UseDefaultWebProxy = UseDefaultWebProxy;
+			bd.PrivacyNoticeAt = PrivacyNoticeAt;
+			bd.PrivacyNoticeVersion = PrivacyNoticeVersion;
+			bd.TransactionFlow = TransactionFlow;
 
-			Parent.Bindings.Add(BD);
+			Parent.Bindings.Add(bd);
 
-			return BD;
+			return bd;
 		}
 	}
 
@@ -1381,39 +1321,37 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingTCP(string Name, Namespace Parent) : base()
 		{
-			this.ID = Guid.NewGuid();
+			ID = Guid.NewGuid();
 			this.Parent = Parent;
-			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
+			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
-			this.InheritedTypes.Add(new DataType("System.ServiceModel.NetTcpBinding", DataTypeMode.Class));
+			InheritedTypes.Add(new DataType("System.ServiceModel.NetTcpBinding", DataTypeMode.Class));
 
-			this.CloseTimeout = new TimeSpan(0, 1, 0);
-			this.OpenTimeout = new TimeSpan(0, 1, 0);
-			this.ReceiveTimeout = new TimeSpan(0, 10, 0);
-			this.SendTimeout = new TimeSpan(0, 1, 0);
+			CloseTimeout = new TimeSpan(0, 1, 0);
+			OpenTimeout = new TimeSpan(0, 1, 0);
+			ReceiveTimeout = new TimeSpan(0, 10, 0);
+			SendTimeout = new TimeSpan(0, 1, 0);
 
-			this.HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			this.ListenBacklog = 10;
-			this.MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			this.MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
-			this.MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
-			this.MaxConnections = 10;
-			this.PortSharingEnabled = false;
-			this.ReliableSessionEnabled = false;
-			this.ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
-			this.ReliableSessionsOrdered = false;
-			this.TransactionFlow = true;
-			this.TransactionProtocol = ServiceBindingTransactionProtocol.Default;
-			this.TransferMode = System.ServiceModel.TransferMode.Buffered;
+			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
+			ListenBacklog = 10;
+			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
+			MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxConnections = 10;
+			PortSharingEnabled = false;
+			ReliableSessionEnabled = false;
+			ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
+			ReliableSessionsOrdered = false;
+			TransactionFlow = true;
+			TransactionProtocol = ServiceBindingTransactionProtocol.Default;
+			TransferMode = System.ServiceModel.TransferMode.Buffered;
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.Property == ServiceBinding.IsSearchingProperty) return;
-			if (e.Property == ServiceBinding.IsSearchMatchProperty) return;
-			if (e.Property == ServiceBinding.IsTreeExpandedProperty) return;
+			if (e.Property == IsTreeExpandedProperty) return;
 
 			if (Parent != null)
 				Parent.IsDirty = true;
@@ -1421,35 +1359,35 @@ namespace WCFArchitect.Projects
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
-			if (Parent == this.Parent) return this;
+			if (Equals(Parent, this.Parent)) return this;
 
-			ServiceBindingTCP BD = new ServiceBindingTCP(Name + HostName, Parent);
-			BD.Namespace = Namespace;
-			BD.EndpointAddress = EndpointAddress;
-			BD.ListenAddress = ListenAddress;
-			BD.CloseTimeout = CloseTimeout;
-			BD.OpenTimeout = OpenTimeout;
-			BD.ReceiveTimeout = ReceiveTimeout;
-			BD.SendTimeout = SendTimeout;
-			BD.Security = (BindingSecurityTCP)Security.Copy(HostName, Parent);
+			var bd = new ServiceBindingTCP(Name + HostName, Parent);
+			bd.Namespace = Namespace;
+			bd.EndpointAddress = EndpointAddress;
+			bd.ListenAddress = ListenAddress;
+			bd.CloseTimeout = CloseTimeout;
+			bd.OpenTimeout = OpenTimeout;
+			bd.ReceiveTimeout = ReceiveTimeout;
+			bd.SendTimeout = SendTimeout;
+			bd.Security = (BindingSecurityTCP)Security.Copy(HostName, Parent);
 
-			BD.HostNameComparisonMode = HostNameComparisonMode;
-			BD.MaxBufferPoolSize = MaxBufferPoolSize;
-			BD.MaxBufferSize = MaxBufferSize;
-			BD.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			BD.TransferMode = TransferMode;
-			BD.TransactionFlow = TransactionFlow;
-			BD.ListenBacklog = ListenBacklog;
-			BD.MaxConnections = MaxConnections;
-			BD.PortSharingEnabled = PortSharingEnabled;
-			BD.TransactionProtocol = TransactionProtocol;
-			BD.ReliableSessionEnabled = ReliableSessionEnabled;
-			BD.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
-			BD.ReliableSessionsOrdered = ReliableSessionsOrdered;
+			bd.HostNameComparisonMode = HostNameComparisonMode;
+			bd.MaxBufferPoolSize = MaxBufferPoolSize;
+			bd.MaxBufferSize = MaxBufferSize;
+			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
+			bd.TransferMode = TransferMode;
+			bd.TransactionFlow = TransactionFlow;
+			bd.ListenBacklog = ListenBacklog;
+			bd.MaxConnections = MaxConnections;
+			bd.PortSharingEnabled = PortSharingEnabled;
+			bd.TransactionProtocol = TransactionProtocol;
+			bd.ReliableSessionEnabled = ReliableSessionEnabled;
+			bd.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
+			bd.ReliableSessionsOrdered = ReliableSessionsOrdered;
 
-			Parent.Bindings.Add(BD);
+			Parent.Bindings.Add(bd);
 
-			return BD;
+			return bd;
 		}
 	}
 
@@ -1490,34 +1428,32 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingNamedPipe(string Name, Namespace Parent) : base()
 		{
-			this.ID = Guid.NewGuid();
+			ID = Guid.NewGuid();
 			this.Parent = Parent;
-			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
+			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
-			this.InheritedTypes.Add(new DataType("System.ServiceModel.NetNamedPipeBinding", DataTypeMode.Class));
+			InheritedTypes.Add(new DataType("System.ServiceModel.NetNamedPipeBinding", DataTypeMode.Class));
 
-			this.CloseTimeout = new TimeSpan(0, 1, 0);
-			this.OpenTimeout = new TimeSpan(0, 1, 0);
-			this.ReceiveTimeout = new TimeSpan(0, 10, 0);
-			this.SendTimeout = new TimeSpan(0, 1, 0);
+			CloseTimeout = new TimeSpan(0, 1, 0);
+			OpenTimeout = new TimeSpan(0, 1, 0);
+			ReceiveTimeout = new TimeSpan(0, 10, 0);
+			SendTimeout = new TimeSpan(0, 1, 0);
 
-			this.HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			this.MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			this.MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
-			this.MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
-			this.MaxConnections = 10;
-			this.TransactionFlow = true;
-			this.TransactionProtocol = ServiceBindingTransactionProtocol.Default;
-			this.TransferMode = System.ServiceModel.TransferMode.Buffered;
+			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
+			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
+			MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxConnections = 10;
+			TransactionFlow = true;
+			TransactionProtocol = ServiceBindingTransactionProtocol.Default;
+			TransferMode = System.ServiceModel.TransferMode.Buffered;
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.Property == ServiceBinding.IsSearchingProperty) return;
-			if (e.Property == ServiceBinding.IsSearchMatchProperty) return;
-			if (e.Property == ServiceBinding.IsTreeExpandedProperty) return;
+			if (e.Property == IsTreeExpandedProperty) return;
 
 			if (Parent != null)
 				Parent.IsDirty = true;
@@ -1525,30 +1461,30 @@ namespace WCFArchitect.Projects
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
-			if (Parent == this.Parent) return this;
+			if (Equals(Parent, this.Parent)) return this;
 
-			ServiceBindingNamedPipe BD = new ServiceBindingNamedPipe(Name + HostName, Parent);
-			BD.Namespace = Namespace;
-			BD.EndpointAddress = EndpointAddress;
-			BD.ListenAddress = ListenAddress;
-			BD.CloseTimeout = CloseTimeout;
-			BD.OpenTimeout = OpenTimeout;
-			BD.ReceiveTimeout = ReceiveTimeout;
-			BD.SendTimeout = SendTimeout;
-			BD.Security = (BindingSecurityNamedPipe)Security.Copy(HostName, Parent);
+			var bd = new ServiceBindingNamedPipe(Name + HostName, Parent);
+			bd.Namespace = Namespace;
+			bd.EndpointAddress = EndpointAddress;
+			bd.ListenAddress = ListenAddress;
+			bd.CloseTimeout = CloseTimeout;
+			bd.OpenTimeout = OpenTimeout;
+			bd.ReceiveTimeout = ReceiveTimeout;
+			bd.SendTimeout = SendTimeout;
+			bd.Security = (BindingSecurityNamedPipe)Security.Copy(HostName, Parent);
 
-			BD.HostNameComparisonMode = HostNameComparisonMode;
-			BD.MaxBufferPoolSize = MaxBufferPoolSize;
-			BD.MaxBufferSize = MaxBufferSize;
-			BD.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			BD.TransferMode = TransferMode;
-			BD.TransactionFlow = TransactionFlow;
-			BD.MaxConnections = MaxConnections;
-			BD.TransactionProtocol = TransactionProtocol;
+			bd.HostNameComparisonMode = HostNameComparisonMode;
+			bd.MaxBufferPoolSize = MaxBufferPoolSize;
+			bd.MaxBufferSize = MaxBufferSize;
+			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
+			bd.TransferMode = TransferMode;
+			bd.TransactionFlow = TransactionFlow;
+			bd.MaxConnections = MaxConnections;
+			bd.TransactionProtocol = TransactionProtocol;
 
-			Parent.Bindings.Add(BD);
+			Parent.Bindings.Add(bd);
 
-			return BD;
+			return bd;
 		}
 	}
 
@@ -1616,42 +1552,40 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingMSMQ(string Name, Namespace Parent) : base()
 		{
-			this.ID = Guid.NewGuid();
+			ID = Guid.NewGuid();
 			this.Parent = Parent;
-			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
+			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
-			this.InheritedTypes.Add(new DataType("System.ServiceModel.NetMsmqBinding", DataTypeMode.Class));
+			InheritedTypes.Add(new DataType("System.ServiceModel.NetMsmqBinding", DataTypeMode.Class));
 
-			this.CloseTimeout = new TimeSpan(0, 1, 0);
-			this.OpenTimeout = new TimeSpan(0, 1, 0);
-			this.ReceiveTimeout = new TimeSpan(0, 10, 0);
-			this.SendTimeout = new TimeSpan(0, 1, 0);
+			CloseTimeout = new TimeSpan(0, 1, 0);
+			OpenTimeout = new TimeSpan(0, 1, 0);
+			ReceiveTimeout = new TimeSpan(0, 10, 0);
+			SendTimeout = new TimeSpan(0, 1, 0);
 
-			this.DeadLetterQueue = System.ServiceModel.DeadLetterQueue.System;		//This is the default if Durable is true
-			this.Durable = true;			//Must be true if ExactlyOnce is true.
-			this.ExactlyOnce = true;
-			this.MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			this.MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
-			this.MaxRetryCycles = 2;
-			this.QueueTransferProtocol = System.ServiceModel.QueueTransferProtocol.Native;
-			this.ReceiveContextEnabled = true;
-			this.ReceiveErrorHandling = System.ServiceModel.ReceiveErrorHandling.Reject;
-			this.ReceiveRetryCount = 5;
-			this.RetryCycleDelay = new TimeSpan(0, 10, 0);
-			this.TimeToLive = new TimeSpan(1, 0, 0, 0);
-			this.UseActiveDirectory = false;
-			this.UseMSMQTracing = false;
-			this.UseSourceJournal = false;
-			this.ValidityDuration = TimeSpan.Zero;
+			DeadLetterQueue = System.ServiceModel.DeadLetterQueue.System;		//This is the default if Durable is true
+			Durable = true;			//Must be true if ExactlyOnce is true.
+			ExactlyOnce = true;
+			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
+			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxRetryCycles = 2;
+			QueueTransferProtocol = System.ServiceModel.QueueTransferProtocol.Native;
+			ReceiveContextEnabled = true;
+			ReceiveErrorHandling = System.ServiceModel.ReceiveErrorHandling.Reject;
+			ReceiveRetryCount = 5;
+			RetryCycleDelay = new TimeSpan(0, 10, 0);
+			TimeToLive = new TimeSpan(1, 0, 0, 0);
+			UseActiveDirectory = false;
+			UseMSMQTracing = false;
+			UseSourceJournal = false;
+			ValidityDuration = TimeSpan.Zero;
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.Property == ServiceBinding.IsSearchingProperty) return;
-			if (e.Property == ServiceBinding.IsSearchMatchProperty) return;
-			if (e.Property == ServiceBinding.IsTreeExpandedProperty) return;
+			if (e.Property == IsTreeExpandedProperty) return;
 
 			if (Parent != null)
 				Parent.IsDirty = true;
@@ -1659,39 +1593,39 @@ namespace WCFArchitect.Projects
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
-			if (Parent == this.Parent) return this;
+			if (Equals(Parent, this.Parent)) return this;
 
-			ServiceBindingMSMQ BD = new ServiceBindingMSMQ(Name + HostName, Parent);
-			BD.Namespace = Namespace;
-			BD.EndpointAddress = EndpointAddress;
-			BD.ListenAddress = ListenAddress;
-			BD.CloseTimeout = CloseTimeout;
-			BD.OpenTimeout = OpenTimeout;
-			BD.ReceiveTimeout = ReceiveTimeout;
-			BD.SendTimeout = SendTimeout;
-			BD.Security = (BindingSecurityMSMQ)Security.Copy(HostName, Parent);
+			var bd = new ServiceBindingMSMQ(Name + HostName, Parent);
+			bd.Namespace = Namespace;
+			bd.EndpointAddress = EndpointAddress;
+			bd.ListenAddress = ListenAddress;
+			bd.CloseTimeout = CloseTimeout;
+			bd.OpenTimeout = OpenTimeout;
+			bd.ReceiveTimeout = ReceiveTimeout;
+			bd.SendTimeout = SendTimeout;
+			bd.Security = (BindingSecurityMSMQ)Security.Copy(HostName, Parent);
 
-			BD.MaxBufferPoolSize = MaxBufferPoolSize;
-			BD.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			BD.CustomDeadLetterQueue = CustomDeadLetterQueue;
-			BD.DeadLetterQueue = DeadLetterQueue;
-			BD.ExactlyOnce = ExactlyOnce;
-			BD.MaxRetryCycles = MaxRetryCycles;
-			BD.QueueTransferProtocol = QueueTransferProtocol;
-			BD.ReceiveContextEnabled = ReceiveContextEnabled;
-			BD.ReceiveErrorHandling = ReceiveErrorHandling;
-			BD.ReceiveRetryCount = ReceiveRetryCount;
-			BD.RetryCycleDelay = RetryCycleDelay;
-			BD.TimeToLive = TimeToLive;
-			BD.UseActiveDirectory = UseActiveDirectory;
-			BD.UseMSMQTracing = UseMSMQTracing;
-			BD.UseSourceJournal = UseSourceJournal;
-			BD.ValidityDuration = ValidityDuration;
-			BD.Durable = Durable;
+			bd.MaxBufferPoolSize = MaxBufferPoolSize;
+			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
+			bd.CustomDeadLetterQueue = CustomDeadLetterQueue;
+			bd.DeadLetterQueue = DeadLetterQueue;
+			bd.ExactlyOnce = ExactlyOnce;
+			bd.MaxRetryCycles = MaxRetryCycles;
+			bd.QueueTransferProtocol = QueueTransferProtocol;
+			bd.ReceiveContextEnabled = ReceiveContextEnabled;
+			bd.ReceiveErrorHandling = ReceiveErrorHandling;
+			bd.ReceiveRetryCount = ReceiveRetryCount;
+			bd.RetryCycleDelay = RetryCycleDelay;
+			bd.TimeToLive = TimeToLive;
+			bd.UseActiveDirectory = UseActiveDirectory;
+			bd.UseMSMQTracing = UseMSMQTracing;
+			bd.UseSourceJournal = UseSourceJournal;
+			bd.ValidityDuration = ValidityDuration;
+			bd.Durable = Durable;
 
-			Parent.Bindings.Add(BD);
+			Parent.Bindings.Add(bd);
 
-			return BD;
+			return bd;
 		}
 	}
 
@@ -1720,30 +1654,28 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingPeerTCP(string Name, Namespace Parent) : base()
 		{
-			this.ID = Guid.NewGuid();
+			ID = Guid.NewGuid();
 			this.Parent = Parent;
-			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
+			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
-			this.InheritedTypes.Add(new DataType("System.ServiceModel.NetPeerTcpBinding", DataTypeMode.Class));
+			InheritedTypes.Add(new DataType("System.ServiceModel.NetPeerTcpBinding", DataTypeMode.Class));
 
-			this.CloseTimeout = new TimeSpan(0, 1, 0);
-			this.OpenTimeout = new TimeSpan(0, 1, 0);
-			this.ReceiveTimeout = new TimeSpan(0, 10, 0);
-			this.SendTimeout = new TimeSpan(0, 1, 0);
+			CloseTimeout = new TimeSpan(0, 1, 0);
+			OpenTimeout = new TimeSpan(0, 1, 0);
+			ReceiveTimeout = new TimeSpan(0, 10, 0);
+			SendTimeout = new TimeSpan(0, 1, 0);
 
-			this.MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			this.MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
-			this.ListenIPAddress = "";
-			this.Port = 31337;		
+			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
+			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			ListenIPAddress = "";
+			Port = 31337;		
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.Property == ServiceBinding.IsSearchingProperty) return;
-			if (e.Property == ServiceBinding.IsSearchMatchProperty) return;
-			if (e.Property == ServiceBinding.IsTreeExpandedProperty) return;
+			if (e.Property == IsTreeExpandedProperty) return;
 
 			if (Parent != null)
 				Parent.IsDirty = true;
@@ -1751,26 +1683,26 @@ namespace WCFArchitect.Projects
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
-			if (Parent == this.Parent) return this;
+			if (Equals(Parent, this.Parent)) return this;
 
-			ServiceBindingPeerTCP BD = new ServiceBindingPeerTCP(Name + HostName, Parent);
-			BD.Namespace = Namespace;
-			BD.EndpointAddress = EndpointAddress;
-			BD.ListenAddress = ListenAddress;
-			BD.CloseTimeout = CloseTimeout;
-			BD.OpenTimeout = OpenTimeout;
-			BD.ReceiveTimeout = ReceiveTimeout;
-			BD.SendTimeout = SendTimeout;
-			BD.Security = (BindingSecurityPeerTCP)Security.Copy(HostName, Parent);
+			var bd = new ServiceBindingPeerTCP(Name + HostName, Parent);
+			bd.Namespace = Namespace;
+			bd.EndpointAddress = EndpointAddress;
+			bd.ListenAddress = ListenAddress;
+			bd.CloseTimeout = CloseTimeout;
+			bd.OpenTimeout = OpenTimeout;
+			bd.ReceiveTimeout = ReceiveTimeout;
+			bd.SendTimeout = SendTimeout;
+			bd.Security = (BindingSecurityPeerTCP)Security.Copy(HostName, Parent);
 
-			BD.MaxBufferPoolSize = MaxBufferPoolSize;
-			BD.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			BD.ListenIPAddress = ListenIPAddress;
-			BD.Port = Port;
+			bd.MaxBufferPoolSize = MaxBufferPoolSize;
+			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
+			bd.ListenIPAddress = ListenIPAddress;
+			bd.Port = Port;
 
-			Parent.Bindings.Add(BD);
+			Parent.Bindings.Add(bd);
 
-			return BD;
+			return bd;
 		}
 	}
 
@@ -1820,36 +1752,34 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingWebHTTP(string Name, Namespace Parent) : base()
 		{
-			this.ID = Guid.NewGuid();
+			ID = Guid.NewGuid();
 			this.Parent = Parent;
-			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
+			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
-			this.InheritedTypes.Add(new DataType("System.ServiceModel.WebHttpBinding", DataTypeMode.Class));
+			InheritedTypes.Add(new DataType("System.ServiceModel.WebHttpBinding", DataTypeMode.Class));
 
-			this.CloseTimeout = new TimeSpan(0, 1, 0);
-			this.OpenTimeout = new TimeSpan(0, 1, 0);
-			this.ReceiveTimeout = new TimeSpan(0, 10, 0);
-			this.SendTimeout = new TimeSpan(0, 1, 0);
+			CloseTimeout = new TimeSpan(0, 1, 0);
+			OpenTimeout = new TimeSpan(0, 1, 0);
+			ReceiveTimeout = new TimeSpan(0, 10, 0);
+			SendTimeout = new TimeSpan(0, 1, 0);
 
-			this.AllowCookies = false;
-			this.BypassProxyOnLocal = false;
-			this.CrossDomainScriptAccessEnabled = false;
-			this.HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			this.MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			this.MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
-			this.MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
-			this.TransferMode = System.ServiceModel.TransferMode.Buffered;
-			this.UseDefaultWebProxy = true;
-			this.WriteEncoding = ServiceBindingTextEncoding.UTF8;
+			AllowCookies = false;
+			BypassProxyOnLocal = false;
+			CrossDomainScriptAccessEnabled = false;
+			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
+			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
+			MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			TransferMode = System.ServiceModel.TransferMode.Buffered;
+			UseDefaultWebProxy = true;
+			WriteEncoding = ServiceBindingTextEncoding.UTF8;
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.Property == ServiceBinding.IsSearchingProperty) return;
-			if (e.Property == ServiceBinding.IsSearchMatchProperty) return;
-			if (e.Property == ServiceBinding.IsTreeExpandedProperty) return;
+			if (e.Property == IsTreeExpandedProperty) return;
 
 			if (Parent != null)
 				Parent.IsDirty = true;
@@ -1857,32 +1787,32 @@ namespace WCFArchitect.Projects
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
-			if (Parent == this.Parent) return this;
+			if (Equals(Parent, this.Parent)) return this;
 
-			ServiceBindingWebHTTP BD = new ServiceBindingWebHTTP(Name + HostName, Parent);
-			BD.Namespace = Namespace;
-			BD.EndpointAddress = EndpointAddress;
-			BD.ListenAddress = ListenAddress;
-			BD.CloseTimeout = CloseTimeout;
-			BD.OpenTimeout = OpenTimeout;
-			BD.ReceiveTimeout = ReceiveTimeout;
-			BD.SendTimeout = SendTimeout;
-			BD.Security = (BindingSecurityWebHTTP)Security.Copy(HostName, Parent);
+			var bd = new ServiceBindingWebHTTP(Name + HostName, Parent);
+			bd.Namespace = Namespace;
+			bd.EndpointAddress = EndpointAddress;
+			bd.ListenAddress = ListenAddress;
+			bd.CloseTimeout = CloseTimeout;
+			bd.OpenTimeout = OpenTimeout;
+			bd.ReceiveTimeout = ReceiveTimeout;
+			bd.SendTimeout = SendTimeout;
+			bd.Security = (BindingSecurityWebHTTP)Security.Copy(HostName, Parent);
 
-			BD.BypassProxyOnLocal = BypassProxyOnLocal;
-			BD.HostNameComparisonMode = HostNameComparisonMode;
-			BD.MaxBufferPoolSize = MaxBufferPoolSize;
-			BD.MaxBufferSize = MaxBufferSize;
-			BD.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			BD.ProxyAddress = ProxyAddress;
-			BD.TransferMode = TransferMode;
-			BD.UseDefaultWebProxy = UseDefaultWebProxy;
-			BD.CrossDomainScriptAccessEnabled = CrossDomainScriptAccessEnabled;
-			BD.WriteEncoding = WriteEncoding;
+			bd.BypassProxyOnLocal = BypassProxyOnLocal;
+			bd.HostNameComparisonMode = HostNameComparisonMode;
+			bd.MaxBufferPoolSize = MaxBufferPoolSize;
+			bd.MaxBufferSize = MaxBufferSize;
+			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
+			bd.ProxyAddress = ProxyAddress;
+			bd.TransferMode = TransferMode;
+			bd.UseDefaultWebProxy = UseDefaultWebProxy;
+			bd.CrossDomainScriptAccessEnabled = CrossDomainScriptAccessEnabled;
+			bd.WriteEncoding = WriteEncoding;
 
-			Parent.Bindings.Add(BD);
+			Parent.Bindings.Add(bd);
 
-			return BD;
+			return bd;
 		}
 	}
 
@@ -1944,39 +1874,37 @@ namespace WCFArchitect.Projects
 
 		public ServiceBindingMSMQIntegration(string Name, Namespace Parent) : base()
 		{
-			this.ID = Guid.NewGuid();
+			ID = Guid.NewGuid();
 			this.Parent = Parent;
-			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
+			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
-			this.InheritedTypes.Add(new DataType("System.ServiceModel.MsmqIntegration.MsmqIntegrationBinding", DataTypeMode.Class));
+			InheritedTypes.Add(new DataType("System.ServiceModel.MsmqIntegration.MsmqIntegrationBinding", DataTypeMode.Class));
 
-			this.CloseTimeout = new TimeSpan(0, 1, 0);
-			this.OpenTimeout = new TimeSpan(0, 1, 0);
-			this.ReceiveTimeout = new TimeSpan(0, 10, 0);
-			this.SendTimeout = new TimeSpan(0, 1, 0);
+			CloseTimeout = new TimeSpan(0, 1, 0);
+			OpenTimeout = new TimeSpan(0, 1, 0);
+			ReceiveTimeout = new TimeSpan(0, 10, 0);
+			SendTimeout = new TimeSpan(0, 1, 0);
 
-			this.DeadLetterQueue = System.ServiceModel.DeadLetterQueue.System;		//This is the default if Durable is true
-			this.Durable = true;			//Must be true if ExactlyOnce is true.
-			this.ExactlyOnce = true;
-			this.MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
-			this.MaxRetryCycles = 2;
-			this.ReceiveContextEnabled = true;
-			this.ReceiveErrorHandling = System.ServiceModel.ReceiveErrorHandling.Reject;
-			this.ReceiveRetryCount = 5;
-			this.RetryCycleDelay = new TimeSpan(0, 10, 0);
-			this.TimeToLive = new TimeSpan(1, 0, 0, 0);
-			this.UseMSMQTracing = false;
-			this.UseSourceJournal = false;
-			this.ValidityDuration = TimeSpan.Zero;
+			DeadLetterQueue = System.ServiceModel.DeadLetterQueue.System;		//This is the default if Durable is true
+			Durable = true;			//Must be true if ExactlyOnce is true.
+			ExactlyOnce = true;
+			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxRetryCycles = 2;
+			ReceiveContextEnabled = true;
+			ReceiveErrorHandling = System.ServiceModel.ReceiveErrorHandling.Reject;
+			ReceiveRetryCount = 5;
+			RetryCycleDelay = new TimeSpan(0, 10, 0);
+			TimeToLive = new TimeSpan(1, 0, 0, 0);
+			UseMSMQTracing = false;
+			UseSourceJournal = false;
+			ValidityDuration = TimeSpan.Zero;
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.Property == ServiceBinding.IsSearchingProperty) return;
-			if (e.Property == ServiceBinding.IsSearchMatchProperty) return;
-			if (e.Property == ServiceBinding.IsTreeExpandedProperty) return;
+			if (e.Property == IsTreeExpandedProperty) return;
 
 			if (Parent != null)
 				Parent.IsDirty = true;
@@ -1984,37 +1912,37 @@ namespace WCFArchitect.Projects
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
-			if (Parent == this.Parent) return this;
+			if (Equals(Parent, this.Parent)) return this;
 
-			ServiceBindingMSMQIntegration BD = new ServiceBindingMSMQIntegration(Name + HostName, Parent);
-			BD.Namespace = Namespace;
-			BD.EndpointAddress = EndpointAddress;
-			BD.ListenAddress = ListenAddress;
-			BD.CloseTimeout = CloseTimeout;
-			BD.OpenTimeout = OpenTimeout;
-			BD.ReceiveTimeout = ReceiveTimeout;
-			BD.SendTimeout = SendTimeout;
-			BD.Security = (BindingSecurityMSMQIntegration)Security.Copy(HostName, Parent);
+			var bd = new ServiceBindingMSMQIntegration(Name + HostName, Parent);
+			bd.Namespace = Namespace;
+			bd.EndpointAddress = EndpointAddress;
+			bd.ListenAddress = ListenAddress;
+			bd.CloseTimeout = CloseTimeout;
+			bd.OpenTimeout = OpenTimeout;
+			bd.ReceiveTimeout = ReceiveTimeout;
+			bd.SendTimeout = SendTimeout;
+			bd.Security = (BindingSecurityMSMQIntegration)Security.Copy(HostName, Parent);
 
-			BD.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			BD.CustomDeadLetterQueue = CustomDeadLetterQueue;
-			BD.DeadLetterQueue = DeadLetterQueue;
-			BD.ExactlyOnce = ExactlyOnce;
-			BD.MaxRetryCycles = MaxRetryCycles;
-			BD.ReceiveContextEnabled = ReceiveContextEnabled;
-			BD.ReceiveErrorHandling = ReceiveErrorHandling;
-			BD.ReceiveRetryCount = ReceiveRetryCount;
-			BD.RetryCycleDelay = RetryCycleDelay;
-			BD.TimeToLive = TimeToLive;
-			BD.UseMSMQTracing = UseMSMQTracing;
-			BD.UseSourceJournal = UseSourceJournal;
-			BD.ValidityDuration = ValidityDuration;
-			BD.Durable = Durable;
-			BD.SerializationFormat = SerializationFormat;
+			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
+			bd.CustomDeadLetterQueue = CustomDeadLetterQueue;
+			bd.DeadLetterQueue = DeadLetterQueue;
+			bd.ExactlyOnce = ExactlyOnce;
+			bd.MaxRetryCycles = MaxRetryCycles;
+			bd.ReceiveContextEnabled = ReceiveContextEnabled;
+			bd.ReceiveErrorHandling = ReceiveErrorHandling;
+			bd.ReceiveRetryCount = ReceiveRetryCount;
+			bd.RetryCycleDelay = RetryCycleDelay;
+			bd.TimeToLive = TimeToLive;
+			bd.UseMSMQTracing = UseMSMQTracing;
+			bd.UseSourceJournal = UseSourceJournal;
+			bd.ValidityDuration = ValidityDuration;
+			bd.Durable = Durable;
+			bd.SerializationFormat = SerializationFormat;
 
-			Parent.Bindings.Add(BD);
+			Parent.Bindings.Add(bd);
 
-			return BD;
+			return bd;
 		}
 	}
 	#endregion

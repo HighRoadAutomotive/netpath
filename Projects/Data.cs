@@ -48,19 +48,6 @@ namespace WCFArchitect.Projects
 		public ObservableCollection<DataElement> Elements { get { return (ObservableCollection<DataElement>)GetValue(ElementsProperty); } set { SetValue(ElementsProperty, value); } }
 		public static readonly DependencyProperty ElementsProperty = DependencyProperty.Register("Elements", typeof(ObservableCollection<DataElement>), typeof(Data));
 
-		//Internal Use - Searching / Filtering
-		[IgnoreDataMember] public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
-		public static readonly DependencyProperty IsSearchingProperty = DependencyProperty.Register("IsSearching", typeof(bool), typeof(Data));
-
-		[IgnoreDataMember] public bool IsSearchMatch { get { return (bool)GetValue(IsSearchMatchProperty); } set { SetValue(IsSearchMatchProperty, value); } }
-		public static readonly DependencyProperty IsSearchMatchProperty = DependencyProperty.Register("IsSearchMatch", typeof(bool), typeof(Data));
-
-		[IgnoreDataMember] public bool IsFiltering { get { return (bool)GetValue(IsFilteringProperty); } set { SetValue(IsFilteringProperty, value); } }
-		public static readonly DependencyProperty IsFilteringProperty = DependencyProperty.Register("IsFiltering", typeof(bool), typeof(Data));
-
-		[IgnoreDataMember] public bool IsFilterMatch { get { return (bool)GetValue(IsFilterMatchProperty); } set { SetValue(IsFilterMatchProperty, value); } }
-		public static readonly DependencyProperty IsFilterMatchProperty = DependencyProperty.Register("IsFilterMatch", typeof(bool), typeof(Data));
-
 		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Data));
 
@@ -73,14 +60,14 @@ namespace WCFArchitect.Projects
 
 		public Data(string Name, Namespace Parent) : base(DataTypeMode.Class)
 		{
-			this.Elements = new ObservableCollection<DataElement>();
-			this.ID = Guid.NewGuid();
+			Elements = new ObservableCollection<DataElement>();
+			ID = Guid.NewGuid();
 			this.Name = Name;
 			this.Name = Helpers.RegExs.ReplaceSpaces.Replace(Name, @"");
-			this.HasClientType = false;
-			this.HasXAMLType = true;
-			this.XAMLType = new DataType(DataTypeMode.Class) { Name = this.Name + "XAML", Scope = this.Scope };
-			this.XAMLType.InheritedTypes.Add(new DataType("DependencyObject", DataTypeMode.Class));
+			HasClientType = false;
+			HasXAMLType = true;
+			XAMLType = new DataType(DataTypeMode.Class) { Name = this.Name + "XAML", Scope = Scope };
+			XAMLType.InheritedTypes.Add(new DataType("DependencyObject", DataTypeMode.Class));
 			this.Parent = Parent;
 		}
 
@@ -89,40 +76,14 @@ namespace WCFArchitect.Projects
 			base.OnPropertyChanged(e);
 
 			if (e.Property == IsDirtyProperty) return;
-			if (e.Property == IsSearchingProperty) return;
-			if (e.Property == IsSearchMatchProperty) return;
-			if (e.Property == IsFilteringProperty) return;
-			if (e.Property == IsFilterMatchProperty) return;
 			if (e.Property == IsTreeExpandedProperty) return;
 
 			IsDirty = true;
 		}
 
-		public void Search(string Value)
+		public IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
 		{
-			if (Value != "")
-			{
-				foreach (DataElement T in Elements)
-				{
-					T.IsSearching = true;
-					T.IsSearchMatch = true;
-					if (T.DataType.Name != "" && T.DataType.Name.IndexOf(Value, StringComparison.InvariantCultureIgnoreCase) < 0) T.IsSearchMatch = false;
-					if (IsSearchMatch == false) IsSearchMatch = T.IsSearchMatch;
-				}
-			}
-			else
-			{
-				foreach (DataElement T in Elements)
-				{
-					T.IsSearching = false;
-					T.IsSearchMatch = false;
-				}
-			}
-		}
-
-		public List<FindReplaceResult> FindReplace(FindReplaceInfo Args)
-		{
-			List<FindReplaceResult> results = new List<FindReplaceResult>();
+			var results = new List<FindReplaceResult>();
 
 			if (Args.Items == FindItems.Data || Args.Items == FindItems.Any)
 			{
@@ -130,37 +91,25 @@ namespace WCFArchitect.Projects
 				{
 					if (Args.MatchCase == false)
 					{
-						if (Args.IsDataType == false)
-						{
-							if (Name != null && Name != "") if (Name.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
-							if (Name != null && Name != "") if (Name.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Code Name", Name, Parent.Owner, this));
-							if (ClientType.Name != null && ClientType.Name != "") if (ClientType.Name.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Contract Name", ClientType.Name, Parent.Owner, this));
-							if (XAMLType.Name != null && XAMLType.Name != "") if (XAMLType.Name.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("WPF Name", XAMLType.Name, Parent.Owner, this));
-						}
+						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Server Name", Name, Parent.Owner, this));
+						if (HasClientType && !string.IsNullOrEmpty(ClientType.Name)) if (ClientType.Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Client Name", ClientType.Name, Parent.Owner, this));
+						if (HasXAMLType && !string.IsNullOrEmpty(XAMLType.Name)) if (XAMLType.Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("XAML Name", XAMLType.Name, Parent.Owner, this));
 					}
 					else
 					{
-						if (Args.IsDataType == false)
-						{
-							if (Name != null && Name != "") if (Name.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
-							if (Name != null && Name != "") if (Name.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Code Name", Name, Parent.Owner, this));
-							if (ClientType.Name != null && ClientType.Name != "") if (ClientType.Name.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Contract Name", ClientType.Name, Parent.Owner, this));
-							if (XAMLType.Name != null && XAMLType.Name != "") if (XAMLType.Name.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("WPF Name", XAMLType.Name, Parent.Owner, this));
-						}
+						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Server Name", Name, Parent.Owner, this));
+						if (HasClientType && !string.IsNullOrEmpty(ClientType.Name)) if (ClientType.Name.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Client Name", ClientType.Name, Parent.Owner, this));
+						if (HasXAMLType && !string.IsNullOrEmpty(XAMLType.Name)) if (XAMLType.Name.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("XAML Name", XAMLType.Name, Parent.Owner, this));
 					}
 				}
 				else
 				{
-					if (Args.IsDataType == false)
-					{
-						if (Name != null && Name != "") if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
-						if (Name != null && Name != "") if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Code Name", Name, Parent.Owner, this));
-						if (ClientType.Name != null && ClientType.Name != "") if (Args.RegexSearch.IsMatch(ClientType.Name)) results.Add(new FindReplaceResult("Contract Name", ClientType.Name, Parent.Owner, this));
-						if (XAMLType.Name != null && XAMLType.Name != "") if (Args.RegexSearch.IsMatch(XAMLType.Name)) results.Add(new FindReplaceResult("WPF Name", XAMLType.Name, Parent.Owner, this));
-					}
+					if (!string.IsNullOrEmpty(Name)) if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Server Name", Name, Parent.Owner, this));
+					if (HasClientType && !string.IsNullOrEmpty(ClientType.Name)) if (Args.RegexSearch.IsMatch(ClientType.Name)) results.Add(new FindReplaceResult("Client Name", ClientType.Name, Parent.Owner, this));
+					if (HasXAMLType && !string.IsNullOrEmpty(XAMLType.Name)) if (Args.RegexSearch.IsMatch(XAMLType.Name)) results.Add(new FindReplaceResult("XAML Name", XAMLType.Name, Parent.Owner, this));
 				}
 
-				if (Args.ReplaceAll == true)
+				if (Args.ReplaceAll)
 				{
 					bool ia = IsActive;
 					IsActive = true;
@@ -168,86 +117,60 @@ namespace WCFArchitect.Projects
 					{
 						if (Args.MatchCase == false)
 						{
-							if (Args.IsDataType == false)
-							{
-								if (Name != null && Name != "") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-								if (Name != null && Name != "") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-								if (ClientType.Name != null && ClientType.Name != "") ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-								if (XAMLType.Name != null && XAMLType.Name != "") XAMLType.Name = Microsoft.VisualBasic.Strings.Replace(XAMLType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-							}
+							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+							if (HasClientType && !string.IsNullOrEmpty(ClientType.Name)) ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+							if (HasXAMLType && !string.IsNullOrEmpty(XAMLType.Name)) XAMLType.Name = Microsoft.VisualBasic.Strings.Replace(XAMLType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 						}
 						else
 						{
-							if (Args.IsDataType == false)
-							{
-								if (Name != null && Name != "") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-								if (Name != null && Name != "") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-								if (ClientType.Name != null && ClientType.Name != "") ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-								if (XAMLType.Name != null && XAMLType.Name != "") XAMLType.Name = Microsoft.VisualBasic.Strings.Replace(XAMLType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-							}
+							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
+							if (HasClientType && !string.IsNullOrEmpty(ClientType.Name)) ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace);
+							if (HasXAMLType && !string.IsNullOrEmpty(XAMLType.Name)) XAMLType.Name = Microsoft.VisualBasic.Strings.Replace(XAMLType.Name, Args.Search, Args.Replace);
 						}
 					}
 					else
 					{
-						if (Args.IsDataType == false)
-						{
-							if (Name != null && Name != "") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-							if (Name != null && Name != "") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-							if (ClientType.Name != null && ClientType.Name != "") ClientType.Name = Args.RegexSearch.Replace(ClientType.Name, Args.Replace);
-							if (XAMLType.Name != null && XAMLType.Name != "") XAMLType.Name = Args.RegexSearch.Replace(XAMLType.Name, Args.Replace);
-						}
+						if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
+						if (HasClientType && !string.IsNullOrEmpty(ClientType.Name)) ClientType.Name = Args.RegexSearch.Replace(ClientType.Name, Args.Replace);
+						if (HasXAMLType && !string.IsNullOrEmpty(XAMLType.Name)) XAMLType.Name = Args.RegexSearch.Replace(XAMLType.Name, Args.Replace);
 					}
 					IsActive = ia;
 				}
 			}
 
-			foreach (DataElement DE in Elements)
-				results.AddRange(DE.FindReplace(Args));
+			foreach (DataElement de in Elements)
+				results.AddRange(de.FindReplace(Args));
 
 			return results;
 		}
 
 		public void Replace(FindReplaceInfo Args, string Field)
 		{
-			if (Args.ReplaceAll == true)
+			if (!Args.ReplaceAll) return;
+			bool ia = IsActive;
+			IsActive = true;
+			if (Args.UseRegex == false)
 			{
-				bool ia = IsActive;
-				IsActive = true;
-				if (Args.UseRegex == false)
+				if (Args.MatchCase == false)
 				{
-					if (Args.MatchCase == false)
-					{
-						if (Args.IsDataType == false)
-						{
-							if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-							if (Field == "Code Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-							if (Field == "Contract Name") ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-							if (Field == "WPF Name") XAMLType.Name = Microsoft.VisualBasic.Strings.Replace(XAMLType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-						}
-					}
-					else
-					{
-						if (Args.IsDataType == false)
-						{
-							if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-							if (Field == "Code Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-							if (Field == "Contract Name") ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-							if (Field == "WPF Name") XAMLType.Name = Microsoft.VisualBasic.Strings.Replace(XAMLType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-						}
-					}
+					if (Field == "Server Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+					if (Field == "Client Name") ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+					if (Field == "XAML Name") XAMLType.Name = Microsoft.VisualBasic.Strings.Replace(XAMLType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 				}
 				else
 				{
-					if (Args.IsDataType == false)
-					{
-						if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-						if (Field == "Code Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-						if (Field == "Contract Name") ClientType.Name = Args.RegexSearch.Replace(ClientType.Name, Args.Replace);
-						if (Field == "WPF Name") XAMLType.Name = Args.RegexSearch.Replace(XAMLType.Name, Args.Replace);
-					}
+					if (Field == "Server Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
+					if (Field == "Client Name") ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace);
+					if (Field == "XAML Name") XAMLType.Name = Microsoft.VisualBasic.Strings.Replace(XAMLType.Name, Args.Search, Args.Replace);
 				}
-				IsActive = ia;
 			}
+			else
+			{
+				if (Field == "Server Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
+				if (Field == "Client Name") ClientType.Name = Args.RegexSearch.Replace(ClientType.Name, Args.Replace);
+				if (Field == "XAML Name") XAMLType.Name = Args.RegexSearch.Replace(XAMLType.Name, Args.Replace);
+			}
+			IsActive = ia;
 		}
 	}
 
@@ -381,15 +304,6 @@ namespace WCFArchitect.Projects
 		public string AttachedAttributeTypes { get { return (string)GetValue(AttachedAttributeTypesProperty); } set { SetValue(AttachedAttributeTypesProperty, value); } }
 		public static readonly DependencyProperty AttachedAttributeTypesProperty = DependencyProperty.Register("AttachedAttributeTypes", typeof(string), typeof(DataElement), new PropertyMetadata(""));
 
-		//Internal Use
-		[IgnoreDataMember] public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
-		public static readonly DependencyProperty IsSearchingProperty = DependencyProperty.Register("IsSearching", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
-
-		[IgnoreDataMember] public bool IsSearchMatch { get { return (bool)GetValue(IsSearchMatchProperty); } set { SetValue(IsSearchMatchProperty, value); } }
-		public static readonly DependencyProperty IsSearchMatchProperty = DependencyProperty.Register("IsSearchMatch", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
-
-		[IgnoreDataMember] public bool IsFiltering { get { return false; } set { } }
-		[IgnoreDataMember] public bool IsFilterMatch { get { return false; } set { } }
 		public bool IsTreeExpanded { get { return false; } set { } }
 		public Data Owner { get; set; }
 
@@ -424,8 +338,6 @@ namespace WCFArchitect.Projects
 			base.OnPropertyChanged(e);
 
 			if (e.Property == OpenableDocument.IsDirtyProperty) return;
-			if (e.Property == IsSearchingProperty) return;
-			if (e.Property == IsSearchMatchProperty) return;
 
 			if (Owner != null)
 				Owner.IsDirty = true;
@@ -436,7 +348,7 @@ namespace WCFArchitect.Projects
 			return DataName;
 		}
 
-		public List<FindReplaceResult> FindReplace(FindReplaceInfo Args)
+		public IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
 		{
 			var results = new List<FindReplaceResult>();
 
@@ -446,31 +358,22 @@ namespace WCFArchitect.Projects
 				{
 					if (Args.MatchCase == false)
 					{
-						if (Args.IsDataType == false)
-						{
-							if (!string.IsNullOrEmpty(DataType.Name)) if (DataType.Name.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", DataType.Name, Owner.Parent.Owner, this));
-							if (!string.IsNullOrEmpty(ClientType.Name)) if (ClientType.Name.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Contract Name", ClientType.Name, Owner.Parent.Owner, this));
-							if (!string.IsNullOrEmpty(XAMLType.Name)) if (XAMLType.Name.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("WPF Name", XAMLType.Name, Owner.Parent.Owner, this));
-						}
+						if (!string.IsNullOrEmpty(DataName)) if (DataName.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Server Name", DataName, Owner.Parent.Owner, this));
+						if (HasClientType && !string.IsNullOrEmpty(ClientName)) if (ClientName.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Client Name", ClientName, Owner.Parent.Owner, this));
+						if (HasXAMLType && !string.IsNullOrEmpty(XAMLName)) if (XAMLName.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("XAML Name", XAMLName, Owner.Parent.Owner, this));
 					}
 					else
 					{
-						if (Args.IsDataType == false)
-						{
-							if (!string.IsNullOrEmpty(DataType.Name)) if (DataType.Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", DataType.Name, Owner.Parent.Owner, this));
-							if (!string.IsNullOrEmpty(ClientType.Name)) if (ClientType.Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Contract Name", ClientType.Name, Owner.Parent.Owner, this));
-							if (!string.IsNullOrEmpty(XAMLType.Name)) if (XAMLType.Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("WPF Name", XAMLType.Name, Owner.Parent.Owner, this));
-						}
+						if (!string.IsNullOrEmpty(DataName)) if (DataName.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Server Name", DataName, Owner.Parent.Owner, this));
+						if (HasClientType && !string.IsNullOrEmpty(ClientName)) if (ClientName.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Client Name", ClientName, Owner.Parent.Owner, this));
+						if (HasXAMLType && !string.IsNullOrEmpty(XAMLName)) if (XAMLName.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("XAML Name", XAMLName, Owner.Parent.Owner, this));
 					}
 				}
 				else
 				{
-					if (Args.IsDataType == false)
-					{
-						if (!string.IsNullOrEmpty(DataType.Name)) if (Args.RegexSearch.IsMatch(DataType.Name)) results.Add(new FindReplaceResult("Name", DataType.Name, Owner.Parent.Owner, this));
-						if (!string.IsNullOrEmpty(ClientType.Name)) if (ClientType.Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Contract Name", ClientType.Name, Owner.Parent.Owner, this));
-						if (!string.IsNullOrEmpty(XAMLType.Name)) if (Args.RegexSearch.IsMatch(XAMLType.Name)) results.Add(new FindReplaceResult("WPF Name", XAMLType.Name, Owner.Parent.Owner, this));
-					}
+					if (!string.IsNullOrEmpty(DataName)) if (Args.RegexSearch.IsMatch(DataName)) results.Add(new FindReplaceResult("Server Name", DataName, Owner.Parent.Owner, this));
+					if (HasClientType && !string.IsNullOrEmpty(ClientName)) if (ClientName.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Client Name", ClientName, Owner.Parent.Owner, this));
+					if (HasXAMLType && !string.IsNullOrEmpty(XAMLName)) if (Args.RegexSearch.IsMatch(XAMLName)) results.Add(new FindReplaceResult("XAML Name", XAMLName, Owner.Parent.Owner, this));
 				}
 
 				if (Args.ReplaceAll)
@@ -481,31 +384,22 @@ namespace WCFArchitect.Projects
 					{
 						if (Args.MatchCase == false)
 						{
-							if (Args.IsDataType == false)
-							{
-								if (!string.IsNullOrEmpty(DataType.Name)) DataType.Name = Microsoft.VisualBasic.Strings.Replace(DataType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-								if (!string.IsNullOrEmpty(ClientType.Name)) ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-								if (!string.IsNullOrEmpty(XAMLType.Name)) XAMLType.Name = Microsoft.VisualBasic.Strings.Replace(XAMLType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-							}
+							if (!string.IsNullOrEmpty(DataName)) DataName = Microsoft.VisualBasic.Strings.Replace(DataName, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+							if (HasClientType && !string.IsNullOrEmpty(ClientName)) ClientName = Microsoft.VisualBasic.Strings.Replace(ClientName, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+							if (HasXAMLType && !string.IsNullOrEmpty(XAMLName)) XAMLName = Microsoft.VisualBasic.Strings.Replace(XAMLName, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 						}
 						else
 						{
-							if (Args.IsDataType == false)
-							{
-								if (!string.IsNullOrEmpty(DataType.Name)) DataType.Name = Microsoft.VisualBasic.Strings.Replace(DataType.Name, Args.Search, Args.Replace);
-								if (!string.IsNullOrEmpty(ClientType.Name)) ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace);
-								if (!string.IsNullOrEmpty(XAMLType.Name)) XAMLType.Name = Microsoft.VisualBasic.Strings.Replace(XAMLType.Name, Args.Search, Args.Replace);
-							}
+							if (!string.IsNullOrEmpty(DataName)) DataName = Microsoft.VisualBasic.Strings.Replace(DataName, Args.Search, Args.Replace);
+							if (HasClientType && !string.IsNullOrEmpty(ClientName)) ClientName = Microsoft.VisualBasic.Strings.Replace(ClientName, Args.Search, Args.Replace);
+							if (HasXAMLType && !string.IsNullOrEmpty(XAMLName)) XAMLName = Microsoft.VisualBasic.Strings.Replace(XAMLName, Args.Search, Args.Replace);
 						}
 					}
 					else
 					{
-						if (Args.IsDataType == false)
-						{
-							if (!string.IsNullOrEmpty(DataType.Name)) DataType.Name = Args.RegexSearch.Replace(DataType.Name, Args.Replace);
-							if (!string.IsNullOrEmpty(ClientType.Name)) ClientType.Name = Args.RegexSearch.Replace(ClientType.Name, Args.Replace);
-							if (!string.IsNullOrEmpty(XAMLType.Name)) XAMLType.Name = Args.RegexSearch.Replace(XAMLType.Name, Args.Replace);
-						}
+						if (!string.IsNullOrEmpty(DataName)) DataName = Args.RegexSearch.Replace(DataName, Args.Replace);
+						if (HasClientType && !string.IsNullOrEmpty(ClientName)) ClientName = Args.RegexSearch.Replace(ClientName, Args.Replace);
+						if (HasXAMLType && !string.IsNullOrEmpty(XAMLName)) XAMLName = Args.RegexSearch.Replace(XAMLName, Args.Replace);
 					}
 					Owner.IsActive = ia;
 				}
@@ -523,31 +417,22 @@ namespace WCFArchitect.Projects
 			{
 				if (Args.MatchCase == false)
 				{
-					if (Args.IsDataType == false)
-					{
-						if (Field == "Name") DataType.Name = Microsoft.VisualBasic.Strings.Replace(DataType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-						if (Field == "Contract Name") ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-						if (Field == "WPF Name") XAMLType.Name = Microsoft.VisualBasic.Strings.Replace(XAMLType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-					}
+					if (Field == "Server Name") DataName = Microsoft.VisualBasic.Strings.Replace(DataName, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+					if (HasClientType && Field == "Client Name") ClientName = Microsoft.VisualBasic.Strings.Replace(ClientName, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+					if (HasXAMLType && Field == "XAML Name") XAMLName = Microsoft.VisualBasic.Strings.Replace(XAMLName, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 				}
 				else
 				{
-					if (Args.IsDataType == false)
-					{
-						if (Field == "Name") DataType.Name = Microsoft.VisualBasic.Strings.Replace(DataType.Name, Args.Search, Args.Replace);
-						if (Field == "Contract Name") ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace);
-						if (Field == "WPF Name") XAMLType.Name = Microsoft.VisualBasic.Strings.Replace(XAMLType.Name, Args.Search, Args.Replace);
-					}
+					if (Field == "Server Name") DataName = Microsoft.VisualBasic.Strings.Replace(DataName, Args.Search, Args.Replace);
+					if (HasClientType && Field == "Client Name") ClientName = Microsoft.VisualBasic.Strings.Replace(ClientName, Args.Search, Args.Replace);
+					if (HasXAMLType && Field == "XAML Name") XAMLName = Microsoft.VisualBasic.Strings.Replace(XAMLName, Args.Search, Args.Replace);
 				}
 			}
 			else
 			{
-				if (Args.IsDataType == false)
-				{
-					if (Field == "Name") DataType.Name = Args.RegexSearch.Replace(DataType.Name, Args.Replace);
-					if (Field == "Contract Name") ClientType.Name = Args.RegexSearch.Replace(ClientType.Name, Args.Replace);
-					if (Field == "WPF Name") XAMLType.Name = Args.RegexSearch.Replace(XAMLType.Name, Args.Replace);
-				}
+				if (Field == "Server Name") DataName = Args.RegexSearch.Replace(DataName, Args.Replace);
+				if (HasClientType && Field == "Client Name") ClientName = Args.RegexSearch.Replace(ClientName, Args.Replace);
+				if (HasXAMLType && Field == "XAML Name") XAMLName = Args.RegexSearch.Replace(XAMLName, Args.Replace);
 			}
 			Owner.IsActive = ia;
 		}

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Prospective.Controls.Dialogs;
+using WCFArchitect.Projects;
 
 namespace WCFArchitect.Interface
 {
@@ -22,34 +25,50 @@ namespace WCFArchitect.Interface
 		public Projects.Project Project { get { return (Projects.Project)GetValue(ProjectProperty); } set { SetValue(ProjectProperty, value); } }
 		public static readonly DependencyProperty ProjectProperty = DependencyProperty.Register("Project", typeof(Projects.Project), typeof(Navigator));
 
-		public object ActivePage { get { return (object)GetValue(ActivePageProperty); } set { SetValue(ActivePageProperty, value); } }
+		public object ActivePage { get { return GetValue(ActivePageProperty); } set { SetValue(ActivePageProperty, value); } }
 		public static readonly DependencyProperty ActivePageProperty = DependencyProperty.Register("ActivePage", typeof(object), typeof(Navigator));
-		
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static RoutedCommand ChangeActivePageCommand = new RoutedCommand();
+
+		public int? ErrorCount { get { return (int?)GetValue(ErrorCountProperty); } set { SetValue(ErrorCountProperty, value); } }
+		public static readonly DependencyProperty ErrorCountProperty = DependencyProperty.Register("ErrorCount", typeof(int?), typeof(Navigator), new PropertyMetadata(0));
+
+		public ObservableCollection<FindReplaceResult> FindResults { get { return (ObservableCollection<FindReplaceResult>)GetValue(FindResultsProperty); } set { SetValue(FindResultsProperty, value); } }
+		public static readonly DependencyProperty FindResultsProperty = DependencyProperty.Register("FindResults", typeof(ObservableCollection<FindReplaceResult>), typeof(Navigator));
+
+		public int? FindResultsCount { get { return (int?)GetValue(FindResultsCountProperty); } set { SetValue(FindResultsCountProperty, value); } }
+		public static readonly DependencyProperty FindResultsCountProperty = DependencyProperty.Register("FindResultsCount", typeof(int?), typeof(Navigator), new PropertyMetadata(0));
+
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")]
+		public static readonly RoutedCommand ChangeActivePageCommand = new RoutedCommand();
 
 		static Navigator()
 		{
-			CommandManager.RegisterClassCommandBinding(typeof(Navigator), new CommandBinding(Navigator.ChangeActivePageCommand, OnChangeActivePageCommandExecuted));
+			CommandManager.RegisterClassCommandBinding(typeof(Navigator), new CommandBinding(ChangeActivePageCommand, OnChangeActivePageCommandExecuted));
 		}
 
 		private static void OnChangeActivePageCommandExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
-			Navigator s = sender as Navigator;
+			var s = sender as Navigator;
 			if (s == null) return;
-			Projects.OpenableDocument d = e.Parameter as Projects.OpenableDocument;
+			var d = e.Parameter as OpenableDocument;
 			s.OpenProjectItem(d);
-			
 		}
 
 		public Navigator()
 		{
 			InitializeComponent();
+
+			FindResults = new ObservableCollection<FindReplaceResult>();
+			FindResultsCount = null;
+			ErrorCount = null;
 		}
 
 		public Navigator(Projects.Project Project)
 		{
 			InitializeComponent();
 
+			FindResults = new ObservableCollection<FindReplaceResult>();
+			FindResultsCount = null;
+			ErrorCount = null;
 			this.Project = Project;
 
 			OpenProjectItem(this.Project);
@@ -57,7 +76,7 @@ namespace WCFArchitect.Interface
 
 		private void NewItem_Click(object sender, RoutedEventArgs e)
 		{
-			DialogService.ShowContentDialog(Project, "New Item", new Dialogs.NewItem(Project, new Action<Projects.OpenableDocument>(OpenProjectItem)));
+			DialogService.ShowContentDialog(Project, "New Item", new Dialogs.NewItem(Project, OpenProjectItem));
 		}
 
 		private void SaveProject_Click(object sender, RoutedEventArgs e)
@@ -67,7 +86,7 @@ namespace WCFArchitect.Interface
 
 		private void DeleteProject_Click(object sender, RoutedEventArgs e)
 		{
-			DialogService.ShowMessageDialog(Project, "Permanently Delete Project?", "This project will be removed from the solution. Would you like to delete it from the disk as well?", new DialogAction("Yes", new Action(() => KillProject())), new DialogAction("No", new Action(() => RemoveProject()), true));
+			DialogService.ShowMessageDialog(Project, "Permanently Delete Project?", "This project will be removed from the solution. Would you like to delete it from the disk as well?", new DialogAction("Yes", KillProject), new DialogAction("No", RemoveProject, true));
 		}
 
 		private void BuildProject_Click(object sender, RoutedEventArgs e)
@@ -75,7 +94,7 @@ namespace WCFArchitect.Interface
 			//Need the compiler driver for this to work.
 		}
 
-		private void OpenProjectItem(Projects.OpenableDocument Item)
+		private void OpenProjectItem(OpenableDocument Item)
 		{
 			if (Item == null) return;
 
@@ -98,7 +117,7 @@ namespace WCFArchitect.Interface
 			if (Globals.Projects.Count == 0) Globals.MainScreen.ShowHomeScreen();
 			else
 			{
-				SolutionItem t = Globals.MainScreen.ScreenButtons.Items[0] as SolutionItem;
+				var t = Globals.MainScreen.ScreenButtons.Items[0] as SolutionItem;
 				if (t != null)
 					Globals.MainScreen.SelectProjectScreen(t.Content as Navigator);
 			}
@@ -111,13 +130,233 @@ namespace WCFArchitect.Interface
 			if(System.IO.File.Exists(Project.AbsolutePath))
 				System.IO.File.Delete(Project.AbsolutePath);
 		}
+
+		private void ShowProject_Click(object sender, RoutedEventArgs e)
+		{
+			ShowFindReplace.IsChecked = false;
+			ShowOutput.IsChecked = false;
+			ShowErrors.IsChecked = false;
+			FindReplaceGrid.Visibility = Visibility.Collapsed;
+			ErrorGrid.Visibility = Visibility.Collapsed;
+			OutputGrid.Visibility = Visibility.Collapsed;
+		}
+
+		private void ShowFindReplace_Checked(object sender, RoutedEventArgs e)
+		{
+			ShowOutput.IsChecked = false;
+			ShowErrors.IsChecked = false;
+			FindReplaceGrid.Visibility = Visibility.Visible;
+			ErrorGrid.Visibility = Visibility.Collapsed;
+			OutputGrid.Visibility = Visibility.Collapsed;
+		}
+
+		private void ShowErrors_Checked(object sender, RoutedEventArgs e)
+		{
+			ShowFindReplace.IsChecked = false;
+			ShowOutput.IsChecked = false;
+			FindReplaceGrid.Visibility = Visibility.Collapsed;
+			ErrorGrid.Visibility = Visibility.Visible;
+			OutputGrid.Visibility = Visibility.Collapsed;
+		}
+
+		private void ShowOutput_Checked(object sender, RoutedEventArgs e)
+		{
+			ShowFindReplace.IsChecked = false;
+			ShowErrors.IsChecked = false;
+			FindReplaceGrid.Visibility = Visibility.Collapsed;
+			ErrorGrid.Visibility = Visibility.Collapsed;
+			OutputGrid.Visibility = Visibility.Visible;
+		}
+
+		#region " Find / Replace "
+
+		private void FindNext_Click(object sender, RoutedEventArgs e)
+		{
+			if (FindResultsCount == 0) FindAll_Click(null, null);
+			if (FindList.SelectedIndex == FindResults.Count - 1) FindList.SelectedIndex = 0;
+			else FindList.SelectedIndex++;
+		}
+
+		private void FindReplace_Click(object sender, RoutedEventArgs e)
+		{
+			Globals.IsFinding = true;
+
+			FindReplaceResult frr = FindResults[FindList.SelectedIndex];
+			Type valueType = frr.Item.GetType();
+			if (valueType == typeof(Projects.Project) || valueType == typeof(DependencyProject))
+			{
+				var T = frr.Item as Projects.Project;
+				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
+			}
+			if (valueType == typeof(Namespace))
+			{
+				var T = frr.Item as Namespace;
+				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
+			}
+			if (valueType == typeof(Service))
+			{
+				var T = frr.Item as Service;
+				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
+			}
+			if (valueType == typeof(Operation))
+			{
+				var T = frr.Item as Operation;
+				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
+			}
+			if (valueType == typeof(MethodParameter))
+			{
+				var T = frr.Item as MethodParameter;
+				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
+			}
+			if (valueType == typeof(Property))
+			{
+				var T = frr.Item as Property;
+				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
+			}
+			if (valueType == typeof(Projects.Data))
+			{
+				var T = frr.Item as Projects.Data;
+				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
+			}
+			if (valueType == typeof(DataElement))
+			{
+				var T = frr.Item as DataElement;
+				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
+			}
+			if (valueType == typeof(Projects.Enum))
+			{
+				var T = frr.Item as Projects.Enum;
+				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
+			}
+			if (valueType == typeof(EnumElement))
+			{
+				var T = frr.Item as EnumElement;
+				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
+			}
+			if (valueType == typeof(ServiceBinding))
+			{
+				var T = frr.Item as ServiceBinding;
+				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
+			}
+			if (valueType == typeof(BindingSecurity))
+			{
+				var T = frr.Item as BindingSecurity;
+				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
+			}
+			if (valueType == typeof(Host))
+			{
+				var T = frr.Item as Host;
+				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
+			}
+			if (valueType == typeof(HostEndpoint))
+			{
+				var T = frr.Item as HostEndpoint;
+				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
+			}
+			if (valueType == typeof(HostBehavior))
+			{
+				var T = frr.Item as HostBehavior;
+				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
+			}
+
+			Globals.IsFinding = false;
+		}
+
+		private void FindAll_Click(object sender, RoutedEventArgs e)
+		{
+			Globals.IsFinding = true;
+
+			FindResults.Clear();
+			var findInfo = new FindReplaceInfo((FindItems)FindItem.SelectedIndex, (FindLocations)FindLocation.SelectedIndex, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value);
+			var results = new List<FindReplaceResult>();
+
+			if (findInfo.Location == FindLocations.EntireSolution)
+			{
+				foreach (Projects.Project p in Globals.Projects)
+					results.AddRange(p.FindReplace(findInfo));
+			}
+			if (findInfo.Location == FindLocations.CurrentProject)
+			{
+				results.AddRange(Project.FindReplace(findInfo));
+			}
+
+			foreach (FindReplaceResult frr in results)
+				FindResults.Add(frr);
+			FindResultsCount = FindResults.Count;
+			if (FindResultsCount == 0) FindResultsCount = null;
+
+			Globals.IsFinding = false;
+		}
+
+		private void FindReplaceAll_Click(object sender, RoutedEventArgs e)
+		{
+			Globals.IsFinding = true;
+
+			FindResults.Clear();
+			var findInfo = new FindReplaceInfo((FindItems)FindItem.SelectedIndex, (FindLocations)FindLocation.SelectedIndex, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value, FindReplaceValue.Text);
+			var results = new List<FindReplaceResult>();
+
+			if (findInfo.Location == FindLocations.EntireSolution)
+			{
+				foreach (Projects.Project p in Globals.Projects)
+					results.AddRange(p.FindReplace(findInfo));
+			}
+			if (findInfo.Location == FindLocations.CurrentProject)
+			{
+				results.AddRange(Project.FindReplace(findInfo));
+			}
+
+			foreach (FindReplaceResult frr in results)
+				FindResults.Add(frr);
+			FindResultsCount = FindResults.Count;
+			if (FindResultsCount == 0) FindResultsCount = null;
+
+			Globals.IsFinding = false;
+		}
+
+		private void FindList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			//TODO: Add code to open the selected item when all screens are finished.
+		}
+
+		#endregion
+
+		private void ErrorShowErrors_Checked(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void ErrorShowWarnings_Checked(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void ErrorShowInfo_Checked(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void ErrorShowErrors_Unchecked(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void ErrorShowWarnings_Unchecked(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void ErrorShowInfo_Unchecked(object sender, RoutedEventArgs e)
+		{
+
+		}
 	}
 
 	public class ProjectList : ItemsControl
 	{
 		protected override DependencyObject GetContainerForItemOverride()
 		{
-			return new System.Windows.Controls.Primitives.ToggleButton();
+			return new ToggleButton();
 		}
 
 		protected override bool IsItemItsOwnContainerOverride(object item)
@@ -130,7 +369,7 @@ namespace WCFArchitect.Interface
 	{
 		protected override DependencyObject GetContainerForItemOverride()
 		{
-			return new System.Windows.Controls.Button();
+			return new Button();
 		}
 
 		protected override bool IsItemItsOwnContainerOverride(object item)
@@ -155,17 +394,17 @@ namespace WCFArchitect.Interface
 
 		public override DataTemplate SelectTemplate(object item, DependencyObject container)
 		{
-			if (item.GetType() == typeof(Projects.BindingSecurityBasicHTTP)) return BasicHTTPTemplate;
-			if (item.GetType() == typeof(Projects.BindingSecurityBasicHTTP)) return BasicHTTPSTemplate;
-			if (item.GetType() == typeof(Projects.BindingSecurityMSMQ)) return MSMQTemplate;
-			if (item.GetType() == typeof(Projects.BindingSecurityMSMQIntegration)) return MSMQIntegrationTemplate;
-			if (item.GetType() == typeof(Projects.BindingSecurityNamedPipe)) return NamedPipeTemplate;
-			if (item.GetType() == typeof(Projects.BindingSecurityPeerTCP)) return PeerTCPTemplate;
-			if (item.GetType() == typeof(Projects.BindingSecurityTCP)) return TCPTemplate;
-			if (item.GetType() == typeof(Projects.BindingSecurityWebHTTP)) return WebHTTPTemplate;
-			if (item.GetType() == typeof(Projects.BindingSecurityWSDualHTTP)) return WSDualHTTPTemplate;
-			if (item.GetType() == typeof(Projects.BindingSecurityWSFederationHTTP)) return WSFederationHTTPTemplate;
-			if (item.GetType() == typeof(Projects.BindingSecurityWSHTTP)) return WSHTTPTemplate;
+			if (item.GetType() == typeof(BindingSecurityBasicHTTP)) return BasicHTTPTemplate;
+			if (item.GetType() == typeof(BindingSecurityBasicHTTP)) return BasicHTTPSTemplate;
+			if (item.GetType() == typeof(BindingSecurityMSMQ)) return MSMQTemplate;
+			if (item.GetType() == typeof(BindingSecurityMSMQIntegration)) return MSMQIntegrationTemplate;
+			if (item.GetType() == typeof(BindingSecurityNamedPipe)) return NamedPipeTemplate;
+			if (item.GetType() == typeof(BindingSecurityPeerTCP)) return PeerTCPTemplate;
+			if (item.GetType() == typeof(BindingSecurityTCP)) return TCPTemplate;
+			if (item.GetType() == typeof(BindingSecurityWebHTTP)) return WebHTTPTemplate;
+			if (item.GetType() == typeof(BindingSecurityWSDualHTTP)) return WSDualHTTPTemplate;
+			if (item.GetType() == typeof(BindingSecurityWSFederationHTTP)) return WSFederationHTTPTemplate;
+			if (item.GetType() == typeof(BindingSecurityWSHTTP)) return WSHTTPTemplate;
 			return BasicHTTPTemplate;
 		}
 	}
@@ -190,21 +429,21 @@ namespace WCFArchitect.Interface
 
 		public override DataTemplate SelectTemplate(object item, DependencyObject container)
 		{
-			if (item.GetType() == typeof(Projects.ServiceBindingBasicHTTP)) return BasicHTTPTemplate;
-			if (item.GetType() == typeof(Projects.ServiceBindingBasicHTTPS)) return BasicHTTPSTemplate;
-			if (item.GetType() == typeof(Projects.ServiceBindingNetHTTP)) return NetHTTPTemplate;
-			if (item.GetType() == typeof(Projects.ServiceBindingNetHTTPS)) return NetHTTPSTemplate;
-			if (item.GetType() == typeof(Projects.ServiceBindingMSMQ)) return MSMQTemplate;
-			if (item.GetType() == typeof(Projects.ServiceBindingMSMQIntegration)) return MSMQIntegrationTemplate;
-			if (item.GetType() == typeof(Projects.ServiceBindingNamedPipe)) return NamedPipeTemplate;
-			if (item.GetType() == typeof(Projects.ServiceBindingPeerTCP)) return PeerTCPTemplate;
-			if (item.GetType() == typeof(Projects.ServiceBindingTCP)) return TCPTemplate;
-			if (item.GetType() == typeof(Projects.ServiceBindingWebHTTP)) return WebHTTPTemplate;
-			if (item.GetType() == typeof(Projects.ServiceBindingWSDualHTTP)) return WSDualHTTPTemplate;
-			if (item.GetType() == typeof(Projects.ServiceBindingWSFederationHTTP)) return WSFederationHTTPTemplate;
-			if (item.GetType() == typeof(Projects.ServiceBindingWS2007FederationHTTP)) return WS2007FederationHTTPTemplate;
-			if (item.GetType() == typeof(Projects.ServiceBindingWSHTTP)) return WSHTTPTemplate;
-			if (item.GetType() == typeof(Projects.ServiceBindingWS2007HTTP)) return WS2007HTTPTemplate;
+			if (item.GetType() == typeof(ServiceBindingBasicHTTP)) return BasicHTTPTemplate;
+			if (item.GetType() == typeof(ServiceBindingBasicHTTPS)) return BasicHTTPSTemplate;
+			if (item.GetType() == typeof(ServiceBindingNetHTTP)) return NetHTTPTemplate;
+			if (item.GetType() == typeof(ServiceBindingNetHTTPS)) return NetHTTPSTemplate;
+			if (item.GetType() == typeof(ServiceBindingMSMQ)) return MSMQTemplate;
+			if (item.GetType() == typeof(ServiceBindingMSMQIntegration)) return MSMQIntegrationTemplate;
+			if (item.GetType() == typeof(ServiceBindingNamedPipe)) return NamedPipeTemplate;
+			if (item.GetType() == typeof(ServiceBindingPeerTCP)) return PeerTCPTemplate;
+			if (item.GetType() == typeof(ServiceBindingTCP)) return TCPTemplate;
+			if (item.GetType() == typeof(ServiceBindingWebHTTP)) return WebHTTPTemplate;
+			if (item.GetType() == typeof(ServiceBindingWSDualHTTP)) return WSDualHTTPTemplate;
+			if (item.GetType() == typeof(ServiceBindingWSFederationHTTP)) return WSFederationHTTPTemplate;
+			if (item.GetType() == typeof(ServiceBindingWS2007FederationHTTP)) return WS2007FederationHTTPTemplate;
+			if (item.GetType() == typeof(ServiceBindingWSHTTP)) return WSHTTPTemplate;
+			if (item.GetType() == typeof(ServiceBindingWS2007HTTP)) return WS2007HTTPTemplate;
 			return BasicHTTPTemplate;
 		}
 	}
@@ -216,9 +455,256 @@ namespace WCFArchitect.Interface
 
 		public override DataTemplate SelectTemplate(object item, DependencyObject container)
 		{
-			if (item.GetType() == typeof(Projects.Method)) return MethodTemplate;
-			if (item.GetType() == typeof(Projects.Property)) return PropertyTemplate;
+			if (item != null && item.GetType() == typeof(Method)) return MethodTemplate;
+			if (item != null && item.GetType() == typeof(Property)) return PropertyTemplate;
 			return MethodTemplate;
+		}
+	}
+
+	[ValueConversion(typeof(Compiler.CompileMessageSeverity), typeof(string))]
+	public class CompileMessageSeverityImageConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if (value == null) return "";
+			var lt = (Compiler.CompileMessageSeverity)value;
+			if (lt == Compiler.CompileMessageSeverity.ERROR) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Error.png";
+			if (lt == Compiler.CompileMessageSeverity.WARN) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Warning.png";
+			if (lt == Compiler.CompileMessageSeverity.INFO) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Message.png";
+			return "";
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	[ValueConversion(typeof(object), typeof(string))]
+	public class ErrorObjectNameConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if (value == null) return "";
+			Type valueType = value.GetType();
+
+			if (valueType == typeof(string)) return value;
+			if (valueType == typeof(Projects.Project))
+			{
+				var T = value as Projects.Project;
+				if (T != null) return string.IsNullOrEmpty(T.Name) ? "Project Settings" : T.Name;
+			}
+			if (valueType == typeof(Projects.ServiceBinding))
+			{
+				Projects.ServiceBinding T = value as Projects.ServiceBinding;
+				if (T.Name == "" || T.Name == null)
+					return "Service Binding";
+				else
+					return T.Name;
+			}
+			if (valueType == typeof(Projects.BindingSecurity))
+			{
+				Projects.BindingSecurity T = value as Projects.BindingSecurity;
+				if (T.Name == "" || T.Name == null)
+					return "Binding Security";
+				else
+					return T.Name;
+			}
+			if (valueType == typeof(Projects.Host))
+			{
+				Projects.Host T = value as Projects.Host;
+				if (T.Name == "" || T.Name == null)
+					return "Host";
+				else
+					return T.Name;
+			}
+			if (valueType == typeof(Projects.Namespace))
+			{
+				Projects.Namespace T = value as Projects.Namespace;
+				if (T.Name == "" || T.Name == null)
+					return "Namespace";
+				else
+					return T.Name;
+			}
+			if (valueType == typeof(Projects.Service))
+			{
+				Projects.Service T = value as Projects.Service;
+				if (T.Name == "" || T.Name == null)
+					return "Service";
+				else
+					return T.Name;
+			}
+			if (valueType == typeof(Projects.Operation))
+			{
+				Projects.Operation T = value as Projects.Operation;
+				if (T.Name == "" || T.Name == null)
+					return "Operation";
+				else
+					return T.Name;
+			}
+			if (valueType == typeof(Projects.MethodParameter))
+			{
+				Projects.MethodParameter T = value as Projects.MethodParameter;
+				if (T.Name == "" || T.Name == null)
+					return "Operation Parameter";
+				else
+					return T.Name;
+			}
+			if (valueType == typeof(Projects.Property))
+			{
+				Projects.Property T = value as Projects.Property;
+				if (T.Name == "" || T.Name == null)
+					return "Property";
+				else
+					return T.Name;
+			}
+			if (valueType == typeof(Projects.Data))
+			{
+				Projects.Data T = value as Projects.Data;
+				if (T.Name == "" || T.Name == null)
+					return "Data";
+				else
+					return T.Name;
+			}
+			if (valueType == typeof(Projects.DataElement))
+			{
+				Projects.DataElement T = value as Projects.DataElement;
+				if (T.DataType.Name == "" || T.DataType.Name == null)
+					return "Data Value";
+				else
+					return T.DataType.Name;
+			}
+			if (valueType == typeof(Projects.Enum))
+			{
+				Projects.Enum T = value as Projects.Enum;
+				if (T.Name == "" || T.Name == null)
+					return "Enum";
+				else
+					return T.Name;
+			}
+			if (valueType == typeof(Projects.EnumElement))
+			{
+				Projects.EnumElement T = value as Projects.EnumElement;
+				if (T.Name == "" || T.Name == null)
+					return "Enum Value";
+				else
+					return T.Name;
+			}
+			return "";
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	[ValueConversion(typeof(object), typeof(string))]
+	public class ErrorObjectOwnerNameConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if (value == null) return "";
+			Type valueType = value.GetType();
+
+			if (valueType == typeof(string)) return value;
+			if (valueType == typeof(Projects.Project) || valueType == typeof(Projects.DependencyProject))
+			{
+				Projects.Project T = value as Projects.Project;
+				if (T.Name == "" || T.Name == null)
+					return "Project Settings";
+				else
+					return T.Name;
+			}
+			if (valueType == typeof(Projects.ServiceBinding))
+			{
+				Projects.ServiceBinding T = value as Projects.ServiceBinding;
+				if (T.Parent.Name == "" || T.Parent.Name == null)
+					return "Service Binding";
+				else
+					return T.Parent.Name;
+			}
+			if (valueType == typeof(Projects.BindingSecurity))
+			{
+				Projects.BindingSecurity T = value as Projects.BindingSecurity;
+				if (T.Parent.Name == "" || T.Parent.Name == null)
+					return "Binding Security";
+				else
+					return T.Parent.Name;
+			}
+			if (valueType == typeof(Projects.Host))
+			{
+				Projects.Host T = value as Projects.Host;
+				if (T.Parent.Name == "" || T.Parent.Name == null)
+					return "Host";
+				else
+					return T.Parent.Name;
+			}
+			if (valueType == typeof(Projects.Namespace))
+			{
+				Projects.Namespace T = value as Projects.Namespace;
+				if (T.Owner.Name == "" || T.Owner.Name == null)
+					return "Namespace";
+				else
+					return T.Owner.Name;
+			}
+			if (valueType == typeof(Projects.Service))
+			{
+				Projects.Service T = value as Projects.Service;
+				if (T.Parent.Owner.Name == "" || T.Parent.Owner.Name == null)
+					return "Service";
+				else
+					return T.Parent.Owner.Name;
+			}
+			if (valueType == typeof(Projects.Data))
+			{
+				Projects.Data T = value as Projects.Data;
+				if (T.Parent.Owner.Name == "" || T.Parent.Owner.Name == null)
+					return "Data";
+				else
+					return T.Parent.Owner.Name;
+			}
+			if (valueType == typeof(Projects.Enum))
+			{
+				Projects.Enum T = value as Projects.Enum;
+				if (T.Parent.Owner.Name == "" || T.Parent.Owner.Name == null)
+					return "Enum";
+				else
+					return T.Parent.Owner.Name;
+			}
+			return "";
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	[ValueConversion(typeof(object), typeof(string))]
+	public class DocumentTypeImage16Converter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if (value == null) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Project.png";
+			Type valueType = value.GetType();
+			if (valueType == typeof(Projects.Project)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Project.png";
+			if (valueType == typeof(DependencyProject)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/DependencyProject.png";
+			if (valueType == typeof(Namespace)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Namespace.png";
+			if (valueType == typeof(Service)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Service.png";
+			if (valueType == typeof(Operation)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Operation.png";
+			if (valueType == typeof(MethodParameter)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Property.png";
+			if (valueType == typeof(Property)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Property.png";
+			if (valueType == typeof(Projects.Data)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Data.png";
+			if (valueType == typeof(DataElement)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Property.png";
+			if (valueType == typeof(Projects.Enum)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Enum.png";
+			if (valueType == typeof(EnumElement)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Property.png";
+			return "pack://application:,,,/WCFArchitect;component/Icons/X16/Project.png";
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
 		}
 	}
 

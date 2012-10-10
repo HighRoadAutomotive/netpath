@@ -28,19 +28,6 @@ namespace WCFArchitect.Projects
 		public string ConfigurationName { get { return (string)GetValue(ConfigurationNameProperty); } set { SetValue(ConfigurationNameProperty, value); } }
 		public static readonly DependencyProperty ConfigurationNameProperty = DependencyProperty.Register("ConfigurationName", typeof(string), typeof(Service));
 
-		//Internal Use - Searching / Filtering
-		[IgnoreDataMember()] public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
-		public static readonly DependencyProperty IsSearchingProperty = DependencyProperty.Register("IsSearching", typeof(bool), typeof(Service));
-
-		[IgnoreDataMember()] public bool IsSearchMatch { get { return (bool)GetValue(IsSearchMatchProperty); } set { SetValue(IsSearchMatchProperty, value); } }
-		public static readonly DependencyProperty IsSearchMatchProperty = DependencyProperty.Register("IsSearchMatch", typeof(bool), typeof(Service));
-
-		[IgnoreDataMember()] public bool IsFiltering { get { return (bool)GetValue(IsFilteringProperty); } set { SetValue(IsFilteringProperty, value); } }
-		public static readonly DependencyProperty IsFilteringProperty = DependencyProperty.Register("IsFiltering", typeof(bool), typeof(Service));
-
-		[IgnoreDataMember()] public bool IsFilterMatch { get { return (bool)GetValue(IsFilterMatchProperty); } set { SetValue(IsFilterMatchProperty, value); } }
-		public static readonly DependencyProperty IsFilterMatchProperty = DependencyProperty.Register("IsFilterMatch", typeof(bool), typeof(Service));
-
 		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Service));
 
@@ -52,12 +39,12 @@ namespace WCFArchitect.Projects
 		{
 			this.Name = Name;
 			this.Parent = Parent;
-			this.IsOpen = false;
-			this.IsCallback = false;
-			this.Operations = new ObservableCollection<Operation>();
-			this.ID = Guid.NewGuid();
+			IsOpen = false;
+			IsCallback = false;
+			Operations = new ObservableCollection<Operation>();
+			ID = Guid.NewGuid();
 			var r = new System.Text.RegularExpressions.Regex(@"\W+");
-			this.ConfigurationName = "";
+			ConfigurationName = "";
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -65,94 +52,14 @@ namespace WCFArchitect.Projects
 			base.OnPropertyChanged(e);
 			
 			if (e.Property == IsDirtyProperty) return;
-			if (e.Property == IsSearchingProperty) return;
-			if (e.Property == IsSearchMatchProperty) return;
-			if (e.Property == IsFilteringProperty) return;
-			if (e.Property == IsFilterMatchProperty) return;
 			if (e.Property == IsTreeExpandedProperty) return;
 		
 			IsDirty = true;
 		}
 	
-		public void Search(string Value)
+		public IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
 		{
-			if (Value != "")
-			{
-				foreach (Operation T in Operations)
-				{
-					T.IsSearching = true;
-					T.IsSearchMatch = T.Name.Contains(Value);
-					if (IsSearchMatch == false) IsSearchMatch = T.IsSearchMatch;
-				}
-				foreach (Property T in Operations)
-				{
-					T.IsSearching = true;
-					T.IsSearchMatch = T.Name.Contains(Value);
-					if (IsSearchMatch == false) IsSearchMatch = T.IsSearchMatch;
-				}
-			}
-			else
-			{
-				foreach (Operation T in Operations)
-				{
-					T.IsSearching = false;
-					T.IsSearchMatch = false;
-				}
-				foreach (Property T in Operations)
-				{
-					T.IsSearching = false;
-					T.IsSearchMatch = false;
-				}
-			}
-		}
-
-		public void SearchOperations(string Value)
-		{
-			if (Value != "")
-			{
-				foreach (Operation T in Operations)
-				{
-					T.IsSearching = true;
-					T.IsSearchMatch = true;
-					if (T.Name != "" && T.Name.IndexOf(Value, StringComparison.InvariantCultureIgnoreCase) < 0) T.IsSearchMatch = false;
-					if (IsSearchMatch == false) IsSearchMatch = T.IsSearchMatch;
-				}
-			}
-			else
-			{
-				foreach (Operation T in Operations)
-				{
-					T.IsSearching = false;
-					T.IsSearchMatch = false;
-				}
-			}
-		}
-
-		public void SearchProperties(string Value)
-		{
-			if (Value != "")
-			{
-				foreach (Property T in Operations)
-				{
-					T.IsSearching = true;
-					T.IsSearchMatch = true;
-					if (T.Name != "" && T.Name.IndexOf(Value, StringComparison.InvariantCultureIgnoreCase) < 0) T.IsSearchMatch = false;
-					if (IsSearchMatch == false) IsSearchMatch = T.IsSearchMatch;
-				}
-			}
-			else
-			{
-				foreach (Property T in Operations)
-				{
-					T.IsSearching = false;
-					T.IsSearchMatch = false;
-				}
-			}
-		}
-
-		public List<FindReplaceResult> FindReplace(FindReplaceInfo Args)
-		{
-			List<FindReplaceResult> results = new List<FindReplaceResult>();
+			var results = new List<FindReplaceResult>();
 
 			if (Args.Items == FindItems.Service || Args.Items == FindItems.Any)
 			{
@@ -160,31 +67,22 @@ namespace WCFArchitect.Projects
 				{
 					if (Args.MatchCase == false)
 					{
-						if (Args.IsDataType == false)
-						{
-							if (Name != null && Name != "") if (Name.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
-							if (HasClientType == true) if (ClientType.Name != null && ClientType.Name != "") if (ClientType.Name.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Contract Name", ClientType.Name, Parent.Owner, this));
-						}
+						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
+						if (HasClientType && !string.IsNullOrEmpty(ClientType.Name)) if (ClientType.Name.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Contract Name", ClientType.Name, Parent.Owner, this));
 					}
 					else
 					{
-						if (Args.IsDataType == false)
-						{
-							if (Name != null && Name != "") if (Name.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
-							if (HasClientType == true) if (ClientType.Name != null && ClientType.Name != "") if (ClientType.Name.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Contract Name", ClientType.Name, Parent.Owner, this));
-						}
+						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
+						if (HasClientType && !string.IsNullOrEmpty(ClientType.Name)) if (ClientType.Name.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Contract Name", ClientType.Name, Parent.Owner, this));
 					}
 				}
 				else
 				{
-					if (Args.IsDataType == false)
-					{
-						if (Name != null && Name != "") if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
-						if (HasClientType == true) if (ClientType.Name != null && ClientType.Name != "") if (Args.RegexSearch.IsMatch(ClientType.Name)) results.Add(new FindReplaceResult("Contract Name", ClientType.Name, Parent.Owner, this));
-					}
+					if (!string.IsNullOrEmpty(Name)) if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
+					if (HasClientType && !string.IsNullOrEmpty(ClientType.Name)) if (Args.RegexSearch.IsMatch(ClientType.Name)) results.Add(new FindReplaceResult("Contract Name", ClientType.Name, Parent.Owner, this));
 				}
 
-				if (Args.ReplaceAll == true)
+				if (Args.ReplaceAll)
 				{
 					bool ia = IsActive;
 					IsActive = true;
@@ -192,77 +90,57 @@ namespace WCFArchitect.Projects
 					{
 						if (Args.MatchCase == false)
 						{
-							if (Args.IsDataType == false)
-							{
-								if (Name != null && Name != "") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-								if (HasClientType == true) if (ClientType.Name != null && ClientType.Name != "") ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-							}
+							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+							if (HasClientType && !string.IsNullOrEmpty(ClientType.Name)) ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 						}
 						else
 						{
-							if (Args.IsDataType == false)
-							{
-								if (Name != null && Name != "") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-								if (HasClientType == true) if (ClientType.Name != null && ClientType.Name != "") ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-							}
+							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
+							if (HasClientType && !string.IsNullOrEmpty(ClientType.Name)) ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace);
 						}
 					}
 					else
 					{
-						if (Args.IsDataType == false)
-						{
-							if (Name != null && Name != "") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-							if (HasClientType == true) if (ClientType.Name != null && ClientType.Name != "") ClientType.Name = Args.RegexSearch.Replace(ClientType.Name, Args.Replace);
-						}
+						if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
+						if (HasClientType && !string.IsNullOrEmpty(ClientType.Name)) ClientType.Name = Args.RegexSearch.Replace(ClientType.Name, Args.Replace);
 					}
 					IsActive = ia;
 				}
 			}
 
-			foreach (Operation O in Operations)
-				results.AddRange(O.FindReplace(Args));
+			foreach (Operation o in Operations)
+				results.AddRange(o.FindReplace(Args));
 
-			foreach (Property P in Operations)
-				results.AddRange(P.FindReplace(Args));
+			foreach (Property p in Operations)
+				results.AddRange(p.FindReplace(Args));
 
 			return results;
 		}
 
 		public void Replace(FindReplaceInfo Args, string Field)
 		{
-			if (Args.ReplaceAll == true)
+			if (!Args.ReplaceAll) return;
+			bool ia = IsActive;
+			IsActive = true;
+			if (Args.UseRegex == false)
 			{
-				bool ia = IsActive;
-				IsActive = true;
-				if (Args.UseRegex == false)
+				if (Args.MatchCase == false)
 				{
-					if (Args.MatchCase == false)
-					{
-						if (Args.IsDataType == false)
-						{
-							if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-							if (HasClientType == true) if (Field == "Contract Name") ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-						}
-					}
-					else
-					{
-						if (Args.IsDataType == false)
-						{
-							if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-							if (HasClientType == true) if (Field == "Contract Name") ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-						}
-					}
+					if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+					if (HasClientType) if (Field == "Contract Name") ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 				}
 				else
 				{
-					if (Args.IsDataType == false)
-					{
-						if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-						if (HasClientType == true) if (Field == "Contract Name") ClientType.Name = Args.RegexSearch.Replace(ClientType.Name, Args.Replace);
-					}
+					if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
+					if (HasClientType) if (Field == "Contract Name") ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace);
 				}
-				IsActive = ia;
 			}
+			else
+			{
+				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
+				if (HasClientType) if (Field == "Contract Name") ClientType.Name = Args.RegexSearch.Replace(ClientType.Name, Args.Replace);
+			}
+			IsActive = ia;
 		}
 	}
 
@@ -288,17 +166,6 @@ namespace WCFArchitect.Projects
 
 		public System.Net.Security.ProtectionLevel ProtectionLevel { get { return (System.Net.Security.ProtectionLevel)GetValue(ProtectionLevelProperty); } set { SetValue(ProtectionLevelProperty, value); } }
 		public static readonly DependencyProperty ProtectionLevelProperty = DependencyProperty.Register("ProtectionLevel", typeof(System.Net.Security.ProtectionLevel), typeof(Operation));
-
-		//Internal Use - Searching / Filtering
-		[IgnoreDataMember()] public bool IsSearching { get { return (bool)GetValue(IsSearchingProperty); } set { SetValue(IsSearchingProperty, value); } }
-		public static readonly DependencyProperty IsSearchingProperty = DependencyProperty.Register("IsSearching", typeof(bool), typeof(Operation));
-
-		[IgnoreDataMember()] public bool IsSearchMatch { get { return (bool)GetValue(IsSearchMatchProperty); } set { SetValue(IsSearchMatchProperty, value); } }
-		public static readonly DependencyProperty IsSearchMatchProperty = DependencyProperty.Register("IsSearchMatch", typeof(bool), typeof(Operation));
-
-		[IgnoreDataMember()] public bool IsFiltering { get { return false; } set { } }
-		[IgnoreDataMember()] public bool IsFilterMatch { get { return false; } set { } }
-		[IgnoreDataMember()] public bool IsTreeExpanded { get { return false; } set { } }
 		
 		[IgnoreDataMember()] public string Declaration { get { return (string)GetValue(DeclarationProperty); } protected set { SetValue(DeclarationPropertyKey, value); } }
 		private static readonly DependencyPropertyKey DeclarationPropertyKey = DependencyProperty.RegisterReadOnly("Declaration", typeof(string), typeof(Operation), new PropertyMetadata(""));
@@ -314,10 +181,10 @@ namespace WCFArchitect.Projects
 
 		public Operation(string Name, Service Owner)
 		{
-			this.ID = Guid.NewGuid();
+			ID = Guid.NewGuid();
 			this.Name = Name;
-			this.ReturnType = new DataType(PrimitiveTypes.Void);
-			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
+			ReturnType = new DataType(PrimitiveTypes.Void);
+			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Owner = Owner;
 		}
 
@@ -326,8 +193,6 @@ namespace WCFArchitect.Projects
 			base.OnPropertyChanged(e);
 	
 			if (e.Property == OpenableDocument.IsDirtyProperty) return;
-			if (e.Property == Operation.IsSearchingProperty) return;
-			if (e.Property == Operation.IsSearchMatchProperty) return;
 			
 			if (Owner != null)
 				Owner.IsDirty = true;
@@ -338,9 +203,9 @@ namespace WCFArchitect.Projects
 			return Name;
 		}
 
-		public virtual List<FindReplaceResult> FindReplace(FindReplaceInfo Args)
+		public virtual IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
 		{
-			List<FindReplaceResult> results = new List<FindReplaceResult>();
+			var results = new List<FindReplaceResult>();
 
 			if (Args.Items == FindItems.Service || Args.Items == FindItems.Any)
 			{
@@ -348,31 +213,22 @@ namespace WCFArchitect.Projects
 				{
 					if (Args.MatchCase == false)
 					{
-						if (Args.IsDataType == false)
-						{
-							if (Name != null && Name != "") if (Name.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
-							if (ClientName != null && ClientName != "") if (ClientName.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Contract Name", ClientName, Owner.Parent.Owner, this)); ;
-						}
+						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
+						if (!string.IsNullOrEmpty(ClientName)) if (ClientName.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Contract Name", ClientName, Owner.Parent.Owner, this)); ;
 					}
 					else
 					{
-						if (Args.IsDataType == false)
-						{
-							if (Name != null && Name != "") if (Name.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
-							if (ClientName != null && ClientName != "") if (ClientName.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Contract Name", ClientName, Owner.Parent.Owner, this));
-						}
+						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
+						if (!string.IsNullOrEmpty(ClientName)) if (ClientName.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Contract Name", ClientName, Owner.Parent.Owner, this));
 					}
 				}
 				else
 				{
-					if (Args.IsDataType == false)
-					{
-						if (Name != null && Name != "") if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
-						if (ClientName != null && ClientName != "") if (Args.RegexSearch.IsMatch(ClientName)) results.Add(new FindReplaceResult("Contract Name", ClientName, Owner.Parent.Owner, this)); ;
-					}
+					if (!string.IsNullOrEmpty(Name)) if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
+					if (!string.IsNullOrEmpty(ClientName)) if (Args.RegexSearch.IsMatch(ClientName)) results.Add(new FindReplaceResult("Contract Name", ClientName, Owner.Parent.Owner, this)); ;
 				}
 
-				if (Args.ReplaceAll == true)
+				if (Args.ReplaceAll)
 				{
 					bool ia = Owner.IsActive;
 					Owner.IsActive = true;
@@ -380,28 +236,19 @@ namespace WCFArchitect.Projects
 					{
 						if (Args.MatchCase == false)
 						{
-							if (Args.IsDataType == false)
-							{
-								if (Name != null && Name != "") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-								if (ClientName != null && ClientName != "") ClientName = Microsoft.VisualBasic.Strings.Replace(ClientName, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-							}
+							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+							if (!string.IsNullOrEmpty(ClientName)) ClientName = Microsoft.VisualBasic.Strings.Replace(ClientName, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 						}
 						else
 						{
-							if (Args.IsDataType == false)
-							{
-								if (Name != null && Name != "") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-								if (ClientName != null && ClientName != "") ClientName = Microsoft.VisualBasic.Strings.Replace(ClientName, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary); ;
-							}
+							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
+							if (!string.IsNullOrEmpty(ClientName)) ClientName = Microsoft.VisualBasic.Strings.Replace(ClientName, Args.Search, Args.Replace);
 						}
 					}
 					else
 					{
-						if (Args.IsDataType == false)
-						{
-							if (Name != null && Name != "") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-							if (ClientName != null && ClientName != "") ClientName = Args.RegexSearch.Replace(ClientName, Args.Replace);
-						}
+						if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
+						if (!string.IsNullOrEmpty(ClientName)) ClientName = Args.RegexSearch.Replace(ClientName, Args.Replace);
 					}
 					Owner.IsActive = ia;
 				}
@@ -412,39 +259,28 @@ namespace WCFArchitect.Projects
 
 		public virtual void Replace(FindReplaceInfo Args, string Field)
 		{
-			if (Args.ReplaceAll == true)
+			if (!Args.ReplaceAll) return;
+			bool ia = Owner.IsActive;
+			Owner.IsActive = true;
+			if (Args.UseRegex == false)
 			{
-				bool ia = Owner.IsActive;
-				Owner.IsActive = true;
-				if (Args.UseRegex == false)
+				if (Args.MatchCase == false)
 				{
-					if (Args.MatchCase == false)
-					{
-						if (Args.IsDataType == false)
-						{
-							if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-							if (Field == "Contract Name") ClientName = Microsoft.VisualBasic.Strings.Replace(ClientName, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-						}
-					}
-					else
-					{
-						if (Args.IsDataType == false)
-						{
-							if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-							if (Field == "Contract Name") ClientName = Microsoft.VisualBasic.Strings.Replace(ClientName, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-						}
-					}
+					if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+					if (Field == "Contract Name") ClientName = Microsoft.VisualBasic.Strings.Replace(ClientName, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 				}
 				else
 				{
-					if (Args.IsDataType == false)
-					{
-						if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-						if (Field == "Contract Name") ClientName = Args.RegexSearch.Replace(ClientName, Args.Replace);
-					}
+					if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
+					if (Field == "Contract Name") ClientName = Microsoft.VisualBasic.Strings.Replace(ClientName, Args.Search, Args.Replace);
 				}
-				Owner.IsActive = ia;
 			}
+			else
+			{
+				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
+				if (Field == "Contract Name") ClientName = Args.RegexSearch.Replace(ClientName, Args.Replace);
+			}
+			Owner.IsActive = ia;
 		}
 	}
 
@@ -457,7 +293,7 @@ namespace WCFArchitect.Projects
 
 		public Property(string Name, Service Owner) : base(Name, Owner)
 		{
-			this.ReturnType = new DataType(PrimitiveTypes.String);
+			ReturnType = new DataType(PrimitiveTypes.String);
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -465,17 +301,13 @@ namespace WCFArchitect.Projects
 			base.OnPropertyChanged(e);
 
 			if (e.Property == OpenableDocument.IsDirtyProperty) return;
-			if (e.Property == Operation.IsSearchingProperty) return;
-			if (e.Property == Operation.IsSearchMatchProperty) return;
 
 			if (Owner != null)
 				Owner.IsDirty = true;
 
-			if (e.Property != Operation.DeclarationProperty && e.Property != Operation.ClientDeclarationProperty)
-			{
-				Declaration = string.Format("{0} {1} {2}{{ get; {3}}}", ReturnType.ToScopeString(), ReturnType.ToString(), Name, IsReadOnly == true ? "set; " : "");
-				ClientDeclaration = string.Format("{0} {1} {2}{{ get; {3}}}", ReturnType.ToScopeString(), ReturnType.ToString(), ClientName, IsReadOnly == true ? "set; " : "");
-			}
+			if (e.Property == DeclarationProperty || e.Property == ClientDeclarationProperty) return;
+			Declaration = string.Format("{0} {1} {2}{{ get; {3}}}", ReturnType.ToScopeString(), ReturnType, Name, IsReadOnly ? "set; " : "");
+			ClientDeclaration = string.Format("{0} {1} {2}{{ get; {3}}}", ReturnType.ToScopeString(), ReturnType, ClientName, IsReadOnly ? "set; " : "");
 		}
 	}
 
@@ -509,26 +341,22 @@ namespace WCFArchitect.Projects
 			base.OnPropertyChanged(e);
 
 			if (e.Property == OpenableDocument.IsDirtyProperty) return;
-			if (e.Property == Operation.IsSearchingProperty) return;
-			if (e.Property == Operation.IsSearchMatchProperty) return;
 
 			if (Owner != null)
 				Owner.IsDirty = true;
 
-			if (e.Property != Operation.DeclarationProperty && e.Property != Operation.ClientDeclarationProperty)
-			{
-				StringBuilder sb = new StringBuilder();
-				foreach(MethodParameter p in Parameters)
-					sb.AppendFormat("{0}, ", p.ToString());
-				sb.Remove(sb.Length - 2, 2);
-				Declaration = string.Format("{0} {1} {2}({3});", ReturnType.ToScopeString(), ReturnType.ToString(), Name, sb.ToString());
-				ClientDeclaration = string.Format("{0} {1} {2}({3});", ReturnType.ToScopeString(), ReturnType.ToString(), ClientName, sb.ToString());
-			}
+			if (e.Property == DeclarationProperty || e.Property == ClientDeclarationProperty) return;
+			var sb = new StringBuilder();
+			foreach(MethodParameter p in Parameters)
+				sb.AppendFormat("{0}, ", p);
+			sb.Remove(sb.Length - 2, 2);
+			Declaration = string.Format("{0} {1} {2}({3});", ReturnType.ToScopeString(), ReturnType, Name, sb);
+			ClientDeclaration = string.Format("{0} {1} {2}({3});", ReturnType.ToScopeString(), ReturnType, ClientName, sb);
 		}
 
-		public override List<FindReplaceResult> FindReplace(FindReplaceInfo Args)
+		public override IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
 		{
-			List<FindReplaceResult> results = new List<FindReplaceResult>();
+			var results = new List<FindReplaceResult>();
 			results.AddRange(base.FindReplace(Args));
 			foreach (MethodParameter mp in Parameters)
 				results.AddRange(mp.FindReplace(Args));
@@ -567,7 +395,7 @@ namespace WCFArchitect.Projects
 
 		public MethodParameter(DataType Type, string Name, Service Owner)
 		{
-			this.ID = Guid.NewGuid();
+			ID = Guid.NewGuid();
 			this.Type = Type;
 			this.Name = Name;
 			IsHidden = false;
@@ -584,68 +412,39 @@ namespace WCFArchitect.Projects
 
 		public override string ToString()
 		{
-			return string.Format("{0} {1}", Type.ToString(), Name);
+			return string.Format("{0} {1}", Type, Name);
 		}
 
-		public List<FindReplaceResult> FindReplace(FindReplaceInfo Args)
+		public IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
 		{
-			List<FindReplaceResult> results = new List<FindReplaceResult>();
+			var results = new List<FindReplaceResult>();
 
 			if (Args.Items == FindItems.Service || Args.Items == FindItems.Any)
 			{
 				if (Args.UseRegex == false)
 				{
 					if (Args.MatchCase == false)
-					{
-						if (Args.IsDataType == false)
-						{
-							if (Name != null && Name != "") if (Name.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
-						}
-					}
+						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
 					else
-					{
-						if (Args.IsDataType == false)
-						{
-							if (Name != null && Name != "") if (Name.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
-						}
-					}
+						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
 				}
 				else
-				{
-					if (Args.IsDataType == false)
-					{
-						if (Name != null && Name != "") if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
-					}
-				}
+					if (!string.IsNullOrEmpty(Name)) if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
 
-				if (Args.ReplaceAll == true)
+				if (Args.ReplaceAll)
 				{
 					bool ia = Owner.IsActive;
 					Owner.IsActive = true;
 					if (Args.UseRegex == false)
 					{
 						if (Args.MatchCase == false)
-						{
-							if (Args.IsDataType == false)
-							{
-								if (Name != null && Name != "") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-							}
-						}
+							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 						else
-						{
-							if (Args.IsDataType == false)
-							{
-								if (Name != null && Name != "") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-							}
-						}
+							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
 					}
 					else
-					{
-						if (Args.IsDataType == false)
-						{
-							if (Name != null && Name != "") Name = Args.RegexSearch.Replace(Name, Args.Replace); 
-						}
-					}
+						if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace); 
+
 					Owner.IsActive = ia;
 				}
 			}
@@ -655,36 +454,20 @@ namespace WCFArchitect.Projects
 
 		public void Replace(FindReplaceInfo Args, string Field)
 		{
-			if (Args.ReplaceAll == true)
+			if (!Args.ReplaceAll) return;
+			bool ia = Owner.IsActive;
+			Owner.IsActive = true;
+			if (Args.UseRegex == false)
 			{
-				bool ia = Owner.IsActive;
-				Owner.IsActive = true;
-				if (Args.UseRegex == false)
-				{
-					if (Args.MatchCase == false)
-					{
-						if (Args.IsDataType == false)
-						{
-							if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-						}
-					}
-					else
-					{
-						if (Args.IsDataType == false)
-						{
-							if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Binary);
-						}
-					}
-				}
+				if (Args.MatchCase == false)
+					if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 				else
-				{
-					if (Args.IsDataType == false)
-					{
-						if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-					}
-				}
-				Owner.IsActive = ia;
+					if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
 			}
+			else
+				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
+
+			Owner.IsActive = ia;
 		}
 	}
 }
