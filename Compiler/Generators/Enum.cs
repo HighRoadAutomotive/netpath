@@ -91,24 +91,20 @@ namespace WCFArchitect.Compiler.Generators
 
 		public static string GenerateServerCode30(Projects.Enum o)
 		{
-			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.Append("\t[DataContract(");
-			if (o.HasClientType == true) Code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
-			Code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
-			Code.AppendLine(")]");
-			if (o.IsFlags == true) Code.AppendLine("[Flags]");
-			Code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o.Scope), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
-			Code.AppendLine("\t{");
-			int FV = 0;
-			foreach (EnumElement EE in o.Elements)
-			{
-				if (EE.IsHidden == true) continue;
-				if (o.IsFlags == false) Code.Append(GenerateElementServerCode(EE));
-				else Code.Append(GenerateElementServerCode(EE, FV++));
-			}
-			Code.AppendLine("\t}");
-			return Code.ToString();
+			var code = new StringBuilder();
+			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+			code.Append("\t[DataContract(");
+			if (o.HasClientType) code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
+			code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
+			code.AppendLine(")]");
+			if (o.IsFlags) code.AppendLine("[Flags]");
+			code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o.Scope), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
+			code.AppendLine("\t{");
+			int fv = 0;
+			foreach (EnumElement ee in o.Elements.Where(ee => !ee.IsHidden))
+				code.Append(o.IsFlags == false ? GenerateElementServerCode(ee) : GenerateElementServerCode(ee, fv++));
+			code.AppendLine("\t}");
+			return code.ToString();
 		}
 
 		public static string GenerateServerCode35(Projects.Enum o)
@@ -123,39 +119,34 @@ namespace WCFArchitect.Compiler.Generators
 
 		public static string GenerateServerCode45(Projects.Enum o)
 		{
-			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.Append("\t[DataContract(");
-			if (o.IsReference == true) Code.AppendFormat("IsReference = true ");
-			if (o.HasClientType == true) Code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
-			Code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
-			Code.AppendLine(")]");
-			if (o.IsFlags == true) Code.AppendLine("\t[Flags]");
-			Code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o.Scope), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
-			Code.AppendLine("\t{");
-			int FV = 0;
-			foreach (EnumElement EE in o.Elements)
-			{
-				if (EE.IsHidden == true) continue;
-				if (o.IsFlags == false) Code.Append(GenerateElementServerCode(EE));
-				else Code.Append(GenerateElementServerCode(EE, FV++));
-			}
-			Code.AppendLine("\t}");
-			return Code.ToString();
+			var code = new StringBuilder();
+			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+			code.Append("\t[DataContract(");
+			if (o.IsReference) code.AppendFormat("IsReference = true ");
+			if (o.HasClientType) code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
+			code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
+			code.AppendLine(")]");
+			if (o.IsFlags) code.AppendLine("\t[Flags]");
+			code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o.Scope), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
+			code.AppendLine("\t{");
+			int fv = 0;
+			foreach (EnumElement ee in o.Elements.Where(ee => !ee.IsHidden))
+				code.Append(o.IsFlags == false ? GenerateElementServerCode(ee) : GenerateElementServerCode(ee, fv++));
+			code.AppendLine("\t}");
+			return code.ToString();
 		}
 
 		private static string GenerateElementServerCode(EnumElement o)
 		{
-			StringBuilder Code = new StringBuilder();
-			Code.Append("\t\t[EnumMember(");
-			if (o.ContractValue == "" || o.ContractValue == null) { }
-			else
-				Code.AppendFormat("Value = \"{0}\"", o.ContractValue);
-			Code.AppendFormat(")] {0}", o.Name);
-			if (o.Value == "" || o.Value == null) { }
-			else Code.AppendFormat(" = {0}", o.Value);
-			Code.AppendLine(",");
-			return Code.ToString();
+			var code = new StringBuilder();
+			code.Append("\t\t[EnumMember(");
+			if (!string.IsNullOrEmpty(o.ContractValue))
+				code.AppendFormat("Value = \"{0}\"", o.ContractValue);
+			code.AppendFormat(")] {0}", o.Name);
+			if (!string.IsNullOrEmpty(o.Value))
+				code.AppendFormat(" = {0}", o.Value);
+			code.AppendLine(",");
+			return code.ToString();
 		}
 
 		private static string GenerateElementServerCode(EnumElement o, int ElementIndex)
@@ -167,37 +158,33 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.Owner.Primitive == PrimitiveTypes.Long && ElementIndex > 62) return "";
 			if (o.Owner.Primitive == PrimitiveTypes.ULong && ElementIndex > 63) return "";
 
-			StringBuilder Code = new StringBuilder();
-			Code.Append("\t\t");
-			if (o.IsExcluded == false) Code.Append("[EnumMember()] ");
-			Code.Append(o.Name);
-			if (ElementIndex == 0) Code.Append(" = 0");
-			if (ElementIndex == 1) Code.Append(" = 1");
-			if (ElementIndex > 1) Code.AppendFormat(" = {0}", Convert.ToInt32(Decimal.Round((decimal)Math.Pow(2, ElementIndex - 1))));
-			Code.AppendLine(",");
-			return Code.ToString();
+			var code = new StringBuilder();
+			code.Append("\t\t");
+			if (o.IsExcluded == false) code.Append("[EnumMember()] ");
+			code.Append(o.Name);
+			if (ElementIndex == 0) code.Append(" = 0");
+			if (ElementIndex == 1) code.Append(" = 1");
+			if (ElementIndex > 1) code.AppendFormat(" = {0}", Convert.ToInt32(Decimal.Round((decimal)Math.Pow(2, ElementIndex - 1))));
+			code.AppendLine(",");
+			return code.ToString();
 		}
 
 		public static string GenerateProxyCode30(Projects.Enum o)
 		{
-			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.Append("\t[DataContract(");
-			if (o.HasClientType == true) Code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
-			Code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
-			Code.AppendLine(")]");
-			if (o.IsFlags == true) Code.AppendLine("[Flags]");
-			Code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o.Scope), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
-			Code.AppendLine("\t{");
-			int FV = 0;
-			foreach (EnumElement EE in o.Elements)
-			{
-				if (EE.IsHidden == true) continue;
-				if (o.IsFlags == false) Code.Append(GenerateElementProxyCode(EE));
-				else Code.Append(GenerateElementProxyCode(EE, FV++));
-			}
-			Code.AppendLine("\t}");
-			return Code.ToString();
+			var code = new StringBuilder();
+			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+			code.Append("\t[DataContract(");
+			if (o.HasClientType) code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
+			code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
+			code.AppendLine(")]");
+			if (o.IsFlags) code.AppendLine("[Flags]");
+			code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o.Scope), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
+			code.AppendLine("\t{");
+			int fv = 0;
+			foreach (EnumElement ee in o.Elements.Where(ee => !ee.IsHidden))
+				code.Append(o.IsFlags == false ? GenerateElementProxyCode(ee) : GenerateElementProxyCode(ee, fv++));
+			code.AppendLine("\t}");
+			return code.ToString();
 		}
 
 		public static string GenerateProxyCode35(Projects.Enum o)
@@ -212,43 +199,36 @@ namespace WCFArchitect.Compiler.Generators
 
 		public static string GenerateProxyCode45(Projects.Enum o)
 		{
-			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.Append("\t[DataContract(");
-			if (o.IsReference == true) Code.AppendFormat("IsReference = true ");
-			if (o.HasClientType == true) Code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
-			Code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
-			Code.AppendLine(")]");
-			if (o.IsFlags == true) Code.AppendLine("\t[Flags]");
-			Code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o.Scope), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
-			Code.AppendLine("\t{");
-			int FV = 0;
-			foreach (EnumElement EE in o.Elements)
-			{
-				if (EE.IsHidden == true) continue;
-				if (o.IsFlags == false) Code.Append(GenerateElementProxyCode(EE));
-				else Code.Append(GenerateElementProxyCode(EE, FV++));
-			}
-			Code.AppendLine("\t}");
-			return Code.ToString();
+			var code = new StringBuilder();
+			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+			code.Append("\t[DataContract(");
+			if (o.IsReference) code.AppendFormat("IsReference = true ");
+			if (o.HasClientType) code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
+			code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
+			code.AppendLine(")]");
+			if (o.IsFlags) code.AppendLine("\t[Flags]");
+			code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o.Scope), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
+			code.AppendLine("\t{");
+			int fv = 0;
+			foreach (EnumElement ee in o.Elements.Where(ee => !ee.IsHidden))
+				code.Append(o.IsFlags == false ? GenerateElementProxyCode(ee) : GenerateElementProxyCode(ee, fv++));
+			code.AppendLine("\t}");
+			return code.ToString();
 		}
 
 		private static string GenerateElementProxyCode(EnumElement o)
 		{
-			if (o.IsExcluded == true) return "";
-			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t\t[EnumMember()] {0}", o.Name);
-			if (o.ContractValue == "" || o.ContractValue == null) 
-				Code.AppendFormat(" = {0}", o.Value);
-			else
-				Code.AppendFormat(" = {0}", o.ContractValue);
-			Code.AppendLine(",");
-			return Code.ToString();
+			if (o.IsExcluded) return "";
+			var code = new StringBuilder();
+			code.AppendFormat("\t\t[EnumMember()] {0}", o.Name);
+			code.AppendFormat(" = {0}", string.IsNullOrEmpty(o.ContractValue) ? o.Value : o.ContractValue);
+			code.AppendLine(",");
+			return code.ToString();
 		}
 
 		private static string GenerateElementProxyCode(EnumElement o, int ElementIndex)
 		{
-			if (o.IsExcluded == true) return "";
+			if (o.IsExcluded) return "";
 			if (o.Owner.Primitive == PrimitiveTypes.Short && ElementIndex > 14) return "";
 			if (o.Owner.Primitive == PrimitiveTypes.UShort && ElementIndex > 15) return "";
 			if (o.Owner.Primitive == PrimitiveTypes.Int && ElementIndex > 30) return "";
@@ -256,14 +236,14 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.Owner.Primitive == PrimitiveTypes.Long && ElementIndex > 62) return "";
 			if (o.Owner.Primitive == PrimitiveTypes.ULong && ElementIndex > 63) return "";
 
-			StringBuilder Code = new StringBuilder();
-			Code.Append("\t\t");
-			Code.AppendFormat("[EnumMember()] {0}", o.Name);
-			if (ElementIndex == 0) Code.Append(" = 0");
-			if (ElementIndex == 1) Code.Append(" = 1");
-			if (ElementIndex > 1) Code.AppendFormat(" = {0}", Convert.ToInt32(Decimal.Round((decimal)Math.Pow(2, ElementIndex - 1))));
-			Code.AppendLine(",");
-			return Code.ToString();
+			var code = new StringBuilder();
+			code.Append("\t\t");
+			code.AppendFormat("[EnumMember()] {0}", o.Name);
+			if (ElementIndex == 0) code.Append(" = 0");
+			if (ElementIndex == 1) code.Append(" = 1");
+			if (ElementIndex > 1) code.AppendFormat(" = {0}", Convert.ToInt32(Decimal.Round((decimal)Math.Pow(2, ElementIndex - 1))));
+			code.AppendLine(",");
+			return code.ToString();
 		}
 	}
 }

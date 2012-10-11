@@ -9,7 +9,7 @@ namespace WCFArchitect.Compiler.Generators
 {
 	internal static class BindingsCSGenerator
 	{
-		public static void VerifyCode(Projects.ServiceBinding o)
+		public static void VerifyCode(ServiceBinding o)
 		{
 			if (string.IsNullOrEmpty(o.Name))
 				Program.AddMessage(new CompileMessage("GS6000", "A binding in the '" + o.Parent.Name + "' project has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
@@ -22,19 +22,19 @@ namespace WCFArchitect.Compiler.Generators
 					Program.AddMessage(new CompileMessage("GS6002", "The Namespace '" + o.Namespace + "' for the '" + o.Name + "' binding in the '" + o.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 
 			Type t = o.GetType();
-			if (t == typeof(Projects.ServiceBindingBasicHTTP))
+			if (t == typeof(ServiceBindingBasicHTTP))
 			{
-				var b = o as Projects.ServiceBindingBasicHTTP;
+				var b = o as ServiceBindingBasicHTTP;
 				if (b != null && b.Security == null)
 					Program.AddMessage(new CompileMessage("GS6003", "The Security for the '" + b.Name + "' Basic HTTP Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				if (b != null && !string.IsNullOrEmpty(b.ProxyAddress))
 					if (Helpers.RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
 						Program.AddMessage(new CompileMessage("GS6004", "The Proxy Address '" + b.ProxyAddress + "' for the '" + b.Name + "' Basic HTTP Binding in the '" + b.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 			}
-			else if (t == typeof(Projects.ServiceBindingBasicHTTPS) || t == typeof(Projects.ServiceBindingNetHTTP) || t == typeof(Projects.ServiceBindingNetHTTPS))
+			else if (t == typeof(ServiceBindingBasicHTTPS) || t == typeof(ServiceBindingNetHTTP) || t == typeof(ServiceBindingNetHTTPS))
 			{
-				var b = o as Projects.ServiceBindingNetHTTP;
-				if (b != null && ((Globals.CurrentGenerationTarget == Projects.ProjectGenerationFramework.NET45 || Globals.CurrentGenerationTarget == Projects.ProjectGenerationFramework.WIN8) && b.Parent.Owner != null))
+				var b = o as ServiceBindingNetHTTP;
+				if (b != null && ((Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) && b.Parent.Owner != null))
 					Program.AddMessage(new CompileMessage("GS6001", "The binding '" + o.Name + "' in the '" + o.Parent.Name + "' project cannot be used with any other target framework level than 4.5. Please select .NET Framework 4.5 or Windows Runtime as your Target Framework in the Project page or remove this binding.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 				if (b != null && b.Security == null)
 					Program.AddMessage(new CompileMessage("GS6003", "The Security for the '" + b.Name + "' Net HTTP Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
@@ -42,684 +42,706 @@ namespace WCFArchitect.Compiler.Generators
 					if (Helpers.RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
 						Program.AddMessage(new CompileMessage("GS6004", "The Proxy Address '" + b.ProxyAddress + "' for the '" + b.Name + "' Net HTTP Binding in the '" + b.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 			}
-			else if (t == typeof(Projects.ServiceBindingWSHTTP))
+			else if (t == typeof(ServiceBindingWSHTTP))
 			{
-				var b = o as Projects.ServiceBindingWSHTTP;
+				var b = o as ServiceBindingWSHTTP;
 				if (b != null && b.Security == null)
 					Program.AddMessage(new CompileMessage("GS6005", "The Security for the '" + b.Name + "' WS HTTP Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				if (b != null && !string.IsNullOrEmpty(b.ProxyAddress))
 					if (Helpers.RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
 						Program.AddMessage(new CompileMessage("GS6006", "The Proxy Address '" + b.ProxyAddress + "' for the '" + b.Name + "' WS HTTP Binding in the '" + b.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 			}
-			else if (t == typeof(Projects.ServiceBindingWS2007HTTP))
+			else if (t == typeof(ServiceBindingWS2007HTTP))
 			{
-				var b = o as Projects.ServiceBindingWS2007HTTP;
+				var b = o as ServiceBindingWS2007HTTP;
 				if (b != null && b.Security == null)
 					Program.AddMessage(new CompileMessage("GS6007", "The Security for the '" + b.Name + "' WS 2007 HTTP Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				if (b != null && !string.IsNullOrEmpty(b.ProxyAddress))
 					if (Helpers.RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
 						Program.AddMessage(new CompileMessage("GS6008", "The Proxy Address '" + b.ProxyAddress + "' for the '" + b.Name + "' WS 2007 HTTP Binding in the '" + b.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 			}
-			else if (t == typeof(Projects.ServiceBindingWSDualHTTP))
+			else if (t == typeof(ServiceBindingWSDualHTTP))
 			{
-				var b = o as Projects.ServiceBindingWSDualHTTP;
+				var b = o as ServiceBindingWSDualHTTP;
 				if (b != null && b.Security == null)
 					Program.AddMessage(new CompileMessage("GS6009", "The Security for the '" + b.Name + "' WS Dual Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				if (b != null && !string.IsNullOrEmpty(b.ProxyAddress))
 					if (Helpers.RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
 						Program.AddMessage(new CompileMessage("GS6010", "The Proxy Address '" + b.ProxyAddress + "' for the '" + b.Name + "' WS Dual HTTP Binding in the '" + b.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 			}
-			else if (t == typeof(Projects.ServiceBindingWSFederationHTTP))
+			else if (t == typeof(ServiceBindingWSFederationHTTP))
 			{
-				var b = o as Projects.ServiceBindingWSFederationHTTP;
+				var b = o as ServiceBindingWSFederationHTTP;
 				if (b != null && b.Security == null)
 					Program.AddMessage(new CompileMessage("GS6011", "The Security for the '" + b.Name + "' WS Federation HTTP Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				if (b != null && !string.IsNullOrEmpty(b.ProxyAddress))
 					if (Helpers.RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
 						Program.AddMessage(new CompileMessage("GS6012", "The Proxy Address '" + b.ProxyAddress + "' for the '" + b.Name + "' WS Federation HTTP Binding in the '" + b.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 			}
-			else if (t == typeof(Projects.ServiceBindingWS2007FederationHTTP))
+			else if (t == typeof(ServiceBindingWS2007FederationHTTP))
 			{
-				var b = o as Projects.ServiceBindingWS2007FederationHTTP;
+				var b = o as ServiceBindingWS2007FederationHTTP;
 				if (b != null && b.Security == null)
 					Program.AddMessage(new CompileMessage("GS6013", "The Security for the '" + b.Name + "' WS 2007 Federation HTTP Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				if (b != null && !string.IsNullOrEmpty(b.ProxyAddress))
 					if (Helpers.RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
 						Program.AddMessage(new CompileMessage("GS6014", "The Proxy Address '" + b.ProxyAddress + "' for the '" + b.Name + "' WS 2007 Federation HTTP Binding in the '" + b.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 			}
-			else if (t == typeof(Projects.ServiceBindingTCP))
+			else if (t == typeof(ServiceBindingTCP))
 			{
-				var b = o as Projects.ServiceBindingTCP;
+				var b = o as ServiceBindingTCP;
 				if (b != null && b.Security == null)
 					Program.AddMessage(new CompileMessage("GS6015", "The Security for the '" + b.Name + "' TCP Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 			}
-			else if (t == typeof(Projects.ServiceBindingNamedPipe))
+			else if (t == typeof(ServiceBindingNamedPipe))
 			{
-				var b = o as Projects.ServiceBindingNamedPipe;
+				var b = o as ServiceBindingNamedPipe;
 				if (b != null && b.Security == null)
 					Program.AddMessage(new CompileMessage("GS6016", "The Security for the '" + b.Name + "' Named Pipe Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 			}
-			else if (t == typeof(Projects.ServiceBindingMSMQ))
+			else if (t == typeof(ServiceBindingMSMQ))
 			{
-				var b = o as Projects.ServiceBindingMSMQ;
+				var b = o as ServiceBindingMSMQ;
 				if (b != null && b.Security == null)
 					Program.AddMessage(new CompileMessage("GS6017", "The Security for the '" + b.Name + "' MSMQ Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 			}
-			else if (t == typeof(Projects.ServiceBindingPeerTCP))
+			else if (t == typeof(ServiceBindingPeerTCP))
 			{
-				var b = o as Projects.ServiceBindingPeerTCP;
+				var b = o as ServiceBindingPeerTCP;
 				if (b != null && b.Security == null)
 					Program.AddMessage(new CompileMessage("GS6018", "The Security for the '" + b.Name + "' Peer TCP Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				if (b != null && !string.IsNullOrEmpty(b.ListenIPAddress))
 					if (Helpers.RegExs.MatchIPv4.IsMatch(b.ListenIPAddress) == false && Helpers.RegExs.MatchIPv6.IsMatch(b.ListenIPAddress) == false)
 						Program.AddMessage(new CompileMessage("GS6019", "The Listen IP Address for the '" + b.Name + "' Peer TCP Binding in the '" + b.Parent.Name + "' project is not valid.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 			}
-			else if (t == typeof(Projects.ServiceBindingWebHTTP))
+			else if (t == typeof(ServiceBindingWebHTTP))
 			{
-				var b = o as Projects.ServiceBindingWebHTTP;
+				var b = o as ServiceBindingWebHTTP;
 				if (b != null && b.Security == null)
 					Program.AddMessage(new CompileMessage("GS6020", "The Security for the '" + b.Name + "' MSMQ Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				if (b != null && !string.IsNullOrEmpty(b.ProxyAddress))
 					if (Helpers.RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
 						Program.AddMessage(new CompileMessage("GS6021", "The Proxy Address '" + b.ProxyAddress + "' for the '" + b.Name + "' Basic HTTP Binding in the '" + b.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 			}
-			else if (t == typeof(Projects.ServiceBindingMSMQIntegration))
+			else if (t == typeof(ServiceBindingMSMQIntegration))
 			{
-				var b = o as Projects.ServiceBindingMSMQIntegration;
+				var b = o as ServiceBindingMSMQIntegration;
 				if (b != null && b.Security == null)
 					Program.AddMessage(new CompileMessage("GS6021", "The Security for the '" + b.Name + "' MSMQ Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 			}
 		}
 
-		public static string GenerateCode30(Projects.ServiceBinding o)
+		public static string GenerateCode30(ServiceBinding o)
 		{
 			Type t = o.GetType();
-			if (t == typeof(Projects.ServiceBindingWebHTTP)) return "";
-
-			return GenerateCode35(o);
+			return t == typeof(ServiceBindingWebHTTP) ? "" : GenerateCode35(o);
 		}
-		public static string GenerateCode35(Projects.ServiceBinding o)
+		public static string GenerateCode35(ServiceBinding o)
 		{
 			Type t = o.GetType();
-			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
-			Code.AppendLine("\t{");
-			Code.AppendFormat("\t\tpublic {0}(){1}", o.Name, Environment.NewLine);
-			Code.AppendLine("\t\t{");
-			Code.AppendLine("\t\t\tSetDefaults();");
-			Code.AppendLine("\t\t}");
-			Code.AppendFormat("\t\tpublic {0}({1} CustomSecurity){2}", o.Name, GenerateBindingBaseType(o), Environment.NewLine);
-			Code.AppendLine("\t\t{");
-			Code.AppendLine("\t\t\tSetDefaults();");
-			Code.AppendLine("\t\t\tBasicHttpSecurity sec = this.Security;");
-			Code.AppendLine("\t\t\tsec = CustomSecurity;");
-			Code.AppendLine("\t\t}");
-			Code.AppendFormat("\t\tpublic {0}(System.Xml.XmlDictionaryReaderQuotas ReaderQuotas){1}", o.Name, Environment.NewLine);
-			Code.AppendLine("\t\t{");
-			Code.AppendLine("\t\t\tSetDefaults();");
-			Code.AppendLine("\t\t\tthis.ReaderQuotas = ReaderQuotas;");
-			Code.AppendLine("\t\t}");
-			Code.AppendFormat("\t\tpublic {0}({1} CustomSecurity, System.Xml.XmlDictionaryReaderQuotas ReaderQuotas){2}", o.Name, GenerateBindingBaseType(o), Environment.NewLine);
-			Code.AppendLine("\t\t{");
-			Code.AppendLine("\t\t\tSetDefaults();");
-			Code.AppendLine("\t\t\tBasicHttpSecurity sec = this.Security;");
-			Code.AppendLine("\t\t\tsec = CustomSecurity;");
-			Code.AppendLine("\t\t\tthis.ReaderQuotas = ReaderQuotas;");
-			Code.AppendLine("\t\t}");
-			Code.AppendLine("\t\tprivate void SetDefaults()");
-			Code.AppendLine("\t\t{");
+			var code = new StringBuilder();
+			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
+			code.AppendLine("\t{");
+			code.AppendFormat("\t\tpublic {0}(){1}", o.Name, Environment.NewLine);
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tSetDefaults();");
+			code.AppendLine("\t\t}");
+			code.AppendFormat("\t\tpublic {0}({1} CustomSecurity){2}", o.Name, GenerateBindingBaseType(o), Environment.NewLine);
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tSetDefaults();");
+			code.AppendLine("\t\t\tBasicHttpSecurity sec = this.Security;");
+			code.AppendLine("\t\t\tsec = CustomSecurity;");
+			code.AppendLine("\t\t}");
+			code.AppendFormat("\t\tpublic {0}(System.Xml.XmlDictionaryReaderQuotas ReaderQuotas){1}", o.Name, Environment.NewLine);
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tSetDefaults();");
+			code.AppendLine("\t\t\tthis.ReaderQuotas = ReaderQuotas;");
+			code.AppendLine("\t\t}");
+			code.AppendFormat("\t\tpublic {0}({1} CustomSecurity, System.Xml.XmlDictionaryReaderQuotas ReaderQuotas){2}", o.Name, GenerateBindingBaseType(o), Environment.NewLine);
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tSetDefaults();");
+			code.AppendLine("\t\t\tBasicHttpSecurity sec = this.Security;");
+			code.AppendLine("\t\t\tsec = CustomSecurity;");
+			code.AppendLine("\t\t\tthis.ReaderQuotas = ReaderQuotas;");
+			code.AppendLine("\t\t}");
+			code.AppendLine("\t\tprivate void SetDefaults()");
+			code.AppendLine("\t\t{");
 			// Generic Binding code.
-			Code.AppendFormat("\t\t\tthis.CloseTimeout = new TimeSpan({0});{1}", o.CloseTimeout.Ticks, Environment.NewLine);
-			Code.AppendFormat("\t\t\tthis.Name = \"{0}\";{1}", o.Name, Environment.NewLine);
-			Code.AppendFormat("\t\t\tthis.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
-			Code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
-			Code.AppendFormat("\t\t\tthis.ReceiveTimeout = new TimeSpan({0});{1}", o.ReceiveTimeout.Ticks, Environment.NewLine);
-			Code.AppendFormat("\t\t\tthis.SendTimeout = new TimeSpan({0});{1}", o.SendTimeout.Ticks, Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.CloseTimeout = new TimeSpan({0});{1}", o.CloseTimeout.Ticks, Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Name = \"{0}\";{1}", o.Name, Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.ReceiveTimeout = new TimeSpan({0});{1}", o.ReceiveTimeout.Ticks, Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.SendTimeout = new TimeSpan({0});{1}", o.SendTimeout.Ticks, Environment.NewLine);
 			// Binding Specific code.
-			if (t == typeof(Projects.ServiceBindingBasicHTTP))
+			if (t == typeof(ServiceBindingBasicHTTP))
 			{
-				Projects.ServiceBindingBasicHTTP b = o as Projects.ServiceBindingBasicHTTP;
-				Code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MessageEncoding = WSMessageEncoding.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.WSMessageEncoding), b.MessageEncoding), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(Projects.ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingBasicHTTP;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MessageEncoding = WSMessageEncoding.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.WSMessageEncoding), b.MessageEncoding), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingWSHTTP))
+			else if (t == typeof(ServiceBindingWSHTTP))
 			{
-				Projects.ServiceBindingWSHTTP b = o as Projects.ServiceBindingWSHTTP;
-				Code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(Projects.ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingWSHTTP;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingWS2007HTTP))
+			else if (t == typeof(ServiceBindingWS2007HTTP))
 			{
-				Projects.ServiceBindingWS2007HTTP b = o as Projects.ServiceBindingWS2007HTTP;
-				Code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(Projects.ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingWS2007HTTP;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingWSDualHTTP))
+			else if (t == typeof(ServiceBindingWSDualHTTP))
 			{
-				Projects.ServiceBindingWSDualHTTP b = o as Projects.ServiceBindingWSDualHTTP;
-				Code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				if (b.ClientBaseAddress != "") Code.AppendFormat("\t\t\tthis.ClientBaseAddress = new Uri(\"{0}\");{1}", b.ClientBaseAddress, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(Projects.ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingWSDualHTTP;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				if (b.ClientBaseAddress != "") code.AppendFormat("\t\t\tthis.ClientBaseAddress = new Uri(\"{0}\");{1}", b.ClientBaseAddress, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingWSFederationHTTP))
+			else if (t == typeof(ServiceBindingWSFederationHTTP))
 			{
-				Projects.ServiceBindingWSFederationHTTP b = o as Projects.ServiceBindingWSFederationHTTP;
-				Code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				var b = o as ServiceBindingWSFederationHTTP;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
 				if (b.PrivacyNoticeAt != "")
 				{
-					Code.AppendFormat("\t\t\tthis.PrivacyNoticeAt = new Uri(\"{0}\");{1}", b.PrivacyNoticeAt, Environment.NewLine);
-					Code.AppendFormat("\t\t\tthis.PrivacyNoticeVersion = {0};{1}", b.PrivacyNoticeVersion, Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.PrivacyNoticeAt = new Uri(\"{0}\");{1}", b.PrivacyNoticeAt, Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.PrivacyNoticeVersion = {0};{1}", b.PrivacyNoticeVersion, Environment.NewLine);
 				}
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(Projects.ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingWS2007FederationHTTP))
+			else if (t == typeof(ServiceBindingWS2007FederationHTTP))
 			{
-				Projects.ServiceBindingWS2007FederationHTTP b = o as Projects.ServiceBindingWS2007FederationHTTP;
-				Code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				var b = o as ServiceBindingWS2007FederationHTTP;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
 				if (b.PrivacyNoticeAt != "")
 				{
-					Code.AppendFormat("\t\t\tthis.PrivacyNoticeAt = new Uri(\"{0}\");{1}", b.PrivacyNoticeAt, Environment.NewLine);
-					Code.AppendFormat("\t\t\tthis.PrivacyNoticeVersion = {0};{1}", b.PrivacyNoticeVersion, Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.PrivacyNoticeAt = new Uri(\"{0}\");{1}", b.PrivacyNoticeAt, Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.PrivacyNoticeVersion = {0};{1}", b.PrivacyNoticeVersion, Environment.NewLine);
 				}
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(Projects.ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingTCP))
+			else if (t == typeof(ServiceBindingTCP))
 			{
-				Projects.ServiceBindingTCP b = o as Projects.ServiceBindingTCP;
-				Code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ListenBacklog = {0};{1}", b.ListenBacklog, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxConnections = {0};{1}", b.MaxConnections, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.PortSharingEnabled = {0};{1}", b.PortSharingEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};{1}", System.Enum.GetName(typeof(Projects.ServiceBindingTransactionProtocol), b.TransactionProtocol), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingTCP;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ListenBacklog = {0};{1}", b.ListenBacklog, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxConnections = {0};{1}", b.MaxConnections, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.PortSharingEnabled = {0};{1}", b.PortSharingEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTransactionProtocol), b.TransactionProtocol), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingNamedPipe))
+			else if (t == typeof(ServiceBindingNamedPipe))
 			{
-				Projects.ServiceBindingNamedPipe b = o as Projects.ServiceBindingNamedPipe;
-				Code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxConnections = {0};{1}", b.MaxConnections, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};{1}", System.Enum.GetName(typeof(Projects.ServiceBindingTransactionProtocol), b.TransactionProtocol), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingNamedPipe;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxConnections = {0};{1}", b.MaxConnections, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTransactionProtocol), b.TransactionProtocol), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingMSMQ))
+			else if (t == typeof(ServiceBindingMSMQ))
 			{
-				Projects.ServiceBindingMSMQ b = o as Projects.ServiceBindingMSMQ;
-				Code.AppendFormat("\t\t\tthis.CustomerDeadLetterQueue = new Uri(\"{0}\");{1}", b.CustomDeadLetterQueue, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.DeadLetterQueue = DeadLetterQueue.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.DeadLetterQueue), b.DeadLetterQueue), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.Durable = {0};{1}", b.Durable == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ExactlyOnce = {0};{1}", b.ExactlyOnce == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxRetryCycles = {0};{1}", b.MaxRetryCycles, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.QueueTransferProtocol = QueueTransferProtocol.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.QueueTransferProtocol), b.QueueTransferProtocol), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReceiveContextEnabled = {0};{1}", b.ReceiveContextEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReceiveErrorHandling = ReceiveErrorHandling.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.ReceiveErrorHandling), b.ReceiveErrorHandling), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReceiveRetryCount = {0};{1}", b.ReceiveRetryCount, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.RetryCycleDelay = new TimeSpan({0});{1}", b.RetryCycleDelay.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TimeToLive = new TimeSpan({0});{1}", b.TimeToLive.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.UseActiveDirectory = {0};{1}", b.UseActiveDirectory == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.UseMSMQTracing = {0};{1}", b.UseMSMQTracing == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.UseSourceJournal = {0};{1}", b.UseSourceJournal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				if (b.ValidityDuration != TimeSpan.Zero) Code.AppendFormat("\t\t\tthis.ValidityDuration = new TimeSpan({0});{1}", b.ValidityDuration.Ticks, Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingMSMQ;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.CustomerDeadLetterQueue = new Uri(\"{0}\");{1}", b.CustomDeadLetterQueue, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.DeadLetterQueue = DeadLetterQueue.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.DeadLetterQueue), b.DeadLetterQueue), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.Durable = {0};{1}", b.Durable ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ExactlyOnce = {0};{1}", b.ExactlyOnce ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxRetryCycles = {0};{1}", b.MaxRetryCycles, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.QueueTransferProtocol = QueueTransferProtocol.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.QueueTransferProtocol), b.QueueTransferProtocol), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReceiveContextEnabled = {0};{1}", b.ReceiveContextEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReceiveErrorHandling = ReceiveErrorHandling.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.ReceiveErrorHandling), b.ReceiveErrorHandling), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReceiveRetryCount = {0};{1}", b.ReceiveRetryCount, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.RetryCycleDelay = new TimeSpan({0});{1}", b.RetryCycleDelay.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TimeToLive = new TimeSpan({0});{1}", b.TimeToLive.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.UseActiveDirectory = {0};{1}", b.UseActiveDirectory ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.UseMSMQTracing = {0};{1}", b.UseMSMQTracing ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.UseSourceJournal = {0};{1}", b.UseSourceJournal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				if (b.ValidityDuration != TimeSpan.Zero) code.AppendFormat("\t\t\tthis.ValidityDuration = new TimeSpan({0});{1}", b.ValidityDuration.Ticks, Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingPeerTCP))
+			else if (t == typeof(ServiceBindingPeerTCP))
 			{
-				Projects.ServiceBindingPeerTCP b = o as Projects.ServiceBindingPeerTCP;
-				if (b.ListenIPAddress == "") { Code.AppendLine("\t\t\tthis.ListenIPAddress = null;"); } else { Code.AppendFormat("\t\t\tthis.ListenIPAddress = IPAddress.Parse(\"{0}\");{1}", b.ListenIPAddress, Environment.NewLine); }
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.Port = {0};{1}", b.Port, Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingPeerTCP;
+				if (b == null) return "";
+				if (b.ListenIPAddress == "") { code.AppendLine("\t\t\tthis.ListenIPAddress = null;"); } else { code.AppendFormat("\t\t\tthis.ListenIPAddress = IPAddress.Parse(\"{0}\");{1}", b.ListenIPAddress, Environment.NewLine); }
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.Port = {0};{1}", b.Port, Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingWebHTTP))
+			else if (t == typeof(ServiceBindingWebHTTP))
 			{
-				Projects.ServiceBindingWebHTTP b = o as Projects.ServiceBindingWebHTTP;
-				Code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.CrossDomainScriptAccessEnabled = {0};{1}", b.CrossDomainScriptAccessEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.WriteEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(Projects.ServiceBindingTextEncoding), b.WriteEncoding), Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingWebHTTP;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.CrossDomainScriptAccessEnabled = {0};{1}", b.CrossDomainScriptAccessEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.WriteEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.WriteEncoding), Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingMSMQIntegration))
+			else if (t == typeof(ServiceBindingMSMQIntegration))
 			{
-				Projects.ServiceBindingMSMQIntegration b = o as Projects.ServiceBindingMSMQIntegration;
-				Code.AppendFormat("\t\t\tthis.CustomerDeadLetterQueue = new Uri(\"{0}\");{1}", b.CustomDeadLetterQueue, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.DeadLetterQueue = DeadLetterQueue.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.DeadLetterQueue), b.DeadLetterQueue), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.Durable = {0};{1}", b.Durable == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ExactlyOnce = {0};{1}", b.ExactlyOnce == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxRetryCycles = {0};{1}", b.MaxRetryCycles, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReceiveContextEnabled = {0};{1}", b.ReceiveContextEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReceiveErrorHandling = ReceiveErrorHandling.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.ReceiveErrorHandling), b.ReceiveErrorHandling), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReceiveRetryCount = {0};{1}", b.ReceiveRetryCount, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.RetryCycleDelay = new TimeSpan({0});{1}", b.RetryCycleDelay.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TimeToLive = new TimeSpan({0});{1}", b.TimeToLive.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.UseMSMQTracing = {0};{1}", b.UseMSMQTracing == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.UseSourceJournal = {0};{1}", b.UseSourceJournal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				if (b.ValidityDuration != TimeSpan.Zero) Code.AppendFormat("\t\t\tthis.ValidityDuration = new TimeSpan({0});{1}", b.ValidityDuration.Ticks, Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingMSMQIntegration;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.CustomerDeadLetterQueue = new Uri(\"{0}\");{1}", b.CustomDeadLetterQueue, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.DeadLetterQueue = DeadLetterQueue.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.DeadLetterQueue), b.DeadLetterQueue), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.Durable = {0};{1}", b.Durable ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ExactlyOnce = {0};{1}", b.ExactlyOnce ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxRetryCycles = {0};{1}", b.MaxRetryCycles, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReceiveContextEnabled = {0};{1}", b.ReceiveContextEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReceiveErrorHandling = ReceiveErrorHandling.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.ReceiveErrorHandling), b.ReceiveErrorHandling), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReceiveRetryCount = {0};{1}", b.ReceiveRetryCount, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.RetryCycleDelay = new TimeSpan({0});{1}", b.RetryCycleDelay.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TimeToLive = new TimeSpan({0});{1}", b.TimeToLive.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.UseMSMQTracing = {0};{1}", b.UseMSMQTracing ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.UseSourceJournal = {0};{1}", b.UseSourceJournal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				if (b.ValidityDuration != TimeSpan.Zero) code.AppendFormat("\t\t\tthis.ValidityDuration = new TimeSpan({0});{1}", b.ValidityDuration.Ticks, Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			Code.AppendLine("\t\t}");
-			Code.AppendLine("\t}");
-			return Code.ToString();
+			code.AppendLine("\t\t}");
+			code.AppendLine("\t}");
+			return code.ToString();
 		}
 
-		public static string GenerateCode40(Projects.ServiceBinding o)
+		public static string GenerateCode40(ServiceBinding o)
 		{
 			return GenerateCode45(o);
 		}
 
-		public static string GenerateCode45(Projects.ServiceBinding o)
+		public static string GenerateCode45(ServiceBinding o)
 		{
 			Type t = o.GetType();
-			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
-			Code.AppendLine("\t{");
-			Code.AppendFormat("\t\tpublic {0}(){1}", o.Name, Environment.NewLine);
-			Code.AppendLine("\t\t{");
-			Code.AppendLine("\t\t\tSetDefaults();");
-			Code.AppendLine("\t\t}");
-			Code.AppendFormat("\t\tpublic {0}({1} CustomSecurity){2}", o.Name, GenerateBindingBaseType(o), Environment.NewLine);
-			Code.AppendLine("\t\t{");
-			Code.AppendLine("\t\t\tSetDefaults();");
-			Code.AppendLine("\t\t\tthis.Security = CustomSecurity;");
-			Code.AppendLine("\t\t}");
-			Code.AppendFormat("\t\tpublic {0}(System.Xml.XmlDictionaryReaderQuotas ReaderQuotas){1}", o.Name, Environment.NewLine);
-			Code.AppendLine("\t\t{");
-			Code.AppendLine("\t\t\tSetDefaults();");
-			Code.AppendLine("\t\t\tthis.ReaderQuotas = ReaderQuotas;");
-			Code.AppendLine("\t\t}");
-			Code.AppendFormat("\t\tpublic {0}({1} CustomSecurity, System.Xml.XmlDictionaryReaderQuotas ReaderQuotas){2}", o.Name, GenerateBindingBaseType(o), Environment.NewLine);
-			Code.AppendLine("\t\t{");
-			Code.AppendLine("\t\t\tSetDefaults();");
-			Code.AppendLine("\t\t\tthis.Security = CustomSecurity;");
-			Code.AppendLine("\t\t\tthis.ReaderQuotas = ReaderQuotas;");
-			Code.AppendLine("\t\t}");
-			Code.AppendLine("\t\tprivate void SetDefaults()");
-			Code.AppendLine("\t\t{");
+			var code = new StringBuilder();
+			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
+			code.AppendLine("\t{");
+			code.AppendFormat("\t\tpublic {0}(){1}", o.Name, Environment.NewLine);
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tSetDefaults();");
+			code.AppendLine("\t\t}");
+			code.AppendFormat("\t\tpublic {0}({1} CustomSecurity){2}", o.Name, GenerateBindingBaseType(o), Environment.NewLine);
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tSetDefaults();");
+			code.AppendLine("\t\t\tthis.Security = CustomSecurity;");
+			code.AppendLine("\t\t}");
+			code.AppendFormat("\t\tpublic {0}(System.Xml.XmlDictionaryReaderQuotas ReaderQuotas){1}", o.Name, Environment.NewLine);
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tSetDefaults();");
+			code.AppendLine("\t\t\tthis.ReaderQuotas = ReaderQuotas;");
+			code.AppendLine("\t\t}");
+			code.AppendFormat("\t\tpublic {0}({1} CustomSecurity, System.Xml.XmlDictionaryReaderQuotas ReaderQuotas){2}", o.Name, GenerateBindingBaseType(o), Environment.NewLine);
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tSetDefaults();");
+			code.AppendLine("\t\t\tthis.Security = CustomSecurity;");
+			code.AppendLine("\t\t\tthis.ReaderQuotas = ReaderQuotas;");
+			code.AppendLine("\t\t}");
+			code.AppendLine("\t\tprivate void SetDefaults()");
+			code.AppendLine("\t\t{");
 			// Generic Binding code.
-			Code.AppendFormat("\t\t\tthis.CloseTimeout = new TimeSpan({0});{1}", o.CloseTimeout.Ticks, Environment.NewLine);
-			Code.AppendFormat("\t\t\tthis.Name = \"{0}\";{1}", o.Name, Environment.NewLine);
-			Code.AppendFormat("\t\t\tthis.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
-			Code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
-			Code.AppendFormat("\t\t\tthis.ReceiveTimeout = new TimeSpan({0});{1}", o.ReceiveTimeout.Ticks, Environment.NewLine);
-			Code.AppendFormat("\t\t\tthis.SendTimeout = new TimeSpan({0});{1}", o.SendTimeout.Ticks, Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.CloseTimeout = new TimeSpan({0});{1}", o.CloseTimeout.Ticks, Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Name = \"{0}\";{1}", o.Name, Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.ReceiveTimeout = new TimeSpan({0});{1}", o.ReceiveTimeout.Ticks, Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.SendTimeout = new TimeSpan({0});{1}", o.SendTimeout.Ticks, Environment.NewLine);
 			// Binding Specific code.
-			if (t == typeof(Projects.ServiceBindingBasicHTTP))
+			if (t == typeof(ServiceBindingBasicHTTP))
 			{
-				Projects.ServiceBindingBasicHTTP b = o as Projects.ServiceBindingBasicHTTP;
-				Code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MessageEncoding = WSMessageEncoding.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.WSMessageEncoding), b.MessageEncoding), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(Projects.ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingBasicHTTP;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MessageEncoding = WSMessageEncoding.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.WSMessageEncoding), b.MessageEncoding), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			if (t == typeof(Projects.ServiceBindingBasicHTTPS))
+			if (t == typeof(ServiceBindingBasicHTTPS))
 			{
-				Projects.ServiceBindingBasicHTTPS b = o as Projects.ServiceBindingBasicHTTPS;
-				Code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MessageEncoding = WSMessageEncoding.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.WSMessageEncoding), b.MessageEncoding), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(Projects.ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingBasicHTTPS;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MessageEncoding = WSMessageEncoding.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.WSMessageEncoding), b.MessageEncoding), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingNetHTTP))
+			else if (t == typeof(ServiceBindingNetHTTP))
 			{
-				Projects.ServiceBindingNetHTTP b = o as Projects.ServiceBindingNetHTTP;
-				Code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MessageEncoding = NetHttpMessageEncoding.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.NetHttpMessageEncoding), b.MessageEncoding), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(Projects.ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.WebSocketSettings.CreateNotificationOnConnection = {0};{1}", b.CreateNotificationOnConnection == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.WebSocketSettings.DisablePayloadMasking = {0};{1}", b.DisablePayloadMasking == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.WebSocketSettings.KeepAliveInterval = new TimeSpan({0});{1}", b.KeepAliveInterval.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.WebSocketSettings.MaxPendingConnections = {0};{1}", b.MaxPendingConnections, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.WebSocketSettings.SubProtocol = \"{0}\";{1}", b.SubProtocol, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.WebSocketSettings.TransportUsage = System.ServiceModel.Channels.WebSocketTransportUsage.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.Channels.WebSocketTransportUsage), b.TransportUsage), Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingNetHTTP;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MessageEncoding = NetHttpMessageEncoding.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.NetHttpMessageEncoding), b.MessageEncoding), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.WebSocketSettings.CreateNotificationOnConnection = {0};{1}", b.CreateNotificationOnConnection ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.WebSocketSettings.DisablePayloadMasking = {0};{1}", b.DisablePayloadMasking ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.WebSocketSettings.KeepAliveInterval = new TimeSpan({0});{1}", b.KeepAliveInterval.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.WebSocketSettings.MaxPendingConnections = {0};{1}", b.MaxPendingConnections, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.WebSocketSettings.SubProtocol = \"{0}\";{1}", b.SubProtocol, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.WebSocketSettings.TransportUsage = System.ServiceModel.Channels.WebSocketTransportUsage.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.Channels.WebSocketTransportUsage), b.TransportUsage), Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingNetHTTPS))
+			else if (t == typeof(ServiceBindingNetHTTPS))
 			{
-				Projects.ServiceBindingNetHTTPS b = o as Projects.ServiceBindingNetHTTPS;
-				Code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MessageEncoding = NetHttpMessageEncoding.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.NetHttpMessageEncoding), b.MessageEncoding), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(Projects.ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.WebSocketSettings.CreateNotificationOnConnection = {0};{1}", b.CreateNotificationOnConnection == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.WebSocketSettings.DisablePayloadMasking = {0};{1}", b.DisablePayloadMasking == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.WebSocketSettings.KeepAliveInterval = new TimeSpan({0});{1}", b.KeepAliveInterval.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.WebSocketSettings.MaxPendingConnections = {0};{1}", b.MaxPendingConnections, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.WebSocketSettings.SubProtocol = \"{0}\";{1}", b.SubProtocol, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.WebSocketSettings.TransportUsage = System.ServiceModel.Channels.WebSocketTransportUsage.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.Channels.WebSocketTransportUsage), b.TransportUsage), Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingNetHTTPS;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MessageEncoding = NetHttpMessageEncoding.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.NetHttpMessageEncoding), b.MessageEncoding), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.WebSocketSettings.CreateNotificationOnConnection = {0};{1}", b.CreateNotificationOnConnection ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.WebSocketSettings.DisablePayloadMasking = {0};{1}", b.DisablePayloadMasking ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.WebSocketSettings.KeepAliveInterval = new TimeSpan({0});{1}", b.KeepAliveInterval.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.WebSocketSettings.MaxPendingConnections = {0};{1}", b.MaxPendingConnections, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.WebSocketSettings.SubProtocol = \"{0}\";{1}", b.SubProtocol, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.WebSocketSettings.TransportUsage = System.ServiceModel.Channels.WebSocketTransportUsage.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.Channels.WebSocketTransportUsage), b.TransportUsage), Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingWSHTTP))
+			else if (t == typeof(ServiceBindingWSHTTP))
 			{
-				Projects.ServiceBindingWSHTTP b = o as Projects.ServiceBindingWSHTTP;
-				Code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(Projects.ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingWSHTTP;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingWS2007HTTP))
+			else if (t == typeof(ServiceBindingWS2007HTTP))
 			{
-				Projects.ServiceBindingWS2007HTTP b = o as Projects.ServiceBindingWS2007HTTP;
-				Code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(Projects.ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingWS2007HTTP;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingWSDualHTTP))
+			else if (t == typeof(ServiceBindingWSDualHTTP))
 			{
-				Projects.ServiceBindingWSDualHTTP b = o as Projects.ServiceBindingWSDualHTTP;
-				Code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				if (b.ClientBaseAddress != "") Code.AppendFormat("\t\t\tthis.ClientBaseAddress = new Uri(\"{0}\");{1}", b.ClientBaseAddress, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(Projects.ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingWSDualHTTP;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				if (b.ClientBaseAddress != "") code.AppendFormat("\t\t\tthis.ClientBaseAddress = new Uri(\"{0}\");{1}", b.ClientBaseAddress, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingWSFederationHTTP))
+			else if (t == typeof(ServiceBindingWSFederationHTTP))
 			{
-				Projects.ServiceBindingWSFederationHTTP b = o as Projects.ServiceBindingWSFederationHTTP;
-				Code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				var b = o as ServiceBindingWSFederationHTTP;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
 				if (b.PrivacyNoticeAt != "")
 				{
-					Code.AppendFormat("\t\t\tthis.PrivacyNoticeAt = new Uri(\"{0}\");{1}", b.PrivacyNoticeAt, Environment.NewLine);
-					Code.AppendFormat("\t\t\tthis.PrivacyNoticeVersion = {0};{1}", b.PrivacyNoticeVersion, Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.PrivacyNoticeAt = new Uri(\"{0}\");{1}", b.PrivacyNoticeAt, Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.PrivacyNoticeVersion = {0};{1}", b.PrivacyNoticeVersion, Environment.NewLine);
 				}
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(Projects.ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingWS2007FederationHTTP))
+			else if (t == typeof(ServiceBindingWS2007FederationHTTP))
 			{
-				Projects.ServiceBindingWS2007FederationHTTP b = o as Projects.ServiceBindingWS2007FederationHTTP;
-				Code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				var b = o as ServiceBindingWS2007FederationHTTP;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
 				if (b.PrivacyNoticeAt != "")
 				{
-					Code.AppendFormat("\t\t\tthis.PrivacyNoticeAt = new Uri(\"{0}\");{1}", b.PrivacyNoticeAt, Environment.NewLine);
-					Code.AppendFormat("\t\t\tthis.PrivacyNoticeVersion = {0};{1}", b.PrivacyNoticeVersion, Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.PrivacyNoticeAt = new Uri(\"{0}\");{1}", b.PrivacyNoticeAt, Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.PrivacyNoticeVersion = {0};{1}", b.PrivacyNoticeVersion, Environment.NewLine);
 				}
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(Projects.ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingTCP))
+			else if (t == typeof(ServiceBindingTCP))
 			{
-				Projects.ServiceBindingTCP b = o as Projects.ServiceBindingTCP;
-				Code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ListenBacklog = {0};{1}", b.ListenBacklog, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxConnections = {0};{1}", b.MaxConnections, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.PortSharingEnabled = {0};{1}", b.PortSharingEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};{1}", System.Enum.GetName(typeof(Projects.ServiceBindingTransactionProtocol), b.TransactionProtocol), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingTCP;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ListenBacklog = {0};{1}", b.ListenBacklog, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxConnections = {0};{1}", b.MaxConnections, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.PortSharingEnabled = {0};{1}", b.PortSharingEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTransactionProtocol), b.TransactionProtocol), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingNamedPipe))
+			else if (t == typeof(ServiceBindingNamedPipe))
 			{
-				Projects.ServiceBindingNamedPipe b = o as Projects.ServiceBindingNamedPipe;
-				Code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxConnections = {0};{1}", b.MaxConnections, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};{1}", System.Enum.GetName(typeof(Projects.ServiceBindingTransactionProtocol), b.TransactionProtocol), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingNamedPipe;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxConnections = {0};{1}", b.MaxConnections, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTransactionProtocol), b.TransactionProtocol), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingMSMQ))
+			else if (t == typeof(ServiceBindingMSMQ))
 			{
-				Projects.ServiceBindingMSMQ b = o as Projects.ServiceBindingMSMQ;
-				Code.AppendFormat("\t\t\tthis.CustomerDeadLetterQueue = new Uri(\"{0}\");{1}", b.CustomDeadLetterQueue, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.DeadLetterQueue = DeadLetterQueue.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.DeadLetterQueue), b.DeadLetterQueue), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.Durable = {0};{1}", b.Durable == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ExactlyOnce = {0};{1}", b.ExactlyOnce == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxRetryCycles = {0};{1}", b.MaxRetryCycles, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.QueueTransferProtocol = QueueTransferProtocol.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.QueueTransferProtocol), b.QueueTransferProtocol), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReceiveContextEnabled = {0};{1}", b.ReceiveContextEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReceiveErrorHandling = ReceiveErrorHandling.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.ReceiveErrorHandling), b.ReceiveErrorHandling), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReceiveRetryCount = {0};{1}", b.ReceiveRetryCount, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.RetryCycleDelay = new TimeSpan({0});{1}", b.RetryCycleDelay.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TimeToLive = new TimeSpan({0});{1}", b.TimeToLive.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.UseActiveDirectory = {0};{1}", b.UseActiveDirectory == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.UseMSMQTracing = {0};{1}", b.UseMSMQTracing == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.UseSourceJournal = {0};{1}", b.UseSourceJournal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				if (b.ValidityDuration != TimeSpan.Zero) Code.AppendFormat("\t\t\tthis.ValidityDuration = new TimeSpan({0});{1}", b.ValidityDuration.Ticks, Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingMSMQ;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.CustomerDeadLetterQueue = new Uri(\"{0}\");{1}", b.CustomDeadLetterQueue, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.DeadLetterQueue = DeadLetterQueue.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.DeadLetterQueue), b.DeadLetterQueue), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.Durable = {0};{1}", b.Durable ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ExactlyOnce = {0};{1}", b.ExactlyOnce ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxRetryCycles = {0};{1}", b.MaxRetryCycles, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.QueueTransferProtocol = QueueTransferProtocol.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.QueueTransferProtocol), b.QueueTransferProtocol), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReceiveContextEnabled = {0};{1}", b.ReceiveContextEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReceiveErrorHandling = ReceiveErrorHandling.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.ReceiveErrorHandling), b.ReceiveErrorHandling), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReceiveRetryCount = {0};{1}", b.ReceiveRetryCount, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.RetryCycleDelay = new TimeSpan({0});{1}", b.RetryCycleDelay.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TimeToLive = new TimeSpan({0});{1}", b.TimeToLive.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.UseActiveDirectory = {0};{1}", b.UseActiveDirectory ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.UseMSMQTracing = {0};{1}", b.UseMSMQTracing ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.UseSourceJournal = {0};{1}", b.UseSourceJournal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				if (b.ValidityDuration != TimeSpan.Zero) code.AppendFormat("\t\t\tthis.ValidityDuration = new TimeSpan({0});{1}", b.ValidityDuration.Ticks, Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingPeerTCP))
+			else if (t == typeof(ServiceBindingPeerTCP))
 			{
-				Projects.ServiceBindingPeerTCP b = o as Projects.ServiceBindingPeerTCP;
-				if (b.ListenIPAddress == "") { Code.AppendLine("\t\t\tthis.ListenIPAddress = null;"); } else { Code.AppendFormat("\t\t\tthis.ListenIPAddress = IPAddress.Parse(\"{0}\");{1}", b.ListenIPAddress, Environment.NewLine); }
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.Port = {0};{1}", b.Port, Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingPeerTCP;
+				if (b == null) return "";
+				if (b.ListenIPAddress == "") { code.AppendLine("\t\t\tthis.ListenIPAddress = null;"); } else { code.AppendFormat("\t\t\tthis.ListenIPAddress = IPAddress.Parse(\"{0}\");{1}", b.ListenIPAddress, Environment.NewLine); }
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.Port = {0};{1}", b.Port, Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingWebHTTP))
+			else if (t == typeof(ServiceBindingWebHTTP))
 			{
-				Projects.ServiceBindingWebHTTP b = o as Projects.ServiceBindingWebHTTP;
-				Code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.CrossDomainScriptAccessEnabled = {0};{1}", b.CrossDomainScriptAccessEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) Code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.WriteEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(Projects.ServiceBindingTextEncoding), b.WriteEncoding), Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingWebHTTP;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.CrossDomainScriptAccessEnabled = {0};{1}", b.CrossDomainScriptAccessEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.WriteEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.WriteEncoding), Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			else if (t == typeof(Projects.ServiceBindingMSMQIntegration))
+			else if (t == typeof(ServiceBindingMSMQIntegration))
 			{
-				Projects.ServiceBindingMSMQIntegration b = o as Projects.ServiceBindingMSMQIntegration;
-				Code.AppendFormat("\t\t\tthis.CustomerDeadLetterQueue = new Uri(\"{0}\");{1}", b.CustomDeadLetterQueue, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.DeadLetterQueue = DeadLetterQueue.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.DeadLetterQueue), b.DeadLetterQueue), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.Durable = {0};{1}", b.Durable == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ExactlyOnce = {0};{1}", b.ExactlyOnce == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.MaxRetryCycles = {0};{1}", b.MaxRetryCycles, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReceiveContextEnabled = {0};{1}", b.ReceiveContextEnabled == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReceiveErrorHandling = ReceiveErrorHandling.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.ReceiveErrorHandling), b.ReceiveErrorHandling), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.ReceiveRetryCount = {0};{1}", b.ReceiveRetryCount, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.RetryCycleDelay = new TimeSpan({0});{1}", b.RetryCycleDelay.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.TimeToLive = new TimeSpan({0});{1}", b.TimeToLive.Ticks, Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.UseMSMQTracing = {0};{1}", b.UseMSMQTracing == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				Code.AppendFormat("\t\t\tthis.UseSourceJournal = {0};{1}", b.UseSourceJournal == true ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				if (b.ValidityDuration != TimeSpan.Zero) Code.AppendFormat("\t\t\tthis.ValidityDuration = new TimeSpan({0});{1}", b.ValidityDuration.Ticks, Environment.NewLine);
-				if (b.Security != null) Code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				var b = o as ServiceBindingMSMQIntegration;
+				if (b == null) return "";
+				code.AppendFormat("\t\t\tthis.CustomerDeadLetterQueue = new Uri(\"{0}\");{1}", b.CustomDeadLetterQueue, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.DeadLetterQueue = DeadLetterQueue.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.DeadLetterQueue), b.DeadLetterQueue), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.Durable = {0};{1}", b.Durable ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ExactlyOnce = {0};{1}", b.ExactlyOnce ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MaxRetryCycles = {0};{1}", b.MaxRetryCycles, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReceiveContextEnabled = {0};{1}", b.ReceiveContextEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReceiveErrorHandling = ReceiveErrorHandling.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.ReceiveErrorHandling), b.ReceiveErrorHandling), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ReceiveRetryCount = {0};{1}", b.ReceiveRetryCount, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.RetryCycleDelay = new TimeSpan({0});{1}", b.RetryCycleDelay.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TimeToLive = new TimeSpan({0});{1}", b.TimeToLive.Ticks, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.UseMSMQTracing = {0};{1}", b.UseMSMQTracing ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.UseSourceJournal = {0};{1}", b.UseSourceJournal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				if (b.ValidityDuration != TimeSpan.Zero) code.AppendFormat("\t\t\tthis.ValidityDuration = new TimeSpan({0});{1}", b.ValidityDuration.Ticks, Environment.NewLine);
+				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
 			}
-			Code.AppendLine("\t\t}");
-			Code.AppendLine("\t}");
-			return Code.ToString();
+			code.AppendLine("\t\t}");
+			code.AppendLine("\t}");
+			return code.ToString();
 		}
-		public static string GenerateCode35Client(Projects.ServiceBinding o)
+		public static string GenerateCode35Client(ServiceBinding o)
 		{
 			return GenerateCode35(o);
 		}
-		public static string GenerateCode40Client(Projects.ServiceBinding o)
+		public static string GenerateCode40Client(ServiceBinding o)
 		{
 			Type t = o.GetType();
-			if (t == typeof(Projects.ServiceBindingWebHTTP)) return "";
-
-			return GenerateCode40(o);
+			return t == typeof(ServiceBindingWebHTTP) ? "" : GenerateCode40(o);
 		}
 
-		public static string GenerateBindingBaseType(Projects.ServiceBinding o)
+		public static string GenerateBindingBaseType(ServiceBinding o)
 		{
-			if (o.InheritedTypes.Count <= 0) return "";
-			return DataTypeCSGenerator.GenerateType(o.InheritedTypes[0]);
+			return o.InheritedTypes.Count <= 0 ? "" : DataTypeCSGenerator.GenerateType(o.InheritedTypes[0]);
 		}
 	}
 }

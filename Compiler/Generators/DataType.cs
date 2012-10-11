@@ -129,7 +129,7 @@ namespace WCFArchitect.Compiler.Generators
 		}
 
 
-		public static string GenerateTypeDeclaration(Projects.DataType o)
+		public static string GenerateTypeDeclaration(DataType o)
 		{
 			var sb = new StringBuilder();
 			if (o.TypeMode == DataTypeMode.Class)
@@ -207,7 +207,7 @@ namespace WCFArchitect.Compiler.Generators
 			return o.Name;
 		}
 		
-		public static string GenerateTypeGenerics(Projects.DataType o)
+		public static string GenerateTypeGenerics(DataType o)
 		{
 			var s = new StringBuilder("(Of ");
 			if (o.TypeMode == DataTypeMode.Collection)
