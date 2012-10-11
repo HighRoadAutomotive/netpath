@@ -75,10 +75,10 @@ namespace WCFArchitect.Compiler
 		{
 			Messages.Add(Message);
 			if (Message.Severity == CompileMessageSeverity.ERROR && HighestSeverity != CompileMessageSeverity.ERROR) HighestSeverity = CompileMessageSeverity.ERROR;
-			if(Message.Severity == CompileMessageSeverity.WARN && HighestSeverity == CompileMessageSeverity.INFO) HighestSeverity = CompileMessageSeverity.WARN;
+			if (Message.Severity == CompileMessageSeverity.WARN && HighestSeverity == CompileMessageSeverity.INFO) HighestSeverity = CompileMessageSeverity.WARN;
 
 			//Write message to the log file and console
-			string mstr = string.Format("{0} {1}: {2} Object: {3} Owner: {4}", Message.Severity.ToString(), Message.Code, Message.Description, Message.ErrorObject, Message.Owner);
+			string mstr = string.Format("{0} {1}: {2} Object: {3} Owner: {4}", Message.Severity, Message.Code, Message.Description, Message.ErrorObject, Message.Owner);
 			if(LogFile != null)
 				LogFile.WriteLine(mstr);
 			Console.WriteLine(mstr);
