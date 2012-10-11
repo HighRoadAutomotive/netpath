@@ -101,7 +101,7 @@
 				<TextBlock Text="Item" Grid.Column="4" Margin="5" FontSize="10pt" />
 				<TextBlock Text="Project" Grid.Column="5" Margin="5" FontSize="10pt" />
 			</Grid>
-			<ListBox x:Name="ErrorList" Grid.Row="3" Background="Transparent" BorderThickness="0" Margin="0">
+			<ListBox x:Name="ErrorList" Grid.Row="3" Background="Transparent" BorderThickness="0" Margin="0" ScrollViewer.VerticalScrollBarVisibility="Visible">
 				<ListBox.Resources>
 					<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
 				</ListBox.Resources>
@@ -188,13 +188,14 @@
 					<ColumnDefinition Name="ItemsGridCD8" Width="*" />
 					<ColumnDefinition Name="ItemsGridCD9" Width="200" />
 					<ColumnDefinition Name="ItemsGridCD10" Width="175" />
+					<ColumnDefinition Width="15" />
 				</Grid.ColumnDefinitions>
 				<TextBlock Text="Field" Grid.Column="0" Margin="5" FontSize="10pt" />
 				<TextBlock Text="Value" Grid.Column="1" Margin="5" FontSize="10pt" />
 				<TextBlock Text="Item" Grid.Column="2" Margin="5" FontSize="10pt" />
 				<TextBlock Text="Project" Grid.Column="3" Margin="5" FontSize="10pt" />
 			</Grid>
-			<ListBox x:Name="FindList" ItemsSource="{Binding Path=FindResults}" Grid.Row="3" Background="Transparent" ItemContainerStyle="{StaticResource StretchedContainerStyle}" BorderThickness="0" Margin="0" SelectionChanged="FindList_SelectionChanged">
+			<ListBox x:Name="FindList" ItemsSource="{Binding Path=FindResults}" Grid.Row="3" Background="Transparent" ItemContainerStyle="{StaticResource StretchedContainerStyle}" BorderThickness="0" Margin="0" ScrollViewer.VerticalScrollBarVisibility="Visible" SelectionChanged="FindList_SelectionChanged">
 				<ListBox.Resources>
 					<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
 				</ListBox.Resources>
@@ -207,7 +208,6 @@
 									<ColumnDefinition Width="{Binding ElementName=ItemsGridCD8, Path=Width}" />
 									<ColumnDefinition Width="{Binding ElementName=ItemsGridCD9, Path=Width}" />
 									<ColumnDefinition Width="{Binding ElementName=ItemsGridCD10, Path=Width}" />
-									<ColumnDefinition Width="15" />
 								</Grid.ColumnDefinitions>
 								<Grid.RowDefinitions>
 									<RowDefinition Height="20" />

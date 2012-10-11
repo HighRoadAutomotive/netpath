@@ -1,19 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Diagnostics;
-using WCFArchitect.Interface;
 using Prospective.Controls.Dialogs;
 using WCFArchitect.Options;
 
@@ -25,8 +16,8 @@ namespace WCFArchitect.Interface
 		public object SelectedProject { get { return GetValue(SelectedProjectProperty); } set { SetValue(SelectedProjectProperty, value); } }
 		public static readonly DependencyProperty SelectedProjectProperty = DependencyProperty.Register("SelectedProject", typeof(object), typeof(Main));
 		
-		public Options.UserProfile UserProfile { get { return (Options.UserProfile)GetValue(UserProfileProperty); } set { SetValue(UserProfileProperty, value); } }
-		public static readonly DependencyProperty UserProfileProperty = DependencyProperty.Register("UserProfile", typeof(Options.UserProfile), typeof(Main));
+		public UserProfile UserProfile { get { return (UserProfile)GetValue(UserProfileProperty); } set { SetValue(UserProfileProperty, value); } }
+		public static readonly DependencyProperty UserProfileProperty = DependencyProperty.Register("UserProfile", typeof(UserProfile), typeof(Main));
 
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static readonly RoutedCommand SelectProjectCommand = new RoutedCommand();
 
@@ -478,7 +469,7 @@ namespace WCFArchitect.Interface
 		public bool IsSelected { get { return (bool)GetValue(IsSelectedProperty); } set { SetValue(IsSelectedProperty, value); } }
 		public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.Register("IsSelected", typeof(bool), typeof(SolutionItem), new PropertyMetadata(false));
 
-		public object Header { get { return (object)GetValue(HeaderProperty); } set { SetValue(HeaderProperty, value); } }
+		public object Header { get { return GetValue(HeaderProperty); } set { SetValue(HeaderProperty, value); } }
 		public static readonly DependencyProperty HeaderProperty = DependencyProperty.Register("Header", typeof(object), typeof(SolutionItem), new PropertyMetadata(new object()));
 
 		internal Projects.Project Project { get; private set; }
@@ -486,15 +477,15 @@ namespace WCFArchitect.Interface
 		public SolutionItem(Projects.Project Project)
 		{
 			this.Project = Project;
-			this.Header = Project.Name.ToUpper();
-			this.Content = new Navigator(Project);
+			Header = Project.Name.ToUpper();
+			Content = new Navigator(Project);
 		}
 	}
 
 	internal partial class RecentProjectItem : Control
 	{
-		public WCFArchitect.Options.RecentSolution Data;
-		public bool IsImportant = false;
+		public RecentSolution Data;
+		public bool IsImportant;
 
 		public string ItemTitle { get { return (string)GetValue(ItemTitleProperty); } set { SetValue(ItemTitleProperty, value); } }
 		public static readonly DependencyProperty ItemTitleProperty = DependencyProperty.Register("ItemTitle", typeof(string), typeof(RecentProjectItem), new PropertyMetadata(""));
@@ -505,22 +496,22 @@ namespace WCFArchitect.Interface
 		public string ItemFlag { get { return (string)GetValue(ItemFlagProperty); } set { SetValue(ItemFlagProperty, value); } }
 		public static readonly DependencyProperty ItemFlagProperty = DependencyProperty.Register("ItemFlag", typeof(string), typeof(RecentProjectItem), new PropertyMetadata("pack://application:,,,/WCFArchitect;component/Icons/X32/FlagRecent.png"));
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static RoutedCommand OpenCommand = new RoutedCommand();
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static RoutedCommand FlagCommand = new RoutedCommand();
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static RoutedCommand FolderCommand = new RoutedCommand();
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static RoutedCommand RemoveCommand = new RoutedCommand();
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static readonly RoutedCommand OpenCommand = new RoutedCommand();
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static readonly RoutedCommand FlagCommand = new RoutedCommand();
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static readonly RoutedCommand FolderCommand = new RoutedCommand();
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static readonly RoutedCommand RemoveCommand = new RoutedCommand();
 
 		static RecentProjectItem()
 		{
-			CommandManager.RegisterClassCommandBinding(typeof(RecentProjectItem), new CommandBinding(RecentProjectItem.OpenCommand, OnOpenCommandExecuted));
-			CommandManager.RegisterClassCommandBinding(typeof(RecentProjectItem), new CommandBinding(RecentProjectItem.FlagCommand, OnFlagCommandExecuted));
-			CommandManager.RegisterClassCommandBinding(typeof(RecentProjectItem), new CommandBinding(RecentProjectItem.FolderCommand, OnFolderCommandExecuted));
-			CommandManager.RegisterClassCommandBinding(typeof(RecentProjectItem), new CommandBinding(RecentProjectItem.RemoveCommand, OnRemoveCommandExecuted));
+			CommandManager.RegisterClassCommandBinding(typeof(RecentProjectItem), new CommandBinding(OpenCommand, OnOpenCommandExecuted));
+			CommandManager.RegisterClassCommandBinding(typeof(RecentProjectItem), new CommandBinding(FlagCommand, OnFlagCommandExecuted));
+			CommandManager.RegisterClassCommandBinding(typeof(RecentProjectItem), new CommandBinding(FolderCommand, OnFolderCommandExecuted));
+			CommandManager.RegisterClassCommandBinding(typeof(RecentProjectItem), new CommandBinding(RemoveCommand, OnRemoveCommandExecuted));
 		}
 
 		private static void OnRemoveCommandExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
-			RecentProjectItem t = e.Parameter as RecentProjectItem;
+			var t = e.Parameter as RecentProjectItem;
 			if (t == null) return;
 
 			t.CMRemove();
@@ -528,7 +519,7 @@ namespace WCFArchitect.Interface
 
 		private static void OnFolderCommandExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
-			RecentProjectItem t = e.Parameter as RecentProjectItem;
+			var t = e.Parameter as RecentProjectItem;
 			if (t == null) return;
 
 			t.CMOpenFolder();
@@ -536,7 +527,7 @@ namespace WCFArchitect.Interface
 
 		private static void OnFlagCommandExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
-			RecentProjectItem t = e.Parameter as RecentProjectItem;
+			var t = e.Parameter as RecentProjectItem;
 			if (t == null) return;
 
 			t.FlagImportant();
@@ -544,13 +535,13 @@ namespace WCFArchitect.Interface
 
 		private static void OnOpenCommandExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
-			RecentProjectItem t = e.Parameter as RecentProjectItem;
+			var t = e.Parameter as RecentProjectItem;
 			if (t == null) return;
 
 			t.OpenProject();
 		}
 
-		public RecentProjectItem(WCFArchitect.Options.RecentSolution Data, bool IsImportant)
+		public RecentProjectItem(RecentSolution Data, bool IsImportant)
 		{
 			this.Data = Data;
 			this.IsImportant = IsImportant;
@@ -558,12 +549,12 @@ namespace WCFArchitect.Interface
 			ItemTitle = Data.Name;
 			ItemPath = Data.Path;
 
-			if (IsImportant == true) ItemFlag = "pack://application:,,,/WCFArchitect;component/Icons/X32/FlagImportant.png";
+			if (IsImportant) ItemFlag = "pack://application:,,,/WCFArchitect;component/Icons/X32/FlagImportant.png";
 		}
 
 		private void FlagImportant()
 		{
-			if (IsImportant == true)
+			if (IsImportant)
 			{
 				Globals.UserProfile.ImportantProjects.Remove(Data);
 				Globals.UserProfile.RecentProjects.Add(Data);
@@ -586,7 +577,7 @@ namespace WCFArchitect.Interface
 			if (!System.IO.File.Exists(Data.Path))
 			{
 				DialogService.ShowMessageDialog(null, "Unable to Locate Project File.", "Unable to located the requested file, would you like to remove this project from the list?",
-					new DialogAction("Yes", new Action(() => { if (IsImportant == true) { Globals.UserProfile.ImportantProjects.Remove(Data); } else { Globals.UserProfile.RecentProjects.Remove(Data); } Globals.MainScreen.RefreshRecentList(); }), true, false), new DialogAction("No", false, true));
+					new DialogAction("Yes", () => { if (IsImportant) { Globals.UserProfile.ImportantProjects.Remove(Data); } else { Globals.UserProfile.RecentProjects.Remove(Data); } Globals.MainScreen.RefreshRecentList(); }, true), new DialogAction("No", false, true));
 				return;
 			}
 
@@ -597,14 +588,14 @@ namespace WCFArchitect.Interface
 
 		private void CMOpenFolder()
 		{
-			System.Diagnostics.ProcessStartInfo PSI = new System.Diagnostics.ProcessStartInfo(System.IO.Path.GetDirectoryName(Data.Path));
-			PSI.UseShellExecute = true;
-			System.Diagnostics.Process.Start(PSI);
+			var psi = new ProcessStartInfo(System.IO.Path.GetDirectoryName(Data.Path));
+			psi.UseShellExecute = true;
+			Process.Start(psi);
 		}
 
 		private void CMRemove()
 		{
-			if (IsImportant == true)
+			if (IsImportant)
 			{
 				Globals.UserProfile.ImportantProjects.Remove(Data);
 			}

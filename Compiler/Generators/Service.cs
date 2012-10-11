@@ -17,7 +17,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				if (Helpers.RegExs.MatchCodeName.IsMatch(o.Name) == false)
 					Program.AddMessage(new CompileMessage("GS2001", "The service '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-			if (o.HasClientType == true) { }
+			if (o.HasClientType) { }
 				if (Helpers.RegExs.MatchCodeName.IsMatch(o.ClientType.Name) == false)
 					Program.AddMessage(new CompileMessage("GS2002", "The service '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 
@@ -34,9 +34,8 @@ namespace WCFArchitect.Compiler.Generators
 				if (m.ReturnType == null)
 					Program.AddMessage(new CompileMessage("GS2007", "The operation '" + m.Name + "' in the '" + o.Name + "' service has a blank Return Type. A Return Type MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
 
-				foreach (MethodParameter mp in m.Parameters)
-					if (string.IsNullOrEmpty(mp.Name))
-						Program.AddMessage(new CompileMessage("GS2008", "The operation '" + m.Name + "' in the '" + o.Name + "' service has a parameter with a blank name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
+				foreach (MethodParameter mp in m.Parameters.Where(mp => string.IsNullOrEmpty(mp.Name)))
+					Program.AddMessage(new CompileMessage("GS2008", "The method parameter '" + m.Name + "' in the '" + o.Name + "' service has a parameter with a blank name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
 			}
 
 			foreach (Property p in o.Operations)
@@ -66,31 +65,31 @@ namespace WCFArchitect.Compiler.Generators
 
 		public static string GenerateServerCode45(Service o)
 		{
-			StringBuilder Code = new StringBuilder();
+			var code = new StringBuilder();
 			if (o.IsCallback == false)
 			{
-				Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-				Code.Append("\t[ServiceContract(");
+				code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+				code.Append("\t[ServiceContract(");
 				if (o.Callback != null)
-					Code.AppendFormat("CallbackContract = typeof(I{0}), ", o.Callback.Name);
-				if (o.ConfigurationName != "" && o.ConfigurationName != null)
-					Code.AppendFormat("ConfigurationName = \"{0}\", ", o.ConfigurationName);
+					code.AppendFormat("CallbackContract = typeof(I{0}), ", o.Callback.Name);
+				if (!string.IsNullOrEmpty(o.ConfigurationName))
+					code.AppendFormat("ConfigurationName = \"{0}\", ", o.ConfigurationName);
 				if (o.ProtectionLevel != System.Net.Security.ProtectionLevel.None)
-					Code.AppendFormat("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}, ", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.ProtectionLevel));
-				Code.AppendFormat("SessionMode = System.ServiceModel.SessionMode.{0}, ", System.Enum.GetName(typeof(System.ServiceModel.SessionMode), o.SessionMode));
-				if (o.HasClientType == true)
-					Code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
-				Code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
-				Code.AppendLine(")]");
+					code.AppendFormat("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}, ", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.ProtectionLevel));
+				code.AppendFormat("SessionMode = System.ServiceModel.SessionMode.{0}, ", System.Enum.GetName(typeof(System.ServiceModel.SessionMode), o.SessionMode));
+				if (o.HasClientType)
+					code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
+				code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
+				code.AppendLine(")]");
 			}
-			Code.AppendFormat("\t{0} interface I{1}{2}", DataTypeCSGenerator.GenerateScope(o.Scope), o.Name, Environment.NewLine);
-			Code.AppendLine("\t{");
-			foreach (Property P in o.Operations)
-				Code.Append(GeneratePropertyServerCode45(P));
-			foreach (Method M in o.Operations)
-				Code.Append(GenerateOperationServerCode45(M));
-			Code.AppendLine("\t}");
-			return Code.ToString();
+			code.AppendFormat("\t{0} interface I{1}{2}", DataTypeCSGenerator.GenerateScope(o.Scope), o.Name, Environment.NewLine);
+			code.AppendLine("\t{");
+			foreach (Property p in o.Operations)
+				code.Append(GeneratePropertyServerCode45(p));
+			foreach (Method m in o.Operations)
+				code.Append(GenerateOperationServerCode45(m));
+			code.AppendLine("\t}");
+			return code.ToString();
 		}
 
 		public static string GenerateClientCode30(Service o)
@@ -105,94 +104,94 @@ namespace WCFArchitect.Compiler.Generators
 
 		public static string GenerateClientCode40(Service o)
 		{
-			if (o.IsCallback == true) return "";
-			StringBuilder Code = new StringBuilder();
+			if (o.IsCallback) return "";
+			var code = new StringBuilder();
 
 			//Generate the Client interface
-			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.AppendFormat("\t{0} interface {1}{2}", o.HasClientType == true ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType == true ? o.ClientType.Name : o.Name, Environment.NewLine);
-			Code.AppendLine("\t{");
-			foreach (Method M in o.Operations)
-				Code.AppendLine(GenerateOperationInterfaceCode40(M));
-			Code.AppendLine("\t}");
-			Code.AppendLine();
+			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+			code.AppendFormat("\t{0} interface {1}{2}", o.HasClientType ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, Environment.NewLine);
+			code.AppendLine("\t{");
+			foreach (Method m in o.Operations)
+				code.AppendLine(GenerateOperationInterfaceCode40(m));
+			code.AppendLine("\t}");
+			code.AppendLine();
 			//Generate Callback Interface (if any)
 			if (o.Callback != null)
 			{
-				Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-				Code.AppendFormat("\t{0} interface {1}{2}", o.Callback.HasClientType == true ? DataTypeCSGenerator.GenerateScope(o.Callback.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Callback.Scope), o.Callback.HasClientType == true ? o.Callback.ClientType.Name : o.Callback.Name, Environment.NewLine);
-				Code.AppendLine("\t{");
-				foreach (Method M in o.Callback.Operations)
-					Code.AppendLine(GenerateOperationInterfaceCode40(M));
-				Code.AppendLine("\t}");
-				Code.AppendLine();
+				code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+				code.AppendFormat("\t{0} interface {1}{2}", o.Callback.HasClientType ? DataTypeCSGenerator.GenerateScope(o.Callback.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Callback.Scope), o.Callback.HasClientType ? o.Callback.ClientType.Name : o.Callback.Name, Environment.NewLine);
+				code.AppendLine("\t{");
+				foreach (Method m in o.Callback.Operations)
+					code.AppendLine(GenerateOperationInterfaceCode40(m));
+				code.AppendLine("\t}");
+				code.AppendLine();
 			}
 			//Generate Channel Interface
-			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.AppendFormat("\t{0} interface {1}Channel : {2}, System.ServiceModel.IClientChannel{3}", o.HasClientType == true ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType == true ? o.ClientType.Name : o.Name, o.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ClientType) : DataTypeCSGenerator.GenerateType(o), Environment.NewLine);
-			Code.AppendLine("\t{");
-			Code.AppendLine("\t}");
-			Code.AppendLine();
+			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+			code.AppendFormat("\t{0} interface {1}Channel : {2}, System.ServiceModel.IClientChannel{3}", o.HasClientType ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.HasClientType ? DataTypeCSGenerator.GenerateType(o.ClientType) : DataTypeCSGenerator.GenerateType(o), Environment.NewLine);
+			code.AppendLine("\t{");
+			code.AppendLine("\t}");
+			code.AppendLine();
 			//Generate the Proxy Class
-			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.AppendFormat("\t{0} partial class {1}Client : System.ServiceModel.ClientBase<{1}>, {1}{3}", o.HasClientType == true ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType == true ? o.ClientType.Name : o.Name, Environment.NewLine);
-			Code.AppendLine("\t{");
-			Host H = o.Parent.Owner.Namespace.GetServiceHost(o);
-			if (H != null)
-				Code.Append(HostCSGenerator.GenerateClientCode40(H));
-			foreach (Property P in o.Operations)
-				Code.AppendLine(GeneratePropertyClientCode(P));
-			foreach (Method M in o.Operations)
-				Code.AppendLine(GenerateOperationProxyCode40(M));
-			Code.AppendLine("\t}");
+			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+			code.AppendFormat("\t{0} partial class {1}Client : System.ServiceModel.ClientBase<{1}>, {1}{2}", o.HasClientType ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, Environment.NewLine);
+			code.AppendLine("\t{");
+			Host h = o.Parent.Owner.Namespace.GetServiceHost(o);
+			if (h != null)
+				code.Append(HostCSGenerator.GenerateClientCode40(h));
+			foreach (Property p in o.Operations)
+				code.AppendLine(GeneratePropertyClientCode(p));
+			foreach (Method m in o.Operations)
+				code.AppendLine(GenerateOperationProxyCode40(m));
+			code.AppendLine("\t}");
 
-			return Code.ToString();
+			return code.ToString();
 		}
 
 		public static string GenerateClientCode45(Service o)
 		{
-			if (o.IsCallback == true) return "";
-			StringBuilder Code = new StringBuilder();
+			if (o.IsCallback) return "";
+			var code = new StringBuilder();
 
 			//Generate the Client interface
-			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.AppendFormat("\t{0} interface {1}{2}", o.HasClientType == true ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType == true ? o.ClientType.Name : o.Name, Environment.NewLine);
-			Code.AppendLine("\t{");
-			foreach (Method M in o.Operations)
-				Code.AppendLine(GenerateOperationInterfaceCode45(M));
-			Code.AppendLine("\t}");
-			Code.AppendLine();
+			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+			code.AppendFormat("\t{0} interface {1}{2}", o.HasClientType ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, Environment.NewLine);
+			code.AppendLine("\t{");
+			foreach (Method m in o.Operations)
+				code.AppendLine(GenerateOperationInterfaceCode45(m));
+			code.AppendLine("\t}");
+			code.AppendLine();
 			//Generate Callback Interface (if any)
 			if (o.Callback != null)
 			{
-				Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-				Code.AppendFormat("\t{0} interface {1}{2}", o.Callback.HasClientType == true ? DataTypeCSGenerator.GenerateScope(o.Callback.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Callback.Scope), o.Callback.HasClientType == true ? o.Callback.ClientType.Name : o.Callback.Name, Environment.NewLine);
-				Code.AppendLine("\t{");
-				foreach (Method M in o.Callback.Operations)
-					Code.AppendLine(GenerateOperationInterfaceCode45(M));
-				Code.AppendLine("\t}");
-				Code.AppendLine();
+				code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+				code.AppendFormat("\t{0} interface {1}{2}", o.Callback.HasClientType ? DataTypeCSGenerator.GenerateScope(o.Callback.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Callback.Scope), o.Callback.HasClientType ? o.Callback.ClientType.Name : o.Callback.Name, Environment.NewLine);
+				code.AppendLine("\t{");
+				foreach (Method m in o.Callback.Operations)
+					code.AppendLine(GenerateOperationInterfaceCode45(m));
+				code.AppendLine("\t}");
+				code.AppendLine();
 			}
 			//Generate Channel Interface
-			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.AppendFormat("\t{0} interface {1}Channel : {2}, System.ServiceModel.IClientChannel{3}", o.HasClientType == true ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType == true ? o.ClientType.Name : o.Name, o.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ClientType) : DataTypeCSGenerator.GenerateType(o), Environment.NewLine);
-			Code.AppendLine("\t{");
-			Code.AppendLine("\t}");
-			Code.AppendLine();
+			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+			code.AppendFormat("\t{0} interface {1}Channel : {2}, System.ServiceModel.IClientChannel{3}", o.HasClientType ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.HasClientType ? DataTypeCSGenerator.GenerateType(o.ClientType) : DataTypeCSGenerator.GenerateType(o), Environment.NewLine);
+			code.AppendLine("\t{");
+			code.AppendLine("\t}");
+			code.AppendLine();
 			//Generate the Proxy Class
-			Code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion.ToString(), Environment.NewLine);
-			Code.AppendFormat("\t{0} partial class {1}Client : System.ServiceModel.ClientBase<{1}>, {1}{3}", o.HasClientType == true ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType == true ? o.ClientType.Name : o.Name, Environment.NewLine);
-			Code.AppendLine("\t{");
-			Host H = o.Parent.Owner.Namespace.GetServiceHost(o);
-				if (H != null)
-					Code.Append(HostCSGenerator.GenerateClientCode45(H));
-			foreach (Property P in o.Operations)
-				Code.AppendLine(GeneratePropertyClientCode(P));
-			foreach (Method M in o.Operations)
-				Code.AppendLine(GenerateOperationProxyCode45(M));
-			Code.AppendLine("\t}");
+			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+			code.AppendFormat("\t{0} partial class {1}Client : System.ServiceModel.ClientBase<{1}>, {1}{2}", o.HasClientType ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, Environment.NewLine);
+			code.AppendLine("\t{");
+			Host h = o.Parent.Owner.Namespace.GetServiceHost(o);
+				if (h != null)
+					code.Append(HostCSGenerator.GenerateClientCode45(h));
+			foreach (Property p in o.Operations)
+				code.AppendLine(GeneratePropertyClientCode(p));
+			foreach (Method m in o.Operations)
+				code.AppendLine(GenerateOperationProxyCode45(m));
+			code.AppendLine("\t}");
 
-			return Code.ToString();
+			return code.ToString();
 		}
 
 		public static string GenerateOperationServerCode30(Method o)
@@ -212,48 +211,48 @@ namespace WCFArchitect.Compiler.Generators
 
 		public static string GenerateOperationServerCode45(Method o)
 		{
-			StringBuilder Code = new StringBuilder();
+			var code = new StringBuilder();
 
-			Code.Append("\t\t[OperationContract(");
-			if (o.IsInitiating == true && o.IsTerminating == false)
-				Code.Append("IsInitiating = true, ");
-			if (o.IsInitiating == false && o.IsTerminating == true)
-				Code.Append("IsTerminating = true, ");
-			if (o.IsOneWay == true)
-				Code.Append("IsOneWay = true, ");
+			code.Append("\t\t[OperationContract(");
+			if (o.IsInitiating && o.IsTerminating == false)
+				code.Append("IsInitiating = true, ");
+			if (o.IsInitiating == false && o.IsTerminating)
+				code.Append("IsTerminating = true, ");
+			if (o.IsOneWay)
+				code.Append("IsOneWay = true, ");
 			if (o.ProtectionLevel != System.Net.Security.ProtectionLevel.None)
-				Code.AppendFormat("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}, ", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.ProtectionLevel));
-			if (o.ClientName == "" || o.ClientName == null)
-				Code.AppendFormat("Name = \"{0}\", ", o.ClientName);
-			if (Code.Length > 21) Code.Remove(Code.Length - 2, 2);
-			Code.AppendFormat(")] {0} {1}(", DataTypeCSGenerator.GenerateType(o.ReturnType), o.Name);
-			foreach (MethodParameter OP in o.Parameters)
-				Code.AppendFormat("{0},", GenerateMethodParameterServerCode(OP));
-			if (o.Parameters.Count > 0) Code.Remove(Code.Length - 1, 1);
-			Code.AppendLine(");");
+				code.AppendFormat("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}, ", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.ProtectionLevel));
+			if (string.IsNullOrEmpty(o.ClientName))
+				code.AppendFormat("Name = \"{0}\", ", o.ClientName);
+			if (code.Length > 21) code.Remove(code.Length - 2, 2);
+			code.AppendFormat(")] {0} {1}(", DataTypeCSGenerator.GenerateType(o.ReturnType), o.Name);
+			foreach (MethodParameter op in o.Parameters)
+				code.AppendFormat("{0},", GenerateMethodParameterServerCode(op));
+			if (o.Parameters.Count > 0) code.Remove(code.Length - 1, 1);
+			code.AppendLine(");");
 
-			if (o.UseAsyncPattern == true)
+			if (o.UseAsyncPattern)
 			{
-				Code.Append("\t\t[OperationContract(");
-				if (o.IsInitiating == true && o.IsTerminating == false)
-					Code.Append("IsInitiating = true, ");
-				if (o.IsInitiating == false && o.IsTerminating == true)
-					Code.Append("IsTerminating = true, ");
-				if (o.IsOneWay == true)
-					Code.Append("IsOneWay = true, ");
+				code.Append("\t\t[OperationContract(");
+				if (o.IsInitiating && o.IsTerminating == false)
+					code.Append("IsInitiating = true, ");
+				if (o.IsInitiating == false && o.IsTerminating)
+					code.Append("IsTerminating = true, ");
+				if (o.IsOneWay)
+					code.Append("IsOneWay = true, ");
 				if (o.ProtectionLevel != System.Net.Security.ProtectionLevel.None)
-					Code.AppendFormat("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}, ", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.ProtectionLevel));
-				if (o.ClientName == "" || o.ClientName == null)
-					Code.AppendFormat("Name = \"{0}\", ", o.ClientName);
-				if (Code.Length > 21) Code.Remove(Code.Length - 2, 2);
-				Code.AppendFormat(")] IAsyncResult Begin{0}(", o.Name);
-				foreach (MethodParameter OP in o.Parameters)
-					Code.AppendFormat("{0},", GenerateMethodParameterServerCode(OP));
-				Code.AppendLine(" AsyncCallback Callback, object AsyncState);");
-				Code.AppendFormat("\t\t{0} End{1}(IAsyncResult result);{2}", DataTypeCSGenerator.GenerateType(o.ReturnType), o.Name, Environment.NewLine);
+					code.AppendFormat("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}, ", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.ProtectionLevel));
+				if (string.IsNullOrEmpty(o.ClientName))
+					code.AppendFormat("Name = \"{0}\", ", o.ClientName);
+				if (code.Length > 21) code.Remove(code.Length - 2, 2);
+				code.AppendFormat(")] IAsyncResult Begin{0}(", o.Name);
+				foreach (MethodParameter op in o.Parameters)
+					code.AppendFormat("{0},", GenerateMethodParameterServerCode(op));
+				code.AppendLine(" AsyncCallback Callback, object AsyncState);");
+				code.AppendFormat("\t\t{0} End{1}(IAsyncResult result);{2}", DataTypeCSGenerator.GenerateType(o.ReturnType), o.Name, Environment.NewLine);
 			}
 
-			return Code.ToString();
+			return code.ToString();
 		}
 
 		public static string GenerateOperationInterfaceCode30(Method o)
@@ -266,88 +265,75 @@ namespace WCFArchitect.Compiler.Generators
 			return GenerateOperationInterfaceCode40(o);
 		}
 
+		//TODO: This functions needs format args from the Action/RelayAction
 		public static string GenerateOperationInterfaceCode40(Method o)
 		{
-			StringBuilder Code = new StringBuilder();
+			var code = new StringBuilder();
 
-			Code.Append("\t\t[OperationContract(");
-			if (o.IsOneWay == true)
-				Code.AppendFormat("IsOneWay = true, Action = \"{0}/{1}/{2}\"");
-			else
-				Code.AppendFormat("Action = \"{0}/{1}/{2}\", ReplyAction = \"{0}/{1}/{2}Response\"");
-			Code.AppendLine(")]");
-			Code.AppendFormat("\t\t{0} {1}(", o.ReturnType.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) == true ? o.ClientName : o.Name);
-			foreach (MethodParameter OP in o.Parameters)
-				Code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(OP));
-			if (o.Parameters.Count > 0) Code.Remove(Code.Length - 2, 2);
-			Code.AppendLine(");");
+			code.Append("\t\t[OperationContract(");
+			code.AppendFormat(o.IsOneWay ? "IsOneWay = true, Action = \"{0}/{1}/{2}\"" : "Action = \"{0}/{1}/{2}\", ReplyAction = \"{0}/{1}/{2}Response\"");
+			code.AppendLine(")]");
+			code.AppendFormat("\t\t{0} {1}(", o.ReturnType.HasClientType ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) ? o.ClientName : o.Name);
+			foreach (MethodParameter op in o.Parameters)
+				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+			code.AppendLine(");");
 
-			if (o.UseAsyncPattern == true)
+			if (o.UseAsyncPattern)
 			{
-				Code.Append("\t\t[OperationContract(");
-				if (o.IsOneWay == true)
-					Code.AppendFormat("IsOneWay = true, Action = \"{0}/{1}/{2}\"");
-				else
-					Code.AppendFormat("Action = \"{0}/{1}/{2}\", ReplyAction = \"{0}/{1}/{2}Response\"");
-				Code.AppendLine(")]");
-				Code.AppendFormat("\t\tIAsyncResult {0}(", UseOperationClientName(o) == true ? o.ClientName : o.Name);
-				foreach (MethodParameter OP in o.Parameters)
-					Code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(OP));
-				Code.AppendLine("AsyncCallback Callback, object AsyncState);");
-				Code.AppendFormat("\t\t{0} End{1}(IAsyncResult result);{2}", o.ReturnType.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) == true ? o.ClientName : o.Name, Environment.NewLine);
+				code.Append("\t\t[OperationContract(");
+				code.AppendFormat(o.IsOneWay ? "IsOneWay = true, Action = \"{0}/{1}/{2}\"" : "Action = \"{0}/{1}/{2}\", ReplyAction = \"{0}/{1}/{2}Response\"");
+				code.AppendLine(")]");
+				code.AppendFormat("\t\tIAsyncResult {0}(", UseOperationClientName(o) ? o.ClientName : o.Name);
+				foreach (MethodParameter op in o.Parameters)
+					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+				code.AppendLine("AsyncCallback Callback, object AsyncState);");
+				code.AppendFormat("\t\t{0} End{1}(IAsyncResult result);{2}", o.ReturnType.HasClientType ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) ? o.ClientName : o.Name, Environment.NewLine);
 			}
 
-			return Code.ToString();
+			return code.ToString();
 		}
 
+		//TODO: This functions needs format args from the Action/RelayAction
 		public static string GenerateOperationInterfaceCode45(Method o)
 		{
-			StringBuilder Code = new StringBuilder();
+			var code = new StringBuilder();
 
-			Code.Append("\t\t[OperationContract(");
-			if (o.IsOneWay == true)
-				Code.AppendFormat("IsOneWay = true, Action = \"{0}/{1}/{2}\"");
-			else
-				Code.AppendFormat("Action = \"{0}/{1}/{2}\", ReplyAction = \"{0}/{1}/{2}Response\"");
-			Code.AppendLine(")]");
-			Code.AppendFormat("\t\t{0} {1}(", o.ReturnType.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) == true ? o.ClientName : o.Name);
-			foreach (MethodParameter OP in o.Parameters)
-				Code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(OP));
-			if (o.Parameters.Count > 0) Code.Remove(Code.Length - 2, 2);
-			Code.AppendLine(");");
+			code.Append("\t\t[OperationContract(");
+			code.AppendFormat(o.IsOneWay ? "IsOneWay = true, Action = \"{0}/{1}/{2}\"" : "Action = \"{0}/{1}/{2}\", ReplyAction = \"{0}/{1}/{2}Response\"");
+			code.AppendLine(")]");
+			code.AppendFormat("\t\t{0} {1}(", o.ReturnType.HasClientType ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) ? o.ClientName : o.Name);
+			foreach (MethodParameter op in o.Parameters)
+				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+			code.AppendLine(");");
 
-			if (o.UseAwaitPattern == true)
+			if (o.UseAwaitPattern)
 			{
-				Code.Append("\t\t[OperationContract(");
-				if (o.IsOneWay == true)
-					Code.AppendFormat("IsOneWay = true, Action = \"{0}/{1}/{2}\"");
-				else
-					Code.AppendFormat("Action = \"{0}/{1}/{2}\", ReplyAction = \"{0}/{1}/{2}Response\"");
-				Code.AppendLine(")]");
-				if (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) Code.AppendFormat("\t\tSystem.Threading.Tasks.Task {0}(", UseOperationClientName(o) == true ? o.ClientName : o.Name);
-				else Code.AppendFormat("\t\tSystem.Threading.Tasks.Task<{0}> {1}Async(", o.ReturnType.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) == true ? o.ClientName : o.Name);
-				foreach (MethodParameter OP in o.Parameters)
-					Code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(OP));
-				if (o.Parameters.Count > 0) Code.Remove(Code.Length - 2, 2);
-				Code.AppendLine(");");
+				code.Append("\t\t[OperationContract(");
+				code.AppendFormat(o.IsOneWay ? "IsOneWay = true, Action = \"{0}/{1}/{2}\"" : "Action = \"{0}/{1}/{2}\", ReplyAction = \"{0}/{1}/{2}Response\"");
+				code.AppendLine(")]");
+				if (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) code.AppendFormat("\t\tSystem.Threading.Tasks.Task {0}(", UseOperationClientName(o) ? o.ClientName : o.Name);
+				else code.AppendFormat("\t\tSystem.Threading.Tasks.Task<{0}> {1}Async(", o.ReturnType.HasClientType ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) ? o.ClientName : o.Name);
+				foreach (MethodParameter op in o.Parameters)
+					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+				code.AppendLine(");");
 			}
 
-			if (o.UseAsyncPattern == true)
+			if (o.UseAsyncPattern)
 			{
-				Code.Append("\t\t[OperationContract(");
-				if (o.IsOneWay == true)
-					Code.AppendFormat("IsOneWay = true, Action = \"{0}/{1}/{2}\"");
-				else
-					Code.AppendFormat("Action = \"{0}/{1}/{2}\", ReplyAction = \"{0}/{1}/{2}Response\"");
-				Code.AppendLine(")]");
-				Code.AppendFormat("\t\tIAsyncResult {0}(", UseOperationClientName(o) == true ? o.ClientName : o.Name);
-				foreach (MethodParameter OP in o.Parameters)
-					Code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(OP));
-				Code.AppendLine("AsyncCallback Callback, object AsyncState);");
-				Code.AppendFormat("\t\t{0} End{1}(IAsyncResult result);{2}", o.ReturnType.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) == true ? o.ClientName : o.Name, Environment.NewLine);
+				code.Append("\t\t[OperationContract(");
+				code.AppendFormat(o.IsOneWay ? "IsOneWay = true, Action = \"{0}/{1}/{2}\"" : "Action = \"{0}/{1}/{2}\", ReplyAction = \"{0}/{1}/{2}Response\"");
+				code.AppendLine(")]");
+				code.AppendFormat("\t\tIAsyncResult {0}(", UseOperationClientName(o) ? o.ClientName : o.Name);
+				foreach (MethodParameter op in o.Parameters)
+					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+				code.AppendLine("AsyncCallback Callback, object AsyncState);");
+				code.AppendFormat("\t\t{0} End{1}(IAsyncResult result);{2}", o.ReturnType.HasClientType ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) ? o.ClientName : o.Name, Environment.NewLine);
 			}
 
-			return Code.ToString();
+			return code.ToString();
 		}
 
 		public static string GenerateOperationProxyCode30(Method o)
@@ -362,136 +348,134 @@ namespace WCFArchitect.Compiler.Generators
 
 		public static string GenerateOperationProxyCode40(Method o)
 		{
-			StringBuilder Code = new StringBuilder();
+			var code = new StringBuilder();
 
-			Code.AppendFormat("\t\t{0} {1}(", o.ReturnType.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) == true ? o.ClientName : o.Name);
-			foreach (MethodParameter OP in o.Parameters)
-				Code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(OP));
-			if (o.Parameters.Count > 0) Code.Remove(Code.Length - 2, 2);
-			Code.AppendLine(")");
-			Code.AppendLine("\t\t{");
-			Code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationClientName(o) == true ? o.ClientName : o.Name);
+			code.AppendFormat("\t\t{0} {1}(", o.ReturnType.HasClientType ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) ? o.ClientName : o.Name);
 			foreach (MethodParameter op in o.Parameters)
-				Code.AppendFormat("{0}, ", op.Name);
-			if (o.Parameters.Count > 0) Code.Remove(Code.Length - 2, 2);
-			Code.AppendLine(");");
-			Code.AppendLine("\t\t}");
+				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+			code.AppendLine(")");
+			code.AppendLine("\t\t{");
+			code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationClientName(o) ? o.ClientName : o.Name);
+			foreach (MethodParameter op in o.Parameters)
+				code.AppendFormat("{0}, ", op.Name);
+			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+			code.AppendLine(");");
+			code.AppendLine("\t\t}");
 
-			if (o.UseAsyncPattern == true)
+			if (o.UseAsyncPattern)
 			{
-				Code.AppendFormat("\t\tIAsyncResult {0}(", UseOperationClientName(o) == true ? o.ClientName : UseOperationClientName(o) == true ? o.ClientName : o.Name);
-				foreach (MethodParameter OP in o.Parameters)
-					Code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(OP));
-				Code.AppendLine("AsyncCallback Callback, object AsyncState)");
-				Code.AppendLine("\t\t{");
-				Code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationClientName(o) == true ? o.ClientName : UseOperationClientName(o) == true ? o.ClientName : o.Name);
+				code.AppendFormat("\t\tIAsyncResult {0}(", UseOperationClientName(o) ? o.ClientName : UseOperationClientName(o) ? o.ClientName : o.Name);
 				foreach (MethodParameter op in o.Parameters)
-					Code.AppendFormat("{0}, ", op.Name);
-				Code.AppendLine("Callback, AsyncState);");
-				Code.AppendLine("\t\t}");
-				Code.AppendFormat("\t\t{0} End{1}(IAsyncResult result){2}", o.ReturnType.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) == true ? o.ClientName : UseOperationClientName(o) == true ? o.ClientName : o.Name, Environment.NewLine);
-				Code.AppendLine("\t\t{");
-				Code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationClientName(o) == true ? o.ClientName : UseOperationClientName(o) == true ? o.ClientName : o.Name);
+					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+				code.AppendLine("AsyncCallback Callback, object AsyncState)");
+				code.AppendLine("\t\t{");
+				code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationClientName(o) ? o.ClientName : UseOperationClientName(o) ? o.ClientName : o.Name);
 				foreach (MethodParameter op in o.Parameters)
-					Code.AppendFormat("{0}, ", op.Name);
-				Code.AppendLine("Callback, AsyncState);");
-				Code.AppendLine("\t\t}");
+					code.AppendFormat("{0}, ", op.Name);
+				code.AppendLine("Callback, AsyncState);");
+				code.AppendLine("\t\t}");
+				code.AppendFormat("\t\t{0} End{1}(IAsyncResult result){2}", o.ReturnType.HasClientType ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) ? o.ClientName : UseOperationClientName(o) ? o.ClientName : o.Name, Environment.NewLine);
+				code.AppendLine("\t\t{");
+				code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationClientName(o) ? o.ClientName : UseOperationClientName(o) ? o.ClientName : o.Name);
+				foreach (MethodParameter op in o.Parameters)
+					code.AppendFormat("{0}, ", op.Name);
+				code.AppendLine("Callback, AsyncState);");
+				code.AppendLine("\t\t}");
 			}
 
-			return Code.ToString();
+			return code.ToString();
 		}
 
 		public static string GenerateOperationProxyCode45(Method o)
 		{
-			StringBuilder Code = new StringBuilder();
+			var code = new StringBuilder();
 
-			Code.AppendFormat("\t\t{0} {1}(", o.ReturnType.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) == true ? o.ClientName : o.Name);
-			foreach (MethodParameter OP in o.Parameters)
-				Code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(OP));
-			if (o.Parameters.Count > 0) Code.Remove(Code.Length - 2, 2);
-			Code.AppendLine(")");
-			Code.AppendLine("\t\t{");
-			Code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationClientName(o) == true ? o.ClientName : o.Name);
+			code.AppendFormat("\t\t{0} {1}(", o.ReturnType.HasClientType ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) ? o.ClientName : o.Name);
 			foreach (MethodParameter op in o.Parameters)
-				Code.AppendFormat("{0}, ", op.Name);
-			if (o.Parameters.Count > 0) Code.Remove(Code.Length - 2, 2);
-			Code.AppendLine(");");
-			Code.AppendLine("\t\t}");
+				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+			code.AppendLine(")");
+			code.AppendLine("\t\t{");
+			code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationClientName(o) ? o.ClientName : o.Name);
+			foreach (MethodParameter op in o.Parameters)
+				code.AppendFormat("{0}, ", op.Name);
+			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+			code.AppendLine(");");
+			code.AppendLine("\t\t}");
 
-			if (o.UseAwaitPattern == true)
+			if (o.UseAwaitPattern)
 			{
-				if (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) Code.AppendFormat("\t\tSystem.Threading.Tasks.Task {0}(", UseOperationClientName(o) == true ? o.ClientName : UseOperationClientName(o) == true ? o.ClientName : o.Name);
-				else Code.AppendFormat("\t\tSystem.Threading.Tasks.Task<{0}> {1}(", o.ReturnType.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) == true ? o.ClientName : UseOperationClientName(o) == true ? o.ClientName : o.Name);
-				foreach (MethodParameter OP in o.Parameters)
-					Code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(OP));
-				if (o.Parameters.Count > 0) Code.Remove(Code.Length - 2, 2);
-				Code.AppendLine(");");
-				Code.AppendLine("\t\t{");
-				Code.AppendFormat("\t\t\treturn base.Channel.{0}Async(", UseOperationClientName(o) == true ? o.ClientName : UseOperationClientName(o) == true ? o.ClientName : o.Name);
+				if (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) code.AppendFormat("\t\tSystem.Threading.Tasks.Task {0}(", UseOperationClientName(o) ? o.ClientName : UseOperationClientName(o) ? o.ClientName : o.Name);
+				else code.AppendFormat("\t\tSystem.Threading.Tasks.Task<{0}> {1}(", o.ReturnType.HasClientType ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) ? o.ClientName : UseOperationClientName(o) ? o.ClientName : o.Name);
 				foreach (MethodParameter op in o.Parameters)
-					Code.AppendFormat("{0}, ", op.Name);
-				if (o.Parameters.Count > 0) Code.Remove(Code.Length - 2, 2);
-				Code.AppendLine(");");
-				Code.AppendLine("\t\t}");
+					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+				code.AppendLine(");");
+				code.AppendLine("\t\t{");
+				code.AppendFormat("\t\t\treturn base.Channel.{0}Async(", UseOperationClientName(o) ? o.ClientName : UseOperationClientName(o) ? o.ClientName : o.Name);
+				foreach (MethodParameter op in o.Parameters)
+					code.AppendFormat("{0}, ", op.Name);
+				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+				code.AppendLine(");");
+				code.AppendLine("\t\t}");
 			}
 
-			if (o.UseAsyncPattern == true)
+			if (o.UseAsyncPattern)
 			{
-				Code.AppendFormat("\t\tIAsyncResult {0}(", UseOperationClientName(o) == true ? o.ClientName : UseOperationClientName(o) == true ? o.ClientName : o.Name);
-				foreach (MethodParameter OP in o.Parameters)
-					Code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(OP));
-				Code.AppendLine("AsyncCallback Callback, object AsyncState)");
-				Code.AppendLine("\t\t{");
-				Code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationClientName(o) == true ? o.ClientName : UseOperationClientName(o) == true ? o.ClientName : o.Name);
+				code.AppendFormat("\t\tIAsyncResult {0}(", UseOperationClientName(o) ? o.ClientName : UseOperationClientName(o) ? o.ClientName : o.Name);
 				foreach (MethodParameter op in o.Parameters)
-					Code.AppendFormat("{0}, ", op.Name);
-				Code.AppendLine("Callback, AsyncState);");
-				Code.AppendLine("\t\t}");
-				Code.AppendFormat("\t\t{0} End{1}(IAsyncResult result){2}", o.ReturnType.HasClientType == true ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) == true ? o.ClientName : UseOperationClientName(o) == true ? o.ClientName : o.Name, Environment.NewLine);
-				Code.AppendLine("\t\t{");
-				Code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationClientName(o) == true ? o.ClientName : UseOperationClientName(o) == true ? o.ClientName : o.Name);
+					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+				code.AppendLine("AsyncCallback Callback, object AsyncState)");
+				code.AppendLine("\t\t{");
+				code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationClientName(o) ? o.ClientName : UseOperationClientName(o) ? o.ClientName : o.Name);
 				foreach (MethodParameter op in o.Parameters)
-					Code.AppendFormat("{0}, ", op.Name);
-				Code.AppendLine("Callback, AsyncState);");
-				Code.AppendLine("\t\t}");
+					code.AppendFormat("{0}, ", op.Name);
+				code.AppendLine("Callback, AsyncState);");
+				code.AppendLine("\t\t}");
+				code.AppendFormat("\t\t{0} End{1}(IAsyncResult result){2}", o.ReturnType.HasClientType ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) ? o.ClientName : UseOperationClientName(o) ? o.ClientName : o.Name, Environment.NewLine);
+				code.AppendLine("\t\t{");
+				code.AppendFormat("\t\t\treturn base.Channel.{0}(", UseOperationClientName(o) ? o.ClientName : UseOperationClientName(o) ? o.ClientName : o.Name);
+				foreach (MethodParameter op in o.Parameters)
+					code.AppendFormat("{0}, ", op.Name);
+				code.AppendLine("Callback, AsyncState);");
+				code.AppendLine("\t\t}");
 			}
 
-			return Code.ToString();
+			return code.ToString();
 		}
 
 		public static string GenerateMethodParameterServerCode(MethodParameter o)
 		{
-			if (o.IsHidden == true) return "";
-			return string.Format("{0} {1}", DataTypeCSGenerator.GenerateType(o.Type), o.Name);
+			return o.IsHidden ? "" : string.Format("{0} {1}", DataTypeCSGenerator.GenerateType(o.Type), o.Name);
 		}
 
 		public static string GenerateMethodParameterClientCode(MethodParameter o)
 		{
-			if (o.IsHidden == true) return "";
+			if (o.IsHidden) return "";
 
 			if (o.Type.TypeMode == DataTypeMode.Class)
 			{
-				Data ptype = o.Type as Data;
-				return string.Format("{0} {1}", ptype.HasClientType == true ? DataTypeCSGenerator.GenerateType(ptype.ClientType) : DataTypeCSGenerator.GenerateType(o.Type), o.Name);
+				var ptype = o.Type as Data;
+				return string.Format("{0} {1}", ptype != null && ptype.HasClientType ? DataTypeCSGenerator.GenerateType(ptype.ClientType) : DataTypeCSGenerator.GenerateType(o.Type), o.Name);
+			}													    
+			if (o.Type.TypeMode == DataTypeMode.Struct)			    
+			{													    
+				var ptype = o.Type as Data;						    
+				return string.Format("{0} {1}", ptype != null && ptype.HasClientType ? DataTypeCSGenerator.GenerateType(ptype.ClientType) : DataTypeCSGenerator.GenerateType(o.Type), o.Name);
+			}													    
+			if (o.Type.TypeMode == DataTypeMode.Enum)			    
+			{													    
+				var ptype = o.Type as Projects.Enum;			    
+				return string.Format("{0} {1}", ptype != null && ptype.HasClientType ? DataTypeCSGenerator.GenerateType(ptype.ClientType) : DataTypeCSGenerator.GenerateType(o.Type), o.Name);
 			}
-			else if (o.Type.TypeMode == DataTypeMode.Struct)
-			{
-				Data ptype = o.Type as Data;
-				return string.Format("{0} {1}", ptype.HasClientType == true ? DataTypeCSGenerator.GenerateType(ptype.ClientType) : DataTypeCSGenerator.GenerateType(o.Type), o.Name);
-			}
-			else if (o.Type.TypeMode == DataTypeMode.Enum)
-			{
-				Projects.Enum ptype = o.Type as Projects.Enum;
-				return string.Format("{0} {1}", ptype.HasClientType == true ? DataTypeCSGenerator.GenerateType(ptype.ClientType) : DataTypeCSGenerator.GenerateType(o.Type), o.Name);
-			}
-			else
-				return string.Format("{0} {1}", DataTypeCSGenerator.GenerateType(o.Type), o.Name);
+			
+			return string.Format("{0} {1}", DataTypeCSGenerator.GenerateType(o.Type), o.Name);
 		}
 
 		public static bool UseOperationClientName(Operation o)
 		{
-			if (o.ClientName == null || o.ClientName == "") return false;
-			return true;
+			return !string.IsNullOrEmpty(o.ClientName);
 		}
 
 		public static string GeneratePropertyServerCode30(Property o)
@@ -511,54 +495,47 @@ namespace WCFArchitect.Compiler.Generators
 
 		public static string GeneratePropertyServerCode45(Property o)
 		{
-			StringBuilder Code = new StringBuilder();
-			Code.AppendFormat("\t\t{0} {1} {{ ", DataTypeCSGenerator.GenerateType(o.ReturnType), o.Name);
+			var code = new StringBuilder();
+			code.AppendFormat("\t\t{0} {1} {{ ", DataTypeCSGenerator.GenerateType(o.ReturnType), o.Name);
 			if (o.IsReadOnly == false)
 			{
 				//Write Getter Code
-				Code.Append("[OperationContract(");
-				if (o.IsOneWay == true)
-					Code.Append("IsOneWay = true, ");
+				code.Append("[OperationContract(");
+				if (o.IsOneWay)
+					code.Append("IsOneWay = true, ");
 				if (o.ProtectionLevel != System.Net.Security.ProtectionLevel.None)
-					Code.AppendFormat("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}, ", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.ProtectionLevel));
-				Code.AppendFormat("Name = \"Get{0}\"", o.Name);
-				Code.Append(")] get; ");
+					code.AppendFormat("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}, ", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.ProtectionLevel));
+				code.AppendFormat("Name = \"Get{0}\"", o.Name);
+				code.Append(")] get; ");
 
 				//Write Setter Code
-				Code.Append("[OperationContract(");
-				if (o.IsOneWay == true)
-					Code.Append("IsOneWay = true, ");
+				code.Append("[OperationContract(");
+				if (o.IsOneWay)
+					code.Append("IsOneWay = true, ");
 				if (o.ProtectionLevel != System.Net.Security.ProtectionLevel.None)
-					Code.AppendFormat("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}, ", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.ProtectionLevel));
-				Code.AppendFormat("Name = \"Set{0}\"", o.Name);
-				Code.Append(")] set;");
+					code.AppendFormat("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}, ", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.ProtectionLevel));
+				code.AppendFormat("Name = \"Set{0}\"", o.Name);
+				code.Append(")] set;");
 			}
 			else
 			{
 				//Write Getter Code
-				Code.Append("[OperationContract(");
-				if (o.IsOneWay == true)
-					Code.Append("IsOneWay = true, ");
+				code.Append("[OperationContract(");
+				if (o.IsOneWay)
+					code.Append("IsOneWay = true, ");
 				if (o.ProtectionLevel != System.Net.Security.ProtectionLevel.None)
-					Code.AppendFormat("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}, ", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.ProtectionLevel));
-				Code.AppendFormat("Name = \"Get{0}\"", o.Name);
-				Code.Append(")] get; ");
+					code.AppendFormat("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}, ", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.ProtectionLevel));
+				code.AppendFormat("Name = \"Get{0}\"", o.Name);
+				code.Append(")] get; ");
 			}
-			Code.AppendLine(" }");
+			code.AppendLine(" }");
 
-			return Code.ToString();
+			return code.ToString();
 		}
 
 		public static string GeneratePropertyClientCode(Property o)
 		{
-			if (o.IsReadOnly == false)
-			{
-				return string.Format("\t\tpublic {0} {1} {{ get {{ return Get{1}(); }} set {{ Set{1}(value); }} }}", DataTypeCSGenerator.GenerateType(o.ReturnType), o.Name);
-			}
-			else
-			{
-				return string.Format("\t\tpublic {0} {1} {{ get {{ return Get{1}(); }} }}", DataTypeCSGenerator.GenerateType(o.ReturnType), o.Name);
-			}
+			return string.Format(o.IsReadOnly == false ? "\t\tpublic {0} {1} {{ get {{ return Get{1}(); }} set {{ Set{1}(value); }} }}" : "\t\tpublic {0} {1} {{ get {{ return Get{1}(); }} }}", DataTypeCSGenerator.GenerateType(o.ReturnType), o.Name);
 		}
 	}
 }
