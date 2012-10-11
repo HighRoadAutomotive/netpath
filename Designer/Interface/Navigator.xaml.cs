@@ -40,6 +40,8 @@ namespace WCFArchitect.Interface
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")]
 		public static readonly RoutedCommand ChangeActivePageCommand = new RoutedCommand();
 
+		public Compiler Compiler { get; private set; }
+
 		static Navigator()
 		{
 			CommandManager.RegisterClassCommandBinding(typeof(Navigator), new CommandBinding(ChangeActivePageCommand, OnChangeActivePageCommandExecuted));
@@ -60,6 +62,7 @@ namespace WCFArchitect.Interface
 			FindResults = new ObservableCollection<FindReplaceResult>();
 			FindResultsCount = null;
 			ErrorCount = null;
+			Compiler = new Compiler(this);
 		}
 
 		public Navigator(Projects.Project Project)
@@ -70,6 +73,7 @@ namespace WCFArchitect.Interface
 			FindResultsCount = null;
 			ErrorCount = null;
 			this.Project = Project;
+			Compiler = new Compiler(this);
 
 			OpenProjectItem(this.Project);
 		}
@@ -91,7 +95,8 @@ namespace WCFArchitect.Interface
 
 		private void BuildProject_Click(object sender, RoutedEventArgs e)
 		{
-			//Need the compiler driver for this to work.
+			ShowOutput.IsChecked = true;
+			Compiler.Build();
 		}
 
 		private void OpenProjectItem(OpenableDocument Item)
@@ -394,6 +399,7 @@ namespace WCFArchitect.Interface
 
 		public override DataTemplate SelectTemplate(object item, DependencyObject container)
 		{
+			if (item == null) return BasicHTTPTemplate;
 			if (item.GetType() == typeof(BindingSecurityBasicHTTP)) return BasicHTTPTemplate;
 			if (item.GetType() == typeof(BindingSecurityBasicHTTP)) return BasicHTTPSTemplate;
 			if (item.GetType() == typeof(BindingSecurityMSMQ)) return MSMQTemplate;
@@ -429,6 +435,7 @@ namespace WCFArchitect.Interface
 
 		public override DataTemplate SelectTemplate(object item, DependencyObject container)
 		{
+			if (item == null) return BasicHTTPTemplate;
 			if (item.GetType() == typeof(ServiceBindingBasicHTTP)) return BasicHTTPTemplate;
 			if (item.GetType() == typeof(ServiceBindingBasicHTTPS)) return BasicHTTPSTemplate;
 			if (item.GetType() == typeof(ServiceBindingNetHTTP)) return NetHTTPTemplate;
@@ -461,16 +468,16 @@ namespace WCFArchitect.Interface
 		}
 	}
 
-	[ValueConversion(typeof(Compiler.CompileMessageSeverity), typeof(string))]
+	[ValueConversion(typeof(CompileMessageSeverity), typeof(string))]
 	public class CompileMessageSeverityImageConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			if (value == null) return "";
-			var lt = (Compiler.CompileMessageSeverity)value;
-			if (lt == Compiler.CompileMessageSeverity.ERROR) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Error.png";
-			if (lt == Compiler.CompileMessageSeverity.WARN) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Warning.png";
-			if (lt == Compiler.CompileMessageSeverity.INFO) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Message.png";
+			var lt = (CompileMessageSeverity)value;
+			if (lt == CompileMessageSeverity.ERROR) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Error.png";
+			if (lt == CompileMessageSeverity.WARN) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Warning.png";
+			if (lt == CompileMessageSeverity.INFO) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Message.png";
 			return "";
 		}
 
@@ -494,101 +501,85 @@ namespace WCFArchitect.Interface
 				var T = value as Projects.Project;
 				if (T != null) return string.IsNullOrEmpty(T.Name) ? "Project Settings" : T.Name;
 			}
-			if (valueType == typeof(Projects.ServiceBinding))
+			if (valueType == typeof(ServiceBinding))
 			{
-				Projects.ServiceBinding T = value as Projects.ServiceBinding;
-				if (T.Name == "" || T.Name == null)
+				var T = value as ServiceBinding;
+				if (T != null && string.IsNullOrEmpty(T.Name))
 					return "Service Binding";
-				else
-					return T.Name;
+				if (T != null) return T.Name;
 			}
-			if (valueType == typeof(Projects.BindingSecurity))
+			if (valueType == typeof(BindingSecurity))
 			{
-				Projects.BindingSecurity T = value as Projects.BindingSecurity;
-				if (T.Name == "" || T.Name == null)
+				var T = value as BindingSecurity;
+				if (T != null && string.IsNullOrEmpty(T.Name))
 					return "Binding Security";
-				else
-					return T.Name;
+				if (T != null) return T.Name;
 			}
-			if (valueType == typeof(Projects.Host))
+			if (valueType == typeof(Host))
 			{
-				Projects.Host T = value as Projects.Host;
-				if (T.Name == "" || T.Name == null)
+				var T = value as Host;
+				if (T != null && string.IsNullOrEmpty(T.Name))
 					return "Host";
-				else
-					return T.Name;
+				if (T != null) return T.Name;
 			}
-			if (valueType == typeof(Projects.Namespace))
+			if (valueType == typeof(Namespace))
 			{
-				Projects.Namespace T = value as Projects.Namespace;
-				if (T.Name == "" || T.Name == null)
+				var T = value as Namespace;
+				if (T != null && string.IsNullOrEmpty(T.Name))
 					return "Namespace";
-				else
-					return T.Name;
+				if (T != null) return T.Name;
 			}
-			if (valueType == typeof(Projects.Service))
+			if (valueType == typeof(Service))
 			{
-				Projects.Service T = value as Projects.Service;
-				if (T.Name == "" || T.Name == null)
+				var T = value as Service;
+				if (T != null && string.IsNullOrEmpty(T.Name))
 					return "Service";
-				else
-					return T.Name;
+				if (T != null) return T.Name;
 			}
-			if (valueType == typeof(Projects.Operation))
+			if (valueType == typeof(Method))
 			{
-				Projects.Operation T = value as Projects.Operation;
-				if (T.Name == "" || T.Name == null)
+				var T = value as Operation;
+				if (T != null && string.IsNullOrEmpty(T.Name))
 					return "Operation";
-				else
-					return T.Name;
+				if (T != null) return T.Name;
 			}
-			if (valueType == typeof(Projects.MethodParameter))
+			if (valueType == typeof(MethodParameter))
 			{
-				Projects.MethodParameter T = value as Projects.MethodParameter;
-				if (T.Name == "" || T.Name == null)
+				var T = value as MethodParameter;
+				if (T != null && string.IsNullOrEmpty(T.Name))
 					return "Operation Parameter";
-				else
-					return T.Name;
+				if (T != null) return T.Name;
 			}
-			if (valueType == typeof(Projects.Property))
+			if (valueType == typeof(Property))
 			{
-				Projects.Property T = value as Projects.Property;
-				if (T.Name == "" || T.Name == null)
+				var T = value as Property;
+				if (T != null && string.IsNullOrEmpty(T.Name))
 					return "Property";
-				else
-					return T.Name;
+				if (T != null) return T.Name;
 			}
 			if (valueType == typeof(Projects.Data))
 			{
-				Projects.Data T = value as Projects.Data;
-				if (T.Name == "" || T.Name == null)
+				var T = value as Projects.Data;
+				if (T != null && string.IsNullOrEmpty(T.Name))
 					return "Data";
-				else
-					return T.Name;
+				if (T != null) return T.Name;
 			}
-			if (valueType == typeof(Projects.DataElement))
+			if (valueType == typeof(DataElement))
 			{
-				Projects.DataElement T = value as Projects.DataElement;
-				if (T.DataType.Name == "" || T.DataType.Name == null)
+				var T = value as DataElement;
+				if (T != null && string.IsNullOrEmpty(T.DataType.Name))
 					return "Data Value";
-				else
-					return T.DataType.Name;
+				if (T != null) return T.DataType.Name;
 			}
 			if (valueType == typeof(Projects.Enum))
 			{
-				Projects.Enum T = value as Projects.Enum;
-				if (T.Name == "" || T.Name == null)
-					return "Enum";
-				else
-					return T.Name;
+				var T = value as Projects.Enum;
+				return string.IsNullOrEmpty(T.Name) ? "Enum" : T.Name;
 			}
-			if (valueType == typeof(Projects.EnumElement))
+			if (valueType == typeof(EnumElement))
 			{
-				Projects.EnumElement T = value as Projects.EnumElement;
-				if (T.Name == "" || T.Name == null)
-					return "Enum Value";
-				else
-					return T.Name;
+				var T = value as EnumElement;
+				return string.IsNullOrEmpty(T.Name) ? "Enum Value" : T.Name;
 			}
 			return "";
 		}
@@ -608,69 +599,61 @@ namespace WCFArchitect.Interface
 			Type valueType = value.GetType();
 
 			if (valueType == typeof(string)) return value;
-			if (valueType == typeof(Projects.Project) || valueType == typeof(Projects.DependencyProject))
+			if (valueType == typeof(Projects.Project))
 			{
-				Projects.Project T = value as Projects.Project;
-				if (T.Name == "" || T.Name == null)
+				var T = value as Projects.Project;
+				if (T != null && string.IsNullOrEmpty(T.Name))
 					return "Project Settings";
-				else
-					return T.Name;
+				if (T != null) return T.Name;
 			}
-			if (valueType == typeof(Projects.ServiceBinding))
+			if (valueType == typeof(ServiceBinding))
 			{
-				Projects.ServiceBinding T = value as Projects.ServiceBinding;
-				if (T.Parent.Name == "" || T.Parent.Name == null)
+				var T = value as ServiceBinding;
+				if (T != null && string.IsNullOrEmpty(T.Parent.Name))
 					return "Service Binding";
-				else
-					return T.Parent.Name;
+				if (T != null) return T.Parent.Name;
 			}
-			if (valueType == typeof(Projects.BindingSecurity))
+			if (valueType == typeof(BindingSecurity))
 			{
-				Projects.BindingSecurity T = value as Projects.BindingSecurity;
-				if (T.Parent.Name == "" || T.Parent.Name == null)
+				var T = value as BindingSecurity;
+				if (T != null && string.IsNullOrEmpty(T.Parent.Name))
 					return "Binding Security";
-				else
-					return T.Parent.Name;
+				if (T != null) return T.Parent.Name;
 			}
-			if (valueType == typeof(Projects.Host))
+			if (valueType == typeof(Host))
 			{
-				Projects.Host T = value as Projects.Host;
-				if (T.Parent.Name == "" || T.Parent.Name == null)
+				var T = value as Host;
+				if (T != null && (T.Parent != null && string.IsNullOrEmpty(T.Parent.Name)))
 					return "Host";
-				else
-					return T.Parent.Name;
+				if (T != null && T.Parent != null) return T.Parent.Name;
 			}
-			if (valueType == typeof(Projects.Namespace))
+			if (valueType == typeof(Namespace))
 			{
-				Projects.Namespace T = value as Projects.Namespace;
-				if (T.Owner.Name == "" || T.Owner.Name == null)
+				var T = value as Namespace;
+				if (T != null && string.IsNullOrEmpty(T.Owner.Name))
 					return "Namespace";
-				else
-					return T.Owner.Name;
+				if (T != null) return T.Owner.Name;
 			}
-			if (valueType == typeof(Projects.Service))
+			if (valueType == typeof(Service))
 			{
-				Projects.Service T = value as Projects.Service;
-				if (T.Parent.Owner.Name == "" || T.Parent.Owner.Name == null)
+				var T = value as Service;
+				if (T != null && string.IsNullOrEmpty(T.Parent.Owner.Name))
 					return "Service";
-				else
-					return T.Parent.Owner.Name;
+				if (T != null) return T.Parent.Owner.Name;
 			}
 			if (valueType == typeof(Projects.Data))
 			{
-				Projects.Data T = value as Projects.Data;
-				if (T.Parent.Owner.Name == "" || T.Parent.Owner.Name == null)
+				var T = value as Projects.Data;
+				if (T != null && string.IsNullOrEmpty(T.Parent.Owner.Name))
 					return "Data";
-				else
-					return T.Parent.Owner.Name;
+				if (T != null) return T.Parent.Owner.Name;
 			}
 			if (valueType == typeof(Projects.Enum))
 			{
-				Projects.Enum T = value as Projects.Enum;
-				if (T.Parent.Owner.Name == "" || T.Parent.Owner.Name == null)
+				var T = value as Projects.Enum;
+				if (T != null && string.IsNullOrEmpty(T.Parent.Owner.Name))
 					return "Enum";
-				else
-					return T.Parent.Owner.Name;
+				if (T != null) return T.Parent.Owner.Name;
 			}
 			return "";
 		}

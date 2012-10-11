@@ -159,6 +159,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Compiler.cs" />
     <Compile Include="Interface\Data\Data.xaml.cs">
       <DependentUpon>Data.xaml</DependentUpon>
     </Compile>
