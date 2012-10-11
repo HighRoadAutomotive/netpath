@@ -50,6 +50,7 @@ namespace WCFArchitect
 			OutputBlock.Inlines.Clear();
 			OutputBlock.Inlines.Add(new Run(string.Format("------ Building Project: {0} ------", NavWindow.Project.Name)));
 			OutputBlock.Inlines.Add(new LineBreak());
+			OutputBlock.Inlines.Add(new LineBreak());
 			NavWindow.ErrorCount = 0;
 			NavWindow.ErrorList.Items.Clear();
 
