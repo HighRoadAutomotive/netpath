@@ -70,7 +70,7 @@
 				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
 			<TextBlock Text="OUTPUT" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="10,5" Grid.Row="0" />
-			<RichTextBox Name="OutputBox" BorderThickness="0" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Grid.Row="1" Background="Transparent" Foreground="{StaticResource DefaultFontColor}" />
+			<RichTextBox Name="OutputBox" BorderThickness="0" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Grid.Row="1" Background="Transparent" FontSize="10pt" FontFamily="Courier New" Foreground="{StaticResource DefaultFontColor}" />
 		</Grid>
 		<Grid x:Name="ErrorGrid" Background="#DD222222" Grid.ColumnSpan="2" Grid.RowSpan="2" IsHitTestVisible="True" Visibility="Collapsed" >
 			<Grid.RowDefinitions>
