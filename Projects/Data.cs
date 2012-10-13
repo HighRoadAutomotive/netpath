@@ -81,6 +81,43 @@ namespace WCFArchitect.Projects
 			IsDirty = true;
 		}
 
+		public void AddKnownType(DataType Type, bool IsClientType = false, bool IsXAMLType = false)
+		{
+			if (IsClientType == false && IsXAMLType == false)
+			{
+				if (KnownTypes.Any(dt => dt.TypeName == Type.TypeName)) return;
+				KnownTypes.Add(Type.Copy());
+			}
+			if (IsClientType && IsXAMLType == false)
+			{
+				if (ClientType.KnownTypes.Any(dt => dt.TypeName == Type.TypeName)) return;
+				ClientType.KnownTypes.Add(Type.Copy());
+			}
+			if (IsClientType == false || IsXAMLType == false) return;
+			if (XAMLType.KnownTypes.Any(dt => dt.TypeName == Type.TypeName)) return;
+			XAMLType.KnownTypes.Add(Type.Copy());
+		}
+
+		public void RemoveKnownType(DataType Type, bool IsClientType = false, bool IsXAMLType = false)
+		{
+			if (IsClientType == false && IsXAMLType == false)
+			{
+				if (Elements.Any(dt => dt.DataType.TypeName == Type.TypeName)) return;
+				var d = KnownTypes.FirstOrDefault(a => a.TypeName == Type.TypeName);
+				if (d != null) KnownTypes.Remove(d);
+			}
+			if (IsClientType && IsXAMLType == false)
+			{
+				if (Elements.Any(dt => dt.ClientType.TypeName == Type.TypeName)) return;
+				var d = KnownTypes.FirstOrDefault(a => a.TypeName == Type.TypeName);
+				if (d != null) KnownTypes.Remove(d);
+			}
+			if (IsClientType == false || IsXAMLType == false) return;
+			if (Elements.Any(dt => dt.XAMLType.TypeName == Type.TypeName)) return;
+			var t = KnownTypes.FirstOrDefault(a => a.TypeName == Type.TypeName);
+			if (t != null) KnownTypes.Remove(t);
+		}
+
 		public IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
 		{
 			var results = new List<FindReplaceResult>();
@@ -183,7 +220,23 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty DataScopeProperty = DependencyProperty.Register("DataScope", typeof(DataScope), typeof(DataElement), new PropertyMetadata(DataScope.Public));
 
 		public DataType DataType { get { return (DataType)GetValue(DataTypeProperty); } set { SetValue(DataTypeProperty, value); } }
-		public static readonly DependencyProperty DataTypeProperty = DependencyProperty.Register("DataType", typeof(DataType), typeof(DataElement));
+		public static readonly DependencyProperty DataTypeProperty = DependencyProperty.Register("DataType", typeof(DataType), typeof(DataElement), new PropertyMetadata(DataTypeChangedCallback));
+
+		private static void DataTypeChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs p)
+		{
+			var de = o as DataElement;
+			if (de == null) return;
+			if (de.Owner == null) return;
+			var nt = p.NewValue as DataType;
+			if (nt == null) return;
+			var ot = p.OldValue as DataType;
+			if (ot == null) return;
+			
+			if (ot.TypeMode == DataTypeMode.Array && ot.CollectionGenericType.TypeMode == DataTypeMode.Primitive) de.Owner.RemoveKnownType(nt);
+			if (nt.TypeMode == DataTypeMode.Array && nt.CollectionGenericType.TypeMode == DataTypeMode.Primitive) de.Owner.AddKnownType(nt);
+			if (ot.TypeMode == DataTypeMode.Primitive && ot.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.RemoveKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
+			if (nt.TypeMode == DataTypeMode.Primitive && nt.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.AddKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
+		}
 
 		public string DataName { get { return (string)GetValue(DataNameProperty); } set { SetValue(DataNameProperty, value); } }
 		public static readonly DependencyProperty DataNameProperty = DependencyProperty.Register("DataName", typeof(string), typeof(DataElement), new PropertyMetadata(""));
@@ -201,9 +254,14 @@ namespace WCFArchitect.Projects
 				t.ClientScope = t.DataScope;
 				t.ClientType = t.DataType.Copy();
 				t.ClientName = t.DataName;
+				if (t.ClientType == null || t.Owner == null) return;
+				if (t.ClientType.TypeMode == DataTypeMode.Array && t.ClientType.CollectionGenericType.TypeMode == DataTypeMode.Primitive) t.Owner.AddKnownType(t.ClientType, true);
+				if (t.ClientType.TypeMode == DataTypeMode.Primitive && t.ClientType.Primitive == PrimitiveTypes.DateTimeOffset) t.Owner.AddKnownType(new DataType(PrimitiveTypes.DateTimeOffset), true);
 			}
 			else
 			{
+				if (t.ClientType.TypeMode == DataTypeMode.Array && t.ClientType.CollectionGenericType.TypeMode == DataTypeMode.Primitive) t.Owner.RemoveKnownType(t.ClientType, true);
+				if (t.ClientType.TypeMode == DataTypeMode.Primitive && t.ClientType.Primitive == PrimitiveTypes.DateTimeOffset) t.Owner.RemoveKnownType(new DataType(PrimitiveTypes.DateTimeOffset), true);
 				t.ClientScope = DataScope.Public;
 				t.ClientType = null;
 				t.ClientName = "";
@@ -215,7 +273,22 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty ClientScopeProperty = DependencyProperty.Register("ClientScope", typeof(DataScope), typeof(DataElement), new PropertyMetadata(DataScope.Public));
 
 		public DataType ClientType { get { return (DataType)GetValue(ClientTypeProperty); } set { SetValue(ClientTypeProperty, value); } }
-		public static readonly DependencyProperty ClientTypeProperty = DependencyProperty.Register("ClientType", typeof(DataType), typeof(DataElement));
+		public static readonly DependencyProperty ClientTypeProperty = DependencyProperty.Register("ClientType", typeof(DataType), typeof(DataElement), new PropertyMetadata(ClientTypeChangedCallback));
+
+		private static void ClientTypeChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs p)
+		{
+			var de = o as DataElement;
+			if (de == null) return;
+			var nt = p.NewValue as DataType;
+			if (nt == null) return;
+			var ot = p.OldValue as DataType;
+			if (ot == null) return;
+
+			if (ot.TypeMode == DataTypeMode.Array && ot.CollectionGenericType.TypeMode == DataTypeMode.Primitive) de.Owner.RemoveKnownType(nt, true);
+			if (nt.TypeMode == DataTypeMode.Array && nt.CollectionGenericType.TypeMode == DataTypeMode.Primitive) de.Owner.AddKnownType(nt, true);
+			if (ot.TypeMode == DataTypeMode.Primitive && ot.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.RemoveKnownType(new DataType(PrimitiveTypes.DateTimeOffset), true);
+			if (nt.TypeMode == DataTypeMode.Primitive && nt.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.AddKnownType(new DataType(PrimitiveTypes.DateTimeOffset), true);
+		}
 
 		public string ClientName { get { return (string)GetValue(ClientNameProperty); } set { SetValue(ClientNameProperty, value); } }
 		public static readonly DependencyProperty ClientNameProperty = DependencyProperty.Register("ClientName", typeof(string), typeof(DataElement), new PropertyMetadata(""));
