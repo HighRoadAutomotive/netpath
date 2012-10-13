@@ -24,7 +24,7 @@ namespace WCFArchitect.Interface.Project
 
 		public Project(Projects.Project Project)
 		{
-			this.Settings = Project;
+			Settings = Project;
 
 			InitializeComponent();
 
@@ -103,7 +103,7 @@ namespace WCFArchitect.Interface.Project
 			if (clickedListBoxItem != null) { to = clickedListBoxItem.Content as ProjectUsingNamespace; }
 
 			if (to == null) return;
-			DialogService.ShowMessageDialog(Settings, "Delete Using Namespace", "Are you sure you want to delete the '" + to.Namespace + "' Namespace?", new DialogAction("Yes", new Action(() => Settings.UsingNamespaces.Remove(to)), true), new DialogAction("No", false, true));
+			DialogService.ShowMessageDialog(Settings, "Delete Using Namespace", "Are you sure you want to delete the '" + to.Namespace + "' Namespace?", new DialogAction("Yes", () => Settings.UsingNamespaces.Remove(to), true), new DialogAction("No", false, true));
 		}
 
 		#endregion

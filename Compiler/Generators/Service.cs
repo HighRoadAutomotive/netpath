@@ -68,6 +68,8 @@ namespace WCFArchitect.Compiler.Generators
 			var code = new StringBuilder();
 			if (o.IsCallback == false)
 			{
+				foreach (DataType dt in o.KnownTypes)
+					code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
 				code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 				code.Append("\t[ServiceContract(");
 				if (o.Callback != null)
@@ -108,6 +110,9 @@ namespace WCFArchitect.Compiler.Generators
 			var code = new StringBuilder();
 
 			//Generate the Client interface
+			if (o.ClientType != null)
+				foreach (DataType dt in o.ClientType.KnownTypes)
+					code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0} interface {1}{2}", o.HasClientType ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, Environment.NewLine);
 			code.AppendLine("\t{");
@@ -154,6 +159,9 @@ namespace WCFArchitect.Compiler.Generators
 			var code = new StringBuilder();
 
 			//Generate the Client interface
+			if (o.ClientType != null)
+				foreach (DataType dt in o.ClientType.KnownTypes)
+					code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0} interface {1}{2}", o.HasClientType ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, Environment.NewLine);
 			code.AppendLine("\t{");

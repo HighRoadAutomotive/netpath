@@ -25,6 +25,12 @@ namespace WCFArchitect.Interface.Data
 		public bool CanSetType { get { return (bool)GetValue(CanSetTypeProperty); } set { SetValue(CanSetTypeProperty, value); } }
 		public static readonly DependencyProperty CanSetTypeProperty = DependencyProperty.Register("CanSetType", typeof(bool), typeof(TypeEditor), new PropertyMetadata(true));
 
+		public bool SupportInheritedTypes { get { return (bool)GetValue(SupportInheritedTypesProperty); } set { SetValue(SupportInheritedTypesProperty, value); } }
+		public static readonly DependencyProperty SupportInheritedTypesProperty = DependencyProperty.Register("SupportInheritedTypes", typeof(bool), typeof(TypeEditor), new PropertyMetadata(false));
+
+		public bool SupportKnownTypes { get { return (bool)GetValue(SupportKnownTypesProperty); } set { SetValue(SupportKnownTypesProperty, value); } }
+		public static readonly DependencyProperty SupportKnownTypesProperty = DependencyProperty.Register("SupportKnownTypes", typeof(bool), typeof(TypeEditor), new PropertyMetadata(false));
+
 		private static void OpenTypeChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
 		{
 			var t = o as TypeEditor;
@@ -38,6 +44,7 @@ namespace WCFArchitect.Interface.Data
 				return;
 			}
 			t.SelectInheritedType.Project = tdt.Parent.Owner;
+			t.SelectKnownType.Project = tdt.Parent.Owner;
 			t.IsEnabled = true;
 		}
 
@@ -90,11 +97,12 @@ namespace WCFArchitect.Interface.Data
 		{
 			if(SelectInheritedType.OpenType != null)
 				OpenType.InheritedTypes.Add(SelectInheritedType.OpenType);
+			else
+				return;
 
 			SelectInheritedType.OpenType = null;
 
-			if (OpenType.InheritedTypes.Count == 0)
-				InheritedTypes.Visibility = Visibility.Collapsed;
+			InheritedTypes.Visibility = Visibility.Visible;
 		}
 
 		private void DeleteSelectedInheritedType_Click(object sender, RoutedEventArgs e)
@@ -108,12 +116,48 @@ namespace WCFArchitect.Interface.Data
 				InheritedTypes.Visibility = Visibility.Collapsed;
 		}
 
+		private void AddKnownType_Click(object sender, RoutedEventArgs e)
+		{
+			if (SelectKnownType.OpenType != null)
+				OpenType.KnownTypes.Add(SelectKnownType.OpenType);
+			else
+				return;
+
+			SelectKnownType.OpenType = null;
+
+			KnownTypes.Visibility = Visibility.Visible;
+		}
+
+		private void DeleteSelectedKnownType_Click(object sender, RoutedEventArgs e)
+		{
+			if (sender == null) return;
+			var lbi = Globals.GetVisualParent<ListBoxItem>(sender);
+			if (lbi == null) return;
+			OpenType.KnownTypes.Remove(lbi.Content as DataType);
+
+			if (OpenType.KnownTypes.Count == 0)
+				KnownTypes.Visibility = Visibility.Collapsed;
+		}
+
 		private void ContentControl_IsKeyboardFocusWithinChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
+			if(IsKeyboardFocusWithin && SupportInheritedTypes)
+				InheritedTypesGrid.Visibility = Visibility.Visible;
+			else
+				InheritedTypesGrid.Visibility = Visibility.Collapsed;
+			if(IsKeyboardFocusWithin && SupportKnownTypes)
+				KnownTypesGrid.Visibility = Visibility.Visible;
+			else
+				KnownTypesGrid.Visibility = Visibility.Collapsed;
+
 			if (IsKeyboardFocusWithin && OpenType.InheritedTypes.Count > 0)
 				InheritedTypes.Visibility = Visibility.Visible;
 			else
 				InheritedTypes.Visibility = Visibility.Collapsed;
+			if (IsKeyboardFocusWithin && OpenType.KnownTypes.Count > 0)
+				KnownTypes.Visibility = Visibility.Visible;
+			else
+				KnownTypes.Visibility = Visibility.Collapsed;
 		}
 	}
 

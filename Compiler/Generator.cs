@@ -115,7 +115,8 @@ namespace WCFArchitect.Compiler
 				if (Framework == ProjectGenerationFramework.NET45 || Framework == ProjectGenerationFramework.WIN8) code.AppendLine(NamespaceCSGenerator.GenerateClientCode45(Project.Namespace));
 			}
 
-			string op = Server ? new Uri(new Uri(Project.AbsolutePath), System.IO.Path.Combine(OutputDirectory, Project.ServerOutputFile + ".cs")).LocalPath : new Uri(new Uri(Project.AbsolutePath), System.IO.Path.Combine(OutputDirectory, Project.ClientOutputFile + ".cs")).LocalPath;
+			string op = Server ? new Uri(new Uri(Project.AbsolutePath), System.IO.Path.Combine(OutputDirectory, Project.ServerOutputFile + ".cs")).AbsolutePath : new Uri(new Uri(Project.AbsolutePath), System.IO.Path.Combine(OutputDirectory, Project.ClientOutputFile + ".cs")).AbsolutePath;
+			op = Uri.UnescapeDataString(op);
 			Console.WriteLine(Server ? "Writing Server Output: {0}" : "Writing Client Output: {0}", op);
 			System.IO.File.WriteAllText(op, code.ToString());
 		}
@@ -160,14 +161,7 @@ namespace WCFArchitect.Compiler
 				if (t != null) return t;
 			}
 
-			if(!Equals(Namesapce, Project.Namespace)) return null;
-			foreach(DependencyProject dp in Project.DependencyProjects)
-			{
-				var t = ReferenceRetrieve(dp.Project, dp.Project.Namespace, TypeID);
-				if (t != null) return t;
-			}
-
-			return null;
+			return !Equals(Namesapce, Project.Namespace) ? null : Project.DependencyProjects.Select(dp => ReferenceRetrieve(dp.Project, dp.Project.Namespace, TypeID)).FirstOrDefault(t => t != null);
 		}
 
 		private string ReferenceGenerate(DataType Reference)

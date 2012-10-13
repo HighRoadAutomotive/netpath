@@ -26,6 +26,7 @@ namespace WCFArchitect.Projects
 	{
 		None,
 		Void,
+		Object,
 		Byte,
 		SByte,
 		Short,
@@ -68,7 +69,11 @@ namespace WCFArchitect.Projects
 				if (t.ClientType == null)
 				{
 					t.ClientType = Convert.ToBoolean(e.NewValue) == false ? null : new DataType(t.TypeMode) { ID = t.ID, Parent = t.Parent, Name = t.Name, Scope = t.Scope, Partial = t.Partial, Abstract = t.Abstract, Sealed = t.Sealed };
-					if (t.ClientType != null) t.ClientType.InheritedTypes.Add(new DataType("System.Runtime.Serialization.IExtensibleDataObject", DataTypeMode.Interface));
+					if (t.ClientType != null)
+					{
+						t.ClientType.InheritedTypes.Add(new DataType("System.Runtime.Serialization.IExtensibleDataObject", DataTypeMode.Interface));
+						t.ClientType.KnownTypes = new ObservableCollection<DataType>(t.KnownTypes);
+					}
 				}
 			}
 		}
@@ -103,6 +108,9 @@ namespace WCFArchitect.Projects
 
 		public ObservableCollection<DataType> InheritedTypes { get { return (ObservableCollection<DataType>)GetValue(InheritedTypesProperty); } set { SetValue(InheritedTypesProperty, value); } }
 		public static readonly DependencyProperty InheritedTypesProperty = DependencyProperty.Register("InheritedTypes", typeof(ObservableCollection<DataType>), typeof(DataType));
+
+		public ObservableCollection<DataType> KnownTypes { get { return (ObservableCollection<DataType>)GetValue(KnownTypesProperty); } set { SetValue(KnownTypesProperty, value); } }
+		public static readonly DependencyProperty KnownTypesProperty = DependencyProperty.Register("KnownTypes", typeof(ObservableCollection<DataType>), typeof(DataType));
 
 		public DataType CollectionGenericType { get { return (DataType)GetValue(CollectionGenericTypeProperty); } set { SetValue(CollectionGenericTypeProperty, value); } }
 		public static readonly DependencyProperty CollectionGenericTypeProperty = DependencyProperty.Register("CollectionGenericType", typeof(DataType), typeof(DataType), new PropertyMetadata(null, DataTypePropertyChangedCallback));
@@ -154,6 +162,7 @@ namespace WCFArchitect.Projects
 			HasClientType = false;
 			IsExternalType = false;
 			InheritedTypes = new ObservableCollection<DataType>();
+			KnownTypes = new ObservableCollection<DataType>();
 		}
 
 		public DataType(DataTypeMode Mode)
@@ -169,6 +178,7 @@ namespace WCFArchitect.Projects
 			HasClientType = false;
 			IsExternalType = false;
 			InheritedTypes = new ObservableCollection<DataType>();
+			KnownTypes = new ObservableCollection<DataType>();
 		}
 
 		public DataType(PrimitiveTypes Primitive)
@@ -183,6 +193,7 @@ namespace WCFArchitect.Projects
 			if (TypeMode == DataTypeMode.Primitive)
 			{
 				if (this.Primitive == PrimitiveTypes.Void) Name = "void";
+				if (this.Primitive == PrimitiveTypes.Object) Name = "object";
 				if (this.Primitive == PrimitiveTypes.Byte) Name = "byte";
 				if (this.Primitive == PrimitiveTypes.SByte) Name = "sbyte";
 				if (this.Primitive == PrimitiveTypes.Short) Name = "short";
@@ -266,6 +277,8 @@ namespace WCFArchitect.Projects
 
 			if (TypeMode == DataTypeMode.Primitive)
 			{
+				if (Primitive == PrimitiveTypes.Void) return string.Format("{0} void", ToScopeString());
+				if (Primitive == PrimitiveTypes.Object) return string.Format("{0} object", ToScopeString());
 				if (Primitive == PrimitiveTypes.Byte) return string.Format("{0} byte", ToScopeString());
 				if (Primitive == PrimitiveTypes.SByte) return string.Format("{0} sbyte", ToScopeString());
 				if (Primitive == PrimitiveTypes.Short) return string.Format("{0} short", ToScopeString());
@@ -309,6 +322,8 @@ namespace WCFArchitect.Projects
 
 			if (TypeMode == DataTypeMode.Primitive)
 			{
+				if (Primitive == PrimitiveTypes.Void) return "void";
+				if (Primitive == PrimitiveTypes.Object) return "object";
 				if (Primitive == PrimitiveTypes.Byte) return "byte";
 				if (Primitive == PrimitiveTypes.SByte) return "sbyte";
 				if (Primitive == PrimitiveTypes.Short) return "short";

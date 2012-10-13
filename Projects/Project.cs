@@ -157,7 +157,7 @@ namespace WCFArchitect.Projects
 			DefaultTypes = new List<DataType>
 				                    {
 										//Primitive Types
-					                    new DataType(PrimitiveTypes.Void),
+					                    new DataType(PrimitiveTypes.Object),
 					                    new DataType(PrimitiveTypes.Byte),
 					                    new DataType(PrimitiveTypes.SByte),
 					                    new DataType(PrimitiveTypes.Short),
@@ -216,7 +216,7 @@ namespace WCFArchitect.Projects
 			DefaultTypes = new List<DataType>
 				                    {
 										//Primitive Types
-					                    new DataType(PrimitiveTypes.Void),
+					                    new DataType(PrimitiveTypes.Object),
 					                    new DataType(PrimitiveTypes.Byte),
 					                    new DataType(PrimitiveTypes.SByte),
 					                    new DataType(PrimitiveTypes.Short),

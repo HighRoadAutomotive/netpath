@@ -53,6 +53,8 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateServerCode30(Data o)
 		{
 			var code = new StringBuilder();
+			foreach (DataType dt in o.KnownTypes)
+				code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
 			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t[DataContract(Name = \"{0}\", Namespace = \"{1}\")]{2}", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
@@ -84,6 +86,8 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateServerCode45(Data o)
 		{
 			var code = new StringBuilder();
+			foreach (DataType dt in o.KnownTypes)
+				code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
 			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]{3}", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
@@ -104,6 +108,8 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateProxyCode30(Data o)
 		{
 			var code = new StringBuilder();
+			foreach (DataType dt in o.ClientType != null ? o.ClientType.KnownTypes : o.KnownTypes)
+				code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
 			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute]");
 			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t[DataContract(Name = \"{0}\", Namespace = \"{1}\")]{2}", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI, Environment.NewLine);
@@ -139,6 +145,8 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateProxyCode40(Data o)
 		{
 			var code = new StringBuilder();
+			foreach (DataType dt in o.ClientType != null ? o.ClientType.KnownTypes : o.KnownTypes)
+				code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
 			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute]");
 			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]{3}", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI, Environment.NewLine);
@@ -168,6 +176,8 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateProxyCode45(Data o)
 		{
 			var code = new StringBuilder();
+			foreach (DataType dt in o.ClientType != null ? o.ClientType.KnownTypes : o.KnownTypes)
+				code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
 			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute]");
 			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]{3}", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name , o.Parent.URI, Environment.NewLine);

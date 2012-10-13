@@ -58,7 +58,7 @@ namespace WCFArchitect
 
 			var t = new Uri("file:///" + FilePath);
 			var b = new Uri("file:///" + BasePath);
-			return b.MakeRelativeUri(t).ToString();
+			return Uri.UnescapeDataString(b.MakeRelativeUri(t).ToString());
 		}
 
 		public static void OpenSolution(string Path, Action<bool> FinishedAction)

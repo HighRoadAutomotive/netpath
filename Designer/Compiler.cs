@@ -50,7 +50,6 @@ namespace WCFArchitect
 			OutputBlock.Inlines.Clear();
 			OutputBlock.Inlines.Add(new Run(string.Format("------ Building Project: {0} ------", NavWindow.Project.Name)));
 			OutputBlock.Inlines.Add(new LineBreak());
-			OutputBlock.Inlines.Add(new LineBreak());
 			NavWindow.ErrorCount = 0;
 			NavWindow.ErrorList.Items.Clear();
 
@@ -60,7 +59,9 @@ namespace WCFArchitect
 			cp.BeginErrorReadLine();
 			cp.BeginOutputReadLine();
 			await BuildFinished();
+			cp.Close();
 
+			if (NavWindow.ErrorCount == 0) NavWindow.ErrorCount = null;
 			OutputBlock.Inlines.Add(new Run(string.Format("====== Finished Project: {0} ======", NavWindow.Project.Name)));
 		}
 
@@ -71,7 +72,7 @@ namespace WCFArchitect
 		
 		private void StdOut(object sender, DataReceivedEventArgs e)
 		{
-			if (e.Data == null) return;
+			if (string.IsNullOrEmpty(e.Data)) return;
 
 			Application.Current.Dispatcher.Invoke(() =>
 													  {
@@ -85,15 +86,26 @@ namespace WCFArchitect
 
 		private void StdErr(object sender, DataReceivedEventArgs e)
 		{
-			if (e.Data == null) return;
+			if (string.IsNullOrEmpty(e.Data)) return;
 
 			Application.Current.Dispatcher.Invoke(() =>
 				                                      {
-					                                      var dcs = new DataContractSerializer(typeof (CompileMessage), new DataContractSerializerSettings {MaxItemsInObjectGraph = Int32.MaxValue, IgnoreExtensionDataObject = true, SerializeReadOnlyTypes = true, PreserveObjectReferences = true});
-					                                      var tr = XmlReader.Create(new StringReader(e.Data), new XmlReaderSettings() {CloseInput = true, Async = false});
-					                                      var t = (CompileMessage) dcs.ReadObject(tr);
-					                                      NavWindow.ErrorList.Items.Add(t);
-					                                      NavWindow.ErrorCount++;
+					                                      try
+					                                      {
+															  var dcs = new DataContractSerializer(typeof (CompileMessage), new DataContractSerializerSettings {MaxItemsInObjectGraph = Int32.MaxValue, IgnoreExtensionDataObject = true, SerializeReadOnlyTypes = true, PreserveObjectReferences = true});
+															  var tr = XmlReader.Create(new StringReader(e.Data), new XmlReaderSettings() {CloseInput = true, Async = false});
+															  var t = (CompileMessage) dcs.ReadObject(tr);
+															  NavWindow.ErrorList.Items.Add(t);
+															  NavWindow.ErrorCount++;
+					                                      }
+					                                      catch (Exception)
+					                                      {
+															  var tr = new Run(e.Data);
+															  OutputBlock.Inlines.Add(tr);
+															  OutputBlock.Inlines.Add(new LineBreak());
+															  if (e.Data.IndexOf("ERROR", StringComparison.InvariantCulture) >= 0) tr.Foreground = Brushes.DarkRed;
+															  if (e.Data.IndexOf("WARN", StringComparison.InvariantCulture) >= 0) tr.Foreground = Brushes.DarkOrange;
+														  }
 													  }, DispatcherPriority.Send);
 		}
 	}
