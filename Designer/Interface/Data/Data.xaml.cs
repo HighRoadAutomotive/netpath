@@ -21,20 +21,8 @@ namespace WCFArchitect.Interface.Data
 		public Projects.Data OpenType { get { return (Projects.Data)GetValue(OpenTypeProperty); } set { SetValue(OpenTypeProperty, value); } }
 		public static readonly DependencyProperty OpenTypeProperty = DependencyProperty.Register("OpenType", typeof(Projects.Data), typeof(Data));
 
-		public bool FilterScopePublic { get { return (bool)GetValue(FilterScopePublicProperty); } set { SetValue(FilterScopePublicProperty, value); } }
-		public static readonly DependencyProperty FilterScopePublicProperty = DependencyProperty.Register("FilterScopePublic", typeof(bool), typeof(Data));
-
-		public bool FilterScopeProtected { get { return (bool)GetValue(FilterScopeProtectedProperty); } set { SetValue(FilterScopeProtectedProperty, value); } }
-		public static readonly DependencyProperty FilterScopeProtectedProperty = DependencyProperty.Register("FilterScopeProtected", typeof(bool), typeof(Data));
-
-		public bool FilterScopePrivate { get { return (bool)GetValue(FilterScopePrivateProperty); } set { SetValue(FilterScopePrivateProperty, value); } }
-		public static readonly DependencyProperty FilterScopePrivateProperty = DependencyProperty.Register("FilterScopePrivate", typeof(bool), typeof(Data));
-
-		public bool FilterScopeInternal { get { return (bool)GetValue(FilterScopeInternalProperty); } set { SetValue(FilterScopeInternalProperty, value); } }
-		public static readonly DependencyProperty FilterScopeInternalProperty = DependencyProperty.Register("FilterScopeInternal", typeof(bool), typeof(Data));
-
-		public bool FilterScopeProtectedInternal { get { return (bool)GetValue(FilterScopeProtectedInternalProperty); } set { SetValue(FilterScopeProtectedInternalProperty, value); } }
-		public static readonly DependencyProperty FilterScopeProtectedInternalProperty = DependencyProperty.Register("FilterScopeProtectedInternal", typeof(bool), typeof(Data));
+		public object ActiveElement { get { return GetValue(ActiveElementProperty); } set { SetValue(ActiveElementProperty, value); } }
+		public static readonly DependencyProperty ActiveElementProperty = DependencyProperty.Register("ActiveElement", typeof(object), typeof(Data));
 
 		public Data() { }
 
@@ -91,35 +79,11 @@ namespace WCFArchitect.Interface.Data
 			AddMemberName.Text = "";
 		}
 
-		private void ElementName_PreviewKeyDown(object sender, KeyEventArgs e)
+		private void ValuesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (e.Key == Key.Up) if (ValuesList.SelectedIndex == 0) ValuesList.SelectedIndex = OpenType.Elements.Count - 1; else ValuesList.SelectedIndex--;
-			if (e.Key == Key.Down) if (ValuesList.SelectedIndex == OpenType.Elements.Count - 1) ValuesList.SelectedIndex = 0; else ValuesList.SelectedIndex++;
-
-			if (e.Key != Key.Up && e.Key != Key.Down) return;
-			var ts = ValuesList.ItemTemplate.FindName("ElementName", GetListBoxItemPresenter()) as Prospective.Controls.TextBox;
-			if (ts == null) return;
-			ts.Focus();
-		}
-
-		private void ElementName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
-		{
-			var elementName = sender as Prospective.Controls.TextBox;
-			if (elementName == null) return;
-			string t = Helpers.RegExs.ReplaceSpaces.Replace(elementName.Text ?? "", @"");
-
-			e.IsValid = Helpers.RegExs.MatchCodeName.IsMatch(t);
-		}
-
-		private void Order_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
-		{
-			var order = sender as Prospective.Controls.TextBox;
-			if (order == null) return;
-			if (string.IsNullOrEmpty(order.Text)) return;
-
-			try { Convert.ToInt32(order.Text); }
-			catch { e.IsValid = false; return; }
-			e.IsValid = true;
+			var t = ValuesList.SelectedItem as Projects.DataElement;
+			if (t == null) return;
+			ActiveElement = new DataElement(t);
 		}
 
 		private void DeleteElement_Click(object sender, RoutedEventArgs e)
@@ -294,93 +258,6 @@ namespace WCFArchitect.Interface.Data
 		}
 
 		#endregion
-
-		#region - Filtering -
-
-		private void FilterBarScope_Click(object sender, RoutedEventArgs e)
-		{
-			FilterBarScope.ContextMenu.Visibility = Visibility.Visible;
-			FilterBarScope.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
-			FilterBarScope.ContextMenu.PlacementTarget = FilterBarScope;
-			FilterBarScope.ContextMenu.IsOpen = true;
-		}
-
-		private void FilterBarScopeMenuItem_Click(object sender, RoutedEventArgs e)
-		{
-			ApplyFiter();
-		}
-
-		private void FilterBarDataType_Click(object sender, RoutedEventArgs e)
-		{
-			FilterBarDataType.Visibility = Visibility.Hidden;
-			FilterDataTypeBox.Visibility = Visibility.Visible;
-			FilterDataTypeBox.Focus();
-		}
-
-		private void FilterDataTypeBox_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			ApplyFiter();
-		}
-
-		private void FilterDataTypeBox_LostFocus(object sender, RoutedEventArgs e)
-		{
-			if (FilterDataTypeBox.Text == "")
-			{
-				FilterBarDataType.Visibility = Visibility.Visible;
-				FilterDataTypeBox.Visibility = Visibility.Hidden;
-			}
-		}
-
-		private void FilterBarName_Click(object sender, RoutedEventArgs e)
-		{
-			FilterBarName.Visibility = Visibility.Hidden;
-			FilterNameBox.Visibility = Visibility.Visible;
-			FilterNameBox.Focus();
-		}
-
-		private void FilterNameBox_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			ApplyFiter();
-		}
-
-		private void FilterNameBox_LostFocus(object sender, RoutedEventArgs e)
-		{
-			if (FilterNameBox.Text == "")
-			{
-				FilterBarName.Visibility = Visibility.Visible;
-				FilterNameBox.Visibility = Visibility.Hidden;
-			}
-		}
-
-		private void ApplyFiter()
-		{
-			FilteredScopes.Visibility = Visibility.Collapsed;
-			FilteredScopes.Text = "Filtering:";
-			if (FilterScopePublic == false) { FilteredScopes.Text += " Public,"; FilteredScopes.Visibility = Visibility.Visible; }
-			if (FilterScopeProtected == false) { FilteredScopes.Text += " Protected,"; FilteredScopes.Visibility = Visibility.Visible; }
-			if (FilterScopePrivate == false) { FilteredScopes.Text += " Private,"; FilteredScopes.Visibility = Visibility.Visible; }
-			if (FilterScopeInternal == false) { FilteredScopes.Text += " Internal,"; FilteredScopes.Visibility = Visibility.Visible; }
-			if (FilterScopeProtectedInternal == false) { FilteredScopes.Text += " Protected Internal,"; FilteredScopes.Visibility = Visibility.Visible; }
-			FilteredScopes.Text = FilteredScopes.Text.Remove(FilteredScopes.Text.Length - 1);
-
-			foreach (Projects.DataElement DE in OpenType.Elements)
-			{
-				ListBoxItem lbi = (ListBoxItem)ValuesList.ItemContainerGenerator.ContainerFromItem(DE);
-				if (lbi == null) continue;
-
-				lbi.Visibility = Visibility.Collapsed;
-				if (DE.DataScope == Projects.DataScope.Public && FilterScopePublic == false) continue;
-				if (DE.DataScope == Projects.DataScope.Protected && FilterScopeProtected == false) continue;
-				if (DE.DataScope == Projects.DataScope.Private && FilterScopePrivate == false) continue;
-				if (DE.DataScope == Projects.DataScope.Internal && FilterScopeInternal == false) continue;
-				if (DE.DataScope == Projects.DataScope.ProtectedInternal && FilterScopeProtectedInternal == false) continue;
-				if (DE.DataType.Name.IndexOf(FilterDataTypeBox.Text, StringComparison.InvariantCultureIgnoreCase) < 0) continue;
-				if (DE.DataName.IndexOf(FilterNameBox.Text, StringComparison.InvariantCultureIgnoreCase) < 0) continue;
-				lbi.Visibility = Visibility.Visible;
-			}
-		}
-
-		#endregion
 	}
 
 	[ValueConversion(typeof(Projects.DataScope), typeof(int))]
@@ -442,7 +319,7 @@ namespace WCFArchitect.Interface.Data
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			var v = (int)value;
-			return v < 0 ? "" : v.ToString();
+			return v < 0 ? "" : v.ToString(CultureInfo.InvariantCulture);
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
