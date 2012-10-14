@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test Server", "Test Server\Test Server.csproj", "{2E02C136-A9B7-45FF-9577-F6061E3A471D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test Client", "Test Client\Test Client.csproj", "{A14C9B8E-2872-450A-A711-20E62190F225}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2E02C136-A9B7-45FF-9577-F6061E3A471D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E02C136-A9B7-45FF-9577-F6061E3A471D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E02C136-A9B7-45FF-9577-F6061E3A471D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E02C136-A9B7-45FF-9577-F6061E3A471D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A14C9B8E-2872-450A-A711-20E62190F225}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A14C9B8E-2872-450A-A711-20E62190F225}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A14C9B8E-2872-450A-A711-20E62190F225}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A14C9B8E-2872-450A-A711-20E62190F225}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

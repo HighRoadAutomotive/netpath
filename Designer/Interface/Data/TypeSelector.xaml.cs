@@ -39,7 +39,7 @@ namespace WCFArchitect.Interface.Data
 				var v = e.NewValue as Projects.Project;
 				if (v != null) t.IntProject = v;
 			}
-			if (e.NewValue.GetType() == typeof(Projects.Method) || e.NewValue.GetType() == typeof(Projects.Property))
+			if (e.NewValue.GetType() == typeof(Method) || e.NewValue.GetType() == typeof(Property))
 			{
 				var v = e.NewValue as Operation;
 				if (v != null) t.IntProject = v.Owner.Parent.Owner;
@@ -59,9 +59,9 @@ namespace WCFArchitect.Interface.Data
 				var v = e.NewValue as Projects.Data;
 				if (v != null) t.IntProject = v.Parent.Owner;
 			}
-			if (e.NewValue.GetType() == typeof(DataElement))
+			if (e.NewValue.GetType() == typeof(Projects.DataElement))
 			{
-				var v = e.NewValue as DataElement;
+				var v = e.NewValue as Projects.DataElement;
 				if (v != null) t.IntProject = v.Owner.Parent.Owner;
 			}
 		}

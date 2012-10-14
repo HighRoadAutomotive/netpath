@@ -40,176 +40,59 @@
 		<pc:TextBox x:Name="AddMemberName" LabelText="Name" Grid.Row="3" Margin="490,5,105,5" Validate="AddMemberName_Validate" TextChanged="AddMemberName_TextChanged" KeyUp="AddMemberName_KeyUp" />
 		<Button x:Name="AddMember" Grid.Row="3" Margin="5" Content="Add" HorizontalAlignment="Right" Width="90" IsEnabled="False" Click="AddMember_Click" />
 		<Grid Grid.Row="4" Margin="5">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="230"/>
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
 			<Grid.RowDefinitions>
-				<RowDefinition Height="28" />
 				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Name="ItemsGridCD1" Width="0.75*" />
-					<ColumnDefinition Name="ItemsGridCD2" Width="1.25*" />
-					<ColumnDefinition Name="ItemsGridCD3" Width="2*" />
-					<ColumnDefinition MinWidth="55" MaxWidth="55" />
-					<ColumnDefinition MinWidth="55" MaxWidth="55" />
-					<ColumnDefinition MinWidth="75" MaxWidth="75" />
-					<ColumnDefinition MinWidth="30" MaxWidth="30" />
-					<ColumnDefinition MaxWidth="16" />
-				</Grid.ColumnDefinitions>
-				<Button Grid.Column="0" Padding="5,0" HorizontalContentAlignment="Stretch" x:Name="FilterBarScope" Click="FilterBarScope_Click">
-					<Grid>
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-						</Grid.RowDefinitions>
-						<TextBlock Grid.Row="0" Text="Scope" />
-						<TextBlock x:Name="FilteredScopes" Grid.Row="1" Text="Filtering:" TextTrimming="CharacterEllipsis" FontSize="10" Margin="5,0" Visibility="Collapsed" />
-					</Grid>
-					<Button.ContextMenu>
-						<ContextMenu>
-							<MenuItem IsCheckable="True" Header="Public" IsChecked="{Binding Path=FilterScopePublic}" Click="FilterBarScopeMenuItem_Click" />
-							<MenuItem IsCheckable="True" Header="Protected" IsChecked="{Binding Path=FilterScopeProtected}" Click="FilterBarScopeMenuItem_Click" />
-							<MenuItem IsCheckable="True" Header="Private" IsChecked="{Binding Path=FilterScopePrivate}" Click="FilterBarScopeMenuItem_Click" />
-							<MenuItem IsCheckable="True" Header="Internal" IsChecked="{Binding Path=FilterScopeInternal}" Click="FilterBarScopeMenuItem_Click" />
-							<MenuItem IsCheckable="True" Header="Protected Internal" IsChecked="{Binding Path=FilterScopeProtectedInternal}" Click="FilterBarScopeMenuItem_Click" />
-						</ContextMenu>
-					</Button.ContextMenu>
-				</Button>
-				<Grid Grid.Column="1" >
-					<pc:TextBox LabelText="Filter Data Type" LabelTextColor="Gray" x:Name="FilterDataTypeBox" Visibility="Collapsed" Margin="0" TextChanged="FilterDataTypeBox_TextChanged" LostFocus="FilterDataTypeBox_LostFocus" />
-					<Button Padding="5,0" HorizontalContentAlignment="Stretch" Content="Data Type" x:Name="FilterBarDataType" Click="FilterBarDataType_Click" />
-				</Grid>
-				<Grid Grid.Column="2" >
-					<pc:TextBox LabelText="Filter Name" LabelTextColor="Gray" x:Name="FilterNameBox" Visibility="Collapsed" Margin="0" TextChanged="FilterNameBox_TextChanged" LostFocus="FilterNameBox_LostFocus" />
-					<Button Padding="5,0" HorizontalContentAlignment="Stretch" Content="Name" x:Name="FilterBarName" Click="FilterBarName_Click" />
-				</Grid>
-				<Border Grid.Column="3" BorderThickness="0" Padding="5,0" Background="{StaticResource DefaultBackgroundColor}" >
-					<TextBlock Text="Order" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{StaticResource DefaultFontColor}" FontSize="{StaticResource DefaultFontSize}" />
-				</Border>
-				<Border Grid.Column="4" BorderThickness="0" Padding="5,0" Background="{StaticResource DefaultBackgroundColor}" >
-					<TextBlock Text="Hidden" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{StaticResource DefaultFontColor}" FontSize="{StaticResource DefaultFontSize}" />
-				</Border>
-				<Border Grid.Column="5" Background="{StaticResource DefaultBackgroundColor}" />
-				<Border Grid.Column="6" Background="{StaticResource DefaultBackgroundColor}" />
-				<Border Grid.Column="7" Background="{StaticResource DefaultBackgroundColor}" />
-			</Grid>
-			<ListBox Grid.Row="1" x:Name="ValuesList" ItemsSource="{Binding Path=OpenType.Elements}" AllowDrop="True" BorderThickness="0" Background="Transparent" Margin="0" SelectionMode="Single" Padding="-1,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.IsVirtualizing="False" PreviewMouseLeftButtonDown="ValuesList_PreviewMouseLeftButtonDown" PreviewMouseMove="ValuesList_PreviewMouseMove" QueryContinueDrag="ValuesList_QueryContinueDrag" DragLeave="ValuesList_DragLeave" PreviewDragOver="ValuesList_PreviewDragOver" PreviewDrop="ValuesList_Drop" >
+			<ListBox x:Name="ValuesList" ItemsSource="{Binding Path=OpenType.Elements}" AllowDrop="True" BorderThickness="0" Background="Transparent" Margin="0" SelectionMode="Single" Padding="-1,0" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.IsVirtualizing="False" SelectionChanged="ValuesList_SelectionChanged" PreviewMouseLeftButtonDown="ValuesList_PreviewMouseLeftButtonDown" PreviewMouseMove="ValuesList_PreviewMouseMove" QueryContinueDrag="ValuesList_QueryContinueDrag" DragLeave="ValuesList_DragLeave" PreviewDragOver="ValuesList_PreviewDragOver" PreviewDrop="ValuesList_Drop" >
 				<ListBox.ItemTemplate>
 					<DataTemplate DataType="{x:Type Projects:DataElement}">
 						<Grid Name="ItemGrid" >
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="*" />
-								<ColumnDefinition MinWidth="75" MaxWidth="75" />
-								<ColumnDefinition MinWidth="30" MaxWidth="30" />
+								<ColumnDefinition Width="Auto" />
 							</Grid.ColumnDefinitions>
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
 							</Grid.RowDefinitions>
-							<Grid Name="ServerGrid" Grid.Row="0">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="{Binding ElementName=ItemsGridCD1, Path=Width}" />
-									<ColumnDefinition Width="{Binding ElementName=ItemsGridCD2, Path=Width}" />
-									<ColumnDefinition Width="{Binding ElementName=ItemsGridCD3, Path=Width}" />
-									<ColumnDefinition MinWidth="55" MaxWidth="55" />
-									<ColumnDefinition MinWidth="55" MaxWidth="55" />
-								</Grid.ColumnDefinitions>
-								<ComboBox Grid.Column="0" Margin="2" SelectedIndex="{Binding Path=DataScope, Converter={StaticResource DataScopeConverter}}" VerticalContentAlignment="Center" Name="Scope" >
-									<ComboBox.Items>
-										<ComboBoxItem Content="Public" />
-										<ComboBoxItem Content="Protected" />
-										<ComboBoxItem Content="Private" />
-										<ComboBoxItem Content="Internal" />
-										<ComboBoxItem Content="Protected Internal" />
-									</ComboBox.Items>
-								</ComboBox>
-								<Data:TypeSelector Grid.Column="1" Margin="2" Name="DataType" OpenType="{Binding Path=DataType}" Project="{Binding}" LabelText="Server Type" VerticalContentAlignment="Center" ToolTip="{Binding Path=DataType}"  />
-								<pc:TextBox Grid.Column="2" Margin="2" Name="ElementName" Text="{Binding Path=DataName, UpdateSourceTrigger=PropertyChanged}" LabelText="Server Name" VerticalContentAlignment="Center" PreviewKeyDown="ElementName_PreviewKeyDown" Validate="ElementName_Validate" ToolTip="{Binding Path=DataName}" />
-								<pc:TextBox Grid.Column="3" Margin="2" Name="Order" Text="{Binding Path=Order, Converter={StaticResource ElementOrderConverter}}" Validate="Order_Validate" />
-								<CheckBox Grid.Column="4" Margin="2" IsChecked="{Binding Path=IsHidden}" Name="Hidden" HorizontalAlignment="Center" VerticalAlignment="Center" />
-							</Grid>
-							<Border x:Name="ContractContainer" Grid.Row="1" Visibility="Collapsed">
-								<Grid Name="ContractGrid" Visibility="{Binding Path=HasClientType, Converter={StaticResource BoolVisibilityConverter}}">
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="{Binding ElementName=ItemsGridCD1, Path=Width}" />
-										<ColumnDefinition Width="{Binding ElementName=ItemsGridCD2, Path=Width}" />
-										<ColumnDefinition Width="{Binding ElementName=ItemsGridCD3, Path=Width}" />
-										<ColumnDefinition MinWidth="55" MaxWidth="55" />
-										<ColumnDefinition MinWidth="55" MaxWidth="55" />
-									</Grid.ColumnDefinitions>
-									<ComboBox Grid.Column="0" Margin="2" SelectedIndex="{Binding Path=ClientScope, Converter={StaticResource DataScopeConverter}}" VerticalContentAlignment="Center" Name="ClientScope" >
-										<ComboBox.Items>
-											<ComboBoxItem Content="Public" />
-											<ComboBoxItem Content="Protected" />
-											<ComboBoxItem Content="Private" />
-											<ComboBoxItem Content="Internal" />
-											<ComboBoxItem Content="Protected Internal" />
-										</ComboBox.Items>
-									</ComboBox>
-									<Data:TypeSelector Grid.Column="1" Margin="2" Name="ClientType" OpenType="{Binding Path=ClientType}" Project="{Binding}" LabelText="Client Type" VerticalContentAlignment="Center" ToolTip="{Binding Path=ClientType}"  />
-									<pc:TextBox Grid.Column="2" Margin="2" Name="ClientElementName" Text="{Binding Path=ClientName, UpdateSourceTrigger=PropertyChanged}" LabelText="Client Name" VerticalContentAlignment="Center" PreviewKeyDown="ElementName_PreviewKeyDown" Validate="ElementName_Validate" ToolTip="{Binding Path=DataName}" />
-								</Grid>
-							</Border>
-							<Border x:Name="XAMLContainer" Grid.Row="2" Visibility="Collapsed">
-								<Grid Name="XAMLGrid" Visibility="{Binding Path=HasXAMLType, Converter={StaticResource BoolVisibilityConverter}}">
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="{Binding ElementName=ItemsGridCD1, Path=Width}" />
-										<ColumnDefinition Width="{Binding ElementName=ItemsGridCD2, Path=Width}" />
-										<ColumnDefinition Width="{Binding ElementName=ItemsGridCD3, Path=Width}" />
-										<ColumnDefinition MinWidth="55" MaxWidth="55" />
-										<ColumnDefinition MinWidth="55" MaxWidth="55" />
-									</Grid.ColumnDefinitions>
-									<ComboBox Grid.Column="0" Margin="2" SelectedIndex="{Binding Path=XAMLScope, Converter={StaticResource DataScopeConverter}}" VerticalContentAlignment="Center" Name="XAMLScope" >
-										<ComboBox.Items>
-											<ComboBoxItem Content="Public" />
-											<ComboBoxItem Content="Protected" />
-											<ComboBoxItem Content="Private" />
-											<ComboBoxItem Content="Internal" />
-											<ComboBoxItem Content="Protected Internal" />
-										</ComboBox.Items>
-									</ComboBox>
-									<Data:TypeSelector Grid.Column="1" Margin="2" Name="XAMLType" OpenType="{Binding Path=XAMLType}" Project="{Binding}" LabelText="XAML Type" VerticalContentAlignment="Center" ToolTip="{Binding Path=XAMLType}"  />
-									<pc:TextBox Grid.Column="2" Margin="2" Name="XAMLElementName" Text="{Binding Path=XAMLName, UpdateSourceTrigger=PropertyChanged}" LabelText="XAML Name" VerticalContentAlignment="Center" PreviewKeyDown="ElementName_PreviewKeyDown" Validate="ElementName_Validate" ToolTip="{Binding Path=DataName}" />
-								</Grid>
-							</Border>
-							<Border x:Name="AttributeContainer" Grid.Row="3" Visibility="Collapsed">
-								<Grid Name="AttributeGrid" Visibility="{Binding Path=IsAttached, Converter={StaticResource BoolVisibilityConverter}}">
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="150" />
-										<ColumnDefinition Width="*" />
-										<ColumnDefinition Width="*" />
-									</Grid.ColumnDefinitions>
-									<ToggleButton Grid.Column="0" Content="Enable Browsing" Margin="5" VerticalAlignment="Top" Padding="2,0" Height="23" IsChecked="{Binding Path=AttachedBrowsable}" Name="AttachedBrowsable" ToolTip="Determines if the attribute can be browsed." />
-									<ToggleButton Grid.Column="0" Content="Include Descendants" Margin="5,33,5,5" VerticalAlignment="Top" Padding="2,0" Height="23" IsChecked="{Binding Path=AttachedBrowsableIncludeDescendants}" IsEnabled="{Binding ElementName=AttachedBrowsable, Path=IsChecked}" Name="AttachedBrowsableIncludeDescendants" ToolTip="Determines if the descendants of the attribute can be browsed." />
-									<pc:TextBox Name="AttachedTargetTypes" Grid.Column="1" Margin="5,5,5,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Text="{Binding Path=AttachedTargetTypes}" ToolTip="Please enter the Target Types as a common seperated list." />
-									<pc:TextBox Name="AttachedAttributeTypes" Grid.Column="2" Margin="5,5,5,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Text="{Binding Path=AttachedAttributeTypes}" ToolTip="Please enter the Attribute Types as a common seperated list." />
-								</Grid>
-							</Border>
-							<Grid Name="OptionsGrid" Grid.Row="4" Visibility="Collapsed" >
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
-								<Grid.RowDefinitions>
-									<RowDefinition Height="Auto" />
-									<RowDefinition Height="Auto" />
-								</Grid.RowDefinitions>
-								<ToggleButton Grid.Column="0" Grid.Row="0" Content="Is Data Member" Margin="2" Padding="2,0" Height="23" IsChecked="{Binding Path=IsDataMember}" Name="IsDataMember" ToolTip="Determines if the member is marked as a member of the data contract." />
-								<ToggleButton Grid.Column="1" Grid.Row="0" Content="Is Read-Only" Margin="2" Padding="2,0" Height="23" IsChecked="{Binding Path=IsReadOnly}" Name="IsReadOnly" ToolTip="The member is read-only." />
-								<ToggleButton Grid.Column="2" Grid.Row="0" Content="Is Required" Margin="2" Padding="2,0" Height="23" IsChecked="{Binding Path=IsRequired}" IsEnabled="{Binding Path=IsDataMember}" Name="IsRequired" ToolTip="The member is required by the data contract." />
-								<ToggleButton Grid.Column="3" Grid.Row="0" Content="Emit Default Value" Margin="2" Padding="2,0" Height="23" IsChecked="{Binding Path=EmitDefaultValue}" IsEnabled="{Binding Path=IsDataMember}" Name="EmitDefaultValue" ToolTip="Force WCF emit the default value for the type if no value is provided." />
-								<ToggleButton Grid.Column="4" Grid.Row="0" Content="Custom Client Type" Margin="2" Padding="2,0" Height="23" IsChecked="{Binding Path=HasClientType}" IsEnabled="{Binding Path=IsDataMember}" Name="HasClientType" ToolTip="Specifies a custom data type and name for the client contract." />
-								<ToggleButton Grid.Column="0" Grid.Row="1" Content="Has WinForms Binding" Margin="2" Padding="2,0" Height="23" IsChecked="{Binding Path=GenerateWinFormsSupport}" IsEnabled="{Binding Path=IsDataMember}" Name="GenerateWinFormsSupport" ToolTip="Generates support for WinForms databinding." />
-								<ToggleButton Grid.Column="1" Grid.Row="1" Content="Has XAML Binding" Margin="2" Padding="2,0" Height="23" IsChecked="{Binding Path=HasXAMLType}" IsEnabled="{Binding Path=IsDataMember}" Name="GenerateXAMLBinding" ToolTip="Tells WCF Architect to generate a WPF binding for this member." />
-								<ToggleButton Grid.Column="2" Grid.Row="1" Content="Is XAML Attached" Margin="2" Padding="2,0" Height="23" IsChecked="{Binding Path=IsAttached}" IsEnabled="{Binding Path=HasXAMLType}" Name="IsAttached" ToolTip="Tells WCF Architect to generate an Attached WPF Binding for this member." />
-							</Grid>
-							<Label Grid.Column="1" Grid.RowSpan="5" Content="Click to Move" FontSize="10" FontStyle="Italic" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsHitTestVisible="True" />
-							<Button Grid.Column="2" Grid.RowSpan="5" Name="DeleteElement" Visibility="Hidden" Margin="1,1,2,1" Padding="0" Click="DeleteElement_Click">
+							<Border x:Name="ItemBG" Grid.ColumnSpan="2" Background="Transparent" CornerRadius="5" />
+							<StackPanel Orientation="Vertical" Margin="3">
+								<StackPanel Orientation="Horizontal">
+									<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Property.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
+									<TextBlock Text="{Binding Path=DataName}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="11pt" />
+								</StackPanel>
+								<TextBlock Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" >
+									<TextBlock.Text>
+										<MultiBinding StringFormat="Server: {0} {1} {2}">
+											<Binding Path="DataScope" Converter="{StaticResource DataScopeNameConverter}" ConverterParameter='True' />
+											<Binding Path="DataType.TypeName" />
+											<Binding Path="DataName" />
+										</MultiBinding>
+									</TextBlock.Text>
+								</TextBlock>
+								<TextBlock Visibility="{Binding Path=HasClientType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" >
+									<TextBlock.Text>
+										<MultiBinding StringFormat="Client: {0} {1} {2}">
+											<Binding Path="ClientScope" Converter="{StaticResource DataScopeNameConverter}" ConverterParameter='True' />
+											<Binding Path="ClientType.TypeName" />
+											<Binding Path="ClientName" />
+										</MultiBinding>
+									</TextBlock.Text>
+								</TextBlock>
+								<TextBlock Visibility="{Binding Path=HasXAMLType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" >
+									<TextBlock.Text>
+										<MultiBinding StringFormat="XAML: {0} {1} {2}">
+											<Binding Path="XAMLScope" Converter="{StaticResource DataScopeNameConverter}" ConverterParameter='True' />
+											<Binding Path="XAMLType.TypeName" />
+											<Binding Path="XAMLName" />
+										</MultiBinding>
+									</TextBlock.Text>
+								</TextBlock>
+							</StackPanel>
+							<Button Grid.Column="1" x:Name="DeleteElement" Visibility="Collapsed" Margin="0" Padding="0" Width="30" Style="{StaticResource ListItemButtonRight}" Click="DeleteElement_Click">
 								<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
 							</Button>
 						</Grid>
@@ -219,45 +102,19 @@
 									<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True" />
 									<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="False" />
 								</MultiDataTrigger.Conditions>
-								<Setter TargetName="ItemGrid" Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
-								<Setter TargetName="DeleteElement" Property="Visibility" Value="Visible" />
+								<Setter TargetName="ItemBG" Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
 							</MultiDataTrigger>
-							<MultiDataTrigger>
-								<MultiDataTrigger.Conditions>
-									<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True" />
-								</MultiDataTrigger.Conditions>
-								<Setter TargetName="ItemGrid" Property="Background" Value="#22FFFFFF" />
+							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True" >
 								<Setter TargetName="DeleteElement" Property="Visibility" Value="Visible" />
-								<Setter TargetName="OptionsGrid" Property="Visibility" Value="Visible" />
-								<Setter TargetName="ContractContainer" Property="Visibility" Value="Visible" />
-								<Setter TargetName="XAMLContainer" Property="Visibility" Value="Visible" />
-								<Setter TargetName="AttributeContainer" Property="Visibility" Value="Visible" />
-							</MultiDataTrigger>
+							</DataTrigger>
+							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True" >
+								<Setter TargetName="ItemBG" Property="Background" Value="{StaticResource DefaultSelectionColor}" />
+							</DataTrigger>
 						</DataTemplate.Triggers>
 					</DataTemplate>
 				</ListBox.ItemTemplate>
-				<ListBox.ItemContainerStyle>
-					<Style TargetType="{x:Type ListBoxItem}">
-						<Setter Property="UseLayoutRounding" Value="true"/>
-						<Setter Property="OverridesDefaultStyle" Value="true"/>
-						<Setter Property="Padding" Value="0" />
-						<Setter Property="Margin" Value="0" />
-						<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-						<Setter Property="Template">
-							<Setter.Value>
-								<ControlTemplate TargetType="{x:Type ListBoxItem}">
-									<ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-									<ControlTemplate.Triggers>
-										<Trigger Property="IsKeyboardFocusWithin" Value="True">
-											<Setter Property="IsSelected" Value="True"/>
-										</Trigger>
-									</ControlTemplate.Triggers>
-								</ControlTemplate>
-							</Setter.Value>
-						</Setter>
-					</Style>
-				</ListBox.ItemContainerStyle>
 			</ListBox>
+			<ContentPresenter Grid.Column="1" Content="{Binding Path=ActiveElement}" />
 		</Grid>
 	</Grid>
 </ContentControl>

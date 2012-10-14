@@ -163,6 +163,9 @@
     <Compile Include="Interface\Data\Data.xaml.cs">
       <DependentUpon>Data.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interface\Data\DataElement.xaml.cs">
+      <DependentUpon>DataElement.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interface\Data\TypeEditor.xaml.cs">
       <DependentUpon>TypeEditor.xaml</DependentUpon>
     </Compile>
@@ -199,6 +202,10 @@
     <Compile Include="RegExs.cs" />
     <Compile Include="Themes\DragAdorner.cs" />
     <Page Include="Interface\Data\Data.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Interface\Data\DataElement.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
