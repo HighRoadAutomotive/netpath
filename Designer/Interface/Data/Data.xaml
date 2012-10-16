@@ -35,7 +35,7 @@
 		<Data:TypeEditor OpenType="{Binding Path=OpenType.ClientType}" x:Name="ClientTypeEditor" SupportInheritedTypes="True" SupportKnownTypes="True" Grid.Row="1" Margin="100,0,0,0" />
 		<ToggleButton Grid.Row="2" Margin="5" IsChecked="{Binding Path=OpenType.HasXAMLType}" Content="XAML Type:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="90" />
 		<Data:TypeEditor OpenType="{Binding Path=OpenType.XAMLType}" x:Name="XAMLTypeEditor" CanSetType="False" SupportInheritedTypes="True" Grid.Row="2" Margin="100,0,0,0" />
-		<Label Grid.Row="3" Margin="5" Padding="8,2,0,2" Content="Add Member:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="100" />
+		<Label Grid.Row="3" Margin="-4,5,0,5" Padding="8,2,0,2" Content="Add Member:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="100" />
 		<Data:TypeSelector Project="{Binding OpenType}" x:Name="AddMemberType" LabelText="Type" Grid.Row="3" Margin="105,5,0,5" HorizontalAlignment="Left" Width="375" Selected="AddMemberType_Selected" ValidationChanged="AddMemberType_ValidationChanged" />
 		<pc:TextBox x:Name="AddMemberName" LabelText="Name" Grid.Row="3" Margin="490,5,105,5" Validate="AddMemberName_Validate" TextChanged="AddMemberName_TextChanged" KeyUp="AddMemberName_KeyUp" />
 		<Button x:Name="AddMember" Grid.Row="3" Margin="5" Content="Add" HorizontalAlignment="Right" Width="90" IsEnabled="False" Click="AddMember_Click" />

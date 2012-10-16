@@ -79,6 +79,7 @@ namespace WCFArchitect.Interface.Data
 			if (bindingExpression != null) bindingExpression.UpdateTarget();
 			t.IsSettingType = false;
 			t.HasResults = false;
+			if (e.NewValue == null) t.Results.Clear();
 		}
 
 		public bool HasResults { get { return (bool)GetValue(HasResultsProperty); } set { SetValue(HasResultsProperty, value); } }

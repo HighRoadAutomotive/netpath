@@ -76,6 +76,7 @@ namespace WCFArchitect.Interface.Data
 			OpenType.Elements.Add(new Projects.DataElement(Projects.DataScope.Public, AddMemberType.OpenType, AddMemberName.Text, OpenType));
 			AddMemberType.Focus();
 			AddMemberType.OpenType = null;
+			
 			AddMemberName.Text = "";
 		}
 
