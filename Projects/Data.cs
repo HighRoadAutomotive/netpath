@@ -66,7 +66,7 @@ namespace WCFArchitect.Projects
 			this.Name = Helpers.RegExs.ReplaceSpaces.Replace(Name, @"");
 			HasClientType = false;
 			HasXAMLType = true;
-			XAMLType = new DataType(DataTypeMode.Class) { Name = this.Name + "XAML", Scope = Scope };
+			XAMLType = new DataType(DataTypeMode.Class) { Name = this.Name + "XAML", Scope = Scope, Parent = Parent };
 			XAMLType.InheritedTypes.Add(new DataType("DependencyObject", DataTypeMode.Class));
 			this.Parent = Parent;
 		}
