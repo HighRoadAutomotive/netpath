@@ -32,10 +32,16 @@ namespace WCFArchitect.Projects
 
 	public abstract class BindingSecurity : DataType
 	{
+		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
+		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(BindingSecurity));
+
 		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(BindingSecurity), new UIPropertyMetadata(false));
 
-		public BindingSecurity() : base(DataTypeMode.Class) { }
+		public BindingSecurity() : base(DataTypeMode.Class)
+		{
+			Documentation = new Documentation { IsClass = true };
+		}
 
 		public IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
 		{

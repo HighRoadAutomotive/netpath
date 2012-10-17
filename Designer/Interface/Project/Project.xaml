@@ -42,26 +42,28 @@
 		<TextBox Height="23" Margin="190,73,10,0" Name="txtProjectNamespaceURI" VerticalAlignment="Top" Text="{Binding Path=Settings.Namespace.URI}" />
 	</Grid>
 	<GroupBox Name="ProjectGenerationOptionsGroup" Header="Project Generation Options" Margin="5" Grid.Row="1" Grid.ColumnSpan="2">
-		<Grid Margin="5,0">
+		<Grid >
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width=".5*" />
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="Auto" />
 				<ColumnDefinition Width="*" />
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
-			<CheckBox Content="Use Serializer for Faults" IsChecked="{Binding Path=Settings.ServiceSerializeFaults}" Margin="0,1,0,0" VerticalAlignment="Center" Grid.Column="0" />
-			<Label Content="Serializer:" Height="Auto" HorizontalAlignment="Left" Margin="0,4,0,0" VerticalAlignment="Top" Grid.Column="1" />
-			<ComboBox Grid.Column="1" Height="23" Margin="82,5,5,4" VerticalAlignment="Top" SelectedIndex="{Binding Path=Settings.ServiceSerializer, Converter={StaticResource ProjectServiceSerializerTypeConverter}}" >
+			<CheckBox Content="Enable Documentation Warnings" IsChecked="{Binding Path=Settings.EnableDocumentationWarnings}" Margin="10,7,10,6" VerticalAlignment="Center" Grid.Column="0" />
+			<CheckBox Content="Serialize Faults" IsChecked="{Binding Path=Settings.ServiceSerializeFaults}" Margin="10,7,10,6" VerticalAlignment="Center" Grid.Column="1" />
+			<Label Content="Serializer:" Height="Auto" HorizontalAlignment="Left" Margin="0,4,0,0" VerticalAlignment="Top" Grid.Column="2" />
+			<ComboBox Grid.Column="2" Height="23" Margin="71,5,5,0" VerticalAlignment="Top" SelectedIndex="{Binding Path=Settings.ServiceSerializer, Converter={StaticResource ProjectServiceSerializerTypeConverter}}" >
 				<ComboBox.Items>
 					<ComboBoxItem>Auto</ComboBoxItem>
 					<ComboBoxItem>Data Contract</ComboBoxItem>
 					<ComboBoxItem>XML</ComboBoxItem>
 				</ComboBox.Items>
 			</ComboBox>
-			<Label Content="Collection Type:" Height="Auto" HorizontalAlignment="Left" Margin="0,4,0,0" VerticalAlignment="Top" Grid.Column="2" />
-			<ComboBox Grid.Column="2" Height="23" Margin="127,5,0,5" VerticalAlignment="Top" SelectedIndex="{Binding Path=Settings.CollectionSerializationOverride, Converter={StaticResource ProjectCollectionTypeConverter}}" >
+			<Label Content="Collection Type:" Height="Auto" HorizontalAlignment="Left" Margin="0,4,0,0" VerticalAlignment="Top" Grid.Column="3" />
+			<ComboBox Grid.Column="3" Height="23" Margin="109,5,5,0" VerticalAlignment="Top" SelectedIndex="{Binding Path=Settings.CollectionSerializationOverride, Converter={StaticResource ProjectCollectionTypeConverter}}" >
 				<ComboBox.Items>
 					<ComboBoxItem>Auto</ComboBoxItem>
 					<ComboBoxItem>List</ComboBoxItem>

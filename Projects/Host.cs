@@ -48,11 +48,14 @@ namespace WCFArchitect.Projects
 		public System.ServiceModel.Description.PrincipalPermissionMode AuthorizationPrincipalPermissionMode { get { return (System.ServiceModel.Description.PrincipalPermissionMode)GetValue(AuthorizationPrincipalPermissionModeProperty); } set { SetValue(AuthorizationPrincipalPermissionModeProperty, value); } }
 		public static readonly DependencyProperty AuthorizationPrincipalPermissionModeProperty = DependencyProperty.Register("AuthorizationPrincipalPermissionMode", typeof(System.ServiceModel.Description.PrincipalPermissionMode), typeof(Host));
 
-		public WCFArchitect.Projects.Service Service { get { return (WCFArchitect.Projects.Service)GetValue(ServiceProperty); } set { SetValue(ServiceProperty, value); } }
-		public static readonly DependencyProperty ServiceProperty = DependencyProperty.Register("Service", typeof(WCFArchitect.Projects.Service), typeof(Host));
+		public Service Service { get { return (Service)GetValue(ServiceProperty); } set { SetValue(ServiceProperty, value); } }
+		public static readonly DependencyProperty ServiceProperty = DependencyProperty.Register("Service", typeof(Service), typeof(Host));
 
-		public ObservableCollection<WCFArchitect.Projects.HostBehavior> Behaviors { get { return (ObservableCollection<WCFArchitect.Projects.HostBehavior>)GetValue(BehaviorsProperty); } set { SetValue(BehaviorsProperty, value); } }
-		public static readonly DependencyProperty BehaviorsProperty = DependencyProperty.Register("Behaviors", typeof(ObservableCollection<WCFArchitect.Projects.HostBehavior>), typeof(Host));
+		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
+		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(Host));
+
+		public ObservableCollection<HostBehavior> Behaviors { get { return (ObservableCollection<HostBehavior>)GetValue(BehaviorsProperty); } set { SetValue(BehaviorsProperty, value); } }
+		public static readonly DependencyProperty BehaviorsProperty = DependencyProperty.Register("Behaviors", typeof(ObservableCollection<HostBehavior>), typeof(Host));
 
 		public ObservableCollection<HostEndpoint> Endpoints { get { return (ObservableCollection<HostEndpoint>)GetValue(EndpointsProperty); } set { SetValue(EndpointsProperty, value); } }
 		public static readonly DependencyProperty EndpointsProperty = DependencyProperty.Register("Endpoints", typeof(ObservableCollection<HostEndpoint>), typeof(Host));
@@ -60,7 +63,11 @@ namespace WCFArchitect.Projects
 		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Host), new UIPropertyMetadata(false));
 
-		public Host() : base(DataTypeMode.Class) { Endpoints = new ObservableCollection<HostEndpoint>(); }
+		public Host() : base(DataTypeMode.Class)
+		{
+			Endpoints = new ObservableCollection<HostEndpoint>();
+			Documentation = new Documentation { IsClass = true };
+		}
 
 		public Host(string Name, Namespace Parent) : base(DataTypeMode.Class)
 		{
@@ -72,6 +79,7 @@ namespace WCFArchitect.Projects
 			this.Name = r.Replace(Name, @"");
 			this.Parent = Parent;
 			Credentials = new HostCredentials(this);
+			Documentation = new Documentation { IsClass = true };
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)

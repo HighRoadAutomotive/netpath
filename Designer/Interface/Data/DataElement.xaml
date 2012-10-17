@@ -53,51 +53,47 @@
 		<Data:TypeSelector Grid.Column="2" Margin="5" x:Name="DataType" OpenType="{Binding Path=Element.DataType}" Project="{Binding Path=Project}" LabelText="Type" VerticalContentAlignment="Center" ToolTip="{Binding Path=Element.DataType}"  />
 		<pc:TextBox Grid.Column="3" Margin="5,5,0,5" Name="ElementName" Text="{Binding Path=Element.DataName, UpdateSourceTrigger=PropertyChanged}" LabelText="Name" VerticalContentAlignment="Center" Validate="ElementName_Validate" ToolTip="{Binding Path=Element.DataName}" />
 	</Grid>
-	<Border x:Name="ContractContainer" Grid.Row="2" >
-		<Grid Name="ContractGrid" Visibility="{Binding Path=Element.HasClientType, Converter={StaticResource BoolVisibilityConverter}}">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="75" />
-				<ColumnDefinition Width=".5*" />
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
-			<ToggleButton Grid.Column="0" Margin="0,5,5,5" Content="Client:" Padding="2,0" IsChecked="{Binding Path=Element.HasClientType}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="GenerateClientTYpe" ToolTip="Tells WCF Architect to generate a different member type for the client." />
-			<ComboBox Grid.Column="1" Margin="5" SelectedIndex="{Binding Path=Element.ClientScope, Converter={StaticResource DataScopeConverter}}" VerticalContentAlignment="Center" Name="ClientScope" >
-				<ComboBox.Items>
-					<ComboBoxItem Content="Public" />
-					<ComboBoxItem Content="Protected" />
-					<ComboBoxItem Content="Private" />
-					<ComboBoxItem Content="Internal" />
-					<ComboBoxItem Content="Protected Internal" />
-				</ComboBox.Items>
-			</ComboBox>
-			<Data:TypeSelector Grid.Column="2" Margin="5" x:Name="ClientType" OpenType="{Binding Path=Element.ClientType}" Project="{Binding}" LabelText="Type" VerticalContentAlignment="Center" ToolTip="{Binding Path=Element.ClientType}"  />
-			<pc:TextBox Grid.Column="3" Margin="5,5,0,5" Name="ClientElementName" Text="{Binding Path=Element.ClientName, UpdateSourceTrigger=PropertyChanged}" LabelText="Name" VerticalContentAlignment="Center" Validate="ElementName_Validate" ToolTip="{Binding Path=Element.ClientName}" />
-		</Grid>
-	</Border>
-	<Border x:Name="XAMLContainer" Grid.Row="3" >
-		<Grid Name="XAMLGrid" Visibility="{Binding Path=Element.HasXAMLType, Converter={StaticResource BoolVisibilityConverter}}">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="75" />
-				<ColumnDefinition Width=".5*" />
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
-			<ToggleButton Grid.Column="0" Margin="0,5,5,5" Content="XAML:" Padding="2,0" IsChecked="{Binding Path=Element.HasXAMLType}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="GenerateXAMLBinding" ToolTip="Tells WCF Architect to generate a WPF binding for this member." />
-			<ComboBox Grid.Column="1" Margin="5" SelectedIndex="{Binding Path=Element.XAMLScope, Converter={StaticResource DataScopeConverter}}" VerticalContentAlignment="Center" Name="XAMLScope" >
-				<ComboBox.Items>
-					<ComboBoxItem Content="Public" />
-					<ComboBoxItem Content="Protected" />
-					<ComboBoxItem Content="Private" />
-					<ComboBoxItem Content="Internal" />
-					<ComboBoxItem Content="Protected Internal" />
-				</ComboBox.Items>
-			</ComboBox>
-			<Data:TypeSelector Grid.Column="2" Margin="5" x:Name="XAMLType" OpenType="{Binding Path=Element.XAMLType}" Project="{Binding}" LabelText="Type" VerticalContentAlignment="Center" ToolTip="{Binding Path=Element.XAMLType}"  />
-			<pc:TextBox Grid.Column="3" Margin="5,5,0,5" Name="XAMLElementName" Text="{Binding Path=Element.XAMLName, UpdateSourceTrigger=PropertyChanged}" LabelText="Name" VerticalContentAlignment="Center" Validate="ElementName_Validate" ToolTip="{Binding Path=Element.XMALName}" />
-		</Grid>
-	</Border>
-	<Grid Name="OptionsGrid" Grid.Row="4">
+	<Grid Name="ContractGrid" Grid.Row="2" >
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="75" />
+			<ColumnDefinition Width=".5*" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+		<ToggleButton Grid.Column="0" Margin="0,5,5,5" Content="Client:" Padding="2,0" IsChecked="{Binding Path=Element.HasClientType}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="GenerateClientTYpe" ToolTip="Tells WCF Architect to generate a different member type for the client." />
+		<ComboBox Grid.Column="1" Margin="5" SelectedIndex="{Binding Path=Element.ClientScope, Converter={StaticResource DataScopeConverter}}" VerticalContentAlignment="Center" Name="ClientScope" >
+			<ComboBox.Items>
+				<ComboBoxItem Content="Public" />
+				<ComboBoxItem Content="Protected" />
+				<ComboBoxItem Content="Private" />
+				<ComboBoxItem Content="Internal" />
+				<ComboBoxItem Content="Protected Internal" />
+			</ComboBox.Items>
+		</ComboBox>
+		<Data:TypeSelector Grid.Column="2" Margin="5" x:Name="ClientType" OpenType="{Binding Path=Element.ClientType}" Project="{Binding}" LabelText="Type" VerticalContentAlignment="Center" ToolTip="{Binding Path=Element.ClientType}"  />
+		<pc:TextBox Grid.Column="3" Margin="5,5,0,5" Name="ClientElementName" Text="{Binding Path=Element.ClientName, UpdateSourceTrigger=PropertyChanged}" LabelText="Name" VerticalContentAlignment="Center" Validate="ElementName_Validate" ToolTip="{Binding Path=Element.ClientName}" />
+	</Grid>
+	<Grid Name="XAMLGrid" Grid.Row="3" >
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="75" />
+			<ColumnDefinition Width=".5*" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+		<ToggleButton Grid.Column="0" Margin="0,5,5,5" Content="XAML:" Padding="2,0" IsChecked="{Binding Path=Element.HasXAMLType}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="GenerateXAMLBinding" ToolTip="Tells WCF Architect to generate a WPF binding for this member." />
+		<ComboBox Grid.Column="1" Margin="5" SelectedIndex="{Binding Path=Element.XAMLScope, Converter={StaticResource DataScopeConverter}}" VerticalContentAlignment="Center" Name="XAMLScope" >
+			<ComboBox.Items>
+				<ComboBoxItem Content="Public" />
+				<ComboBoxItem Content="Protected" />
+				<ComboBoxItem Content="Private" />
+				<ComboBoxItem Content="Internal" />
+				<ComboBoxItem Content="Protected Internal" />
+			</ComboBox.Items>
+		</ComboBox>
+		<Data:TypeSelector Grid.Column="2" Margin="5" x:Name="XAMLType" OpenType="{Binding Path=Element.XAMLType}" Project="{Binding}" LabelText="Type" VerticalContentAlignment="Center" ToolTip="{Binding Path=Element.XAMLType}"  />
+		<pc:TextBox Grid.Column="3" Margin="5,5,0,5" Name="XAMLElementName" Text="{Binding Path=Element.XAMLName, UpdateSourceTrigger=PropertyChanged}" LabelText="Name" VerticalContentAlignment="Center" Validate="ElementName_Validate" ToolTip="{Binding Path=Element.XAMLName}" />
+	</Grid>
+	<Grid Name="OptionsGrid" Grid.Row="4" Margin="0,5,0,0" >
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="*" />
@@ -119,22 +115,20 @@
 		<ToggleButton Grid.Column="2" Grid.Row="2" Content="Attached XAML" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.IsAttached}" IsEnabled="{Binding Path=Element.HasXAMLType}" Name="IsAttached" ToolTip="Tells WCF Architect to generate an Attached WPF Binding for this member." />
 		<pc:TextBox Grid.Column="3" Grid.Row="2" Margin="5,5,0,5" Name="Order" LabelText="Order" Text="{Binding Path=Element.Order, Converter={StaticResource ElementOrderConverter}}" Validate="Order_Validate" />
 	</Grid>
-	<Border x:Name="AttributeContainer" Grid.Row="5" >
-		<Grid Name="AttributeGrid" Visibility="{Binding Path=Element.IsAttached, Converter={StaticResource BoolVisibilityConverter}}">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="150" />
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-			</Grid.RowDefinitions>
-			<Label Grid.ColumnSpan="2" Grid.Row="0" Content="Attached XAML Attributes" FontSize="12pt" />
-			<ToggleButton Grid.Row="1" Grid.Column="0" Content="Enable Browsing" Margin="0,5,5,5" VerticalAlignment="Top" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.AttachedBrowsable}" Name="AttachedBrowsable" ToolTip="Determines if the attribute can be browsed." />
-			<ToggleButton Grid.Row="1" Grid.Column="0" Content="Include Descendants" Margin="0,35,5,5" VerticalAlignment="Top" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.AttachedBrowsableIncludeDescendants}" IsEnabled="{Binding ElementName=AttachedBrowsable, Path=IsChecked}" Name="AttachedBrowsableIncludeDescendants" ToolTip="Determines if the descendants of the attribute can be browsed." />
-			<pc:TextBox Name="AttachedTargetTypes" Grid.Row="1" Grid.Column="1" Margin="5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Text="{Binding Path=Element.AttachedTargetTypes}" ToolTip="Please enter the Target Types as a common seperated list." />
-			<pc:TextBox Name="AttachedAttributeTypes" Grid.Row="1" Grid.Column="2" Margin="5,5,0,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Text="{Binding Path=Element.AttachedAttributeTypes}" ToolTip="Please enter the Attribute Types as a common seperated list." />
-		</Grid>
-	</Border>
+	<Grid Name="AttributeGrid" Grid.Row="5" Margin="0,5,0,0" Visibility="{Binding Path=Element.IsAttached, Converter={StaticResource BoolVisibilityConverter}}" >
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="150" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		<Label Grid.ColumnSpan="2" Grid.Row="0" Content="Attached XAML Attributes" FontSize="12pt" />
+		<ToggleButton Grid.Row="1" Grid.Column="0" Content="Enable Browsing" Margin="0,5,5,5" VerticalAlignment="Top" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.AttachedBrowsable}" Name="AttachedBrowsable" ToolTip="Determines if the attribute can be browsed." />
+		<ToggleButton Grid.Row="1" Grid.Column="0" Content="Include Descendants" Margin="0,35,5,5" VerticalAlignment="Top" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.AttachedBrowsableIncludeDescendants}" IsEnabled="{Binding ElementName=AttachedBrowsable, Path=IsChecked}" Name="AttachedBrowsableIncludeDescendants" ToolTip="Determines if the descendants of the attribute can be browsed." />
+		<pc:TextBox Name="AttachedTargetTypes" Grid.Row="1" Grid.Column="1" Margin="5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Text="{Binding Path=Element.AttachedTargetTypes}" ToolTip="Please enter the Target Types as a common seperated list." />
+		<pc:TextBox Name="AttachedAttributeTypes" Grid.Row="1" Grid.Column="2" Margin="5,5,0,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Text="{Binding Path=Element.AttachedAttributeTypes}" ToolTip="Please enter the Attribute Types as a common seperated list." />
+	</Grid>
 </Grid>

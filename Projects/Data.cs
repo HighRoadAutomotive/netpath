@@ -45,6 +45,9 @@ namespace WCFArchitect.Projects
 		public bool IsReference { get { return (bool)GetValue(IsReferenceProperty); } set { SetValue(IsReferenceProperty, value); } }
 		public static readonly DependencyProperty IsReferenceProperty = DependencyProperty.Register("IsReference", typeof(bool), typeof(Data));
 
+		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
+		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(Data));
+
 		public ObservableCollection<DataElement> Elements { get { return (ObservableCollection<DataElement>)GetValue(ElementsProperty); } set { SetValue(ElementsProperty, value); } }
 		public static readonly DependencyProperty ElementsProperty = DependencyProperty.Register("Elements", typeof(ObservableCollection<DataElement>), typeof(Data));
 
@@ -56,6 +59,7 @@ namespace WCFArchitect.Projects
 
 		public Data() : base(DataTypeMode.Class)
 		{
+			Documentation = new Documentation { IsClass = true };
 		}
 
 		public Data(string Name, Namespace Parent) : base(DataTypeMode.Class)
@@ -69,6 +73,7 @@ namespace WCFArchitect.Projects
 			XAMLType = new DataType(DataTypeMode.Class) { Name = this.Name + "XAML", Scope = Scope, Parent = Parent };
 			XAMLType.InheritedTypes.Add(new DataType("DependencyObject", DataTypeMode.Class));
 			this.Parent = Parent;
+			Documentation = new Documentation { IsClass = true };
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -377,6 +382,9 @@ namespace WCFArchitect.Projects
 		public string AttachedAttributeTypes { get { return (string)GetValue(AttachedAttributeTypesProperty); } set { SetValue(AttachedAttributeTypesProperty, value); } }
 		public static readonly DependencyProperty AttachedAttributeTypesProperty = DependencyProperty.Register("AttachedAttributeTypes", typeof(string), typeof(DataElement), new PropertyMetadata(""));
 
+		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
+		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(DataElement));
+
 		public bool IsTreeExpanded { get { return false; } set { } }
 		public Data Owner { get; set; }
 
@@ -390,6 +398,7 @@ namespace WCFArchitect.Projects
 			AttachedAttributeTypes = "";
 			EmitDefaultValue = false;
 			Order = -1;
+			Documentation = new Documentation { IsProperty = true };
 		}
 
 		public DataElement(DataScope Scope, DataType DataType, string Name, Data Owner)
@@ -404,6 +413,7 @@ namespace WCFArchitect.Projects
 			AttachedAttributeTypes = "";
 			EmitDefaultValue = false;
 			Order = -1;
+			Documentation = new Documentation { IsProperty = true };
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
