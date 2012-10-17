@@ -133,6 +133,8 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode45(BindingSecurityBasicHTTP o)
 		{
 			var code = new StringBuilder();
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
 			code.AppendLine("\t{");
@@ -155,6 +157,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendFormat("\t\t\tsec.Transport.Realm = \"{0}\";{1}", o.TransportRealm, Environment.NewLine);
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t}");
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
 			return code.ToString();
 		}
 
@@ -178,6 +181,8 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode45(BindingSecurityBasicHTTPS o)
 		{
 			var code = new StringBuilder();
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
 			code.AppendLine("\t{");
@@ -200,6 +205,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendFormat("\t\t\tsec.Transport.Realm = \"{0}\";{1}", o.TransportRealm, Environment.NewLine);
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t}");
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
 			return code.ToString();
 		}
 	}
@@ -228,6 +234,8 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode45(BindingSecurityWSHTTP o)
 		{
 			var code = new StringBuilder();
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
 			code.AppendLine("\t{");
@@ -254,6 +262,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendFormat("\t\t\tsec.Transport.Realm = \"{0}\";{1}", o.TransportRealm, Environment.NewLine);
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t}");
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
 			return code.ToString();
 		}
 
@@ -292,6 +301,8 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode45(BindingSecurityWSDualHTTP o)
 		{
 			var code = new StringBuilder();
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
 			code.AppendLine("\t{");
@@ -310,6 +321,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendFormat("\t\t\tsec.Message.NegotiateServiceCredential = {0};{1}", o.MessageNegotiateServiceCredential ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t}");
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
 			return code.ToString();
 		}
 
@@ -348,6 +360,8 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode45(BindingSecurityWSFederationHTTP o)
 		{
 			var code = new StringBuilder();
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
 			code.AppendLine("\t{");
@@ -374,6 +388,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendFormat("\t\t\tsec.Message.NegotiateServiceCredential = {0};{1}", o.MessageNegotiateServiceCredential ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t}");
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
 			return code.ToString();
 		}
 
@@ -402,6 +417,8 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode35(BindingSecurityTCP o)
 		{
 			var code = new StringBuilder();
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
 			code.AppendLine("\t{");
@@ -422,6 +439,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendFormat("\t\t\tsec.Transport.ProtectionLevel = ProtectionLevel.{0};{1}", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.TransportProtectionLevel), Environment.NewLine);
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t}");
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
 			return code.ToString();
 		}
 
@@ -433,6 +451,8 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode45(BindingSecurityTCP o)
 		{
 			var code = new StringBuilder();
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
 			code.AppendLine("\t{");
@@ -471,6 +491,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendLine("\t\t\tsec.Transport.ExtendedProtectionPolicy = Policy;");
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t}");
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
 			return code.ToString();
 		}
 
@@ -509,6 +530,8 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode45(BindingSecurityNamedPipe o)
 		{
 			var code = new StringBuilder();
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
 			code.AppendLine("\t{");
@@ -523,6 +546,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendFormat("\t\t\tsec.Transport.ProtectionLevel = ProtectionLevel.{0};{1}", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.TransportProtectionLevel), Environment.NewLine);
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t}");
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
 			return code.ToString();
 		}
 
@@ -561,6 +585,8 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode45(BindingSecurityMSMQ o)
 		{
 			var code = new StringBuilder();
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
 			code.AppendLine("\t{");
@@ -585,6 +611,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendFormat("\t\t\tsec.Transport.MsmqSecureHashAlgorithm = MsmqSecureHashAlgorithm.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqSecureHashAlgorithm), o.TransportSecureHashAlgorithm), Environment.NewLine);
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t}");
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
 			return code.ToString();
 		}
 
@@ -623,6 +650,8 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode45(BindingSecurityPeerTCP o)
 		{
 			var code = new StringBuilder();
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
 			code.AppendLine("\t{");
@@ -637,6 +666,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendFormat("\t\t\tsec.Transport.CredentialType = PeerTransportCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.PeerTransportCredentialType), o.TransportClientCredentialType), Environment.NewLine);
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t}");
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
 			return code.ToString();
 		}
 
@@ -665,6 +695,8 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode35(BindingSecurityWebHTTP o)
 		{
 			var code = new StringBuilder();
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
 			code.AppendLine("\t{");
@@ -683,6 +715,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendFormat("\t\t\tsec.Transport.Realm = \"{0}\";{1}", o.TransportRealm, Environment.NewLine);
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t}");
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
 			return code.ToString();
 		}
 
@@ -694,6 +727,8 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode45(BindingSecurityWebHTTP o)
 		{
 			var code = new StringBuilder();
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
 			code.AppendLine("\t{");
@@ -728,6 +763,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendLine("\t\t\tsec.Transport.ExtendedProtectionPolicy = Policy;");
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t}");
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
 			return code.ToString();
 		}
 
@@ -766,6 +802,8 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode45(BindingSecurityMSMQIntegration o)
 		{
 			var code = new StringBuilder();
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
 			code.AppendLine("\t{");
@@ -786,6 +824,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendFormat("\t\t\tsec.Transport.MsmqSecureHashAlgorithm = MsmqSecureHashAlgorithm.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqSecureHashAlgorithm), o.TransportSecureHashAlgorithm), Environment.NewLine);
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t}");
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
 			return code.ToString();
 		}
 

@@ -86,6 +86,9 @@ namespace WCFArchitect.Compiler
 			}
 			code.AppendLine();
 
+			//Disable XML documentation warnings 
+			if (!Project.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
+
 			//Scan, verify, and generate references
 			var refs = new List<DataType>(ReferenceScan(Project.Namespace));
 			foreach(Projects.Enum e in refs)
@@ -114,6 +117,9 @@ namespace WCFArchitect.Compiler
 				if (Framework == ProjectGenerationFramework.NET40Client) code.AppendLine(NamespaceCSGenerator.GenerateClientCode40Client(Project.Namespace));
 				if (Framework == ProjectGenerationFramework.NET45 || Framework == ProjectGenerationFramework.WIN8) code.AppendLine(NamespaceCSGenerator.GenerateClientCode45(Project.Namespace));
 			}
+
+			//Reenable XML documentation warnings
+			if (!Project.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
 
 			string op = Server ? new Uri(new Uri(Project.AbsolutePath), System.IO.Path.Combine(OutputDirectory, Project.ServerOutputFile + ".cs")).AbsolutePath : new Uri(new Uri(Project.AbsolutePath), System.IO.Path.Combine(OutputDirectory, Project.ClientOutputFile + ".cs")).AbsolutePath;
 			op = Uri.UnescapeDataString(op);

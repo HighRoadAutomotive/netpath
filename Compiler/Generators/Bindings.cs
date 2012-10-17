@@ -140,6 +140,8 @@ namespace WCFArchitect.Compiler.Generators
 		{
 			Type t = o.GetType();
 			var code = new StringBuilder();
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
 			code.AppendLine("\t{");
@@ -394,6 +396,7 @@ namespace WCFArchitect.Compiler.Generators
 			}
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t}");
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
 			return code.ToString();
 		}
 
@@ -406,6 +409,8 @@ namespace WCFArchitect.Compiler.Generators
 		{
 			Type t = o.GetType();
 			var code = new StringBuilder();
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
 			code.AppendLine("\t{");
@@ -727,6 +732,7 @@ namespace WCFArchitect.Compiler.Generators
 			}
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t}");
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
 			return code.ToString();
 		}
 		public static string GenerateCode35Client(ServiceBinding o)
