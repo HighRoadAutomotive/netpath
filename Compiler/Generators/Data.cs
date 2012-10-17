@@ -53,6 +53,7 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateServerCode30(Data o)
 		{
 			var code = new StringBuilder();
+			code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			foreach (DataType dt in o.KnownTypes)
 				code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
 			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
@@ -86,6 +87,7 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateServerCode45(Data o)
 		{
 			var code = new StringBuilder();
+			code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			foreach (DataType dt in o.KnownTypes)
 				code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
 			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
@@ -108,6 +110,7 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateProxyCode30(Data o)
 		{
 			var code = new StringBuilder();
+			code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			foreach (DataType dt in o.ClientType != null ? o.ClientType.KnownTypes : o.KnownTypes)
 				code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
 			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute]");
@@ -145,6 +148,7 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateProxyCode40(Data o)
 		{
 			var code = new StringBuilder();
+			code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			foreach (DataType dt in o.ClientType != null ? o.ClientType.KnownTypes : o.KnownTypes)
 				code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
 			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute]");
@@ -176,6 +180,7 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateProxyCode45(Data o)
 		{
 			var code = new StringBuilder();
+			code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			foreach (DataType dt in o.ClientType != null ? o.ClientType.KnownTypes : o.KnownTypes)
 				code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
 			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute]");
@@ -214,6 +219,7 @@ namespace WCFArchitect.Compiler.Generators
 
 			var code = new StringBuilder();
 			code.AppendFormat("\t//XAML Integration Object for the {0} DTO{1}", o.HasClientType ? o.ClientType.Name : o.Name, Environment.NewLine);
+			code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o.XAMLType), Environment.NewLine);
 			code.AppendLine("\t{");
@@ -307,6 +313,7 @@ namespace WCFArchitect.Compiler.Generators
 
 			var code = new StringBuilder();
 			code.AppendFormat("\t//XAML Integration Object for the {0} DTO{1}", o.HasClientType ? o.ClientType.Name : o.Name, Environment.NewLine);
+			code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o.XAMLType), Environment.NewLine);
 			code.AppendLine("\t{");
@@ -383,6 +390,7 @@ namespace WCFArchitect.Compiler.Generators
 		{
 			if (o.IsHidden) return "";
 			var code = new StringBuilder();
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("\t\tprivate {0} m_{1};{2}", DataTypeCSGenerator.GenerateType(o.DataType), o.DataName, Environment.NewLine);
 			if (o.IsDataMember)
 			{
@@ -413,6 +421,7 @@ namespace WCFArchitect.Compiler.Generators
 		{
 			if (o.IsHidden) return "";
 			var code = new StringBuilder();
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			if (o.IsDataMember)
 			{
 				code.AppendFormat("\t\t[DataMember({0}{1}{2}Name = \"{3}\")] ", o.EmitDefaultValue ? "EmitDefaultValue = false, " : "", o.IsRequired ? "IsRequired = true, " : "", o.Order >= 0 ? string.Format("Order = {0}, ", o.Order) : "", o.HasClientType ? o.ClientName : o.DataName);
@@ -431,6 +440,7 @@ namespace WCFArchitect.Compiler.Generators
 		{
 			if (o.IsHidden) return "";
 			var code = new StringBuilder();
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("\t\tprivate {0} {1}Field;{2}", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.DataName, Environment.NewLine);
 			if (o.IsDataMember)
 			{
@@ -464,6 +474,7 @@ namespace WCFArchitect.Compiler.Generators
 		{
 			if (o.IsHidden) return "";
 			var code = new StringBuilder();
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("\t\tprivate {0} {1}Field;{2}", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.DataName, Environment.NewLine);
 			if (o.IsDataMember)
 			{
@@ -492,6 +503,7 @@ namespace WCFArchitect.Compiler.Generators
 		{
 			if (o.IsHidden) return "";
 			var code = new StringBuilder();
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("\t\tprivate {0} {1}Field;{2}", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.DataName, Environment.NewLine);
 			if (o.IsDataMember)
 			{

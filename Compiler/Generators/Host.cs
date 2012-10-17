@@ -69,6 +69,8 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.Service == null) return "";
 
 			var code = new StringBuilder();
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0} : ServiceHost{1}", DataTypeCSGenerator.GenerateType(o), Environment.NewLine);
 			code.AppendLine("\t{");
@@ -310,6 +312,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendLine("\t\t}");
 			#endregion
 
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
 			code.AppendLine("\t}");
 
 			return code.ToString();
@@ -320,6 +323,8 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.Service == null) return "";
 
 			var code = new StringBuilder();
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0} : ServiceHost{1}", DataTypeCSGenerator.GenerateType(o), Environment.NewLine);
 			code.AppendLine("\t{");
@@ -562,6 +567,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendLine("\t\t}");
 			#endregion
 
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
 			code.AppendLine("\t}");
 
 			return code.ToString();
@@ -577,6 +583,8 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.Service == null) return "";
 
 			var code = new StringBuilder();
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0} : ServiceHost{1}", DataTypeCSGenerator.GenerateType(o), Environment.NewLine);
 			code.AppendLine("\t{");
@@ -813,6 +821,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendLine("\t\t}");
 			#endregion
 
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
 			code.AppendLine("\t}");
 
 			return code.ToString();
@@ -848,6 +857,8 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.Service == null) return "";
 
 			var code = new StringBuilder();
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateType(o), Environment.NewLine);
 			code.AppendLine("\t{");
@@ -858,6 +869,7 @@ namespace WCFArchitect.Compiler.Generators
 			foreach (HostEndpoint he in o.Endpoints)
 				code.AppendLine(GenerateEndpointClientCode(he));
 
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
 			code.AppendLine("\t}");
 
 			return code.ToString();

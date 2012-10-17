@@ -36,6 +36,7 @@ namespace WCFArchitect.Projects
 
 		public Service() : base(DataTypeMode.Class)
 		{
+			Documentation = new Documentation { IsClass = true };
 		}
 
 		public Service(string Name, Namespace Parent) : base(DataTypeMode.Class)

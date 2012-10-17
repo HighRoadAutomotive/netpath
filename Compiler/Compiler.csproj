@@ -65,6 +65,7 @@
     <Compile Include="Generators\Bindings.cs" />
     <Compile Include="Generators\Data.cs" />
     <Compile Include="Generators\DataType.cs" />
+    <Compile Include="Generators\Documentation.cs" />
     <Compile Include="Generators\Enum.cs" />
     <Compile Include="Generators\Host.cs" />
     <Compile Include="Generators\Namespace.cs" />

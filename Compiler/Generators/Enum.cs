@@ -92,6 +92,7 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateServerCode30(Projects.Enum o)
 		{
 			var code = new StringBuilder();
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.Append("\t[DataContract(");
 			if (o.HasClientType) code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
@@ -120,6 +121,7 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateServerCode45(Projects.Enum o)
 		{
 			var code = new StringBuilder();
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.Append("\t[DataContract(");
 			if (o.IsReference) code.AppendFormat("IsReference = true ");
@@ -172,6 +174,7 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateProxyCode30(Projects.Enum o)
 		{
 			var code = new StringBuilder();
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.Append("\t[DataContract(");
 			if (o.HasClientType) code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
@@ -200,6 +203,7 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateProxyCode45(Projects.Enum o)
 		{
 			var code = new StringBuilder();
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.Append("\t[DataContract(");
 			if (o.IsReference) code.AppendFormat("IsReference = true ");

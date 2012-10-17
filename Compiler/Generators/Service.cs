@@ -66,6 +66,7 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateServerCode45(Service o)
 		{
 			var code = new StringBuilder();
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			if (o.IsCallback == false)
 			{
 				foreach (DataType dt in o.KnownTypes)
@@ -110,6 +111,7 @@ namespace WCFArchitect.Compiler.Generators
 			var code = new StringBuilder();
 
 			//Generate the Client interface
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			if (o.ClientType != null)
 				foreach (DataType dt in o.ClientType.KnownTypes)
 					code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
@@ -159,6 +161,7 @@ namespace WCFArchitect.Compiler.Generators
 			var code = new StringBuilder();
 
 			//Generate the Client interface
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			if (o.ClientType != null)
 				foreach (DataType dt in o.ClientType.KnownTypes)
 					code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
@@ -220,6 +223,9 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateOperationServerCode45(Method o)
 		{
 			var code = new StringBuilder();
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
+			foreach (MethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
+				code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 
 			code.Append("\t\t[OperationContract(");
 			if (o.IsInitiating && o.IsTerminating == false)
@@ -277,6 +283,9 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateOperationInterfaceCode40(Method o)
 		{
 			var code = new StringBuilder();
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
+			foreach (MethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
+				code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 
 			code.Append("\t\t[OperationContract(");
 			code.AppendFormat(o.IsOneWay ? "IsOneWay = true, Action = \"{0}/{1}/{2}\"" : "Action = \"{0}/{1}/{2}\", ReplyAction = \"{0}/{1}/{2}Response\"");
@@ -306,6 +315,9 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateOperationInterfaceCode45(Method o)
 		{
 			var code = new StringBuilder();
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
+			foreach (MethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
+				code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 
 			code.Append("\t\t[OperationContract(");
 			code.AppendFormat(o.IsOneWay ? "IsOneWay = true, Action = \"{0}/{1}/{2}\"" : "Action = \"{0}/{1}/{2}\", ReplyAction = \"{0}/{1}/{2}Response\"");
@@ -357,6 +369,9 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateOperationProxyCode40(Method o)
 		{
 			var code = new StringBuilder();
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
+			foreach (MethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
+				code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 
 			code.AppendFormat("\t\t{0} {1}(", o.ReturnType.HasClientType ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) ? o.ClientName : o.Name);
 			foreach (MethodParameter op in o.Parameters)
@@ -398,6 +413,9 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateOperationProxyCode45(Method o)
 		{
 			var code = new StringBuilder();
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
+			foreach (MethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
+				code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 
 			code.AppendFormat("\t\t{0} {1}(", o.ReturnType.HasClientType ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), UseOperationClientName(o) ? o.ClientName : o.Name);
 			foreach (MethodParameter op in o.Parameters)
@@ -504,6 +522,7 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GeneratePropertyServerCode45(Property o)
 		{
 			var code = new StringBuilder();
+			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("\t\t{0} {1} {{ ", DataTypeCSGenerator.GenerateType(o.ReturnType), o.Name);
 			if (o.IsReadOnly == false)
 			{
