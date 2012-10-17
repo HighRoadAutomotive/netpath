@@ -28,6 +28,9 @@ namespace WCFArchitect.Projects
 		public string ConfigurationName { get { return (string)GetValue(ConfigurationNameProperty); } set { SetValue(ConfigurationNameProperty, value); } }
 		public static readonly DependencyProperty ConfigurationNameProperty = DependencyProperty.Register("ConfigurationName", typeof(string), typeof(Service));
 
+		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
+		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(Service));
+
 		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Service));
 
@@ -45,6 +48,7 @@ namespace WCFArchitect.Projects
 			ID = Guid.NewGuid();
 			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			ConfigurationName = "";
+			Documentation = new Documentation { IsClass = true };
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -166,8 +170,9 @@ namespace WCFArchitect.Projects
 
 		public System.Net.Security.ProtectionLevel ProtectionLevel { get { return (System.Net.Security.ProtectionLevel)GetValue(ProtectionLevelProperty); } set { SetValue(ProtectionLevelProperty, value); } }
 		public static readonly DependencyProperty ProtectionLevelProperty = DependencyProperty.Register("ProtectionLevel", typeof(System.Net.Security.ProtectionLevel), typeof(Operation));
-		
-		[IgnoreDataMember()] public string Declaration { get { return (string)GetValue(DeclarationProperty); } protected set { SetValue(DeclarationPropertyKey, value); } }
+
+		[IgnoreDataMember()]
+		public string Declaration { get { return (string)GetValue(DeclarationProperty); } protected set { SetValue(DeclarationPropertyKey, value); } }
 		private static readonly DependencyPropertyKey DeclarationPropertyKey = DependencyProperty.RegisterReadOnly("Declaration", typeof(string), typeof(Operation), new PropertyMetadata(""));
 		public static readonly DependencyProperty DeclarationProperty = DeclarationPropertyKey.DependencyProperty;
 		
@@ -286,6 +291,9 @@ namespace WCFArchitect.Projects
 
 	public class Property : Operation
 	{
+		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
+		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(Property));
+
 		public bool IsReadOnly { get { return (bool)GetValue(IsReadOnlyProperty); } set { SetValue(IsReadOnlyProperty, value); } }
 		public static readonly DependencyProperty IsReadOnlyProperty = DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(Property));
 
@@ -294,6 +302,7 @@ namespace WCFArchitect.Projects
 		public Property(string Name, Service Owner) : base(Name, Owner)
 		{
 			ReturnType = new DataType(PrimitiveTypes.String);
+			Documentation = new Documentation { IsProperty = true };
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -325,6 +334,9 @@ namespace WCFArchitect.Projects
 		public bool IsTerminating { get { return (bool)GetValue(IsTerminatingProperty); } set { SetValue(IsTerminatingProperty, value); } }
 		public static readonly DependencyProperty IsTerminatingProperty = DependencyProperty.Register("IsTerminating", typeof(bool), typeof(Method));
 
+		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
+		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(Method));
+
 		public ObservableCollection<MethodParameter> Parameters { get { return (ObservableCollection<MethodParameter>)GetValue(ParametersProperty); } set { SetValue(ParametersProperty, value); } }
 		public static readonly DependencyProperty ParametersProperty = DependencyProperty.Register("Parameters", typeof(ObservableCollection<MethodParameter>), typeof(Method));
 
@@ -334,6 +346,7 @@ namespace WCFArchitect.Projects
 		{
 			this.Parameters = new ObservableCollection<MethodParameter>();
 			this.ReturnType = new DataType(PrimitiveTypes.Void);
+			Documentation = new Documentation { IsMethod = true };
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -383,6 +396,9 @@ namespace WCFArchitect.Projects
 		public bool IsHidden { get { return (bool)GetValue(IsHiddenProperty); } set { SetValue(IsHiddenProperty, value); } }
 		public static readonly DependencyProperty IsHiddenProperty = DependencyProperty.Register("IsHidden", typeof(bool), typeof(MethodParameter));
 
+		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
+		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(Enum));
+
 		//Internal Use
 		public Service Owner { get; set; }
 
@@ -391,6 +407,7 @@ namespace WCFArchitect.Projects
 			ID = Guid.NewGuid();
 			Type = new DataType(PrimitiveTypes.String);
 			IsHidden = false;
+			Documentation = new Documentation {IsParameter = true};
 		}
 
 		public MethodParameter(DataType Type, string Name, Service Owner)
@@ -400,6 +417,7 @@ namespace WCFArchitect.Projects
 			this.Name = Name;
 			IsHidden = false;
 			this.Owner = Owner;
+			Documentation = new Documentation { IsParameter = true };
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)

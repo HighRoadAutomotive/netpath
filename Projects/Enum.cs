@@ -19,6 +19,9 @@ namespace WCFArchitect.Projects
 		public DataType BaseType { get { return (DataType)GetValue(BaseTypeProperty); } set { SetValue(BaseTypeProperty, value); } }
 		public static readonly DependencyProperty BaseTypeProperty = DependencyProperty.Register("BaseType", typeof(DataType), typeof(Enum));
 
+		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
+		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(Enum));
+
 		public ObservableCollection<EnumElement> Elements { get { return (ObservableCollection<EnumElement>)GetValue(ElementsProperty); } set { SetValue(ElementsProperty, value); } }
 		public static readonly DependencyProperty ElementsProperty = DependencyProperty.Register("Elements", typeof(ObservableCollection<EnumElement>), typeof(Enum));
 
@@ -39,6 +42,7 @@ namespace WCFArchitect.Projects
 			HasClientType = false;
 			this.Parent = Parent;
 			BaseType = new DataType(PrimitiveTypes.Int);
+			Documentation = new Documentation { IsClass = true };
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)

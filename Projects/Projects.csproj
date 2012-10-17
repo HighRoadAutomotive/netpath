@@ -97,6 +97,7 @@
     <Compile Include="CompilerMessages.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="DataType.cs" />
+    <Compile Include="Documentation.cs" />
     <Compile Include="Enum.cs" />
     <Compile Include="FindReplace.cs" />
     <Compile Include="Host.cs" />

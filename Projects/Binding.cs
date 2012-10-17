@@ -49,10 +49,16 @@ namespace WCFArchitect.Projects
 		public TimeSpan SendTimeout { get { return (TimeSpan)GetValue(SendTimeoutProperty); } set { SetValue(SendTimeoutProperty, value); } }
 		public static readonly DependencyProperty SendTimeoutProperty = DependencyProperty.Register("SendTimeout", typeof(TimeSpan), typeof(ServiceBinding));
 
+		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
+		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(ServiceBinding));
+
 		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(ServiceBinding), new UIPropertyMetadata(false));
 
-		public ServiceBinding() : base(DataTypeMode.Class) { }
+		public ServiceBinding() : base(DataTypeMode.Class)
+		{
+			Documentation = new Documentation { IsClass = true };
+		}
 
 		public IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
 		{
