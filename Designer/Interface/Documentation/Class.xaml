@@ -1,0 +1,29 @@
+﻿<Grid x:Class="WCFArchitect.Interface.Documentation.Class"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      mc:Ignorable="d" d:DesignHeight="150" d:DesignWidth="700">
+	<Grid.RowDefinitions>
+		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
+	</Grid.RowDefinitions>
+	<Grid.ColumnDefinitions>
+		<ColumnDefinition Width="*" />
+		<ColumnDefinition Width="*" />
+		<ColumnDefinition Width="*" />
+	</Grid.ColumnDefinitions>
+	<Label Grid.Row="0" Content="Documentation" FontSize="12pt" />
+	<StackPanel x:Name="SummaryBlock" Grid.Row="1" Grid.Column="0" Orientation="Vertical" Margin="0,0,5,0">
+		<Label Content="Summary" />
+		<TextBox Text="{Binding Path=Documentation.Summary}" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" Height="75" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" />
+	</StackPanel>
+	<StackPanel x:Name="RemarksBlock" Grid.Row="1" Grid.Column="1" Orientation="Vertical" Margin="5,0">
+		<Label Content="Remarks" />
+		<TextBox Text="{Binding Path=Documentation.Remarks}" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" Height="75" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" />
+	</StackPanel>
+	<StackPanel x:Name="ExampleBlock" Grid.Row="1" Grid.Column="2" Orientation="Vertical" Margin="5,0,0,0">
+		<Label Content="Example" />
+		<TextBox Text="{Binding Path=Documentation.Example}" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" Height="75" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" />
+	</StackPanel>
+</Grid>

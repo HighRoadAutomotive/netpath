@@ -35,8 +35,9 @@ namespace WCFArchitect.Interface.Data
 		{
 			var elementName = sender as Prospective.Controls.TextBox;
 			if (elementName == null) return;
-			string t = Helpers.RegExs.ReplaceSpaces.Replace(elementName.Text ?? "", @"");
+			if(string.IsNullOrEmpty(elementName.Text)) return;
 
+			string t = Helpers.RegExs.ReplaceSpaces.Replace(elementName.Text ?? "", @"");
 			e.IsValid = Helpers.RegExs.MatchCodeName.IsMatch(t);
 		}
 
@@ -49,6 +50,20 @@ namespace WCFArchitect.Interface.Data
 			try { Convert.ToInt32(order.Text); }
 			catch { e.IsValid = false; return; }
 			e.IsValid = true;
+		}
+
+		private void GenerateClientType_Unchecked(object sender, RoutedEventArgs e)
+		{
+			ClientScope.SelectedIndex = -1;
+			ClientType.OpenType = null;
+			ClientName.Text = "";
+		}
+
+		private void GenerateXAMLBinding_Unchecked(object sender, RoutedEventArgs e)
+		{
+			XAMLScope.SelectedIndex = -1;
+			XAMLType.OpenType = null;
+			XAMLName.Text = "";
 		}
 	}
 }

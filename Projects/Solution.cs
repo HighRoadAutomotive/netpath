@@ -19,7 +19,7 @@ namespace WCFArchitect.Projects
 		public ObservableCollection<string> Projects { get { return (ObservableCollection<string>)GetValue(ProjectsProperty); } set { SetValue(ProjectsProperty, value); } }
 		public static readonly DependencyProperty ProjectsProperty = DependencyProperty.Register("Projects", typeof(ObservableCollection<string>), typeof(Solution));
 
-		public string AbsolutePath { get; private set; }
+		[IgnoreDataMember] public string AbsolutePath { get; private set; }
 
 		public Solution() { }
 

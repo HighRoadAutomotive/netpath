@@ -181,6 +181,12 @@
     <Compile Include="Interface\Dialogs\NewSolution.xaml.cs">
       <DependentUpon>NewSolution.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interface\Documentation\Class.xaml.cs">
+      <DependentUpon>Class.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Documentation\Standard.xaml.cs">
+      <DependentUpon>Standard.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interface\Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>
     </Compile>
@@ -228,6 +234,14 @@
     <Page Include="Interface\Dialogs\NewSolution.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Interface\Documentation\Class.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Interface\Documentation\Standard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Interface\Main.xaml">
       <SubType>Designer</SubType>

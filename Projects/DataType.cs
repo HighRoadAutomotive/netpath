@@ -135,9 +135,9 @@ namespace WCFArchitect.Projects
 		public DataTypeMode TypeMode { get { return (DataTypeMode)GetValue(TypeModeProperty); } set { SetValue(TypeModeProperty, value); } }
 		public static readonly DependencyProperty TypeModeProperty = DependencyProperty.Register("TypeMode", typeof(DataTypeMode), typeof(DataType), new PropertyMetadata(DataTypeMode.Class));
 
-		public bool IsExternalType { get; private set; }
-		public PrimitiveTypes Primitive { get; private set; }
-		public bool IsTypeReference { get; private set; }
+		public bool IsExternalType { get; set; }
+		public PrimitiveTypes Primitive { get; set; }
+		public bool IsTypeReference { get; set; }
 
 		[IgnoreDataMember] public bool DataHasExtensionData { get { return InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0); } }
 		[IgnoreDataMember] public bool ClientHasExtensionData { get { return HasClientType && (ClientType.InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0)); } }

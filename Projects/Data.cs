@@ -15,6 +15,7 @@ namespace WCFArchitect.Projects
 		Private,
 		Internal,
 		ProtectedInternal,
+		Disabled,
 	}
 
 	public class Data : DataType
@@ -51,6 +52,7 @@ namespace WCFArchitect.Projects
 		public ObservableCollection<DataElement> Elements { get { return (ObservableCollection<DataElement>)GetValue(ElementsProperty); } set { SetValue(ElementsProperty, value); } }
 		public static readonly DependencyProperty ElementsProperty = DependencyProperty.Register("Elements", typeof(ObservableCollection<DataElement>), typeof(Data));
 
+		//System
 		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Data));
 
@@ -265,10 +267,13 @@ namespace WCFArchitect.Projects
 			}
 			else
 			{
-				if (t.ClientType.TypeMode == DataTypeMode.Array && t.ClientType.CollectionGenericType.TypeMode == DataTypeMode.Primitive) t.Owner.RemoveKnownType(t.ClientType, true);
-				if (t.ClientType.TypeMode == DataTypeMode.Primitive && t.ClientType.Primitive == PrimitiveTypes.DateTimeOffset) t.Owner.RemoveKnownType(new DataType(PrimitiveTypes.DateTimeOffset), true);
-				t.ClientScope = DataScope.Public;
-				t.ClientType = null;
+				var tct = e.OldValue as DataType;
+				if (tct != null)
+				{
+					if (tct.TypeMode == DataTypeMode.Array && tct.CollectionGenericType.TypeMode == DataTypeMode.Primitive) t.Owner.RemoveKnownType(tct, true);
+					if (tct.TypeMode == DataTypeMode.Primitive && tct.Primitive == PrimitiveTypes.DateTimeOffset) t.Owner.RemoveKnownType(new DataType(PrimitiveTypes.DateTimeOffset), true);
+				}
+				t.ClientScope = DataScope.Disabled;
 				t.ClientName = "";
 				t.IsAttached = false;
 			}
@@ -314,7 +319,7 @@ namespace WCFArchitect.Projects
 			}
 			else
 			{
-				t.XAMLScope = DataScope.Public;
+				t.XAMLScope = DataScope.Disabled;
 				t.XAMLType = null;
 				t.XAMLName = "";
 				t.IsAttached = false;
@@ -385,6 +390,10 @@ namespace WCFArchitect.Projects
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(DataElement));
 
+		//System
+		public bool IsSelected { get { return (bool)GetValue(IsSelectedProperty); } set { SetValue(IsSelectedProperty, value); } }
+		public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.Register("IsSelected", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
+
 		public bool IsTreeExpanded { get { return false; } set { } }
 		public Data Owner { get; set; }
 
@@ -393,6 +402,9 @@ namespace WCFArchitect.Projects
 			ID = Guid.NewGuid();
 			DataType = new DataType(PrimitiveTypes.String);
 			DataScope = DataScope.Public;
+			ClientScope = DataScope.Disabled;
+			HasClientType = false;
+			ClientScope = DataScope.Disabled;
 			HasXAMLType = true;
 			AttachedTargetTypes = "";
 			AttachedAttributeTypes = "";
@@ -408,6 +420,8 @@ namespace WCFArchitect.Projects
 			this.Owner = Owner;
 			DataName = Name;
 			DataScope = Scope;
+			HasClientType = false;
+			ClientScope = DataScope.Disabled;
 			HasXAMLType = true;
 			AttachedTargetTypes = "";
 			AttachedAttributeTypes = "";

@@ -75,7 +75,7 @@ namespace WCFArchitect.Interface
 			this.Project = Project;
 			Compiler = new Compiler(this);
 
-			OpenProjectItem(this.Project);
+			OpenProjectItem(Project.Namespace.GetLastSelectedItem() ?? this.Project);
 		}
 
 		private void NewItem_Click(object sender, RoutedEventArgs e)
@@ -112,6 +112,7 @@ namespace WCFArchitect.Interface
 				ActivePage = new Data.Data(Item as Projects.Data);
 
 			//Need to make all item pages before this function can be completed.
+			Project.Namespace.SetSelectedItem(Item);
 		}
 
 		private void RemoveProject()

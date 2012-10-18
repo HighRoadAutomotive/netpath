@@ -20,7 +20,7 @@
 		</ResourceDictionary>
 	</ContentControl.Resources>
 	<Grid Name="BG">
-		<pc:TextBox x:Name="TypeName" Text="{Binding Path=OpenType, Mode=OneWay, TargetNullValue=''}" LabelText="{Binding Path=LabelText}" TextChanged="TypeName_TextChanged" KeyUp="TypeName_KeyUp" />
+		<pc:TextBox x:Name="TypeName" Text="{Binding Path=OpenType, Mode=OneWay, TargetNullValue=''}" LabelText="{Binding Path=LabelText}" IsEnabled="{Binding IsEnabled}" TextChanged="TypeName_TextChanged" KeyDown="TypeName_KeyDown" KeyUp="TypeName_KeyUp" />
 		<Popup PlacementTarget="{Binding ElementName=BG}" x:Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" IsOpen="{Binding HasResults}" Margin="0" MaxHeight="200" MinWidth="250" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom" UseLayoutRounding="{Binding UseLayoutRounding}" >
 			<Border x:Name="DropDownBorder" Width="{Binding ActualWidth}" BorderThickness="0" Background="{Binding Background}" HorizontalAlignment="Stretch" UseLayoutRounding="{Binding UseLayoutRounding}">
 				<ListBox x:Name="TypesList" ItemsSource="{Binding Path=Results}" Padding="0" BorderThickness="0" BorderBrush="Transparent" Background="{StaticResource ItemSelectorBackgroundColor}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" VirtualizingPanel.IsVirtualizing="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" KeyUp="TypesList_KeyUp" MouseUp="TypesList_MouseUp" >

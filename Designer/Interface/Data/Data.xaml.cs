@@ -31,6 +31,9 @@ namespace WCFArchitect.Interface.Data
 			OpenType = Data;
 
 			InitializeComponent();
+
+			Projects.DataElement t = OpenType.Elements.FirstOrDefault(a => a.IsSelected);
+			if (t != null) ValuesList.SelectedItem = t;
 		}
 
 		private void AddMemberType_ValidationChanged(object Sender, RoutedEventArgs E)
@@ -55,7 +58,7 @@ namespace WCFArchitect.Interface.Data
 		private void AddMemberName_KeyUp(object sender, KeyEventArgs e)
 		{
 			if (e.Key == Key.Enter)
-				if (AddMemberType.OpenType == null || AddMemberName.Text == "")
+				if (!string.IsNullOrEmpty(AddMemberName.Text))
 					AddMember_Click(sender, null);
 		}
 
@@ -73,17 +76,27 @@ namespace WCFArchitect.Interface.Data
 		private void AddMember_Click(object sender, RoutedEventArgs e)
 		{
 			if (AddMember.IsEnabled == false) return;
-			OpenType.Elements.Add(new Projects.DataElement(Projects.DataScope.Public, AddMemberType.OpenType, AddMemberName.Text, OpenType));
+			
+			var t = new Projects.DataElement(Projects.DataScope.Public, AddMemberType.OpenType, AddMemberName.Text, OpenType);
+			OpenType.Elements.Add(t);
+			
 			AddMemberType.Focus();
 			AddMemberType.OpenType = null;
-			
 			AddMemberName.Text = "";
+
+			ValuesList.SelectedItem = t;
 		}
 
 		private void ValuesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			var t = ValuesList.SelectedItem as Projects.DataElement;
 			if (t == null) return;
+
+			//Set the new item as selected.
+			foreach (Projects.DataElement de in OpenType.Elements)
+				de.IsSelected = false;
+			t.IsSelected = true;
+
 			ActiveElement = new DataElement(t);
 		}
 
@@ -93,7 +106,9 @@ namespace WCFArchitect.Interface.Data
 			if (op == null) return;
 
 			if (Prospective.Controls.MessageBox.Show("Are you sure you wish to delete the '" + op.DataType + " " + op.DataName + "' data member?", "Delete Data Member?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No) return;
+			ActiveElement = null;
 			OpenType.Elements.Remove(op);
+
 		}
 
 		#region - Drag/Drop Support -
@@ -266,18 +281,22 @@ namespace WCFArchitect.Interface.Data
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
+			if (value == null) return -1;
 			var lt = (Projects.DataScope)value;
 			if (lt == Projects.DataScope.Public) return 0;
 			if (lt == Projects.DataScope.Protected) return 1;
 			if (lt == Projects.DataScope.Private) return 2;
 			if (lt == Projects.DataScope.Internal) return 3;
 			if (lt == Projects.DataScope.ProtectedInternal) return 4;
+			if (lt == Projects.DataScope.Disabled) return -1;
 			return 0;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
+			if (value == null) return null;
 			var lt = (int)value;
+			if (lt == -1) return Projects.DataScope.Disabled;
 			if (lt == 0) return Projects.DataScope.Public;
 			if (lt == 1) return Projects.DataScope.Protected;
 			if (lt == 2) return Projects.DataScope.Private;
@@ -293,13 +312,15 @@ namespace WCFArchitect.Interface.Data
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			var param = System.Convert.ToBoolean(parameter);
+			if (value == null) return "";
 			var lt = (Projects.DataScope)value;
+			if (lt == Projects.DataScope.Disabled) return "";
 			if (lt == Projects.DataScope.Public) return param ? "public" : "Public";
 			if (lt == Projects.DataScope.Protected) return param ? "protected" : "Protected";
 			if (lt == Projects.DataScope.Private) return param ? "private" : "Private";
 			if (lt == Projects.DataScope.Internal) return param ? "internal" : "Internal";
 			if (lt == Projects.DataScope.ProtectedInternal) return param ? "protected internal" : "Protected Internal";
-			return 0;
+			return "";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -310,7 +331,7 @@ namespace WCFArchitect.Interface.Data
 			if (lt == "Private" || lt == "private") return Projects.DataScope.Private;
 			if (lt == "Internal" || lt == "internal") return Projects.DataScope.Internal;
 			if (lt == "Protected Internal" || lt == "protected internal") return Projects.DataScope.ProtectedInternal;
-			return "Public";
+			return Projects.DataScope.Disabled;
 		}
 	}
 

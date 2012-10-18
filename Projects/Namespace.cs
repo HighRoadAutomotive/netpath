@@ -40,6 +40,7 @@ namespace WCFArchitect.Projects
 		public ObservableCollection<Host> Hosts { get { return (ObservableCollection<Host>)GetValue(HostsProperty); } set { SetValue(HostsProperty, value); } }
 		public static readonly DependencyProperty HostsProperty = DependencyProperty.Register("Hosts", typeof(ObservableCollection<Host>), typeof(Namespace));
 
+		//System
 		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Namespace));
 
@@ -270,9 +271,70 @@ namespace WCFArchitect.Projects
 		public Host GetServiceHost(Service s)
 		{
 			foreach (Host h in Hosts)
-				if (h.Service == s)
-					return h;
+				if (Equals(h.Service, s)) return h;
+
 			return Children.Select(n => n.GetServiceHost(s)).FirstOrDefault(t => t != null);
+		}
+
+		public OpenableDocument GetLastSelectedItem()
+		{
+			foreach (BindingSecurity s in Security)
+				if (s.IsSelected) return s;
+
+			foreach (ServiceBinding s in Bindings)
+				if (s.IsSelected) return s;
+
+			foreach (Host s in Hosts)
+				if (s.IsSelected) return s;
+
+			foreach (Service s in Services)
+				if (s.IsSelected) return s;
+
+			foreach (Data s in Data)
+				if (s.IsSelected) return s;
+
+			foreach (Enum s in Enums)
+				if (s.IsSelected) return s;
+
+			foreach (Namespace s in Children)
+			{
+				if (s.IsSelected) return s;
+				OpenableDocument t = s.GetLastSelectedItem();
+				if (t != null) return t;
+			}
+
+			return null;
+		}
+
+		public void SetSelectedItem(OpenableDocument Item)
+		{
+			//Reset all items to unselected.
+			foreach (BindingSecurity s in Security)
+				s.IsSelected = false;
+
+			foreach (ServiceBinding s in Bindings)
+				s.IsSelected = false;
+
+			foreach (Host s in Hosts)
+				s.IsSelected = false;
+
+			foreach (Service s in Services)
+				s.IsSelected = false;
+
+			foreach (Data s in Data)
+				s.IsSelected = false;
+
+			foreach (Enum s in Enums)
+				s.IsSelected = false;
+
+			foreach (Namespace s in Children)
+			{
+				s.IsSelected = false;
+				s.SetSelectedItem(null);
+			}
+
+			if (Item == null) return;
+			Item.IsSelected = true;
 		}
 	}
 }
