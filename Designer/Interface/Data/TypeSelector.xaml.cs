@@ -79,7 +79,7 @@ namespace WCFArchitect.Interface.Data
 			if (bindingExpression != null) bindingExpression.UpdateTarget();
 			t.IsSettingType = false;
 			t.HasResults = false;
-			if (e.NewValue == null) t.Results.Clear();
+			if (e.NewValue == null && t.Results != null) t.Results.Clear();
 		}
 
 		public bool HasResults { get { return (bool)GetValue(HasResultsProperty); } set { SetValue(HasResultsProperty, value); } }
@@ -251,25 +251,32 @@ namespace WCFArchitect.Interface.Data
 			}
 		}
 
+		private void TypeName_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Tab)
+			{
+				SelectType();
+			}
+		}
+
 		private void TypeName_KeyUp(object sender, KeyEventArgs e)
 		{
 			if (e.Key == Key.Enter)
 			{
 				SelectType();
 			}
-			if (Results != null && Results.Count > 1)
+
+			if (Results == null || Results.Count <= 1) return;
+			if (TypesList.SelectedIndex < 0) TypesList.SelectedIndex = 0;
+			if (e.Key == Key.Up)
 			{
-				if (TypesList.SelectedIndex < 0) TypesList.SelectedIndex = 0;
-				if (e.Key == Key.Up)
-				{
-					TypesList.SelectedIndex--;
-					if (TypesList.SelectedIndex < 0) TypesList.SelectedIndex = Results.Count - 1;
-				}
-				if (e.Key == Key.Down)
-				{
-					TypesList.SelectedIndex++;
-					if (TypesList.SelectedIndex >= Results.Count) TypesList.SelectedIndex = 0;
-				}
+				TypesList.SelectedIndex--;
+				if (TypesList.SelectedIndex < 0) TypesList.SelectedIndex = Results.Count - 1;
+			}
+			if (e.Key == Key.Down)
+			{
+				TypesList.SelectedIndex++;
+				if (TypesList.SelectedIndex >= Results.Count) TypesList.SelectedIndex = 0;
 			}
 		}
 

@@ -85,7 +85,11 @@ namespace WCFArchitect.Projects
 		[IgnoreDataMember] public bool IsDirty { get { return (bool)GetValue(IsDirtyProperty); } set { if (IsActive) SetValue(IsDirtyProperty, value); } }
 		public static readonly DependencyProperty IsDirtyProperty = DependencyProperty.Register("IsDirty", typeof(bool), typeof(OpenableDocument), new UIPropertyMetadata(false));
 
-		public OpenableDocument() : base()
+		public bool IsSelected { get { return (bool)GetValue(IsSelectedProperty); } set { SetValue(IsSelectedProperty, value); } }
+		public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.Register("IsSelected", typeof(bool), typeof(OpenableDocument), new PropertyMetadata(false));
+
+		public OpenableDocument()
+			: base()
 		{
 			IsActive = false;
 			IsDirty = false;
@@ -144,8 +148,8 @@ namespace WCFArchitect.Projects
 		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Project), new UIPropertyMetadata(true));
 
-		public List<DataType> DefaultTypes { get; private set; }
-		public List<DataType> InheritableTypes { get; private set; } 
+		[IgnoreDataMember] public List<DataType> DefaultTypes { get; private set; }
+		[IgnoreDataMember] public List<DataType> InheritableTypes { get; private set; } 
 
 		public Project()
 		{
@@ -502,7 +506,7 @@ namespace WCFArchitect.Projects
 		[IgnoreDataMember()] public Project Project { get { return (Project)GetValue(ProjectProperty); } set { SetValue(ProjectProperty, value); if (value != null) ProjectID = Project.ID; } }
 		public static readonly DependencyProperty ProjectProperty = DependencyProperty.Register("Project", typeof(Project), typeof(DependencyProject));
 
-		public Guid ProjectID { get; private set; }
+		public Guid ProjectID { get; set; }
 	}
 
 	public enum ProjectGenerationFramework
@@ -520,7 +524,7 @@ namespace WCFArchitect.Projects
 
 	public class ProjectGenerationTarget : DependencyObject
 	{
-		public Guid ProjectID { get; protected set; }
+		public Guid ProjectID { get; set; }
 		public Guid ID { get; set; }
 
 		public bool IsEnabled { get { return (bool)GetValue(IsEnabledProperty); } set { SetValue(IsEnabledProperty, value); } }
