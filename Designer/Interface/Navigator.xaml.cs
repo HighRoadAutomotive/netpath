@@ -106,10 +106,13 @@ namespace WCFArchitect.Interface
 			if (Item.GetType() == typeof(Projects.Project))
 				ActivePage = new Project.Project(Item as Projects.Project);
 
-			//Open Service Page Here
+			if (Item.GetType() == typeof(Projects.Service))
+				ActivePage = new Service.Service(Item as Projects.Service);
 
 			if (Item.GetType() == typeof(Projects.Data))
 				ActivePage = new Data.Data(Item as Projects.Data);
+
+			//TODO: Finish adding screens as they are made.
 
 			//Need to make all item pages before this function can be completed.
 			Project.Namespace.SetSelectedItem(Item);
@@ -199,9 +202,9 @@ namespace WCFArchitect.Interface
 				var T = frr.Item as Namespace;
 				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
 			}
-			if (valueType == typeof(Service))
+			if (valueType == typeof(Projects.Service))
 			{
-				var T = frr.Item as Service;
+				var T = frr.Item as Projects.Service;
 				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
 			}
 			if (valueType == typeof(Operation))
@@ -530,9 +533,9 @@ namespace WCFArchitect.Interface
 					return "Namespace";
 				if (T != null) return T.Name;
 			}
-			if (valueType == typeof(Service))
+			if (valueType == typeof(Projects.Service))
 			{
-				var T = value as Service;
+				var T = value as Projects.Service;
 				if (T != null && string.IsNullOrEmpty(T.Name))
 					return "Service";
 				if (T != null) return T.Name;
@@ -540,9 +543,9 @@ namespace WCFArchitect.Interface
 			if (valueType == typeof(Method))
 			{
 				var T = value as Operation;
-				if (T != null && string.IsNullOrEmpty(T.Name))
+				if (T != null && string.IsNullOrEmpty(T.ServerName))
 					return "Operation";
-				if (T != null) return T.Name;
+				if (T != null) return T.ServerName;
 			}
 			if (valueType == typeof(MethodParameter))
 			{
@@ -554,9 +557,9 @@ namespace WCFArchitect.Interface
 			if (valueType == typeof(Property))
 			{
 				var T = value as Property;
-				if (T != null && string.IsNullOrEmpty(T.Name))
+				if (T != null && string.IsNullOrEmpty(T.ServerName))
 					return "Property";
-				if (T != null) return T.Name;
+				if (T != null) return T.ServerName;
 			}
 			if (valueType == typeof(Projects.Data))
 			{
@@ -635,9 +638,9 @@ namespace WCFArchitect.Interface
 					return "Namespace";
 				if (T != null) return T.Owner.Name;
 			}
-			if (valueType == typeof(Service))
+			if (valueType == typeof(Projects.Service))
 			{
-				var T = value as Service;
+				var T = value as Projects.Service;
 				if (T != null && string.IsNullOrEmpty(T.Parent.Owner.Name))
 					return "Service";
 				if (T != null) return T.Parent.Owner.Name;
@@ -675,7 +678,7 @@ namespace WCFArchitect.Interface
 			if (valueType == typeof(Projects.Project)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Project.png";
 			if (valueType == typeof(DependencyProject)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/DependencyProject.png";
 			if (valueType == typeof(Namespace)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Namespace.png";
-			if (valueType == typeof(Service)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Service.png";
+			if (valueType == typeof(Projects.Service)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Service.png";
 			if (valueType == typeof(Operation)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Operation.png";
 			if (valueType == typeof(MethodParameter)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Property.png";
 			if (valueType == typeof(Property)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Property.png";

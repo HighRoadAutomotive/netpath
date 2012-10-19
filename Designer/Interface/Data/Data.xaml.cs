@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Globalization;
+using Prospective.Controls.Dialogs;
 
 namespace WCFArchitect.Interface.Data
 {
@@ -105,10 +106,7 @@ namespace WCFArchitect.Interface.Data
 			var op = ValuesList.SelectedItem as Projects.DataElement;
 			if (op == null) return;
 
-			if (Prospective.Controls.MessageBox.Show("Are you sure you wish to delete the '" + op.DataType + " " + op.DataName + "' data member?", "Delete Data Member?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No) return;
-			ActiveElement = null;
-			OpenType.Elements.Remove(op);
-
+			DialogService.ShowMessageDialog("WCF ARCHITECT", "Are you sure you wish to delete the '" + op.DataType + " " + op.DataName + "' data member?", "Delete Data Member?", new DialogAction("Yes", () => { ActiveElement = null; OpenType.Elements.Remove(op); }, true), new DialogAction("No", false, true));
 		}
 
 		#region - Drag/Drop Support -

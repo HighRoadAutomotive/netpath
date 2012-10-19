@@ -161,8 +161,7 @@
 						<Root:NewItemType DataType="3" Title="Data" Description="Data contracts are used to send data in WCF." ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/Data.png" />
 						<Root:NewItemType DataType="4" Title="Enumeration" Description="Enumeration contracts are used to create enums for WCF." ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/Enum.png" />
 						<Root:NewItemType DataType="5" Title="Binding" Description="Bindings in WCF determine how a service will communicate." ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/Binding.png" />
-						<Root:NewItemType DataType="6" Title="Security" Description="Security objects are used to secure Bindings in WCF." ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/BindingSecurity.png" />
-						<Root:NewItemType DataType="7" Title="Host" Description="Hosts are used to host WCF Services." ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/Host.png" />
+						<Root:NewItemType DataType="6" Title="Host" Description="Hosts are used to host WCF Services." ImageSource="pack://application:,,,/WCFArchitect;component/Icons/X32/Host.png" />
 					</ListBox.Items>
 				</ListBox>
 				<ListBox HorizontalAlignment="Stretch" Margin="2.5,0,2.5,0" Grid.Column="1" Visibility="Collapsed" BorderThickness="0" Background="Transparent" VerticalAlignment="Stretch" Name="NewItemBindingTypesList" SelectionMode="Single" ItemTemplate="{StaticResource ListBoxItemTemplate}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" SelectionChanged="NewItemBindingTypesList_SelectionChanged">

@@ -25,10 +25,6 @@ namespace WCFArchitect.Projects
 		public ObservableCollection<EnumElement> Elements { get { return (ObservableCollection<EnumElement>)GetValue(ElementsProperty); } set { SetValue(ElementsProperty, value); } }
 		public static readonly DependencyProperty ElementsProperty = DependencyProperty.Register("Elements", typeof(ObservableCollection<EnumElement>), typeof(Enum));
 
-		//System
-		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
-		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Enum));
-
 		public Enum() : base(DataTypeMode.Enum)
 		{
 		}
@@ -46,15 +42,6 @@ namespace WCFArchitect.Projects
 			Documentation = new Documentation { IsClass = true };
 		}
 
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsDirtyProperty) return;
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			IsDirty = true;
-		}
 
 		public IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
 		{
@@ -83,8 +70,6 @@ namespace WCFArchitect.Projects
 
 				if (Args.ReplaceAll)
 				{
-					bool ia = IsActive;
-					IsActive = true;
 					if (Args.UseRegex == false)
 					{
 						if (Args.MatchCase == false)
@@ -103,7 +88,6 @@ namespace WCFArchitect.Projects
 						if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
 						if (HasClientType && !string.IsNullOrEmpty(ClientType.Name)) ClientType.Name = Args.RegexSearch.Replace(ClientType.Name, Args.Replace);
 					}
-					IsActive = ia;
 				}
 			}
 
@@ -116,8 +100,6 @@ namespace WCFArchitect.Projects
 		public void Replace(FindReplaceInfo Args, string Field)
 		{
 			if (!Args.ReplaceAll) return;
-			bool ia = IsActive;
-			IsActive = true;
 			if (Args.UseRegex == false)
 			{
 				if (Args.MatchCase == false)
@@ -136,7 +118,6 @@ namespace WCFArchitect.Projects
 				if (Field == "Server Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
 				if (HasClientType && Field == "Client Name") ClientType.Name = Args.RegexSearch.Replace(ClientType.Name, Args.Replace);
 			}
-			IsActive = ia;
 		}
 	}
 
@@ -161,42 +142,32 @@ namespace WCFArchitect.Projects
 		public string ContractValue { get { return (string)GetValue(ContractValueProperty); } set { SetValue(ContractValueProperty, value); } }
 		public static readonly DependencyProperty ContractValueProperty = DependencyProperty.Register("ContractValue", typeof(string), typeof(EnumElement));
 
-		public bool IsTreeExpanded { get { return false; } set { } }
 		public Enum Owner { get; set; }
 
 		public EnumElement()
 		{
-			this.ID = Guid.NewGuid();
-			this.IsExcluded = false;
+			ID = Guid.NewGuid();
+			IsExcluded = false;
 		}
 
 		public EnumElement(string Name, string Value, string ContractValue, Enum Owner)
 		{
-			this.ID = Guid.NewGuid();
+			ID = Guid.NewGuid();
 			this.Name = Name;
 			this.Value = Value;
 			this.ContractValue = ContractValue;
-			this.IsExcluded = false;
+			IsExcluded = false;
 			this.Owner = Owner;
 		}
 
 		public EnumElement(string Name, string Flags, Enum Owner)
 		{
-			this.ID = Guid.NewGuid();
+			ID = Guid.NewGuid();
 			this.Name = Name;
-			this.IsExcluded = false;
+			IsExcluded = false;
 			this.Owner = Owner;
 		}
 
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == OpenableDocument.IsDirtyProperty) return;
-
-			if (Owner != null)
-				Owner.IsDirty = true;
-		}
 
 		public override string ToString()
 		{
@@ -233,8 +204,6 @@ namespace WCFArchitect.Projects
 
 				if (Args.ReplaceAll)
 				{
-					bool ia = Owner.IsActive;
-					Owner.IsActive = true;
 					if (Args.UseRegex == false)
 					{
 						if (Args.MatchCase == false)
@@ -256,7 +225,6 @@ namespace WCFArchitect.Projects
 						if (!string.IsNullOrEmpty(Value)) Value = Args.RegexSearch.Replace(Value, Args.Replace);
 						if (!string.IsNullOrEmpty(ContractValue)) ContractValue = Args.RegexSearch.Replace(ContractValue, Args.Replace);
 					}
-					Owner.IsActive = ia;
 				}
 			}
 
@@ -265,32 +233,27 @@ namespace WCFArchitect.Projects
 
 		public void Replace(FindReplaceInfo Args, string Field)
 		{
-			if (Args.ReplaceAll == true)
+			if (Args.ReplaceAll != true) return;
+			if (Args.UseRegex == false)
 			{
-				bool ia = Owner.IsActive;
-				Owner.IsActive = true;
-				if (Args.UseRegex == false)
+				if (Args.MatchCase == false)
 				{
-					if (Args.MatchCase == false)
-					{
-						if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-						if (Field == "Server Value") Value = Microsoft.VisualBasic.Strings.Replace(Value, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-						if (Field == "Client Value") ContractValue = Microsoft.VisualBasic.Strings.Replace(ContractValue, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-					}
-					else
-					{
-						if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
-						if (Field == "Server Value") Value = Microsoft.VisualBasic.Strings.Replace(Value, Args.Search, Args.Replace);
-						if (Field == "Client Value") ContractValue = Microsoft.VisualBasic.Strings.Replace(ContractValue, Args.Search, Args.Replace);
-					}
+					if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+					if (Field == "Server Value") Value = Microsoft.VisualBasic.Strings.Replace(Value, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+					if (Field == "Client Value") ContractValue = Microsoft.VisualBasic.Strings.Replace(ContractValue, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 				}
 				else
 				{
-					if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-					if (Field == "Server Value") Value = Args.RegexSearch.Replace(Value, Args.Replace);
-					if (Field == "Client Value") ContractValue = Args.RegexSearch.Replace(ContractValue, Args.Replace);
+					if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
+					if (Field == "Server Value") Value = Microsoft.VisualBasic.Strings.Replace(Value, Args.Search, Args.Replace);
+					if (Field == "Client Value") ContractValue = Microsoft.VisualBasic.Strings.Replace(ContractValue, Args.Search, Args.Replace);
 				}
-				Owner.IsActive = ia;
+			}
+			else
+			{
+				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
+				if (Field == "Server Value") Value = Args.RegexSearch.Replace(Value, Args.Replace);
+				if (Field == "Client Value") ContractValue = Args.RegexSearch.Replace(ContractValue, Args.Replace);
 			}
 		}
 	}

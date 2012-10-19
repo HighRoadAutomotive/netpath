@@ -32,27 +32,28 @@ namespace WCFArchitect.Interface.Documentation
 			var t = d as Standard;
 			if (t == null) return;
 
-			t.SummaryBlock.Visibility = Visibility.Visible;
-			t.RemarksBlock.Visibility = Visibility.Visible;
-			t.ReturnsBlock.Visibility = Visibility.Visible;
-			t.ExampleBlock.Visibility = Visibility.Visible;
-			t.ValueBlock.Visibility = Visibility.Visible;
+			t.ReturnsLabel.Visibility = Visibility.Visible;
+			t.ReturnsEditor.Visibility = Visibility.Visible;
+			t.ValueLabel.Visibility = Visibility.Visible;
+			t.ValueEditor.Visibility = Visibility.Visible;
 
 			if (t.IsProperty)
-				t.ReturnsBlock.Visibility = Visibility.Collapsed;
+			{
+				t.ReturnsLabel.Visibility = Visibility.Collapsed;
+				t.ReturnsEditor.Visibility = Visibility.Collapsed;
+			}
 			if (t.IsMethod)
-				t.ValueBlock.Visibility = Visibility.Collapsed;
+			{
+				t.ValueLabel.Visibility = Visibility.Collapsed;
+				t.ValueEditor.Visibility = Visibility.Collapsed;
+			}
 		}
 
 		public Standard()
 		{
 			InitializeComponent();
 
-			SummaryBlock.DataContext = this;
-			RemarksBlock.DataContext = this;
-			ReturnsBlock.DataContext = this;
-			ExampleBlock.DataContext = this;
-			ValueBlock.DataContext = this;
+			DataContext = this;
 		}
 	}
 }

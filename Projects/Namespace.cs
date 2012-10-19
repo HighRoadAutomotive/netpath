@@ -73,16 +73,6 @@ namespace WCFArchitect.Projects
 			URI = "";
 		}
 
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsDirtyProperty) return;
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			IsDirty = true;
-		}
-
 		public IEnumerable<DataType> SearchTypes(string Search, bool DataOnly = false)
 		{
 			var results = new List<DataType>();
@@ -133,8 +123,6 @@ namespace WCFArchitect.Projects
 
 				if (Args.ReplaceAll)
 				{
-					bool ia = IsActive;
-					IsActive = true;
 					if (Args.UseRegex == false)
 					{
 						if (Args.MatchCase == false)
@@ -153,7 +141,6 @@ namespace WCFArchitect.Projects
 						if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
 						if (!string.IsNullOrEmpty(URI)) URI = Args.RegexSearch.Replace(URI, Args.Replace);
 					}
-					IsActive = ia;
 				}
 			}
 
@@ -185,8 +172,6 @@ namespace WCFArchitect.Projects
 		{
 			if (!Args.ReplaceAll) return;
 
-			bool ia = IsActive;
-			IsActive = true;
 			if (Args.UseRegex == false)
 			{
 				if (Args.MatchCase == false)
@@ -205,7 +190,6 @@ namespace WCFArchitect.Projects
 				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
 				if (Field == "URI") URI = Args.RegexSearch.Replace(URI, Args.Replace);
 			}
-			IsActive = ia;
 		}
 
 		public void ChangeOwners(Namespace NewOwner)

@@ -235,8 +235,6 @@ namespace WCFArchitect.Projects
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.Property == IsDirtyProperty) return;
-
 			if (e.Property == DeclarationProperty || e.Property == TypeNameProperty) return;
 			TypeName = ToString();
 			Declaration = ToDeclarationString();

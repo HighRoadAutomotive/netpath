@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Security;
 using System.Text;
 using System.Windows;
 using System.Runtime.Serialization;
@@ -10,14 +11,12 @@ namespace WCFArchitect.Projects
 {
 	public class Service : DataType
 	{
-		public ObservableCollection<Operation> Operations { get { return (ObservableCollection<Operation>)GetValue(OperationsProperty); } set { SetValue(OperationsProperty, value); } }
-		public static readonly DependencyProperty OperationsProperty = DependencyProperty.Register("Operations", typeof(ObservableCollection<Operation>), typeof(Service));
 
-		public bool IsCallback { get { return (bool)GetValue(IsCallbackProperty); } set { SetValue(IsCallbackProperty, value); } }
-		public static readonly DependencyProperty IsCallbackProperty = DependencyProperty.Register("IsCallback", typeof(bool), typeof(Service));
+		public ObservableCollection<Operation> ServiceOperations { get { return (ObservableCollection<Operation>)GetValue(ServiceOperationsProperty); } set { SetValue(ServiceOperationsProperty, value); } }
+		public static readonly DependencyProperty ServiceOperationsProperty = DependencyProperty.Register("ServiceOperations", typeof(ObservableCollection<Operation>), typeof(Service));
 
-		public Service Callback { get { return (Service)GetValue(CallbackProperty); } set { SetValue(CallbackProperty, value); } }
-		public static readonly DependencyProperty CallbackProperty = DependencyProperty.Register("Callback", typeof(Service), typeof(Service));
+		public ObservableCollection<Operation> CallbackOperations { get { return (ObservableCollection<Operation>)GetValue(CallbackOperationsProperty); } set { SetValue(CallbackOperationsProperty, value); } }
+		public static readonly DependencyProperty CallbackOperationsProperty = DependencyProperty.Register("CallbackOperations", typeof(ObservableCollection<Operation>), typeof(Service));
 
 		public System.Net.Security.ProtectionLevel ProtectionLevel { get { return (System.Net.Security.ProtectionLevel)GetValue(ProtectionLevelProperty); } set { SetValue(ProtectionLevelProperty, value); } }
 		public static readonly DependencyProperty ProtectionLevelProperty = DependencyProperty.Register("ProtectionLevel", typeof(System.Net.Security.ProtectionLevel), typeof(Service));
@@ -28,41 +27,49 @@ namespace WCFArchitect.Projects
 		public string ConfigurationName { get { return (string)GetValue(ConfigurationNameProperty); } set { SetValue(ConfigurationNameProperty, value); } }
 		public static readonly DependencyProperty ConfigurationNameProperty = DependencyProperty.Register("ConfigurationName", typeof(string), typeof(Service));
 
-		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
-		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(Service));
+		public Documentation ServiceDocumentation { get { return (Documentation)GetValue(ServiceDocumentationProperty); } set { SetValue(ServiceDocumentationProperty, value); } }
+		public static readonly DependencyProperty ServiceDocumentationProperty = DependencyProperty.Register("ServiceDocumentation", typeof(Documentation), typeof(Service));
+
+		public Documentation CallbackDocumentation { get { return (Documentation)GetValue(CallbackDocumentationProperty); } set { SetValue(CallbackDocumentationProperty, value); } }
+		public static readonly DependencyProperty CallbackDocumentationProperty = DependencyProperty.Register("CallbackDocumentation", typeof(Documentation), typeof(Service));
 
 		//System
-		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
-		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Service));
+		[IgnoreDataMember] public bool HasCallback { get { return CallbackOperations.Count > 0; } }
 
 		public Service() : base(DataTypeMode.Class)
 		{
-			Documentation = new Documentation { IsClass = true };
+			ServiceOperations = new ObservableCollection<Operation>();
+			CallbackOperations = new ObservableCollection<Operation>();
+			ServiceDocumentation = new Documentation { IsClass = true };
+			CallbackDocumentation = new Documentation { IsClass = true };
 		}
 
 		public Service(string Name, Namespace Parent) : base(DataTypeMode.Class)
 		{
 			this.Name = Name;
 			this.Parent = Parent;
-			IsOpen = false;
-			IsCallback = false;
-			Operations = new ObservableCollection<Operation>();
+			ServiceOperations = new ObservableCollection<Operation>();
+			CallbackOperations = new ObservableCollection<Operation>();
 			ID = Guid.NewGuid();
 			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			ConfigurationName = "";
-			Documentation = new Documentation { IsClass = true };
+			ServiceDocumentation = new Documentation { IsClass = true };
+			CallbackDocumentation = new Documentation { IsClass = true };
 		}
 
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+		public void AddKnownType(DataType Type)
 		{
-			base.OnPropertyChanged(e);
-			
-			if (e.Property == IsDirtyProperty) return;
-			if (e.Property == IsTreeExpandedProperty) return;
-		
-			IsDirty = true;
+			if (KnownTypes.Any(dt => dt.TypeName == Type.TypeName)) return;
+			KnownTypes.Add(Type.Copy());
 		}
-	
+
+		public void RemoveKnownType(DataType Type)
+		{
+			if (ServiceOperations.Any(dt => dt.ReturnType.TypeName == Type.TypeName)) return;
+			var d = KnownTypes.FirstOrDefault(a => a.TypeName == Type.TypeName);
+			if (d != null) KnownTypes.Remove(d);
+		}
+
 		public IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
 		{
 			var results = new List<FindReplaceResult>();
@@ -90,8 +97,6 @@ namespace WCFArchitect.Projects
 
 				if (Args.ReplaceAll)
 				{
-					bool ia = IsActive;
-					IsActive = true;
 					if (Args.UseRegex == false)
 					{
 						if (Args.MatchCase == false)
@@ -110,15 +115,14 @@ namespace WCFArchitect.Projects
 						if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
 						if (HasClientType && !string.IsNullOrEmpty(ClientType.Name)) ClientType.Name = Args.RegexSearch.Replace(ClientType.Name, Args.Replace);
 					}
-					IsActive = ia;
 				}
 			}
 
-			foreach (Operation o in Operations)
+			foreach (Operation o in ServiceOperations)
 				results.AddRange(o.FindReplace(Args));
 
-			foreach (Property p in Operations)
-				results.AddRange(p.FindReplace(Args));
+			foreach (Operation o in CallbackOperations)
+				results.AddRange(o.FindReplace(Args));
 
 			return results;
 		}
@@ -126,8 +130,6 @@ namespace WCFArchitect.Projects
 		public void Replace(FindReplaceInfo Args, string Field)
 		{
 			if (!Args.ReplaceAll) return;
-			bool ia = IsActive;
-			IsActive = true;
 			if (Args.UseRegex == false)
 			{
 				if (Args.MatchCase == false)
@@ -146,7 +148,6 @@ namespace WCFArchitect.Projects
 				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
 				if (HasClientType) if (Field == "Contract Name") ClientType.Name = Args.RegexSearch.Replace(ClientType.Name, Args.Replace);
 			}
-			IsActive = ia;
 		}
 	}
 
@@ -154,18 +155,40 @@ namespace WCFArchitect.Projects
 	{
 		public Guid ID { get; set; }
 
-		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value ?? "", @"")); } }
-		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(Operation));
-		
-		[IgnoreDataMember()] public bool HasContract { get { return (bool)GetValue(HasContractProperty); } protected set { SetValue(HasContractPropertyKey, value); } }
-		private static readonly DependencyPropertyKey HasContractPropertyKey = DependencyProperty.RegisterReadOnly("HasContract", typeof(bool), typeof(Operation), new PropertyMetadata(false));
-		public static readonly DependencyProperty HasContractProperty = HasContractPropertyKey.DependencyProperty;
-
-		public string ClientName { get { return (string)GetValue(ClientNameProperty); } set { SetValue(ClientNameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value ?? "", @"")); if (string.IsNullOrEmpty(value)) HasContract = false; } }
-		public static readonly DependencyProperty ClientNameProperty = DependencyProperty.Register("ClientName", typeof(string), typeof(Operation));
-
 		public DataType ReturnType { get { return (DataType)GetValue(ReturnTypeProperty); } set { SetValue(ReturnTypeProperty, value); } }
-		public static readonly DependencyProperty ReturnTypeProperty = DependencyProperty.Register("ReturnType", typeof(DataType), typeof(Operation));
+		public static readonly DependencyProperty ReturnTypeProperty = DependencyProperty.Register("ReturnType", typeof(DataType), typeof(Operation), new PropertyMetadata(ReturnTypeChangedCallback));
+
+		private static void ReturnTypeChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs p)
+		{
+			var de = o as Operation;
+			if (de == null) return;
+			var nt = p.NewValue as DataType;
+			if (nt == null) return;
+			var ot = p.OldValue as DataType;
+			if (ot == null) return;
+
+			if (ot.TypeMode == DataTypeMode.Array && ot.CollectionGenericType.TypeMode == DataTypeMode.Primitive) de.Owner.RemoveKnownType(nt);
+			if (nt.TypeMode == DataTypeMode.Array && nt.CollectionGenericType.TypeMode == DataTypeMode.Primitive) de.Owner.AddKnownType(nt);
+			if (ot.TypeMode == DataTypeMode.Primitive && ot.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.RemoveKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
+			if (nt.TypeMode == DataTypeMode.Primitive && nt.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.AddKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
+		}
+
+		public string ServerName { get { return (string)GetValue(ServerNameProperty); } set { SetValue(ServerNameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value ?? "", @"")); } }
+		public static readonly DependencyProperty ServerNameProperty = DependencyProperty.Register("ServerName", typeof(string), typeof(Operation));
+
+		public bool HasClientType { get { return (bool)GetValue(HasClientTypeProperty); } set { SetValue(HasClientTypeProperty, value); } }
+		public static readonly DependencyProperty HasClientTypeProperty = DependencyProperty.Register("HasClientType", typeof(bool), typeof(Operation), new PropertyMetadata(false, HasClientTypeChangedCallback));
+
+		private static void HasClientTypeChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as Operation;
+			if (t == null) return;
+
+			t.ClientName = Convert.ToBoolean(e.NewValue) ? t.ServerName : "";
+		}
+
+		public string ClientName { get { return (string)GetValue(ClientNameProperty); } set { SetValue(ClientNameProperty, value); } }
+		public static readonly DependencyProperty ClientNameProperty = DependencyProperty.Register("ClientName", typeof(string), typeof(Operation), new PropertyMetadata(""));
 
 		public bool IsOneWay { get { return (bool)GetValue(IsOneWayProperty); } set { SetValue(IsOneWayProperty, value); } }
 		public static readonly DependencyProperty IsOneWayProperty = DependencyProperty.Register("IsOneWay", typeof(bool), typeof(Operation));
@@ -173,12 +196,11 @@ namespace WCFArchitect.Projects
 		public System.Net.Security.ProtectionLevel ProtectionLevel { get { return (System.Net.Security.ProtectionLevel)GetValue(ProtectionLevelProperty); } set { SetValue(ProtectionLevelProperty, value); } }
 		public static readonly DependencyProperty ProtectionLevelProperty = DependencyProperty.Register("ProtectionLevel", typeof(System.Net.Security.ProtectionLevel), typeof(Operation));
 
-		[IgnoreDataMember()]
-		public string Declaration { get { return (string)GetValue(DeclarationProperty); } protected set { SetValue(DeclarationPropertyKey, value); } }
+		[IgnoreDataMember] public string Declaration { get { return (string)GetValue(DeclarationProperty); } protected set { SetValue(DeclarationPropertyKey, value); } }
 		private static readonly DependencyPropertyKey DeclarationPropertyKey = DependencyProperty.RegisterReadOnly("Declaration", typeof(string), typeof(Operation), new PropertyMetadata(""));
 		public static readonly DependencyProperty DeclarationProperty = DeclarationPropertyKey.DependencyProperty;
 		
-		[IgnoreDataMember()] public string ClientDeclaration { get { return (string)GetValue(ClientDeclarationProperty); } protected set { SetValue(ClientDeclarationPropertyKey, value); } }
+		[IgnoreDataMember] public string ClientDeclaration { get { return (string)GetValue(ClientDeclarationProperty); } protected set { SetValue(ClientDeclarationPropertyKey, value); } }
 		private static readonly DependencyPropertyKey ClientDeclarationPropertyKey = DependencyProperty.RegisterReadOnly("ClientDeclaration", typeof(string), typeof(Operation), new PropertyMetadata(""));
 		public static readonly DependencyProperty ClientDeclarationProperty = ClientDeclarationPropertyKey.DependencyProperty;
 
@@ -193,25 +215,16 @@ namespace WCFArchitect.Projects
 		public Operation(string Name, Service Owner)
 		{
 			ID = Guid.NewGuid();
-			this.Name = Name;
+			ServerName = Name;
 			ReturnType = new DataType(PrimitiveTypes.Void);
 			var r = new System.Text.RegularExpressions.Regex(@"\W+");
+			ProtectionLevel = ProtectionLevel.None;
 			this.Owner = Owner;
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-	
-			if (e.Property == OpenableDocument.IsDirtyProperty) return;
-			
-			if (Owner != null)
-				Owner.IsDirty = true;
 		}
 
 		public override string ToString()
 		{
-			return Name;
+			return ServerName;
 		}
 
 		public virtual IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
@@ -224,44 +237,41 @@ namespace WCFArchitect.Projects
 				{
 					if (Args.MatchCase == false)
 					{
-						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
-						if (!string.IsNullOrEmpty(ClientName)) if (ClientName.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Contract Name", ClientName, Owner.Parent.Owner, this)); ;
+						if (!string.IsNullOrEmpty(ServerName)) if (ServerName.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Server Name", ServerName, Owner.Parent.Owner, this));
+						if (!string.IsNullOrEmpty(ClientName)) if (ClientName.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Client Name", ClientName, Owner.Parent.Owner, this)); ;
 					}
 					else
 					{
-						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
-						if (!string.IsNullOrEmpty(ClientName)) if (ClientName.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Contract Name", ClientName, Owner.Parent.Owner, this));
+						if (!string.IsNullOrEmpty(ServerName)) if (ServerName.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Server Name", ServerName, Owner.Parent.Owner, this));
+						if (!string.IsNullOrEmpty(ClientName)) if (ClientName.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Client Name", ClientName, Owner.Parent.Owner, this));
 					}
 				}
 				else
 				{
-					if (!string.IsNullOrEmpty(Name)) if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
-					if (!string.IsNullOrEmpty(ClientName)) if (Args.RegexSearch.IsMatch(ClientName)) results.Add(new FindReplaceResult("Contract Name", ClientName, Owner.Parent.Owner, this)); ;
+					if (!string.IsNullOrEmpty(ServerName)) if (Args.RegexSearch.IsMatch(ServerName)) results.Add(new FindReplaceResult("Server Name", ServerName, Owner.Parent.Owner, this));
+					if (!string.IsNullOrEmpty(ClientName)) if (Args.RegexSearch.IsMatch(ClientName)) results.Add(new FindReplaceResult("Client Name", ClientName, Owner.Parent.Owner, this)); ;
 				}
 
 				if (Args.ReplaceAll)
 				{
-					bool ia = Owner.IsActive;
-					Owner.IsActive = true;
 					if (Args.UseRegex == false)
 					{
 						if (Args.MatchCase == false)
 						{
-							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+							if (!string.IsNullOrEmpty(ServerName)) ServerName = Microsoft.VisualBasic.Strings.Replace(ServerName, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 							if (!string.IsNullOrEmpty(ClientName)) ClientName = Microsoft.VisualBasic.Strings.Replace(ClientName, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 						}
 						else
 						{
-							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
+							if (!string.IsNullOrEmpty(ServerName)) ServerName = Microsoft.VisualBasic.Strings.Replace(ServerName, Args.Search, Args.Replace);
 							if (!string.IsNullOrEmpty(ClientName)) ClientName = Microsoft.VisualBasic.Strings.Replace(ClientName, Args.Search, Args.Replace);
 						}
 					}
 					else
 					{
-						if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
+						if (!string.IsNullOrEmpty(ServerName)) ServerName = Args.RegexSearch.Replace(ServerName, Args.Replace);
 						if (!string.IsNullOrEmpty(ClientName)) ClientName = Args.RegexSearch.Replace(ClientName, Args.Replace);
 					}
-					Owner.IsActive = ia;
 				}
 			}
 
@@ -271,27 +281,24 @@ namespace WCFArchitect.Projects
 		public virtual void Replace(FindReplaceInfo Args, string Field)
 		{
 			if (!Args.ReplaceAll) return;
-			bool ia = Owner.IsActive;
-			Owner.IsActive = true;
 			if (Args.UseRegex == false)
 			{
 				if (Args.MatchCase == false)
 				{
-					if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-					if (Field == "Contract Name") ClientName = Microsoft.VisualBasic.Strings.Replace(ClientName, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+					if (Field == "Server Name") ServerName = Microsoft.VisualBasic.Strings.Replace(ServerName, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+					if (Field == "Client Name") ClientName = Microsoft.VisualBasic.Strings.Replace(ClientName, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 				}
 				else
 				{
-					if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
-					if (Field == "Contract Name") ClientName = Microsoft.VisualBasic.Strings.Replace(ClientName, Args.Search, Args.Replace);
+					if (Field == "Server Name") ServerName = Microsoft.VisualBasic.Strings.Replace(ServerName, Args.Search, Args.Replace);
+					if (Field == "Client Name") ClientName = Microsoft.VisualBasic.Strings.Replace(ClientName, Args.Search, Args.Replace);
 				}
 			}
 			else
 			{
-				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-				if (Field == "Contract Name") ClientName = Args.RegexSearch.Replace(ClientName, Args.Replace);
+				if (Field == "Server Name") ServerName = Args.RegexSearch.Replace(ServerName, Args.Replace);
+				if (Field == "Client Name") ClientName = Args.RegexSearch.Replace(ClientName, Args.Replace);
 			}
-			Owner.IsActive = ia;
 		}
 	}
 
@@ -315,14 +322,9 @@ namespace WCFArchitect.Projects
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.Property == OpenableDocument.IsDirtyProperty) return;
-
-			if (Owner != null)
-				Owner.IsDirty = true;
-
 			if (e.Property == DeclarationProperty || e.Property == ClientDeclarationProperty) return;
-			Declaration = string.Format("{0} {1} {2}{{ get; {3}}}", ReturnType.ToScopeString(), ReturnType, Name, IsReadOnly ? "set; " : "");
-			ClientDeclaration = string.Format("{0} {1} {2}{{ get; {3}}}", ReturnType.ToScopeString(), ReturnType, ClientName, IsReadOnly ? "set; " : "");
+			Declaration = string.Format("{0} {1}{{ get; {2}}}", ReturnType, ServerName, IsReadOnly ? "set; " : "");
+			ClientDeclaration = string.Format("{0} {1}{{ get; {2}}}", ReturnType, ClientName, IsReadOnly ? "set; " : "");
 		}
 	}
 
@@ -350,8 +352,15 @@ namespace WCFArchitect.Projects
 
 		public Method(string Name, Service Owner) : base(Name, Owner)
 		{
-			this.Parameters = new ObservableCollection<MethodParameter>();
-			this.ReturnType = new DataType(PrimitiveTypes.Void);
+			Parameters = new ObservableCollection<MethodParameter>();
+			ReturnType = new DataType(PrimitiveTypes.Void);
+			Documentation = new Documentation { IsMethod = true };
+		}
+
+		public Method(DataType ReturnType, string Name, Service Owner) : base(Name, Owner)
+		{
+			Parameters = new ObservableCollection<MethodParameter>();
+			this.ReturnType = ReturnType;
 			Documentation = new Documentation { IsMethod = true };
 		}
 
@@ -359,18 +368,13 @@ namespace WCFArchitect.Projects
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.Property == OpenableDocument.IsDirtyProperty) return;
-
-			if (Owner != null)
-				Owner.IsDirty = true;
-
 			if (e.Property == DeclarationProperty || e.Property == ClientDeclarationProperty) return;
 			var sb = new StringBuilder();
 			foreach(MethodParameter p in Parameters)
 				sb.AppendFormat("{0}, ", p);
 			sb.Remove(sb.Length - 2, 2);
-			Declaration = string.Format("{0} {1} {2}({3});", ReturnType.ToScopeString(), ReturnType, Name, sb);
-			ClientDeclaration = string.Format("{0} {1} {2}({3});", ReturnType.ToScopeString(), ReturnType, ClientName, sb);
+			Declaration = string.Format("{0} {1}({2});", ReturnType, ServerName, sb);
+			ClientDeclaration = string.Format("{0} {1}({2});", ReturnType, ClientName, sb);
 		}
 
 		public override IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
@@ -426,14 +430,6 @@ namespace WCFArchitect.Projects
 			Documentation = new Documentation { IsParameter = true };
 		}
 
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (Owner != null)
-				Owner.IsDirty = true;
-		}
-
 		public override string ToString()
 		{
 			return string.Format("{0} {1}", Type, Name);
@@ -457,8 +453,6 @@ namespace WCFArchitect.Projects
 
 				if (Args.ReplaceAll)
 				{
-					bool ia = Owner.IsActive;
-					Owner.IsActive = true;
 					if (Args.UseRegex == false)
 					{
 						if (Args.MatchCase == false)
@@ -468,8 +462,6 @@ namespace WCFArchitect.Projects
 					}
 					else
 						if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace); 
-
-					Owner.IsActive = ia;
 				}
 			}
 
@@ -479,8 +471,6 @@ namespace WCFArchitect.Projects
 		public void Replace(FindReplaceInfo Args, string Field)
 		{
 			if (!Args.ReplaceAll) return;
-			bool ia = Owner.IsActive;
-			Owner.IsActive = true;
 			if (Args.UseRegex == false)
 			{
 				if (Args.MatchCase == false)
@@ -490,8 +480,6 @@ namespace WCFArchitect.Projects
 			}
 			else
 				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-
-			Owner.IsActive = ia;
 		}
 	}
 }

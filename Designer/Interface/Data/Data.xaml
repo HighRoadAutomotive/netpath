@@ -44,7 +44,7 @@
 		<Data:TypeSelector Project="{Binding OpenType}" x:Name="AddMemberType" LabelText="Type" Grid.Row="5" Margin="105,5,0,5" HorizontalAlignment="Left" Width="375" Selected="AddMemberType_Selected" ValidationChanged="AddMemberType_ValidationChanged" />
 		<pc:TextBox x:Name="AddMemberName" LabelText="Name" Grid.Row="5" Margin="490,5,105,5" Validate="AddMemberName_Validate" TextChanged="AddMemberName_TextChanged" KeyUp="AddMemberName_KeyUp" />
 		<Button x:Name="AddMember" Grid.Row="5" Margin="5" Content="Add" HorizontalAlignment="Right" Width="90" IsEnabled="False" Click="AddMember_Click" />
-		<Grid Grid.Row="6" Margin="10">
+		<Grid Grid.Row="6" Margin="0,5,0,0">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="230"/>
 				<ColumnDefinition Width="*" />

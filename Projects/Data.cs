@@ -53,9 +53,6 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty ElementsProperty = DependencyProperty.Register("Elements", typeof(ObservableCollection<DataElement>), typeof(Data));
 
 		//System
-		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
-		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Data));
-
 		[IgnoreDataMember] public bool HasWinFormsBindings { get { return Elements.Any(a => a.GenerateWinFormsSupport); } }
 		[IgnoreDataMember] public bool XAMLHasExtensionData { get { return HasXAMLType && (XAMLType.InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0)); } }
 
@@ -76,16 +73,6 @@ namespace WCFArchitect.Projects
 			XAMLType.InheritedTypes.Add(new DataType("DependencyObject", DataTypeMode.Class));
 			this.Parent = Parent;
 			Documentation = new Documentation { IsClass = true };
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsDirtyProperty) return;
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			IsDirty = true;
 		}
 
 		public void AddKnownType(DataType Type, bool IsClientType = false, bool IsXAMLType = false)
@@ -155,8 +142,6 @@ namespace WCFArchitect.Projects
 
 				if (Args.ReplaceAll)
 				{
-					bool ia = IsActive;
-					IsActive = true;
 					if (Args.UseRegex == false)
 					{
 						if (Args.MatchCase == false)
@@ -178,7 +163,6 @@ namespace WCFArchitect.Projects
 						if (HasClientType && !string.IsNullOrEmpty(ClientType.Name)) ClientType.Name = Args.RegexSearch.Replace(ClientType.Name, Args.Replace);
 						if (HasXAMLType && !string.IsNullOrEmpty(XAMLType.Name)) XAMLType.Name = Args.RegexSearch.Replace(XAMLType.Name, Args.Replace);
 					}
-					IsActive = ia;
 				}
 			}
 
@@ -191,8 +175,6 @@ namespace WCFArchitect.Projects
 		public void Replace(FindReplaceInfo Args, string Field)
 		{
 			if (!Args.ReplaceAll) return;
-			bool ia = IsActive;
-			IsActive = true;
 			if (Args.UseRegex == false)
 			{
 				if (Args.MatchCase == false)
@@ -214,7 +196,6 @@ namespace WCFArchitect.Projects
 				if (Field == "Client Name") ClientType.Name = Args.RegexSearch.Replace(ClientType.Name, Args.Replace);
 				if (Field == "XAML Name") XAMLType.Name = Args.RegexSearch.Replace(XAMLType.Name, Args.Replace);
 			}
-			IsActive = ia;
 		}
 	}
 
@@ -394,7 +375,6 @@ namespace WCFArchitect.Projects
 		public bool IsSelected { get { return (bool)GetValue(IsSelectedProperty); } set { SetValue(IsSelectedProperty, value); } }
 		public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.Register("IsSelected", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
 
-		public bool IsTreeExpanded { get { return false; } set { } }
 		public Data Owner { get; set; }
 
 		public DataElement()
@@ -428,16 +408,6 @@ namespace WCFArchitect.Projects
 			EmitDefaultValue = false;
 			Order = -1;
 			Documentation = new Documentation { IsProperty = true };
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == OpenableDocument.IsDirtyProperty) return;
-
-			if (Owner != null)
-				Owner.IsDirty = true;
 		}
 
 		public override string ToString()
@@ -475,8 +445,6 @@ namespace WCFArchitect.Projects
 
 				if (Args.ReplaceAll)
 				{
-					bool ia = Owner.IsActive;
-					Owner.IsActive = true;
 					if (Args.UseRegex == false)
 					{
 						if (Args.MatchCase == false)
@@ -498,7 +466,6 @@ namespace WCFArchitect.Projects
 						if (HasClientType && !string.IsNullOrEmpty(ClientName)) ClientName = Args.RegexSearch.Replace(ClientName, Args.Replace);
 						if (HasXAMLType && !string.IsNullOrEmpty(XAMLName)) XAMLName = Args.RegexSearch.Replace(XAMLName, Args.Replace);
 					}
-					Owner.IsActive = ia;
 				}
 			}
 
@@ -508,8 +475,6 @@ namespace WCFArchitect.Projects
 		public void Replace(FindReplaceInfo Args, string Field)
 		{
 			if (!Args.ReplaceAll) return;
-			bool ia = Owner.IsActive;
-			Owner.IsActive = true;
 			if (Args.UseRegex == false)
 			{
 				if (Args.MatchCase == false)
@@ -531,7 +496,6 @@ namespace WCFArchitect.Projects
 				if (HasClientType && Field == "Client Name") ClientName = Args.RegexSearch.Replace(ClientName, Args.Replace);
 				if (HasXAMLType && Field == "XAML Name") XAMLName = Args.RegexSearch.Replace(XAMLName, Args.Replace);
 			}
-			Owner.IsActive = ia;
 		}
 	}
 }
