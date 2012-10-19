@@ -28,8 +28,8 @@ namespace WCFArchitect.Interface.Dialogs
 		{
 			InitializeComponent();
 
-			this.ActiveProject = Project;
-			this.OpenProjectItem = OpenItemAction;
+			ActiveProject = Project;
+			OpenProjectItem = OpenItemAction;
 
 			EnableAddItem();
 
@@ -105,7 +105,8 @@ namespace WCFArchitect.Interface.Dialogs
 			NewItemAdd.IsEnabled = false;
 
 			if (NewItemTypesList.SelectedItem == null) return;
-			NewItemType NIT = NewItemTypesList.SelectedItem as NewItemType;
+			var NIT = NewItemTypesList.SelectedItem as NewItemType;
+			if (NIT == null) return;
 			if (NewItemBindingTypesList.SelectedItem == null && NIT.DataType == 5) return;
 			if (NewItemSecurityTypesList.SelectedItem == null && NIT.DataType == 6) return;
 			if (NewItemProjectNamespaceList.SelectedItem == null && NewItemProjectNamespaceRoot.IsChecked == false) return;
@@ -118,39 +119,40 @@ namespace WCFArchitect.Interface.Dialogs
 		{
 			if (NewItemTypesList.SelectedItem == null)
 			{
-				NewItemProjectNamespaces.Visibility = System.Windows.Visibility.Collapsed;
-				NewItemBindingTypesList.Visibility = System.Windows.Visibility.Collapsed;
-				NewItemSecurityTypesList.Visibility = System.Windows.Visibility.Collapsed;
+				NewItemProjectNamespaces.Visibility = Visibility.Collapsed;
+				NewItemBindingTypesList.Visibility = Visibility.Collapsed;
+				NewItemSecurityTypesList.Visibility =Visibility.Collapsed;
 			}
 
 			NewItemAdd.IsEnabled = false;
 			NewItemProjectNamespaceList.ItemsSource = null;
 			NewItemBindingTypesList.SelectedItem = null;
 			NewItemSecurityTypesList.SelectedItem = null;
-			NewItemProjectNamespaces.Visibility = System.Windows.Visibility.Collapsed;
-			NewItemBindingTypesList.Visibility = System.Windows.Visibility.Collapsed;
-			NewItemSecurityTypesList.Visibility = System.Windows.Visibility.Collapsed;
+			NewItemProjectNamespaces.Visibility = Visibility.Collapsed;
+			NewItemBindingTypesList.Visibility = Visibility.Collapsed;
+			NewItemSecurityTypesList.Visibility = Visibility.Collapsed;
 			
 			IsNamespaceListUpdating = true;
 			NewItemProjectNamespaceRoot.IsChecked = true;
 			if (NewItemTypesList.SelectedItem == null) return;
 
-			NewItemType NIT = NewItemTypesList.SelectedItem as NewItemType;
+			var NIT = NewItemTypesList.SelectedItem as NewItemType;
+			if (NIT == null) return;
 			if (NIT.DataType == 1 || NIT.DataType == 2 || NIT.DataType == 3 || NIT.DataType == 4)
 			{
 				NewItemProjectNamespaceList.ItemsSource = ActiveProject.Namespace.Children;
 				NewItemProjectNamespaceRoot.IsChecked = true;
 				NewItemProjectNamespaceRoot.Content = ActiveProject.Namespace.Name;
-				NewItemProjectNamespaces.Visibility = System.Windows.Visibility.Visible;
+				NewItemProjectNamespaces.Visibility = Visibility.Visible;
 			}
 			if (NIT.DataType == 5)
 			{
-				NewItemBindingTypesList.Visibility = System.Windows.Visibility.Visible;
+				NewItemBindingTypesList.Visibility = Visibility.Visible;
 				NewItemBindingTypesList.Focus();
 			}
 			if (NIT.DataType == 6)
 			{
-				NewItemSecurityTypesList.Visibility = System.Windows.Visibility.Visible;
+				NewItemSecurityTypesList.Visibility = Visibility.Visible;
 				NewItemSecurityTypesList.Focus();
 			}
 			if (NIT.DataType == 7)
@@ -158,14 +160,14 @@ namespace WCFArchitect.Interface.Dialogs
 				NewItemProjectNamespaceList.ItemsSource = ActiveProject.Namespace.Children;
 				NewItemProjectNamespaceRoot.IsChecked = true;
 				NewItemProjectNamespaceRoot.Content = ActiveProject.Namespace.Name;
-				NewItemProjectNamespaces.Visibility = System.Windows.Visibility.Visible;
+				NewItemProjectNamespaces.Visibility = Visibility.Visible;
 			}
 			IsNamespaceListUpdating = false;
 		}
 
 		private void NewItemProjectNamespaceRoot_Checked(object sender, RoutedEventArgs e)
 		{
-			if (IsNamespaceListUpdating == true) return;
+			if (IsNamespaceListUpdating) return;
 			NewItemProjectNamespaceList.ItemsSource = null;
 
 			EnableAddItem();
@@ -184,7 +186,7 @@ namespace WCFArchitect.Interface.Dialogs
 			NewItemProjectNamespaceList.ItemsSource = ActiveProject.Namespace.Children;
 			NewItemProjectNamespaceRoot.IsChecked = true;
 			NewItemProjectNamespaceRoot.Content = ActiveProject.Namespace.Name;
-			NewItemProjectNamespaces.Visibility = System.Windows.Visibility.Visible;
+			NewItemProjectNamespaces.Visibility = Visibility.Visible;
 
 			EnableAddItem();
 		}
@@ -194,7 +196,7 @@ namespace WCFArchitect.Interface.Dialogs
 			NewItemProjectNamespaceList.ItemsSource = ActiveProject.Namespace.Children;
 			NewItemProjectNamespaceRoot.IsChecked = true;
 			NewItemProjectNamespaceRoot.Content = ActiveProject.Namespace.Name;
-			NewItemProjectNamespaces.Visibility = System.Windows.Visibility.Visible;
+			NewItemProjectNamespaces.Visibility = Visibility.Visible;
 
 			EnableAddItem();
 		}
@@ -217,107 +219,46 @@ namespace WCFArchitect.Interface.Dialogs
 
 			try
 			{
-				NewItemType NIT = NewItemTypesList.SelectedItem as NewItemType;
+				var NIT = NewItemTypesList.SelectedItem as NewItemType;
+				if (NIT == null) return;
 
 				if (NIT.DataType == 1)
 				{
-					if (NewItemProjectNamespaceRoot.IsChecked == true)
-					{
-						Projects.Namespace NI = new Projects.Namespace(NewItemName.Text, ActiveProject.Namespace, ActiveProject);
-						NI.IsTreeExpanded = true;
-						if (NewItemProjectNamespaceList.SelectedItem == null) ActiveProject.Namespace.Children.Add(NI);
-						else ActiveProject.Namespace.Children.Add(NI);
-						Globals.IsLoading = false;
-						OpenProjectItem(NI);
-					}
-					else
-					{
-						Projects.Namespace NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace;
-						Projects.Namespace NI = new Projects.Namespace(NewItemName.Text, NIN, ActiveProject);
-						NI.IsTreeExpanded = true;
-						if (NewItemProjectNamespaceList.SelectedItem == null) ActiveProject.Namespace.Children.Add(NI);
-						else NIN.Children.Add(NI);
-						Globals.IsLoading = false;
-						OpenProjectItem(NI);
-					}
+					var NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace ?? ActiveProject.Namespace;
+					var NI = new Projects.Namespace(NewItemName.Text, NIN, ActiveProject);
+					NIN.Children.Add(NI);
+					Globals.IsLoading = false;
+					OpenProjectItem(NI);
 				}
 				else if (NIT.DataType == 2)
 				{
-					if (NewItemProjectNamespaceRoot.IsChecked == true)
-					{
-						Projects.Service NI = new Projects.Service(NewItemName.Text, ActiveProject.Namespace);
-						NI.IsTreeExpanded = true;
-						ActiveProject.Namespace.Services.Add(NI);
-						Globals.IsLoading = false;
-						OpenProjectItem(NI);
-					}
-					else
-					{
-						Projects.Namespace NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace;
-						if (NIN == null)
-							NewItemProjectNamespaceRoot.IsChecked = true;
-
-						Projects.Service NI = new Projects.Service(NewItemName.Text, NIN);
-						NI.IsTreeExpanded = true;
-						NIN.Services.Add(NI);
-						Globals.IsLoading = false;
-						OpenProjectItem(NI);
-					}
+					var NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace ?? ActiveProject.Namespace;
+					var NI = new Projects.Service(NewItemName.Text, NIN);
+					NIN.Services.Add(NI);
+					Globals.IsLoading = false;
+					OpenProjectItem(NI);
 				}
 				else if (NIT.DataType == 3)
 				{
-					if (NewItemProjectNamespaceRoot.IsChecked == true)
-					{
-						Projects.Data NI = new Projects.Data(NewItemName.Text, ActiveProject.Namespace);
-						NI.IsTreeExpanded = true;
-						ActiveProject.Namespace.Data.Add(NI);
-						Globals.IsLoading = false;
-						OpenProjectItem(NI);
-					}
-					else
-					{
-						Projects.Namespace NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace;
-						if (NIN == null)
-							NewItemProjectNamespaceRoot.IsChecked = true;
-
-						Projects.Data NI = new Projects.Data(NewItemName.Text, NIN);
-						NI.IsTreeExpanded = true;
-						NIN.Data.Add(NI);
-						Globals.IsLoading = false;
-						OpenProjectItem(NI);
-					}
+					var NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace ?? ActiveProject.Namespace;
+					var NI = new Projects.Data(NewItemName.Text, NIN);
+					NIN.Data.Add(NI);
+					Globals.IsLoading = false;
+					OpenProjectItem(NI);
 				}
 				else if (NIT.DataType == 4)
 				{
-					if (NewItemProjectNamespaceRoot.IsChecked == true)
-					{
-						Projects.Enum NI = new Projects.Enum(NewItemName.Text, ActiveProject.Namespace);
-						ActiveProject.Namespace.Enums.Add(NI);
-						NI.IsTreeExpanded = true;
-						Globals.IsLoading = false;
-						OpenProjectItem(NI);
-					}
-					else
-					{
-						Projects.Namespace NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace;
-						if (NIN == null)
-							NewItemProjectNamespaceRoot.IsChecked = true;
-
-						Projects.Enum NI = new Projects.Enum(NewItemName.Text, NIN);
-						NI.IsTreeExpanded = true;
-						NIN.Enums.Add(NI);
-						Globals.IsLoading = false;
-						OpenProjectItem(NI);
-					}
+					var NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace ?? ActiveProject.Namespace;
+					var NI = new Projects.Enum(NewItemName.Text, NIN);
+					NIN.Enums.Add(NI);
+					Globals.IsLoading = false;
+					OpenProjectItem(NI);
 				}
 				else if (NIT.DataType == 5)
 				{
-					NewItemType NBT = NewItemBindingTypesList.SelectedItem as NewItemType;
+					var NBT = NewItemBindingTypesList.SelectedItem as NewItemType;
 					if (NBT == null) return;
-					Projects.Namespace NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace;
-					if (NewItemProjectNamespaceRoot.IsChecked == true) NIN = ActiveProject.Namespace;
-					if (NIN == null)
-						NewItemProjectNamespaceRoot.IsChecked = true;
+					var NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace ?? ActiveProject.Namespace;
 
 					Projects.ServiceBinding NI = null;
 					if (NBT.DataType == 1) NI = new Projects.ServiceBindingBasicHTTP(NewItemName.Text, NIN);
@@ -342,38 +283,9 @@ namespace WCFArchitect.Interface.Dialogs
 				}
 				else if (NIT.DataType == 6)
 				{
-					NewItemType NBT = NewItemSecurityTypesList.SelectedItem as NewItemType;
-					if (NBT == null) return;
-					Projects.Namespace NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace;
-					if (NewItemProjectNamespaceRoot.IsChecked == true) NIN = ActiveProject.Namespace;
-					if (NIN == null)
-						NewItemProjectNamespaceRoot.IsChecked = true;
-
-					Projects.BindingSecurity NI = null;
-					if (NBT.DataType == 1) NI = new Projects.BindingSecurityBasicHTTP(NewItemName.Text, NIN);
-					if (NBT.DataType == 2) NI = new Projects.BindingSecurityBasicHTTPS(NewItemName.Text, NIN);
-					if (NBT.DataType == 3) NI = new Projects.BindingSecurityTCP(NewItemName.Text, NIN);
-					if (NBT.DataType == 4) NI = new Projects.BindingSecurityNamedPipe(NewItemName.Text, NIN);
-					if (NBT.DataType == 5) NI = new Projects.BindingSecurityMSMQ(NewItemName.Text, NIN);
-					if (NBT.DataType == 6) NI = new Projects.BindingSecurityPeerTCP(NewItemName.Text, NIN);
-					if (NBT.DataType == 7) NI = new Projects.BindingSecurityWebHTTP(NewItemName.Text, NIN);
-					if (NBT.DataType == 8) NI = new Projects.BindingSecurityMSMQIntegration(NewItemName.Text, NIN);
-					if (NBT.DataType == 9) NI = new Projects.BindingSecurityWSHTTP(NewItemName.Text, NIN);
-					if (NBT.DataType == 10) NI = new Projects.BindingSecurityWSDualHTTP(NewItemName.Text, NIN);
-					if (NBT.DataType == 11) NI = new Projects.BindingSecurityWSFederationHTTP(NewItemName.Text, NIN);
-
-					NIN.Security.Add(NI);
-					Globals.IsLoading = false;
-					OpenProjectItem(NI);
-				}
-				else if (NIT.DataType == 7)
-				{
-					Projects.Namespace NIP = null;
-					if (NewItemProjectNamespaceRoot.IsChecked == true) NIP = ActiveProject.Namespace;
-					else NIP = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace;
-					
-					Projects.Host NI = new Projects.Host(NewItemName.Text, NIP);
-					NIP.Hosts.Add(NI);
+					var NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace ?? ActiveProject.Namespace;
+					var NI = new Projects.Host(NewItemName.Text, NIN);
+					NIN.Hosts.Add(NI);
 					Globals.IsLoading = false;
 					OpenProjectItem(NI);
 				}

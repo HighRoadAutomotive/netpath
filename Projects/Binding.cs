@@ -52,10 +52,6 @@ namespace WCFArchitect.Projects
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(ServiceBinding));
 
-		//System
-		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
-		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(ServiceBinding), new UIPropertyMetadata(false));
-
 		public ServiceBinding() : base(DataTypeMode.Class)
 		{
 			Documentation = new Documentation { IsClass = true };
@@ -88,8 +84,6 @@ namespace WCFArchitect.Projects
 
 				if (Args.ReplaceAll)
 				{
-					bool ia = Parent.IsActive;
-					Parent.IsActive = true;
 					if (Args.UseRegex == false)
 					{
 						if (Args.MatchCase == false)
@@ -108,7 +102,6 @@ namespace WCFArchitect.Projects
 						if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
 						if (!string.IsNullOrEmpty(Namespace)) Namespace = Args.RegexSearch.Replace(Namespace, Args.Replace);
 					}
-					Parent.IsActive = ia;
 				}
 			}
 
@@ -118,8 +111,6 @@ namespace WCFArchitect.Projects
 		public void Replace(FindReplaceInfo Args, string Field)
 		{
 			if (!Args.ReplaceAll) return;
-			bool ia = Parent.IsActive;
-			Parent.IsActive = true;
 			if (Args.UseRegex == false)
 			{
 				if (Args.MatchCase == false)
@@ -138,7 +129,6 @@ namespace WCFArchitect.Projects
 				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
 				if (Field == "Namespace") Namespace = Args.RegexSearch.Replace(Namespace, Args.Replace);
 			}
-			Parent.IsActive = ia;
 		}
 
 		public abstract ServiceBinding Copy(string HostName, Namespace Parent);
@@ -209,16 +199,6 @@ namespace WCFArchitect.Projects
 			TextEncoding = ServiceBindingTextEncoding.UTF8;
 			TransferMode = System.ServiceModel.TransferMode.Buffered;
 			UseDefaultWebProxy = true;
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
 		}
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
@@ -320,16 +300,6 @@ namespace WCFArchitect.Projects
 			TextEncoding = ServiceBindingTextEncoding.UTF8;
 			TransferMode = System.ServiceModel.TransferMode.Buffered;
 			UseDefaultWebProxy = true;
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
 		}
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
@@ -467,16 +437,6 @@ namespace WCFArchitect.Projects
 			ReliableSessionEnabled = false;
 			ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
 			ReliableSessionsOrdered = false;
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
 		}
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
@@ -622,16 +582,6 @@ namespace WCFArchitect.Projects
 			ReliableSessionEnabled = false;
 			ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
 			ReliableSessionsOrdered = false;
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
 		}
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
@@ -782,16 +732,6 @@ namespace WCFArchitect.Projects
 
 			return bd;
 		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
-		}
 	}
 
 	#endregion
@@ -869,16 +809,6 @@ namespace WCFArchitect.Projects
 			TextEncoding = ServiceBindingTextEncoding.UTF8;
 			TransactionFlow = true;
 			UseDefaultWebProxy = true;
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
 		}
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
@@ -984,16 +914,6 @@ namespace WCFArchitect.Projects
 			TextEncoding = ServiceBindingTextEncoding.UTF8;
 			TransactionFlow = true;
 			UseDefaultWebProxy = true;
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
 		}
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
@@ -1105,16 +1025,6 @@ namespace WCFArchitect.Projects
 			TextEncoding = ServiceBindingTextEncoding.UTF8;
 			TransactionFlow = true;
 			UseDefaultWebProxy = true;
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
 		}
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
@@ -1231,16 +1141,6 @@ namespace WCFArchitect.Projects
 			UseDefaultWebProxy = true;
 		}
 
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
-		}
-
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
 			if (Equals(Parent, this.Parent)) return this;
@@ -1354,16 +1254,6 @@ namespace WCFArchitect.Projects
 			TransferMode = System.ServiceModel.TransferMode.Buffered;
 		}
 
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
-		}
-
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
 			if (Equals(Parent, this.Parent)) return this;
@@ -1455,17 +1345,6 @@ namespace WCFArchitect.Projects
 			TransactionProtocol = ServiceBindingTransactionProtocol.Default;
 			TransferMode = System.ServiceModel.TransferMode.Buffered;
 		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
-		}
-
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
 			if (Equals(Parent, this.Parent)) return this;
@@ -1588,16 +1467,6 @@ namespace WCFArchitect.Projects
 			ValidityDuration = TimeSpan.Zero;
 		}
 
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
-		}
-
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
 		{
 			if (Equals(Parent, this.Parent)) return this;
@@ -1676,16 +1545,6 @@ namespace WCFArchitect.Projects
 			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
 			ListenIPAddress = "";
 			Port = 31337;		
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
 		}
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
@@ -1780,16 +1639,6 @@ namespace WCFArchitect.Projects
 			TransferMode = System.ServiceModel.TransferMode.Buffered;
 			UseDefaultWebProxy = true;
 			WriteEncoding = ServiceBindingTextEncoding.UTF8;
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
 		}
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)
@@ -1905,16 +1754,6 @@ namespace WCFArchitect.Projects
 			UseMSMQTracing = false;
 			UseSourceJournal = false;
 			ValidityDuration = TimeSpan.Zero;
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
 		}
 
 		public override ServiceBinding Copy(string HostName, Namespace Parent)

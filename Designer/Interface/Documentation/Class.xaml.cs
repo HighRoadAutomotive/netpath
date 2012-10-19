@@ -24,9 +24,7 @@ namespace WCFArchitect.Interface.Documentation
 		{
 			InitializeComponent();
 
-			SummaryBlock.DataContext = this;
-			RemarksBlock.DataContext = this;
-			ExampleBlock.DataContext = this;
+			DataContext = this;
 		}
 	}
 }

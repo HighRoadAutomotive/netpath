@@ -74,27 +74,6 @@
 	
 	
 	<!-- Service Templates -->
-	<DataTemplate x:Key="MethodItemTemplate" DataType="{x:Type wap:Method}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Operation.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
-				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
-			</StackPanel>
-			<TextBlock Text="{Binding Path=Declaration, StringFormat='Server: {0}'}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-			<TextBlock Text="{Binding Path=ClientDeclaration, StringFormat='Client: {0}'}" Visibility="{Binding Path=HasContract, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-		</StackPanel>
-	</DataTemplate>	
-	<DataTemplate x:Key="PropertyItemTemplate" DataType="{x:Type wap:Property}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Property.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
-				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
-			</StackPanel>
-			<TextBlock Text="{Binding Path=Declaration, StringFormat='Server: {0}'}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-			<TextBlock Text="{Binding Path=ClientDeclaration, StringFormat='Client: {0}'}" Visibility="{Binding Path=HasContract, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-		</StackPanel>
-	</DataTemplate>
-	<local:ProjectListOperationTemplateSelector x:Key="ProjectListOperationTemplateSelector" MethodTemplate="{StaticResource MethodItemTemplate}" PropertyTemplate="{StaticResource PropertyItemTemplate}" />
 	<Style x:Key="ServiceContainerTemplate" TargetType="{x:Type ToggleButton}">
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
@@ -149,13 +128,7 @@
 			</StackPanel>
 			<TextBlock Text="{Binding Path=Declaration, StringFormat='Server: {0}'}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 			<TextBlock Text="{Binding Path=ClientType.Declaration, StringFormat='Contract: {0}'}" Visibility="{Binding Path=HasClientType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-			<local:ProjectItemList x:Name="SubItems" Visibility="Collapsed" ItemsSource="{Binding Path=Operations}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListOperationTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
 		</StackPanel>
-		<DataTemplate.Triggers>
-			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}},Path=IsChecked}" Value="True" >
-				<Setter TargetName="SubItems" Property="Visibility" Value="Visible" />
-			</DataTrigger>
-		</DataTemplate.Triggers>
 	</DataTemplate>
 
 	

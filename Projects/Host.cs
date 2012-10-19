@@ -60,10 +60,6 @@ namespace WCFArchitect.Projects
 		public ObservableCollection<HostEndpoint> Endpoints { get { return (ObservableCollection<HostEndpoint>)GetValue(EndpointsProperty); } set { SetValue(EndpointsProperty, value); } }
 		public static readonly DependencyProperty EndpointsProperty = DependencyProperty.Register("Endpoints", typeof(ObservableCollection<HostEndpoint>), typeof(Host));
 
-		//System
-		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
-		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Host), new UIPropertyMetadata(false));
-
 		public Host() : base(DataTypeMode.Class)
 		{
 			Endpoints = new ObservableCollection<HostEndpoint>();
@@ -81,14 +77,6 @@ namespace WCFArchitect.Projects
 			this.Parent = Parent;
 			Credentials = new HostCredentials(this);
 			Documentation = new Documentation { IsClass = true };
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-			if (e.Property == IsDirtyProperty) return;
-			if (Parent != null)
-				Parent.IsDirty = true;
 		}
 
 		public IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
@@ -118,8 +106,6 @@ namespace WCFArchitect.Projects
 
 				if (Args.ReplaceAll)
 				{
-					bool ia = Parent.IsActive;
-					Parent.IsActive = true;
 					if (Args.UseRegex == false)
 					{
 						if (Args.MatchCase == false)
@@ -138,7 +124,6 @@ namespace WCFArchitect.Projects
 						if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
 						if (!string.IsNullOrEmpty(Namespace)) Namespace = Args.RegexSearch.Replace(Namespace, Args.Replace);
 					}
-					Parent.IsActive = ia;
 				}
 			}
 
@@ -154,8 +139,6 @@ namespace WCFArchitect.Projects
 		public void Replace(FindReplaceInfo Args, string Field)
 		{
 			if (!Args.ReplaceAll) return;
-			bool ia = Parent.IsActive;
-			Parent.IsActive = true;
 			if (Args.UseRegex == false)
 			{
 				if (Args.MatchCase == false)
@@ -174,7 +157,6 @@ namespace WCFArchitect.Projects
 				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
 				if (Field == "Namespace") Namespace = Args.RegexSearch.Replace(Namespace, Args.Replace);
 			}
-			Parent.IsActive = ia;
 		}
 	}
 
@@ -221,15 +203,6 @@ namespace WCFArchitect.Projects
 			this.Name = Helpers.RegExs.ReplaceSpaces.Replace(Name, "");
 		}
 
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-			if (e.Property == OpenableDocument.IsDirtyProperty) return;
-			if (Parent != null)
-				if (Parent.Parent != null)
-					Parent.Parent.IsDirty = true;
-		}
-
 		public override string ToString()
 		{
 			return Name;
@@ -265,8 +238,6 @@ namespace WCFArchitect.Projects
 
 				if (Args.ReplaceAll)
 				{
-					bool ia = Parent.Parent.IsActive;
-					Parent.Parent.IsActive = true;
 					if (Args.UseRegex == false)
 					{
 						if (Args.MatchCase == false)
@@ -288,7 +259,6 @@ namespace WCFArchitect.Projects
 						if (!string.IsNullOrEmpty(ServerAddress)) ServerAddress = Args.RegexSearch.Replace(ServerAddress, Args.Replace);
 						if (!string.IsNullOrEmpty(ClientAddress)) ClientAddress = Args.RegexSearch.Replace(ClientAddress, Args.Replace);
 					}
-					Parent.Parent.IsActive = ia;
 				}
 			}
 
@@ -298,8 +268,6 @@ namespace WCFArchitect.Projects
 		public void Replace(FindReplaceInfo Args, string Field)
 		{
 			if (!Args.ReplaceAll) return;
-			bool ia = Parent.Parent.IsActive;
-			Parent.Parent.IsActive = true;
 			if (Args.UseRegex == false)
 			{
 				if (Args.MatchCase == false)
@@ -321,7 +289,6 @@ namespace WCFArchitect.Projects
 				if (Field == "Server Address") ServerAddress = Args.RegexSearch.Replace(ServerAddress, Args.Replace);
 				if (Field == "Client Address") ClientAddress = Args.RegexSearch.Replace(ClientAddress, Args.Replace);
 			}
-			Parent.Parent.IsActive = ia;
 		}
 	}
 
@@ -339,7 +306,7 @@ namespace WCFArchitect.Projects
 
 		public HostEndpointAddressHeader(string Name, string Namespace)
 		{
-			this.ID = Guid.NewGuid();
+			ID = Guid.NewGuid();
 			this.Name = Name;
 			this.Namespace = Namespace;
 		}
@@ -446,22 +413,13 @@ namespace WCFArchitect.Projects
 
 		public HostCredentials()
 		{
-			this.IssuedTokenAllowedAudiencesUris = new ObservableCollection<string>();
+			IssuedTokenAllowedAudiencesUris = new ObservableCollection<string>();
 		}
 
 		public HostCredentials(Host Owner)
 		{
-			this.IssuedTokenAllowedAudiencesUris = new ObservableCollection<string>();
+			IssuedTokenAllowedAudiencesUris = new ObservableCollection<string>();
 			this.Owner = Owner;
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-			if (e.Property == OpenableDocument.IsDirtyProperty) return;
-			if (Owner != null)
-				if (Owner.Parent != null)
-					Owner.Parent.IsDirty = true;
 		}
 
 		public override string ToString()
@@ -508,8 +466,6 @@ namespace WCFArchitect.Projects
 
 				if (Args.ReplaceAll)
 				{
-					bool ia = Parent.Parent.IsActive;
-					Parent.Parent.IsActive = true;
 					if (Args.UseRegex == false)
 					{
 						if (Args.MatchCase == false)
@@ -519,7 +475,6 @@ namespace WCFArchitect.Projects
 					}
 					else
 						if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
-					Parent.Parent.IsActive = ia;
 				}
 			}
 
@@ -529,8 +484,6 @@ namespace WCFArchitect.Projects
 		public void Replace(FindReplaceInfo Args, string Field)
 		{
 			if (!Args.ReplaceAll) return;
-			bool ia = Parent.Parent.IsActive;
-			Parent.Parent.IsActive = true;
 			if (Args.UseRegex == false)
 			{
 				if (Args.MatchCase == false)
@@ -541,7 +494,6 @@ namespace WCFArchitect.Projects
 			}
 			else
 				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-			Parent.Parent.IsActive = ia;
 		}
 	}
 
@@ -572,28 +524,19 @@ namespace WCFArchitect.Projects
 
 		public HostDebugBehavior(string Name, Host Parent)
 		{
-			this.ID = Guid.NewGuid();
-			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
+			ID = Guid.NewGuid();
+			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
 			this.Parent = Parent;
-			this.IsDefaultBehavior = false;
+			IsDefaultBehavior = false;
 
-			this.HttpHelpPageBinding = null;
-			this.HttpHelpPageEnabled = false;
-			this.HttpHelpPageUrl = "";
-			this.HttpsHelpPageBinding = null;
-			this.HttpsHelpPageEnabled = false;
-			this.HttpsHelpPageUrl = "";
-			this.IncludeExceptionDetailInFaults = false;
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-			if (e.Property == OpenableDocument.IsDirtyProperty) return;
-			if (Parent != null)
-				if (Parent.Parent != null)
-					Parent.Parent.IsDirty = true;
+			HttpHelpPageBinding = null;
+			HttpHelpPageEnabled = false;
+			HttpHelpPageUrl = "";
+			HttpsHelpPageBinding = null;
+			HttpsHelpPageEnabled = false;
+			HttpsHelpPageUrl = "";
+			IncludeExceptionDetailInFaults = false;
 		}
 	}
 
@@ -624,27 +567,18 @@ namespace WCFArchitect.Projects
 
 		public HostMetadataBehavior(string Name, Host Parent)
 		{
-			this.ID = Guid.NewGuid();
-			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
+			ID = Guid.NewGuid();
+			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
 			this.Parent = Parent;
 
-			this.ExternalMetadataLocation = "";
-			this.HttpGetBinding = null;
-			this.HttpGetEnabled = false;
-			this.HttpGetUrl = "";
-			this.HttpsGetBinding = null;
-			this.HttpsGetEnabled = false;
-			this.HttpsGetUrl = "";
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-			if (e.Property == OpenableDocument.IsDirtyProperty) return;
-			if (Parent != null)
-				if (Parent.Parent != null)
-					Parent.Parent.IsDirty = true;
+			ExternalMetadataLocation = "";
+			HttpGetBinding = null;
+			HttpGetEnabled = false;
+			HttpGetUrl = "";
+			HttpsGetBinding = null;
+			HttpsGetEnabled = false;
+			HttpsGetUrl = "";
 		}
 	}
 
@@ -663,23 +597,15 @@ namespace WCFArchitect.Projects
 
 		public HostThrottlingBehavior(string Name, Host Parent)
 		{
-			this.ID = Guid.NewGuid();
-			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
+			ID = Guid.NewGuid();
+			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
 			this.Parent = Parent;
 
-			this.MaxConcurrentCalls = 16;
-			this.MaxConcurrentInstances = 26;
-			this.MaxConcurrentSessions = 10;
+			MaxConcurrentCalls = 16;
+			MaxConcurrentInstances = 26;
+			MaxConcurrentSessions = 10;
 		}
 
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-			if (e.Property == OpenableDocument.IsDirtyProperty) return;
-			if (Parent != null)
-				if (Parent.Parent != null)
-					Parent.Parent.IsDirty = true;
-		}
 	}
 }

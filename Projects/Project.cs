@@ -76,23 +76,15 @@ namespace WCFArchitect.Projects
 		}
 	}
 
+		//Open document handling
 	public class OpenableDocument : DependencyObject
 	{
-		//Open document handling
-		[IgnoreDataMember] public bool IsActive { get; set; }
-		[IgnoreDataMember] public bool IsOpen { get; set; }
-
-		[IgnoreDataMember] public bool IsDirty { get { return (bool)GetValue(IsDirtyProperty); } set { if (IsActive) SetValue(IsDirtyProperty, value); } }
-		public static readonly DependencyProperty IsDirtyProperty = DependencyProperty.Register("IsDirty", typeof(bool), typeof(OpenableDocument), new UIPropertyMetadata(false));
-
 		public bool IsSelected { get { return (bool)GetValue(IsSelectedProperty); } set { SetValue(IsSelectedProperty, value); } }
 		public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.Register("IsSelected", typeof(bool), typeof(OpenableDocument), new PropertyMetadata(false));
 
 		public OpenableDocument()
-			: base()
 		{
-			IsActive = false;
-			IsDirty = false;
+			IsSelected = false;
 		}
 	}
 
@@ -103,7 +95,7 @@ namespace WCFArchitect.Projects
 		Enum
 	}
 
-	public partial class Project : OpenableDocument
+	public class Project : OpenableDocument
 	{
 		public Guid ID { get; set; }
 		[IgnoreDataMember] public string AbsolutePath { get; private set; }
@@ -144,9 +136,6 @@ namespace WCFArchitect.Projects
 
 		public ObservableCollection<ProjectGenerationTarget> ClientGenerationTargets { get { return (ObservableCollection<ProjectGenerationTarget>)GetValue(ClientGenerationTargetsProperty); } set { SetValue(ClientGenerationTargetsProperty, value); } }
 		public static readonly DependencyProperty ClientGenerationTargetsProperty = DependencyProperty.Register("ClientGenerationTargets", typeof(ObservableCollection<ProjectGenerationTarget>), typeof(Project));
-
-		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
-		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Project), new UIPropertyMetadata(true));
 
 		[IgnoreDataMember] public List<DataType> DefaultTypes { get; private set; }
 		[IgnoreDataMember] public List<DataType> InheritableTypes { get; private set; } 
@@ -290,16 +279,6 @@ namespace WCFArchitect.Projects
 				                  };
 		}
 
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsDirtyProperty) return;
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			IsDirty = true;
-		}
-
 		private static string GetRelativePath(string BasePath, string FilePath)
 		{
 			if (!Path.IsPathRooted(FilePath)) FilePath = Path.GetFullPath(FilePath);
@@ -424,8 +403,6 @@ namespace WCFArchitect.Projects
 
 				if (Args.ReplaceAll)
 				{
-					bool ia = IsActive;
-					IsActive = true;
 					if (Args.UseRegex == false)
 					{
 						if (Args.MatchCase == false)
@@ -447,7 +424,6 @@ namespace WCFArchitect.Projects
 						if (!string.IsNullOrEmpty(Namespace.Name)) Namespace.Name = Args.RegexSearch.Replace(Namespace.Name, Args.Replace);
 						if (!string.IsNullOrEmpty(Namespace.URI)) Namespace.URI = Args.RegexSearch.Replace(Namespace.URI, Args.Replace);
 					}
-					IsActive = ia;
 				}
 			}
 
@@ -459,8 +435,6 @@ namespace WCFArchitect.Projects
 		public void Replace(FindReplaceInfo Args, string Field)
 		{
 			if (!Args.ReplaceAll) return;
-			bool ia = IsActive;
-			IsActive = true;
 			if (Args.UseRegex == false)
 			{
 				if (Args.MatchCase == false)
@@ -482,7 +456,6 @@ namespace WCFArchitect.Projects
 				if (Field == "Namespace") Namespace.Name = Args.RegexSearch.Replace(Namespace.Name, Args.Replace);
 				if (Field == "Namespace URI") Namespace.URI = Args.RegexSearch.Replace(Namespace.URI, Args.Replace);
 			}
-			IsActive = ia;
 
 			Namespace.Replace(Args, Field);
 		}

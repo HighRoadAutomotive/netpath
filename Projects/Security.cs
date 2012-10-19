@@ -35,10 +35,6 @@ namespace WCFArchitect.Projects
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(BindingSecurity));
 
-		//System
-		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
-		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(BindingSecurity), new UIPropertyMetadata(false));
-
 		public BindingSecurity() : base(DataTypeMode.Class)
 		{
 			Documentation = new Documentation { IsClass = true };
@@ -62,8 +58,6 @@ namespace WCFArchitect.Projects
 
 				if (Args.ReplaceAll)
 				{
-					bool ia = Parent.IsActive;
-					Parent.IsActive = true;
 					if (Args.UseRegex == false)
 					{
 						if (Args.MatchCase == false)
@@ -73,8 +67,6 @@ namespace WCFArchitect.Projects
 					}
 					else
 						if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
-
-					Parent.IsActive = ia;
 				}
 			}
 
@@ -84,8 +76,6 @@ namespace WCFArchitect.Projects
 		public void Replace (FindReplaceInfo Args, string Field)
 		{
 			if (Args.ReplaceAll != true) return;
-			bool ia = Parent.IsActive;
-			Parent.IsActive = true;
 			if (Args.UseRegex == false)
 			{
 				if (Args.MatchCase == false)
@@ -95,7 +85,6 @@ namespace WCFArchitect.Projects
 			}
 			else
 				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-			Parent.IsActive = ia;
 		}
 
 		public abstract BindingSecurity Copy(string HostName, Namespace Parent);
@@ -134,16 +123,6 @@ namespace WCFArchitect.Projects
 			this.Parent = Parent;
 
 			Mode = System.ServiceModel.BasicHttpSecurityMode.None;
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
 		}
 
 		public override BindingSecurity Copy(string HostName, Namespace Parent)
@@ -199,16 +178,6 @@ namespace WCFArchitect.Projects
 			this.Parent = Parent;
 
 			Mode = System.ServiceModel.BasicHttpsSecurityMode.Transport;
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
 		}
 
 		public override BindingSecurity Copy(string HostName, Namespace Parent)
@@ -278,16 +247,6 @@ namespace WCFArchitect.Projects
 			TransportProxyCredentialType = System.ServiceModel.HttpProxyCredentialType.None;
 		}
 
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
-		}
-
 		public override BindingSecurity Copy(string HostName, Namespace Parent)
 		{
 			if (Equals(Parent, this.Parent)) return this;
@@ -340,16 +299,6 @@ namespace WCFArchitect.Projects
 			MessageAlgorithmSuite = BindingSecurityAlgorithmSuite.Basic256;
 			MessageClientCredentialType = System.ServiceModel.MessageCredentialType.Windows;
 			MessageNegotiateServiceCredential = true;
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
 		}
 
 		public override BindingSecurity Copy(string HostName, Namespace Parent)
@@ -417,16 +366,6 @@ namespace WCFArchitect.Projects
 			MessageNegotiateServiceCredential = true;
 		}
 
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
-		}
-
 		public override BindingSecurity Copy(string HostName, Namespace Parent)
 		{
 			if (Equals(Parent, this.Parent)) return this;
@@ -484,16 +423,6 @@ namespace WCFArchitect.Projects
 			TransportProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
 		}
 
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
-		}
-
 		public override BindingSecurity Copy(string HostName, Namespace Parent)
 		{
 			if (Equals(Parent, this.Parent)) return this;
@@ -535,16 +464,6 @@ namespace WCFArchitect.Projects
 
 			Mode = System.ServiceModel.NetNamedPipeSecurityMode.Transport;
 			TransportProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
 		}
 
 		public override BindingSecurity Copy(string HostName, Namespace Parent)
@@ -605,16 +524,6 @@ namespace WCFArchitect.Projects
 			TransportSecureHashAlgorithm = System.ServiceModel.MsmqSecureHashAlgorithm.Sha512;
 		}
 
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
-		}
-
 		public override BindingSecurity Copy(string HostName, Namespace Parent)
 		{
 			if (Equals(Parent, this.Parent)) return this;
@@ -660,16 +569,6 @@ namespace WCFArchitect.Projects
 			TransportClientCredentialType = System.ServiceModel.PeerTransportCredentialType.Password;
 		}
 
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
-		}
-
 		public override BindingSecurity Copy(string HostName, Namespace Parent)
 		{
 			if (Equals(Parent, this.Parent)) return this;
@@ -713,16 +612,6 @@ namespace WCFArchitect.Projects
 			this.Parent = Parent;
 
 			Mode = System.ServiceModel.WebHttpSecurityMode.None;
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
 		}
 
 		public override BindingSecurity Copy(string HostName, Namespace Parent)
@@ -777,16 +666,6 @@ namespace WCFArchitect.Projects
 			TransportEncryptionAlgorithm = System.ServiceModel.MsmqEncryptionAlgorithm.Aes;
 			TransportProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
 			TransportSecureHashAlgorithm = System.ServiceModel.MsmqSecureHashAlgorithm.Sha512;
-		}
-
-		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			if (e.Property == IsTreeExpandedProperty) return;
-
-			if (Parent != null)
-				Parent.IsDirty = true;
 		}
 
 		public override BindingSecurity Copy(string HostName, Namespace Parent)

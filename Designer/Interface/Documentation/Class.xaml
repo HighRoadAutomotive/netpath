@@ -7,6 +7,7 @@
 	<Grid.RowDefinitions>
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
+		<RowDefinition Height="*" />
 	</Grid.RowDefinitions>
 	<Grid.ColumnDefinitions>
 		<ColumnDefinition Width="*" />
@@ -14,16 +15,10 @@
 		<ColumnDefinition Width="*" />
 	</Grid.ColumnDefinitions>
 	<Label Grid.Row="0" Content="Documentation" FontSize="12pt" />
-	<StackPanel x:Name="SummaryBlock" Grid.Row="1" Grid.Column="0" Orientation="Vertical" Margin="0,0,5,0">
-		<Label Content="Summary" />
-		<TextBox Text="{Binding Path=Documentation.Summary}" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" Height="75" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" />
-	</StackPanel>
-	<StackPanel x:Name="RemarksBlock" Grid.Row="1" Grid.Column="1" Orientation="Vertical" Margin="5,0">
-		<Label Content="Remarks" />
-		<TextBox Text="{Binding Path=Documentation.Remarks}" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" Height="75" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" />
-	</StackPanel>
-	<StackPanel x:Name="ExampleBlock" Grid.Row="1" Grid.Column="2" Orientation="Vertical" Margin="5,0,0,0">
-		<Label Content="Example" />
-		<TextBox Text="{Binding Path=Documentation.Example}" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" Height="75" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" />
-	</StackPanel>
+	<Label Content="Summary" Grid.Row="1" Grid.Column="0" />
+	<TextBox Text="{Binding Path=Documentation.Summary}" Grid.Row="2" Grid.Column="0" Margin="0,0,5,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" />
+	<Label Content="Remarks" Grid.Row="1" Grid.Column="1" />
+	<TextBox Text="{Binding Path=Documentation.Remarks}" Grid.Row="2" Grid.Column="1" Margin="5,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" />
+	<Label Content="Example" Grid.Row="1" Grid.Column="2" />
+	<TextBox Text="{Binding Path=Documentation.Example}" Grid.Row="2" Grid.Column="2" Margin="5,0,0,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" />
 </Grid>
