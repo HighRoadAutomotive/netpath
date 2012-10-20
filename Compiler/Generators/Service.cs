@@ -18,7 +18,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				if (Helpers.RegExs.MatchCodeName.IsMatch(o.Name) == false)
 					Program.AddMessage(new CompileMessage("GS2001", "The service '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-			if (o.HasClientType) { }
+			if (o.HasClientType) 
 				if (Helpers.RegExs.MatchCodeName.IsMatch(o.ClientType.Name) == false)
 					Program.AddMessage(new CompileMessage("GS2002", "The service '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 
@@ -26,14 +26,14 @@ namespace WCFArchitect.Compiler.Generators
 			Operations.AddRange(o.ServiceOperations);
 			Operations.AddRange(o.CallbackOperations);
 
-			foreach (Method m in Operations)
+			foreach (Method m in Operations.Where(a => a.GetType() == typeof(Method)))
 			{
 				if (string.IsNullOrEmpty(m.ServerName))
 					Program.AddMessage(new CompileMessage("GS2004", "An operation in the '" + o.Name + "' service has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
 				else
 					if (Helpers.RegExs.MatchCodeName.IsMatch(m.ServerName) == false)
 						Program.AddMessage(new CompileMessage("GS2005", "The operation '" + m.ServerName + "' in the '" + o.Name + "' service contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
-				if (string.IsNullOrEmpty(m.ClientName))
+				if (!string.IsNullOrEmpty(m.ClientName))
 					if (Helpers.RegExs.MatchCodeName.IsMatch(m.ClientName) == false)
 						Program.AddMessage(new CompileMessage("GS2006", "The operation '" + m.ServerName + "' in the '" + o.Name + "' service contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
 				if (m.ReturnType == null)
@@ -43,7 +43,7 @@ namespace WCFArchitect.Compiler.Generators
 					Program.AddMessage(new CompileMessage("GS2008", "The method parameter '" + m.ServerName + "' in the '" + o.Name + "' service has a parameter with a blank name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
 			}
 
-			foreach (Property p in Operations)
+			foreach (Property p in Operations.Where(a => a.GetType() == typeof(Property)))
 			{
 				if (string.IsNullOrEmpty(p.ServerName))
 					Program.AddMessage(new CompileMessage("GS2010", "A property in the '" + o.Name + "' service has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o, p, p.GetType(), o.ID, p.ID));
@@ -74,7 +74,7 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.ServiceDocumentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.ServiceDocumentation));
 			foreach (DataType dt in o.KnownTypes)
 				code.AppendLine(string.Format("\t[ServiceKnownType(typeof({0}))]", dt));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.Append("\t[ServiceContract(");
 			if (o.HasCallback)
 				code.AppendFormat("CallbackContract = typeof(I{0}Callback), ", o.Name);
@@ -89,9 +89,9 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendLine(")]");
 			code.AppendFormat("\t{0} interface I{1}{2}", DataTypeCSGenerator.GenerateScope(o.Scope), o.Name, Environment.NewLine);
 			code.AppendLine("\t{");
-			foreach (Property p in o.ServiceOperations)
+			foreach (Property p in o.ServiceOperations.Where(a => a.GetType() == typeof(Property)))
 				code.Append(GeneratePropertyServerCode45(p));
-			foreach (Method m in o.ServiceOperations)
+			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
 				code.Append(GenerateOperationServerCode45(m));
 			code.AppendLine("\t}");
 
@@ -100,12 +100,12 @@ namespace WCFArchitect.Compiler.Generators
 				if (o.CallbackDocumentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.CallbackDocumentation));
 				foreach (DataType dt in o.KnownTypes)
 					code.AppendLine(string.Format("\t[ServiceKnownType(typeof({0}))]", dt));
-				code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+				code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 				code.AppendFormat("\t{0} interface I{1}Callback{2}", DataTypeCSGenerator.GenerateScope(o.Scope), o.Name, Environment.NewLine);
 				code.AppendLine("\t{");
-				foreach (Property p in o.CallbackOperations)
+				foreach (Property p in o.CallbackOperations.Where(a => a.GetType() == typeof(Property)))
 					code.Append(GeneratePropertyServerCode45(p));
-				foreach (Method m in o.CallbackOperations)
+				foreach (Method m in o.CallbackOperations.Where(a => a.GetType() == typeof(Method)))
 					code.Append(GenerateOperationServerCode45(m));
 				code.AppendLine("\t}");
 			}
@@ -135,9 +135,9 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0} interface {1}{2}", o.HasClientType ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, Environment.NewLine);
 			code.AppendLine("\t{");
-			foreach (Property p in o.ServiceOperations)
+			foreach (Property p in o.ServiceOperations.Where(a => a.GetType() == typeof(Property)))
 				code.AppendLine(GeneratePropertyInterfaceCode40(p));
-			foreach (Method m in o.ServiceOperations)
+			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
 				code.AppendLine(GenerateMethodInterfaceCode40(m));
 			code.AppendLine("\t}");
 			code.AppendLine();
@@ -147,32 +147,32 @@ namespace WCFArchitect.Compiler.Generators
 				if (o.CallbackDocumentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.CallbackDocumentation));
 				foreach (DataType dt in o.KnownTypes)
 					code.AppendLine(string.Format("\t[ServiceKnownType(typeof({0}))]", dt));
-				code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+				code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 				code.AppendFormat("\t{0} interface {1}Callback{2}", o.HasClientType ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.Name, Environment.NewLine);
 				code.AppendLine("\t{");
-				foreach (Property p in o.CallbackOperations)
+				foreach (Property p in o.CallbackOperations.Where(a => a.GetType() == typeof(Property)))
 					code.AppendLine(GeneratePropertyInterfaceCode40(p));
-				foreach (Method m in o.CallbackOperations)
+				foreach (Method m in o.CallbackOperations.Where(a => a.GetType() == typeof(Method)))
 					code.AppendLine(GenerateMethodInterfaceCode40(m));
 				code.AppendLine("\t}");
 				code.AppendLine();
 			}
 			//Generate Channel Interface
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0} interface {1}Channel : {2}, System.ServiceModel.IClientChannel{3}", o.HasClientType ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.HasClientType ? DataTypeCSGenerator.GenerateType(o.ClientType) : DataTypeCSGenerator.GenerateType(o), Environment.NewLine);
 			code.AppendLine("\t{");
 			code.AppendLine("\t}");
 			code.AppendLine();
 			//Generate the Proxy Class
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0} partial class {1}Client : System.ServiceModel.ClientBase<{1}>, {1}{2}", o.HasClientType ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, Environment.NewLine);
 			code.AppendLine("\t{");
 			Host h = o.Parent.Owner.Namespace.GetServiceHost(o);
 			if (h != null)
 				code.Append(HostCSGenerator.GenerateClientCode40(h));
-			foreach (Property p in o.ServiceOperations)
+			foreach (Property p in o.ServiceOperations.Where(a => a.GetType() == typeof(Property)))
 				code.AppendLine(GeneratePropertyClientCode(p));
-			foreach (Method m in o.ServiceOperations)
+			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
 				code.AppendLine(GenerateOperationProxyCode40(m));
 			code.AppendLine("\t}");
 
@@ -187,12 +187,12 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.ServiceDocumentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.ServiceDocumentation));
 			foreach (DataType dt in o.KnownTypes)
 				code.AppendLine(string.Format("\t[ServiceKnownType(typeof({0}))]", dt));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0} interface {1}{2}", o.HasClientType ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, Environment.NewLine);
 			code.AppendLine("\t{");
-			foreach (Property p in o.ServiceOperations)
+			foreach (Property p in o.ServiceOperations.Where(a => a.GetType() == typeof(Property)))
 				code.AppendLine(GeneratePropertyInterfaceCode45(p));
-			foreach (Method m in o.ServiceOperations)
+			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
 				code.AppendLine(GenerateMethodInterfaceCode45(m));
 			code.AppendLine("\t}");
 			code.AppendLine();
@@ -202,33 +202,33 @@ namespace WCFArchitect.Compiler.Generators
 				if (o.CallbackDocumentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.CallbackDocumentation));
 				foreach (DataType dt in o.KnownTypes)
 					code.AppendLine(string.Format("\t[ServiceKnownType(typeof({0}))]", dt));
-				code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+				code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 				code.AppendFormat("\t{0} interface {1}Callback{2}", o.HasClientType ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.Name, Environment.NewLine);
 				code.AppendLine("\t{");
-				foreach (Property p in o.CallbackOperations)
+				foreach (Property p in o.CallbackOperations.Where(a => a.GetType() == typeof(Property)))
 					code.AppendLine(GeneratePropertyInterfaceCode45(p));
-				foreach (Method m in o.CallbackOperations)
+				foreach (Method m in o.CallbackOperations.Where(a => a.GetType() == typeof(Method)))
 					code.AppendLine(GenerateMethodInterfaceCode45(m));
 				code.AppendLine("\t}");
 				code.AppendLine();
 			}
 			//Generate Channel Interface
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0} interface {1}Channel : {2}, System.ServiceModel.IClientChannel{3}", o.HasClientType ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.HasClientType ? DataTypeCSGenerator.GenerateType(o.ClientType) : DataTypeCSGenerator.GenerateType(o), Environment.NewLine);
 			code.AppendLine("\t{");
 			code.AppendLine("\t}");
 			code.AppendLine();
 			//Generate the Proxy Class
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0} partial class {1}Client : System.ServiceModel.ClientBase<{1}>, {1}{2}", o.HasClientType ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, Environment.NewLine);
 			code.AppendLine("\t{");
 			Host h = o.Parent.Owner.Namespace.GetServiceHost(o);
-				if (h != null)
-					code.Append(HostCSGenerator.GenerateClientCode45(h));
-			foreach (Property p in o.ServiceOperations)
-				code.AppendLine(GeneratePropertyClientCode(p));
-			foreach (Method m in o.ServiceOperations)
-				code.AppendLine(GenerateOperationProxyCode45(m));
+			if (h != null)
+				code.Append(HostCSGenerator.GenerateClientCode45(h));
+			foreach (Property p in o.ServiceOperations.Where(a => a.GetType() == typeof(Property)))
+			code.AppendLine(GeneratePropertyClientCode(p));
+			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+			code.AppendLine(GenerateOperationProxyCode45(m));
 			code.AppendLine("\t}");
 
 			return code.ToString();
@@ -396,7 +396,7 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
 			code.AppendLine(")");
 			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\treturn base.Channel.{0}(", o.HasClientType ? o.ClientName : o.ServerName);
+			code.AppendFormat("\t\t\t{0}base.Channel.{1}(", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName);
 			foreach (MethodParameter op in o.Parameters)
 				code.AppendFormat("{0}, ", op.Name);
 			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
@@ -410,14 +410,14 @@ namespace WCFArchitect.Compiler.Generators
 					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 				code.AppendLine("AsyncCallback Callback, object AsyncState)");
 				code.AppendLine("\t\t{");
-				code.AppendFormat("\t\t\treturn base.Channel.{0}(", o.HasClientType ? o.ClientName : o.ServerName);
+				code.AppendFormat("\t\t\t{0}base.Channel.{1}(", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("{0}, ", op.Name);
 				code.AppendLine("Callback, AsyncState);");
 				code.AppendLine("\t\t}");
 				code.AppendFormat("\t\tpublic {0} End{1}(IAsyncResult result){2}", o.ReturnType.HasClientType ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName, Environment.NewLine);
 				code.AppendLine("\t\t{");
-				code.AppendFormat("\t\t\treturn base.Channel.{0}(", o.HasClientType ? o.ClientName : o.ServerName);
+				code.AppendFormat("\t\t\t{0}base.Channel.{1}(", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("{0}, ", op.Name);
 				code.AppendLine("Callback, AsyncState);");
@@ -440,7 +440,7 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
 			code.AppendLine(")");
 			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\treturn base.Channel.{0}(", o.HasClientType ? o.ClientName : o.ServerName);
+			code.AppendFormat("\t\t\t{0}base.Channel.{1}(", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName);
 			foreach (MethodParameter op in o.Parameters)
 				code.AppendFormat("{0}, ", op.Name);
 			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
@@ -456,7 +456,7 @@ namespace WCFArchitect.Compiler.Generators
 				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
 				code.AppendLine(");");
 				code.AppendLine("\t\t{");
-				code.AppendFormat("\t\t\treturn base.Channel.{0}Async(", o.HasClientType ? o.ClientName : o.ServerName);
+				code.AppendFormat("\t\t\t{0}base.Channel.{1}(", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("{0}, ", op.Name);
 				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
@@ -471,14 +471,14 @@ namespace WCFArchitect.Compiler.Generators
 					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 				code.AppendLine("AsyncCallback Callback, object AsyncState)");
 				code.AppendLine("\t\t{");
-				code.AppendFormat("\t\t\treturn base.Channel.{0}(", o.HasClientType ? o.ClientName : o.ServerName);
+				code.AppendFormat("\t\t\t{0}base.Channel.{1}(", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("{0}, ", op.Name);
 				code.AppendLine("Callback, AsyncState);");
 				code.AppendLine("\t\t}");
 				code.AppendFormat("\t\tpublic {0} End{1}(IAsyncResult result){2}", o.ReturnType.HasClientType ? DataTypeCSGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeCSGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName, Environment.NewLine);
 				code.AppendLine("\t\t{");
-				code.AppendFormat("\t\t\treturn base.Channel.{0}(", o.HasClientType ? o.ClientName : o.ServerName);
+				code.AppendFormat("\t\t\t{0}base.Channel.{1}(", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("{0}, ", op.Name);
 				code.AppendLine("Callback, AsyncState);");
@@ -586,14 +586,31 @@ namespace WCFArchitect.Compiler.Generators
 			if (!o.IsReadOnly)
 			{
 				code.AppendLine(string.Format(o.IsOneWay ? "\t\t[OperationContract(IsOneWay = true, Action = \"{0}/{1}/{2}\")]" : "\t\t[OperationContract(Action = \"{0}/{1}/{2}\", ReplyAction = \"{0}/{1}/{2}Response\")]", o.Owner.Parent.URI, o.Owner.Name, o.ServerName));
-				code.AppendLine(string.Format("\t\tvoid Set{1}({0});", DataTypeCSGenerator.GenerateType(o.ReturnType), o.ServerName));
+				code.AppendLine(string.Format("\t\tvoid Set{1}({0} value);", DataTypeCSGenerator.GenerateType(o.ReturnType), o.ServerName));
 			}
 			return code.ToString();
 		}
 
 		public static string GeneratePropertyClientCode(Property o)
 		{
-			return string.Format(o.IsReadOnly == false ? "\t\tpublic {0} {1} {{ get {{ return Get{1}(); }} set {{ Set{1}(value); }} }}" : "\t\tpublic {0} {1} {{ get {{ return Get{1}(); }} }}", DataTypeCSGenerator.GenerateType(o.ReturnType), o.ServerName);
+			var code = new StringBuilder();
+
+			code.AppendLine(string.Format("\t\t{0} {1}.Get{2}()", DataTypeCSGenerator.GenerateType(o.ReturnType), o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, o.ServerName));
+			code.AppendLine("\t\t{");
+			code.AppendLine(string.Format("\t\t\treturn base.Channel.Get{0}();", o.HasClientType ? o.ClientName : o.ServerName));
+			code.AppendLine("\t\t}");
+
+			if(!o.IsReadOnly)
+			{
+				code.AppendLine(string.Format("\t\tvoid {1}.Set{2}({0} value)", DataTypeCSGenerator.GenerateType(o.ReturnType), o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, o.ServerName));
+				code.AppendLine("\t\t{");
+				code.AppendLine(string.Format("\t\t\tbase.Channel.Set{0}(value);", o.HasClientType ? o.ClientName : o.ServerName));
+				code.AppendLine("\t\t}");
+			}
+
+			code.AppendLine(string.Format(o.IsReadOnly == false ? "\t\tpublic {0} {1} {{ get {{ return (({2})this).Get{1}(); }} set {{ (({2})this).Set{1}(value); }} }}" : "\t\tpublic {0} {1} {{ get {{ return (({2})this).Get{1}(); }} }}", DataTypeCSGenerator.GenerateType(o.ReturnType), o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name));
+
+			return code.ToString();
 		}
 	}
 }

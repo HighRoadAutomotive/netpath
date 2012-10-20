@@ -12,12 +12,21 @@ namespace WCFArchitect.Interface
 {
 	public partial class Main : Window
 	{
+		private enum SaveCloseMode
+		{
+			None,
+			Save,
+			NoSave,
+		}
+
 		//Project Properties
 		public object SelectedProject { get { return GetValue(SelectedProjectProperty); } set { SetValue(SelectedProjectProperty, value); } }
 		public static readonly DependencyProperty SelectedProjectProperty = DependencyProperty.Register("SelectedProject", typeof(object), typeof(Main));
 		
 		public UserProfile UserProfile { get { return (UserProfile)GetValue(UserProfileProperty); } set { SetValue(UserProfileProperty, value); } }
 		public static readonly DependencyProperty UserProfileProperty = DependencyProperty.Register("UserProfile", typeof(UserProfile), typeof(Main));
+
+		private SaveCloseMode CloseMode { get; set; }
 
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static readonly RoutedCommand SelectProjectCommand = new RoutedCommand();
 
@@ -28,6 +37,7 @@ namespace WCFArchitect.Interface
 
 		public Main()
 		{
+			CloseMode = SaveCloseMode.None;
 			if (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor == 0) Globals.WindowsLevel = Globals.WindowsVersion.WinVista;
 			if (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor == 1) Globals.WindowsLevel = Globals.WindowsVersion.WinSeven;
 			if (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor == 2) Globals.WindowsLevel = Globals.WindowsVersion.WinEight;
@@ -103,6 +113,23 @@ namespace WCFArchitect.Interface
 
 		private void Main_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
+			if (Globals.Solution == null) return;
+			if (CloseMode == SaveCloseMode.None)
+			{
+				DialogService.ShowMessageDialog("WCF ARCHITECT", "Save Solution?", "Would you like to save your work before closing?", new DialogAction("Yes", () => { CloseMode = SaveCloseMode.Save; Application.Current.Shutdown(0); }, true), new DialogAction("No", () => { CloseMode = SaveCloseMode.NoSave; Application.Current.Shutdown(0); }), new DialogAction("Cancel", false, true));
+				e.Cancel = true;
+				return;
+			}
+			if(CloseMode == SaveCloseMode.Save)
+			{
+				Globals.SaveSolution();
+				foreach(Projects.Project p in Globals.Projects)
+					Projects.Project.Save(p);
+			}
+			if(CloseMode == SaveCloseMode.NoSave)
+			{
+				Globals.SaveSolution();
+			}
 		}
 
 		private void Main_KeyUp(object sender, KeyEventArgs e)

@@ -20,17 +20,14 @@
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="*" />
-		<RowDefinition Height="2*" />
+		<RowDefinition Height="1.5*" />
 	</Grid.RowDefinitions>
-	<StackPanel Orientation="Horizontal" Margin="0,5" Grid.Row="0">
-		<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/Operation.png" UseLayoutRounding="True" Height="32" Width="32" Stretch="Uniform" Margin="5,0"/>
-		<TextBlock Text="{Binding Path=MethodData.Declaration}" FontSize="14pt" />
-	</StackPanel>
-	<Label Grid.Row="1" Content="Return Type:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="100" />
-	<Data:TypeSelector Project="{Binding ServiceProject}" x:Name="AddCallbackMemberType" Grid.Row="1" Margin="105,5,0,5" />
-	<Label Content="Server Name:" Grid.Row="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="100" />
+	<TextBlock Text="{Binding Path=MethodData.Declaration}" FontSize="14pt" Margin="0,5" Grid.Row="0" />
+	<Label Grid.Row="1" Content="Return Type:" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="100" Padding="10,2,0,2" />
+	<Data:TypeSelector OpenType="{Binding Path=MethodData.ReturnType}" Project="{Binding Path=ServiceProject}" AllowVoid="True" Grid.Row="1" Margin="105,5,0,5" />
+	<Label Content="Server Name:" Grid.Row="2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="100" Padding="10,2,0,2" />
 	<pc:TextBox Text="{Binding Path=MethodData.ServerName}" Name="ServerName" Grid.Row="2" Height="23" Margin="105,5,0,5" ToolTip="{Binding Path=MethodData.ServerName}" />
-	<Label Content="Client Name:" Grid.Row="3" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="100" />
+	<ToggleButton Content="Client Name:" Grid.Row="3" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Margin="0,5,5,5" HorizontalAlignment="Left" IsChecked="{Binding Path=MethodData.HasClientType}" />
 	<pc:TextBox Text="{Binding Path=MethodData.ClientName}" Name="ClientName" Grid.Row="3" Height="23" Margin="105,5,0,5" IsEnabled="{Binding Path=MethodData.HasClientType}" ToolTip="{Binding Path=MethodData.ClientName}" />
 	<Label Grid.Row="4" Content="Options" FontSize="12pt" Margin="0,5,0,0" />
 	<Grid Grid.Row="5">
@@ -47,16 +44,15 @@
 		<ToggleButton Content="Terminating" IsChecked="{Binding Path=MethodData.IsTerminating}" Margin="5" Grid.Column="2" Checked="Terminating_Checked" />
 		<ToggleButton Content="Async" IsChecked="{Binding Path=MethodData.UseAsyncPattern}" Margin="5" Grid.Column="3" />
 		<ToggleButton Content="Await" IsChecked="{Binding Path=MethodData.UseAwaitPattern}" Margin="5" Grid.Column="4" />
-		<Label Content="Protection Level:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="5" />
-		<ComboBox Height="23" Margin="110,5,0,5" SelectedIndex="{Binding Path=MethodData.ProtectionLevel, Converter={StaticResource ProtectionLevelConverter}}" Grid.Column="5" >
+		<Label Content="Protection:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="5" />
+		<ComboBox Height="23" Margin="80,5,0,5" SelectedIndex="{Binding Path=MethodData.ProtectionLevel, Converter={StaticResource ProtectionLevelConverter}}" Grid.Column="5" >
 			<ComboBoxItem Content="None" />
 			<ComboBoxItem Content="Sign" />
 			<ComboBoxItem Content="Encrypt and Sign" />
 		</ComboBox>
 	</Grid>
 	<Docs:Standard Grid.Row="6" Margin="0,5,0,0" IsMethod="True" Documentation="{Binding Path=MethodData.Documentation}" />
-
-	<Grid Grid.Row="8" >
+	<Grid Grid.Row="7" >
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
@@ -84,35 +80,30 @@
 		<ListBox Grid.Row="2" Name="ValuesList" AllowDrop="True" BorderThickness="0" Background="Transparent" Margin="0" SelectionMode="Single" Padding="-1,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.IsVirtualizing="False" ItemContainerStyle="{StaticResource StretchedContainerStyle}" PreviewMouseLeftButtonDown="ValuesList_PreviewMouseLeftButtonDown" PreviewMouseMove="ValuesList_PreviewMouseMove" QueryContinueDrag="ValuesList_QueryContinueDrag" DragLeave="ValuesList_DragLeave" PreviewDragOver="ValuesList_PreviewDragOver" PreviewDrop="ValuesList_Drop" >
 			<ListBox.ItemTemplate>
 				<DataTemplate DataType="{x:Type Projects:MethodParameter}">
-					<Grid>
-						<Grid.RowDefinitions>
-						</Grid.RowDefinitions>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width=".5*" />
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="75" />
-							<ColumnDefinition Width="75" />
-							<ColumnDefinition Width="30" />
-						</Grid.ColumnDefinitions>
-						<Data:TypeSelector x:Name="OperationParameterDataType" OpenType="{Binding Path=Type}" Project="{Binding ElementName=ProjectBinding, Path=DataContext}" Grid.Column="0" Margin="0,5,5,5" VerticalContentAlignment="Center" ToolTip="{Binding Path=Type}"  />
-						<pc:TextBox Name="OperationParameterElementName" Text="{Binding Path=Name}" Grid.Column="1" Margin="5" VerticalContentAlignment="Center" PreviewKeyDown="OperationParameterElementName_PreviewKeyDown" Validate="OperationParameterElementName_Validate" ToolTip="{Binding Path=Name}" />
-						<pc:TextBox Name="OperationParameterDocumentation" Text="{Binding Path=Documentation.Summary}" LabelText="Documentation" Margin="5" Grid.Column="2" VerticalContentAlignment="Center" PreviewKeyDown="OperationParameterDocumentation_PreviewKeyDown" ToolTip="{Binding Path=Name}" />
-						<ToggleButton Content="Hidden" IsChecked="{Binding Path=IsHidden}" Margin="5" Grid.Column="3" />
-						<Label Content="Click to Move" FontSize="10" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" Grid.Column="4" />
-						<Button Name="DeleteOperationParameter" Visibility="Hidden" Grid.Column="5" Margin="1,1,2,1" Padding="0" Click="DeleteOperationParameter_Click">
-							<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
-						</Button>
-					</Grid>
+					<Border x:Name="BG" IsHitTestVisible="True" Background="#01FFFFFF">
+						<Grid>
+							<Grid.RowDefinitions>
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width=".5*" />
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="75" />
+								<ColumnDefinition Width="75" />
+								<ColumnDefinition Width="30" />
+							</Grid.ColumnDefinitions>
+							<Data:TypeSelector x:Name="OperationParameterDataType" OpenType="{Binding Path=Type}" Project="{Binding ElementName=ProjectBinding, Path=DataContext}" Grid.Column="0" Margin="0,5,5,5" VerticalContentAlignment="Center" ToolTip="{Binding Path=Type}"  />
+							<pc:TextBox Name="OperationParameterElementName" Text="{Binding Path=Name}" Grid.Column="1" Margin="5" VerticalContentAlignment="Center" PreviewKeyDown="OperationParameterElementName_PreviewKeyDown" Validate="OperationParameterElementName_Validate" ToolTip="{Binding Path=Name}" />
+							<pc:TextBox Name="OperationParameterDocumentation" Text="{Binding Path=Documentation.Summary}" LabelText="Documentation" Margin="5" Grid.Column="2" VerticalContentAlignment="Center" PreviewKeyDown="OperationParameterDocumentation_PreviewKeyDown" ToolTip="{Binding Path=Name}" />
+							<ToggleButton Content="Hidden" IsChecked="{Binding Path=IsHidden}" Margin="5" Grid.Column="3" />
+							<Label Content="Click to Move" FontSize="10" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="4" />
+							<Button Name="DeleteOperationParameter" Visibility="Hidden" Grid.Column="5" Margin="1,1,2,1" Padding="0" Click="DeleteOperationParameter_Click">
+								<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+							</Button>
+						</Grid>
+					</Border>
 					<DataTemplate.Triggers>
-						<MultiDataTrigger>
-							<MultiDataTrigger.Conditions>
-								<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True" />
-								<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="False" />
-							</MultiDataTrigger.Conditions>
-							<Setter TargetName="DeleteOperationParameter" Property="Visibility" Value="Visible" />
-						</MultiDataTrigger>
-						<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True" >
+						<DataTrigger Binding="{Binding ElementName=BG,Path=IsMouseOver}" Value="True" >
 							<Setter TargetName="DeleteOperationParameter" Property="Visibility" Value="Visible" />
 						</DataTrigger>
 					</DataTemplate.Triggers>

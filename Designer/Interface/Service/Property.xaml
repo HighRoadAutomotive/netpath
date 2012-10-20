@@ -19,12 +19,9 @@
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 	</Grid.RowDefinitions>
-	<StackPanel Orientation="Horizontal" Margin="0,5" Grid.Row="0">
-		<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/Property.png" UseLayoutRounding="True" Height="32" Width="32" Stretch="Uniform" Margin="5,0"/>
-		<TextBlock Text="{Binding Path=PropertyData.Declaration}" FontSize="14pt" />
-	</StackPanel>
+	<TextBlock Text="{Binding Path=PropertyData.Declaration}" FontSize="14pt" Margin="0,5" Grid.Row="0" />
 	<Label Grid.Row="1" Content="Data Type:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="80" />
-	<Data:TypeSelector Project="{Binding ServiceProject}" x:Name="AddCallbackMemberType" Grid.Row="1" Margin="85,5,0,5" />
+	<Data:TypeSelector OpenType="{Binding Path=PropertyData.ReturnType}" Project="{Binding Path=ServiceProject}"  Grid.Row="1" Margin="85,5,0,5" />
 	<Label Content="Name:" Grid.Row="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="80" />
 	<pc:TextBox Text="{Binding Path=PropertyData.ServerName}" Name="Name" Grid.Row="2" Height="23" Margin="85,5,0,5" ToolTip="{Binding Path=PropertyData.ServerName}" />
 	<Label Grid.Row="3" Content="Options" FontSize="12pt" Margin="0,5,0,0" />
@@ -43,5 +40,5 @@
 			<ComboBoxItem Content="Encrypt and Sign" />
 		</ComboBox>
 	</Grid>
-	<Docs:Standard Grid.Row="5" Margin="0,5,0,0" IsProperty="True" Documentation="{Binding Path=PropertyData.Documentation}" />
+	<Docs:Standard Grid.Row="5" Margin="0,5,0,0" IsProperty="True" MinHeight="250" Documentation="{Binding Path=PropertyData.Documentation}" />
 </Grid>

@@ -24,6 +24,9 @@ namespace WCFArchitect.Interface.Data
 		public object Project { get { return GetValue(ProjectProperty); } set { SetValue(ProjectProperty, value); } }
 		public static readonly DependencyProperty ProjectProperty = DependencyProperty.Register("Project", typeof(object), typeof(TypeSelector), new PropertyMetadata(null, ProjectChangedCallback));
 
+		public bool AllowVoid { get { return (bool)GetValue(AllowVoidProperty); } set { SetValue(AllowVoidProperty, value); } }
+		public static readonly DependencyProperty AllowVoidProperty = DependencyProperty.Register("AllowVoid", typeof(bool), typeof(TypeSelector), new PropertyMetadata(false));
+
 		private static void ProjectChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
 		{
 			var t = o as TypeSelector;
@@ -199,7 +202,7 @@ namespace WCFArchitect.Interface.Data
 						//Edit the dictionary key type
 						if (cp > go && cp <= gs)
 						{
-							Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(go, gs - go).Replace("<", "").Replace(",", "").Replace(">", "").Trim(), false)); //Search for results without collections, the compiler does not support nested collections.
+							Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(go, gs - go).Replace("<", "").Replace(",", "").Replace(">", "").Trim(),false)); //Search for results without collections, the compiler does not support nested collections.
 							SelectDictionaryKey = true;
 						}
 
@@ -212,7 +215,7 @@ namespace WCFArchitect.Interface.Data
 					}
 				}
 				else
-					Results = new ObservableCollection<DataType>(IntProject.SearchTypes(TypeName.Text.Replace("[", "").Replace("]", "")));
+					Results = new ObservableCollection<DataType>(IntProject.SearchTypes(TypeName.Text.Replace("[", "").Replace("]", ""), true, AllowVoid));
 
 				if (Results.Count >= 1)
 				{
@@ -237,7 +240,7 @@ namespace WCFArchitect.Interface.Data
 			{
 				string sstr = TypeName.Text.Replace("<", "").Replace(",", "").Replace(">", "").Replace("[", "").Replace("]", "").Trim();
 
-				Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr, false, true, true));
+				Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr, false, AllowVoid, true, true));
 
 				if (Results.Count >= 1)
 				{

@@ -59,6 +59,7 @@ namespace WCFArchitect.Projects
 		public Data() : base(DataTypeMode.Class)
 		{
 			Documentation = new Documentation { IsClass = true };
+			IsDataObject = true;
 		}
 
 		public Data(string Name, Namespace Parent) : base(DataTypeMode.Class)
@@ -69,6 +70,7 @@ namespace WCFArchitect.Projects
 			this.Name = Helpers.RegExs.ReplaceSpaces.Replace(Name, @"");
 			HasClientType = false;
 			HasXAMLType = true;
+			IsDataObject = true;
 			XAMLType = new DataType(DataTypeMode.Class) { Name = this.Name + "XAML", Scope = Scope, Parent = Parent };
 			XAMLType.InheritedTypes.Add(new DataType("DependencyObject", DataTypeMode.Class));
 			this.Parent = Parent;
@@ -384,7 +386,6 @@ namespace WCFArchitect.Projects
 			DataScope = DataScope.Public;
 			ClientScope = DataScope.Disabled;
 			HasClientType = false;
-			ClientScope = DataScope.Disabled;
 			HasXAMLType = true;
 			AttachedTargetTypes = "";
 			AttachedAttributeTypes = "";

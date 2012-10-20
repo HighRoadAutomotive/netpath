@@ -140,18 +140,18 @@ namespace WCFArchitect.Compiler
 
 			foreach (Service s in Scan.Services)
 			{
-				foreach (Method m in s.ServiceOperations)
+				foreach (Method m in s.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
 				{
 					if (m.ReturnType.IsTypeReference) refs.Add(m.ReturnType);
 					refs.AddRange(from mp in m.Parameters where mp.Type.IsTypeReference select mp.Type);
 				}
-				refs.AddRange(from Property p in s.ServiceOperations where p.ReturnType.IsTypeReference select p.ReturnType);
-				foreach (Method m in s.CallbackOperations)
+				refs.AddRange(from Property p in s.ServiceOperations.Where(a => a.GetType() == typeof(Property)) where p.ReturnType.IsTypeReference select p.ReturnType);
+				foreach (Method m in s.CallbackOperations.Where(a => a.GetType() == typeof(Method)))
 				{
 					if (m.ReturnType.IsTypeReference) refs.Add(m.ReturnType);
 					refs.AddRange(from mp in m.Parameters where mp.Type.IsTypeReference select mp.Type);
 				}
-				refs.AddRange(from Property p in s.CallbackOperations where p.ReturnType.IsTypeReference select p.ReturnType);
+				refs.AddRange(from Property p in s.CallbackOperations.Where(a => a.GetType() == typeof(Property)) where p.ReturnType.IsTypeReference select p.ReturnType);
 			}
 
 			foreach(Namespace n in Scan.Children)

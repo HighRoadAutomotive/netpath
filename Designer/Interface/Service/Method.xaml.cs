@@ -48,6 +48,7 @@ namespace WCFArchitect.Interface.Service
 			InitializeComponent();
 
 			ValuesList.ItemsSource = Data.Parameters;
+			DataContext = this;
 		}
 
 		#region - Drag/Drop Support -
@@ -249,7 +250,8 @@ namespace WCFArchitect.Interface.Service
 		private void AddParameter_Click(object sender, RoutedEventArgs e)
 		{
 			if (AddParameter.IsEnabled == false) return;
-			MethodData.Parameters.Add(new Projects.MethodParameter(AddParameterType.OpenType, AddParameterName.Text, MethodData.Owner));
+			MethodData.Parameters.Add(new Projects.MethodParameter(AddParameterType.OpenType, AddParameterName.Text, MethodData.Owner, MethodData));
+			AddParameterType.OpenType = null;
 			AddParameterType.Focus();
 			AddParameterName.Text = "";
 		}
@@ -287,10 +289,11 @@ namespace WCFArchitect.Interface.Service
 
 		private void DeleteOperationParameter_Click(object sender, RoutedEventArgs e)
 		{
-			var OP = ValuesList.SelectedItem as Projects.MethodParameter;
+			var lbi = Globals.GetVisualParent<ListBoxItem>(sender);
+			var OP = lbi.Content as Projects.MethodParameter;
 			if (OP == null) return;
 
-			DialogService.ShowMessageDialog("WCF ARCHITECT", "Are you sure you wish to delete the '" + OP.Type + " " + OP.Name + "' data member?", "Delete Data Member?", new DialogAction("Yes", () => MethodData.Parameters.Remove(OP), true), new DialogAction("No", false, true));
+			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Method Parameter?", "Are you sure you wish to delete the '" + OP.Type + " " + OP.Name + "' method parameter?", new DialogAction("Yes", () => MethodData.Parameters.Remove(OP), true), new DialogAction("No", false, true));
 		}
 	}
 }
