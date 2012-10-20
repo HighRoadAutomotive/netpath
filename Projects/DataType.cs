@@ -71,7 +71,7 @@ namespace WCFArchitect.Projects
 					t.ClientType = Convert.ToBoolean(e.NewValue) == false ? null : new DataType(t.TypeMode) { ID = t.ID, Parent = t.Parent, Name = t.Name, Scope = t.Scope, Partial = t.Partial, Abstract = t.Abstract, Sealed = t.Sealed };
 					if (t.ClientType != null)
 					{
-						t.ClientType.InheritedTypes.Add(new DataType("System.Runtime.Serialization.IExtensibleDataObject", DataTypeMode.Interface));
+						if (t.IsDataObject) t.ClientType.InheritedTypes.Add(new DataType("System.Runtime.Serialization.IExtensibleDataObject", DataTypeMode.Interface));
 						t.ClientType.KnownTypes = new ObservableCollection<DataType>(t.KnownTypes);
 					}
 				}
@@ -142,6 +142,7 @@ namespace WCFArchitect.Projects
 		[IgnoreDataMember] public bool DataHasExtensionData { get { return InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0); } }
 		[IgnoreDataMember] public bool ClientHasExtensionData { get { return HasClientType && (ClientType.InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0)); } }
 		[IgnoreDataMember] public bool ClientHasImpliedExtensionData { get { return !HasClientType; } }
+		[IgnoreDataMember] public bool IsDataObject { get; set; }
 
 		private static void DataTypePropertyChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
 		{
@@ -161,6 +162,7 @@ namespace WCFArchitect.Projects
 			Primitive = PrimitiveTypes.None;
 			HasClientType = false;
 			IsExternalType = false;
+			IsDataObject = false;
 			InheritedTypes = new ObservableCollection<DataType>();
 			KnownTypes = new ObservableCollection<DataType>();
 		}
@@ -177,6 +179,7 @@ namespace WCFArchitect.Projects
 			Primitive = PrimitiveTypes.None;
 			HasClientType = false;
 			IsExternalType = false;
+			IsDataObject = false;
 			InheritedTypes = new ObservableCollection<DataType>();
 			KnownTypes = new ObservableCollection<DataType>();
 		}
@@ -190,32 +193,31 @@ namespace WCFArchitect.Projects
 			HasClientType = false;
 			TypeMode = DataTypeMode.Primitive;
 			IsExternalType = false;
-			if (TypeMode == DataTypeMode.Primitive)
-			{
-				if (this.Primitive == PrimitiveTypes.Void) Name = "void";
-				if (this.Primitive == PrimitiveTypes.Object) Name = "object";
-				if (this.Primitive == PrimitiveTypes.Byte) Name = "byte";
-				if (this.Primitive == PrimitiveTypes.SByte) Name = "sbyte";
-				if (this.Primitive == PrimitiveTypes.Short) Name = "short";
-				if (this.Primitive == PrimitiveTypes.Int) Name = "int";
-				if (this.Primitive == PrimitiveTypes.Long) Name = "long";
-				if (this.Primitive == PrimitiveTypes.UShort) Name = "ushort";
-				if (this.Primitive == PrimitiveTypes.UInt) Name = "uint";
-				if (this.Primitive == PrimitiveTypes.ULong) Name = "ulong";
-				if (this.Primitive == PrimitiveTypes.Float) Name = "float";
-				if (this.Primitive == PrimitiveTypes.Double) Name = "double";
-				if (this.Primitive == PrimitiveTypes.Decimal) Name = "decimal";
-				if (this.Primitive == PrimitiveTypes.Bool) Name = "bool";
-				if (this.Primitive == PrimitiveTypes.Char) Name = "char";
-				if (this.Primitive == PrimitiveTypes.String) Name = "string";
-				if (this.Primitive == PrimitiveTypes.DateTime) Name = "DateTime";
-				if (this.Primitive == PrimitiveTypes.DateTimeOffset) Name = "DateTimeOffset";
-				if (this.Primitive == PrimitiveTypes.TimeSpan) Name = "TimeSpan";
-				if (this.Primitive == PrimitiveTypes.GUID) Name = "Guid";
-				if (this.Primitive == PrimitiveTypes.URI) Name = "Uri";
-				if (this.Primitive == PrimitiveTypes.Version) Name = "Version";
-				if (this.Primitive == PrimitiveTypes.ByteArray) Name = "byte[]";
-			}
+			IsDataObject = false;
+			if (TypeMode != DataTypeMode.Primitive) return;
+			if (this.Primitive == PrimitiveTypes.Void) Name = "void";
+			if (this.Primitive == PrimitiveTypes.Object) Name = "object";
+			if (this.Primitive == PrimitiveTypes.Byte) Name = "byte";
+			if (this.Primitive == PrimitiveTypes.SByte) Name = "sbyte";
+			if (this.Primitive == PrimitiveTypes.Short) Name = "short";
+			if (this.Primitive == PrimitiveTypes.Int) Name = "int";
+			if (this.Primitive == PrimitiveTypes.Long) Name = "long";
+			if (this.Primitive == PrimitiveTypes.UShort) Name = "ushort";
+			if (this.Primitive == PrimitiveTypes.UInt) Name = "uint";
+			if (this.Primitive == PrimitiveTypes.ULong) Name = "ulong";
+			if (this.Primitive == PrimitiveTypes.Float) Name = "float";
+			if (this.Primitive == PrimitiveTypes.Double) Name = "double";
+			if (this.Primitive == PrimitiveTypes.Decimal) Name = "decimal";
+			if (this.Primitive == PrimitiveTypes.Bool) Name = "bool";
+			if (this.Primitive == PrimitiveTypes.Char) Name = "char";
+			if (this.Primitive == PrimitiveTypes.String) Name = "string";
+			if (this.Primitive == PrimitiveTypes.DateTime) Name = "DateTime";
+			if (this.Primitive == PrimitiveTypes.DateTimeOffset) Name = "DateTimeOffset";
+			if (this.Primitive == PrimitiveTypes.TimeSpan) Name = "TimeSpan";
+			if (this.Primitive == PrimitiveTypes.GUID) Name = "Guid";
+			if (this.Primitive == PrimitiveTypes.URI) Name = "Uri";
+			if (this.Primitive == PrimitiveTypes.Version) Name = "Version";
+			if (this.Primitive == PrimitiveTypes.ByteArray) Name = "byte[]";
 		}
 
 		public DataType(string External, DataTypeMode ExternalType)
@@ -227,6 +229,7 @@ namespace WCFArchitect.Projects
 			Scope = DataScope.Public;
 			Partial = false;
 			IsExternalType = true;
+			IsDataObject = false;
 			TypeMode = ExternalType;
 			HasClientType = false;
 		}

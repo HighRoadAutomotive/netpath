@@ -82,7 +82,7 @@
 							<Border x:Name="ItemBG" Grid.ColumnSpan="2" Background="Transparent" CornerRadius="5" />
 							<StackPanel Orientation="Vertical" Margin="3">
 								<StackPanel Orientation="Horizontal">
-									<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Operation.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
+									<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Property.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 									<TextBlock Text="{Binding Path=ServerName}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="11pt" />
 								</StackPanel>
 								<TextBlock Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" >
@@ -161,45 +161,45 @@
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="5*" />
 				</Grid.RowDefinitions>
-				<Docs:Class Grid.Row="0" Documentation="{Binding Path=ServiceType.ServiceDocumentation}" />
+				<Docs:Class Grid.Row="0" Margin="5,0" Documentation="{Binding Path=ServiceType.ServiceDocumentation}" />
 				<Label Grid.Row="1" Content="Operations" FontSize="14pt" Margin="0,10,0,0" />
 				<Label Grid.Row="2" Margin="-4,5,0,5" Padding="8,2,0,2" Content="Add Operation:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="100" />
-				<Data:TypeSelector Project="{Binding ServiceProject}" x:Name="AddServiceMemberType" LabelText="Type" Grid.Row="2" Margin="105,5,0,5" HorizontalAlignment="Left" Width="325" Selected="AddServiceMemberType_Selected" ValidationChanged="AddServiceMemberType_ValidationChanged" />
+				<Data:TypeSelector Project="{Binding ServiceProject}" AllowVoid="True" x:Name="AddServiceMemberType" LabelText="Type" Grid.Row="2" Margin="105,5,0,5" HorizontalAlignment="Left" Width="325" Selected="AddServiceMemberType_Selected" ValidationChanged="AddServiceMemberType_ValidationChanged" />
 				<pc:TextBox x:Name="AddServiceMemberName" LabelText="Name" Grid.Row="2" Margin="440,5,205,5" Validate="AddServiceMemberName_Validate" TextChanged="AddServiceMemberName_TextChanged" KeyUp="AddServiceMemberName_KeyUp" />
-				<Button x:Name="AddServiceMethod" Grid.Row="2" Margin="5" Content="Add" HorizontalAlignment="Right" Width="90" IsEnabled="False" Click="AddServiceMethod_Click" />
-				<Button x:Name="AddServiceProperty" Grid.Row="2" Margin="0,5,105,5" Content="Add" HorizontalAlignment="Right" Width="90" IsEnabled="False" Click="AddServiceProperty_Click" />
+				<Button x:Name="AddServiceMethod" Grid.Row="2" Margin="0,5,105,5" Content="Method" HorizontalAlignment="Right" Width="90" IsEnabled="False" Click="AddServiceMethod_Click" />
+				<Button x:Name="AddServiceProperty" Grid.Row="2" Margin="5" Content="Property" HorizontalAlignment="Right" Width="90" IsEnabled="False" Click="AddServiceProperty_Click" />
 				<Grid Grid.Row="3" Margin="0,5,0,0">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="230" />
 						<ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
 					<ListBox x:Name="ServiceOperationsList" Grid.Column="0" ItemsSource="{Binding Path=ServiceType.ServiceOperations}" AllowDrop="True" BorderThickness="0" Background="Transparent" Margin="0" SelectionMode="Single" Padding="-1,0" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.IsVirtualizing="False" SelectionChanged="ServiceOperationsList_SelectionChanged"  PreviewMouseLeftButtonDown="ServiceOperationsList_PreviewMouseLeftButtonDown" PreviewMouseMove="ServiceOperationsList_PreviewMouseMove" QueryContinueDrag="ServiceOperationsList_QueryContinueDrag" DragLeave="ServiceOperationsList_DragLeave" PreviewDragOver="ServiceOperationsList_PreviewDragOver" PreviewDrop="ServiceOperationsList_Drop" />
-					<ContentPresenter Grid.Row="1" Content="{Binding Path=ActiveOperation}" />
+					<ContentPresenter Grid.Column="1" Grid.Row="1" Margin="5,0" Content="{Binding Path=ActiveOperation}" />
 				</Grid>
 			</Grid>
 		</TabItem>
 		<TabItem Header="CALLBACK" FontSize="12pt" Padding="5">
 			<Grid>
 				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
 					<RowDefinition Height="*" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="5*" />
 				</Grid.RowDefinitions>
-				<Docs:Class Grid.Row="0" Grid.ColumnSpan="2" Documentation="{Binding Path=ServiceType.CallbackDocumentation}" />
+				<Docs:Class Grid.Row="0" Margin="5,0" Documentation="{Binding Path=ServiceType.CallbackDocumentation}" />
 				<Label Grid.Row="1" Content="Operations" FontSize="14pt" Margin="0,10,0,0" />
 				<Label Grid.Row="2" Margin="-4,5,0,5" Padding="8,2,0,2" Content="Add Operation:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="100" />
-				<Data:TypeSelector Project="{Binding ServiceProject}" x:Name="AddCallbackMemberType" LabelText="Type" Grid.Row="2" Margin="105,5,0,5" HorizontalAlignment="Left" Width="325" Selected="AddCallbackMemberType_Selected" ValidationChanged="AddCallbackMemberType_ValidationChanged" />
+				<Data:TypeSelector Project="{Binding ServiceProject}" AllowVoid="True" x:Name="AddCallbackMemberType" LabelText="Type" Grid.Row="2" Margin="105,5,0,5" HorizontalAlignment="Left" Width="325" Selected="AddCallbackMemberType_Selected" ValidationChanged="AddCallbackMemberType_ValidationChanged" />
 				<pc:TextBox x:Name="AddCallbackMemberName" LabelText="Name" Grid.Row="2" Margin="440,5,205,5" Validate="AddCallbackMemberName_Validate" TextChanged="AddCallbackMemberName_TextChanged" KeyUp="AddCallbackMemberName_KeyUp" />
-				<Button x:Name="AddCallbackMethod" Grid.Row="2" Margin="5" Content="Add" HorizontalAlignment="Right" Width="90" IsEnabled="False" Click="AddCallbackMethod_Click" />
-				<Button x:Name="AddCallbackProperty" Grid.Row="2" Margin="0,5,105,5" Content="Add" HorizontalAlignment="Right" Width="90" IsEnabled="False" Click="AddCallbackProperty_Click" />
+				<Button x:Name="AddCallbackMethod" Grid.Row="2" Margin="0,5,105,5" Content="Method" HorizontalAlignment="Right" Width="90" IsEnabled="False" Click="AddCallbackMethod_Click" />
+				<Button x:Name="AddCallbackProperty" Grid.Row="2" Margin="5" Content="Property" HorizontalAlignment="Right" Width="90" IsEnabled="False" Click="AddCallbackProperty_Click" />
 				<Grid Grid.Row="3" Margin="0,5,0,0">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="230" />
 						<ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
 					<ListBox x:Name="CallbackOperationsList" Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Path=ServiceType.CallbackOperations}" AllowDrop="True" BorderThickness="0" Background="Transparent" Margin="0" SelectionMode="Single" Padding="-1,0" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.IsVirtualizing="False" SelectionChanged="CallbackOperationsList_SelectionChanged"  PreviewMouseLeftButtonDown="CallbackOperationsList_PreviewMouseLeftButtonDown" PreviewMouseMove="CallbackOperationsList_PreviewMouseMove" QueryContinueDrag="CallbackOperationsList_QueryContinueDrag" DragLeave="CallbackOperationsList_DragLeave" PreviewDragOver="CallbackOperationsList_PreviewDragOver" PreviewDrop="CallbackOperationsList_Drop" />
-					<ContentPresenter Grid.Column="1" Grid.Row="1" Content="{Binding Path=ActiveCallback}" />
+					<ContentPresenter Grid.Column="1" Grid.Row="1" Margin="5,0" Content="{Binding Path=ActiveCallback}" />
 				</Grid>
 			</Grid>
 		</TabItem>

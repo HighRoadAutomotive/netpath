@@ -139,6 +139,7 @@ namespace WCFArchitect.Projects
 
 		[IgnoreDataMember] public List<DataType> DefaultTypes { get; private set; }
 		[IgnoreDataMember] public List<DataType> InheritableTypes { get; private set; } 
+		[IgnoreDataMember] public DataType VoidType { get; private set; } 
 
 		public Project()
 		{
@@ -195,6 +196,9 @@ namespace WCFArchitect.Projects
 
 			//Add the default inheritable types.
 			InheritableTypes = new List<DataType>() {new DataType("System.Windows.DependencyObject", DataTypeMode.Class), new DataType("System.Runtime.Serialization.IExtensibleDataObject", DataTypeMode.Interface), new DataType("System.ComponentModel.INotifyPropertyChanged", DataTypeMode.Interface)};
+
+			//Add the void type
+			VoidType = new DataType(PrimitiveTypes.Void);
 		}
 
 		public Project(string Name)
@@ -335,9 +339,9 @@ namespace WCFArchitect.Projects
 			Storage.Save(Path, Data);
 		}
 
-		public List<DataType> SearchTypes(string Search, bool IncludeCollections = true, bool DataOnly = false, bool IncludeInheritable = false)
+		public List<DataType> SearchTypes(string Search, bool IncludeCollections = true, bool IncludeVoid = false, bool DataOnly = false, bool IncludeInheritable = false)
 		{
-			if(string.IsNullOrEmpty(Search)) return new List<DataType>();
+			if (string.IsNullOrEmpty(Search)) return new List<DataType>();
 
 			var results = new List<DataType>();
 
@@ -351,10 +355,12 @@ namespace WCFArchitect.Projects
 			}
 			results.AddRange(Namespace.SearchTypes(Search, DataOnly));
 
-			foreach(DependencyProject dp in DependencyProjects)
+			foreach (DependencyProject dp in DependencyProjects)
 				results.AddRange(dp.Project.SearchTypes(Search, false, true));
 
-			if (IncludeInheritable) results.RemoveAll(a => a.GetType() == typeof(Enum));
+			if (IncludeInheritable) results.RemoveAll(a => a.GetType() == typeof (Enum));
+
+			if(IncludeVoid && VoidType.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0)  results.Add(VoidType);
 
 			return results;
 		}

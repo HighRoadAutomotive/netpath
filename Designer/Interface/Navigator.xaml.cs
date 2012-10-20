@@ -37,14 +37,59 @@ namespace WCFArchitect.Interface
 		public int? FindResultsCount { get { return (int?)GetValue(FindResultsCountProperty); } set { SetValue(FindResultsCountProperty, value); } }
 		public static readonly DependencyProperty FindResultsCountProperty = DependencyProperty.Register("FindResultsCount", typeof(int?), typeof(Navigator), new PropertyMetadata(0));
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")]
-		public static readonly RoutedCommand ChangeActivePageCommand = new RoutedCommand();
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static readonly RoutedCommand ChangeActivePageCommand = new RoutedCommand();
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static readonly RoutedCommand DeleteCommand = new RoutedCommand();
 
 		public Compiler Compiler { get; private set; }
 
 		static Navigator()
 		{
 			CommandManager.RegisterClassCommandBinding(typeof(Navigator), new CommandBinding(ChangeActivePageCommand, OnChangeActivePageCommandExecuted));
+			CommandManager.RegisterClassCommandBinding(typeof(Navigator), new CommandBinding(DeleteCommand, OnDeleteCommand));
+		}
+
+		private static void OnDeleteCommand(object sender, ExecutedRoutedEventArgs e)
+		{
+			var s = sender as Navigator;
+			if (s == null) return;
+
+			Type dt = e.Parameter.GetType();
+			if (dt == typeof(Projects.Namespace))
+			{
+				var t = e.Parameter as Projects.Namespace;
+				if (t == null) return;
+				DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Namespace?", "Are you sure you want to delete the '" + t.FullName + "' namespace?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Children.Remove(t); }, true), new DialogAction("No", false, true));
+			}
+			if (dt == typeof(Projects.Service))
+			{
+				var t = e.Parameter as Projects.Service;
+				if (t == null) return;
+				DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Service?", "Are you sure you want to delete the '" + t.Declaration + "' service?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Services.Remove(t); }, true), new DialogAction("No", false, true));
+			}
+			if (dt == typeof(Projects.Data))
+			{
+				var t = e.Parameter as Projects.Data;
+				if (t == null) return;
+				DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Data?", "Are you sure you want to delete the '" + t.Declaration + "' data?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Data.Remove(t); }, true), new DialogAction("No", false, true));
+			}
+			if (dt == typeof(Projects.Enum))
+			{
+				var t = e.Parameter as Projects.Enum;
+				if (t == null) return;
+				DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Enumeration?", "Are you sure you want to delete the '" + t.Declaration + "' enumeration?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Enums.Remove(t); }, true), new DialogAction("No", false, true));
+			}
+			if (dt == typeof(Projects.ServiceBinding))
+			{
+				var t = e.Parameter as Projects.ServiceBinding;
+				if (t == null) return;
+				DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Binding?", "Are you sure you want to delete the '" + t.Declaration + "' binding?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Bindings.Remove(t); }, true), new DialogAction("No", false, true));
+			}
+			if (dt == typeof(Projects.Host))
+			{
+				var t = e.Parameter as Projects.Host;
+				if (t == null) return;
+				DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Host?", "Are you sure you want to delete the '" + t.Declaration + "' host?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Hosts.Remove(t); }, true), new DialogAction("No", false, true));
+			}
 		}
 
 		private static void OnChangeActivePageCommandExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -116,6 +161,246 @@ namespace WCFArchitect.Interface
 
 			//Need to make all item pages before this function can be completed.
 			Project.Namespace.SetSelectedItem(Item);
+		}
+
+		private void OpenProjectItemBelow(OpenableDocument Item)
+		{
+			if (Item == null) return;
+			Type dt = Item.GetType();
+			if (dt == typeof(Projects.Namespace))
+			{
+				var t = Item as Projects.Namespace;
+				if (t == null) return;
+				int idx = t.Parent.Children.IndexOf(t);
+				int ic = t.Parent.Children.Count - 1;
+				if (idx < ic)
+					OpenProjectItem(t.Parent.Children[idx + 1]);
+				else
+				{
+					if (t.Parent.Services.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Services[0]);
+						return;
+					}
+					if (t.Parent.Data.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Data[0]);
+						return;
+					}
+					if (t.Parent.Enums.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Enums[0]);
+						return;
+					}
+					if (t.Parent.Bindings.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Bindings[0]);
+						return;
+					}
+					if (t.Parent.Hosts.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Hosts[0]);
+						return;
+					}
+					if(t.Parent != null && !Equals(t.Parent, t.Owner.Namespace)) OpenProjectItem(t.Parent);
+					else OpenProjectItem(Project);
+				}
+			}
+			if (dt == typeof(Projects.Service))
+			{
+				var t = Item as Projects.Service;
+				if (t == null) return;
+				int idx = t.Parent.Services.IndexOf(t);
+				int ic = t.Parent.Services.Count - 1;
+				if (idx < ic)
+					OpenProjectItem(t.Parent.Services[idx + 1]);
+				else
+				{
+					if (t.Parent.Data.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Data[0]);
+						return;
+					}
+					if (t.Parent.Enums.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Enums[0]);
+						return;
+					}
+					if (t.Parent.Bindings.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Bindings[0]);
+						return;
+					}
+					if (t.Parent.Hosts.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Hosts[0]);
+						return;
+					}
+					if (t.Parent.Children.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Children[0]);
+						return;
+					}
+					if (t.Parent != null && !Equals(t.Parent, t.Parent.Owner.Namespace)) OpenProjectItem(t.Parent);
+					else OpenProjectItem(Project);
+				}
+			}
+			if (dt == typeof(Projects.Data))
+			{
+				var t = Item as Projects.Data;
+				if (t == null) return;
+				int idx = t.Parent.Data.IndexOf(t);
+				int ic = t.Parent.Data.Count - 1;
+				if (idx < ic)
+					OpenProjectItem(t.Parent.Data[idx + 1]);
+				else
+				{
+					if (t.Parent.Enums.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Enums[0]);
+						return;
+					}
+					if (t.Parent.Bindings.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Bindings[0]);
+						return;
+					}
+					if (t.Parent.Hosts.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Hosts[0]);
+						return;
+					}
+					if (t.Parent.Children.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Children[0]);
+						return;
+					}
+					if (t.Parent.Services.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Services[0]);
+						return;
+					}
+					if (t.Parent != null && !Equals(t.Parent, t.Parent.Owner.Namespace)) OpenProjectItem(t.Parent);
+					else OpenProjectItem(Project);
+				}
+			}
+			if (dt == typeof(Projects.Enum))
+			{
+				var t = Item as Projects.Enum;
+				if (t == null) return;
+				int idx = t.Parent.Enums.IndexOf(t);
+				int ic = t.Parent.Enums.Count - 1;
+				if (idx < ic)
+					OpenProjectItem(t.Parent.Enums[idx + 1]);
+				else
+				{
+					if (t.Parent.Bindings.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Bindings[0]);
+						return;
+					}
+					if (t.Parent.Hosts.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Hosts[0]);
+						return;
+					}
+					if (t.Parent.Children.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Children[0]);
+						return;
+					}
+					if (t.Parent.Services.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Services[0]);
+						return;
+					}
+					if (t.Parent.Data.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Data[0]);
+						return;
+					}
+					if (t.Parent != null && !Equals(t.Parent, t.Parent.Owner.Namespace)) OpenProjectItem(t.Parent);
+					else OpenProjectItem(Project);
+				}
+			}
+			if (dt == typeof(Projects.ServiceBinding))
+			{
+				var t = Item as Projects.ServiceBinding;
+				if (t == null) return;
+				int idx = t.Parent.Bindings.IndexOf(t);
+				int ic = t.Parent.Bindings.Count - 1;
+				if (idx < ic)
+					OpenProjectItem(t.Parent.Bindings[idx + 1]);
+				else
+				{
+					if (t.Parent.Hosts.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Hosts[0]);
+						return;
+					}
+					if (t.Parent.Children.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Children[0]);
+						return;
+					}
+					if (t.Parent.Services.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Services[0]);
+						return;
+					}
+					if (t.Parent.Data.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Data[0]);
+						return;
+					}
+					if (t.Parent.Enums.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Enums[0]);
+						return;
+					}
+					if (t.Parent != null && !Equals(t.Parent, t.Parent.Owner.Namespace)) OpenProjectItem(t.Parent);
+					else OpenProjectItem(Project);
+				}
+			}
+			if (dt == typeof(Projects.Host))
+			{
+				var t = Item as Projects.Host;
+				if (t == null) return;
+				int idx = t.Parent.Hosts.IndexOf(t);
+				int ic = t.Parent.Hosts.Count - 1;
+				if (idx < ic)
+					OpenProjectItem(t.Parent.Hosts[idx + 1]);
+				else
+				{
+					if (t.Parent.Children.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Children[0]);
+						return;
+					}
+					if (t.Parent.Services.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Services[0]);
+						return;
+					}
+					if (t.Parent.Data.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Data[0]);
+						return;
+					}
+					if (t.Parent.Enums.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Enums[0]);
+						return;
+					}
+					if (t.Parent.Bindings.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Bindings[0]);
+						return;
+					}
+					if (t.Parent != null && !Equals(t.Parent, t.Parent.Owner.Namespace)) OpenProjectItem(t.Parent);
+					else OpenProjectItem(Project);
+				}
+			}
 		}
 
 		private void RemoveProject()

@@ -41,14 +41,28 @@
 		<Setter Property="UseLayoutRounding" Value="True" />
 		<Setter Property="Command" Value="{x:Static local:Navigator.ChangeActivePageCommand}" />
 		<Setter Property="CommandParameter" Value="{Binding}" />
-		<Setter Property="Padding" Value="5,0,0,0" />
+		<Setter Property="Padding" Value="4" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type Button}">
-					<Border x:Name="PART_Border" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" CornerRadius="5" Padding="{TemplateBinding Padding}">
-						<ContentPresenter Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
-					</Border>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<Border x:Name="PART_Border" Grid.ColumnSpan="2" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" CornerRadius="5" />
+						<ContentPresenter Grid.Column="0" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+						<Button x:Name="Delete" Visibility="Collapsed" Grid.Column="1" Grid.RowSpan="2" Margin="0" Padding="0" Width="30" Style="{StaticResource ListItemButtonRight}" Command="{x:Static local:Navigator.DeleteCommand}" CommandParameter="{Binding}" >
+							<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+						</Button>
+					</Grid>
 					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="Delete" Property="Visibility" Value="Visible" />
+						</Trigger>
 						<MultiTrigger>
 							<MultiTrigger.Conditions>
 								<Condition Property="IsEnabled" Value="True" />
@@ -87,17 +101,31 @@
 		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="UseLayoutRounding" Value="True" />
+		<Setter Property="Padding" Value="4" />
 		<Setter Property="Command" Value="{x:Static local:Navigator.ChangeActivePageCommand}" />
 		<Setter Property="CommandParameter" Value="{Binding}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type ToggleButton}">
-					<Border x:Name="PART_Border" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" CornerRadius="5" >
-						<Border x:Name="Overlay" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" CornerRadius="5" Padding="5,0,0,0">
-							<ContentPresenter Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
-						</Border>
-					</Border>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<Border x:Name="PART_Border" Grid.ColumnSpan="2" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" CornerRadius="5" />
+						<Border x:Name="Overlay" Grid.ColumnSpan="2" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" CornerRadius="5" Padding="5,0,0,0" />
+						<ContentPresenter Grid.Column="0" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+						<Button x:Name="Delete" Visibility="Collapsed" Grid.Column="1" Grid.RowSpan="2" Margin="0" Padding="0" Width="30" Style="{StaticResource ListItemButtonRight}" Command="{x:Static local:Navigator.DeleteCommand}" CommandParameter="{Binding}" >
+							<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+						</Button>
+					</Grid>
 					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="Delete" Property="Visibility" Value="Visible" />
+						</Trigger>
 						<MultiTrigger>
 							<MultiTrigger.Conditions>
 								<Condition Property="IsEnabled" Value="True" />
@@ -121,13 +149,13 @@
 		</Setter>
 	</Style>
 	<DataTemplate x:Key="ServiceItemTemplate" DataType="{x:Type wap:Service}">
-		<StackPanel Orientation="Vertical" Margin="3">
+		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Service.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Service.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
-			<TextBlock Text="{Binding Path=Declaration, StringFormat='Server: {0}'}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-			<TextBlock Text="{Binding Path=ClientType.Declaration, StringFormat='Contract: {0}'}" Visibility="{Binding Path=HasClientType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="{Binding Path=Declaration, StringFormat='Server: {0}'}" Grid.Row="1" Margin="20,0,0,0" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="{Binding Path=ClientType.Declaration, StringFormat='Client: {0}'}" Grid.Row="2" Margin="20,0,0,0" Visibility="{Binding Path=HasClientType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 		</StackPanel>
 	</DataTemplate>
 
@@ -146,17 +174,31 @@
 		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="UseLayoutRounding" Value="True" />
+		<Setter Property="Padding" Value="4" />
 		<Setter Property="Command" Value="{x:Static local:Navigator.ChangeActivePageCommand}" />
 		<Setter Property="CommandParameter" Value="{Binding}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type ToggleButton}">
-					<Border x:Name="PART_Border" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" CornerRadius="5" >
-						<Border x:Name="Overlay" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" CornerRadius="5" Padding="5,0,0,0">
-							<ContentPresenter Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
-						</Border>
-					</Border>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<Border x:Name="PART_Border" Grid.ColumnSpan="2" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" CornerRadius="5" />
+						<Border x:Name="Overlay" Grid.ColumnSpan="2" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" CornerRadius="5" Padding="5,0,0,0" />
+						<ContentPresenter Grid.Column="0" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+						<Button x:Name="Delete" Visibility="Collapsed" Grid.Column="1" Grid.RowSpan="2" Margin="0" Padding="0" Width="30" Style="{StaticResource ListItemButtonRight}" Command="{x:Static local:Navigator.DeleteCommand}" CommandParameter="{Binding}" >
+							<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+						</Button>
+					</Grid>
 					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="Delete" Property="Visibility" Value="Visible" />
+						</Trigger>
 						<MultiTrigger>
 							<MultiTrigger.Conditions>
 								<Condition Property="IsEnabled" Value="True" />
@@ -180,27 +222,19 @@
 		</Setter>
 	</Style>
 	<DataTemplate x:Key="DataItemTemplate" DataType="{x:Type wap:Data}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
+		<StackPanel Orientation="Vertical">
+			<StackPanel Orientation="Horizontal" >
 				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Data.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="11pt" />
 			</StackPanel>
-			<TextBlock Text="{Binding Path=Declaration, StringFormat='Server: {0}'}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
-			<TextBlock Text="{Binding Path=ClientType.Declaration, StringFormat='Client: {0}'}" Visibility="{Binding Path=HasClientType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
-			<TextBlock Text="{Binding Path=XAMLType.Declaration, StringFormat='XAML: {0}'}" Visibility="{Binding Path=HasXAMLType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
+			<TextBlock Text="{Binding Path=Declaration, StringFormat='Server: {0}'}" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
+			<TextBlock Text="{Binding Path=ClientType.Declaration, StringFormat='Client: {0}'}" Grid.Row="2" Visibility="{Binding Path=HasClientType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
+			<TextBlock Text="{Binding Path=XAMLType.Declaration, StringFormat='XAML: {0}'}" Grid.Row="3" Visibility="{Binding Path=HasXAMLType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
 
 	
 	<!-- Enum Templates -->
-	<DataTemplate x:Key="EnumElementItemTemplate" DataType="{x:Type wap:EnumElement}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Property.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
-				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
-			</StackPanel>
-		</StackPanel>
-	</DataTemplate>
 	<Style x:Key="EnumContainerTemplate" TargetType="{x:Type ToggleButton}">
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
@@ -214,17 +248,31 @@
 		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="UseLayoutRounding" Value="True" />
+		<Setter Property="Padding" Value="4" />
 		<Setter Property="Command" Value="{x:Static local:Navigator.ChangeActivePageCommand}" />
 		<Setter Property="CommandParameter" Value="{Binding}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type ToggleButton}">
-					<Border x:Name="PART_Border" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" CornerRadius="5" >
-						<Border x:Name="Overlay" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" CornerRadius="5" Padding="5,0,0,0">
-							<ContentPresenter Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
-						</Border>
-					</Border>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<Border x:Name="PART_Border" Grid.ColumnSpan="2" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" CornerRadius="5" />
+						<Border x:Name="Overlay" Grid.ColumnSpan="2" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" CornerRadius="5" Padding="5,0,0,0" />
+						<ContentPresenter Grid.Column="0" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+						<Button x:Name="Delete" Visibility="Collapsed" Grid.Column="1" Grid.RowSpan="2" Margin="0" Padding="0" Width="30" Style="{StaticResource ListItemButtonRight}" Command="{x:Static local:Navigator.DeleteCommand}" CommandParameter="{Binding}" >
+							<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+						</Button>
+					</Grid>
 					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="Delete" Property="Visibility" Value="Visible" />
+						</Trigger>
 						<MultiTrigger>
 							<MultiTrigger.Conditions>
 								<Condition Property="IsEnabled" Value="True" />
@@ -248,262 +296,151 @@
 		</Setter>
 	</Style>
 	<DataTemplate x:Key="EnumItemTemplate" DataType="{x:Type wap:Enum}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Enum.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+		<StackPanel Orientation="Vertical">
+			<StackPanel Orientation="Horizontal" Grid.Row="0" >
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Enum.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
-			<TextBlock Text="{Binding Path=Declaration, StringFormat='Server: {0}'}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-			<TextBlock Text="{Binding Path=ClientType.Declaration, StringFormat='Client: {0}'}" Visibility="{Binding Path=HasClientType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-			<local:ProjectItemList x:Name="SubItems" Visibility="Collapsed" ItemsSource="{Binding Path=Elements}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplate="{StaticResource EnumElementItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
-		</StackPanel>
-		<DataTemplate.Triggers>
-			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}},Path=IsChecked}" Value="True" >
-				<Setter TargetName="SubItems" Property="Visibility" Value="Visible" />
-			</DataTrigger>
-		</DataTemplate.Triggers>
-	</DataTemplate>
-		
-	
-	<!-- Security Templates -->
-	<DataTemplate x:Key="BindingSecurityBasicHTTPItemTemplate" DataType="{x:Type wap:BindingSecurityBasicHTTP}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/BasicHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
-				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
-			</StackPanel>
-			<TextBlock Text="WCF Security Type: BasicHttpSecurity" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="{Binding Path=Declaration, StringFormat='Server: {0}'}" Grid.Row="1" Margin="20,0,0,0" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="{Binding Path=ClientType.Declaration, StringFormat='Client: {0}'}" Grid.Row="2" Margin="20,0,0,0" Visibility="{Binding Path=HasClientType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 		</StackPanel>
 	</DataTemplate>
-	<DataTemplate x:Key="BindingSecurityBasicHTTPSItemTemplate" DataType="{x:Type wap:BindingSecurityBasicHTTPS}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/BasicHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
-				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
-			</StackPanel>
-			<TextBlock Text="WCF Security Type: BasicHttpsSecurity" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-		</StackPanel>
-	</DataTemplate>
-	<DataTemplate x:Key="BindingSecurityMSMQItemTemplate" DataType="{x:Type wap:BindingSecurityMSMQ}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/MSMQ.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
-				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
-			</StackPanel>
-			<TextBlock Text="WCF Security Type: NetMsmqSecurity" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-		</StackPanel>
-	</DataTemplate>
-	<DataTemplate x:Key="BindingSecurityMSMQIntegrationItemTemplate" DataType="{x:Type wap:BindingSecurityMSMQIntegration}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/MSMQ.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
-				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
-			</StackPanel>
-			<TextBlock Text="WCF Security Type: MsmqIntegrationSecurity" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-		</StackPanel>
-	</DataTemplate>
-	<DataTemplate x:Key="BindingSecurityNamedPipeItemTemplate" DataType="{x:Type wap:BindingSecurityNamedPipe}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/NamedPipe.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
-				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
-			</StackPanel>
-			<TextBlock Text="WCF Security Type: NetNamedPipeSecurity" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-		</StackPanel>
-	</DataTemplate>
-	<DataTemplate x:Key="BindingSecurityPeerTCPItemTemplate" DataType="{x:Type wap:BindingSecurityPeerTCP}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/PeerTCP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
-				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
-			</StackPanel>
-			<TextBlock Text="WCF Security Type: PeerSecuritySettings" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-		</StackPanel>
-	</DataTemplate>
-	<DataTemplate x:Key="BindingSecurityTCPItemTemplate" DataType="{x:Type wap:BindingSecurityTCP}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/TCP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
-				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
-			</StackPanel>
-			<TextBlock Text="WCF Security Type: NetTcpSecurity" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-		</StackPanel>
-	</DataTemplate>
-	<DataTemplate x:Key="BindingSecurityWebHTTPItemTemplate" DataType="{x:Type wap:BindingSecurityWebHTTP}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WebHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
-				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
-			</StackPanel>
-			<TextBlock Text="WCF Security Type: WebHttpSecurity" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-		</StackPanel>
-	</DataTemplate>
-	<DataTemplate x:Key="BindingSecurityWSDualHTTPItemTemplate" DataType="{x:Type wap:BindingSecurityWSDualHTTP}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSDualHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
-				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
-			</StackPanel>
-			<TextBlock Text="WCF Security Type: WSDualHttpSecurity" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-		</StackPanel>
-	</DataTemplate>
-	<DataTemplate x:Key="BindingSecurityWSFederationHTTPItemTemplate" DataType="{x:Type wap:BindingSecurityWSFederationHTTP}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSFederationHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
-				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
-			</StackPanel>
-			<TextBlock Text="WCF Security Type: WSFederationHttpSecurity" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-		</StackPanel>
-	</DataTemplate>
-	<DataTemplate x:Key="BindingSecurityWSHTTPItemTemplate" DataType="{x:Type wap:BindingSecurityWSHTTP}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
-				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
-			</StackPanel>
-			<TextBlock Text="WCF Security Type: WSHttpSecurity" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-		</StackPanel>
-	</DataTemplate>
-	<local:ProjectListSecurityTemplateSelector x:Key="ProjectListSecurityTemplateSelector" BasicHTTPTemplate="{StaticResource BindingSecurityBasicHTTPItemTemplate}" BasicHTTPSTemplate="{StaticResource BindingSecurityBasicHTTPSItemTemplate}" MSMQTemplate="{StaticResource BindingSecurityMSMQItemTemplate}" 
-	MSMQIntegrationTemplate="{StaticResource BindingSecurityMSMQIntegrationItemTemplate}" NamedPipeTemplate="{StaticResource BindingSecurityNamedPipeItemTemplate}" PeerTCPTemplate="{StaticResource BindingSecurityPeerTCPItemTemplate}" TCPTemplate="{StaticResource BindingSecurityTCPItemTemplate}" 
-	WebHTTPTemplate="{StaticResource BindingSecurityWebHTTPItemTemplate}" WSDualHTTPTemplate="{StaticResource BindingSecurityWSDualHTTPItemTemplate}" WSFederationHTTPTemplate="{StaticResource BindingSecurityWSFederationHTTPItemTemplate}" WSHTTPTemplate="{StaticResource BindingSecurityWSHTTPItemTemplate}" />
 
 	
 	<!-- Binding Templates -->
 	<DataTemplate x:Key="ServiceBindingBasicHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingBasicHTTP}">
-		<StackPanel Orientation="Vertical" Margin="3">
+		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/BasicHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/BasicHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
-			<TextBlock Text="WCF Binding Type: BasicHttpBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="WCF Binding Type: BasicHttpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
 	<DataTemplate x:Key="ServiceBindingBasicHTTPSItemTemplate" DataType="{x:Type wap:ServiceBindingBasicHTTPS}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/BasicHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+		<StackPanel Orientation="Vertical">
+			<StackPanel Orientation="Horizontal" >
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/BasicHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
-			<TextBlock Text="WCF Binding Type: BasicHttpsBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="WCF Binding Type: BasicHttpsBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
 	<DataTemplate x:Key="ServiceBindingNetHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingNetHTTP}">
-		<StackPanel Orientation="Vertical" Margin="3">
+		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/NetHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/NetHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
-			<TextBlock Text="WCF Binding Type: NetHttpBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="WCF Binding Type: NetHttpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
 	<DataTemplate x:Key="ServiceBindingNetHTTPSItemTemplate" DataType="{x:Type wap:ServiceBindingNetHTTPS}">
-		<StackPanel Orientation="Vertical" Margin="3">
+		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/NetHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/NetHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
-			<TextBlock Text="WCF Binding Type: NetHttpsBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="WCF Binding Type: NetHttpsBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
 	<DataTemplate x:Key="ServiceBindingMSMQItemTemplate" DataType="{x:Type wap:ServiceBindingMSMQ}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/MSMQ.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+		<StackPanel Orientation="Vertical">
+			<StackPanel Orientation="Horizontal" >
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/MSMQ.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
-			<TextBlock Text="WCF Binding Type: NetMsmqBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="WCF Binding Type: NetMsmqBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
 	<DataTemplate x:Key="ServiceBindingMSMQIntegrationItemTemplate" DataType="{x:Type wap:ServiceBindingMSMQIntegration}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/MSMQ.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+		<StackPanel Orientation="Vertical">
+			<StackPanel Orientation="Horizontal" >
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/MSMQ.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
-			<TextBlock Text="WCF Binding Type: MsmqIntegrationBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="WCF Binding Type: MsmqIntegrationBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
 	<DataTemplate x:Key="ServiceBindingNamedPipeItemTemplate" DataType="{x:Type wap:ServiceBindingNamedPipe}">
-		<StackPanel Orientation="Vertical" Margin="3">
+		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/NamedPipe.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/NamedPipe.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
-			<TextBlock Text="WCF Binding Type: NetNamedPipeBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="WCF Binding Type: NetNamedPipeBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
 	<DataTemplate x:Key="ServiceBindingPeerTCPItemTemplate" DataType="{x:Type wap:ServiceBindingPeerTCP}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/PeerTCP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+		<StackPanel Orientation="Vertical">
+			<StackPanel Orientation="Horizontal" >
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/PeerTCP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
-			<TextBlock Text="WCF Binding Type: NetPeerTcpBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="WCF Binding Type: NetPeerTcpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
 	<DataTemplate x:Key="ServiceBindingTCPItemTemplate" DataType="{x:Type wap:ServiceBindingTCP}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/TCP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+		<StackPanel Orientation="Vertical">
+			<StackPanel Orientation="Horizontal" >
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/TCP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
-			<TextBlock Text="WCF Binding Type: NetTcpBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="WCF Binding Type: NetTcpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
 	<DataTemplate x:Key="ServiceBindingWebHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingWebHTTP}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WebHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+		<StackPanel Orientation="Vertical">
+			<StackPanel Orientation="Horizontal" >
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WebHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
-			<TextBlock Text="WCF Binding Type: WebHttpBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="WCF Binding Type: WebHttpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
 	<DataTemplate x:Key="ServiceBindingWSDualHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingWSDualHTTP}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSDualHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+		<StackPanel Orientation="Vertical">
+			<StackPanel Orientation="Horizontal" >
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSDualHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
-			<TextBlock Text="WCF Binding Type: WSDualHttpBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="WCF Binding Type: WSDualHttpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
 	<DataTemplate x:Key="ServiceBindingWSFederationHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingWSFederationHTTP}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSFederationHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+		<StackPanel Orientation="Vertical">
+			<StackPanel Orientation="Horizontal" >
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSFederationHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
-			<TextBlock Text="WCF Binding Type: WSFederationHttpBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="WCF Binding Type: WSFederationHttpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
 	<DataTemplate x:Key="ServiceBindingWS2007FederationHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingWS2007FederationHTTP}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSFederationHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+		<StackPanel Orientation="Vertical">
+			<StackPanel Orientation="Horizontal" >
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSFederationHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
-			<TextBlock Text="WCF Binding Type: WS2007FederationHttpBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="WCF Binding Type: WS2007FederationHttpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
 	<DataTemplate x:Key="ServiceBindingWSHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingWSHTTP}">
-		<StackPanel Orientation="Vertical" Margin="3">
+		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
-			<TextBlock Text="WCF Binding Type: WSHttpBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="WCF Binding Type: WSHttpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
 	<DataTemplate x:Key="ServiceBindingWS2007HTTPItemTemplate" DataType="{x:Type wap:ServiceBindingWS2007HTTP}">
-		<StackPanel Orientation="Vertical" Margin="3">
-			<StackPanel Orientation="Horizontal">
-				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,3,0" />
+		<StackPanel Orientation="Vertical">
+			<StackPanel Orientation="Horizontal" >
+				<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X16/WSHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
 			</StackPanel>
-			<TextBlock Text="WCF Binding Type: WS2007HttpBinding" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+			<TextBlock Text="WCF Binding Type: WS2007HttpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
 	<local:ProjectListBindingTemplateSelector x:Key="ProjectListBindingTemplateSelector" BasicHTTPTemplate="{StaticResource ServiceBindingBasicHTTPItemTemplate}" BasicHTTPSTemplate="{StaticResource ServiceBindingBasicHTTPSItemTemplate}" NetHTTPTemplate="{StaticResource ServiceBindingNetHTTPItemTemplate}" 
@@ -586,8 +523,7 @@
 			<local:ProjectList x:Name="SubItems3" Visibility="Collapsed" ItemsSource="{Binding Path=Data}" ItemContainerStyle="{StaticResource DataContainerTemplate}" ItemTemplate="{StaticResource DataItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
 			<local:ProjectList x:Name="SubItems4" Visibility="Collapsed" ItemsSource="{Binding Path=Enums}" ItemContainerStyle="{StaticResource EnumContainerTemplate}" ItemTemplate="{StaticResource EnumItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
 			<local:ProjectItemList x:Name="SubItems5" Visibility="Collapsed" ItemsSource="{Binding Path=Bindings}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListBindingTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
-			<local:ProjectItemList x:Name="SubItems6" Visibility="Collapsed" ItemsSource="{Binding Path=Security}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListSecurityTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
-			<local:ProjectItemList x:Name="SubItems7" Visibility="Collapsed" ItemsSource="{Binding Path=Hosts}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplate="{StaticResource HostItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
+			<local:ProjectItemList x:Name="SubItems6" Visibility="Collapsed" ItemsSource="{Binding Path=Hosts}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplate="{StaticResource HostItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
 		</StackPanel>
 		<DataTemplate.Triggers>
 			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}},Path=IsChecked}" Value="True" >
@@ -598,7 +534,6 @@
 				<Setter TargetName="SubItems4" Property="Visibility" Value="Visible" />
 				<Setter TargetName="SubItems5" Property="Visibility" Value="Visible" />
 				<Setter TargetName="SubItems6" Property="Visibility" Value="Visible" />
-				<Setter TargetName="SubItems7" Property="Visibility" Value="Visible" />
 			</DataTrigger>
 		</DataTemplate.Triggers>
 	</DataTemplate>

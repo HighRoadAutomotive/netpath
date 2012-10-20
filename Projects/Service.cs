@@ -18,8 +18,8 @@ namespace WCFArchitect.Projects
 		public ObservableCollection<Operation> CallbackOperations { get { return (ObservableCollection<Operation>)GetValue(CallbackOperationsProperty); } set { SetValue(CallbackOperationsProperty, value); } }
 		public static readonly DependencyProperty CallbackOperationsProperty = DependencyProperty.Register("CallbackOperations", typeof(ObservableCollection<Operation>), typeof(Service));
 
-		public System.Net.Security.ProtectionLevel ProtectionLevel { get { return (System.Net.Security.ProtectionLevel)GetValue(ProtectionLevelProperty); } set { SetValue(ProtectionLevelProperty, value); } }
-		public static readonly DependencyProperty ProtectionLevelProperty = DependencyProperty.Register("ProtectionLevel", typeof(System.Net.Security.ProtectionLevel), typeof(Service));
+		public ProtectionLevel ProtectionLevel { get { return (ProtectionLevel)GetValue(ProtectionLevelProperty); } set { SetValue(ProtectionLevelProperty, value); } }
+		public static readonly DependencyProperty ProtectionLevelProperty = DependencyProperty.Register("ProtectionLevel", typeof(ProtectionLevel), typeof(Service));
 
 		public System.ServiceModel.SessionMode SessionMode { get { return (System.ServiceModel.SessionMode)GetValue(SessionModeProperty); } set { SetValue(SessionModeProperty, value); } }
 		public static readonly DependencyProperty SessionModeProperty = DependencyProperty.Register("SessionMode", typeof(System.ServiceModel.SessionMode), typeof(Service));
@@ -51,7 +51,6 @@ namespace WCFArchitect.Projects
 			ServiceOperations = new ObservableCollection<Operation>();
 			CallbackOperations = new ObservableCollection<Operation>();
 			ID = Guid.NewGuid();
-			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			ConfigurationName = "";
 			ServiceDocumentation = new Documentation { IsClass = true };
 			CallbackDocumentation = new Documentation { IsClass = true };
@@ -310,11 +309,15 @@ namespace WCFArchitect.Projects
 		public bool IsReadOnly { get { return (bool)GetValue(IsReadOnlyProperty); } set { SetValue(IsReadOnlyProperty, value); } }
 		public static readonly DependencyProperty IsReadOnlyProperty = DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(Property));
 
-		public Property() : base() { }
-
-		public Property(string Name, Service Owner) : base(Name, Owner)
+		public Property() : base()
 		{
 			ReturnType = new DataType(PrimitiveTypes.String);
+			Documentation = new Documentation { IsProperty = true };
+		}
+
+		public Property(DataType ReturnType, string Name, Service Owner) : base(Name, Owner)
+		{
+			this.ReturnType = ReturnType;
 			Documentation = new Documentation { IsProperty = true };
 		}
 
@@ -348,11 +351,17 @@ namespace WCFArchitect.Projects
 		public ObservableCollection<MethodParameter> Parameters { get { return (ObservableCollection<MethodParameter>)GetValue(ParametersProperty); } set { SetValue(ParametersProperty, value); } }
 		public static readonly DependencyProperty ParametersProperty = DependencyProperty.Register("Parameters", typeof(ObservableCollection<MethodParameter>), typeof(Method));
 
-		public Method() : base() { }
+		public Method() : base()
+		{
+			Parameters = new ObservableCollection<MethodParameter>();
+			Parameters.CollectionChanged += Parameters_CollectionChanged;
+			Documentation = new Documentation { IsMethod = true };
+		}
 
 		public Method(string Name, Service Owner) : base(Name, Owner)
 		{
 			Parameters = new ObservableCollection<MethodParameter>();
+			Parameters.CollectionChanged += Parameters_CollectionChanged;
 			ReturnType = new DataType(PrimitiveTypes.Void);
 			Documentation = new Documentation { IsMethod = true };
 		}
@@ -360,21 +369,34 @@ namespace WCFArchitect.Projects
 		public Method(DataType ReturnType, string Name, Service Owner) : base(Name, Owner)
 		{
 			Parameters = new ObservableCollection<MethodParameter>();
+			Parameters.CollectionChanged += Parameters_CollectionChanged;
 			this.ReturnType = ReturnType;
 			Documentation = new Documentation { IsMethod = true };
+		}
+
+		private void Parameters_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			UpdateDeclaration();
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
 
+			if(Parameters == null) return;
 			if (e.Property == DeclarationProperty || e.Property == ClientDeclarationProperty) return;
+
+			UpdateDeclaration();
+		}
+
+		internal void UpdateDeclaration()
+		{
 			var sb = new StringBuilder();
-			foreach(MethodParameter p in Parameters)
+			foreach (MethodParameter p in Parameters)
 				sb.AppendFormat("{0}, ", p);
-			sb.Remove(sb.Length - 2, 2);
-			Declaration = string.Format("{0} {1}({2});", ReturnType, ServerName, sb);
-			ClientDeclaration = string.Format("{0} {1}({2});", ReturnType, ClientName, sb);
+			if (Parameters.Count > 0) sb.Remove(sb.Length - 2, 2);
+			Declaration = string.Format("{0} {1}({2})", ReturnType, ServerName, sb);
+			ClientDeclaration = string.Format("{0} {1}({2})", ReturnType, ClientName, sb);
 		}
 
 		public override IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
@@ -398,7 +420,22 @@ namespace WCFArchitect.Projects
 		public Guid ID { get; set; }
 
 		public DataType Type { get { return (DataType)GetValue(TypeProperty); } set { SetValue(TypeProperty, value); } }
-		public static readonly DependencyProperty TypeProperty = DependencyProperty.Register("Type", typeof(DataType), typeof(MethodParameter));
+		public static readonly DependencyProperty TypeProperty = DependencyProperty.Register("Type", typeof(DataType), typeof(MethodParameter), new PropertyMetadata(TypeChangedCallback));
+
+		private static void TypeChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs p)
+		{
+			var de = o as Operation;
+			if (de == null) return;
+			var nt = p.NewValue as DataType;
+			if (nt == null) return;
+			var ot = p.OldValue as DataType;
+			if (ot == null) return;
+
+			if (ot.TypeMode == DataTypeMode.Array && ot.CollectionGenericType.TypeMode == DataTypeMode.Primitive) de.Owner.RemoveKnownType(nt);
+			if (nt.TypeMode == DataTypeMode.Array && nt.CollectionGenericType.TypeMode == DataTypeMode.Primitive) de.Owner.AddKnownType(nt);
+			if (ot.TypeMode == DataTypeMode.Primitive && ot.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.RemoveKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
+			if (nt.TypeMode == DataTypeMode.Primitive && nt.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.AddKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
+		}
 
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value ?? "", @"")); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(MethodParameter));
@@ -411,6 +448,7 @@ namespace WCFArchitect.Projects
 
 		//Internal Use
 		public Service Owner { get; set; }
+		public Method Parent { get; set; }
 
 		public MethodParameter ()
 		{
@@ -420,14 +458,22 @@ namespace WCFArchitect.Projects
 			Documentation = new Documentation {IsParameter = true};
 		}
 
-		public MethodParameter(DataType Type, string Name, Service Owner)
+		public MethodParameter(DataType Type, string Name, Service Owner, Method Parent)
 		{
 			ID = Guid.NewGuid();
 			this.Type = Type;
 			this.Name = Name;
 			IsHidden = false;
 			this.Owner = Owner;
+			this.Parent = Parent;
 			Documentation = new Documentation { IsParameter = true };
+		}
+
+		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnPropertyChanged(e);
+
+			if (Parent != null) Parent.UpdateDeclaration();
 		}
 
 		public override string ToString()

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Prospective.Controls.Dialogs;
+using WCFArchitect.Projects;
 
 namespace WCFArchitect.Interface.Service
 {
@@ -254,8 +255,9 @@ namespace WCFArchitect.Interface.Service
 
 		private void AddServiceMemberType_ValidationChanged(object Sender, RoutedEventArgs E)
 		{
+			if (AddServiceMemberType.OpenType == null) return;
 			AddServiceMethod.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && !AddServiceMemberName.IsInvalid && AddServiceMemberType.IsValid);
-			AddServiceProperty.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && !AddServiceMemberName.IsInvalid && AddServiceMemberType.IsValid);
+			AddServiceProperty.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && AddServiceMemberType.OpenType.Primitive != PrimitiveTypes.Void && !AddServiceMemberName.IsInvalid && AddServiceMemberType.IsValid);
 		}
 
 		private void AddServiceMemberType_Selected(object sender, RoutedEventArgs e)
@@ -269,8 +271,9 @@ namespace WCFArchitect.Interface.Service
 			if (string.IsNullOrEmpty(AddServiceMemberName.Text)) return;
 
 			e.IsValid = Helpers.RegExs.MatchCodeName.IsMatch(AddServiceMemberName.Text);
+			if (AddServiceMemberType.OpenType == null) return;
 			AddServiceMethod.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && e.IsValid && AddServiceMemberType.IsValid);
-			AddServiceProperty.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && !AddServiceMemberName.IsInvalid && AddServiceMemberType.IsValid);
+			AddServiceProperty.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && AddServiceMemberType.OpenType.Primitive != PrimitiveTypes.Void && !AddServiceMemberName.IsInvalid && AddServiceMemberType.IsValid);
 		}
 
 		private void AddServiceMemberName_KeyUp(object sender, KeyEventArgs e)
@@ -290,7 +293,7 @@ namespace WCFArchitect.Interface.Service
 			}
 			if (AddServiceMemberType.OpenType != null && AddServiceMemberName.Text != "") AddServiceMethod.IsEnabled = true;
 			else AddServiceMethod.IsEnabled = false;
-			if (AddServiceMemberType.OpenType != null && AddServiceMemberName.Text != "") AddServiceProperty.IsEnabled = true;
+			if (AddServiceMemberType.OpenType != null && AddServiceMemberType.OpenType.Primitive != PrimitiveTypes.Void && AddServiceMemberName.Text != "") AddServiceProperty.IsEnabled = true;
 			else AddServiceProperty.IsEnabled = false;
 		}
 
@@ -312,7 +315,7 @@ namespace WCFArchitect.Interface.Service
 		{
 			if (AddServiceMethod.IsEnabled == false) return;
 
-			var t = new Projects.Method(AddServiceMemberType.OpenType, AddServiceMemberName.Text, ServiceType);
+			var t = new Projects.Property(AddServiceMemberType.OpenType, AddServiceMemberName.Text, ServiceType);
 			ServiceType.ServiceOperations.Add(t);
 
 			AddServiceMemberType.Focus();
@@ -352,7 +355,7 @@ namespace WCFArchitect.Interface.Service
 			var OP = ServiceOperationsList.SelectedItem as Projects.Operation;
 			if (OP == null) return;
 
-			DialogService.ShowMessageDialog("WCF ARCHITECT", "Are you sure you wish to delete the '" + OP.ReturnType + " " + OP.ServerName + "' data member?", "Delete Data Member?", new DialogAction("Yes", () => ServiceType.ServiceOperations.Remove(OP), true), new DialogAction("No", false, true));
+			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Service Operation?", "Are you sure you wish to delete the '" + OP.ReturnType + " " + OP.ServerName + "' service operation?", new DialogAction("Yes", () => ServiceType.ServiceOperations.Remove(OP), true), new DialogAction("No", false, true));
 		}
 
 		#endregion
@@ -361,8 +364,9 @@ namespace WCFArchitect.Interface.Service
 
 		private void AddCallbackMemberType_ValidationChanged(object Sender, RoutedEventArgs E)
 		{
+			if (AddCallbackMemberType.OpenType == null) return;
 			AddCallbackMethod.IsEnabled = (!string.IsNullOrEmpty(AddCallbackMemberName.Text) && !AddCallbackMemberName.IsInvalid && AddCallbackMemberType.IsValid);
-			AddCallbackProperty.IsEnabled = (!string.IsNullOrEmpty(AddCallbackMemberName.Text) && !AddCallbackMemberName.IsInvalid && AddCallbackMemberType.IsValid);
+			AddCallbackProperty.IsEnabled = (!string.IsNullOrEmpty(AddCallbackMemberName.Text) && AddCallbackMemberType.OpenType.Primitive != PrimitiveTypes.Void && !AddCallbackMemberName.IsInvalid && AddCallbackMemberType.IsValid);
 		}
 
 		private void AddCallbackMemberType_Selected(object sender, RoutedEventArgs e)
@@ -376,8 +380,9 @@ namespace WCFArchitect.Interface.Service
 			if (string.IsNullOrEmpty(AddCallbackMemberName.Text)) return;
 
 			e.IsValid = Helpers.RegExs.MatchCodeName.IsMatch(AddCallbackMemberName.Text);
+			if (AddCallbackMemberType.OpenType == null) return;
 			AddCallbackMethod.IsEnabled = (!string.IsNullOrEmpty(AddCallbackMemberName.Text) && e.IsValid && AddCallbackMemberType.IsValid);
-			AddCallbackProperty.IsEnabled = (!string.IsNullOrEmpty(AddCallbackMemberName.Text) && !AddCallbackMemberName.IsInvalid && AddCallbackMemberType.IsValid);
+			AddCallbackProperty.IsEnabled = (!string.IsNullOrEmpty(AddCallbackMemberName.Text) && AddCallbackMemberType.OpenType.Primitive != PrimitiveTypes.Void && !AddCallbackMemberName.IsInvalid && AddCallbackMemberType.IsValid);
 		}
 
 		private void AddCallbackMemberName_KeyUp(object sender, KeyEventArgs e)
@@ -397,7 +402,7 @@ namespace WCFArchitect.Interface.Service
 			}
 			if (AddCallbackMemberType.OpenType != null && AddCallbackMemberName.Text != "") AddCallbackMethod.IsEnabled = true;
 			else AddCallbackMethod.IsEnabled = false;
-			if (AddCallbackMemberType.OpenType != null && AddCallbackMemberName.Text != "") AddCallbackProperty.IsEnabled = true;
+			if (AddCallbackMemberType.OpenType != null && AddCallbackMemberType.OpenType.Primitive != PrimitiveTypes.Void && AddCallbackMemberName.Text != "") AddCallbackProperty.IsEnabled = true;
 			else AddCallbackProperty.IsEnabled = false;
 		}
 
@@ -419,7 +424,7 @@ namespace WCFArchitect.Interface.Service
 		{
 			if (AddCallbackMethod.IsEnabled == false) return;
 
-			var t = new Projects.Method(AddCallbackMemberType.OpenType, AddCallbackMemberName.Text, ServiceType);
+			var t = new Projects.Property(AddCallbackMemberType.OpenType, AddCallbackMemberName.Text, ServiceType);
 			ServiceType.CallbackOperations.Add(t);
 
 			AddCallbackMemberType.Focus();
@@ -458,7 +463,7 @@ namespace WCFArchitect.Interface.Service
 			var OP = CallbackOperationsList.SelectedItem as Projects.Operation;
 			if (OP == null) return;
 
-			DialogService.ShowMessageDialog("WCF ARCHITECT", "Are you sure you wish to delete the '" + OP.ReturnType + " " + OP.ServerName + "' data member?", "Delete Data Member?", new DialogAction("Yes", () => ServiceType.CallbackOperations.Remove(OP), true), new DialogAction("No", false, true));
+			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Callback Operation?", "Are you sure you wish to delete the '" + OP.ReturnType + " " + OP.ServerName + "' callback operation?", new DialogAction("Yes", () => ServiceType.CallbackOperations.Remove(OP), true), new DialogAction("No", false, true));
 		}
 
 		#endregion

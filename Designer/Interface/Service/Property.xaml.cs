@@ -24,6 +24,8 @@ namespace WCFArchitect.Interface.Service
 		public Property()
 		{
 			InitializeComponent();
+
+			DataContext = this;
 		}
 
 		public Property(Projects.Property Data)
@@ -32,6 +34,8 @@ namespace WCFArchitect.Interface.Service
 			ServiceProject = Data.Owner.Parent.Owner;
 
 			InitializeComponent();
+
+			DataContext = this;
 		}
 	}
 }

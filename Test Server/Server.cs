@@ -23,6 +23,7 @@ using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.Text;
 
+#pragma warning disable 1591
 namespace Test1
 {
 	/**************************************************************************
@@ -53,5 +54,20 @@ namespace Test1
 	}
 
 
+	/**************************************************************************
+	*	Service Contracts
+	**************************************************************************/
+
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	[ServiceContract(SessionMode = System.ServiceModel.SessionMode.Allowed, Namespace = "http://tempuri.org/Test1/")]
+	public interface ITestService
+	{
+		string asdaasd { [OperationContract(Name = "Getasdaasd")] get; [OperationContract(Name = "Setasdaasd")] set; }
+		///<param name='asdss'></param>
+		[OperationContract(Name = "")] void asdas(string asdss);
+	}
+
+
 }
 
+#pragma warning enable 1591

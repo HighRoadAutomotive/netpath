@@ -24,6 +24,7 @@ using System.ServiceModel.Description;
 using System.Text;
 using System.Windows;
 
+#pragma warning disable 1591
 namespace Test1
 {
 	/**************************************************************************
@@ -66,7 +67,6 @@ namespace Test1
 	}
 
 	//XAML Integration Object for the TestData1 DTO
-	[KnownType(typeof(Guid[]))]
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
 	public partial class TestData1XAML : System.Windows.DependencyObject
 	{
@@ -413,5 +413,51 @@ namespace Test1
 	}
 
 
+	/**************************************************************************
+	*	Service Contracts
+	**************************************************************************/
+
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	public interface TestService
+	{
+		[OperationContract(Action = "http://tempuri.org/Test1//TestService/asdaasd", ReplyAction = "http://tempuri.org/Test1//TestService/asdaasdResponse")]
+		string Getasdaasd();
+		[OperationContract(Action = "http://tempuri.org/Test1//TestService/asdaasd", ReplyAction = "http://tempuri.org/Test1//TestService/asdaasdResponse")]
+		void Setasdaasd(string value);
+
+		///<param name='asdss'></param>
+		[OperationContract(Action = "http://tempuri.org/Test1//TestService/asdas", ReplyAction = "http://tempuri.org/Test1//TestService/asdasResponse")]
+		void asdas(string asdss);
+
+	}
+
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	public interface TestServiceChannel : Test1.TestService, System.ServiceModel.IClientChannel
+	{
+	}
+
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	public partial class TestServiceClient : System.ServiceModel.ClientBase<TestService>, TestService
+	{
+		string TestService.Getasdaasd()
+		{
+			return base.Channel.Getasdaasd();
+		}
+		void TestService.Setasdaasd(string value)
+		{
+			base.Channel.Setasdaasd(value);
+		}
+		public string asdaasd { get { return ((TestService)this).Getasdaasd(); } set { ((TestService)this).Setasdaasd(value); } }
+
+		///<param name='asdss'></param>
+		public void asdas(string asdss)
+		{
+			base.Channel.asdas(asdss);
+		}
+
+	}
+
+
 }
 
+#pragma warning enable 1591
