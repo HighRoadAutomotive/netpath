@@ -6,6 +6,7 @@ using System.Net.Security;
 using System.Text;
 using System.Windows;
 using System.Runtime.Serialization;
+using System.ServiceModel.Web;
 
 namespace WCFArchitect.Projects
 {
@@ -348,10 +349,25 @@ namespace WCFArchitect.Projects
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(Method));
 
+		public bool IsRESTMethod { get { return (bool)GetValue(IsRESTMethodProperty); } set { SetValue(IsRESTMethodProperty, value); } }
+		public static readonly DependencyProperty IsRESTMethodProperty = DependencyProperty.Register("IsRESTMethod", typeof(bool), typeof(Method), new PropertyMetadata(false, IsRESTMethodChangedCallback));
+
+		private static void IsRESTMethodChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as Method;
+			if (t == null) return;
+
+			if (Convert.ToBoolean(e.NewValue) == false) t.REST.Unregister();
+			t.REST = Convert.ToBoolean(e.NewValue) ? new MethodREST(t) : null;
+		}
+
+		public MethodREST REST { get { return (MethodREST)GetValue(RESTProperty); } set { SetValue(RESTProperty, value); } }
+		public static readonly DependencyProperty RESTProperty = DependencyProperty.Register("REST", typeof(MethodREST), typeof(Method));
+
 		public ObservableCollection<MethodParameter> Parameters { get { return (ObservableCollection<MethodParameter>)GetValue(ParametersProperty); } set { SetValue(ParametersProperty, value); } }
 		public static readonly DependencyProperty ParametersProperty = DependencyProperty.Register("Parameters", typeof(ObservableCollection<MethodParameter>), typeof(Method));
 
-		public Method() : base()
+		public Method()
 		{
 			Parameters = new ObservableCollection<MethodParameter>();
 			Parameters.CollectionChanged += Parameters_CollectionChanged;
@@ -443,6 +459,9 @@ namespace WCFArchitect.Projects
 		public bool IsHidden { get { return (bool)GetValue(IsHiddenProperty); } set { SetValue(IsHiddenProperty, value); } }
 		public static readonly DependencyProperty IsHiddenProperty = DependencyProperty.Register("IsHidden", typeof(bool), typeof(MethodParameter));
 
+		public bool IsRESTInvalid { get { return (bool)GetValue(IsRESTInvalidProperty); } set { SetValue(IsRESTInvalidProperty, value); } }
+		public static readonly DependencyProperty IsRESTInvalidProperty = DependencyProperty.Register("IsRESTInvalid", typeof(bool), typeof(MethodParameter), new PropertyMetadata(false));
+
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(Enum));
 
@@ -526,6 +545,91 @@ namespace WCFArchitect.Projects
 			}
 			else
 				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
+		}
+	}
+
+	public enum MethodRESTVerbs
+	{
+		GET,
+		POST,
+		PUT,
+		DELETE,
+	}
+
+	public class MethodREST : DependencyObject
+	{
+		public Guid ID { get; private set; }
+
+		public string RESTName { get { return (string)GetValue(RESTNameProperty); } set { SetValue(RESTNameProperty, value); } }
+		public static readonly DependencyProperty RESTNameProperty = DependencyProperty.Register("RESTName", typeof(string), typeof(MethodREST), new PropertyMetadata(""));
+
+		public string UriTemplate { get { return (string)GetValue(UriTemplateProperty); } set { SetValue(UriTemplateProperty, value); } }
+		public static readonly DependencyProperty UriTemplateProperty = DependencyProperty.Register("UriTemplate", typeof(string), typeof(MethodREST), new PropertyMetadata("/"));
+
+		public bool UseParameterFormat { get { return (bool)GetValue(UseParameterFormatProperty); } set { SetValue(UseParameterFormatProperty, value); } }
+		public static readonly DependencyProperty UseParameterFormatProperty = DependencyProperty.Register("UseParameterFormat", typeof(bool), typeof(MethodREST), new PropertyMetadata(false, UseParameterFormatChangedCallback));
+
+		private static void UseParameterFormatChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as MethodREST;
+			if (t != null) t.UriTemplate = t.BuildUriTemplate();
+		}
+
+		public MethodRESTVerbs Method { get { return (MethodRESTVerbs)GetValue(MethodProperty); } set { SetValue(MethodProperty, value); } }
+		public static readonly DependencyProperty MethodProperty = DependencyProperty.Register("Method", typeof(MethodRESTVerbs), typeof(MethodREST), new PropertyMetadata(MethodRESTVerbs.GET));
+
+		public WebMessageBodyStyle BodyStyle { get { return (WebMessageBodyStyle)GetValue(BodyStyleProperty); } set { SetValue(BodyStyleProperty, value); } }
+		public static readonly DependencyProperty BodyStyleProperty = DependencyProperty.Register("BodyStyle", typeof(WebMessageBodyStyle), typeof(MethodREST), new PropertyMetadata(WebMessageBodyStyle.Bare));
+
+		public WebMessageFormat RequestFormat { get { return (WebMessageFormat)GetValue(RequestFormatProperty); } set { SetValue(RequestFormatProperty, value); } }
+		public static readonly DependencyProperty RequestFormatProperty = DependencyProperty.Register("RequestFormat", typeof(WebMessageFormat), typeof(MethodREST), new PropertyMetadata(WebMessageFormat.Xml));
+
+		public WebMessageFormat ResponseFormat { get { return (WebMessageFormat)GetValue(ResponseFormatProperty); } set { SetValue(ResponseFormatProperty, value); } }
+		public static readonly DependencyProperty ResponseFormatProperty = DependencyProperty.Register("ResponseFormat", typeof(WebMessageFormat), typeof(MethodREST), new PropertyMetadata(WebMessageFormat.Xml));
+
+		public Method Owner { get; private set; }
+
+		public MethodREST(Method Owner)
+		{
+			ID = new Guid();
+			this.Owner = Owner;
+			this.Owner.Parameters.CollectionChanged += Parameters_CollectionChanged;
+
+			UriTemplate = BuildUriTemplate();
+		}
+
+		private void Parameters_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			UriTemplate = BuildUriTemplate();
+		}
+
+		public void Unregister()
+		{
+			Owner.Parameters.CollectionChanged -= Parameters_CollectionChanged;
+		}
+
+		public string BuildUriTemplate()
+		{
+			var code = new StringBuilder();
+			if (Owner.Parameters.Any(a => a.Type.TypeMode == DataTypeMode.Primitive || a.Type.TypeMode == DataTypeMode.Enum))
+				code.AppendFormat(UseParameterFormat ? "{0}?" : "{0}", string.IsNullOrEmpty(RESTName) ? Owner.ServerName : RESTName);
+			else
+				return string.IsNullOrEmpty(RESTName) ? Owner.ServerName : RESTName;
+
+			foreach(MethodParameter mp in Owner.Parameters.Where(a => a.Type.TypeMode == DataTypeMode.Primitive || a.Type.TypeMode == DataTypeMode.Enum))
+			{
+				if (mp.Type.TypeMode == DataTypeMode.Primitive && (mp.Type.Primitive == PrimitiveTypes.None || mp.Type.Primitive == PrimitiveTypes.ByteArray || mp.Type.Primitive == PrimitiveTypes.Void || mp.Type.Primitive == PrimitiveTypes.Object || mp.Type.Primitive == PrimitiveTypes.URI || mp.Type.Primitive == PrimitiveTypes.Version))
+				{
+					mp.IsRESTInvalid = true;
+					continue;
+				}
+
+				code.AppendFormat(UseParameterFormat ? "&{0}={{{0}}}" : "/{0}", mp.Name);
+			}
+
+			Method = Owner.Parameters.Any(a => a.Type.TypeMode == DataTypeMode.Struct || a.Type.TypeMode == DataTypeMode.Class) ? (Method == MethodRESTVerbs.GET ? MethodRESTVerbs.POST : Method) : MethodRESTVerbs.GET;
+
+			return code.Replace("?&", "?").ToString();
 		}
 	}
 }
