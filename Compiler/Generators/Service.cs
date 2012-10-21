@@ -29,18 +29,28 @@ namespace WCFArchitect.Compiler.Generators
 			foreach (Method m in Operations.Where(a => a.GetType() == typeof(Method)))
 			{
 				if (string.IsNullOrEmpty(m.ServerName))
-					Program.AddMessage(new CompileMessage("GS2004", "An operation in the '" + o.Name + "' service has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
+					Program.AddMessage(new CompileMessage("GS2004", "An method in the '" + o.Name + "' service has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
 				else
 					if (Helpers.RegExs.MatchCodeName.IsMatch(m.ServerName) == false)
-						Program.AddMessage(new CompileMessage("GS2005", "The operation '" + m.ServerName + "' in the '" + o.Name + "' service contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
+						Program.AddMessage(new CompileMessage("GS2005", "The method '" + m.ServerName + "' in the '" + o.Name + "' service contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
 				if (!string.IsNullOrEmpty(m.ClientName))
 					if (Helpers.RegExs.MatchCodeName.IsMatch(m.ClientName) == false)
-						Program.AddMessage(new CompileMessage("GS2006", "The operation '" + m.ServerName + "' in the '" + o.Name + "' service contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
+						Program.AddMessage(new CompileMessage("GS2006", "The method '" + m.ServerName + "' in the '" + o.Name + "' service contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
 				if (m.ReturnType == null)
-					Program.AddMessage(new CompileMessage("GS2007", "The operation '" + m.ServerName + "' in the '" + o.Name + "' service has a blank Return Type. A Return Type MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
+					Program.AddMessage(new CompileMessage("GS2007", "The method '" + m.ServerName + "' in the '" + o.Name + "' service has a blank Return Type. A Return Type MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
+				else
+					if (m.IsRESTMethod && m.ReturnType.TypeMode == DataTypeMode.Primitive && (m.ReturnType.Primitive == PrimitiveTypes.Void || m.ReturnType.Primitive == PrimitiveTypes.None))
+						Program.AddMessage(new CompileMessage("GS2012", "The method return type '" + m.ReturnType + "' in the '" + o.Name + "' service is not a valid REST return type. Please specify a valid REST return type.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
+				if (m.ReturnType.TypeMode == DataTypeMode.Namespace || m.ReturnType.TypeMode == DataTypeMode.Interface)
+					Program.AddMessage(new CompileMessage("GS2013", "The method return type '" + m.ReturnType + "' in the '" + o.Name + "' service is not a valid return type. Please specify a valid return type.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
 
-				foreach (MethodParameter mp in m.Parameters.Where(mp => string.IsNullOrEmpty(mp.Name)))
-					Program.AddMessage(new CompileMessage("GS2008", "The method parameter '" + m.ServerName + "' in the '" + o.Name + "' service has a parameter with a blank name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
+				foreach (MethodParameter mp in m.Parameters)
+				{
+					if(string.IsNullOrEmpty(mp.Name))
+						Program.AddMessage(new CompileMessage("GS2008", "The method parameter '" + m.ServerName + "' in the '" + o.Name + "' service has a parameter with a blank name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
+					if (m.IsRESTMethod && mp.IsRESTInvalid)
+						Program.AddMessage(new CompileMessage("GS2009", "The method REST parameter '" + (string.IsNullOrEmpty(m.REST.RESTName) ? m.ServerName : m.REST.RESTName) + "' in the '" + m.ServerName + "' method is not a valid REST parameter. Please specify a valid REST parameter.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.ID, m.ID));
+				}
 			}
 
 			foreach (Property p in Operations.Where(a => a.GetType() == typeof(Property)))
@@ -49,7 +59,9 @@ namespace WCFArchitect.Compiler.Generators
 					Program.AddMessage(new CompileMessage("GS2010", "A property in the '" + o.Name + "' service has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o, p, p.GetType(), o.ID, p.ID));
 				else
 					if (Helpers.RegExs.MatchCodeName.IsMatch(p.ServerName) == false)
-						Program.AddMessage(new CompileMessage("GS2011", "The Property '" + p.ServerName + "' in the '" + o.Name + "' service contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, o, p, p.GetType(), o.ID, p.ID));
+						Program.AddMessage(new CompileMessage("GS2011", "The property '" + p.ServerName + "' in the '" + o.Name + "' service contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, o, p, p.GetType(), o.ID, p.ID));
+				if (p.ReturnType.TypeMode == DataTypeMode.Namespace || p.ReturnType.TypeMode == DataTypeMode.Interface)
+					Program.AddMessage(new CompileMessage("GS2014", "The property value type '" + p.ReturnType + "' in the '" + o.Name + "' service is not a valid value type. Please specify a valid value type.", CompileMessageSeverity.ERROR, o, p, p.GetType(), o.ID, p.ID));
 			}
 		}
 
@@ -164,9 +176,26 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendLine("\t}");
 			code.AppendLine();
 			//Generate the Proxy Class
+			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute()]");
 			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0} partial class {1}Client : System.ServiceModel.ClientBase<{1}>, {1}{2}", o.HasClientType ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, Environment.NewLine);
 			code.AppendLine("\t{");
+			code.AppendLine(string.Format("\t\tpublic {0}Client(string endpointConfigurationName) : base(endpointConfigurationName)", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t}");
+			code.AppendLine();
+			code.AppendLine(string.Format("\t\tpublic {0}Client(string endpointConfigurationName, string remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t}");
+			code.AppendLine();
+			code.AppendLine(string.Format("\t\tpublic {0}Client(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t}");
+			code.AppendLine();
+			code.AppendLine(string.Format("\t\tpublic {0}Client(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : base(binding, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t}");
+			code.AppendLine();
 			Host h = o.Parent.Owner.Namespace.GetServiceHost(o);
 			if (h != null)
 				code.Append(HostCSGenerator.GenerateClientCode40(h));
@@ -219,9 +248,26 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendLine("\t}");
 			code.AppendLine();
 			//Generate the Proxy Class
+			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute()]");
 			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.AppendFormat("\t{0} partial class {1}Client : System.ServiceModel.ClientBase<{1}>, {1}{2}", o.HasClientType ? DataTypeCSGenerator.GenerateScope(o.ClientType.Scope) : DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, Environment.NewLine);
 			code.AppendLine("\t{");
+			code.AppendLine(string.Format("\t\tpublic {0}Client(string endpointConfigurationName) : base(endpointConfigurationName)", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t}");
+			code.AppendLine();
+			code.AppendLine(string.Format("\t\tpublic {0}Client(string endpointConfigurationName, string remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t}");
+			code.AppendLine();
+			code.AppendLine(string.Format("\t\tpublic {0}Client(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t}");
+			code.AppendLine();
+			code.AppendLine(string.Format("\t\tpublic {0}Client(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : base(binding, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t}");
+			code.AppendLine();
 			Host h = o.Parent.Owner.Namespace.GetServiceHost(o);
 			if (h != null)
 				code.Append(HostCSGenerator.GenerateClientCode45(h));
@@ -256,44 +302,14 @@ namespace WCFArchitect.Compiler.Generators
 			foreach (MethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
 				code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 
-			code.Append("\t\t[OperationContract(");
-			if (o.IsInitiating && o.IsTerminating == false)
-				code.Append("IsInitiating = true, ");
-			if (o.IsInitiating == false && o.IsTerminating)
-				code.Append("IsTerminating = true, ");
-			if (o.IsOneWay)
-				code.Append("IsOneWay = true, ");
-			if (o.ProtectionLevel != System.Net.Security.ProtectionLevel.None)
-				code.AppendFormat("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}, ", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.ProtectionLevel));
-			if (string.IsNullOrEmpty(o.ClientName))
-				code.AppendFormat("Name = \"{0}\", ", o.ClientName);
-			if (code.Length > 21) code.Remove(code.Length - 2, 2);
-			code.AppendFormat(")] {0} {1}(", DataTypeCSGenerator.GenerateType(o.ReturnType), o.ServerName);
+			code.AppendLine(string.Format("\t\t[OperationContract({0}{1}{2}{3}{4})]", o.IsInitiating ? "IsInitiating = true, " : "", o.IsTerminating ? "IsTerminating = true, " : "", o.IsOneWay ? "IsOneWay = true, " : "", o.ProtectionLevel != System.Net.Security.ProtectionLevel.None ? string.Format("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}, ", o.ProtectionLevel) : "", !string.IsNullOrEmpty(o.ClientName) ? string.Format("Name = \"{0}\"", o.ClientName) : "").Replace(",)]", ")]"));
+			if (o.IsRESTMethod && (Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35))
+				code.AppendLine(string.Format("\t\t[{0}(UriTemplate=\"{1}\", {2}BodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.{3}, RequestFormat = System.ServiceModel.Web.WebMessageFormat.{4}, ResponseFormat = System.ServiceModel.Web.WebMessageFormat.{5})]", o.REST.Method == MethodRESTVerbs.GET ? "WebGet" : "WebInvoke", o.REST.BuildUriTemplate(), o.REST.Method != MethodRESTVerbs.GET ? string.Format("Method = \"{0}\", ", o.REST.Method) : "", o.REST.BodyStyle, o.REST.RequestFormat, o.REST.ResponseFormat));
+			code.AppendFormat("\t\t{0} {1}(", DataTypeCSGenerator.GenerateType(o.ReturnType), o.ServerName);
 			foreach (MethodParameter op in o.Parameters)
 				code.AppendFormat("{0},", GenerateMethodParameterServerCode(op));
 			if (o.Parameters.Count > 0) code.Remove(code.Length - 1, 1);
 			code.AppendLine(");");
-
-			if (o.UseAsyncPattern)
-			{
-				code.Append("\t\t[OperationContract(");
-				if (o.IsInitiating && o.IsTerminating == false)
-					code.Append("IsInitiating = true, ");
-				if (o.IsInitiating == false && o.IsTerminating)
-					code.Append("IsTerminating = true, ");
-				if (o.IsOneWay)
-					code.Append("IsOneWay = true, ");
-				if (o.ProtectionLevel != System.Net.Security.ProtectionLevel.None)
-					code.AppendFormat("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}, ", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.ProtectionLevel));
-				if (string.IsNullOrEmpty(o.ClientName))
-					code.AppendFormat("Name = \"{0}\", ", o.ClientName);
-				if (code.Length > 21) code.Remove(code.Length - 2, 2);
-				code.AppendFormat(")] IAsyncResult Begin{0}(", o.ServerName);
-				foreach (MethodParameter op in o.Parameters)
-					code.AppendFormat("{0},", GenerateMethodParameterServerCode(op));
-				code.AppendLine(" AsyncCallback Callback, object AsyncState);");
-				code.AppendFormat("\t\t{0} End{1}(IAsyncResult result);{2}", DataTypeCSGenerator.GenerateType(o.ReturnType), o.ServerName, Environment.NewLine);
-			}
 
 			return code.ToString();
 		}
