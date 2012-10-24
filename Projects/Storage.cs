@@ -18,11 +18,11 @@ namespace WCFArchitect.Projects
 				throw new FileNotFoundException("Unable to locate file '" + Path + "'");
 
 			var kt = new List<Type>(new Type[] { 
-				typeof(Solution), typeof(Project), typeof(ProjectGenerationTarget), typeof(DataType), typeof(Namespace),
+				typeof(Solution), typeof(Project), typeof(ProjectGenerationTarget), typeof(DataType), typeof(Namespace), typeof(Documentation),
 				typeof(BindingSecurity), typeof(BindingSecurityBasicHTTP), typeof(BindingSecurityMSMQ), typeof(BindingSecurityMSMQIntegration), typeof(BindingSecurityNamedPipe), typeof(BindingSecurityPeerTCP), typeof(BindingSecurityTCP), typeof(BindingSecurityWebHTTP), typeof(BindingSecurityWSDualHTTP), typeof(BindingSecurityWSFederationHTTP), typeof(BindingSecurityWSHTTP),
 				typeof(ServiceBinding), typeof(ServiceBindingBasicHTTP), typeof(ServiceBindingMSMQ), typeof(ServiceBindingMSMQIntegration), typeof(ServiceBindingNamedPipe), typeof(ServiceBindingNetHTTP), typeof(ServiceBindingPeerTCP), typeof(ServiceBindingTCP), typeof(ServiceBindingWebHTTP), typeof(ServiceBindingWS2007FederationHTTP), typeof(ServiceBindingWS2007HTTP), typeof(ServiceBindingWSDualHTTP), typeof(ServiceBindingWSFederationHTTP), typeof(ServiceBindingWSHTTP),
 				typeof(Host), typeof(HostBehavior), typeof(HostCredentials), typeof(HostDebugBehavior), typeof(HostEndpoint), typeof(HostEndpointAddressHeader), typeof(HostMetadataBehavior), typeof(HostThrottlingBehavior),
-				typeof(Service), typeof(Operation), typeof(Method), typeof(MethodParameter), typeof(Property),
+				typeof(Service), typeof(Operation), typeof(Method), typeof(MethodREST), typeof(MethodParameter), typeof(Property),
 				typeof(Enum), typeof(EnumElement),
 				typeof(Data), typeof(DataElement)
 			});
@@ -47,11 +47,11 @@ namespace WCFArchitect.Projects
 			}
 
 			var kt = new List<Type>(new Type[] { 
-				typeof(Solution), typeof(Project), typeof(ProjectGenerationTarget), typeof(DataType), typeof(Namespace),
+				typeof(Solution), typeof(Project), typeof(ProjectGenerationTarget), typeof(DataType), typeof(Namespace), typeof(Documentation),
 				typeof(BindingSecurity), typeof(BindingSecurityBasicHTTP), typeof(BindingSecurityMSMQ), typeof(BindingSecurityMSMQIntegration), typeof(BindingSecurityNamedPipe), typeof(BindingSecurityPeerTCP), typeof(BindingSecurityTCP), typeof(BindingSecurityWebHTTP), typeof(BindingSecurityWSDualHTTP), typeof(BindingSecurityWSFederationHTTP), typeof(BindingSecurityWSHTTP),
 				typeof(ServiceBinding), typeof(ServiceBindingBasicHTTP), typeof(ServiceBindingMSMQ), typeof(ServiceBindingMSMQIntegration), typeof(ServiceBindingNamedPipe), typeof(ServiceBindingNetHTTP), typeof(ServiceBindingPeerTCP), typeof(ServiceBindingTCP), typeof(ServiceBindingWebHTTP), typeof(ServiceBindingWS2007FederationHTTP), typeof(ServiceBindingWS2007HTTP), typeof(ServiceBindingWSDualHTTP), typeof(ServiceBindingWSFederationHTTP), typeof(ServiceBindingWSHTTP),
 				typeof(Host), typeof(HostBehavior), typeof(HostCredentials), typeof(HostDebugBehavior), typeof(HostEndpoint), typeof(HostEndpointAddressHeader), typeof(HostMetadataBehavior), typeof(HostThrottlingBehavior),
-				typeof(Service), typeof(Operation), typeof(Method), typeof(MethodParameter), typeof(Property),
+				typeof(Service), typeof(Operation), typeof(Method), typeof(MethodREST), typeof(MethodParameter), typeof(Property),
 				typeof(Enum), typeof(EnumElement),
 				typeof(Data), typeof(DataElement)
 			});

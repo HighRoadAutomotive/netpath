@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WCFArchitect.Projects;
+using WCFArchitect.Projects.Helpers;
 
 namespace WCFArchitect.Compiler.Generators
 {
@@ -14,11 +15,11 @@ namespace WCFArchitect.Compiler.Generators
 			if (string.IsNullOrEmpty(o.Name))
 				Program.AddMessage(new CompileMessage("GS5000", "A host in the '" + o.Parent.Name + "' project has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 			else
-				if (Helpers.RegExs.MatchCodeName.IsMatch(o.Name) == false)
+				if (RegExs.MatchCodeName.IsMatch(o.Name) == false)
 					Program.AddMessage(new CompileMessage("GS5001", "The host '" + o.Name + "' in the '" + o.Parent.Name + "' project contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 			if (string.IsNullOrEmpty(o.Namespace)) { }
 			else
-				if (Helpers.RegExs.MatchHTTPURI.IsMatch(o.Namespace) == false)
+				if (RegExs.MatchHTTPURI.IsMatch(o.Namespace) == false)
 					Program.AddMessage(new CompileMessage("GS5002", "The Namespace URI '" + o.Namespace + "' for the '" + o.Name + "' host in the '" + o.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 
 			if (o.Service == null)
@@ -26,7 +27,7 @@ namespace WCFArchitect.Compiler.Generators
 
 			foreach (string ba in o.BaseAddresses)
 			{
-				bool baValid = Helpers.RegExs.MatchHTTPURI.IsMatch(ba) || Helpers.RegExs.MatchTCPURI.IsMatch(ba) || Helpers.RegExs.MatchP2PURI.IsMatch(ba) || Helpers.RegExs.MatchPipeURI.IsMatch(ba) || Helpers.RegExs.MatchMSMQURI.IsMatch(ba);
+				bool baValid = RegExs.MatchHTTPURI.IsMatch(ba) || RegExs.MatchTCPURI.IsMatch(ba) || RegExs.MatchP2PURI.IsMatch(ba) || RegExs.MatchPipeURI.IsMatch(ba) || RegExs.MatchMSMQURI.IsMatch(ba);
 				if (baValid)
 					Program.AddMessage(new CompileMessage("GS5003", "The URI '" + ba + "' for the '" + o.Name + "' host in the '" + o.Parent.Name + "' project is not a valid URI. Any associated services and data may not function properly.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 			}
@@ -36,7 +37,7 @@ namespace WCFArchitect.Compiler.Generators
 				if (string.IsNullOrEmpty(he.Name))
 					Program.AddMessage(new CompileMessage("GS5004", "A host in the endpoint '" + he.Parent.Name + "' project has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, he.Parent, he, he.GetType(), he.Parent.ID, he.ID));
 				else
-					if (Helpers.RegExs.MatchCodeName.IsMatch(he.Name) == false)
+					if (RegExs.MatchCodeName.IsMatch(he.Name) == false)
 						Program.AddMessage(new CompileMessage("GS5005", "The host endpoint '" + he.Name + "' in the '" + he.Parent.Name + "' project contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, he.Parent, he, he.GetType(), he.Parent.ID, he.ID));
 				if (he.Binding == null)
 					Program.AddMessage(new CompileMessage("GS5006", "The host endpoint'" + he.Name + "' in the '" + he.Parent.Name + "' must have a Binding. Please specify a Binding", CompileMessageSeverity.ERROR, he.Parent, he, he.GetType(), he.Parent.ID, he.ID));
@@ -48,17 +49,17 @@ namespace WCFArchitect.Compiler.Generators
 				if (t == typeof(HostDebugBehavior))
 				{
 					var b = hb as HostDebugBehavior;
-					if (b != null && Helpers.RegExs.MatchHTTPURI.IsMatch(b.HttpHelpPageUrl) == false)
+					if (b != null && RegExs.MatchHTTPURI.IsMatch(b.HttpHelpPageUrl) == false)
 						Program.AddMessage(new CompileMessage("GS5007", "The HTTP Help Page URL '" + b.HttpHelpPageUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
-					if (b != null && Helpers.RegExs.MatchHTTPURI.IsMatch(b.HttpsHelpPageUrl) == false)
+					if (b != null && RegExs.MatchHTTPURI.IsMatch(b.HttpsHelpPageUrl) == false)
 						Program.AddMessage(new CompileMessage("GS5008", "The HTTPS Help Page URL '" + b.HttpsHelpPageUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				}
 				else if (t == typeof(HostMetadataBehavior))
 				{
 					var b = hb as HostMetadataBehavior;
-					if (b != null && Helpers.RegExs.MatchHTTPURI.IsMatch(b.HttpGetUrl) == false)
+					if (b != null && RegExs.MatchHTTPURI.IsMatch(b.HttpGetUrl) == false)
 						Program.AddMessage(new CompileMessage("GS5009", "The HTTP Get URL '" + b.HttpGetUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
-					if (b != null && Helpers.RegExs.MatchHTTPURI.IsMatch(b.HttpsGetUrl) == false)
+					if (b != null && RegExs.MatchHTTPURI.IsMatch(b.HttpsGetUrl) == false)
 						Program.AddMessage(new CompileMessage("GS5010", "The HTTPS Get URL '" + b.HttpsGetUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				}
 			}
@@ -119,7 +120,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode30(hb));
@@ -143,7 +144,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode30(hb));
@@ -167,7 +168,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode30(hb));
@@ -191,7 +192,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode30(hb));
@@ -218,7 +219,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode30(hb));
@@ -245,7 +246,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode30(hb));
@@ -272,7 +273,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode30(hb));
@@ -299,7 +300,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode30(hb));
@@ -371,7 +372,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode35(hb));
@@ -395,7 +396,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode35(hb));
@@ -419,7 +420,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode35(hb));
@@ -443,7 +444,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode35(hb));
@@ -469,7 +470,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode35(hb));
@@ -497,7 +498,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode35(hb));
@@ -525,7 +526,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode35(hb));
@@ -553,7 +554,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode35(hb));
@@ -621,7 +622,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode45(hb));
@@ -646,7 +647,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode45(hb));
@@ -671,7 +672,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode45(hb));
@@ -696,7 +697,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode45(hb));
@@ -723,7 +724,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode45(hb));
@@ -751,7 +752,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode45(hb));
@@ -779,7 +780,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode45(hb));
@@ -807,7 +808,7 @@ namespace WCFArchitect.Compiler.Generators
 			else
 				code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
 			if (!string.IsNullOrEmpty(o.ConfigurationName)) code.AppendFormat("\t\t\tthis.Description.ConfigurationName = \"{0}\";{1}", o.ConfigurationName, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", Helpers.RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Description.Name = \"{0}\";{1}", RegExs.ReplaceSpaces.Replace(o.Name, ""), Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Description.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			foreach (HostBehavior hb in o.Behaviors)
 				code.Append(GenerateBehaviorCode45(hb));

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WCFArchitect.Projects;
+using WCFArchitect.Projects.Helpers;
 
 namespace WCFArchitect.Compiler.Generators
 {
@@ -14,7 +15,7 @@ namespace WCFArchitect.Compiler.Generators
 			if (string.IsNullOrEmpty(o.Name))
 				Program.AddMessage(new CompileMessage("GS7000", "A binding security element in the '" + o.Parent.Name + "' project has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 			else
-				if (Helpers.RegExs.MatchCodeName.IsMatch(o.Name) == false)
+				if (RegExs.MatchCodeName.IsMatch(o.Name) == false)
 					Program.AddMessage(new CompileMessage("GS7001", "The binding security element '" + o.Name + "' in the '" + o.Parent.Name + "' project contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 		}
 

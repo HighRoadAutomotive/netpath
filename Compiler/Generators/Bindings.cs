@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WCFArchitect.Projects;
+using WCFArchitect.Projects.Helpers;
 
 namespace WCFArchitect.Compiler.Generators
 {
@@ -14,11 +15,11 @@ namespace WCFArchitect.Compiler.Generators
 			if (string.IsNullOrEmpty(o.Name))
 				Program.AddMessage(new CompileMessage("GS6000", "A binding in the '" + o.Parent.Name + "' project has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 			else
-				if (Helpers.RegExs.MatchCodeName.IsMatch(o.Name) == false)
+				if (RegExs.MatchCodeName.IsMatch(o.Name) == false)
 					Program.AddMessage(new CompileMessage("GS6001", "The binding '" + o.Name + "' in the '" + o.Parent.Name + "' project contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 			if (string.IsNullOrEmpty(o.Namespace)) { }
 			else
-				if (Helpers.RegExs.MatchHTTPURI.IsMatch(o.Namespace) == false)
+				if (RegExs.MatchHTTPURI.IsMatch(o.Namespace) == false)
 					Program.AddMessage(new CompileMessage("GS6002", "The Namespace '" + o.Namespace + "' for the '" + o.Name + "' binding in the '" + o.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 
 			Type t = o.GetType();
@@ -28,7 +29,7 @@ namespace WCFArchitect.Compiler.Generators
 				if (b != null && b.Security == null)
 					Program.AddMessage(new CompileMessage("GS6003", "The Security for the '" + b.Name + "' Basic HTTP Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				if (b != null && !string.IsNullOrEmpty(b.ProxyAddress))
-					if (Helpers.RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
+					if (RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
 						Program.AddMessage(new CompileMessage("GS6004", "The Proxy Address '" + b.ProxyAddress + "' for the '" + b.Name + "' Basic HTTP Binding in the '" + b.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 			}
 			else if (t == typeof(ServiceBindingBasicHTTPS) || t == typeof(ServiceBindingNetHTTP) || t == typeof(ServiceBindingNetHTTPS))
@@ -39,7 +40,7 @@ namespace WCFArchitect.Compiler.Generators
 				if (b != null && b.Security == null)
 					Program.AddMessage(new CompileMessage("GS6003", "The Security for the '" + b.Name + "' Net HTTP Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				if (b != null && !string.IsNullOrEmpty(b.ProxyAddress))
-					if (Helpers.RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
+					if (RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
 						Program.AddMessage(new CompileMessage("GS6004", "The Proxy Address '" + b.ProxyAddress + "' for the '" + b.Name + "' Net HTTP Binding in the '" + b.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 			}
 			else if (t == typeof(ServiceBindingWSHTTP))
@@ -48,7 +49,7 @@ namespace WCFArchitect.Compiler.Generators
 				if (b != null && b.Security == null)
 					Program.AddMessage(new CompileMessage("GS6005", "The Security for the '" + b.Name + "' WS HTTP Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				if (b != null && !string.IsNullOrEmpty(b.ProxyAddress))
-					if (Helpers.RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
+					if (RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
 						Program.AddMessage(new CompileMessage("GS6006", "The Proxy Address '" + b.ProxyAddress + "' for the '" + b.Name + "' WS HTTP Binding in the '" + b.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 			}
 			else if (t == typeof(ServiceBindingWS2007HTTP))
@@ -57,7 +58,7 @@ namespace WCFArchitect.Compiler.Generators
 				if (b != null && b.Security == null)
 					Program.AddMessage(new CompileMessage("GS6007", "The Security for the '" + b.Name + "' WS 2007 HTTP Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				if (b != null && !string.IsNullOrEmpty(b.ProxyAddress))
-					if (Helpers.RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
+					if (RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
 						Program.AddMessage(new CompileMessage("GS6008", "The Proxy Address '" + b.ProxyAddress + "' for the '" + b.Name + "' WS 2007 HTTP Binding in the '" + b.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 			}
 			else if (t == typeof(ServiceBindingWSDualHTTP))
@@ -66,7 +67,7 @@ namespace WCFArchitect.Compiler.Generators
 				if (b != null && b.Security == null)
 					Program.AddMessage(new CompileMessage("GS6009", "The Security for the '" + b.Name + "' WS Dual Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				if (b != null && !string.IsNullOrEmpty(b.ProxyAddress))
-					if (Helpers.RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
+					if (RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
 						Program.AddMessage(new CompileMessage("GS6010", "The Proxy Address '" + b.ProxyAddress + "' for the '" + b.Name + "' WS Dual HTTP Binding in the '" + b.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 			}
 			else if (t == typeof(ServiceBindingWSFederationHTTP))
@@ -75,7 +76,7 @@ namespace WCFArchitect.Compiler.Generators
 				if (b != null && b.Security == null)
 					Program.AddMessage(new CompileMessage("GS6011", "The Security for the '" + b.Name + "' WS Federation HTTP Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				if (b != null && !string.IsNullOrEmpty(b.ProxyAddress))
-					if (Helpers.RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
+					if (RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
 						Program.AddMessage(new CompileMessage("GS6012", "The Proxy Address '" + b.ProxyAddress + "' for the '" + b.Name + "' WS Federation HTTP Binding in the '" + b.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 			}
 			else if (t == typeof(ServiceBindingWS2007FederationHTTP))
@@ -84,7 +85,7 @@ namespace WCFArchitect.Compiler.Generators
 				if (b != null && b.Security == null)
 					Program.AddMessage(new CompileMessage("GS6013", "The Security for the '" + b.Name + "' WS 2007 Federation HTTP Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				if (b != null && !string.IsNullOrEmpty(b.ProxyAddress))
-					if (Helpers.RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
+					if (RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
 						Program.AddMessage(new CompileMessage("GS6014", "The Proxy Address '" + b.ProxyAddress + "' for the '" + b.Name + "' WS 2007 Federation HTTP Binding in the '" + b.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 			}
 			else if (t == typeof(ServiceBindingTCP))
@@ -111,7 +112,7 @@ namespace WCFArchitect.Compiler.Generators
 				if (b != null && b.Security == null)
 					Program.AddMessage(new CompileMessage("GS6018", "The Security for the '" + b.Name + "' Peer TCP Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				if (b != null && !string.IsNullOrEmpty(b.ListenIPAddress))
-					if (Helpers.RegExs.MatchIPv4.IsMatch(b.ListenIPAddress) == false && Helpers.RegExs.MatchIPv6.IsMatch(b.ListenIPAddress) == false)
+					if (RegExs.MatchIPv4.IsMatch(b.ListenIPAddress) == false && RegExs.MatchIPv6.IsMatch(b.ListenIPAddress) == false)
 						Program.AddMessage(new CompileMessage("GS6019", "The Listen IP Address for the '" + b.Name + "' Peer TCP Binding in the '" + b.Parent.Name + "' project is not valid.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 			}
 			else if (t == typeof(ServiceBindingWebHTTP))
@@ -120,7 +121,7 @@ namespace WCFArchitect.Compiler.Generators
 				if (b != null && b.Security == null)
 					Program.AddMessage(new CompileMessage("GS6020", "The Security for the '" + b.Name + "' MSMQ Binding in the '" + b.Parent.Name + "' project is not set. The default values will be used. This may result in data being transmitted over insecure connections.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				if (b != null && !string.IsNullOrEmpty(b.ProxyAddress))
-					if (Helpers.RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
+					if (RegExs.MatchHTTPURI.IsMatch(b.ProxyAddress) == false)
 						Program.AddMessage(new CompileMessage("GS6021", "The Proxy Address '" + b.ProxyAddress + "' for the '" + b.Name + "' Basic HTTP Binding in the '" + b.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 			}
 			else if (t == typeof(ServiceBindingMSMQIntegration))

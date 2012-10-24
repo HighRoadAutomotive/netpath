@@ -448,13 +448,13 @@ namespace WCFArchitect.Interface.Service
 			{
 				var m = t as Projects.Method;
 				if (m == null) return;
-				ActiveOperation = new Method(m);
+				ActiveCallback = new Method(m);
 			}
 			else
 			{
 				var m = t as Projects.Property;
 				if (m == null) return;
-				ActiveOperation = new Property(m);
+				ActiveCallback = new Property(m);
 			}
 		}
 

@@ -59,6 +59,8 @@ namespace WCFArchitect
 			cp.BeginErrorReadLine();
 			cp.BeginOutputReadLine();
 			await BuildFinished();
+			cp.CancelErrorRead();
+			cp.CancelOutputRead();
 			cp.Close();
 
 			if (NavWindow.ErrorCount == 0) NavWindow.ErrorCount = null;

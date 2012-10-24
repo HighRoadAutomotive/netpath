@@ -24,6 +24,8 @@ using System.ServiceModel.Description;
 using System.Text;
 using System.Windows;
 
+[assembly: System.Runtime.Serialization.ContractNamespaceAttribute("http://tempuri.org/Test1/", ClrNamespace="Test1")]
+
 #pragma warning disable 1591
 namespace Test1
 {
@@ -418,41 +420,152 @@ namespace Test1
 	**************************************************************************/
 
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
-	public interface TestService
+	public interface ITestService
 	{
-		[OperationContract(Action = "http://tempuri.org/Test1//TestService/asdaasd", ReplyAction = "http://tempuri.org/Test1//TestService/asdaasdResponse")]
-		string Getasdaasd();
-		[OperationContract(Action = "http://tempuri.org/Test1//TestService/asdaasd", ReplyAction = "http://tempuri.org/Test1//TestService/asdaasdResponse")]
-		void Setasdaasd(string value);
+		[OperationContract(Action = "http://tempuri.org/Test/TestService/Getasdads", ReplyAction = "http://tempuri.org/Test/TestService/SetasdadsResponse")]
+		bool Getasdads();
+		[OperationContract(Action = "http://tempuri.org/Test/TestService/Getasdads", ReplyAction = "http://tempuri.org/Test/TestService/SetasdadsResponse")]
+		void Setasdads(bool value);
 
-		///<param name='asdss'></param>
-		[OperationContract(Action = "http://tempuri.org/Test1//TestService/asdas", ReplyAction = "http://tempuri.org/Test1//TestService/asdasResponse")]
-		void asdas(string asdss);
+		[OperationContract(Action = "http://tempuri.org/Test/TestService/SynchronousTest", ReplyAction = "http://tempuri.org/Test/TestService/SynchronousTestResponse")]
+		void SynchronousTest();
+
+		///<param name='Callback'>The function to call when the operation is complete.</param>
+		///<param name='AsyncState'>An object representing the state of the operation.</param>
+		[OperationContract(Action = "http://tempuri.org/Test/TestService/AsynchronousTestInvoke", ReplyAction = "http://tempuri.org/Test/TestService/AsynchronousTestInvokeResponse")]
+		IAsyncResult BeginAsynchronousTestInvoke(AsyncCallback Callback, object AsyncState);
+		///<summary>Finalizes the asynchronous operation.</summary>
+		///<returns>
+		///
+		///</returns>
+		///<param name='result'>The result of the operation.</param>
+		string EndAsynchronousTestInvoke(IAsyncResult result);
+
+		[OperationContract(Action = "http://tempuri.org/Test/TestService/AwaitableTestAsync", ReplyAction = "http://tempuri.org/Test/TestService/AwaitableTestAsyncResponse")]
+		System.Threading.Tasks.Task<bool> AwaitableTestAsync();
 
 	}
 
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
-	public interface TestServiceChannel : Test1.TestService, System.ServiceModel.IClientChannel
+	public interface ITestServiceCallback
 	{
+		[OperationContract(Action = "http://tempuri.org/Test/TestService/SyncTest", ReplyAction = "http://tempuri.org/Test/TestService/SyncTestResponse")]
+		void SyncTest();
+
+		///<param name='Callback'>The function to call when the operation is complete.</param>
+		///<param name='AsyncState'>An object representing the state of the operation.</param>
+		[OperationContract(Action = "http://tempuri.org/Test/TestService/AsyncTestInvoke", ReplyAction = "http://tempuri.org/Test/TestService/AsyncTestInvokeResponse")]
+		IAsyncResult BeginAsyncTestInvoke(AsyncCallback Callback, object AsyncState);
+		///<summary>Finalizes the asynchronous operation.</summary>
+		///<returns>
+		///
+		///</returns>
+		///<param name='result'>The result of the operation.</param>
+		bool EndAsyncTestInvoke(IAsyncResult result);
+
+		[OperationContract(Action = "http://tempuri.org/Test/TestService/AwaitTestAsync", ReplyAction = "http://tempuri.org/Test/TestService/AwaitTestAsyncResponse")]
+		System.Threading.Tasks.Task<string> AwaitTestAsync();
+
 	}
 
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
-	public partial class TestServiceClient : System.ServiceModel.ClientBase<TestService>, TestService
+	public interface ITestServiceChannel : ITestService, System.ServiceModel.IClientChannel
 	{
-		string TestService.Getasdaasd()
-		{
-			return base.Channel.Getasdaasd();
-		}
-		void TestService.Setasdaasd(string value)
-		{
-			base.Channel.Setasdaasd(value);
-		}
-		public string asdaasd { get { return ((TestService)this).Getasdaasd(); } set { ((TestService)this).Setasdaasd(value); } }
+	}
 
-		///<param name='asdss'></param>
-		public void asdas(string asdss)
+	[System.Diagnostics.DebuggerStepThroughAttribute()]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	public partial class TestServiceProxy : System.ServiceModel.ClientBase<ITestService>, ITestService
+	{
+		public TestServiceProxy(string endpointConfigurationName) : base(endpointConfigurationName)
 		{
-			base.Channel.asdas(asdss);
+			onBeginAsynchronousTestDelegate = new BeginOperationDelegate(this.OnBeginAsynchronousTest);
+			onEndAsynchronousTestDelegate = new EndOperationDelegate(this.OnEndAsynchronousTest);
+			onAsynchronousTestCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnAsynchronousTestCompleted);
+		}
+
+		public TestServiceProxy(string endpointConfigurationName, string remoteAddress) : base(endpointConfigurationName, remoteAddress)
+		{
+			onBeginAsynchronousTestDelegate = new BeginOperationDelegate(this.OnBeginAsynchronousTest);
+			onEndAsynchronousTestDelegate = new EndOperationDelegate(this.OnEndAsynchronousTest);
+			onAsynchronousTestCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnAsynchronousTestCompleted);
+		}
+
+		public TestServiceProxy(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : base(endpointConfigurationName, remoteAddress)
+		{
+			onBeginAsynchronousTestDelegate = new BeginOperationDelegate(this.OnBeginAsynchronousTest);
+			onEndAsynchronousTestDelegate = new EndOperationDelegate(this.OnEndAsynchronousTest);
+			onAsynchronousTestCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnAsynchronousTestCompleted);
+		}
+
+		public TestServiceProxy(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : base(binding, remoteAddress)
+		{
+			onBeginAsynchronousTestDelegate = new BeginOperationDelegate(this.OnBeginAsynchronousTest);
+			onEndAsynchronousTestDelegate = new EndOperationDelegate(this.OnEndAsynchronousTest);
+			onAsynchronousTestCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnAsynchronousTestCompleted);
+		}
+
+		bool ITestService.Getasdads()
+		{
+			return base.Channel.Getasdads();
+		}
+		void ITestService.Setasdads(bool value)
+		{
+			base.Channel.Setasdads(value);
+		}
+		public bool asdads { get { return ((ITestService)this).Getasdads(); } set { ((ITestService)this).Setasdads(value); } }
+
+		public void SynchronousTest()
+		{
+			base.Channel.SynchronousTest();
+		}
+
+		private readonly BeginOperationDelegate onBeginAsynchronousTestDelegate;
+		private readonly EndOperationDelegate onEndAsynchronousTestDelegate;
+		private readonly System.Threading.SendOrPostCallback onAsynchronousTestCompletedDelegate;
+		public Action<string, System.Exception, bool, object> AsynchronousTestCompleted;
+		///<param name='Callback'>The function to call when the operation is complete.</param>
+		///<param name='AsyncState'>An object representing the state of the operation.</param>
+		IAsyncResult ITestService.BeginAsynchronousTestInvoke(AsyncCallback Callback, object AsyncState)
+		{
+			return base.Channel.BeginAsynchronousTestInvoke(Callback, AsyncState);
+		}
+		///<summary>Finalizes the asynchronous operation.</summary>
+		///<returns>
+		///
+		///</returns>
+		///<param name='result'>The result of the operation.</param>
+		string ITestService.EndAsynchronousTestInvoke(IAsyncResult result)
+		{
+			return base.Channel.EndAsynchronousTestInvoke(result);
+		}
+		private IAsyncResult OnBeginAsynchronousTest(object[] Values, AsyncCallback Callback, object AsyncState)
+		{
+			return ((ITestService)this).BeginAsynchronousTestInvoke(Callback, AsyncState);
+		}
+		private object[] OnEndAsynchronousTest(IAsyncResult result)
+		{
+			return new object[] { ((ITestService)this).EndAsynchronousTestInvoke(result) };
+		}
+		private void OnAsynchronousTestCompleted(object state)
+		{
+			if (this.AsynchronousTestCompleted == null) return;
+			InvokeAsyncCompletedEventArgs e = (InvokeAsyncCompletedEventArgs)state;
+			this.AsynchronousTestCompleted((string)e.Results[0], e.Error, e.Cancelled, e.UserState);
+		}
+		public void AsynchronousTestInvoke()
+		{
+			this.AsynchronousTestInvoke(null);
+		}
+		///<param name='userState'>Allows the user of this function to distinguish between different calls.</param>
+		public void AsynchronousTestInvoke(object userState)
+		{
+			InvokeAsync(this.onBeginAsynchronousTestDelegate, new object[] {  }, this.onEndAsynchronousTestDelegate, this.onAsynchronousTestCompletedDelegate, userState);
+		}
+
+		public System.Threading.Tasks.Task<bool> AwaitableTestAsync()
+		{
+			return base.Channel.AwaitableTestAsync();
 		}
 
 	}
@@ -460,4 +573,4 @@ namespace Test1
 
 }
 
-#pragma warning enable 1591
+#pragma warning restore 1591
