@@ -59,15 +59,155 @@ namespace Test1
 	**************************************************************************/
 
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
-	[ServiceContract(SessionMode = System.ServiceModel.SessionMode.Allowed, Namespace = "http://tempuri.org/Test1/")]
+	[ServiceContract(CallbackContract = typeof(ITestServiceCallback), SessionMode = System.ServiceModel.SessionMode.Allowed, Namespace = "http://tempuri.org/Test1/")]
 	public interface ITestService
 	{
-		string asdaasd { [OperationContract(Name = "Getasdaasd")] get; [OperationContract(Name = "Setasdaasd")] set; }
-		///<param name='asdss'></param>
-		[OperationContract(Name = "")] void asdas(string asdss);
+		bool asdads { [OperationContract(Name = "Getasdads")] get; [OperationContract(Name = "Setasdads")] set; }
+
+		[OperationContract(IsInitiating = false)]
+		void SynchronousTest();
+
+		///<param name='Callback'>The function to call when the operation is complete.</param>
+		///<param name='AsyncState'>An object representing the state of the operation.</param>
+		[OperationContract(AsyncPattern = true, IsInitiating = false)]
+		IAsyncResult BeginAsynchronousTestInvoke( AsyncCallback Callback, object AsyncState);
+		///<summary>Finalizes the asynchronous operation.</summary>
+		///<returns>
+		///
+		///</returns>
+		///<param name='result'>The result of the operation.</param>
+		string EndAsynchronousTestInvoke(IAsyncResult result);
+
+		[OperationContract(IsInitiating = false)]
+		System.Threading.Tasks.Task<bool> AwaitableTestAsync();
+
+	}
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	public interface ITestServiceCallback
+	{
+		[OperationContract(IsInitiating = false)]
+		void SyncTest();
+
+		///<param name='Callback'>The function to call when the operation is complete.</param>
+		///<param name='AsyncState'>An object representing the state of the operation.</param>
+		[OperationContract(AsyncPattern = true, IsInitiating = false)]
+		IAsyncResult BeginAsyncTestInvoke( AsyncCallback Callback, object AsyncState);
+		///<summary>Finalizes the asynchronous operation.</summary>
+		///<returns>
+		///
+		///</returns>
+		///<param name='result'>The result of the operation.</param>
+		bool EndAsyncTestInvoke(IAsyncResult result);
+
+		[OperationContract(IsInitiating = false)]
+		System.Threading.Tasks.Task<string> AwaitTestAsync();
+
+	}
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	public partial class TestServiceCallback : ITestServiceCallback
+	{
+
+		private readonly ITestServiceCallback __callback;
+
+		public TestServiceCallback()
+		{
+			__callback = System.ServiceModel.OperationContext.Current.GetCallbackChannel<ITestServiceCallback>();
+			onBeginAsyncTestDelegate = new BeginOperationDelegate(this.OnBeginAsyncTest);
+			onEndAsyncTestDelegate = new EndOperationDelegate(this.OnEndAsyncTest);
+			onAsyncTestCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnAsyncTestCompleted);
+		}
+
+		public TestServiceCallback(ITestServiceCallback callback)
+		{
+			__callback = callback;
+			onBeginAsyncTestDelegate = new BeginOperationDelegate(this.OnBeginAsyncTest);
+			onEndAsyncTestDelegate = new EndOperationDelegate(this.OnEndAsyncTest);
+			onAsyncTestCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnAsyncTestCompleted);
+		}
+
+		protected class InvokeAsyncCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+		{
+			public object[] Results { get; set; }
+			public InvokeAsyncCompletedEventArgs(object[] results, System.Exception error, bool cancelled, Object userState) : base(error, cancelled, userState)
+			{
+				Results = results;
+			}
+		}
+
+		protected delegate IAsyncResult BeginOperationDelegate(object[] inValues, AsyncCallback asyncCallback, Object state);
+		protected delegate object[] EndOperationDelegate(IAsyncResult result);
+
+		protected void InvokeAsync(BeginOperationDelegate beginOperationDelegate, object[] inValues, EndOperationDelegate endOperationDelegate, System.Threading.SendOrPostCallback operationCompletedCallback, object userState)
+		{
+			if (beginOperationDelegate == null) throw new ArgumentNullException("Argument 'beginOperationDelegate' cannot be null.");
+			if (endOperationDelegate == null) throw new ArgumentNullException("Argument 'endOperationDelegate' cannot be null.");
+			AsyncCallback cb = delegate(IAsyncResult ar)
+			{
+				object[] results = null;
+				Exception error = null;
+				try { results = endOperationDelegate(ar); }
+				catch (Exception ex) { error = ex; }
+				if (operationCompletedCallback != null) operationCompletedCallback(new InvokeAsyncCompletedEventArgs(results, error, false, userState));
+			};
+			beginOperationDelegate(inValues, cb, userState);
+		}
+
+		public void SyncTest()
+		{
+			__callback.SyncTest();
+		}
+
+		private readonly BeginOperationDelegate onBeginAsyncTestDelegate;
+		private readonly EndOperationDelegate onEndAsyncTestDelegate;
+		private readonly System.Threading.SendOrPostCallback onAsyncTestCompletedDelegate;
+		public Action<bool, System.Exception, bool, object> AsyncTestCompleted;
+		///<param name='Callback'>The function to call when the operation is complete.</param>
+		///<param name='AsyncState'>An object representing the state of the operation.</param>
+		IAsyncResult ITestServiceCallback.BeginAsyncTestInvoke(AsyncCallback Callback, object AsyncState)
+		{
+			return __callback.BeginAsyncTestInvoke(Callback, AsyncState);
+		}
+		///<summary>Finalizes the asynchronous operation.</summary>
+		///<returns>
+		///
+		///</returns>
+		///<param name='result'>The result of the operation.</param>
+		bool ITestServiceCallback.EndAsyncTestInvoke(IAsyncResult result)
+		{
+			return __callback.EndAsyncTestInvoke(result);
+		}
+		private IAsyncResult OnBeginAsyncTest(object[] Values, AsyncCallback Callback, object AsyncState)
+		{
+			return ((ITestServiceCallback)this).BeginAsyncTestInvoke(Callback, AsyncState);
+		}
+		private object[] OnEndAsyncTest(IAsyncResult result)
+		{
+			return new object[] { ((ITestServiceCallback)this).EndAsyncTestInvoke(result) };
+		}
+		private void OnAsyncTestCompleted(object state)
+		{
+			if (this.AsyncTestCompleted == null) return;
+			InvokeAsyncCompletedEventArgs e = (InvokeAsyncCompletedEventArgs)state;
+			this.AsyncTestCompleted((bool)e.Results[0], e.Error, e.Cancelled, e.UserState);
+		}
+		public void AsyncTestInvoke()
+		{
+			this.AsyncTestInvoke(null);
+		}
+		///<param name='userState'>Allows the user of this function to distinguish between different calls.</param>
+		public void AsyncTestInvoke(object userState)
+		{
+			InvokeAsync(this.onBeginAsyncTestDelegate, new object[] {  }, this.onEndAsyncTestDelegate, this.onAsyncTestCompletedDelegate, userState);
+		}
+
+		public System.Threading.Tasks.Task<string> AwaitTestAsync()
+		{
+			return __callback.AwaitTestAsync();
+		}
+
 	}
 
 
 }
 
-#pragma warning enable 1591
+#pragma warning restore 1591

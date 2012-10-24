@@ -72,7 +72,6 @@
     <Compile Include="Generators\Security.cs" />
     <Compile Include="Generators\Service.cs" />
     <Compile Include="Globals.cs" />
-    <Compile Include="Helpers\RegExs.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

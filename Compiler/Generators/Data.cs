@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WCFArchitect.Projects;
+using WCFArchitect.Projects.Helpers;
 
 namespace WCFArchitect.Compiler.Generators
 {
@@ -14,28 +15,28 @@ namespace WCFArchitect.Compiler.Generators
 			if (string.IsNullOrEmpty(o.Name))
 				Program.AddMessage(new CompileMessage("GS3000", "The data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 			else
-				if (Helpers.RegExs.MatchCodeName.IsMatch(o.Name) == false)
+				if (RegExs.MatchCodeName.IsMatch(o.Name) == false)
 					Program.AddMessage(new CompileMessage("GS3001", "The data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 
 			if (o.HasClientType)
-				if (Helpers.RegExs.MatchCodeName.IsMatch(o.ClientType.Name) == false)
+				if (RegExs.MatchCodeName.IsMatch(o.ClientType.Name) == false)
 					Program.AddMessage(new CompileMessage("GS3002", "The data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 
 			if (o.HasXAMLType)
-				if (Helpers.RegExs.MatchCodeName.IsMatch(o.XAMLType.Name) == false)
+				if (RegExs.MatchCodeName.IsMatch(o.XAMLType.Name) == false)
 					Program.AddMessage(new CompileMessage("GS3003", "The data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 
 			foreach (DataElement d in o.Elements)
 			{
-				if (Helpers.RegExs.MatchCodeName.IsMatch(d.DataType.Name) == false && d.DataType.TypeMode != DataTypeMode.Array)
+				if (RegExs.MatchCodeName.IsMatch(d.DataType.Name) == false && d.DataType.TypeMode != DataTypeMode.Array)
 					Program.AddMessage(new CompileMessage("GS3001", "The data element '" + d.DataType.Name + "' in the '" + o.Name + "' data object contains invalid characters in the Name.", CompileMessageSeverity.ERROR, o, d, d.GetType(), o.ID, d.ID));
 
 				if (d.HasClientType)
-					if (Helpers.RegExs.MatchCodeName.IsMatch(d.ClientType.Name) == false && d.DataType.TypeMode != DataTypeMode.Array)
+					if (RegExs.MatchCodeName.IsMatch(d.ClientType.Name) == false && d.DataType.TypeMode != DataTypeMode.Array)
 						Program.AddMessage(new CompileMessage("GS3002", "The data object '" + d.ClientType.Name + "' in the '" + o.Name + "' namespace contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 
 				if (d.HasXAMLType)
-					if (Helpers.RegExs.MatchCodeName.IsMatch(d.XAMLType.Name) == false && d.DataType.TypeMode != DataTypeMode.Array)
+					if (RegExs.MatchCodeName.IsMatch(d.XAMLType.Name) == false && d.DataType.TypeMode != DataTypeMode.Array)
 						Program.AddMessage(new CompileMessage("GS3003", "The data object '" + d.XAMLType.Name + "' in the '" + o.Name + "' namespace contains invalid characters in the XAML Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 			}
 

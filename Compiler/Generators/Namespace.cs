@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WCFArchitect.Projects;
+using WCFArchitect.Projects.Helpers;
 
 namespace WCFArchitect.Compiler.Generators
 {
@@ -14,7 +15,7 @@ namespace WCFArchitect.Compiler.Generators
 			if (string.IsNullOrEmpty(o.URI))
 				Program.AddMessage(new CompileMessage("GS1000", "The '" + o.Name + "' namespace in the '" + o.Owner.Name + "' project does not have a URI. Namespaces MUST have a URI.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 			else
-				if (Helpers.RegExs.MatchHTTPURI.IsMatch(o.URI) == false)
+				if (RegExs.MatchHTTPURI.IsMatch(o.URI) == false)
 					Program.AddMessage(new CompileMessage("GS1001", "The URI '" + o.URI + "' for the '" + o.Name + "' namespace in the '" + o.Owner.Name + "' project is not a valid URI. Any associated services and data may not function properly.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 
 			foreach (Projects.Enum ee in o.Enums)
@@ -38,6 +39,18 @@ namespace WCFArchitect.Compiler.Generators
 			foreach (Namespace tn in o.Children)
 				VerifyCode(tn);
 
+		}
+
+		public static string GenerateContractNamespaceAttributes(Namespace o)
+		{
+			var code = new StringBuilder();
+
+			code.AppendLine(string.Format("[assembly: System.Runtime.Serialization.ContractNamespaceAttribute(\"{0}\", ClrNamespace=\"{1}\")]", o.URI, o.FullName));
+
+			foreach (Namespace tn in o.Children)
+				code.AppendLine(GenerateContractNamespaceAttributes(tn));
+
+			return code.ToString();
 		}
 
 		public static string GenerateServerCode30(Namespace o)

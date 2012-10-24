@@ -40,5 +40,5 @@
 			<ComboBoxItem Content="Encrypt and Sign" />
 		</ComboBox>
 	</Grid>
-	<Docs:Standard Grid.Row="5" Margin="0,5,0,0" IsProperty="True" MinHeight="250" Documentation="{Binding Path=PropertyData.Documentation}" />
+	<Docs:Standard Grid.Row="5" Margin="0,5,0,0" IsProperty="True" MinHeight="200" Documentation="{Binding Path=PropertyData.Documentation}" />
 </Grid>

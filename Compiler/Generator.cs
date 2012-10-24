@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using WCFArchitect.Projects;
+using WCFArchitect.Projects.Helpers;
 using WCFArchitect.Compiler.Generators;
 
 namespace WCFArchitect.Compiler
@@ -27,12 +28,12 @@ namespace WCFArchitect.Compiler
 			if (string.IsNullOrEmpty(Project.ServerOutputFile))
 				Program.AddMessage(new CompileMessage("GS0003", "The '" + Project.Name + "' project does not have a Server Assembly Name. You must specify a Server Assembly Name.", CompileMessageSeverity.ERROR, null, Project, Project.GetType(), Guid.Empty, Project.ID));
 			else
-				if (Helpers.RegExs.MatchFileName.IsMatch(Project.ServerOutputFile) == false)
+				if (RegExs.MatchFileName.IsMatch(Project.ServerOutputFile) == false)
 					Program.AddMessage(new CompileMessage("GS0004", "The Server Assembly Name in '" + Project.Name + "' project is not set or contains invalid characters. You must specify a valid Windows file name.", CompileMessageSeverity.ERROR, null, Project, Project.GetType(), Guid.Empty, Project.ID));
 			if (string.IsNullOrEmpty(Project.ClientOutputFile))
 				Program.AddMessage(new CompileMessage("GS0005", "The '" + Project.Name + "' project does not have a Client Assembly Name. You must specify a Client Assembly Name.", CompileMessageSeverity.ERROR, null, Project, Project.GetType(), Guid.Empty, Project.ID));
 			else
-				if (Helpers.RegExs.MatchFileName.IsMatch(Project.ClientOutputFile) == false)
+				if (RegExs.MatchFileName.IsMatch(Project.ClientOutputFile) == false)
 					Program.AddMessage(new CompileMessage("GS0006", "The Client Assembly Name in '" + Project.Name + "' project is not set or contains invalid characters. You must specify a valid Windows file name.", CompileMessageSeverity.ERROR, null, Project, Project.GetType(), Guid.Empty, Project.ID));
 			if ((Project.ServerOutputFile == Project.ClientOutputFile))
 				Program.AddMessage(new CompileMessage("GS0007", "The '" + Project.Name + "' project Client and Server Assembly Names are the same. You must specify a different Server or Client Assembly Name.", CompileMessageSeverity.ERROR, null, Project, Project.GetType(), Guid.Empty, Project.ID));
@@ -86,6 +87,9 @@ namespace WCFArchitect.Compiler
 			}
 			code.AppendLine();
 
+			//Generate ContractNamespace Attributes
+			if (!Server) code.AppendLine(NamespaceCSGenerator.GenerateContractNamespaceAttributes(Project.Namespace));
+
 			//Disable XML documentation warnings 
 			if (!Project.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
 
@@ -119,7 +123,7 @@ namespace WCFArchitect.Compiler
 			}
 
 			//Reenable XML documentation warnings
-			if (!Project.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
+			if (!Project.EnableDocumentationWarnings) code.AppendLine("#pragma warning restore 1591");
 
 			string op = Server ? new Uri(new Uri(Project.AbsolutePath), System.IO.Path.Combine(OutputDirectory, Project.ServerOutputFile + ".cs")).AbsolutePath : new Uri(new Uri(Project.AbsolutePath), System.IO.Path.Combine(OutputDirectory, Project.ClientOutputFile + ".cs")).AbsolutePath;
 			op = Uri.UnescapeDataString(op);

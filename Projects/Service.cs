@@ -10,14 +10,24 @@ using System.ServiceModel.Web;
 
 namespace WCFArchitect.Projects
 {
+	public enum ServiceAsynchronyMode
+	{
+		Default = 0,
+		Client = 1,
+		Server = 2,
+		Both = 3,
+	}
+
 	public class Service : DataType
 	{
-
 		public ObservableCollection<Operation> ServiceOperations { get { return (ObservableCollection<Operation>)GetValue(ServiceOperationsProperty); } set { SetValue(ServiceOperationsProperty, value); } }
 		public static readonly DependencyProperty ServiceOperationsProperty = DependencyProperty.Register("ServiceOperations", typeof(ObservableCollection<Operation>), typeof(Service));
 
 		public ObservableCollection<Operation> CallbackOperations { get { return (ObservableCollection<Operation>)GetValue(CallbackOperationsProperty); } set { SetValue(CallbackOperationsProperty, value); } }
 		public static readonly DependencyProperty CallbackOperationsProperty = DependencyProperty.Register("CallbackOperations", typeof(ObservableCollection<Operation>), typeof(Service));
+
+		public ServiceAsynchronyMode AsynchronyMode { get { return (ServiceAsynchronyMode)GetValue(AsynchronyModeProperty); } set { SetValue(AsynchronyModeProperty, value); } }
+		public static readonly DependencyProperty AsynchronyModeProperty = DependencyProperty.Register("AsynchronyMode", typeof(ServiceAsynchronyMode), typeof(Service), new PropertyMetadata(ServiceAsynchronyMode.Default));
 
 		public ProtectionLevel ProtectionLevel { get { return (ProtectionLevel)GetValue(ProtectionLevelProperty); } set { SetValue(ProtectionLevelProperty, value); } }
 		public static readonly DependencyProperty ProtectionLevelProperty = DependencyProperty.Register("ProtectionLevel", typeof(ProtectionLevel), typeof(Service));
@@ -36,6 +46,8 @@ namespace WCFArchitect.Projects
 
 		//System
 		[IgnoreDataMember] public bool HasCallback { get { return CallbackOperations.Count > 0; } }
+		[IgnoreDataMember] public bool HasAsyncServiceOperations { get { return ServiceOperations.Where(a => a.GetType() == typeof (Method)).Any(a => ((Method) a).UseAsyncPattern); } }
+		[IgnoreDataMember] public bool HasAsyncCallbackOperations { get { return CallbackOperations.Where(a => a.GetType() == typeof (Method)).Any(a => ((Method) a).UseAsyncPattern); } }
 
 		public Service() : base(DataTypeMode.Class)
 		{
@@ -191,10 +203,10 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty ClientNameProperty = DependencyProperty.Register("ClientName", typeof(string), typeof(Operation), new PropertyMetadata(""));
 
 		public bool IsOneWay { get { return (bool)GetValue(IsOneWayProperty); } set { SetValue(IsOneWayProperty, value); } }
-		public static readonly DependencyProperty IsOneWayProperty = DependencyProperty.Register("IsOneWay", typeof(bool), typeof(Operation));
+		public static readonly DependencyProperty IsOneWayProperty = DependencyProperty.Register("IsOneWay", typeof(bool), typeof(Operation), new PropertyMetadata(false));
 
-		public System.Net.Security.ProtectionLevel ProtectionLevel { get { return (System.Net.Security.ProtectionLevel)GetValue(ProtectionLevelProperty); } set { SetValue(ProtectionLevelProperty, value); } }
-		public static readonly DependencyProperty ProtectionLevelProperty = DependencyProperty.Register("ProtectionLevel", typeof(System.Net.Security.ProtectionLevel), typeof(Operation));
+		public ProtectionLevel ProtectionLevel { get { return (ProtectionLevel)GetValue(ProtectionLevelProperty); } set { SetValue(ProtectionLevelProperty, value); } }
+		public static readonly DependencyProperty ProtectionLevelProperty = DependencyProperty.Register("ProtectionLevel", typeof(ProtectionLevel), typeof(Operation), new PropertyMetadata(ProtectionLevel.None));
 
 		[IgnoreDataMember] public string Declaration { get { return (string)GetValue(DeclarationProperty); } protected set { SetValue(DeclarationPropertyKey, value); } }
 		private static readonly DependencyPropertyKey DeclarationPropertyKey = DependencyProperty.RegisterReadOnly("Declaration", typeof(string), typeof(Operation), new PropertyMetadata(""));
@@ -217,7 +229,6 @@ namespace WCFArchitect.Projects
 			ID = Guid.NewGuid();
 			ServerName = Name;
 			ReturnType = new DataType(PrimitiveTypes.Void);
-			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			ProtectionLevel = ProtectionLevel.None;
 			this.Owner = Owner;
 		}
@@ -238,7 +249,7 @@ namespace WCFArchitect.Projects
 					if (Args.MatchCase == false)
 					{
 						if (!string.IsNullOrEmpty(ServerName)) if (ServerName.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Server Name", ServerName, Owner.Parent.Owner, this));
-						if (!string.IsNullOrEmpty(ClientName)) if (ClientName.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Client Name", ClientName, Owner.Parent.Owner, this)); ;
+						if (!string.IsNullOrEmpty(ClientName)) if (ClientName.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Client Name", ClientName, Owner.Parent.Owner, this));
 					}
 					else
 					{
@@ -249,7 +260,7 @@ namespace WCFArchitect.Projects
 				else
 				{
 					if (!string.IsNullOrEmpty(ServerName)) if (Args.RegexSearch.IsMatch(ServerName)) results.Add(new FindReplaceResult("Server Name", ServerName, Owner.Parent.Owner, this));
-					if (!string.IsNullOrEmpty(ClientName)) if (Args.RegexSearch.IsMatch(ClientName)) results.Add(new FindReplaceResult("Client Name", ClientName, Owner.Parent.Owner, this)); ;
+					if (!string.IsNullOrEmpty(ClientName)) if (Args.RegexSearch.IsMatch(ClientName)) results.Add(new FindReplaceResult("Client Name", ClientName, Owner.Parent.Owner, this));
 				}
 
 				if (Args.ReplaceAll)
@@ -310,7 +321,7 @@ namespace WCFArchitect.Projects
 		public bool IsReadOnly { get { return (bool)GetValue(IsReadOnlyProperty); } set { SetValue(IsReadOnlyProperty, value); } }
 		public static readonly DependencyProperty IsReadOnlyProperty = DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(Property));
 
-		public Property() : base()
+		public Property()
 		{
 			ReturnType = new DataType(PrimitiveTypes.String);
 			Documentation = new Documentation { IsProperty = true };
@@ -334,17 +345,20 @@ namespace WCFArchitect.Projects
 
 	public class Method : Operation
 	{
+		public bool UseSyncPattern { get { return (bool)GetValue(UseSyncPatternProperty); } set { SetValue(UseSyncPatternProperty, value); } }
+		public static readonly DependencyProperty UseSyncPatternProperty = DependencyProperty.Register("UseSyncPattern", typeof(bool), typeof(Method), new PropertyMetadata(true));
+
 		public bool UseAsyncPattern { get { return (bool)GetValue(UseAsyncPatternProperty); } set { SetValue(UseAsyncPatternProperty, value); } }
-		public static readonly DependencyProperty UseAsyncPatternProperty = DependencyProperty.Register("UseAsyncPattern", typeof(bool), typeof(Method));
+		public static readonly DependencyProperty UseAsyncPatternProperty = DependencyProperty.Register("UseAsyncPattern", typeof(bool), typeof(Method), new PropertyMetadata(false));
 
 		public bool UseAwaitPattern { get { return (bool)GetValue(UseAwaitPatternProperty); } set { SetValue(UseAwaitPatternProperty, value); } }
-		public static readonly DependencyProperty UseAwaitPatternProperty = DependencyProperty.Register("UseAwaitPattern", typeof(bool), typeof(Method));
+		public static readonly DependencyProperty UseAwaitPatternProperty = DependencyProperty.Register("UseAwaitPattern", typeof(bool), typeof(Method), new PropertyMetadata(false));
 
 		public bool IsInitiating { get { return (bool)GetValue(IsInitiatingProperty); } set { SetValue(IsInitiatingProperty, value); } }
-		public static readonly DependencyProperty IsInitiatingProperty = DependencyProperty.Register("IsInitiating", typeof(bool), typeof(Method));
+		public static readonly DependencyProperty IsInitiatingProperty = DependencyProperty.Register("IsInitiating", typeof(bool), typeof(Method), new PropertyMetadata(false));
 
 		public bool IsTerminating { get { return (bool)GetValue(IsTerminatingProperty); } set { SetValue(IsTerminatingProperty, value); } }
-		public static readonly DependencyProperty IsTerminatingProperty = DependencyProperty.Register("IsTerminating", typeof(bool), typeof(Method));
+		public static readonly DependencyProperty IsTerminatingProperty = DependencyProperty.Register("IsTerminating", typeof(bool), typeof(Method), new PropertyMetadata(false));
 
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(Method));
@@ -387,6 +401,7 @@ namespace WCFArchitect.Projects
 			Parameters = new ObservableCollection<MethodParameter>();
 			Parameters.CollectionChanged += Parameters_CollectionChanged;
 			this.ReturnType = ReturnType;
+			if (ReturnType.Primitive == PrimitiveTypes.Void) IsOneWay = true;
 			Documentation = new Documentation { IsMethod = true };
 		}
 
@@ -587,7 +602,10 @@ namespace WCFArchitect.Projects
 		public WebMessageFormat ResponseFormat { get { return (WebMessageFormat)GetValue(ResponseFormatProperty); } set { SetValue(ResponseFormatProperty, value); } }
 		public static readonly DependencyProperty ResponseFormatProperty = DependencyProperty.Register("ResponseFormat", typeof(WebMessageFormat), typeof(MethodREST), new PropertyMetadata(WebMessageFormat.Xml));
 
-		public Method Owner { get; private set; }
+		[IgnoreDataMember] private Method owner;
+		public Method Owner { get { return owner; } set { owner = value; if (owner != null) owner.Parameters.CollectionChanged += Parameters_CollectionChanged; UriTemplate = BuildUriTemplate(); } }
+
+		public MethodREST() { }		
 
 		public MethodREST(Method Owner)
 		{

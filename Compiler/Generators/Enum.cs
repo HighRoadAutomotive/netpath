@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WCFArchitect.Projects;
+using WCFArchitect.Projects.Helpers;
 
 namespace WCFArchitect.Compiler.Generators
 {
@@ -14,11 +15,11 @@ namespace WCFArchitect.Compiler.Generators
 			if (string.IsNullOrEmpty(o.Name))
 				Program.AddMessage(new CompileMessage("GS4000", "The enumeration '" + o.Name + "' in the '" + o.Parent.Name + "' namespace has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 			else
-				if (Helpers.RegExs.MatchCodeName.IsMatch(o.Name) == false)
+				if (RegExs.MatchCodeName.IsMatch(o.Name) == false)
 					Program.AddMessage(new CompileMessage("GS4001", "The enumeration '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 
 			if (o.HasClientType)
-				if (Helpers.RegExs.MatchCodeName.IsMatch(o.ClientType.Name) == false)
+				if (RegExs.MatchCodeName.IsMatch(o.ClientType.Name) == false)
 					Program.AddMessage(new CompileMessage("GS4002", "The enumeration '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 
 			foreach (EnumElement e in o.Elements)
@@ -26,7 +27,7 @@ namespace WCFArchitect.Compiler.Generators
 				if (string.IsNullOrEmpty(e.Name))
 					Program.AddMessage(new CompileMessage("GS4003", "The enumeration '" + o.Name + "' in the '" + o.Parent.Name + "' namespace has an enumeration element with a blank Name. A Name MUST be specified.", CompileMessageSeverity.ERROR, o, e, e.GetType(), o.ID, e.ID));
 				else
-					if (Helpers.RegExs.MatchCodeName.IsMatch(e.Name) == false)
+					if (RegExs.MatchCodeName.IsMatch(e.Name) == false)
 						Program.AddMessage(new CompileMessage("GS4004", "The enumeration element '" + e.Name + "' in the '" + o.Name + "' enumeration contains invalid characters in the Name.", CompileMessageSeverity.ERROR, o, e, e.GetType(), o.ID, e.ID));
 
 				if (o.IsFlags == false)

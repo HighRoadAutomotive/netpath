@@ -8,7 +8,7 @@ namespace WCFArchitect.Compiler.Generators
 {
 	internal static class DocumentationCSGenerator
 	{
-		public static string GenerateDocumentation(Projects.Documentation o)
+		public static string GenerateDocumentation(Projects.Documentation o, bool NoReturns = false)
 		{
 			var tabs = o.IsClass ? "\t" : "\t\t";
 
@@ -25,7 +25,7 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendLine(string.Format("{0}///{1}", tabs, o.Remarks.Replace(Environment.NewLine, Environment.NewLine + "\t///")));
 				code.AppendLine(string.Format("{0}///</remarks>", tabs));
 			}
-			if (o.IsMethod && !string.IsNullOrEmpty(o.Returns))
+			if (o.IsMethod && !string.IsNullOrEmpty(o.Returns) && !NoReturns)
 			{
 				code.AppendLine(string.Format("{0}///<returns>", tabs));
 				code.AppendLine(string.Format("{0}///{1}", tabs, o.Returns.Replace(Environment.NewLine, Environment.NewLine + "\t///")));
