@@ -360,24 +360,6 @@ namespace WCFArchitect.Projects
 			return Name;
 		}
 
-		public DataType Copy()
-		{
-			if (TypeMode == DataTypeMode.Primitive)
-				return new DataType(Primitive);
-			if (TypeMode == DataTypeMode.Array)
-				return new DataType(DataTypeMode.Array) { CollectionGenericType = CollectionGenericType };
-
-			if (string.IsNullOrEmpty(Name)) return null;
-
-			if (TypeMode == DataTypeMode.Collection)
-				return new DataType(Name, DataTypeMode.Collection) { CollectionGenericType = CollectionGenericType };
-			if (TypeMode == DataTypeMode.Dictionary)
-				return new DataType(Name, DataTypeMode.Dictionary) { DictionaryKeyGenericType = DictionaryKeyGenericType, DictionaryValueGenericType = DictionaryValueGenericType };
-			if (IsExternalType)
-				return new DataType(Name, TypeMode);
-			return this;
-		}
-
 		public DataType Reference()
 		{
 			if (string.IsNullOrEmpty(Name)) return null;

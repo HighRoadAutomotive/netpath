@@ -72,7 +72,7 @@ namespace WCFArchitect.Projects
 		public void AddKnownType(DataType Type)
 		{
 			if (KnownTypes.Any(dt => dt.TypeName == Type.TypeName)) return;
-			KnownTypes.Add(Type.Copy());
+			KnownTypes.Add(Type);
 		}
 
 		public void RemoveKnownType(DataType Type)

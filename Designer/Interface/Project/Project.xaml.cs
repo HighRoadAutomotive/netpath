@@ -39,6 +39,12 @@ namespace WCFArchitect.Interface.Project
 
 		#region - Project -
 
+		private void txtProjectNamespaceURI_TextChanged(object Sender, TextChangedEventArgs E)
+		{
+			foreach (Projects.Namespace ns in Settings.Namespace.Children)
+				ns.UpdateURI();
+		}
+
 		private void DependencyAdd_Click(object sender, RoutedEventArgs e)
 		{
 			string openpath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -175,7 +181,6 @@ namespace WCFArchitect.Interface.Project
 		}
 
 		#endregion
-
 	}
 
 	[ValueConversion(typeof(ProjectServiceSerializerType), typeof(int))]

@@ -31,8 +31,9 @@ namespace WCFArchitect.Interface.Data
 			this.Element = Element;
 			Project = Element.Owner.Parent.Owner;
 
-			ClientScope.SelectedIndex = -1;
-			XAMLScope.SelectedIndex = -1;
+			DataType.Project = Project;
+			ClientType.Project = Project;
+			XAMLType.Project = Project;
 		}
 
 		private void ElementName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
@@ -59,14 +60,14 @@ namespace WCFArchitect.Interface.Data
 		private void GenerateClientType_Unchecked(object sender, RoutedEventArgs e)
 		{
 			Element.ClientScope = DataScope.Disabled;
-			ClientType.OpenType = null;
+			Element.ClientType = null;
 			ClientName.Text = "";
 		}
 
 		private void GenerateXAMLBinding_Unchecked(object sender, RoutedEventArgs e)
 		{
 			Element.XAMLScope = DataScope.Disabled;
-			XAMLType.OpenType = null;
+			Element.XAMLType = null;
 			XAMLName.Text = "";
 		}
 	}

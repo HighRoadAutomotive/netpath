@@ -47,6 +47,7 @@ namespace WCFArchitect
 		public static bool IsSaving { get; set; }
 		public static bool IsClosing { get; set; }
 		public static Interface.Main MainScreen { get; set; }
+		public static Interface.Navigator OpenNavigator { get; set; }
 
 		public static T GetVisualParent<T>(object childObject) where T : Visual { var child = childObject as DependencyObject; while ((child != null) && !(child is T)) { child = VisualTreeHelper.GetParent(child); } return child as T; }
 		public static T GetVisualChild<T>(Visual parent) where T : Visual { T child = default(T); int numVisuals = VisualTreeHelper.GetChildrenCount(parent); for (int i = 0; i < numVisuals; i++) { var v = (Visual)VisualTreeHelper.GetChild(parent, i); child = v as T; if (child == null) { child = GetVisualChild<T>(v); } if (child != null) { break; } } return child; }
@@ -59,6 +60,12 @@ namespace WCFArchitect
 			var t = new Uri("file:///" + FilePath);
 			var b = new Uri("file:///" + BasePath);
 			return Uri.UnescapeDataString(b.MakeRelativeUri(t).ToString());
+		}
+
+		public static void OpenProjectItem(Projects.OpenableDocument doc)
+		{
+			if (OpenNavigator == null) return;
+			OpenNavigator.OpenProjectItem(doc);
 		}
 
 		public static void OpenSolution(string Path, Action<bool> FinishedAction)

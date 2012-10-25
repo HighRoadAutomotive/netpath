@@ -58,7 +58,7 @@ namespace WCFArchitect.Compiler.Generators
 			foreach (DataType dt in o.KnownTypes)
 				code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
 			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.AppendFormat("\t[DataContract(Name = \"{0}\", Namespace = \"{1}\")]{2}", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI, Environment.NewLine);
+			code.AppendFormat("\t[DataContract(Name = \"{0}\", Namespace = \"{1}\")]{2}", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.FullURI, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
 			code.AppendLine("\t{");
 
@@ -92,7 +92,7 @@ namespace WCFArchitect.Compiler.Generators
 			foreach (DataType dt in o.KnownTypes)
 				code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
 			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.AppendFormat("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]{3}", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI, Environment.NewLine);
+			code.AppendFormat("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]{3}", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.FullURI, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
 			code.AppendLine("\t{");
 	
@@ -116,7 +116,7 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
 			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute]");
 			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.AppendFormat("\t[DataContract(Name = \"{0}\", Namespace = \"{1}\")]{2}", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI, Environment.NewLine);
+			code.AppendFormat("\t[DataContract(Name = \"{0}\", Namespace = \"{1}\")]{2}", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.FullURI, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, o.ClientHasImpliedExtensionData, o.HasWinFormsBindings), Environment.NewLine);
 			code.AppendLine("\t{");
 			if (o.ClientHasExtensionData || o.ClientHasImpliedExtensionData)
@@ -186,7 +186,7 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
 			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute]");
 			code.AppendFormat("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.AppendFormat("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]{3}", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name , o.Parent.URI, Environment.NewLine);
+			code.AppendFormat("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]{3}", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.FullURI, Environment.NewLine);
 			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, o.ClientHasImpliedExtensionData, o.HasWinFormsBindings), Environment.NewLine);
 			code.AppendLine("\t{");
 			if (o.ClientHasExtensionData || o.ClientHasImpliedExtensionData)

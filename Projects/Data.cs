@@ -82,16 +82,16 @@ namespace WCFArchitect.Projects
 			if (IsClientType == false && IsXAMLType == false)
 			{
 				if (KnownTypes.Any(dt => dt.TypeName == Type.TypeName)) return;
-				KnownTypes.Add(Type.Copy());
+				KnownTypes.Add(Type);
 			}
 			if (IsClientType && IsXAMLType == false)
 			{
 				if (ClientType.KnownTypes.Any(dt => dt.TypeName == Type.TypeName)) return;
-				ClientType.KnownTypes.Add(Type.Copy());
+				ClientType.KnownTypes.Add(Type);
 			}
 			if (IsClientType == false || IsXAMLType == false) return;
 			if (XAMLType.KnownTypes.Any(dt => dt.TypeName == Type.TypeName)) return;
-			XAMLType.KnownTypes.Add(Type.Copy());
+			XAMLType.KnownTypes.Add(Type);
 		}
 
 		public void RemoveKnownType(DataType Type, bool IsClientType = false, bool IsXAMLType = false)
@@ -242,7 +242,7 @@ namespace WCFArchitect.Projects
 			if (Convert.ToBoolean(e.NewValue))
 			{
 				t.ClientScope = t.DataScope;
-				t.ClientType = t.DataType.Copy();
+				t.ClientType = t.DataType;
 				t.ClientName = t.DataName;
 				if (t.ClientType == null || t.Owner == null) return;
 				if (t.ClientType.TypeMode == DataTypeMode.Array && t.ClientType.CollectionGenericType.TypeMode == DataTypeMode.Primitive) t.Owner.AddKnownType(t.ClientType, true);
@@ -258,6 +258,7 @@ namespace WCFArchitect.Projects
 				}
 				t.ClientScope = DataScope.Disabled;
 				t.ClientName = "";
+				t.ClientType = null;
 				t.IsAttached = false;
 			}
 		}
@@ -297,7 +298,7 @@ namespace WCFArchitect.Projects
 			if (Convert.ToBoolean(e.NewValue))
 			{
 				t.XAMLScope = t.DataScope;
-				t.XAMLType = t.DataType.Copy();
+				t.XAMLType = t.DataType;
 				t.XAMLName = t.DataName;
 			}
 			else
@@ -385,13 +386,14 @@ namespace WCFArchitect.Projects
 			DataType = new DataType(PrimitiveTypes.String);
 			DataScope = DataScope.Public;
 			ClientScope = DataScope.Disabled;
-			HasClientType = false;
-			HasXAMLType = true;
+			XAMLScope = DataScope.Public;
 			AttachedTargetTypes = "";
 			AttachedAttributeTypes = "";
 			EmitDefaultValue = false;
 			Order = -1;
 			Documentation = new Documentation { IsProperty = true };
+			HasClientType = false;
+			HasXAMLType = true;
 		}
 
 		public DataElement(DataScope Scope, DataType DataType, string Name, Data Owner)
@@ -401,14 +403,15 @@ namespace WCFArchitect.Projects
 			this.Owner = Owner;
 			DataName = Name;
 			DataScope = Scope;
-			HasClientType = false;
 			ClientScope = DataScope.Disabled;
-			HasXAMLType = true;
+			XAMLScope = DataScope.Public;
 			AttachedTargetTypes = "";
 			AttachedAttributeTypes = "";
 			EmitDefaultValue = false;
 			Order = -1;
 			Documentation = new Documentation { IsProperty = true };
+			HasClientType = false;
+			HasXAMLType = true;
 		}
 
 		public override string ToString()

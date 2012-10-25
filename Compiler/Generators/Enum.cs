@@ -97,7 +97,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.Append("\t[DataContract(");
 			if (o.HasClientType) code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
-			code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
+			code.AppendFormat("Namespace = \"{0}\"", o.Parent.FullURI);
 			code.AppendLine(")]");
 			if (o.IsFlags) code.AppendLine("[Flags]");
 			code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o.Scope), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
@@ -127,7 +127,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.Append("\t[DataContract(");
 			if (o.IsReference) code.AppendFormat("IsReference = true ");
 			if (o.HasClientType) code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
-			code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
+			code.AppendFormat("Namespace = \"{0}\"", o.Parent.FullURI);
 			code.AppendLine(")]");
 			if (o.IsFlags) code.AppendLine("\t[Flags]");
 			code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o.Scope), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
@@ -179,7 +179,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
 			code.Append("\t[DataContract(");
 			if (o.HasClientType) code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
-			code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
+			code.AppendFormat("Namespace = \"{0}\"", o.Parent.FullURI);
 			code.AppendLine(")]");
 			if (o.IsFlags) code.AppendLine("[Flags]");
 			code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o.Scope), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
@@ -209,7 +209,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.Append("\t[DataContract(");
 			if (o.IsReference) code.AppendFormat("IsReference = true ");
 			if (o.HasClientType) code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
-			code.AppendFormat("Namespace = \"{0}\"", o.Parent.URI);
+			code.AppendFormat("Namespace = \"{0}\"", o.Parent.FullURI);
 			code.AppendLine(")]");
 			if (o.IsFlags) code.AppendLine("\t[Flags]");
 			code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o.Scope), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
