@@ -249,6 +249,7 @@ namespace WCFArchitect.Interface
 
 		internal void SelectProjectScreen(Navigator NewScreen)
 		{
+			Globals.OpenNavigator = NewScreen;
 			SelectedProject = NewScreen;
 			ActiveProjectScreen.Visibility = Visibility.Visible;
 			HomeScreen.Visibility = Visibility.Collapsed;

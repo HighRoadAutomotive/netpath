@@ -87,21 +87,9 @@ namespace WCFArchitect.Compiler.Generators
 
 			foreach (HostBehavior hb in o.Behaviors)
 			{
-				if (hb.GetType() == typeof(HostDebugBehavior))
-				{
-					code.AppendFormat("\t\tprivate ServiceDebugBehavior m_{0} = null;{1}", hb.Name, Environment.NewLine);
-					code.AppendFormat("\t\tpublic ServiceDebugBehavior {0} {{ get {{ return m_{0} }} private set {{ m_{0} = value; }} }}{1}", hb.Name, Environment.NewLine);
-				}
-				if (hb.GetType() == typeof(HostMetadataBehavior))
-				{
-					code.AppendFormat("\t\tprivate ServiceMetadataBehavior m_{0} = null;{1}", hb.Name, Environment.NewLine);
-					code.AppendFormat("\t\tpublic ServiceMetadataBehavior {0} {{ get {{ return m_{0} }} private set {{ m_{0} = value; }} }}{1}", hb.Name, Environment.NewLine);
-				}
-				if (hb.GetType() == typeof(HostThrottlingBehavior))
-				{
-					code.AppendFormat("\t\tprivate ServiceThrottlingBehavior m_{0} = null;{1}", hb.Name, Environment.NewLine);
-					code.AppendFormat("\t\tpublic ServiceThrottlingBehavior {0} {{ get {{ return m_{0} }} private set {{ m_{0} = value; }} }}{1}", hb.Name, Environment.NewLine);
-				}
+				if (hb.GetType() == typeof(HostDebugBehavior)) code.AppendFormat("\t\tpublic ServiceDebugBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
+				if (hb.GetType() == typeof(HostMetadataBehavior)) code.AppendFormat("\t\tpublic ServiceMetadataBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
+				if (hb.GetType() == typeof(HostThrottlingBehavior)) code.AppendFormat("\t\tpublic ServiceThrottlingBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
 			}
 
 			#region - Generate Default Constructors -
@@ -341,19 +329,10 @@ namespace WCFArchitect.Compiler.Generators
 
 			foreach (HostBehavior hb in o.Behaviors)
 			{
-				if (hb.GetType() == typeof(HostDebugBehavior))
-				{
-					code.AppendFormat("\t\tprivate ServiceDebugBehavior m_{0} = null;{1}", hb.Name, Environment.NewLine);
-					code.AppendFormat("\t\tpublic ServiceDebugBehavior {0} {{ get {{ return m_{0} }} private set {{ m_{0} = value; }} }}{1}", hb.Name, Environment.NewLine);
-				}
-				if (hb.GetType() == typeof(HostMetadataBehavior))
-				{
-					code.AppendFormat("\t\tprivate ServiceMetadataBehavior m_{0} = null;{1}", hb.Name, Environment.NewLine);
-					code.AppendFormat("\t\tpublic ServiceMetadataBehavior {0} {{ get {{ return m_{0} }} private set {{ m_{0} = value; }} }}{1}", hb.Name, Environment.NewLine);
-				}
-				if (hb.GetType() != typeof (HostThrottlingBehavior)) continue;
-				code.AppendFormat("\t\tprivate ServiceThrottlingBehavior m_{0} = null;{1}", hb.Name, Environment.NewLine);
-				code.AppendFormat("\t\tpublic ServiceThrottlingBehavior {0} {{ get {{ return m_{0} }} private set {{ m_{0} = value; }} }}{1}", hb.Name, Environment.NewLine);
+				if (hb.GetType() == typeof(HostDebugBehavior)) code.AppendFormat("\t\tpublic ServiceDebugBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
+				if (hb.GetType() == typeof(HostMetadataBehavior)) code.AppendFormat("\t\tpublic ServiceMetadataBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
+				if (hb.GetType() == typeof(HostThrottlingBehavior)) code.AppendFormat("\t\tpublic ServiceThrottlingBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
+				if (hb.GetType() == typeof(WebHTTPBehavior)) code.AppendFormat("\t\tpublic System.ServiceModel.Web.WebHttpBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
 			}
 
 			#region - Generate Default Constructors -
@@ -604,6 +583,7 @@ namespace WCFArchitect.Compiler.Generators
 				if (hb.GetType() == typeof(HostDebugBehavior)) code.AppendFormat("\t\tpublic ServiceDebugBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
 				if (hb.GetType() == typeof(HostMetadataBehavior)) code.AppendFormat("\t\tpublic ServiceMetadataBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
 				if (hb.GetType() == typeof(HostThrottlingBehavior)) code.AppendFormat("\t\tpublic ServiceThrottlingBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
+				if (hb.GetType() == typeof(WebHTTPBehavior) && (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45)) code.AppendFormat("\t\tpublic System.ServiceModel.Web.WebHttpBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
 			}
 
 			#region - Generate Default Constructors
@@ -1321,35 +1301,6 @@ namespace WCFArchitect.Compiler.Generators
 
 		public static string GenerateBehaviorCode30(HostBehavior o)
 		{
-			Type t = o.GetType();
-			if (t == typeof(HostDebugBehavior))
-			{
-				var b = o as HostDebugBehavior;
-				if (b == null) return "";
-				var code = new StringBuilder();
-				code.AppendFormat("\t\t\tthis.{0} = new ServiceDebugBehavior();{1}", b.Name, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.HttpHelpPageEnabled = {1};{2}", b.Name, b.HttpHelpPageEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.HttpHelpPageUrl = new Uri({1});{2}", b.Name, b.HttpHelpPageUrl, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.HttpsHelpPageEnabled = {1};{2}", b.Name, b.HttpsHelpPageEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.HttpsHelpPageUrl = new Uri({1});{2}", b.Name, b.HttpsHelpPageUrl, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.IncludeExceptionDetailInFaults = new Uri({1});{2}", b.Name, b.IncludeExceptionDetailInFaults ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				if (b.IsDefaultBehavior) code.AppendFormat("\t\t\tthis.Description.Behaviors.Add({0});{1}", b.Name, Environment.NewLine);
-				return code.ToString();
-			}
-			if (t == typeof(HostMetadataBehavior))
-			{
-				var b = o as HostMetadataBehavior;
-				if (b == null) return "";
-				var code = new StringBuilder();
-				code.AppendFormat("\t\t\tthis.{0} = new ServiceMetadataBehavior();{1}", b.Name, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.ExternalMetadataLocation = new Uri({1});{2}", b.Name, b.ExternalMetadataLocation, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.HttpGetEnabled = {1};{2}", b.Name, b.HttpGetEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.HttpGetUrl = new Uri({1});{2}", b.Name, b.HttpGetUrl, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.HttpsGetEnabled = {1};{2}", b.Name, b.HttpsGetEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.HttpsGetUrl = new Uri({1});{2}", b.Name, b.HttpsGetUrl, Environment.NewLine);
-				if (b.IsDefaultBehavior) code.AppendFormat("\t\t\tthis.Description.Behaviors.Add({0});{1}", b.Name, Environment.NewLine);
-				return code.ToString();
-			}
 			return GenerateBehaviorCode35(o);
 		}
 
@@ -1371,39 +1322,52 @@ namespace WCFArchitect.Compiler.Generators
 			{
 				var b = o as HostDebugBehavior;
 				if (b == null) return "";
-				code.AppendFormat("\t\t\tthis.{0} = new ServiceDebugBehavior();{1}", b.Name, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.HttpHelpPageBinding = new {1}();{2}", b.Name, DataTypeCSGenerator.GenerateType(b.HttpHelpPageBinding), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.HttpHelpPageEnabled = {1};{2}", b.Name, b.HttpHelpPageEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.HttpHelpPageUrl = new Uri({1});{2}", b.Name, b.HttpHelpPageUrl, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.HttpsHelpPageBinding = new {1}();{2}", b.Name, DataTypeCSGenerator.GenerateType(b.HttpsHelpPageBinding), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.HttpsHelpPageEnabled = {1};{2}", b.Name, b.HttpsHelpPageEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.HttpsHelpPageUrl = new Uri({1});{2}", b.Name, b.HttpsHelpPageUrl, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.IncludeExceptionDetailInFaults = new Uri({1});{2}", b.Name, b.IncludeExceptionDetailInFaults ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				if (b.IsDefaultBehavior) code.AppendFormat("\t\t\tthis.Description.Behaviors.Add({0});{1}", b.Name, Environment.NewLine);
+				code.AppendLine(string.Format("\t\t\tthis.{0} = new ServiceDebugBehavior();", b.Name));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpHelpPageBinding = new {1}();", b.Name, DataTypeCSGenerator.GenerateType(b.HttpHelpPageBinding)));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpHelpPageEnabled = {1};", b.Name, b.HttpHelpPageEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpHelpPageUrl = new Uri({1});", b.Name, b.HttpHelpPageUrl));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsHelpPageBinding = new {1}();", b.Name, DataTypeCSGenerator.GenerateType(b.HttpsHelpPageBinding)));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsHelpPageEnabled = {1};", b.Name, b.HttpsHelpPageEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsHelpPageUrl = new Uri({1});", b.Name, b.HttpsHelpPageUrl));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.IncludeExceptionDetailInFaults = new Uri({1});", b.Name, b.IncludeExceptionDetailInFaults ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+				if (b.IsDefaultBehavior) code.AppendLine(string.Format("\t\t\tthis.Description.Behaviors.Add({0});", b.Name));
 			}
 			if (t == typeof(HostMetadataBehavior))
 			{
 				var b = o as HostMetadataBehavior;
 				if (b == null) return "";
-				code.AppendFormat("\t\t\tthis.{0} = new ServiceMetadataBehavior();{1}", b.Name, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.ExternalMetadataLocation = new Uri({1});{2}", b.Name, b.ExternalMetadataLocation, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.HttpGetBinding = new {1}();{2}", b.Name, DataTypeCSGenerator.GenerateType(b.HttpGetBinding), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.HttpGetEnabled = {1};{2}", b.Name, b.HttpGetEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.HttpGetUrl = new Uri({1});{2}", b.Name, b.HttpGetUrl, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.HttpsGetBinding = new {1}();{2}", b.Name, DataTypeCSGenerator.GenerateType(b.HttpsGetBinding), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.HttpsGetEnabled = {1};{2}", b.Name, b.HttpsGetEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.HttpsGetUrl = new Uri({1});{2}", b.Name, b.HttpsGetUrl, Environment.NewLine);
-				if (b.IsDefaultBehavior) code.AppendFormat("\t\t\tthis.Description.Behaviors.Add({0});{1}", b.Name, Environment.NewLine);
+				code.AppendLine(string.Format("\t\t\tthis.{0} = new ServiceMetadataBehavior();", b.Name));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.ExternalMetadataLocation = new Uri({1});", b.Name, b.ExternalMetadataLocation));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpGetBinding = new {1}();", b.Name, DataTypeCSGenerator.GenerateType(b.HttpGetBinding)));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpGetEnabled = {1};", b.Name, b.HttpGetEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpGetUrl = new Uri({1});", b.Name, b.HttpGetUrl));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsGetBinding = new {1}();", b.Name, DataTypeCSGenerator.GenerateType(b.HttpsGetBinding)));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsGetEnabled = {1};", b.Name, b.HttpsGetEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsGetUrl = new Uri({1});", b.Name, b.HttpsGetUrl));
+				if (b.IsDefaultBehavior) code.AppendLine(string.Format("\t\t\tthis.Description.Behaviors.Add({0});", b.Name));
 			}
 			if (t == typeof(HostThrottlingBehavior))
 			{
 				var b = o as HostThrottlingBehavior;
 				if (b == null) return "";
-				code.AppendFormat("\t\t\tthis.{0} = new ServiceThrottlingBehavior();{1}", b.Name, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.MaxConcurrentCalls = {1};{2}", b.Name, b.MaxConcurrentCalls, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.MaxConcurrentInstances = {1};{2}", b.Name, b.MaxConcurrentInstances, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.{0}.MaxConcurrentSessions = {1};{2}", b.Name, b.MaxConcurrentSessions, Environment.NewLine);
-				if (b.IsDefaultBehavior) code.AppendFormat("\t\t\tthis.Description.Behaviors.Add({0});{1}", b.Name, Environment.NewLine);
+				code.AppendLine(string.Format("\t\t\tthis.{0} = new ServiceThrottlingBehavior();", b.Name));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.MaxConcurrentCalls = {1};", b.Name, b.MaxConcurrentCalls));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.MaxConcurrentInstances = {1};", b.Name, b.MaxConcurrentInstances));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.MaxConcurrentSessions = {1};", b.Name, b.MaxConcurrentSessions));
+				if (b.IsDefaultBehavior) code.AppendLine(string.Format("\t\t\tthis.Description.Behaviors.Add({0});", b.Name));
+			}
+			if (t == typeof(WebHTTPBehavior) && (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35))
+			{
+				var b = o as WebHTTPBehavior;
+				if (b == null) return "";
+				code.AppendLine(string.Format("\t\t\tthis.{0} = new WebHttpBehavior();", b.Name));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.AutomaticFormatSelectionEnabled = {1};", b.Name, b.AutomaticFormatSelectionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.DefaultBodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.{1};", b.Name, System.Enum.GetName(typeof(System.ServiceModel.Web.WebMessageBodyStyle), b.DefaultBodyStyle)));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.DefaultOutgoingRequestFormat = System.ServiceModel.Web.WebMessageFormat.{1};", b.Name, System.Enum.GetName(typeof(System.ServiceModel.Web.WebMessageFormat), b.DefaultOutgoingRequestFormat)));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.DefaultOutgoingResponseFormat = System.ServiceModel.Web.WebMessageFormat.{1};", b.Name, System.Enum.GetName(typeof(System.ServiceModel.Web.WebMessageFormat), b.DefaultOutgoingResponseFormat)));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.FaultExceptionEnabled = {1};", b.Name, b.FaultExceptionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.HelpEnabled = {1};", b.Name, b.HelpEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+				if (b.IsDefaultBehavior) code.AppendFormat("\t\t\tthis.Description.Behaviors.Add({0});", b.Name);
 			}
 			return code.ToString();
 		}

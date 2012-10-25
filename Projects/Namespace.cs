@@ -44,6 +44,8 @@ namespace WCFArchitect.Projects
 		public bool IsTreeExpanded { get { return (bool)GetValue(IsTreeExpandedProperty); } set { SetValue(IsTreeExpandedProperty, value); } }
 		public static readonly DependencyProperty IsTreeExpandedProperty = DependencyProperty.Register("IsTreeExpanded", typeof(bool), typeof(Namespace));
 
+		[IgnoreDataMember] public string FullURI { get { return GetFullURI(this); } }
+
 		private Namespace() : base(DataTypeMode.Namespace)
 		{
 			Parent = null;
@@ -59,10 +61,6 @@ namespace WCFArchitect.Projects
 
 		public Namespace(string Name, Namespace Parent, Project Owner) : base(DataTypeMode.Namespace)
 		{
-			ID = Guid.NewGuid();
-			this.Name = Name;
-			this.Parent = Parent;
-			this.Owner = Owner;
 			Children = new ObservableCollection<Namespace>();
 			Enums = new ObservableCollection<Enum>();
 			Data = new ObservableCollection<Data>();
@@ -70,7 +68,34 @@ namespace WCFArchitect.Projects
 			Bindings = new ObservableCollection<ServiceBinding>();
 			Security = new ObservableCollection<BindingSecurity>();
 			Hosts = new ObservableCollection<Host>();
-			URI = "";
+			ID = Guid.NewGuid();
+			this.Name = Name;
+			this.Parent = Parent;
+			this.Owner = Owner;
+			URI = GetFullURI(this);
+		}
+
+		private string GetFullURI(Namespace o)
+		{
+			if (o.Parent == null) return o.URI + o.Name.Replace(".", "/") + "/";
+			string uri = GetFullURI(o.Parent);
+			return uri + o.Name.Replace(".", "/") + "/";
+		}
+
+		public void UpdateURI()
+		{
+			foreach(Namespace ns in Children)
+				ns.UpdateURI();
+			if(Parent != null)
+				URI = GetFullURI(this);
+		}
+
+		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnPropertyChanged(e);
+
+			if(e.Property == NameProperty)
+				UpdateURI();
 		}
 
 		public IEnumerable<DataType> SearchTypes(string Search, bool DataOnly = false)

@@ -190,6 +190,9 @@
     <Compile Include="Interface\Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interface\Namespace\Namespace.xaml.cs">
+      <DependentUpon>Namespace.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interface\Navigator.xaml.cs">
       <DependentUpon>Navigator.xaml</DependentUpon>
     </Compile>
@@ -256,6 +259,10 @@
     <Page Include="Interface\Main.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Interface\Namespace\Namespace.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Interface\Navigator.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -680,6 +687,9 @@
   <ItemGroup>
     <Resource Include="Icons\X16\Collection.png" />
     <Resource Include="Icons\X16\External.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Interface\Host\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

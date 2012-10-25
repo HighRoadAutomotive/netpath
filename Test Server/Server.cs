@@ -24,7 +24,7 @@ using System.ServiceModel.Description;
 using System.Text;
 
 #pragma warning disable 1591
-namespace Test1
+namespace WCFArchitect.Projects
 {
 	/**************************************************************************
 	*	Data Contracts
@@ -32,25 +32,16 @@ namespace Test1
 
 	[KnownType(typeof(Guid[]))]
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
-	[DataContract(Name = "TestData1", Namespace = "http://tempuri.org/Test1/")]
+	[DataContract(Name = "TestData1", Namespace = "http://prospectivesoftware.org/WCFArchitect/Projects/")]
 	public partial class TestData1
 	{
-		[DataMember(Name = "sdlfj")] public string sdlfj { get; set; }
 		[DataMember(Name = "ID")] public Guid ID { get; set; }
-		[DataMember(Name = "linktest")] public Test1.TestData2 linktest { get; set; }
-		[DataMember(Name = "collectiontest")] public ObservableCollection<string> collectiontest { get; set; }
-		[DataMember(Name = "sdf")] public Dictionary<int, Guid> sdf { get; set; }
-		[DataMember(Name = "sdfgg")] public SortedDictionary<int, string> sdfgg { get; set; }
-		[DataMember(Name = "askdjsadj")] public List<string> askdjsadj { get; set; }
-		[DataMember(Name = "sdkjfsldjf")] public Dictionary<int, string> sdkjfsldjf { get; set; }
-		[DataMember(Name = "askdjalsd")] public Guid[] askdjalsd { get; set; }
 	}
 
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
-	[DataContract(Name = "TestData2", Namespace = "http://tempuri.org/Test1/")]
+	[DataContract(Name = "TestData2", Namespace = "http://prospectivesoftware.org/WCFArchitect/Projects/")]
 	public partial class TestData2
 	{
-		[DataMember(Name = "sdf")] public string sdf { get; set; }
 	}
 
 
@@ -59,7 +50,7 @@ namespace Test1
 	**************************************************************************/
 
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
-	[ServiceContract(CallbackContract = typeof(ITestServiceCallback), SessionMode = System.ServiceModel.SessionMode.Allowed, Namespace = "http://tempuri.org/Test1/")]
+	[ServiceContract(CallbackContract = typeof(ITestServiceCallback), SessionMode = System.ServiceModel.SessionMode.Allowed, Namespace = "http://prospectivesoftware.org/WCFArchitect/Projects/")]
 	public interface ITestService
 	{
 		bool asdads { [OperationContract(Name = "Getasdads")] get; [OperationContract(Name = "Setasdads")] set; }
@@ -209,5 +200,9 @@ namespace Test1
 
 
 }
+namespace WCFArchitect.Projects.TestNS
+{
+}
+
 
 #pragma warning restore 1591

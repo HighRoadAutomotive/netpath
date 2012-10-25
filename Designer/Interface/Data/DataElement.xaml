@@ -33,6 +33,7 @@
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
 	</Grid.RowDefinitions>
 	<TextBlock Grid.Row="0" FontSize="14pt" >
 		<TextBlock.Text>
@@ -60,7 +61,7 @@
 				<ComboBoxItem Content="Protected Internal" />
 			</ComboBox.Items>
 		</ComboBox>
-		<Data:TypeSelector Grid.Column="2" Margin="5" x:Name="DataType" OpenType="{Binding Path=Element.DataType}" Project="{Binding Path=Project}" LabelText="Type" VerticalContentAlignment="Center" ToolTip="{Binding Path=Element.DataType}"  />
+		<Data:TypeSelector Grid.Column="2" Margin="5" x:Name="DataType" OpenType="{Binding Path=Element.DataType}" LabelText="Type" VerticalContentAlignment="Center" ToolTip="{Binding Path=Element.DataType}"  />
 		<pc:TextBox Grid.Column="3" Margin="5,5,0,5" Name="ElementName" Text="{Binding Path=Element.DataName, UpdateSourceTrigger=PropertyChanged}" LabelText="Name" VerticalContentAlignment="Center" Validate="ElementName_Validate" ToolTip="{Binding Path=Element.DataName}" />
 	</Grid>
 	<Grid Name="ContractGrid" Grid.Row="2" >
@@ -80,7 +81,7 @@
 				<ComboBoxItem Content="Protected Internal" />
 			</ComboBox.Items>
 		</ComboBox>
-		<Data:TypeSelector Grid.Column="2" Margin="5" x:Name="ClientType" OpenType="{Binding Path=Element.ClientType}" Project="{Binding}" LabelText="Type" IsEnabled="{Binding Path=Element.HasClientType}" VerticalContentAlignment="Center" ToolTip="{Binding Path=Element.ClientType}"  />
+		<Data:TypeSelector Grid.Column="2" Margin="5" x:Name="ClientType" OpenType="{Binding Path=Element.ClientType}" LabelText="Type" IsEnabled="{Binding Path=Element.HasClientType}" VerticalContentAlignment="Center" ToolTip="{Binding Path=Element.ClientType}"  />
 		<pc:TextBox Grid.Column="3" Margin="5,5,0,5" Name="ClientName" Text="{Binding Path=Element.ClientName, UpdateSourceTrigger=PropertyChanged}" LabelText="Name" IsEnabled="{Binding Path=Element.HasClientType}" VerticalContentAlignment="Center" Validate="ElementName_Validate" ToolTip="{Binding Path=Element.ClientName}" />
 	</Grid>
 	<Grid Name="XAMLGrid" Grid.Row="3" >
@@ -91,7 +92,7 @@
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<ToggleButton Grid.Column="0" Margin="0,5,5,5" Content="XAML:" Padding="2,0" IsChecked="{Binding Path=Element.HasXAMLType}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="GenerateXAMLBinding" ToolTip="Tells WCF Architect to generate a WPF binding for this member." Unchecked="GenerateXAMLBinding_Unchecked" />
-		<ComboBox Grid.Column="1" Margin="5" SelectedIndex="{Binding Path=Element.XAMLScope, Converter={StaticResource DataScopeConverter}}" VerticalContentAlignment="Center" Name="XAMLScope" >
+		<ComboBox Grid.Column="1" Margin="5" SelectedIndex="{Binding Path=Element.XAMLScope, Converter={StaticResource DataScopeConverter}}" IsEnabled="{Binding Path=Element.HasXAMLType}" VerticalContentAlignment="Center" Name="XAMLScope" >
 			<ComboBox.Items>
 				<ComboBoxItem Content="Public" />
 				<ComboBoxItem Content="Protected" />
@@ -100,8 +101,8 @@
 				<ComboBoxItem Content="Protected Internal" />
 			</ComboBox.Items>
 		</ComboBox>
-		<Data:TypeSelector Grid.Column="2" Margin="5" x:Name="XAMLType" OpenType="{Binding Path=Element.XAMLType}" Project="{Binding}" LabelText="Type" VerticalContentAlignment="Center" ToolTip="{Binding Path=Element.XAMLType}"  />
-		<pc:TextBox Grid.Column="3" Margin="5,5,0,5" Name="XAMLName" Text="{Binding Path=Element.XAMLName, UpdateSourceTrigger=PropertyChanged}" LabelText="Name" VerticalContentAlignment="Center" Validate="ElementName_Validate" ToolTip="{Binding Path=Element.XAMLName}" />
+		<Data:TypeSelector Grid.Column="2" Margin="5" x:Name="XAMLType" OpenType="{Binding Path=Element.XAMLType}" LabelText="Type" IsEnabled="{Binding Path=Element.HasXAMLType}" VerticalContentAlignment="Center" ToolTip="{Binding Path=Element.XAMLType}"  />
+		<pc:TextBox Grid.Column="3" Margin="5,5,0,5" Name="XAMLName" Text="{Binding Path=Element.XAMLName, UpdateSourceTrigger=PropertyChanged}" LabelText="Name" IsEnabled="{Binding Path=Element.HasXAMLType}" VerticalContentAlignment="Center" Validate="ElementName_Validate" ToolTip="{Binding Path=Element.XAMLName}" />
 	</Grid>
 	<Grid Name="OptionsGrid" Grid.Row="4" Margin="0,5,0,0" >
 		<Grid.ColumnDefinitions>
@@ -141,5 +142,6 @@
 		<pc:TextBox Name="AttachedTargetTypes" Grid.Row="1" Grid.Column="1" Margin="5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Text="{Binding Path=Element.AttachedTargetTypes}" ToolTip="Please enter the Target Types as a common seperated list." />
 		<pc:TextBox Name="AttachedAttributeTypes" Grid.Row="1" Grid.Column="2" Margin="5,5,0,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Text="{Binding Path=Element.AttachedAttributeTypes}" ToolTip="Please enter the Attribute Types as a common seperated list." />
 	</Grid>
-	<Docs:Standard x:Name="Docs" Grid.Row="6" Margin="0,5,0,0" IsProperty="True" MinHeight="200" Documentation="{Binding Path=Element.Documentation}" />
+	<Label Grid.Row="6" Content="Documentation" FontSize="12pt" Margin="0,5,0,0" />
+	<Docs:Standard x:Name="Docs" Grid.Row="7" Margin="0,5,0,0" IsProperty="True" MinHeight="200" Documentation="{Binding Path=Element.Documentation}" />
 </Grid>

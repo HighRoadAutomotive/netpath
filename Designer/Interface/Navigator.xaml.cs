@@ -144,12 +144,15 @@ namespace WCFArchitect.Interface
 			Compiler.Build();
 		}
 
-		private void OpenProjectItem(OpenableDocument Item)
+		internal void OpenProjectItem(OpenableDocument Item)
 		{
 			if (Item == null) return;
 
 			if (Item.GetType() == typeof(Projects.Project))
 				ActivePage = new Project.Project(Item as Projects.Project);
+
+			if (Item.GetType() == typeof(Projects.Namespace))
+				ActivePage = new Namespace.Namespace(Item as Projects.Namespace);
 
 			if (Item.GetType() == typeof(Projects.Service))
 				ActivePage = new Service.Service(Item as Projects.Service);
@@ -482,9 +485,9 @@ namespace WCFArchitect.Interface
 				var T = frr.Item as Projects.Project;
 				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
 			}
-			if (valueType == typeof(Namespace))
+			if (valueType == typeof(Projects.Namespace))
 			{
-				var T = frr.Item as Namespace;
+				var T = frr.Item as Projects.Namespace;
 				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
 			}
 			if (valueType == typeof(Projects.Service))
@@ -811,9 +814,9 @@ namespace WCFArchitect.Interface
 					return "Host";
 				if (T != null) return T.Name;
 			}
-			if (valueType == typeof(Namespace))
+			if (valueType == typeof(Projects.Namespace))
 			{
-				var T = value as Namespace;
+				var T = value as Projects.Namespace;
 				if (T != null && string.IsNullOrEmpty(T.Name))
 					return "Namespace";
 				if (T != null) return T.Name;
@@ -916,9 +919,9 @@ namespace WCFArchitect.Interface
 					return "Host";
 				if (T != null && T.Parent != null) return T.Parent.Name;
 			}
-			if (valueType == typeof(Namespace))
+			if (valueType == typeof(Projects.Namespace))
 			{
-				var T = value as Namespace;
+				var T = value as Projects.Namespace;
 				if (T != null && string.IsNullOrEmpty(T.Owner.Name))
 					return "Namespace";
 				if (T != null) return T.Owner.Name;
@@ -962,7 +965,7 @@ namespace WCFArchitect.Interface
 			Type valueType = value.GetType();
 			if (valueType == typeof(Projects.Project)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Project.png";
 			if (valueType == typeof(DependencyProject)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/DependencyProject.png";
-			if (valueType == typeof(Namespace)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Namespace.png";
+			if (valueType == typeof(Projects.Namespace)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Namespace.png";
 			if (valueType == typeof(Projects.Service)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Service.png";
 			if (valueType == typeof(Operation)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Operation.png";
 			if (valueType == typeof(MethodParameter)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Property.png";
