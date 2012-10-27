@@ -24,21 +24,18 @@ using System.ServiceModel.Description;
 using System.Text;
 using System.Windows;
 
-[assembly: System.Runtime.Serialization.ContractNamespaceAttribute("http://prospectivesoftware.org/WCFArchitect/Projects/", ClrNamespace="WCFArchitect.Projects")]
-[assembly: System.Runtime.Serialization.ContractNamespaceAttribute("http://prospectivesoftware.org/WCFArchitect/Projects/TestNS/", ClrNamespace="WCFArchitect.Projects.TestNS")]
-
+[assembly: System.Runtime.Serialization.ContractNamespaceAttribute("http://www.prospectivesoftware.com/Test1/", ClrNamespace="Test1")]
 
 #pragma warning disable 1591
-namespace WCFArchitect.Projects
+namespace Test1
 {
 	/**************************************************************************
 	*	Data Contracts
 	**************************************************************************/
 
-	[KnownType(typeof(Guid[]))]
 	[System.Diagnostics.DebuggerStepThroughAttribute]
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
-	[DataContract(Name = "TestData1", Namespace = "http://prospectivesoftware.org/WCFArchitect/Projects/")]
+	[DataContract(Name = "TestData1", Namespace = "http://www.prospectivesoftware.com/Test1/")]
 	public partial class TestData1 : System.Runtime.Serialization.IExtensibleDataObject
 	{
 		public System.Runtime.Serialization.ExtensionDataObject ExtensionData { get; set; }
@@ -49,32 +46,32 @@ namespace WCFArchitect.Projects
 
 	//XAML Integration Object for the TestData1 DTO
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
-	public partial class TestData1XAML : System.Windows.DependencyObject
+	public partial class TestData1XAML : DependencyObject
 	{
 		//Properties
 		public Guid ID { get { return (Guid)GetValue(IDProperty); } set { SetValue(IDProperty, value); } }
-		public static readonly DependencyProperty IDProperty = DependencyProperty.Register("ID", typeof(Guid), typeof(WCFArchitect.Projects.TestData1));
+		public static readonly DependencyProperty IDProperty = DependencyProperty.Register("ID", typeof(Guid), typeof(Test1.TestData1));
 
 		//Implicit Conversion
-		public static implicit operator WCFArchitect.Projects.TestData1(WCFArchitect.Projects.TestData1XAML Data)
+		public static implicit operator Test1.TestData1(Test1.TestData1XAML Data)
 		{
 			if (Data == null) return null;
 			if (Application.Current.Dispatcher.CheckAccess())
 				return TestData1XAML.ConvertFromXAMLObject(Data);
 			else
-				return (WCFArchitect.Projects.TestData1)Application.Current.Dispatcher.Invoke(new Func<WCFArchitect.Projects.TestData1>(() => WCFArchitect.Projects.TestData1XAML.ConvertFromXAMLObject(Data)), System.Windows.Threading.DispatcherPriority.Normal);
+				return (Test1.TestData1)Application.Current.Dispatcher.Invoke(new Func<Test1.TestData1>(() => Test1.TestData1XAML.ConvertFromXAMLObject(Data)), System.Windows.Threading.DispatcherPriority.Normal);
 		}
-		public static implicit operator WCFArchitect.Projects.TestData1XAML(WCFArchitect.Projects.TestData1 Data)
+		public static implicit operator Test1.TestData1XAML(Test1.TestData1 Data)
 		{
 			if (Data == null) return null;
 			if (Application.Current.Dispatcher.CheckAccess())
 				return TestData1XAML.ConvertToXAMLObject(Data);
 			else
-				return (WCFArchitect.Projects.TestData1XAML)Application.Current.Dispatcher.Invoke(new Func<TestData1>(() => WCFArchitect.Projects.TestData1XAML.ConvertToXAMLObject(Data)), System.Windows.Threading.DispatcherPriority.Normal);
+				return (Test1.TestData1XAML)Application.Current.Dispatcher.Invoke(new Func<TestData1>(() => Test1.TestData1XAML.ConvertToXAMLObject(Data)), System.Windows.Threading.DispatcherPriority.Normal);
 		}
 
 		//Constructors
-		public TestData1XAML(WCFArchitect.Projects.TestData1 Data)
+		public TestData1XAML(Test1.TestData1 Data)
 		{
 			Type t_DT = Data.GetType();
 			FieldInfo fi_ID = t_DT.GetField("IDField", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -87,9 +84,9 @@ namespace WCFArchitect.Projects
 		}
 
 		//XAML/DTO Conversion Functions
-		public static TestData1 ConvertFromXAMLObject(WCFArchitect.Projects.TestData1XAML Data)
+		public static TestData1 ConvertFromXAMLObject(Test1.TestData1XAML Data)
 		{
-			WCFArchitect.Projects.TestData1 DTO = new WCFArchitect.Projects.TestData1();
+			Test1.TestData1 DTO = new Test1.TestData1();
 			Type t_XAML = Data.GetType();
 			Type t_DTO = DTO.GetType();
 			PropertyInfo pi_ID = t_XAML.GetProperty("ID", BindingFlags.Public | BindingFlags.Instance);
@@ -98,9 +95,9 @@ namespace WCFArchitect.Projects
 			return DTO;
 		}
 
-		public static TestData1XAML ConvertToXAMLObject(WCFArchitect.Projects.TestData1 Data)
+		public static TestData1XAML ConvertToXAMLObject(Test1.TestData1 Data)
 		{
-			WCFArchitect.Projects.TestData1XAML XAML = new WCFArchitect.Projects.TestData1XAML();
+			Test1.TestData1XAML XAML = new Test1.TestData1XAML();
 			Type t_DTO = Data.GetType();
 			Type t_XAML = XAML.GetType();
 			PropertyInfo pi_ID = t_XAML.GetProperty("ID", BindingFlags.Public | BindingFlags.Instance);
@@ -111,16 +108,6 @@ namespace WCFArchitect.Projects
 		}
 	}
 
-	[System.Diagnostics.DebuggerStepThroughAttribute]
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
-	[DataContract(Name = "TestData2", Namespace = "http://prospectivesoftware.org/WCFArchitect/Projects/")]
-	public partial class TestData2 : System.Runtime.Serialization.IExtensibleDataObject
-	{
-		public System.Runtime.Serialization.ExtensionDataObject ExtensionData { get; set; }
-
-	}
-
-
 
 	/**************************************************************************
 	*	Service Contracts
@@ -129,17 +116,14 @@ namespace WCFArchitect.Projects
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
 	public interface ITestService
 	{
-		[OperationContract(Action = "http://prospectivesoftware.org/WCFArchitect/Projects/TestService/Getasdads", ReplyAction = "http://prospectivesoftware.org/WCFArchitect/Projects/TestService/SetasdadsResponse")]
-		bool Getasdads();
-		[OperationContract(Action = "http://prospectivesoftware.org/WCFArchitect/Projects/TestService/Getasdads", ReplyAction = "http://prospectivesoftware.org/WCFArchitect/Projects/TestService/SetasdadsResponse")]
-		void Setasdads(bool value);
-
-		[OperationContract(Action = "http://prospectivesoftware.org/WCFArchitect/Projects/TestService/SynchronousTest", ReplyAction = "http://prospectivesoftware.org/WCFArchitect/Projects/TestService/SynchronousTestResponse")]
-		void SynchronousTest();
+		///<param name='asdsasd'></param>
+		///<param name='assdasd'></param>
+		[OperationContract(Action = "http://www.prospectivesoftware.com/Test1/TestService/SynchronousTest", ReplyAction = "http://www.prospectivesoftware.com/Test1/TestService/SynchronousTestResponse")]
+		string SynchronousTest(string asdsasd, bool assdasd);
 
 		///<param name='Callback'>The function to call when the operation is complete.</param>
 		///<param name='AsyncState'>An object representing the state of the operation.</param>
-		[OperationContract(Action = "http://prospectivesoftware.org/WCFArchitect/Projects/TestService/AsynchronousTestInvoke", ReplyAction = "http://prospectivesoftware.org/WCFArchitect/Projects/TestService/AsynchronousTestInvokeResponse")]
+		[OperationContract(Action = "http://www.prospectivesoftware.com/Test1/TestService/AsynchronousTestInvoke", ReplyAction = "http://www.prospectivesoftware.com/Test1/TestService/AsynchronousTestInvokeResponse")]
 		IAsyncResult BeginAsynchronousTestInvoke(AsyncCallback Callback, object AsyncState);
 		///<summary>Finalizes the asynchronous operation.</summary>
 		///<returns>
@@ -148,30 +132,30 @@ namespace WCFArchitect.Projects
 		///<param name='result'>The result of the operation.</param>
 		string EndAsynchronousTestInvoke(IAsyncResult result);
 
-		[OperationContract(Action = "http://prospectivesoftware.org/WCFArchitect/Projects/TestService/AwaitableTestAsync", ReplyAction = "http://prospectivesoftware.org/WCFArchitect/Projects/TestService/AwaitableTestAsyncResponse")]
-		System.Threading.Tasks.Task<bool> AwaitableTestAsync();
+		[OperationContract(Action = "http://www.prospectivesoftware.com/Test1/TestService/AwaitableTestAsync", ReplyAction = "http://www.prospectivesoftware.com/Test1/TestService/AwaitableTestAsyncResponse")]
+		System.Threading.Tasks.Task<Test1.TestData1> AwaitableTestAsync();
 
 	}
 
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
 	public interface ITestServiceCallback
 	{
-		[OperationContract(Action = "http://prospectivesoftware.org/WCFArchitect/Projects/TestService/SyncTest", ReplyAction = "http://prospectivesoftware.org/WCFArchitect/Projects/TestService/SyncTestResponse")]
-		void SyncTest();
+		[OperationContract(Action = "http://www.prospectivesoftware.com/Test1/TestService/SyncTest", ReplyAction = "http://www.prospectivesoftware.com/Test1/TestService/SyncTestResponse")]
+		bool SyncTest();
 
 		///<param name='Callback'>The function to call when the operation is complete.</param>
 		///<param name='AsyncState'>An object representing the state of the operation.</param>
-		[OperationContract(Action = "http://prospectivesoftware.org/WCFArchitect/Projects/TestService/AsyncTestInvoke", ReplyAction = "http://prospectivesoftware.org/WCFArchitect/Projects/TestService/AsyncTestInvokeResponse")]
+		[OperationContract(Action = "http://www.prospectivesoftware.com/Test1/TestService/AsyncTestInvoke", ReplyAction = "http://www.prospectivesoftware.com/Test1/TestService/AsyncTestInvokeResponse")]
 		IAsyncResult BeginAsyncTestInvoke(AsyncCallback Callback, object AsyncState);
 		///<summary>Finalizes the asynchronous operation.</summary>
 		///<returns>
 		///
 		///</returns>
 		///<param name='result'>The result of the operation.</param>
-		bool EndAsyncTestInvoke(IAsyncResult result);
+		sbyte EndAsyncTestInvoke(IAsyncResult result);
 
-		[OperationContract(Action = "http://prospectivesoftware.org/WCFArchitect/Projects/TestService/AwaitTestAsync", ReplyAction = "http://prospectivesoftware.org/WCFArchitect/Projects/TestService/AwaitTestAsyncResponse")]
-		System.Threading.Tasks.Task<string> AwaitTestAsync();
+		[OperationContract(Action = "http://www.prospectivesoftware.com/Test1/TestService/AwaitTestAsync", ReplyAction = "http://www.prospectivesoftware.com/Test1/TestService/AwaitTestAsyncResponse")]
+		System.Threading.Tasks.Task<ObservableCollection<Test1.TestData1>> AwaitTestAsync();
 
 	}
 
@@ -212,19 +196,15 @@ namespace WCFArchitect.Projects
 			onAsynchronousTestCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnAsynchronousTestCompleted);
 		}
 
-		bool ITestService.Getasdads()
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	public partial class TestHost
+	{
+	}
+		///<param name='asdsasd'></param>
+		///<param name='assdasd'></param>
+		public string SynchronousTest(string asdsasd, bool assdasd)
 		{
-			return base.Channel.Getasdads();
-		}
-		void ITestService.Setasdads(bool value)
-		{
-			base.Channel.Setasdads(value);
-		}
-		public bool asdads { get { return ((ITestService)this).Getasdads(); } set { ((ITestService)this).Setasdads(value); } }
-
-		public void SynchronousTest()
-		{
-			base.Channel.SynchronousTest();
+			return base.Channel.SynchronousTest(asdsasd, assdasd);
 		}
 
 		private readonly BeginOperationDelegate onBeginAsynchronousTestDelegate;
@@ -270,7 +250,7 @@ namespace WCFArchitect.Projects
 			InvokeAsync(this.onBeginAsynchronousTestDelegate, new object[] {  }, this.onEndAsynchronousTestDelegate, this.onAsynchronousTestCompletedDelegate, userState);
 		}
 
-		public System.Threading.Tasks.Task<bool> AwaitableTestAsync()
+		public System.Threading.Tasks.Task<Test1.TestData1> AwaitableTestAsync()
 		{
 			return base.Channel.AwaitableTestAsync();
 		}
@@ -278,10 +258,16 @@ namespace WCFArchitect.Projects
 	}
 
 
-}
-namespace WCFArchitect.Projects.TestNS
-{
-}
+	/**************************************************************************
+	*	Service Hosts
+	**************************************************************************/
 
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	public partial class TestHost
+	{
+	}
+
+
+}
 
 #pragma warning restore 1591

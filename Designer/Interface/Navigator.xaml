@@ -29,7 +29,7 @@
 			<ColumnDefinition Width="280" MinWidth="280" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
-		<Button Grid.Column="0" Grid.Row="0" Padding="2" Margin="0,0,5,0" Background="#22FFFFFF" Style="{StaticResource LeafNodeContainerTemplate}" Command="{x:Static local:Navigator.ChangeActivePageCommand}" CommandParameter="{Binding Path=Project}">
+		<Button Grid.Column="0" Grid.Row="0" Padding="2" Margin="0,0,5,0" Background="#22FFFFFF" Style="{StaticResource ProjectContainerTemplate}" Command="{x:Static local:Navigator.ChangeActivePageCommand}" CommandParameter="{Binding Path=Project}">
 			<StackPanel Orientation="Vertical">
 				<StackPanel Orientation="Horizontal" Margin="0,0,0,3">
 					<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X32/Project.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,5,3" />
@@ -57,8 +57,8 @@
 				<local:ProjectList ItemsSource="{Binding Path=Project.Namespace.Services}" ItemContainerStyle="{StaticResource ServiceContainerTemplate}" ItemTemplate="{StaticResource ServiceItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
 				<local:ProjectList ItemsSource="{Binding Path=Project.Namespace.Data}" ItemContainerStyle="{StaticResource DataContainerTemplate}" ItemTemplate="{StaticResource DataItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
 				<local:ProjectList ItemsSource="{Binding Path=Project.Namespace.Enums}" ItemContainerStyle="{StaticResource EnumContainerTemplate}" ItemTemplate="{StaticResource EnumItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
-				<local:ProjectItemList ItemsSource="{Binding Path=Project.Namespace.Bindings}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListBindingTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
-				<local:ProjectItemList ItemsSource="{Binding Path=Project.Namespace.Hosts}" ItemContainerStyle="{StaticResource LeafNodeContainerTemplate}" ItemTemplate="{StaticResource HostItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+				<local:ProjectItemList ItemsSource="{Binding Path=Project.Namespace.Bindings}" ItemContainerStyle="{StaticResource BindingContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListBindingTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+				<local:ProjectItemList ItemsSource="{Binding Path=Project.Namespace.Hosts}" ItemContainerStyle="{StaticResource HostContainerTemplate}" ItemTemplate="{StaticResource HostItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
 			</StackPanel>
 		</ScrollViewer>
 		<GridSplitter ResizeDirection="Columns" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Width="5" Height="Auto" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0" Background="Transparent" />

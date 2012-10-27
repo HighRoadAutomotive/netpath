@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WCFArchitect.Projects;
+using WCFArchitect.Projects.Helpers;
 
 namespace WCFArchitect.Interface.Data
 {
@@ -42,8 +43,8 @@ namespace WCFArchitect.Interface.Data
 			if (elementName == null) return;
 			if(string.IsNullOrEmpty(elementName.Text)) return;
 
-			string t = Helpers.RegExs.ReplaceSpaces.Replace(elementName.Text ?? "", @"");
-			e.IsValid = Helpers.RegExs.MatchCodeName.IsMatch(t);
+			string t = RegExs.ReplaceSpaces.Replace(elementName.Text ?? "", @"");
+			e.IsValid = RegExs.MatchCodeName.IsMatch(t);
 		}
 
 		private void Order_Validate(object sender, Prospective.Controls.ValidateEventArgs e)

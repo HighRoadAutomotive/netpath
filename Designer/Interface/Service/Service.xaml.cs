@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Prospective.Controls.Dialogs;
 using WCFArchitect.Projects;
+using WCFArchitect.Projects.Helpers;
 
 namespace WCFArchitect.Interface.Service
 {
@@ -45,9 +46,9 @@ namespace WCFArchitect.Interface.Service
 
 			InitializeComponent();
 
-			Projects.Operation s = ServiceType.ServiceOperations.FirstOrDefault(a => a.IsSelected);
+			Operation s = ServiceType.ServiceOperations.FirstOrDefault(a => a.IsSelected);
 			if (s != null) ServiceOperationsList.SelectedItem = s;
-			Projects.Operation c = ServiceType.CallbackOperations.FirstOrDefault(a => a.IsSelected);
+			Operation c = ServiceType.CallbackOperations.FirstOrDefault(a => a.IsSelected);
 			if (c != null) CallbackOperationsList.SelectedItem = c;
 		}
 
@@ -270,7 +271,7 @@ namespace WCFArchitect.Interface.Service
 			e.IsValid = true;
 			if (string.IsNullOrEmpty(AddServiceMemberName.Text)) return;
 
-			e.IsValid = Helpers.RegExs.MatchCodeName.IsMatch(AddServiceMemberName.Text);
+			e.IsValid = RegExs.MatchCodeName.IsMatch(AddServiceMemberName.Text);
 			if (AddServiceMemberType.OpenType == null) return;
 			AddServiceMethod.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && e.IsValid && AddServiceMemberType.IsValid);
 			AddServiceProperty.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && AddServiceMemberType.OpenType.Primitive != PrimitiveTypes.Void && !AddServiceMemberName.IsInvalid && AddServiceMemberType.IsValid);
@@ -327,11 +328,11 @@ namespace WCFArchitect.Interface.Service
 
 		private void ServiceOperationsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			var t = ServiceOperationsList.SelectedItem as Projects.Operation;
+			var t = ServiceOperationsList.SelectedItem as Operation;
 			if (t == null) return;
 
 			//Set the new item as selected.
-			foreach (Projects.Operation o in ServiceType.ServiceOperations)
+			foreach (Operation o in ServiceType.ServiceOperations)
 				o.IsSelected = false;
 			t.IsSelected = true;
 
@@ -352,10 +353,11 @@ namespace WCFArchitect.Interface.Service
 
 		private void DeleteServiceOperation_Click(object sender, RoutedEventArgs e)
 		{
-			var OP = ServiceOperationsList.SelectedItem as Projects.Operation;
+			var lbi = Globals.GetVisualParent<ListBoxItem>(sender);
+			var OP = lbi.Content as Operation;
 			if (OP == null) return;
 
-			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Service Operation?", "Are you sure you wish to delete the '" + OP.ReturnType + " " + OP.ServerName + "' service operation?", new DialogAction("Yes", () => ServiceType.ServiceOperations.Remove(OP), true), new DialogAction("No", false, true));
+			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Service Operation?", "Are you sure you want to delete the '" + OP.ReturnType + " " + OP.ServerName + "' service operation?", new DialogAction("Yes", () => ServiceType.ServiceOperations.Remove(OP), true), new DialogAction("No", false, true));
 		}
 
 		#endregion
@@ -379,7 +381,7 @@ namespace WCFArchitect.Interface.Service
 			e.IsValid = true;
 			if (string.IsNullOrEmpty(AddCallbackMemberName.Text)) return;
 
-			e.IsValid = Helpers.RegExs.MatchCodeName.IsMatch(AddCallbackMemberName.Text);
+			e.IsValid = RegExs.MatchCodeName.IsMatch(AddCallbackMemberName.Text);
 			if (AddCallbackMemberType.OpenType == null) return;
 			AddCallbackMethod.IsEnabled = (!string.IsNullOrEmpty(AddCallbackMemberName.Text) && e.IsValid && AddCallbackMemberType.IsValid);
 			AddCallbackProperty.IsEnabled = (!string.IsNullOrEmpty(AddCallbackMemberName.Text) && AddCallbackMemberType.OpenType.Primitive != PrimitiveTypes.Void && !AddCallbackMemberName.IsInvalid && AddCallbackMemberType.IsValid);
@@ -436,11 +438,11 @@ namespace WCFArchitect.Interface.Service
 
 		private void CallbackOperationsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			var t = CallbackOperationsList.SelectedItem as Projects.Operation;
+			var t = CallbackOperationsList.SelectedItem as Operation;
 			if (t == null) return;
 
 			//Set the new item as selected.
-			foreach (Projects.Operation o in ServiceType.CallbackOperations)
+			foreach (Operation o in ServiceType.CallbackOperations)
 				o.IsSelected = false;
 			t.IsSelected = true;
 
@@ -460,10 +462,11 @@ namespace WCFArchitect.Interface.Service
 
 		private void DeleteCallbackOperation_Click(object sender, RoutedEventArgs e)
 		{
-			var OP = CallbackOperationsList.SelectedItem as Projects.Operation;
+			var lbi = Globals.GetVisualParent<ListBoxItem>(sender);
+			var OP = lbi.Content as Operation;
 			if (OP == null) return;
 
-			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Callback Operation?", "Are you sure you wish to delete the '" + OP.ReturnType + " " + OP.ServerName + "' callback operation?", new DialogAction("Yes", () => ServiceType.CallbackOperations.Remove(OP), true), new DialogAction("No", false, true));
+			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Callback Operation?", "Are you sure you want to delete the '" + OP.ReturnType + " " + OP.ServerName + "' callback operation?", new DialogAction("Yes", () => ServiceType.CallbackOperations.Remove(OP), true), new DialogAction("No", false, true));
 		}
 
 		#endregion

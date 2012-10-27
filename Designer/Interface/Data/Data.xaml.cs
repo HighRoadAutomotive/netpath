@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Globalization;
 using Prospective.Controls.Dialogs;
+using WCFArchitect.Projects.Helpers;
 
 namespace WCFArchitect.Interface.Data
 {
@@ -52,7 +53,7 @@ namespace WCFArchitect.Interface.Data
 			e.IsValid = true;
 			if (string.IsNullOrEmpty(AddMemberName.Text)) return;
 
-			e.IsValid = Helpers.RegExs.MatchCodeName.IsMatch(AddMemberName.Text);
+			e.IsValid = RegExs.MatchCodeName.IsMatch(AddMemberName.Text);
 			AddMember.IsEnabled = (!string.IsNullOrEmpty(AddMemberName.Text) &&  e.IsValid && AddMemberType.IsValid);
 		}
 

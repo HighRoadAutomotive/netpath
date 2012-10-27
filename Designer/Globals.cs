@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Media;
 using MP.Karvonite;
 using Prospective.Controls.Dialogs;
+using WCFArchitect.Projects;
 
 namespace WCFArchitect
 {
@@ -62,10 +63,18 @@ namespace WCFArchitect
 			return Uri.UnescapeDataString(b.MakeRelativeUri(t).ToString());
 		}
 
-		public static void OpenProjectItem(Projects.OpenableDocument doc)
+		public static void OpenProjectItem(OpenableDocument doc)
 		{
 			if (OpenNavigator == null) return;
 			OpenNavigator.OpenProjectItem(doc);
+		}
+
+		public static List<ServiceBinding> GetBindings()
+		{
+			var sbl = new List<ServiceBinding>();
+			foreach (Project p in Projects)
+				sbl.AddRange(p.Namespace.GetBindings());
+			return sbl;
 		}
 
 		public static void OpenSolution(string Path, Action<bool> FinishedAction)

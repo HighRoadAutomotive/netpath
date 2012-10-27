@@ -11,8 +11,13 @@
 	d:DesignHeight="600" d:DesignWidth="750" UseLayoutRounding="True" >
 	<Grid.Resources>
 		<Service:ProtectionLevelConverter x:Key="ProtectionLevelConverter" />
+		<Service:MethodRESTVerbsConverter x:Key="MethodRESTVerbsConverter" />
+		<Service:WebMessageBodyStyleConverter x:Key="WebMessageBodyStyleConverter"/>
+		<Service:WebMessageFormatConverter x:Key="WebMessageFormatConverter" />
+		<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
 	</Grid.Resources>
 	<Grid.RowDefinitions>
+		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
@@ -23,7 +28,7 @@
 	</Grid.RowDefinitions>
 	<TextBlock Text="{Binding Path=MethodData.Declaration}" FontSize="14pt" Margin="0,5" Grid.Row="0" />
 	<Label Grid.Row="1" Content="Return Type:" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="100" Padding="10,2,0,2" Margin="5,0" />
-	<Data:TypeSelector OpenType="{Binding Path=MethodData.ReturnType}" Project="{Binding Path=ServiceProject}" AllowVoid="True" Grid.Row="1" Margin="110,5,5,5" />
+	<Data:TypeSelector OpenType="{Binding Path=MethodData.ReturnType, Mode=TwoWay}" Project="{Binding Path=ServiceProject}" AllowVoid="True" Grid.Row="1" Margin="110,5,5,5" />
 	<Label Content="Server Name:" Grid.Row="2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="100" Padding="10,2,0,2" Margin="5,0" />
 	<pc:TextBox Text="{Binding Path=MethodData.ServerName}" Name="ServerName" Grid.Row="2" Height="23" Margin="110,5,5,5" ToolTip="{Binding Path=MethodData.ServerName}" />
 	<ToggleButton Content="Client Name:" Grid.Row="3" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Margin="5" HorizontalAlignment="Left" IsChecked="{Binding Path=MethodData.HasClientType}" />
@@ -52,8 +57,50 @@
 		<ToggleButton Content="Synchronous" IsChecked="{Binding Path=MethodData.UseSyncPattern}" Margin="5" Grid.Column="0" Grid.Row="1" />
 		<ToggleButton Content="Asynchronous" IsChecked="{Binding Path=MethodData.UseAsyncPattern}" Margin="5" Grid.Column="1" Grid.Row="1" />
 		<ToggleButton Content="Awaitable" IsChecked="{Binding Path=MethodData.UseAwaitPattern}" Margin="5" Grid.Column="2" Grid.Row="1" />
+		<ToggleButton Content="REST Method" IsChecked="{Binding Path=MethodData.IsRESTMethod}" Margin="5" Grid.Column="3" Grid.Row="1" />
 	</Grid>
-	<TabControl Grid.Row="6" Margin="0,10,0,0">
+	<Grid Visibility="{Binding Path=MethodData.IsRESTMethod, Converter={StaticResource BoolVisibilityConverter}}" Grid.Row="6" Margin="0,5,0,0">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		<Label Grid.Row="0" Content="REST" FontSize="12pt" Margin="0,5,0,0" />
+		<Label Content="REST Name:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="1" />
+		<pc:TextBox Text="{Binding Path=MethodData.REST.RESTName}" Height="23" Margin="111,5,5,5" VerticalContentAlignment="Center" Grid.Row="1" Grid.ColumnSpan="2" />
+		<Label Content="URI Template:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="2" />
+		<pc:TextBox Text="{Binding Path=MethodData.REST.UriTemplate}" IsReadOnly="True" Height="23" Margin="111,5,160,5" VerticalContentAlignment="Center" Grid.Row="2" Grid.ColumnSpan="2" />
+		<ToggleButton Content="Parameterized URI" Grid.Row="2" Grid.Column="1" Margin="0,5,5,5" Height="23" HorizontalAlignment="Right" Width="145"/>
+		<Label Content="HTTP Verb:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" />
+		<ComboBox Height="23" Margin="111,5,5,5" SelectedIndex="{Binding Path=MethodData.REST.Method, Converter={StaticResource MethodRESTVerbsConverter}}" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" >
+			<ComboBoxItem Content="Bare" />
+			<ComboBoxItem Content="Wrapped" />
+		</ComboBox>
+		<Label Content="Body Style:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="1" />
+		<ComboBox Height="23" Margin="120,5,5,5" SelectedIndex="{Binding Path=MethodData.REST.BodyStyle, Converter={StaticResource WebMessageBodyStyleConverter}}" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="1" >
+			<ComboBoxItem Content="Bare" />
+			<ComboBoxItem Content="Wrapped" />
+			<ComboBoxItem Content="Wrapped Request" />
+			<ComboBoxItem Content="Wrapped Response" />
+		</ComboBox>
+		<Label Content="Request Format:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="0" />
+		<ComboBox Height="23" Margin="111,5,5,5" SelectedIndex="{Binding Path=MethodData.REST.RequestFormat, Converter={StaticResource WebMessageFormatConverter}}" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="0" >
+			<ComboBoxItem Content="XML" />
+			<ComboBoxItem Content="JSON" />
+		</ComboBox>
+		<Label Content="Response Format:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="1" />
+		<ComboBox Height="23" Margin="120,5,5,5" SelectedIndex="{Binding Path=MethodData.REST.ResponseFormat, Converter={StaticResource WebMessageFormatConverter}}" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="1" >
+			<ComboBoxItem Content="XML" />
+			<ComboBoxItem Content="JSON" />
+		</ComboBox>
+	</Grid>
+	<TabControl Grid.Row="7" Margin="0,10,0,0">
 		<TabItem Header="Parameters" FontSize="12pt" Padding="10,5" IsSelected="True">
 			<Grid >
 				<Grid.RowDefinitions>
@@ -93,7 +140,7 @@
 										<ColumnDefinition Width="75" />
 										<ColumnDefinition Width="30" />
 									</Grid.ColumnDefinitions>
-									<Data:TypeSelector x:Name="OperationParameterDataType" OpenType="{Binding Path=Type}" Project="{Binding ElementName=ProjectBinding, Path=DataContext}" Grid.Column="0" Margin="0,5,5,5" VerticalContentAlignment="Center" ToolTip="{Binding Path=Type}"  />
+									<Data:TypeSelector x:Name="OperationParameterDataType" OpenType="{Binding Path=Type, Mode=TwoWay}" Project="{Binding ElementName=ProjectBinding, Path=DataContext}" Grid.Column="0" Margin="0,5,5,5" VerticalContentAlignment="Center" ToolTip="{Binding Path=Type}"  />
 									<pc:TextBox Name="OperationParameterElementName" Text="{Binding Path=Name}" Grid.Column="1" Margin="5" VerticalContentAlignment="Center" PreviewKeyDown="OperationParameterElementName_PreviewKeyDown" Validate="OperationParameterElementName_Validate" ToolTip="{Binding Path=Name}" />
 									<pc:TextBox Name="OperationParameterDocumentation" Text="{Binding Path=Documentation.Summary}" LabelText="Documentation" Margin="5" Grid.Column="2" VerticalContentAlignment="Center" PreviewKeyDown="OperationParameterDocumentation_PreviewKeyDown" ToolTip="{Binding Path=Name}" />
 									<ToggleButton Content="Hidden" IsChecked="{Binding Path=IsHidden}" Margin="5" Grid.Column="3" />

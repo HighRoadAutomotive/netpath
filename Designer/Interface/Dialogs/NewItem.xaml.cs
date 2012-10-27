@@ -60,28 +60,11 @@ namespace WCFArchitect.Interface.Dialogs
 				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSDualHTTP.png", "WS Dual HTTP Binding", "A binding that supports duplex contracts over HTTP.", 13));
 				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png", "WS Federation HTTP Binding", "A binding that supports federated security over HTTP.", 14));
 				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png", "WS 2007 Federation HTTP Binding", "A binding that derives from the WS 2007 HTTP Binding and supports federated security.", 15));
-
-				NewItemSecurityTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png", "Basic HTTP Security", "Security configuration for the Basic HTTP and Net HTTP Bindings.", 1));
-				if (ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET45))
-					NewItemSecurityTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png", "Basic HTTPS Security", "Security configuration for the Basic HTTPS and Net HTTPS Bindings.", 2));
-				NewItemSecurityTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png", "TCP Security", "Security configuration for a TCP Binding.", 3));
-				NewItemSecurityTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/NamedPipe.png", "Named Pipe Security", "Security configuration for a Named Pipe Binding.", 4));
-				NewItemSecurityTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQ.png", "MSMQ Security", "Security configuration for an MSMQ Binding.", 5));
-				NewItemSecurityTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/PeerTCP.png", "Peer TCP Security", "Security configuration for a Peer TCP Binding", 6));
-				if (ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET35) || ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET35Client) || ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET40) || ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET45))
-					NewItemSecurityTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WebHTTP.png", "Web HTTP Security", "Security configuration for a Web HTTP Binding.", 7));
-				NewItemSecurityTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQIntegration.png", "MSMQ Integration Security", "Security configuration for an MSMQ Integration Binding", 8));
-				NewItemSecurityTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png", "WS HTTP Security", "Security configuration for a WS HTTP or WS 2007 HTTP Binding.", 9));
-				NewItemSecurityTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSDualHTTP.png", "WS Dual Security", "Security configuration for a WS Dual Binding.", 10));
-				NewItemSecurityTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png", "WS Federation Security", "Security configuration for a WS Federation or WS 2007 Federation Binding.", 11));
 			}
 			if (ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.SL50) || ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.SL40))
 			{
 				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png", "Basic HTTP Binding", "A binding that can be used with any web service that conforms to the WS-I Basic Profile.", 1));
 				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png", "TCP Binding", "A binding that provides security and reliability for cross-machine communications.", 5));
-
-				NewItemSecurityTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png", "Basic HTTP Security", "Security configuration for the Basic HTTP and Net HTTP Bindings.", 1));
-				NewItemSecurityTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png", "TCP Security", "Security configuration for a TCP Binding.", 3));
 			}
 			if (ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.WIN8))
 			{
@@ -91,10 +74,6 @@ namespace WCFArchitect.Interface.Dialogs
 				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/NetHTTP.png", "Net HTTP Binding", "A binding that can be used with any web service that conforms to the WebSockets Profile.", 3));
 				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/NetHTTP.png", "Net HTTPS Binding", "A binding that can be used with any web service that conforms to the WebSockets Profile.", 4));
 				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png", "TCP Binding", "A binding that provides security and reliability for cross-machine communications.", 5));
-
-				NewItemSecurityTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png", "Basic HTTP Security", "Security configuration for the Basic HTTP and Net HTTP Bindings.", 1));
-				NewItemSecurityTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png", "Basic HTTPS Security", "Security configuration for the Basic HTTPS and Net HTTPS Bindings.", 2));
-				NewItemSecurityTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png", "TCP Security", "Security configuration for a TCP Binding.", 3));
 #if !WINRT
 			}
 #endif
@@ -108,7 +87,6 @@ namespace WCFArchitect.Interface.Dialogs
 			var NIT = NewItemTypesList.SelectedItem as NewItemType;
 			if (NIT == null) return;
 			if (NewItemBindingTypesList.SelectedItem == null && NIT.DataType == 5) return;
-			if (NewItemSecurityTypesList.SelectedItem == null && NIT.DataType == 6) return;
 			if (NewItemProjectNamespaceList.SelectedItem == null && NewItemProjectNamespaceRoot.IsChecked == false) return;
 			if (NewItemName.Text == "") return;
 
@@ -121,16 +99,13 @@ namespace WCFArchitect.Interface.Dialogs
 			{
 				NewItemProjectNamespaces.Visibility = Visibility.Collapsed;
 				NewItemBindingTypesList.Visibility = Visibility.Collapsed;
-				NewItemSecurityTypesList.Visibility =Visibility.Collapsed;
 			}
 
 			NewItemAdd.IsEnabled = false;
 			NewItemProjectNamespaceList.ItemsSource = null;
 			NewItemBindingTypesList.SelectedItem = null;
-			NewItemSecurityTypesList.SelectedItem = null;
 			NewItemProjectNamespaces.Visibility = Visibility.Collapsed;
 			NewItemBindingTypesList.Visibility = Visibility.Collapsed;
-			NewItemSecurityTypesList.Visibility = Visibility.Collapsed;
 			
 			IsNamespaceListUpdating = true;
 			NewItemProjectNamespaceRoot.IsChecked = true;
@@ -151,11 +126,6 @@ namespace WCFArchitect.Interface.Dialogs
 				NewItemBindingTypesList.Focus();
 			}
 			if (NIT.DataType == 6)
-			{
-				NewItemSecurityTypesList.Visibility = Visibility.Visible;
-				NewItemSecurityTypesList.Focus();
-			}
-			if (NIT.DataType == 7)
 			{
 				NewItemProjectNamespaceList.ItemsSource = ActiveProject.Namespace.Children;
 				NewItemProjectNamespaceRoot.IsChecked = true;
@@ -182,16 +152,6 @@ namespace WCFArchitect.Interface.Dialogs
 		}
 
 		private void NewItemBindingTypesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			NewItemProjectNamespaceList.ItemsSource = ActiveProject.Namespace.Children;
-			NewItemProjectNamespaceRoot.IsChecked = true;
-			NewItemProjectNamespaceRoot.Content = ActiveProject.Namespace.Name;
-			NewItemProjectNamespaces.Visibility = Visibility.Visible;
-
-			EnableAddItem();
-		}
-
-		private void NewItemSecurityTypesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			NewItemProjectNamespaceList.ItemsSource = ActiveProject.Namespace.Children;
 			NewItemProjectNamespaceRoot.IsChecked = true;

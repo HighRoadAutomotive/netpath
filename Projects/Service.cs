@@ -642,7 +642,7 @@ namespace WCFArchitect.Projects
 					continue;
 				}
 
-				code.AppendFormat(UseParameterFormat ? "&{0}={{{0}}}" : "/{0}", mp.Name);
+				code.AppendFormat(UseParameterFormat ? "&{0}={{{0}}}" : "/{{{0}}}", mp.Name);
 			}
 
 			Method = Owner.Parameters.Any(a => a.Type.TypeMode == DataTypeMode.Struct || a.Type.TypeMode == DataTypeMode.Class) ? (Method == MethodRESTVerbs.GET ? MethodRESTVerbs.POST : Method) : MethodRESTVerbs.GET;

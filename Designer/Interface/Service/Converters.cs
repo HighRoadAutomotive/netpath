@@ -71,4 +71,72 @@ namespace WCFArchitect.Interface.Service
 			return Projects.ServiceAsynchronyMode.Default;
 		}
 	}
+
+	[ValueConversion(typeof(System.ServiceModel.Web.WebMessageBodyStyle), typeof(int))]
+	public class WebMessageBodyStyleConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (System.ServiceModel.Web.WebMessageBodyStyle)value;
+			if (lt == System.ServiceModel.Web.WebMessageBodyStyle.Bare) return 0;
+			if (lt == System.ServiceModel.Web.WebMessageBodyStyle.Wrapped) return 1;
+			if (lt == System.ServiceModel.Web.WebMessageBodyStyle.WrappedRequest) return 2;
+			if (lt == System.ServiceModel.Web.WebMessageBodyStyle.WrappedResponse) return 3;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return System.ServiceModel.Web.WebMessageBodyStyle.Bare;
+			if (lt == 1) return System.ServiceModel.Web.WebMessageBodyStyle.Wrapped;
+			if (lt == 2) return System.ServiceModel.Web.WebMessageBodyStyle.WrappedRequest;
+			if (lt == 3) return System.ServiceModel.Web.WebMessageBodyStyle.WrappedResponse;
+			return System.ServiceModel.Web.WebMessageBodyStyle.Bare;
+		}
+	}
+
+	[ValueConversion(typeof(Projects.MethodRESTVerbs), typeof(int))]
+	public class MethodRESTVerbsConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (Projects.MethodRESTVerbs)value;
+			if (lt == Projects.MethodRESTVerbs.GET) return 0;
+			if (lt == Projects.MethodRESTVerbs.POST) return 1;
+			if (lt == Projects.MethodRESTVerbs.PUT) return 2;
+			if (lt == Projects.MethodRESTVerbs.DELETE) return 3;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return Projects.MethodRESTVerbs.GET;
+			if (lt == 1) return Projects.MethodRESTVerbs.POST;
+			if (lt == 2) return Projects.MethodRESTVerbs.PUT;
+			if (lt == 3) return Projects.MethodRESTVerbs.DELETE;
+			return Projects.MethodRESTVerbs.GET;
+		}
+	}
+
+	[ValueConversion(typeof(System.ServiceModel.Web.WebMessageFormat), typeof(int))]
+	public class WebMessageFormatConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (System.ServiceModel.Web.WebMessageFormat)value;
+			if (lt == System.ServiceModel.Web.WebMessageFormat.Xml) return 0;
+			if (lt == System.ServiceModel.Web.WebMessageFormat.Json) return 1;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return System.ServiceModel.Web.WebMessageFormat.Xml;
+			if (lt == 1) return System.ServiceModel.Web.WebMessageFormat.Json;
+			return System.ServiceModel.Web.WebMessageFormat.Xml;
+		}
+	}
 }
