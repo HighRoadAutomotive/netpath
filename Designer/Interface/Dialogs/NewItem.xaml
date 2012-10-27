@@ -169,11 +169,6 @@
 						<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
 					</ListBox.Resources>
 				</ListBox>
-				<ListBox HorizontalAlignment="Stretch" Margin="2.5,0,2.5,0" Grid.Column="1" Visibility="Collapsed" BorderThickness="0" Background="Transparent" VerticalAlignment="Stretch" Name="NewItemSecurityTypesList" SelectionMode="Single" ItemTemplate="{StaticResource ListBoxItemTemplate}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" SelectionChanged="NewItemSecurityTypesList_SelectionChanged">
-					<ListBox.Resources>
-						<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
-					</ListBox.Resources>
-				</ListBox>
 				<Border Name="NewItemProjectNamespaces" Margin="2.5,0,2.5,0" Grid.Column="2" Visibility="Collapsed">
 					<Grid>
 						<ToggleButton Name="NewItemProjectNamespaceRoot" Margin="0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="30" Checked="NewItemProjectNamespaceRoot_Checked" />

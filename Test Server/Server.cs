@@ -24,24 +24,17 @@ using System.ServiceModel.Description;
 using System.Text;
 
 #pragma warning disable 1591
-namespace WCFArchitect.Projects
+namespace Test1
 {
 	/**************************************************************************
 	*	Data Contracts
 	**************************************************************************/
 
-	[KnownType(typeof(Guid[]))]
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
-	[DataContract(Name = "TestData1", Namespace = "http://prospectivesoftware.org/WCFArchitect/Projects/")]
+	[DataContract(Name = "TestData1", Namespace = "http://www.prospectivesoftware.com/Test1/")]
 	public partial class TestData1
 	{
 		[DataMember(Name = "ID")] public Guid ID { get; set; }
-	}
-
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
-	[DataContract(Name = "TestData2", Namespace = "http://prospectivesoftware.org/WCFArchitect/Projects/")]
-	public partial class TestData2
-	{
 	}
 
 
@@ -50,48 +43,33 @@ namespace WCFArchitect.Projects
 	**************************************************************************/
 
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
-	[ServiceContract(CallbackContract = typeof(ITestServiceCallback), SessionMode = System.ServiceModel.SessionMode.Allowed, Namespace = "http://prospectivesoftware.org/WCFArchitect/Projects/")]
+	[ServiceContract(CallbackContract = typeof(ITestServiceCallback), SessionMode = System.ServiceModel.SessionMode.Allowed, Namespace = "http://www.prospectivesoftware.com/Test1/")]
 	public interface ITestService
 	{
-		bool asdads { [OperationContract(Name = "Getasdads")] get; [OperationContract(Name = "Setasdads")] set; }
+		///<param name='asdsasd'></param>
+		///<param name='assdasd'></param>
+		[OperationContract(IsInitiating = false)]
+		[System.ServiceModel.Web.WebGet(UriTemplate="SynchronousTest/{asdsasd}/{assdasd}", BodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.Bare, RequestFormat = System.ServiceModel.Web.WebMessageFormat.Xml, ResponseFormat = System.ServiceModel.Web.WebMessageFormat.Xml)]
+		string SynchronousTest(string asdsasd,bool assdasd);
 
 		[OperationContract(IsInitiating = false)]
-		void SynchronousTest();
-
-		///<param name='Callback'>The function to call when the operation is complete.</param>
-		///<param name='AsyncState'>An object representing the state of the operation.</param>
-		[OperationContract(AsyncPattern = true, IsInitiating = false)]
-		IAsyncResult BeginAsynchronousTestInvoke( AsyncCallback Callback, object AsyncState);
-		///<summary>Finalizes the asynchronous operation.</summary>
-		///<returns>
-		///
-		///</returns>
-		///<param name='result'>The result of the operation.</param>
-		string EndAsynchronousTestInvoke(IAsyncResult result);
+		string AsynchronousTestInvoke();
 
 		[OperationContract(IsInitiating = false)]
-		System.Threading.Tasks.Task<bool> AwaitableTestAsync();
+		Test1.TestData1 AwaitableTestAsync();
 
 	}
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
 	public interface ITestServiceCallback
 	{
 		[OperationContract(IsInitiating = false)]
-		void SyncTest();
-
-		///<param name='Callback'>The function to call when the operation is complete.</param>
-		///<param name='AsyncState'>An object representing the state of the operation.</param>
-		[OperationContract(AsyncPattern = true, IsInitiating = false)]
-		IAsyncResult BeginAsyncTestInvoke( AsyncCallback Callback, object AsyncState);
-		///<summary>Finalizes the asynchronous operation.</summary>
-		///<returns>
-		///
-		///</returns>
-		///<param name='result'>The result of the operation.</param>
-		bool EndAsyncTestInvoke(IAsyncResult result);
+		bool SyncTest();
 
 		[OperationContract(IsInitiating = false)]
-		System.Threading.Tasks.Task<string> AwaitTestAsync();
+		sbyte AsyncTestInvoke();
+
+		[OperationContract(IsInitiating = false)]
+		ObservableCollection<Test1.TestData1> AwaitTestAsync();
 
 	}
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
@@ -103,95 +81,24 @@ namespace WCFArchitect.Projects
 		public TestServiceCallback()
 		{
 			__callback = System.ServiceModel.OperationContext.Current.GetCallbackChannel<ITestServiceCallback>();
-			onBeginAsyncTestDelegate = new BeginOperationDelegate(this.OnBeginAsyncTest);
-			onEndAsyncTestDelegate = new EndOperationDelegate(this.OnEndAsyncTest);
-			onAsyncTestCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnAsyncTestCompleted);
 		}
 
 		public TestServiceCallback(ITestServiceCallback callback)
 		{
 			__callback = callback;
-			onBeginAsyncTestDelegate = new BeginOperationDelegate(this.OnBeginAsyncTest);
-			onEndAsyncTestDelegate = new EndOperationDelegate(this.OnEndAsyncTest);
-			onAsyncTestCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnAsyncTestCompleted);
 		}
 
-		protected class InvokeAsyncCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+		public bool SyncTest()
 		{
-			public object[] Results { get; set; }
-			public InvokeAsyncCompletedEventArgs(object[] results, System.Exception error, bool cancelled, Object userState) : base(error, cancelled, userState)
-			{
-				Results = results;
-			}
+			return __callback.SyncTest();
 		}
 
-		protected delegate IAsyncResult BeginOperationDelegate(object[] inValues, AsyncCallback asyncCallback, Object state);
-		protected delegate object[] EndOperationDelegate(IAsyncResult result);
-
-		protected void InvokeAsync(BeginOperationDelegate beginOperationDelegate, object[] inValues, EndOperationDelegate endOperationDelegate, System.Threading.SendOrPostCallback operationCompletedCallback, object userState)
+		public sbyte AsyncTestInvoke()
 		{
-			if (beginOperationDelegate == null) throw new ArgumentNullException("Argument 'beginOperationDelegate' cannot be null.");
-			if (endOperationDelegate == null) throw new ArgumentNullException("Argument 'endOperationDelegate' cannot be null.");
-			AsyncCallback cb = delegate(IAsyncResult ar)
-			{
-				object[] results = null;
-				Exception error = null;
-				try { results = endOperationDelegate(ar); }
-				catch (Exception ex) { error = ex; }
-				if (operationCompletedCallback != null) operationCompletedCallback(new InvokeAsyncCompletedEventArgs(results, error, false, userState));
-			};
-			beginOperationDelegate(inValues, cb, userState);
+			return __callback.AsyncTestInvoke();
 		}
 
-		public void SyncTest()
-		{
-			__callback.SyncTest();
-		}
-
-		private readonly BeginOperationDelegate onBeginAsyncTestDelegate;
-		private readonly EndOperationDelegate onEndAsyncTestDelegate;
-		private readonly System.Threading.SendOrPostCallback onAsyncTestCompletedDelegate;
-		public Action<bool, System.Exception, bool, object> AsyncTestCompleted;
-		///<param name='Callback'>The function to call when the operation is complete.</param>
-		///<param name='AsyncState'>An object representing the state of the operation.</param>
-		IAsyncResult ITestServiceCallback.BeginAsyncTestInvoke(AsyncCallback Callback, object AsyncState)
-		{
-			return __callback.BeginAsyncTestInvoke(Callback, AsyncState);
-		}
-		///<summary>Finalizes the asynchronous operation.</summary>
-		///<returns>
-		///
-		///</returns>
-		///<param name='result'>The result of the operation.</param>
-		bool ITestServiceCallback.EndAsyncTestInvoke(IAsyncResult result)
-		{
-			return __callback.EndAsyncTestInvoke(result);
-		}
-		private IAsyncResult OnBeginAsyncTest(object[] Values, AsyncCallback Callback, object AsyncState)
-		{
-			return ((ITestServiceCallback)this).BeginAsyncTestInvoke(Callback, AsyncState);
-		}
-		private object[] OnEndAsyncTest(IAsyncResult result)
-		{
-			return new object[] { ((ITestServiceCallback)this).EndAsyncTestInvoke(result) };
-		}
-		private void OnAsyncTestCompleted(object state)
-		{
-			if (this.AsyncTestCompleted == null) return;
-			InvokeAsyncCompletedEventArgs e = (InvokeAsyncCompletedEventArgs)state;
-			this.AsyncTestCompleted((bool)e.Results[0], e.Error, e.Cancelled, e.UserState);
-		}
-		public void AsyncTestInvoke()
-		{
-			this.AsyncTestInvoke(null);
-		}
-		///<param name='userState'>Allows the user of this function to distinguish between different calls.</param>
-		public void AsyncTestInvoke(object userState)
-		{
-			InvokeAsync(this.onBeginAsyncTestDelegate, new object[] {  }, this.onEndAsyncTestDelegate, this.onAsyncTestCompletedDelegate, userState);
-		}
-
-		public System.Threading.Tasks.Task<string> AwaitTestAsync()
+		public ObservableCollection<Test1.TestData1> AwaitTestAsync()
 		{
 			return __callback.AwaitTestAsync();
 		}
@@ -199,10 +106,273 @@ namespace WCFArchitect.Projects
 	}
 
 
-}
-namespace WCFArchitect.Projects.TestNS
-{
-}
+	/**************************************************************************
+	*	Service Hosts
+	**************************************************************************/
 
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	public partial class TestHost : ServiceHost
+	{
+		public ServiceThrottlingBehavior TestT1 { get; private set; }
+		public ServiceDebugBehavior TestD1 { get; private set; }
+		public ServiceMetadataBehavior TestM1 { get; private set; }
+		public WebHttpBehavior TestW1 { get; private set; }
+		public ServiceThrottlingBehavior TestT3 { get; private set; }
+		public TestHost(object singletonInstance) : base(singletonInstance)
+		{
+			this.Authorization.ImpersonateCallerForAllOperations = false;
+			this.Authorization.PrincipalPermissionMode = System.ServiceModel.Description.PrincipalPermissionMode.None;
+			this.CloseTimeout = new TimeSpan(600000000);
+			this.OpenTimeout = new TimeSpan(600000000);
+			this.Description.Name = "TestHost";
+			this.Description.Namespace = "http://www.prospectivesoftware.com/";
+			this.TestT1 = new ServiceThrottlingBehavior();
+			this.TestT1.MaxConcurrentCalls = 16;
+			this.TestT1.MaxConcurrentInstances = 26;
+			this.TestT1.MaxConcurrentSessions = 10;
+			this.TestD1 = new ServiceDebugBehavior();
+			this.TestD1.IncludeExceptionDetailInFaults = false;
+			this.TestM1 = new ServiceMetadataBehavior();
+			this.TestM1.ExternalMetadataLocation = new Uri("");
+			this.Description.Behaviors.Add(TestM1);
+			this.TestW1 = new WebHttpBehavior();
+			this.TestW1.AutomaticFormatSelectionEnabled = false;
+			this.TestW1.DefaultBodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.Bare;
+			this.TestW1.DefaultOutgoingRequestFormat = System.ServiceModel.Web.WebMessageFormat.Xml;
+			this.TestW1.DefaultOutgoingResponseFormat = System.ServiceModel.Web.WebMessageFormat.Xml;
+			this.TestW1.FaultExceptionEnabled = false;
+			this.TestW1.HelpEnabled = false;
+			this.TestT3 = new ServiceThrottlingBehavior();
+			this.TestT3.MaxConcurrentCalls = 16;
+			this.TestT3.MaxConcurrentInstances = 26;
+			this.TestT3.MaxConcurrentSessions = 10;
+			this.Description.Behaviors.Add(TestT3);
+		}
+		public TestHost(Type serviceType) : base(serviceType)
+		{
+			this.Authorization.ImpersonateCallerForAllOperations = false;
+			this.Authorization.PrincipalPermissionMode = System.ServiceModel.Description.PrincipalPermissionMode.None;
+			this.CloseTimeout = new TimeSpan(600000000);
+			this.OpenTimeout = new TimeSpan(600000000);
+			this.Description.Name = "TestHost";
+			this.Description.Namespace = "http://www.prospectivesoftware.com/";
+			this.TestT1 = new ServiceThrottlingBehavior();
+			this.TestT1.MaxConcurrentCalls = 16;
+			this.TestT1.MaxConcurrentInstances = 26;
+			this.TestT1.MaxConcurrentSessions = 10;
+			this.TestD1 = new ServiceDebugBehavior();
+			this.TestD1.IncludeExceptionDetailInFaults = false;
+			this.TestM1 = new ServiceMetadataBehavior();
+			this.TestM1.ExternalMetadataLocation = new Uri("");
+			this.Description.Behaviors.Add(TestM1);
+			this.TestW1 = new WebHttpBehavior();
+			this.TestW1.AutomaticFormatSelectionEnabled = false;
+			this.TestW1.DefaultBodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.Bare;
+			this.TestW1.DefaultOutgoingRequestFormat = System.ServiceModel.Web.WebMessageFormat.Xml;
+			this.TestW1.DefaultOutgoingResponseFormat = System.ServiceModel.Web.WebMessageFormat.Xml;
+			this.TestW1.FaultExceptionEnabled = false;
+			this.TestW1.HelpEnabled = false;
+			this.TestT3 = new ServiceThrottlingBehavior();
+			this.TestT3.MaxConcurrentCalls = 16;
+			this.TestT3.MaxConcurrentInstances = 26;
+			this.TestT3.MaxConcurrentSessions = 10;
+			this.Description.Behaviors.Add(TestT3);
+		}
+		public TestHost(object singletonInstance, params Uri[] BaseAddresses) : base(singletonInstance, BaseAddresses)
+		{
+			this.Authorization.ImpersonateCallerForAllOperations = false;
+			this.Authorization.PrincipalPermissionMode = System.ServiceModel.Description.PrincipalPermissionMode.None;
+			this.CloseTimeout = new TimeSpan(600000000);
+			this.OpenTimeout = new TimeSpan(600000000);
+			this.Description.Name = "TestHost";
+			this.Description.Namespace = "http://www.prospectivesoftware.com/";
+			this.TestT1 = new ServiceThrottlingBehavior();
+			this.TestT1.MaxConcurrentCalls = 16;
+			this.TestT1.MaxConcurrentInstances = 26;
+			this.TestT1.MaxConcurrentSessions = 10;
+			this.TestD1 = new ServiceDebugBehavior();
+			this.TestD1.IncludeExceptionDetailInFaults = false;
+			this.TestM1 = new ServiceMetadataBehavior();
+			this.TestM1.ExternalMetadataLocation = new Uri("");
+			this.Description.Behaviors.Add(TestM1);
+			this.TestW1 = new WebHttpBehavior();
+			this.TestW1.AutomaticFormatSelectionEnabled = false;
+			this.TestW1.DefaultBodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.Bare;
+			this.TestW1.DefaultOutgoingRequestFormat = System.ServiceModel.Web.WebMessageFormat.Xml;
+			this.TestW1.DefaultOutgoingResponseFormat = System.ServiceModel.Web.WebMessageFormat.Xml;
+			this.TestW1.FaultExceptionEnabled = false;
+			this.TestW1.HelpEnabled = false;
+			this.TestT3 = new ServiceThrottlingBehavior();
+			this.TestT3.MaxConcurrentCalls = 16;
+			this.TestT3.MaxConcurrentInstances = 26;
+			this.TestT3.MaxConcurrentSessions = 10;
+			this.Description.Behaviors.Add(TestT3);
+		}
+		public TestHost(Type serviceType, params Uri[] BaseAddresses) : base(serviceType, BaseAddresses)
+		{
+			this.Authorization.ImpersonateCallerForAllOperations = false;
+			this.Authorization.PrincipalPermissionMode = System.ServiceModel.Description.PrincipalPermissionMode.None;
+			this.CloseTimeout = new TimeSpan(600000000);
+			this.OpenTimeout = new TimeSpan(600000000);
+			this.Description.Name = "TestHost";
+			this.Description.Namespace = "http://www.prospectivesoftware.com/";
+			this.TestT1 = new ServiceThrottlingBehavior();
+			this.TestT1.MaxConcurrentCalls = 16;
+			this.TestT1.MaxConcurrentInstances = 26;
+			this.TestT1.MaxConcurrentSessions = 10;
+			this.TestD1 = new ServiceDebugBehavior();
+			this.TestD1.IncludeExceptionDetailInFaults = false;
+			this.TestM1 = new ServiceMetadataBehavior();
+			this.TestM1.ExternalMetadataLocation = new Uri("");
+			this.Description.Behaviors.Add(TestM1);
+			this.TestW1 = new WebHttpBehavior();
+			this.TestW1.AutomaticFormatSelectionEnabled = false;
+			this.TestW1.DefaultBodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.Bare;
+			this.TestW1.DefaultOutgoingRequestFormat = System.ServiceModel.Web.WebMessageFormat.Xml;
+			this.TestW1.DefaultOutgoingResponseFormat = System.ServiceModel.Web.WebMessageFormat.Xml;
+			this.TestW1.FaultExceptionEnabled = false;
+			this.TestW1.HelpEnabled = false;
+			this.TestT3 = new ServiceThrottlingBehavior();
+			this.TestT3.MaxConcurrentCalls = 16;
+			this.TestT3.MaxConcurrentInstances = 26;
+			this.TestT3.MaxConcurrentSessions = 10;
+			this.Description.Behaviors.Add(TestT3);
+		}
+		public TestHost(object singletonInstance, bool DisableDefaultEndpoints) : base(singletonInstance)
+		{
+			this.Authorization.ImpersonateCallerForAllOperations = false;
+			this.Authorization.PrincipalPermissionMode = System.ServiceModel.Description.PrincipalPermissionMode.None;
+			this.CloseTimeout = new TimeSpan(600000000);
+			this.OpenTimeout = new TimeSpan(600000000);
+			this.Description.Name = "TestHost";
+			this.Description.Namespace = "http://www.prospectivesoftware.com/";
+			this.TestT1 = new ServiceThrottlingBehavior();
+			this.TestT1.MaxConcurrentCalls = 16;
+			this.TestT1.MaxConcurrentInstances = 26;
+			this.TestT1.MaxConcurrentSessions = 10;
+			this.TestD1 = new ServiceDebugBehavior();
+			this.TestD1.IncludeExceptionDetailInFaults = false;
+			this.TestM1 = new ServiceMetadataBehavior();
+			this.TestM1.ExternalMetadataLocation = new Uri("");
+			this.Description.Behaviors.Add(TestM1);
+			this.TestW1 = new WebHttpBehavior();
+			this.TestW1.AutomaticFormatSelectionEnabled = false;
+			this.TestW1.DefaultBodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.Bare;
+			this.TestW1.DefaultOutgoingRequestFormat = System.ServiceModel.Web.WebMessageFormat.Xml;
+			this.TestW1.DefaultOutgoingResponseFormat = System.ServiceModel.Web.WebMessageFormat.Xml;
+			this.TestW1.FaultExceptionEnabled = false;
+			this.TestW1.HelpEnabled = false;
+			this.TestT3 = new ServiceThrottlingBehavior();
+			this.TestT3.MaxConcurrentCalls = 16;
+			this.TestT3.MaxConcurrentInstances = 26;
+			this.TestT3.MaxConcurrentSessions = 10;
+			this.Description.Behaviors.Add(TestT3);
+			if(DisableDefaultEndpoints == false)
+			{
+			}
+		}
+		public TestHost(Type serviceType, bool DisableDefaultEndpoints) : base(serviceType)
+		{
+			this.Authorization.ImpersonateCallerForAllOperations = false;
+			this.Authorization.PrincipalPermissionMode = System.ServiceModel.Description.PrincipalPermissionMode.None;
+			this.CloseTimeout = new TimeSpan(600000000);
+			this.OpenTimeout = new TimeSpan(600000000);
+			this.Description.Name = "TestHost";
+			this.Description.Namespace = "http://www.prospectivesoftware.com/";
+			this.TestT1 = new ServiceThrottlingBehavior();
+			this.TestT1.MaxConcurrentCalls = 16;
+			this.TestT1.MaxConcurrentInstances = 26;
+			this.TestT1.MaxConcurrentSessions = 10;
+			this.TestD1 = new ServiceDebugBehavior();
+			this.TestD1.IncludeExceptionDetailInFaults = false;
+			this.TestM1 = new ServiceMetadataBehavior();
+			this.TestM1.ExternalMetadataLocation = new Uri("");
+			this.Description.Behaviors.Add(TestM1);
+			this.TestW1 = new WebHttpBehavior();
+			this.TestW1.AutomaticFormatSelectionEnabled = false;
+			this.TestW1.DefaultBodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.Bare;
+			this.TestW1.DefaultOutgoingRequestFormat = System.ServiceModel.Web.WebMessageFormat.Xml;
+			this.TestW1.DefaultOutgoingResponseFormat = System.ServiceModel.Web.WebMessageFormat.Xml;
+			this.TestW1.FaultExceptionEnabled = false;
+			this.TestW1.HelpEnabled = false;
+			this.TestT3 = new ServiceThrottlingBehavior();
+			this.TestT3.MaxConcurrentCalls = 16;
+			this.TestT3.MaxConcurrentInstances = 26;
+			this.TestT3.MaxConcurrentSessions = 10;
+			this.Description.Behaviors.Add(TestT3);
+			if(DisableDefaultEndpoints == false)
+			{
+			}
+		}
+		public TestHost(object singletonInstance, bool DisableDefaultEndpoints, params Uri[] BaseAddresses) : base(singletonInstance, BaseAddresses)
+		{
+			this.Authorization.ImpersonateCallerForAllOperations = false;
+			this.Authorization.PrincipalPermissionMode = System.ServiceModel.Description.PrincipalPermissionMode.None;
+			this.CloseTimeout = new TimeSpan(600000000);
+			this.OpenTimeout = new TimeSpan(600000000);
+			this.Description.Name = "TestHost";
+			this.Description.Namespace = "http://www.prospectivesoftware.com/";
+			this.TestT1 = new ServiceThrottlingBehavior();
+			this.TestT1.MaxConcurrentCalls = 16;
+			this.TestT1.MaxConcurrentInstances = 26;
+			this.TestT1.MaxConcurrentSessions = 10;
+			this.TestD1 = new ServiceDebugBehavior();
+			this.TestD1.IncludeExceptionDetailInFaults = false;
+			this.TestM1 = new ServiceMetadataBehavior();
+			this.TestM1.ExternalMetadataLocation = new Uri("");
+			this.Description.Behaviors.Add(TestM1);
+			this.TestW1 = new WebHttpBehavior();
+			this.TestW1.AutomaticFormatSelectionEnabled = false;
+			this.TestW1.DefaultBodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.Bare;
+			this.TestW1.DefaultOutgoingRequestFormat = System.ServiceModel.Web.WebMessageFormat.Xml;
+			this.TestW1.DefaultOutgoingResponseFormat = System.ServiceModel.Web.WebMessageFormat.Xml;
+			this.TestW1.FaultExceptionEnabled = false;
+			this.TestW1.HelpEnabled = false;
+			this.TestT3 = new ServiceThrottlingBehavior();
+			this.TestT3.MaxConcurrentCalls = 16;
+			this.TestT3.MaxConcurrentInstances = 26;
+			this.TestT3.MaxConcurrentSessions = 10;
+			this.Description.Behaviors.Add(TestT3);
+			if(DisableDefaultEndpoints == false)
+			{
+			}
+		}
+		public TestHost(Type serviceType, bool DisableDefaultEndpoints, params Uri[] BaseAddresses) : base(serviceType, BaseAddresses)
+		{
+			this.Authorization.ImpersonateCallerForAllOperations = false;
+			this.Authorization.PrincipalPermissionMode = System.ServiceModel.Description.PrincipalPermissionMode.None;
+			this.CloseTimeout = new TimeSpan(600000000);
+			this.OpenTimeout = new TimeSpan(600000000);
+			this.Description.Name = "TestHost";
+			this.Description.Namespace = "http://www.prospectivesoftware.com/";
+			this.TestT1 = new ServiceThrottlingBehavior();
+			this.TestT1.MaxConcurrentCalls = 16;
+			this.TestT1.MaxConcurrentInstances = 26;
+			this.TestT1.MaxConcurrentSessions = 10;
+			this.TestD1 = new ServiceDebugBehavior();
+			this.TestD1.IncludeExceptionDetailInFaults = false;
+			this.TestM1 = new ServiceMetadataBehavior();
+			this.TestM1.ExternalMetadataLocation = new Uri("");
+			this.Description.Behaviors.Add(TestM1);
+			this.TestW1 = new WebHttpBehavior();
+			this.TestW1.AutomaticFormatSelectionEnabled = false;
+			this.TestW1.DefaultBodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.Bare;
+			this.TestW1.DefaultOutgoingRequestFormat = System.ServiceModel.Web.WebMessageFormat.Xml;
+			this.TestW1.DefaultOutgoingResponseFormat = System.ServiceModel.Web.WebMessageFormat.Xml;
+			this.TestW1.FaultExceptionEnabled = false;
+			this.TestW1.HelpEnabled = false;
+			this.TestT3 = new ServiceThrottlingBehavior();
+			this.TestT3.MaxConcurrentCalls = 16;
+			this.TestT3.MaxConcurrentInstances = 26;
+			this.TestT3.MaxConcurrentSessions = 10;
+			this.Description.Behaviors.Add(TestT3);
+			if(DisableDefaultEndpoints == false)
+			{
+			}
+		}
+	}
+
+
+}
 
 #pragma warning restore 1591

@@ -38,16 +38,16 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty ListenAddressProperty = DependencyProperty.Register("ListenAddress", typeof(string), typeof(ServiceBinding));
 
 		public TimeSpan CloseTimeout { get { return (TimeSpan)GetValue(CloseTimeoutProperty); } set { SetValue(CloseTimeoutProperty, value); } }
-		public static readonly DependencyProperty CloseTimeoutProperty = DependencyProperty.Register("CloseTimeout", typeof(TimeSpan), typeof(ServiceBinding));
+		public static readonly DependencyProperty CloseTimeoutProperty = DependencyProperty.Register("CloseTimeout", typeof(TimeSpan), typeof(ServiceBinding), new PropertyMetadata(new TimeSpan(0, 1, 0)));
 
 		public TimeSpan OpenTimeout { get { return (TimeSpan)GetValue(OpenTimeoutProperty); } set { SetValue(OpenTimeoutProperty, value); } }
-		public static readonly DependencyProperty OpenTimeoutProperty = DependencyProperty.Register("OpenTimeout", typeof(TimeSpan), typeof(ServiceBinding));
+		public static readonly DependencyProperty OpenTimeoutProperty = DependencyProperty.Register("OpenTimeout", typeof(TimeSpan), typeof(ServiceBinding), new PropertyMetadata(new TimeSpan(0, 1, 0)));
 
 		public TimeSpan ReceiveTimeout { get { return (TimeSpan)GetValue(ReceiveTimeoutProperty); } set { SetValue(ReceiveTimeoutProperty, value); } }
-		public static readonly DependencyProperty ReceiveTimeoutProperty = DependencyProperty.Register("ReceiveTimeout", typeof(TimeSpan), typeof(ServiceBinding));
+		public static readonly DependencyProperty ReceiveTimeoutProperty = DependencyProperty.Register("ReceiveTimeout", typeof(TimeSpan), typeof(ServiceBinding), new PropertyMetadata(new TimeSpan(0, 10, 0)));
 
 		public TimeSpan SendTimeout { get { return (TimeSpan)GetValue(SendTimeoutProperty); } set { SetValue(SendTimeoutProperty, value); } }
-		public static readonly DependencyProperty SendTimeoutProperty = DependencyProperty.Register("SendTimeout", typeof(TimeSpan), typeof(ServiceBinding));
+		public static readonly DependencyProperty SendTimeoutProperty = DependencyProperty.Register("SendTimeout", typeof(TimeSpan), typeof(ServiceBinding), new PropertyMetadata(new TimeSpan(0, 10, 0)));
 
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(ServiceBinding));
@@ -130,8 +130,6 @@ namespace WCFArchitect.Projects
 				if (Field == "Namespace") Namespace = Args.RegexSearch.Replace(Namespace, Args.Replace);
 			}
 		}
-
-		public abstract ServiceBinding Copy(string HostName, Namespace Parent);
 	}
 
 	#region  - ServiceBindingBasicHTTP Class -
@@ -199,37 +197,6 @@ namespace WCFArchitect.Projects
 			TextEncoding = ServiceBindingTextEncoding.UTF8;
 			TransferMode = System.ServiceModel.TransferMode.Buffered;
 			UseDefaultWebProxy = true;
-		}
-
-		public override ServiceBinding Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new ServiceBindingBasicHTTP(Name + HostName, Parent);
-			bd.Namespace = Namespace;
-			bd.EndpointAddress = EndpointAddress;
-			bd.ListenAddress = ListenAddress;
-			bd.CloseTimeout = CloseTimeout;
-			bd.OpenTimeout = OpenTimeout;
-			bd.ReceiveTimeout = ReceiveTimeout;
-			bd.SendTimeout = SendTimeout;
-			bd.Security = (BindingSecurityBasicHTTP)Security.Copy(HostName, Parent);
-
-			bd.AllowCookies = AllowCookies;
-			bd.BypassProxyOnLocal = BypassProxyOnLocal;
-			bd.HostNameComparisonMode = HostNameComparisonMode;
-			bd.MaxBufferPoolSize = MaxBufferPoolSize;
-			bd.MaxBufferSize = MaxBufferSize;
-			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			bd.MessageEncoding = MessageEncoding;
-			bd.ProxyAddress = ProxyAddress;
-			bd.TextEncoding = TextEncoding;
-			bd.TransferMode = TransferMode;
-			bd.UseDefaultWebProxy = UseDefaultWebProxy;
-
-			Parent.Bindings.Add(bd);
-
-			return bd;
 		}
 	}
 
@@ -301,37 +268,6 @@ namespace WCFArchitect.Projects
 			TransferMode = System.ServiceModel.TransferMode.Buffered;
 			UseDefaultWebProxy = true;
 		}
-
-		public override ServiceBinding Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var BD = new ServiceBindingBasicHTTPS(Name + HostName, Parent);
-			BD.Namespace = Namespace;
-			BD.EndpointAddress = EndpointAddress;
-			BD.ListenAddress = ListenAddress;
-			BD.CloseTimeout = CloseTimeout;
-			BD.OpenTimeout = OpenTimeout;
-			BD.ReceiveTimeout = ReceiveTimeout;
-			BD.SendTimeout = SendTimeout;
-			BD.Security = (BindingSecurityBasicHTTPS)Security.Copy(HostName, Parent);
-
-			BD.AllowCookies = AllowCookies;
-			BD.BypassProxyOnLocal = BypassProxyOnLocal;
-			BD.HostNameComparisonMode = HostNameComparisonMode;
-			BD.MaxBufferPoolSize = MaxBufferPoolSize;
-			BD.MaxBufferSize = MaxBufferSize;
-			BD.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			BD.MessageEncoding = MessageEncoding;
-			BD.ProxyAddress = ProxyAddress;
-			BD.TextEncoding = TextEncoding;
-			BD.TransferMode = TransferMode;
-			BD.UseDefaultWebProxy = UseDefaultWebProxy;
-
-			Parent.Bindings.Add(BD);
-
-			return BD;
-		}
 	}
 
 	#endregion
@@ -384,7 +320,7 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty DisablePayloadMaskingProperty = DependencyProperty.Register("DisablePayloadMasking", typeof(bool), typeof(ServiceBindingNetHTTP));
 
 		public TimeSpan KeepAliveInterval { get { return (TimeSpan)GetValue(KeepAliveIntervalProperty); } set { SetValue(KeepAliveIntervalProperty, value); } }
-		public static readonly DependencyProperty KeepAliveIntervalProperty = DependencyProperty.Register("KeepAliveInterval", typeof(TimeSpan), typeof(ServiceBindingNetHTTP));
+		public static readonly DependencyProperty KeepAliveIntervalProperty = DependencyProperty.Register("KeepAliveInterval", typeof(TimeSpan), typeof(ServiceBindingNetHTTP), new PropertyMetadata(new TimeSpan(0, 10, 0)));
 
 		public int MaxPendingConnections { get { return (int)GetValue(MaxPendingConnectionsProperty); } set { SetValue(MaxPendingConnectionsProperty, value); } }
 		public static readonly DependencyProperty MaxPendingConnectionsProperty = DependencyProperty.Register("MaxPendingConnections", typeof(int), typeof(ServiceBindingNetHTTP));
@@ -400,7 +336,7 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty ReliableSessionEnabledProperty = DependencyProperty.Register("ReliableSessionEnabled", typeof(bool), typeof(ServiceBindingNetHTTP));
 
 		public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
-		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingNetHTTP));
+		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingNetHTTP), new PropertyMetadata(new TimeSpan(1, 0, 0)));
 
 		public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionsOrderedProperty = DependencyProperty.Register("ReliableSessionsOrdered", typeof(bool), typeof(ServiceBindingNetHTTP));
@@ -437,45 +373,6 @@ namespace WCFArchitect.Projects
 			ReliableSessionEnabled = false;
 			ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
 			ReliableSessionsOrdered = false;
-		}
-
-		public override ServiceBinding Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new ServiceBindingNetHTTP(Name + HostName, Parent);
-			bd.Namespace = Namespace;
-			bd.EndpointAddress = EndpointAddress;
-			bd.ListenAddress = ListenAddress;
-			bd.CloseTimeout = CloseTimeout;
-			bd.OpenTimeout = OpenTimeout;
-			bd.ReceiveTimeout = ReceiveTimeout;
-			bd.SendTimeout = SendTimeout;
-			bd.Security = (BindingSecurityBasicHTTP)Security.Copy(HostName, Parent);
-
-			bd.AllowCookies = AllowCookies;
-			bd.BypassProxyOnLocal = BypassProxyOnLocal;
-			bd.HostNameComparisonMode = HostNameComparisonMode;
-			bd.MaxBufferPoolSize = MaxBufferPoolSize;
-			bd.MaxBufferSize = MaxBufferSize;
-			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			bd.MessageEncoding = MessageEncoding;
-			bd.ProxyAddress = ProxyAddress;
-			bd.TextEncoding = TextEncoding;
-			bd.TransferMode = TransferMode;
-			bd.CreateNotificationOnConnection = CreateNotificationOnConnection;
-			bd.DisablePayloadMasking = DisablePayloadMasking;
-			bd.MaxPendingConnections = MaxPendingConnections;
-			bd.SubProtocol = SubProtocol;
-			bd.TransportUsage = TransportUsage;
-			bd.UseDefaultWebProxy = UseDefaultWebProxy;
-			bd.ReliableSessionEnabled = ReliableSessionEnabled;
-			bd.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
-			bd.ReliableSessionsOrdered = ReliableSessionsOrdered;
-
-			Parent.Bindings.Add(bd);
-
-			return bd;
 		}
 	}
 
@@ -529,7 +426,7 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty DisablePayloadMaskingProperty = DependencyProperty.Register("DisablePayloadMasking", typeof(bool), typeof(ServiceBindingNetHTTPS));
 
 		public TimeSpan KeepAliveInterval { get { return (TimeSpan)GetValue(KeepAliveIntervalProperty); } set { SetValue(KeepAliveIntervalProperty, value); } }
-		public static readonly DependencyProperty KeepAliveIntervalProperty = DependencyProperty.Register("KeepAliveInterval", typeof(TimeSpan), typeof(ServiceBindingNetHTTPS));
+		public static readonly DependencyProperty KeepAliveIntervalProperty = DependencyProperty.Register("KeepAliveInterval", typeof(TimeSpan), typeof(ServiceBindingNetHTTPS), new PropertyMetadata(new TimeSpan(0, 10, 0)));
 
 		public int MaxPendingConnections { get { return (int)GetValue(MaxPendingConnectionsProperty); } set { SetValue(MaxPendingConnectionsProperty, value); } }
 		public static readonly DependencyProperty MaxPendingConnectionsProperty = DependencyProperty.Register("MaxPendingConnections", typeof(int), typeof(ServiceBindingNetHTTPS));
@@ -545,7 +442,7 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty ReliableSessionEnabledProperty = DependencyProperty.Register("ReliableSessionEnabled", typeof(bool), typeof(ServiceBindingNetHTTPS));
 
 		public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
-		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingNetHTTPS));
+		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingNetHTTPS), new PropertyMetadata(new TimeSpan(1, 0, 0)));
 
 		public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionsOrderedProperty = DependencyProperty.Register("ReliableSessionsOrdered", typeof(bool), typeof(ServiceBindingNetHTTPS));
@@ -583,45 +480,6 @@ namespace WCFArchitect.Projects
 			ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
 			ReliableSessionsOrdered = false;
 		}
-
-		public override ServiceBinding Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var BD = new ServiceBindingNetHTTPS(Name + HostName, Parent);
-			BD.Namespace = Namespace;
-			BD.EndpointAddress = EndpointAddress;
-			BD.ListenAddress = ListenAddress;
-			BD.CloseTimeout = CloseTimeout;
-			BD.OpenTimeout = OpenTimeout;
-			BD.ReceiveTimeout = ReceiveTimeout;
-			BD.SendTimeout = SendTimeout;
-			BD.Security = (BindingSecurityBasicHTTPS)Security.Copy(HostName, Parent);
-
-			BD.AllowCookies = AllowCookies;
-			BD.BypassProxyOnLocal = BypassProxyOnLocal;
-			BD.HostNameComparisonMode = HostNameComparisonMode;
-			BD.MaxBufferPoolSize = MaxBufferPoolSize;
-			BD.MaxBufferSize = MaxBufferSize;
-			BD.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			BD.MessageEncoding = MessageEncoding;
-			BD.ProxyAddress = ProxyAddress;
-			BD.TextEncoding = TextEncoding;
-			BD.TransferMode = TransferMode;
-			BD.CreateNotificationOnConnection = CreateNotificationOnConnection;
-			BD.DisablePayloadMasking = DisablePayloadMasking;
-			BD.MaxPendingConnections = MaxPendingConnections;
-			BD.SubProtocol = SubProtocol;
-			BD.TransportUsage = TransportUsage;
-			BD.UseDefaultWebProxy = UseDefaultWebProxy;
-			BD.ReliableSessionEnabled = ReliableSessionEnabled;
-			BD.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
-			BD.ReliableSessionsOrdered = ReliableSessionsOrdered;
-
-			Parent.Bindings.Add(BD);
-
-			return BD;
-		}
 	}
 
 	#endregion
@@ -646,7 +504,7 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty ReliableSessionEnabledProperty = DependencyProperty.Register("ReliableSessionEnabled", typeof(bool), typeof(ServiceBindingWSHTTP));
 
 		public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
-		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingWSHTTP));
+		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingWSHTTP), new PropertyMetadata(new TimeSpan(1, 0, 0)));
 
 		public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionsOrderedProperty = DependencyProperty.Register("ReliableSessionsOrdered", typeof(bool), typeof(ServiceBindingWSHTTP));
@@ -700,38 +558,6 @@ namespace WCFArchitect.Projects
 			TransactionFlow = true;
 			UseDefaultWebProxy = true;
 		}
-
-		public override ServiceBinding Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new ServiceBindingWSHTTP(Name + HostName, Parent);
-			bd.Namespace = Namespace;
-			bd.EndpointAddress = EndpointAddress;
-			bd.ListenAddress = ListenAddress;
-			bd.CloseTimeout = CloseTimeout;
-			bd.OpenTimeout = OpenTimeout;
-			bd.ReceiveTimeout = ReceiveTimeout;
-			bd.SendTimeout = SendTimeout;
-			bd.Security = (BindingSecurityWSHTTP)Security.Copy(HostName, Parent);
-
-			bd.AllowCookies = AllowCookies;
-			bd.BypassProxyOnLocal = BypassProxyOnLocal;
-			bd.HostNameComparisonMode = HostNameComparisonMode;
-			bd.ReliableSessionEnabled = ReliableSessionEnabled;
-			bd.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
-			bd.ReliableSessionsOrdered = ReliableSessionsOrdered;
-			bd.MaxBufferPoolSize = MaxBufferPoolSize;
-			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			bd.MessageEncoding = MessageEncoding;
-			bd.ProxyAddress = ProxyAddress;
-			bd.TextEncoding = TextEncoding;
-			bd.UseDefaultWebProxy = UseDefaultWebProxy;
-
-			Parent.Bindings.Add(bd);
-
-			return bd;
-		}
 	}
 
 	#endregion
@@ -756,7 +582,7 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty ReliableSessionEnabledProperty = DependencyProperty.Register("ReliableSessionEnabled", typeof(bool), typeof(ServiceBindingWS2007HTTP));
 
 		public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
-		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingWS2007HTTP));
+		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingWS2007HTTP), new PropertyMetadata(new TimeSpan(1, 0, 0)));
 
 		public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionsOrderedProperty = DependencyProperty.Register("ReliableSessionsOrdered", typeof(bool), typeof(ServiceBindingWS2007HTTP));
@@ -810,38 +636,6 @@ namespace WCFArchitect.Projects
 			TransactionFlow = true;
 			UseDefaultWebProxy = true;
 		}
-
-		public override ServiceBinding Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new ServiceBindingWS2007HTTP(Name + HostName, Parent);
-			bd.Namespace = Namespace;
-			bd.EndpointAddress = EndpointAddress;
-			bd.ListenAddress = ListenAddress;
-			bd.CloseTimeout = CloseTimeout;
-			bd.OpenTimeout = OpenTimeout;
-			bd.ReceiveTimeout = ReceiveTimeout;
-			bd.SendTimeout = SendTimeout;
-			bd.Security = (BindingSecurityWSHTTP)Security.Copy(HostName, Parent);
-
-			bd.AllowCookies = AllowCookies;
-			bd.BypassProxyOnLocal = BypassProxyOnLocal;
-			bd.HostNameComparisonMode = HostNameComparisonMode;
-			bd.ReliableSessionEnabled = ReliableSessionEnabled;
-			bd.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
-			bd.ReliableSessionsOrdered = ReliableSessionsOrdered;
-			bd.MaxBufferPoolSize = MaxBufferPoolSize;
-			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			bd.MessageEncoding = MessageEncoding;
-			bd.ProxyAddress = ProxyAddress;
-			bd.TextEncoding = TextEncoding;
-			bd.UseDefaultWebProxy = UseDefaultWebProxy;
-
-			Parent.Bindings.Add(bd);
-
-			return bd;
-		}
 	}
 
 	#endregion
@@ -863,7 +657,7 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty HostNameComparisonModeProperty = DependencyProperty.Register("HostNameComparisonMode", typeof(System.ServiceModel.HostNameComparisonMode), typeof(ServiceBindingWS2007HTTP));
 
 		public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
-		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingWS2007HTTP));
+		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingWS2007HTTP), new PropertyMetadata(new TimeSpan(1, 0, 0)));
 
 		public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionsOrderedProperty = DependencyProperty.Register("ReliableSessionsOrdered", typeof(bool), typeof(ServiceBindingWS2007HTTP));
@@ -915,37 +709,6 @@ namespace WCFArchitect.Projects
 			TransactionFlow = true;
 			UseDefaultWebProxy = true;
 		}
-
-		public override ServiceBinding Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new ServiceBindingWSDualHTTP(Name + HostName, Parent);
-			bd.Namespace = Namespace;
-			bd.EndpointAddress = EndpointAddress;
-			bd.ListenAddress = ListenAddress;
-			bd.CloseTimeout = CloseTimeout;
-			bd.OpenTimeout = OpenTimeout;
-			bd.ReceiveTimeout = ReceiveTimeout;
-			bd.SendTimeout = SendTimeout;
-			bd.Security = (BindingSecurityWSDualHTTP)Security.Copy(HostName, Parent);
-
-			bd.BypassProxyOnLocal = BypassProxyOnLocal;
-			bd.HostNameComparisonMode = HostNameComparisonMode;
-			bd.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
-			bd.ReliableSessionsOrdered = ReliableSessionsOrdered;
-			bd.MaxBufferPoolSize = MaxBufferPoolSize;
-			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			bd.MessageEncoding = MessageEncoding;
-			bd.ProxyAddress = ProxyAddress;
-			bd.TextEncoding = TextEncoding;
-			bd.UseDefaultWebProxy = UseDefaultWebProxy;
-			bd.TransactionFlow = TransactionFlow;
-
-			Parent.Bindings.Add(bd);
-
-			return bd;
-		}
 	}
 
 	#endregion
@@ -967,7 +730,7 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty ReliableSessionEnabledProperty = DependencyProperty.Register("ReliableSessionEnabled", typeof(bool), typeof(ServiceBindingWSFederationHTTP));
 
 		public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
-		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingWSFederationHTTP));
+		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingWSFederationHTTP), new PropertyMetadata(new TimeSpan(1, 0, 0)));
 
 		public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionsOrderedProperty = DependencyProperty.Register("ReliableSessionsOrdered", typeof(bool), typeof(ServiceBindingWSFederationHTTP));
@@ -1026,40 +789,6 @@ namespace WCFArchitect.Projects
 			TransactionFlow = true;
 			UseDefaultWebProxy = true;
 		}
-
-		public override ServiceBinding Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new ServiceBindingWSFederationHTTP(Name + HostName, Parent);
-			bd.Namespace = Namespace;
-			bd.EndpointAddress = EndpointAddress;
-			bd.ListenAddress = ListenAddress;
-			bd.CloseTimeout = CloseTimeout;
-			bd.OpenTimeout = OpenTimeout;
-			bd.ReceiveTimeout = ReceiveTimeout;
-			bd.SendTimeout = SendTimeout;
-			bd.Security = (BindingSecurityWSFederationHTTP)Security.Copy(HostName, Parent);
-
-			bd.BypassProxyOnLocal = BypassProxyOnLocal;
-			bd.HostNameComparisonMode = HostNameComparisonMode;
-			bd.ReliableSessionEnabled = ReliableSessionEnabled;
-			bd.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
-			bd.ReliableSessionsOrdered = ReliableSessionsOrdered;
-			bd.MaxBufferPoolSize = MaxBufferPoolSize;
-			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			bd.MessageEncoding = MessageEncoding;
-			bd.ProxyAddress = ProxyAddress;
-			bd.TextEncoding = TextEncoding;
-			bd.UseDefaultWebProxy = UseDefaultWebProxy;
-			bd.PrivacyNoticeAt = PrivacyNoticeAt;
-			bd.PrivacyNoticeVersion = PrivacyNoticeVersion;
-			bd.TransactionFlow = TransactionFlow;
-
-			Parent.Bindings.Add(bd);
-
-			return bd;
-		}
 	}
 
 	#endregion
@@ -1078,7 +807,7 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty HostNameComparisonModeProperty = DependencyProperty.Register("HostNameComparisonMode", typeof(System.ServiceModel.HostNameComparisonMode), typeof(ServiceBindingWS2007FederationHTTP));
 
 		public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
-		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingWS2007FederationHTTP));
+		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingWS2007FederationHTTP), new PropertyMetadata(new TimeSpan(1, 0, 0)));
 
 		public bool ReliableSessionEnabled { get { return (bool)GetValue(ReliableSessionEnabledProperty); } set { SetValue(ReliableSessionEnabledProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionEnabledProperty = DependencyProperty.Register("ReliableSessionEnabled", typeof(bool), typeof(ServiceBindingWS2007FederationHTTP));
@@ -1140,40 +869,6 @@ namespace WCFArchitect.Projects
 			TransactionFlow = true;
 			UseDefaultWebProxy = true;
 		}
-
-		public override ServiceBinding Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new ServiceBindingWS2007FederationHTTP(Name + HostName, Parent);
-			bd.Namespace = Namespace;
-			bd.EndpointAddress = EndpointAddress;
-			bd.ListenAddress = ListenAddress;
-			bd.CloseTimeout = CloseTimeout;
-			bd.OpenTimeout = OpenTimeout;
-			bd.ReceiveTimeout = ReceiveTimeout;
-			bd.SendTimeout = SendTimeout;
-			bd.Security = (BindingSecurityWSFederationHTTP)Security.Copy(HostName, Parent);
-
-			bd.BypassProxyOnLocal = BypassProxyOnLocal;
-			bd.HostNameComparisonMode = HostNameComparisonMode;
-			bd.ReliableSessionEnabled = ReliableSessionEnabled;
-			bd.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
-			bd.ReliableSessionsOrdered = ReliableSessionsOrdered;
-			bd.MaxBufferPoolSize = MaxBufferPoolSize;
-			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			bd.MessageEncoding = MessageEncoding;
-			bd.ProxyAddress = ProxyAddress;
-			bd.TextEncoding = TextEncoding;
-			bd.UseDefaultWebProxy = UseDefaultWebProxy;
-			bd.PrivacyNoticeAt = PrivacyNoticeAt;
-			bd.PrivacyNoticeVersion = PrivacyNoticeVersion;
-			bd.TransactionFlow = TransactionFlow;
-
-			Parent.Bindings.Add(bd);
-
-			return bd;
-		}
 	}
 
 	#endregion
@@ -1192,7 +887,7 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty ReliableSessionEnabledProperty = DependencyProperty.Register("ReliableSessionEnabled", typeof(bool), typeof(ServiceBindingTCP));
 
 		public TimeSpan ReliableSessionInactivityTimeout { get { return (TimeSpan)GetValue(ReliableSessionInactivityTimeoutProperty); } set { SetValue(ReliableSessionInactivityTimeoutProperty, value); } }
-		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingTCP));
+		public static readonly DependencyProperty ReliableSessionInactivityTimeoutProperty = DependencyProperty.Register("ReliableSessionInactivityTimeout", typeof(TimeSpan), typeof(ServiceBindingTCP), new PropertyMetadata(new TimeSpan(1, 0, 0)));
 
 		public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionsOrderedProperty = DependencyProperty.Register("ReliableSessionsOrdered", typeof(bool), typeof(ServiceBindingTCP));
@@ -1253,39 +948,6 @@ namespace WCFArchitect.Projects
 			TransactionProtocol = ServiceBindingTransactionProtocol.Default;
 			TransferMode = System.ServiceModel.TransferMode.Buffered;
 		}
-
-		public override ServiceBinding Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new ServiceBindingTCP(Name + HostName, Parent);
-			bd.Namespace = Namespace;
-			bd.EndpointAddress = EndpointAddress;
-			bd.ListenAddress = ListenAddress;
-			bd.CloseTimeout = CloseTimeout;
-			bd.OpenTimeout = OpenTimeout;
-			bd.ReceiveTimeout = ReceiveTimeout;
-			bd.SendTimeout = SendTimeout;
-			bd.Security = (BindingSecurityTCP)Security.Copy(HostName, Parent);
-
-			bd.HostNameComparisonMode = HostNameComparisonMode;
-			bd.MaxBufferPoolSize = MaxBufferPoolSize;
-			bd.MaxBufferSize = MaxBufferSize;
-			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			bd.TransferMode = TransferMode;
-			bd.TransactionFlow = TransactionFlow;
-			bd.ListenBacklog = ListenBacklog;
-			bd.MaxConnections = MaxConnections;
-			bd.PortSharingEnabled = PortSharingEnabled;
-			bd.TransactionProtocol = TransactionProtocol;
-			bd.ReliableSessionEnabled = ReliableSessionEnabled;
-			bd.ReliableSessionInactivityTimeout = ReliableSessionInactivityTimeout;
-			bd.ReliableSessionsOrdered = ReliableSessionsOrdered;
-
-			Parent.Bindings.Add(bd);
-
-			return bd;
-		}
 	}
 
 	#endregion
@@ -1345,33 +1007,6 @@ namespace WCFArchitect.Projects
 			TransactionProtocol = ServiceBindingTransactionProtocol.Default;
 			TransferMode = System.ServiceModel.TransferMode.Buffered;
 		}
-		public override ServiceBinding Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new ServiceBindingNamedPipe(Name + HostName, Parent);
-			bd.Namespace = Namespace;
-			bd.EndpointAddress = EndpointAddress;
-			bd.ListenAddress = ListenAddress;
-			bd.CloseTimeout = CloseTimeout;
-			bd.OpenTimeout = OpenTimeout;
-			bd.ReceiveTimeout = ReceiveTimeout;
-			bd.SendTimeout = SendTimeout;
-			bd.Security = (BindingSecurityNamedPipe)Security.Copy(HostName, Parent);
-
-			bd.HostNameComparisonMode = HostNameComparisonMode;
-			bd.MaxBufferPoolSize = MaxBufferPoolSize;
-			bd.MaxBufferSize = MaxBufferSize;
-			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			bd.TransferMode = TransferMode;
-			bd.TransactionFlow = TransactionFlow;
-			bd.MaxConnections = MaxConnections;
-			bd.TransactionProtocol = TransactionProtocol;
-
-			Parent.Bindings.Add(bd);
-
-			return bd;
-		}
 	}
 
 	#endregion
@@ -1414,10 +1049,10 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty ReceiveRetryCountProperty = DependencyProperty.Register("ReceiveRetryCount", typeof(int), typeof(ServiceBindingMSMQ));
 
 		public TimeSpan RetryCycleDelay { get { return (TimeSpan)GetValue(RetryCycleDelayProperty); } set { SetValue(RetryCycleDelayProperty, value); } }
-		public static readonly DependencyProperty RetryCycleDelayProperty = DependencyProperty.Register("RetryCycleDelay", typeof(TimeSpan), typeof(ServiceBindingMSMQ));
+		public static readonly DependencyProperty RetryCycleDelayProperty = DependencyProperty.Register("RetryCycleDelay", typeof(TimeSpan), typeof(ServiceBindingMSMQ), new PropertyMetadata(new TimeSpan(0, 1, 0)));
 
 		public TimeSpan TimeToLive { get { return (TimeSpan)GetValue(TimeToLiveProperty); } set { SetValue(TimeToLiveProperty, value); } }
-		public static readonly DependencyProperty TimeToLiveProperty = DependencyProperty.Register("TimeToLive", typeof(TimeSpan), typeof(ServiceBindingMSMQ));
+		public static readonly DependencyProperty TimeToLiveProperty = DependencyProperty.Register("TimeToLive", typeof(TimeSpan), typeof(ServiceBindingMSMQ), new PropertyMetadata(new TimeSpan(0, 10, 0)));
 
 		public bool UseActiveDirectory { get { return (bool)GetValue(UseActiveDirectoryProperty); } set { SetValue(UseActiveDirectoryProperty, value); } }
 		public static readonly DependencyProperty UseActiveDirectoryProperty = DependencyProperty.Register("UseActiveDirectory", typeof(bool), typeof(ServiceBindingMSMQ));
@@ -1429,7 +1064,7 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty UseSourceJournalProperty = DependencyProperty.Register("UseSourceJournal", typeof(bool), typeof(ServiceBindingMSMQ));
 
 		public TimeSpan ValidityDuration { get { return (TimeSpan)GetValue(ValidityDurationProperty); } set { SetValue(ValidityDurationProperty, value); } }
-		public static readonly DependencyProperty ValidityDurationProperty = DependencyProperty.Register("ValidityDuration", typeof(TimeSpan), typeof(ServiceBindingMSMQ));
+		public static readonly DependencyProperty ValidityDurationProperty = DependencyProperty.Register("ValidityDuration", typeof(TimeSpan), typeof(ServiceBindingMSMQ), new PropertyMetadata(new TimeSpan(1, 0, 0)));
 
 		public bool Durable { get { return (bool)GetValue(DurableProperty); } set { SetValue(DurableProperty, value); } }
 		public static readonly DependencyProperty DurableProperty = DependencyProperty.Register("Durable", typeof(bool), typeof(ServiceBindingMSMQ));
@@ -1465,43 +1100,6 @@ namespace WCFArchitect.Projects
 			UseMSMQTracing = false;
 			UseSourceJournal = false;
 			ValidityDuration = TimeSpan.Zero;
-		}
-
-		public override ServiceBinding Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new ServiceBindingMSMQ(Name + HostName, Parent);
-			bd.Namespace = Namespace;
-			bd.EndpointAddress = EndpointAddress;
-			bd.ListenAddress = ListenAddress;
-			bd.CloseTimeout = CloseTimeout;
-			bd.OpenTimeout = OpenTimeout;
-			bd.ReceiveTimeout = ReceiveTimeout;
-			bd.SendTimeout = SendTimeout;
-			bd.Security = (BindingSecurityMSMQ)Security.Copy(HostName, Parent);
-
-			bd.MaxBufferPoolSize = MaxBufferPoolSize;
-			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			bd.CustomDeadLetterQueue = CustomDeadLetterQueue;
-			bd.DeadLetterQueue = DeadLetterQueue;
-			bd.ExactlyOnce = ExactlyOnce;
-			bd.MaxRetryCycles = MaxRetryCycles;
-			bd.QueueTransferProtocol = QueueTransferProtocol;
-			bd.ReceiveContextEnabled = ReceiveContextEnabled;
-			bd.ReceiveErrorHandling = ReceiveErrorHandling;
-			bd.ReceiveRetryCount = ReceiveRetryCount;
-			bd.RetryCycleDelay = RetryCycleDelay;
-			bd.TimeToLive = TimeToLive;
-			bd.UseActiveDirectory = UseActiveDirectory;
-			bd.UseMSMQTracing = UseMSMQTracing;
-			bd.UseSourceJournal = UseSourceJournal;
-			bd.ValidityDuration = ValidityDuration;
-			bd.Durable = Durable;
-
-			Parent.Bindings.Add(bd);
-
-			return bd;
 		}
 	}
 
@@ -1545,30 +1143,6 @@ namespace WCFArchitect.Projects
 			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
 			ListenIPAddress = "";
 			Port = 31337;		
-		}
-
-		public override ServiceBinding Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new ServiceBindingPeerTCP(Name + HostName, Parent);
-			bd.Namespace = Namespace;
-			bd.EndpointAddress = EndpointAddress;
-			bd.ListenAddress = ListenAddress;
-			bd.CloseTimeout = CloseTimeout;
-			bd.OpenTimeout = OpenTimeout;
-			bd.ReceiveTimeout = ReceiveTimeout;
-			bd.SendTimeout = SendTimeout;
-			bd.Security = (BindingSecurityPeerTCP)Security.Copy(HostName, Parent);
-
-			bd.MaxBufferPoolSize = MaxBufferPoolSize;
-			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			bd.ListenIPAddress = ListenIPAddress;
-			bd.Port = Port;
-
-			Parent.Bindings.Add(bd);
-
-			return bd;
 		}
 	}
 
@@ -1640,36 +1214,6 @@ namespace WCFArchitect.Projects
 			UseDefaultWebProxy = true;
 			WriteEncoding = ServiceBindingTextEncoding.UTF8;
 		}
-
-		public override ServiceBinding Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new ServiceBindingWebHTTP(Name + HostName, Parent);
-			bd.Namespace = Namespace;
-			bd.EndpointAddress = EndpointAddress;
-			bd.ListenAddress = ListenAddress;
-			bd.CloseTimeout = CloseTimeout;
-			bd.OpenTimeout = OpenTimeout;
-			bd.ReceiveTimeout = ReceiveTimeout;
-			bd.SendTimeout = SendTimeout;
-			bd.Security = (BindingSecurityWebHTTP)Security.Copy(HostName, Parent);
-
-			bd.BypassProxyOnLocal = BypassProxyOnLocal;
-			bd.HostNameComparisonMode = HostNameComparisonMode;
-			bd.MaxBufferPoolSize = MaxBufferPoolSize;
-			bd.MaxBufferSize = MaxBufferSize;
-			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			bd.ProxyAddress = ProxyAddress;
-			bd.TransferMode = TransferMode;
-			bd.UseDefaultWebProxy = UseDefaultWebProxy;
-			bd.CrossDomainScriptAccessEnabled = CrossDomainScriptAccessEnabled;
-			bd.WriteEncoding = WriteEncoding;
-
-			Parent.Bindings.Add(bd);
-
-			return bd;
-		}
 	}
 
 	#endregion 
@@ -1706,10 +1250,10 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty ReceiveRetryCountProperty = DependencyProperty.Register("ReceiveRetryCount", typeof(int), typeof(ServiceBindingMSMQIntegration));
 
 		public TimeSpan RetryCycleDelay { get { return (TimeSpan)GetValue(RetryCycleDelayProperty); } set { SetValue(RetryCycleDelayProperty, value); } }
-		public static readonly DependencyProperty RetryCycleDelayProperty = DependencyProperty.Register("RetryCycleDelay", typeof(TimeSpan), typeof(ServiceBindingMSMQIntegration));
+		public static readonly DependencyProperty RetryCycleDelayProperty = DependencyProperty.Register("RetryCycleDelay", typeof(TimeSpan), typeof(ServiceBindingMSMQIntegration), new PropertyMetadata(new TimeSpan(0, 1, 0)));
 
 		public TimeSpan TimeToLive { get { return (TimeSpan)GetValue(TimeToLiveProperty); } set { SetValue(TimeToLiveProperty, value); } }
-		public static readonly DependencyProperty TimeToLiveProperty = DependencyProperty.Register("TimeToLive", typeof(TimeSpan), typeof(ServiceBindingMSMQIntegration));
+		public static readonly DependencyProperty TimeToLiveProperty = DependencyProperty.Register("TimeToLive", typeof(TimeSpan), typeof(ServiceBindingMSMQIntegration), new PropertyMetadata(new TimeSpan(0, 10, 0)));
 
 		public bool UseMSMQTracing { get { return (bool)GetValue(UseMSMQTracingProperty); } set { SetValue(UseMSMQTracingProperty, value); } }
 		public static readonly DependencyProperty UseMSMQTracingProperty = DependencyProperty.Register("UseMSMQTracing", typeof(bool), typeof(ServiceBindingMSMQIntegration));
@@ -1718,7 +1262,7 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty UseSourceJournalProperty = DependencyProperty.Register("UseSourceJournal", typeof(bool), typeof(ServiceBindingMSMQIntegration));
 
 		public TimeSpan ValidityDuration { get { return (TimeSpan)GetValue(ValidityDurationProperty); } set { SetValue(ValidityDurationProperty, value); } }
-		public static readonly DependencyProperty ValidityDurationProperty = DependencyProperty.Register("ValidityDuration", typeof(TimeSpan), typeof(ServiceBindingMSMQIntegration));
+		public static readonly DependencyProperty ValidityDurationProperty = DependencyProperty.Register("ValidityDuration", typeof(TimeSpan), typeof(ServiceBindingMSMQIntegration), new PropertyMetadata(new TimeSpan(1, 0, 0)));
 
 		public bool Durable { get { return (bool)GetValue(DurableProperty); } set { SetValue(DurableProperty, value); } }
 		public static readonly DependencyProperty DurableProperty = DependencyProperty.Register("Durable", typeof(bool), typeof(ServiceBinding));
@@ -1754,41 +1298,6 @@ namespace WCFArchitect.Projects
 			UseMSMQTracing = false;
 			UseSourceJournal = false;
 			ValidityDuration = TimeSpan.Zero;
-		}
-
-		public override ServiceBinding Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new ServiceBindingMSMQIntegration(Name + HostName, Parent);
-			bd.Namespace = Namespace;
-			bd.EndpointAddress = EndpointAddress;
-			bd.ListenAddress = ListenAddress;
-			bd.CloseTimeout = CloseTimeout;
-			bd.OpenTimeout = OpenTimeout;
-			bd.ReceiveTimeout = ReceiveTimeout;
-			bd.SendTimeout = SendTimeout;
-			bd.Security = (BindingSecurityMSMQIntegration)Security.Copy(HostName, Parent);
-
-			bd.MaxReceivedMessageSize = MaxReceivedMessageSize;
-			bd.CustomDeadLetterQueue = CustomDeadLetterQueue;
-			bd.DeadLetterQueue = DeadLetterQueue;
-			bd.ExactlyOnce = ExactlyOnce;
-			bd.MaxRetryCycles = MaxRetryCycles;
-			bd.ReceiveContextEnabled = ReceiveContextEnabled;
-			bd.ReceiveErrorHandling = ReceiveErrorHandling;
-			bd.ReceiveRetryCount = ReceiveRetryCount;
-			bd.RetryCycleDelay = RetryCycleDelay;
-			bd.TimeToLive = TimeToLive;
-			bd.UseMSMQTracing = UseMSMQTracing;
-			bd.UseSourceJournal = UseSourceJournal;
-			bd.ValidityDuration = ValidityDuration;
-			bd.Durable = Durable;
-			bd.SerializationFormat = SerializationFormat;
-
-			Parent.Bindings.Add(bd);
-
-			return bd;
 		}
 	}
 	#endregion

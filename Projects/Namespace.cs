@@ -34,9 +34,6 @@ namespace WCFArchitect.Projects
 		public ObservableCollection<ServiceBinding> Bindings { get { return (ObservableCollection<ServiceBinding>)GetValue(BindingsProperty); } set { SetValue(BindingsProperty, value); } }
 		public static readonly DependencyProperty BindingsProperty = DependencyProperty.Register("Bindings", typeof(ObservableCollection<ServiceBinding>), typeof(Namespace));
 
-		public ObservableCollection<BindingSecurity> Security { get { return (ObservableCollection<BindingSecurity>)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
-		public static readonly DependencyProperty SecurityProperty = DependencyProperty.Register("Security", typeof(ObservableCollection<BindingSecurity>), typeof(Namespace));
-
 		public ObservableCollection<Host> Hosts { get { return (ObservableCollection<Host>)GetValue(HostsProperty); } set { SetValue(HostsProperty, value); } }
 		public static readonly DependencyProperty HostsProperty = DependencyProperty.Register("Hosts", typeof(ObservableCollection<Host>), typeof(Namespace));
 
@@ -54,7 +51,6 @@ namespace WCFArchitect.Projects
 			Data = new ObservableCollection<Data>();
 			Services = new ObservableCollection<Service>();
 			Bindings = new ObservableCollection<ServiceBinding>();
-			Security = new ObservableCollection<BindingSecurity>();
 			Hosts = new ObservableCollection<Host>();
 			URI = "";
 		}
@@ -66,13 +62,30 @@ namespace WCFArchitect.Projects
 			Data = new ObservableCollection<Data>();
 			Services = new ObservableCollection<Service>();
 			Bindings = new ObservableCollection<ServiceBinding>();
-			Security = new ObservableCollection<BindingSecurity>();
 			Hosts = new ObservableCollection<Host>();
 			ID = Guid.NewGuid();
 			this.Name = Name;
 			this.Parent = Parent;
 			this.Owner = Owner;
 			URI = GetFullURI(this);
+		}
+
+		public List<ServiceBinding> GetBindings()
+		{
+			var sbl = new List<ServiceBinding>();
+			foreach (Namespace ns in Children)
+				sbl.AddRange(ns.GetBindings());
+			sbl.AddRange(Bindings);
+			return sbl;
+		}
+
+		public List<Service> GetServices()
+		{
+			var sbl = new List<Service>();
+			foreach (Namespace ns in Children)
+				sbl.AddRange(ns.GetServices());
+			sbl.AddRange(Services);
+			return sbl;
 		}
 
 		private string GetFullURI(Namespace o)
@@ -169,9 +182,6 @@ namespace WCFArchitect.Projects
 				}
 			}
 
-			foreach (BindingSecurity s in Security)
-				results.AddRange(s.FindReplace(Args));
-
 			foreach (ServiceBinding s in Bindings)
 				results.AddRange(s.FindReplace(Args));
 
@@ -215,23 +225,6 @@ namespace WCFArchitect.Projects
 				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
 				if (Field == "URI") URI = Args.RegexSearch.Replace(URI, Args.Replace);
 			}
-		}
-
-		public void ChangeOwners(Namespace NewOwner)
-		{
-			foreach (Service s in Services)
-			{
-				foreach (Host h in Hosts.Where(h => Equals(h.Service, s)))
-				{
-					Hosts.Remove(h);
-					NewOwner.Hosts.Add(h);
-					foreach (HostEndpoint he in h.Endpoints) he.Binding = he.Binding.Copy(h.Name, NewOwner);
-					break;
-				}
-			}
-
-			foreach (Namespace n in Children)
-				n.ChangeOwners(NewOwner);
 		}
 
 		private string GetNamespaceString()
@@ -287,9 +280,6 @@ namespace WCFArchitect.Projects
 
 		public OpenableDocument GetLastSelectedItem()
 		{
-			foreach (BindingSecurity s in Security)
-				if (s.IsSelected) return s;
-
 			foreach (ServiceBinding s in Bindings)
 				if (s.IsSelected) return s;
 
@@ -318,9 +308,6 @@ namespace WCFArchitect.Projects
 		public void SetSelectedItem(OpenableDocument Item)
 		{
 			//Reset all items to unselected.
-			foreach (BindingSecurity s in Security)
-				s.IsSelected = false;
-
 			foreach (ServiceBinding s in Bindings)
 				s.IsSelected = false;
 

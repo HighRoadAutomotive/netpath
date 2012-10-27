@@ -49,18 +49,28 @@ namespace WCFArchitect.Compiler.Generators
 				if (t == typeof(HostDebugBehavior))
 				{
 					var b = hb as HostDebugBehavior;
-					if (b != null && RegExs.MatchHTTPURI.IsMatch(b.HttpHelpPageUrl) == false)
+					if (b == null) continue;
+					if (b.HttpHelpPageEnabled && RegExs.MatchHTTPURI.IsMatch(b.HttpHelpPageUrl) == false)
 						Program.AddMessage(new CompileMessage("GS5007", "The HTTP Help Page URL '" + b.HttpHelpPageUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
-					if (b != null && RegExs.MatchHTTPURI.IsMatch(b.HttpsHelpPageUrl) == false)
+					if (b.HttpsHelpPageEnabled && RegExs.MatchHTTPURI.IsMatch(b.HttpsHelpPageUrl) == false)
 						Program.AddMessage(new CompileMessage("GS5008", "The HTTPS Help Page URL '" + b.HttpsHelpPageUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
+					if (b.HttpHelpPageEnabled && b.HttpHelpPageBinding == null)
+						Program.AddMessage(new CompileMessage("GS5011", "The HTTP Help Page Binding for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project cannot be empty. Please select a binding.", CompileMessageSeverity.ERROR, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
+					if (b.HttpsHelpPageEnabled && b.HttpsHelpPageBinding == null)
+						Program.AddMessage(new CompileMessage("GS5012", "The HTTPS Help Page Binding for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project cannot be empty. Please select a binding.", CompileMessageSeverity.ERROR, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				}
 				else if (t == typeof(HostMetadataBehavior))
 				{
 					var b = hb as HostMetadataBehavior;
-					if (b != null && RegExs.MatchHTTPURI.IsMatch(b.HttpGetUrl) == false)
+					if (b == null) continue;
+					if (b.HttpGetEnabled && RegExs.MatchHTTPURI.IsMatch(b.HttpGetUrl) == false)
 						Program.AddMessage(new CompileMessage("GS5009", "The HTTP Get URL '" + b.HttpGetUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
-					if (b != null && RegExs.MatchHTTPURI.IsMatch(b.HttpsGetUrl) == false)
+					if (b.HttpsGetEnabled && RegExs.MatchHTTPURI.IsMatch(b.HttpsGetUrl) == false)
 						Program.AddMessage(new CompileMessage("GS5010", "The HTTPS Get URL '" + b.HttpsGetUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
+					if (b.HttpGetEnabled && b.HttpGetBinding == null)
+						Program.AddMessage(new CompileMessage("GS5013", "The HTTP Get Binding for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project cannot be empty. Please select a binding.", CompileMessageSeverity.ERROR, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
+					if (b.HttpsGetEnabled && RegExs.MatchHTTPURI.IsMatch(b.HttpsGetUrl) == false)
+						Program.AddMessage(new CompileMessage("GS5014", "The HTTPS Get Binding for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project cannot be empty. Please select a binding.", CompileMessageSeverity.ERROR, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
 				}
 			}
 		} 
@@ -72,8 +82,8 @@ namespace WCFArchitect.Compiler.Generators
 			var code = new StringBuilder();
 			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
 			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.AppendFormat("\t{0} : ServiceHost{1}", DataTypeCSGenerator.GenerateType(o), Environment.NewLine);
+			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
+			code.AppendLine(string.Format("\t{0} : ServiceHost", DataTypeCSGenerator.GenerateTypeDeclaration(o)));
 			code.AppendLine("\t{");
 			string baVars = "";
 			for (int i = 0; i < o.BaseAddresses.Count; i++)
@@ -314,8 +324,8 @@ namespace WCFArchitect.Compiler.Generators
 			var code = new StringBuilder();
 			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
 			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.AppendFormat("\t{0} : ServiceHost{1}", DataTypeCSGenerator.GenerateType(o), Environment.NewLine);
+			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
+			code.AppendLine(string.Format("\t{0} : ServiceHost", DataTypeCSGenerator.GenerateTypeDeclaration(o)));
 			code.AppendLine("\t{");
 			string baVars = "";
 			for (int i = 0; i < o.BaseAddresses.Count; i++)
@@ -332,7 +342,7 @@ namespace WCFArchitect.Compiler.Generators
 				if (hb.GetType() == typeof(HostDebugBehavior)) code.AppendFormat("\t\tpublic ServiceDebugBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
 				if (hb.GetType() == typeof(HostMetadataBehavior)) code.AppendFormat("\t\tpublic ServiceMetadataBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
 				if (hb.GetType() == typeof(HostThrottlingBehavior)) code.AppendFormat("\t\tpublic ServiceThrottlingBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
-				if (hb.GetType() == typeof(WebHTTPBehavior)) code.AppendFormat("\t\tpublic System.ServiceModel.Web.WebHttpBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
+				if (hb.GetType() == typeof(HostWebHTTPBehavior)) code.AppendFormat("\t\tpublic WebHttpBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
 			}
 
 			#region - Generate Default Constructors -
@@ -459,7 +469,6 @@ namespace WCFArchitect.Compiler.Generators
 			foreach (HostEndpoint he in o.Endpoints)
 				code.AppendLine("\t" + GenerateEndpointServerCode(he));
 			code.AppendLine("\t\t\t}");
-			code.AppendLine("\t\t\tthis.Context = new InstanceContext(this);");
 			code.AppendLine("\t\t}");
 
 			//Generate ServiceType Contrstuctor WITH default base addresses
@@ -487,7 +496,6 @@ namespace WCFArchitect.Compiler.Generators
 			foreach (HostEndpoint he in o.Endpoints)
 				code.AppendLine("\t" + GenerateEndpointServerCode(he));
 			code.AppendLine("\t\t\t}");
-			code.AppendLine("\t\t\tthis.Context = new InstanceContext(this);");
 			code.AppendLine("\t\t}");
 
 			//Generate Singleton Service Constructor WITHOUT default base addresses
@@ -515,7 +523,6 @@ namespace WCFArchitect.Compiler.Generators
 			foreach (HostEndpoint he in o.Endpoints)
 				code.AppendLine("\t" + GenerateEndpointServerCode(he));
 			code.AppendLine("\t\t\t}");
-			code.AppendLine("\t\t\tthis.Context = new InstanceContext(this);");
 			code.AppendLine("\t\t}");
 
 			//Generate ServiceType Contrstuctor WITHOUT default base addresses
@@ -543,7 +550,6 @@ namespace WCFArchitect.Compiler.Generators
 			foreach (HostEndpoint he in o.Endpoints)
 				code.AppendLine("\t" + GenerateEndpointServerCode(he));
 			code.AppendLine("\t\t\t}");
-			code.AppendLine("\t\t\tthis.Context = new InstanceContext(this);");
 			code.AppendLine("\t\t}");
 			#endregion
 
@@ -565,8 +571,8 @@ namespace WCFArchitect.Compiler.Generators
 			var code = new StringBuilder();
 			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
 			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.AppendFormat("\t{0} : ServiceHost{1}", DataTypeCSGenerator.GenerateType(o), Environment.NewLine);
+			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
+			code.AppendLine(string.Format("\t{0} : ServiceHost", DataTypeCSGenerator.GenerateTypeDeclaration(o)));
 			code.AppendLine("\t{");
 			string baVars = "";
 			for (int i = 0; i < o.BaseAddresses.Count; i++)
@@ -583,7 +589,7 @@ namespace WCFArchitect.Compiler.Generators
 				if (hb.GetType() == typeof(HostDebugBehavior)) code.AppendFormat("\t\tpublic ServiceDebugBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
 				if (hb.GetType() == typeof(HostMetadataBehavior)) code.AppendFormat("\t\tpublic ServiceMetadataBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
 				if (hb.GetType() == typeof(HostThrottlingBehavior)) code.AppendFormat("\t\tpublic ServiceThrottlingBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
-				if (hb.GetType() == typeof(WebHTTPBehavior) && (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45)) code.AppendFormat("\t\tpublic System.ServiceModel.Web.WebHttpBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
+				if (hb.GetType() == typeof(HostWebHTTPBehavior) && (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45)) code.AppendFormat("\t\tpublic WebHttpBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
 			}
 
 			#region - Generate Default Constructors
@@ -609,7 +615,6 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.ManualFlowControlLimit > 0) code.AppendFormat("\t\t\tthis.ManualFlowControlLimit = {0};{1}", o.ManualFlowControlLimit, Environment.NewLine);
 			foreach (HostEndpoint he in o.Endpoints)
 				code.AppendLine(GenerateEndpointServerCode(he));
-			code.AppendLine("\t\t\tthis.Context = new InstanceContext(this);");
 			code.AppendLine("\t\t}");
 
 			//Generate ServiceType Contrstuctor WITH default base addresses
@@ -634,7 +639,6 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.ManualFlowControlLimit > 0) code.AppendFormat("\t\t\tthis.ManualFlowControlLimit = {0};{1}", o.ManualFlowControlLimit, Environment.NewLine);
 			foreach (HostEndpoint he in o.Endpoints)
 				code.AppendLine(GenerateEndpointServerCode(he));
-			code.AppendLine("\t\t\tthis.Context = new InstanceContext(this);");
 			code.AppendLine("\t\t}");
 
 			//Generate Singleton Service Constructor WITHOUT default base addresses
@@ -659,7 +663,6 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.ManualFlowControlLimit > 0) code.AppendFormat("\t\t\tthis.ManualFlowControlLimit = {0};{1}", o.ManualFlowControlLimit, Environment.NewLine);
 			foreach (HostEndpoint he in o.Endpoints)
 				code.AppendLine(GenerateEndpointServerCode(he));
-			code.AppendLine("\t\t\tthis.Context = new InstanceContext(this);");
 			code.AppendLine("\t\t}");
 
 			//Generate ServiceType Contrstuctor WITHOUT default base addresses
@@ -684,7 +687,6 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.ManualFlowControlLimit > 0) code.AppendFormat("\t\t\tthis.ManualFlowControlLimit = {0};{1}", o.ManualFlowControlLimit, Environment.NewLine);
 			foreach (HostEndpoint he in o.Endpoints)
 				code.AppendLine(GenerateEndpointServerCode(he));
-			code.AppendLine("\t\t\tthis.Context = new InstanceContext(this);");
 			code.AppendLine("\t\t}");
 			#endregion
 
@@ -714,7 +716,6 @@ namespace WCFArchitect.Compiler.Generators
 			foreach (HostEndpoint he in o.Endpoints)
 				code.AppendLine(GenerateEndpointServerCode(he));
 			code.AppendLine("\t\t\t}");
-			code.AppendLine("\t\t\tthis.Context = new InstanceContext(this);");
 			code.AppendLine("\t\t}");
 
 			//Generate ServiceType Contrstuctor WITH default base addresses
@@ -742,7 +743,6 @@ namespace WCFArchitect.Compiler.Generators
 			foreach (HostEndpoint he in o.Endpoints)
 				code.AppendLine(GenerateEndpointServerCode(he));
 			code.AppendLine("\t\t\t}");
-			code.AppendLine("\t\t\tthis.Context = new InstanceContext(this);");
 			code.AppendLine("\t\t}");
 
 			//Generate Singleton Service Constructor WITHOUT default base addresses
@@ -770,7 +770,6 @@ namespace WCFArchitect.Compiler.Generators
 			foreach (HostEndpoint he in o.Endpoints)
 				code.AppendLine(GenerateEndpointServerCode(he));
 			code.AppendLine("\t\t\t}");
-			code.AppendLine("\t\t\tthis.Context = new InstanceContext(this);");
 			code.AppendLine("\t\t}");
 
 			//Generate ServiceType Contrstuctor WITHOUT default base addresses
@@ -798,7 +797,6 @@ namespace WCFArchitect.Compiler.Generators
 			foreach (HostEndpoint he in o.Endpoints)
 				code.AppendLine(GenerateEndpointServerCode(he));
 			code.AppendLine("\t\t\t}");
-			code.AppendLine("\t\t\tthis.Context = new InstanceContext(this);");
 			code.AppendLine("\t\t}");
 			#endregion
 
@@ -840,8 +838,8 @@ namespace WCFArchitect.Compiler.Generators
 			var code = new StringBuilder();
 			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
 			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateType(o), Environment.NewLine);
+			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
+			code.AppendLine(string.Format("\t{0}", DataTypeCSGenerator.GenerateTypeDeclaration(o)));
 			code.AppendLine("\t{");
 
 			foreach (HostEndpoint he in o.Endpoints)
@@ -850,8 +848,8 @@ namespace WCFArchitect.Compiler.Generators
 			foreach (HostEndpoint he in o.Endpoints)
 				code.AppendLine(GenerateEndpointClientCode(he));
 
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
 			code.AppendLine("\t}");
+			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
 
 			return code.ToString();
 		}
@@ -1323,13 +1321,19 @@ namespace WCFArchitect.Compiler.Generators
 				var b = o as HostDebugBehavior;
 				if (b == null) return "";
 				code.AppendLine(string.Format("\t\t\tthis.{0} = new ServiceDebugBehavior();", b.Name));
-				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpHelpPageBinding = new {1}();", b.Name, DataTypeCSGenerator.GenerateType(b.HttpHelpPageBinding)));
-				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpHelpPageEnabled = {1};", b.Name, b.HttpHelpPageEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpHelpPageUrl = new Uri({1});", b.Name, b.HttpHelpPageUrl));
-				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsHelpPageBinding = new {1}();", b.Name, DataTypeCSGenerator.GenerateType(b.HttpsHelpPageBinding)));
-				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsHelpPageEnabled = {1};", b.Name, b.HttpsHelpPageEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsHelpPageUrl = new Uri({1});", b.Name, b.HttpsHelpPageUrl));
-				code.AppendLine(string.Format("\t\t\tthis.{0}.IncludeExceptionDetailInFaults = new Uri({1});", b.Name, b.IncludeExceptionDetailInFaults ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+				if (b.HttpHelpPageEnabled)
+				{
+					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpHelpPageEnabled = {1};", b.Name, b.HttpHelpPageEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpHelpPageBinding = new {1}();", b.Name, DataTypeCSGenerator.GenerateType(b.HttpHelpPageBinding)));
+					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpHelpPageUrl = new Uri(\"{1}\");", b.Name, b.HttpHelpPageUrl));
+				}
+				if (b.HttpsHelpPageEnabled)
+				{
+					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsHelpPageBinding = new {1}();", b.Name, DataTypeCSGenerator.GenerateType(b.HttpsHelpPageBinding)));
+					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsHelpPageEnabled = {1};", b.Name, b.HttpsHelpPageEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsHelpPageUrl = new Uri(\"{1}\");", b.Name, b.HttpsHelpPageUrl));
+				}
+				code.AppendLine(string.Format("\t\t\tthis.{0}.IncludeExceptionDetailInFaults = {1};", b.Name, b.IncludeExceptionDetailInFaults ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				if (b.IsDefaultBehavior) code.AppendLine(string.Format("\t\t\tthis.Description.Behaviors.Add({0});", b.Name));
 			}
 			if (t == typeof(HostMetadataBehavior))
@@ -1337,13 +1341,19 @@ namespace WCFArchitect.Compiler.Generators
 				var b = o as HostMetadataBehavior;
 				if (b == null) return "";
 				code.AppendLine(string.Format("\t\t\tthis.{0} = new ServiceMetadataBehavior();", b.Name));
-				code.AppendLine(string.Format("\t\t\tthis.{0}.ExternalMetadataLocation = new Uri({1});", b.Name, b.ExternalMetadataLocation));
-				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpGetBinding = new {1}();", b.Name, DataTypeCSGenerator.GenerateType(b.HttpGetBinding)));
-				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpGetEnabled = {1};", b.Name, b.HttpGetEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpGetUrl = new Uri({1});", b.Name, b.HttpGetUrl));
-				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsGetBinding = new {1}();", b.Name, DataTypeCSGenerator.GenerateType(b.HttpsGetBinding)));
-				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsGetEnabled = {1};", b.Name, b.HttpsGetEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-				code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsGetUrl = new Uri({1});", b.Name, b.HttpsGetUrl));
+				code.AppendLine(string.Format("\t\t\tthis.{0}.ExternalMetadataLocation = new Uri(\"{1}\");", b.Name, b.ExternalMetadataLocation));
+				if (b.HttpGetEnabled)
+				{
+					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpGetBinding = new {1}();", b.Name, DataTypeCSGenerator.GenerateType(b.HttpGetBinding)));
+					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpGetEnabled = {1};", b.Name, b.HttpGetEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpGetUrl = new Uri(\"{1}\");", b.Name, b.HttpGetUrl));
+				}
+				if (b.HttpsGetEnabled)
+				{
+					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsGetBinding = new {1}();", b.Name, DataTypeCSGenerator.GenerateType(b.HttpsGetBinding)));
+					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsGetEnabled = {1};", b.Name, b.HttpsGetEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsGetUrl = new Uri(\"{1}\");", b.Name, b.HttpsGetUrl));
+				}
 				if (b.IsDefaultBehavior) code.AppendLine(string.Format("\t\t\tthis.Description.Behaviors.Add({0});", b.Name));
 			}
 			if (t == typeof(HostThrottlingBehavior))
@@ -1356,9 +1366,9 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendLine(string.Format("\t\t\tthis.{0}.MaxConcurrentSessions = {1};", b.Name, b.MaxConcurrentSessions));
 				if (b.IsDefaultBehavior) code.AppendLine(string.Format("\t\t\tthis.Description.Behaviors.Add({0});", b.Name));
 			}
-			if (t == typeof(WebHTTPBehavior) && (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35))
+			if (t == typeof(HostWebHTTPBehavior) && (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35))
 			{
-				var b = o as WebHTTPBehavior;
+				var b = o as HostWebHTTPBehavior;
 				if (b == null) return "";
 				code.AppendLine(string.Format("\t\t\tthis.{0} = new WebHttpBehavior();", b.Name));
 				code.AppendLine(string.Format("\t\t\tthis.{0}.AutomaticFormatSelectionEnabled = {1};", b.Name, b.AutomaticFormatSelectionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
@@ -1367,7 +1377,6 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendLine(string.Format("\t\t\tthis.{0}.DefaultOutgoingResponseFormat = System.ServiceModel.Web.WebMessageFormat.{1};", b.Name, System.Enum.GetName(typeof(System.ServiceModel.Web.WebMessageFormat), b.DefaultOutgoingResponseFormat)));
 				code.AppendLine(string.Format("\t\t\tthis.{0}.FaultExceptionEnabled = {1};", b.Name, b.FaultExceptionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				code.AppendLine(string.Format("\t\t\tthis.{0}.HelpEnabled = {1};", b.Name, b.HelpEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-				if (b.IsDefaultBehavior) code.AppendFormat("\t\t\tthis.Description.Behaviors.Add({0});", b.Name);
 			}
 			return code.ToString();
 		}

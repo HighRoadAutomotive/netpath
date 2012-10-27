@@ -162,6 +162,9 @@ namespace WCFArchitect.Interface
 
 			//TODO: Finish adding screens as they are made.
 
+			if (Item.GetType() == typeof(Projects.Host))
+				ActivePage = new Host.Host(Item as Projects.Host);
+
 			//Need to make all item pages before this function can be completed.
 			Project.Namespace.SetSelectedItem(Item);
 		}
@@ -540,9 +543,9 @@ namespace WCFArchitect.Interface
 				var T = frr.Item as BindingSecurity;
 				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
 			}
-			if (valueType == typeof(Host))
+			if (valueType == typeof(Projects.Host))
 			{
-				var T = frr.Item as Host;
+				var T = frr.Item as Projects.Host;
 				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
 			}
 			if (valueType == typeof(HostEndpoint))
@@ -666,7 +669,7 @@ namespace WCFArchitect.Interface
 	{
 		protected override DependencyObject GetContainerForItemOverride()
 		{
-			return new Button();
+			return new ToggleButton();
 		}
 
 		protected override bool IsItemItsOwnContainerOverride(object item)
@@ -807,9 +810,9 @@ namespace WCFArchitect.Interface
 					return "Binding Security";
 				if (T != null) return T.Name;
 			}
-			if (valueType == typeof(Host))
+			if (valueType == typeof(Projects.Host))
 			{
-				var T = value as Host;
+				var T = value as Projects.Host;
 				if (T != null && string.IsNullOrEmpty(T.Name))
 					return "Host";
 				if (T != null) return T.Name;
@@ -912,9 +915,9 @@ namespace WCFArchitect.Interface
 					return "Binding Security";
 				if (T != null) return T.Parent.Name;
 			}
-			if (valueType == typeof(Host))
+			if (valueType == typeof(Projects.Host))
 			{
-				var T = value as Host;
+				var T = value as Projects.Host;
 				if (T != null && (T.Parent != null && string.IsNullOrEmpty(T.Parent.Name)))
 					return "Host";
 				if (T != null && T.Parent != null) return T.Parent.Name;

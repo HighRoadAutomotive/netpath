@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WCFArchitect.Projects;
+using WCFArchitect.Projects.Helpers;
 
 namespace WCFArchitect.Interface.Namespace
 {
@@ -36,24 +37,24 @@ namespace WCFArchitect.Interface.Namespace
 		private void CodeName_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			if (IsLoaded == false) return;
-			CodeName.Text = Helpers.RegExs.ReplaceSpaces.Replace(CodeName.Text, "");
+			CodeName.Text = RegExs.ReplaceSpaces.Replace(CodeName.Text, "");
 			Data.UpdateFullNamespace();
 		}
 
 		private void CodeName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
 		{
-			e.IsValid = Helpers.RegExs.MatchCodeName.IsMatch(CodeName.Text);
+			e.IsValid = RegExs.MatchCodeName.IsMatch(CodeName.Text);
 		}
 
 		private void NamespaceURI_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			if (IsLoaded == false) return;
-			Data.URI = Helpers.RegExs.ReplaceSpaces.Replace(NamespaceURI.Text, "");
+			Data.URI = RegExs.ReplaceSpaces.Replace(NamespaceURI.Text, "");
 		}
 
 		private void NamespaceURI_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
 		{
-			e.IsValid = Helpers.RegExs.MatchHTTPURI.IsMatch(NamespaceURI.Text);
+			e.IsValid = RegExs.MatchHTTPURI.IsMatch(NamespaceURI.Text);
 		}
 
 		private void NamespaceList_MouseDoubleClick(object sender, MouseButtonEventArgs e)

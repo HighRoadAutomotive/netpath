@@ -86,8 +86,6 @@ namespace WCFArchitect.Projects
 			else
 				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
 		}
-
-		public abstract BindingSecurity Copy(string HostName, Namespace Parent);
 	}
 
 	#region - BindingSecurityBasicHTTP Class -
@@ -123,23 +121,6 @@ namespace WCFArchitect.Projects
 			this.Parent = Parent;
 
 			Mode = System.ServiceModel.BasicHttpSecurityMode.None;
-		}
-
-		public override BindingSecurity Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new BindingSecurityBasicHTTP(Name + HostName, Parent);
-			bd.MessageAlgorithmSuite = MessageAlgorithmSuite;
-			bd.MessageClientCredentialType = MessageClientCredentialType;
-			bd.Mode = Mode;
-			bd.TransportClientCredentialType = TransportClientCredentialType;
-			bd.TransportProxyCredentialType = TransportProxyCredentialType;
-			bd.TransportRealm = TransportRealm;
-
-			Parent.Security.Add(bd);
-
-			return bd;
 		}
 	}
 
@@ -178,23 +159,6 @@ namespace WCFArchitect.Projects
 			this.Parent = Parent;
 
 			Mode = System.ServiceModel.BasicHttpsSecurityMode.Transport;
-		}
-
-		public override BindingSecurity Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new BindingSecurityBasicHTTPS(Name + HostName, Parent);
-			bd.MessageAlgorithmSuite = MessageAlgorithmSuite;
-			bd.MessageClientCredentialType = MessageClientCredentialType;
-			bd.Mode = Mode;
-			bd.TransportClientCredentialType = TransportClientCredentialType;
-			bd.TransportProxyCredentialType = TransportProxyCredentialType;
-			bd.TransportRealm = TransportRealm;
-
-			Parent.Security.Add(bd);
-
-			return bd;
 		}
 	}
 
@@ -246,25 +210,6 @@ namespace WCFArchitect.Projects
 			TransportClientCredentialType = System.ServiceModel.HttpClientCredentialType.None;
 			TransportProxyCredentialType = System.ServiceModel.HttpProxyCredentialType.None;
 		}
-
-		public override BindingSecurity Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new BindingSecurityWSHTTP(Name + HostName, Parent);
-			bd.MessageAlgorithmSuite = MessageAlgorithmSuite;
-			bd.MessageClientCredentialType = MessageClientCredentialType;
-			bd.MessageEstablishSecurityContext = MessageEstablishSecurityContext;
-			bd.MessageNegotiateServiceCredential = MessageNegotiateServiceCredential;
-			bd.Mode = Mode;
-			bd.TransportClientCredentialType = TransportClientCredentialType;
-			bd.TransportProxyCredentialType = TransportProxyCredentialType;
-			bd.TransportRealm = TransportRealm;
-
-			Parent.Security.Add(bd);
-
-			return bd;
-		}
 	}
 
 	#endregion
@@ -299,20 +244,6 @@ namespace WCFArchitect.Projects
 			MessageAlgorithmSuite = BindingSecurityAlgorithmSuite.Basic256;
 			MessageClientCredentialType = System.ServiceModel.MessageCredentialType.Windows;
 			MessageNegotiateServiceCredential = true;
-		}
-
-		public override BindingSecurity Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new BindingSecurityWSDualHTTP(Name + HostName, Parent);
-			bd.MessageAlgorithmSuite = MessageAlgorithmSuite;
-			bd.MessageClientCredentialType = MessageClientCredentialType;
-			bd.MessageNegotiateServiceCredential = MessageNegotiateServiceCredential;
-
-			Parent.Security.Add(bd);
-
-			return bd;
 		}
 	}
 
@@ -365,26 +296,6 @@ namespace WCFArchitect.Projects
 			MessageIssuedKeyType = System.IdentityModel.Tokens.SecurityKeyType.SymmetricKey;
 			MessageNegotiateServiceCredential = true;
 		}
-
-		public override BindingSecurity Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new BindingSecurityWSFederationHTTP(Name + HostName, Parent);
-			bd.MessageAlgorithmSuite = MessageAlgorithmSuite;
-			bd.MessageClientCredentialType = MessageClientCredentialType;
-			bd.MessageEstablishSecurityContext = MessageEstablishSecurityContext;
-			bd.MessageIssuedKeyType = MessageIssuedKeyType;
-			bd.MessageIssuedTokenType = MessageIssuedTokenType;
-			bd.MessageIssuerAddress = MessageIssuerAddress;
-			bd.MessageIssuerMetadataAddress = MessageIssuerMetadataAddress;
-			bd.MessageNegotiateServiceCredential = MessageNegotiateServiceCredential;
-			bd.Mode = Mode;
-
-			Parent.Security.Add(bd);
-
-			return bd;
-		}
 	}
 
 	#endregion
@@ -422,22 +333,6 @@ namespace WCFArchitect.Projects
 			TransportClientCredentialType = System.ServiceModel.TcpClientCredentialType.Windows;
 			TransportProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
 		}
-
-		public override BindingSecurity Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new BindingSecurityTCP(Name + HostName, Parent);
-			bd.MessageAlgorithmSuite = MessageAlgorithmSuite;
-			bd.MessageClientCredentialType = MessageClientCredentialType;
-			bd.Mode = Mode;
-			bd.TransportClientCredentialType = TransportClientCredentialType;
-			bd.TransportProtectionLevel = TransportProtectionLevel;
-
-			Parent.Security.Add(bd);
-
-			return bd;
-		}
 	}
 
 	#endregion
@@ -464,19 +359,6 @@ namespace WCFArchitect.Projects
 
 			Mode = System.ServiceModel.NetNamedPipeSecurityMode.Transport;
 			TransportProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
-		}
-
-		public override BindingSecurity Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new BindingSecurityNamedPipe(Name + HostName, Parent);
-			bd.Mode = Mode;
-			bd.TransportProtectionLevel = TransportProtectionLevel;
-
-			Parent.Security.Add(bd);
-
-			return bd;
 		}
 	}
 
@@ -523,24 +405,6 @@ namespace WCFArchitect.Projects
 			TransportProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
 			TransportSecureHashAlgorithm = System.ServiceModel.MsmqSecureHashAlgorithm.Sha512;
 		}
-
-		public override BindingSecurity Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new BindingSecurityMSMQ(Name + HostName, Parent);
-			bd.MessageAlgorithmSuite = MessageAlgorithmSuite;
-			bd.MessageClientCredentialType = MessageClientCredentialType;
-			bd.TransportAuthenticationMode = TransportAuthenticationMode;
-			bd.TransportEncryptionAlgorithm = TransportEncryptionAlgorithm;
-			bd.TransportProtectionLevel = TransportProtectionLevel;
-			bd.TransportSecureHashAlgorithm = TransportSecureHashAlgorithm;
-			bd.Mode = Mode;
-
-			Parent.Security.Add(bd);
-
-			return bd;
-		}
 	}
 
 	#endregion
@@ -567,19 +431,6 @@ namespace WCFArchitect.Projects
 
 			Mode = System.ServiceModel.SecurityMode.Transport;
 			TransportClientCredentialType = System.ServiceModel.PeerTransportCredentialType.Password;
-		}
-
-		public override BindingSecurity Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new BindingSecurityPeerTCP(Name + HostName, Parent);
-			bd.Mode = Mode;
-			bd.TransportClientCredentialType = TransportClientCredentialType;
-
-			Parent.Security.Add(bd);
-
-			return bd;
 		}
 	}
 
@@ -612,21 +463,6 @@ namespace WCFArchitect.Projects
 			this.Parent = Parent;
 
 			Mode = System.ServiceModel.WebHttpSecurityMode.None;
-		}
-
-		public override BindingSecurity Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new BindingSecurityWebHTTP(Name + HostName, Parent);
-			bd.Mode = Mode;
-			bd.TransportClientCredentialType = TransportClientCredentialType;
-			bd.TransportProxyCredentialType = TransportProxyCredentialType;
-			bd.TransportRealm = TransportRealm;
-
-			Parent.Security.Add(bd);
-
-			return bd;
 		}
 	}
 
@@ -666,22 +502,6 @@ namespace WCFArchitect.Projects
 			TransportEncryptionAlgorithm = System.ServiceModel.MsmqEncryptionAlgorithm.Aes;
 			TransportProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
 			TransportSecureHashAlgorithm = System.ServiceModel.MsmqSecureHashAlgorithm.Sha512;
-		}
-
-		public override BindingSecurity Copy(string HostName, Namespace Parent)
-		{
-			if (Equals(Parent, this.Parent)) return this;
-
-			var bd = new BindingSecurityMSMQIntegration(Name + HostName, Parent);
-			bd.TransportAuthenticationMode = TransportAuthenticationMode;
-			bd.TransportEncryptionAlgorithm = TransportEncryptionAlgorithm;
-			bd.TransportProtectionLevel = TransportProtectionLevel;
-			bd.TransportSecureHashAlgorithm = TransportSecureHashAlgorithm;
-			bd.Mode = Mode;
-
-			Parent.Security.Add(bd);
-
-			return bd;
 		}
 	}
 	#endregion

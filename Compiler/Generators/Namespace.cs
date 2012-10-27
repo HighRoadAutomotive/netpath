@@ -33,9 +33,6 @@ namespace WCFArchitect.Compiler.Generators
 			foreach (ServiceBinding se in o.Bindings)
 				BindingsCSGenerator.VerifyCode(se);
 
-			foreach (BindingSecurity se in o.Security)
-				SecurityCSGenerator.VerifyCode(se);
-
 			foreach (Namespace tn in o.Children)
 				VerifyCode(tn);
 
@@ -95,31 +92,20 @@ namespace WCFArchitect.Compiler.Generators
 
 			if (o.Bindings.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Bindings");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Bindings");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (ServiceBinding sb in o.Bindings)
 					code.AppendLine(BindingsCSGenerator.GenerateCode30(sb));
 				code.AppendLine();
 			}
 
-			if (o.Security.Count > 0)
-			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tBinding Security");
-				code.AppendLine("**************************************************************************/");
-				code.AppendLine();
-				foreach (BindingSecurity bs in o.Security)
-					code.AppendLine(SecurityCSGenerator.GenerateCode30(bs));
-				code.AppendLine();
-			}
-
 			if (o.Hosts.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Hosts");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Hosts");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (Host he in o.Hosts)
 					code.AppendLine(HostCSGenerator.GenerateServerCode30(he));
@@ -176,31 +162,20 @@ namespace WCFArchitect.Compiler.Generators
 
 			if (o.Bindings.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Bindings");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Bindings");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (ServiceBinding sb in o.Bindings)
 					code.AppendLine(BindingsCSGenerator.GenerateCode35(sb));
 				code.AppendLine();
 			}
 
-			if (o.Security.Count > 0)
-			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tBinding Security");
-				code.AppendLine("**************************************************************************/");
-				code.AppendLine();
-				foreach (BindingSecurity bs in o.Security)
-					code.AppendLine(SecurityCSGenerator.GenerateCode35(bs));
-				code.AppendLine();
-			}
-
 			if (o.Hosts.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Hosts");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Hosts");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (Host he in o.Hosts)
 					code.AppendLine(HostCSGenerator.GenerateServerCode35(he));
@@ -257,31 +232,20 @@ namespace WCFArchitect.Compiler.Generators
 
 			if (o.Bindings.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Bindings");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Bindings");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (ServiceBinding sb in o.Bindings)
 					code.AppendLine(BindingsCSGenerator.GenerateCode35Client(sb));
 				code.AppendLine();
 			}
 
-			if (o.Security.Count > 0)
-			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tBinding Security");
-				code.AppendLine("**************************************************************************/");
-				code.AppendLine();
-				foreach (BindingSecurity bs in o.Security)
-					code.AppendLine(SecurityCSGenerator.GenerateCode35Client(bs));
-				code.AppendLine();
-			}
-
 			if (o.Hosts.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Hosts");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Hosts");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (Host he in o.Hosts)
 					code.AppendLine(HostCSGenerator.GenerateServerCode35Client(he));
@@ -338,31 +302,20 @@ namespace WCFArchitect.Compiler.Generators
 
 			if (o.Bindings.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Bindings");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Bindings");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (ServiceBinding sb in o.Bindings)
 					code.AppendLine(BindingsCSGenerator.GenerateCode40(sb));
 				code.AppendLine();
 			}
 
-			if (o.Security.Count > 0)
-			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tBinding Security");
-				code.AppendLine("**************************************************************************/");
-				code.AppendLine();
-				foreach (BindingSecurity bs in o.Security)
-					code.AppendLine(SecurityCSGenerator.GenerateCode40(bs));
-				code.AppendLine();
-			}
-
 			if (o.Hosts.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Hosts");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Hosts");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (Host he in o.Hosts)
 					code.AppendLine(HostCSGenerator.GenerateServerCode40(he));
@@ -419,31 +372,20 @@ namespace WCFArchitect.Compiler.Generators
 
 			if (o.Bindings.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Bindings");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Bindings");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (ServiceBinding sb in o.Bindings)
 					code.AppendLine(BindingsCSGenerator.GenerateCode40Client(sb));
 				code.AppendLine();
 			}
 
-			if (o.Security.Count > 0)
-			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tBinding Security");
-				code.AppendLine("**************************************************************************/");
-				code.AppendLine();
-				foreach (BindingSecurity bs in o.Security)
-					code.AppendLine(SecurityCSGenerator.GenerateCode40Client(bs));
-				code.AppendLine();
-			}
-
 			if (o.Hosts.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Hosts");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Hosts");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (Host he in o.Hosts)
 					code.AppendLine(HostCSGenerator.GenerateServerCode40Client(he));
@@ -500,31 +442,20 @@ namespace WCFArchitect.Compiler.Generators
 
 			if (o.Bindings.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Bindings");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Bindings");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (ServiceBinding sb in o.Bindings)
 					code.AppendLine(BindingsCSGenerator.GenerateCode45(sb));
 				code.AppendLine();
 			}
 
-			if (o.Security.Count > 0)
-			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tBinding Security");
-				code.AppendLine("**************************************************************************/");
-				code.AppendLine();
-				foreach (BindingSecurity bs in o.Security)
-					code.AppendLine(SecurityCSGenerator.GenerateCode45(bs));
-				code.AppendLine();
-			}
-
 			if (o.Hosts.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Hosts");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Hosts");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (Host he in o.Hosts)
 					code.AppendLine(HostCSGenerator.GenerateServerCode45(he));
@@ -584,31 +515,20 @@ namespace WCFArchitect.Compiler.Generators
 
 			if (o.Bindings.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Bindings");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Bindings");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (ServiceBinding sb in o.Bindings)
 					code.AppendLine(BindingsCSGenerator.GenerateCode30(sb));
 				code.AppendLine();
 			}
 
-			if (o.Security.Count > 0)
-			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tBinding Security");
-				code.AppendLine("**************************************************************************/");
-				code.AppendLine();
-				foreach (BindingSecurity bs in o.Security)
-					code.AppendLine(SecurityCSGenerator.GenerateCode30(bs));
-				code.AppendLine();
-			}
-
 			if (o.Hosts.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Hosts");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Hosts");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (Host he in o.Hosts)
 					code.AppendLine(HostCSGenerator.GenerateClientCode35(he));
@@ -668,31 +588,20 @@ namespace WCFArchitect.Compiler.Generators
 
 			if (o.Bindings.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Bindings");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Bindings");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (ServiceBinding sb in o.Bindings)
 					code.AppendLine(BindingsCSGenerator.GenerateCode35(sb));
 				code.AppendLine();
 			}
 
-			if (o.Security.Count > 0)
-			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tBinding Security");
-				code.AppendLine("**************************************************************************/");
-				code.AppendLine();
-				foreach (BindingSecurity bs in o.Security)
-					code.AppendLine(SecurityCSGenerator.GenerateCode35(bs));
-				code.AppendLine();
-			}
-
 			if (o.Hosts.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Hosts");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Hosts");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (Host he in o.Hosts)
 					code.AppendLine(HostCSGenerator.GenerateClientCode35(he));
@@ -752,31 +661,20 @@ namespace WCFArchitect.Compiler.Generators
 
 			if (o.Bindings.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Bindings");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Bindings");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (ServiceBinding sb in o.Bindings)
 					code.AppendLine(BindingsCSGenerator.GenerateCode35Client(sb));
 				code.AppendLine();
 			}
 
-			if (o.Security.Count > 0)
-			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tBinding Security");
-				code.AppendLine("**************************************************************************/");
-				code.AppendLine();
-				foreach (BindingSecurity bs in o.Security)
-					code.AppendLine(SecurityCSGenerator.GenerateCode35Client(bs));
-				code.AppendLine();
-			}
-
 			if (o.Hosts.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Hosts");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Hosts");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (Host he in o.Hosts)
 					code.AppendLine(HostCSGenerator.GenerateClientCode35Client(he));
@@ -836,31 +734,20 @@ namespace WCFArchitect.Compiler.Generators
 
 			if (o.Bindings.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Bindings");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Bindings");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (ServiceBinding sb in o.Bindings)
 					code.AppendLine(BindingsCSGenerator.GenerateCode40(sb));
 				code.AppendLine();
 			}
 
-			if (o.Security.Count > 0)
-			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tBinding Security");
-				code.AppendLine("**************************************************************************/");
-				code.AppendLine();
-				foreach (BindingSecurity bs in o.Security)
-					code.AppendLine(SecurityCSGenerator.GenerateCode40(bs));
-				code.AppendLine();
-			}
-
 			if (o.Hosts.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Hosts");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Hosts");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (Host he in o.Hosts)
 					code.AppendLine(HostCSGenerator.GenerateClientCode40(he));
@@ -922,31 +809,20 @@ namespace WCFArchitect.Compiler.Generators
 
 			if (o.Bindings.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Bindings");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Bindings");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (ServiceBinding sb in o.Bindings)
 					code.AppendLine(BindingsCSGenerator.GenerateCode40Client(sb));
 				code.AppendLine();
 			}
 
-			if (o.Security.Count > 0)
-			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tBinding Security");
-				code.AppendLine("**************************************************************************/");
-				code.AppendLine();
-				foreach (BindingSecurity bs in o.Security)
-					code.AppendLine(SecurityCSGenerator.GenerateCode40Client(bs));
-				code.AppendLine();
-			}
-
 			if (o.Hosts.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Hosts");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Hosts");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (Host he in o.Hosts)
 					code.AppendLine(HostCSGenerator.GenerateClientCode40Client(he));
@@ -1006,31 +882,20 @@ namespace WCFArchitect.Compiler.Generators
 
 			if (o.Bindings.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Bindings");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Bindings");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (ServiceBinding sb in o.Bindings)
 					code.AppendLine(BindingsCSGenerator.GenerateCode45(sb));
 				code.AppendLine();
 			}
 
-			if (o.Security.Count > 0)
-			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tBinding Security");
-				code.AppendLine("**************************************************************************/");
-				code.AppendLine();
-				foreach (BindingSecurity bs in o.Security)
-					code.AppendLine(SecurityCSGenerator.GenerateCode45(bs));
-				code.AppendLine();
-			}
-
 			if (o.Hosts.Count > 0)
 			{
-				code.AppendLine("/**************************************************************************");
-				code.AppendLine("*\tService Hosts");
-				code.AppendLine("**************************************************************************/");
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Hosts");
+				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (Host he in o.Hosts)
 					code.AppendLine(HostCSGenerator.GenerateClientCode45(he));

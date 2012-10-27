@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Prospective.Controls.Dialogs;
+using WCFArchitect.Projects.Helpers;
 
 namespace WCFArchitect.Interface.Service
 {
@@ -225,7 +226,7 @@ namespace WCFArchitect.Interface.Service
 			e.IsValid = true;
 			if (string.IsNullOrEmpty(AddParameterName.Text)) return;
 
-			e.IsValid = Helpers.RegExs.MatchCodeName.IsMatch(AddParameterName.Text);
+			e.IsValid = RegExs.MatchCodeName.IsMatch(AddParameterName.Text);
 			AddParameter.IsEnabled = (!string.IsNullOrEmpty(AddParameterName.Text) && e.IsValid && AddParameterType.IsValid);
 		}
 
@@ -282,9 +283,9 @@ namespace WCFArchitect.Interface.Service
 		{
 			var ElementName = sender as Prospective.Controls.TextBox;
 			if (ElementName == null) return;
-			string t = Helpers.RegExs.ReplaceSpaces.Replace(string.IsNullOrEmpty(ElementName.Text) ? "" : ElementName.Text, @"");
+			string t = RegExs.ReplaceSpaces.Replace(string.IsNullOrEmpty(ElementName.Text) ? "" : ElementName.Text, @"");
 
-			e.IsValid = Helpers.RegExs.MatchCodeName.IsMatch(t);
+			e.IsValid = RegExs.MatchCodeName.IsMatch(t);
 		}
 
 		private void DeleteOperationParameter_Click(object sender, RoutedEventArgs e)
@@ -293,7 +294,7 @@ namespace WCFArchitect.Interface.Service
 			var OP = lbi.Content as Projects.MethodParameter;
 			if (OP == null) return;
 
-			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Method Parameter?", "Are you sure you wish to delete the '" + OP.Type + " " + OP.Name + "' method parameter?", new DialogAction("Yes", () => MethodData.Parameters.Remove(OP), true), new DialogAction("No", false, true));
+			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Method Parameter?", "Are you sure you want to delete the '" + OP.Type + " " + OP.Name + "' method parameter?", new DialogAction("Yes", () => MethodData.Parameters.Remove(OP), true), new DialogAction("No", false, true));
 		}
 	}
 }

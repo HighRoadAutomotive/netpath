@@ -61,7 +61,7 @@
 				<ComboBoxItem Content="Protected Internal" />
 			</ComboBox.Items>
 		</ComboBox>
-		<Data:TypeSelector Grid.Column="2" Margin="5" x:Name="DataType" OpenType="{Binding Path=Element.DataType}" LabelText="Type" VerticalContentAlignment="Center" ToolTip="{Binding Path=Element.DataType}"  />
+		<Data:TypeSelector Grid.Column="2" Margin="5" x:Name="DataType" OpenType="{Binding Path=Element.DataType, Mode=TwoWay}" LabelText="Type" VerticalContentAlignment="Center" ToolTip="{Binding Path=Element.DataType}"  />
 		<pc:TextBox Grid.Column="3" Margin="5,5,0,5" Name="ElementName" Text="{Binding Path=Element.DataName, UpdateSourceTrigger=PropertyChanged}" LabelText="Name" VerticalContentAlignment="Center" Validate="ElementName_Validate" ToolTip="{Binding Path=Element.DataName}" />
 	</Grid>
 	<Grid Name="ContractGrid" Grid.Row="2" >
@@ -81,7 +81,7 @@
 				<ComboBoxItem Content="Protected Internal" />
 			</ComboBox.Items>
 		</ComboBox>
-		<Data:TypeSelector Grid.Column="2" Margin="5" x:Name="ClientType" OpenType="{Binding Path=Element.ClientType}" LabelText="Type" IsEnabled="{Binding Path=Element.HasClientType}" VerticalContentAlignment="Center" ToolTip="{Binding Path=Element.ClientType}"  />
+		<Data:TypeSelector Grid.Column="2" Margin="5" x:Name="ClientType" OpenType="{Binding Path=Element.ClientType, Mode=TwoWay}" LabelText="Type" IsEnabled="{Binding Path=Element.HasClientType}" VerticalContentAlignment="Center" ToolTip="{Binding Path=Element.ClientType}"  />
 		<pc:TextBox Grid.Column="3" Margin="5,5,0,5" Name="ClientName" Text="{Binding Path=Element.ClientName, UpdateSourceTrigger=PropertyChanged}" LabelText="Name" IsEnabled="{Binding Path=Element.HasClientType}" VerticalContentAlignment="Center" Validate="ElementName_Validate" ToolTip="{Binding Path=Element.ClientName}" />
 	</Grid>
 	<Grid Name="XAMLGrid" Grid.Row="3" >
@@ -101,7 +101,7 @@
 				<ComboBoxItem Content="Protected Internal" />
 			</ComboBox.Items>
 		</ComboBox>
-		<Data:TypeSelector Grid.Column="2" Margin="5" x:Name="XAMLType" OpenType="{Binding Path=Element.XAMLType}" LabelText="Type" IsEnabled="{Binding Path=Element.HasXAMLType}" VerticalContentAlignment="Center" ToolTip="{Binding Path=Element.XAMLType}"  />
+		<Data:TypeSelector Grid.Column="2" Margin="5" x:Name="XAMLType" OpenType="{Binding Path=Element.XAMLType, Mode=TwoWay}" LabelText="Type" IsEnabled="{Binding Path=Element.HasXAMLType}" VerticalContentAlignment="Center" ToolTip="{Binding Path=Element.XAMLType}"  />
 		<pc:TextBox Grid.Column="3" Margin="5,5,0,5" Name="XAMLName" Text="{Binding Path=Element.XAMLName, UpdateSourceTrigger=PropertyChanged}" LabelText="Name" IsEnabled="{Binding Path=Element.HasXAMLType}" VerticalContentAlignment="Center" Validate="ElementName_Validate" ToolTip="{Binding Path=Element.XAMLName}" />
 	</Grid>
 	<Grid Name="OptionsGrid" Grid.Row="4" Margin="0,5,0,0" >
