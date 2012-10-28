@@ -23,7 +23,50 @@ namespace WCFArchitect.Interface.Data
 		public static readonly DependencyProperty OpenTypeProperty = DependencyProperty.Register("OpenType", typeof(DataType), typeof(TypeEditor), new PropertyMetadata(null, OpenTypeChangedCallback));
 
 		public bool CanSetType { get { return (bool)GetValue(CanSetTypeProperty); } set { SetValue(CanSetTypeProperty, value); } }
-		public static readonly DependencyProperty CanSetTypeProperty = DependencyProperty.Register("CanSetType", typeof(bool), typeof(TypeEditor), new PropertyMetadata(true));
+		public static readonly DependencyProperty CanSetTypeProperty = DependencyProperty.Register("CanSetType", typeof(bool), typeof(TypeEditor), new PropertyMetadata(true, CanSetTypeChangedCallback));
+
+		private static void CanSetTypeChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as TypeEditor;
+			if (t == null) return;
+
+			if (Convert.ToBoolean(e.NewValue))
+			{
+				t.ClassType.Visibility = Visibility.Visible;
+				t.StructType.Visibility = Visibility.Visible;
+			}
+			else
+			{
+				t.ClassType.Visibility = Visibility.Hidden;
+				t.StructType.Visibility = Visibility.Hidden;
+			}
+		}
+
+		public bool IsEnumType { get { return (bool)GetValue(IsEnumTypeProperty); } set { SetValue(IsEnumTypeProperty, value); } }
+		public static readonly DependencyProperty IsEnumTypeProperty = DependencyProperty.Register("IsEnumType", typeof(bool), typeof(TypeEditor), new PropertyMetadata(false, IsEnumTypeChangedCallback));
+
+		private static void IsEnumTypeChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as TypeEditor;
+			if (t == null) return;
+
+			if (Convert.ToBoolean(e.NewValue) == false)
+			{
+				t.Partial.Visibility = Visibility.Visible;
+				t.Abstract.Visibility = Visibility.Visible;
+				t.Sealed.Visibility = Visibility.Visible;
+				t.ClassType.Visibility = Visibility.Visible;
+				t.StructType.Visibility = Visibility.Visible;
+			}
+			else
+			{
+				t.Partial.Visibility = Visibility.Collapsed;
+				t.Abstract.Visibility = Visibility.Collapsed;
+				t.Sealed.Visibility = Visibility.Collapsed;
+				t.ClassType.Visibility = Visibility.Collapsed;
+				t.StructType.Visibility = Visibility.Collapsed;
+			}
+		}
 
 		public bool SupportInheritedTypes { get { return (bool)GetValue(SupportInheritedTypesProperty); } set { SetValue(SupportInheritedTypesProperty, value); } }
 		public static readonly DependencyProperty SupportInheritedTypesProperty = DependencyProperty.Register("SupportInheritedTypes", typeof(bool), typeof(TypeEditor), new PropertyMetadata(false));

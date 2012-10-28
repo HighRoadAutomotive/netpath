@@ -478,7 +478,7 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty IsRESTInvalidProperty = DependencyProperty.Register("IsRESTInvalid", typeof(bool), typeof(MethodParameter), new PropertyMetadata(false));
 
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
-		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(Enum));
+		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(MethodParameter));
 
 		//Internal Use
 		public Service Owner { get; set; }

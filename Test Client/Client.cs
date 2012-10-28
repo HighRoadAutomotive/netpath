@@ -30,6 +30,21 @@ using System.Windows;
 namespace Test1
 {
 	/**************************************************************************
+	*	Enumeration Contracts
+	**************************************************************************/
+
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	[DataContract(Namespace = "http://www.prospectivesoftware.com/Test1/")]
+	public enum TestEnum : ulong
+	{
+		[EnumMember()] _ssads = qweasd | sfsd,
+		[EnumMember()] asdas,
+		[EnumMember()] qweasd = 321,
+		[EnumMember()] sfsd,
+	}
+
+
+	/**************************************************************************
 	*	Data Contracts
 	**************************************************************************/
 

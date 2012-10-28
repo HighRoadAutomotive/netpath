@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using WCFArchitect.Projects;
 using WCFArchitect.Projects.Helpers;
 
@@ -29,84 +27,15 @@ namespace WCFArchitect.Compiler.Generators
 				else
 					if (RegExs.MatchCodeName.IsMatch(e.Name) == false)
 						Program.AddMessage(new CompileMessage("GS4004", "The enumeration element '" + e.Name + "' in the '" + o.Name + "' enumeration contains invalid characters in the Name.", CompileMessageSeverity.ERROR, o, e, e.GetType(), o.ID, e.ID));
-
-				if (o.IsFlags == false)
-				{
-					bool badValue = false;
-					if (o.Primitive == PrimitiveTypes.Int)
-						try { Convert.ToInt32(e.Value); }
-						catch { badValue = true; }
-					else if (o.Primitive == PrimitiveTypes.SByte)
-						try { Convert.ToSByte(e.Value); }
-						catch { badValue = true; }
-					else if (o.Primitive == PrimitiveTypes.Byte)
-						try { Convert.ToByte(e.Value); }
-						catch { badValue = true; }
-					else if (o.Primitive == PrimitiveTypes.UShort)
-						try { Convert.ToUInt16(e.Value); }
-						catch { badValue = true; }
-					else if (o.Primitive == PrimitiveTypes.Short)
-						try { Convert.ToInt16(e.Value); }
-						catch { badValue = true; }
-					else if (o.Primitive == PrimitiveTypes.UInt)
-						try { Convert.ToUInt32(e.Value); }
-						catch { badValue = true; }
-					else if (o.Primitive == PrimitiveTypes.Long)
-						try { Convert.ToInt64(e.Value); }
-						catch { badValue = true; }
-					else if (o.Primitive == PrimitiveTypes.ULong)
-						try { Convert.ToUInt64(e.Value); }
-						catch { badValue = true; }
-
-					if (e.Value == "") badValue = false;
-
-					if (badValue)
-						Program.AddMessage(new CompileMessage("GS4005", "The enumeration element '" + e.Name + "' in the '" + o.Name + "' enumeration contains an invalid value.", CompileMessageSeverity.ERROR, o, e, e.GetType(), o.ID, e.ID));
-				}
 			}
 
 			if (o.IsFlags)
-			{
-				if (o.Primitive == PrimitiveTypes.Short && o.Elements.Count() > 14) Program.AddMessage(new CompileMessage("GS4006", "The number of elements in the Enumeration '" + o.Name + "' exceeds the maximum number of elements (14) supported by the 'short' data type. Any elements above this limit will not be generated.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-				if (o.Primitive == PrimitiveTypes.UShort && o.Elements.Count() > 15) Program.AddMessage(new CompileMessage("GS4006", "The number of elements in the Enumeration '" + o.Name + "' exceeds the maximum number of elements (15) supported by the 'unsigned short' data type. Any elements above this limit will not be generated.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-				if (o.Primitive == PrimitiveTypes.Int && o.Elements.Count() > 30) Program.AddMessage(new CompileMessage("GS4006", "The number of elements in the Enumeration '" + o.Name + "' exceeds the maximum number of elements (30) supported by the 'int' data type. Any elements above this limit will not be generated.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-				if (o.Primitive == PrimitiveTypes.UInt && o.Elements.Count() > 31) Program.AddMessage(new CompileMessage("GS4006", "The number of elements in the Enumeration '" + o.Name + "' exceeds the maximum number of elements (31) supported by the 'unsigned int' data type. Any elements above this limit will not be generated.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-				if (o.Primitive == PrimitiveTypes.Long && o.Elements.Count() > 62) Program.AddMessage(new CompileMessage("GS4006", "The number of elements in the Enumeration '" + o.Name + "' exceeds the maximum number of elements (62) supported by the 'long' data type. Any elements above this limit will not be generated.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-				if (o.Primitive == PrimitiveTypes.ULong && o.Elements.Count() > 63) Program.AddMessage(new CompileMessage("GS4006", "The number of elements in the Enumeration '" + o.Name + "' exceeds the maximum number of elements (63) supported by the 'unsigned long' data type. Any elements above this limit will not be generated.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-			}
-
-			if (o.IsFlags)
-			{
-				bool badValue = true;
-				if (o.Primitive == PrimitiveTypes.Int) badValue = false;
-				else if (o.Primitive == PrimitiveTypes.UShort) badValue = false;
-				else if (o.Primitive == PrimitiveTypes.Short) badValue = false;
-				else if (o.Primitive == PrimitiveTypes.UInt) badValue = false;
-				else if (o.Primitive == PrimitiveTypes.Long) badValue = false;
-				else if (o.Primitive == PrimitiveTypes.ULong) badValue = false;
-
-				if (badValue)
-					Program.AddMessage(new CompileMessage("GS4007", "The flags enumeration '" + o.Name + "' must be one of the following types: short, ushort, int, uint, long, ulong.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-			}
+				if (o.Elements.Count() > 62) Program.AddMessage(new CompileMessage("GS4005", "The number of elements in the Enumeration '" + o.Name + "' exceeds the maximum number of elements (62) supported by a flags enumerations. Any elements above this limit will not be generated.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 		}
 
 		public static string GenerateServerCode30(Projects.Enum o)
 		{
-			var code = new StringBuilder();
-			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.Append("\t[DataContract(");
-			if (o.HasClientType) code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
-			code.AppendFormat("Namespace = \"{0}\"", o.Parent.FullURI);
-			code.AppendLine(")]");
-			if (o.IsFlags) code.AppendLine("[Flags]");
-			code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o.Scope), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
-			code.AppendLine("\t{");
-			int fv = 0;
-			foreach (EnumElement ee in o.Elements.Where(ee => !ee.IsHidden))
-				code.Append(o.IsFlags == false ? GenerateElementServerCode(ee) : GenerateElementServerCode(ee, fv++));
-			code.AppendLine("\t}");
-			return code.ToString();
+			return GenerateServerCode35(o);
 		}
 
 		public static string GenerateServerCode35(Projects.Enum o)
@@ -123,14 +52,13 @@ namespace WCFArchitect.Compiler.Generators
 		{
 			var code = new StringBuilder();
 			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 			code.Append("\t[DataContract(");
-			if (o.IsReference) code.AppendFormat("IsReference = true ");
 			if (o.HasClientType) code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
 			code.AppendFormat("Namespace = \"{0}\"", o.Parent.FullURI);
 			code.AppendLine(")]");
 			if (o.IsFlags) code.AppendLine("\t[Flags]");
-			code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o.Scope), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
+			code.AppendLine(string.Format("\t{0} enum {1} : ulong", DataTypeCSGenerator.GenerateScope(o.Scope), o.Name));
 			code.AppendLine("\t{");
 			int fv = 0;
 			foreach (EnumElement ee in o.Elements.Where(ee => !ee.IsHidden))
@@ -142,53 +70,54 @@ namespace WCFArchitect.Compiler.Generators
 		private static string GenerateElementServerCode(EnumElement o)
 		{
 			var code = new StringBuilder();
+			if (!string.IsNullOrEmpty(o.Documentation)) code.AppendLine(string.Format("\t\t<summary>{0}</summary>", o.Documentation));
 			code.Append("\t\t[EnumMember(");
-			if (!string.IsNullOrEmpty(o.ContractValue))
-				code.AppendFormat("Value = \"{0}\"", o.ContractValue);
+			if (o.ClientValue != null)
+				code.AppendFormat("Value = \"{0}\"", o.ClientValue);
 			code.AppendFormat(")] {0}", o.Name);
-			if (!string.IsNullOrEmpty(o.Value))
-				code.AppendFormat(" = {0}", o.Value);
+			if (o.IsCustomValue)
+				code.AppendFormat(" = {0}", o.ServerValue);
+			if (o.IsAggregateValue)
+				if (o.AggregateValues.Count > 0)
+				{
+					code.AppendFormat(" = {0}", o.AggregateValues[0]);
+					for (int i = 1; i < o.AggregateValues.Count; i++)
+						code.AppendFormat(" | {0}", o.AggregateValues[i]);
+				}
 			code.AppendLine(",");
 			return code.ToString();
 		}
 
 		private static string GenerateElementServerCode(EnumElement o, int ElementIndex)
 		{
-			if (o.Owner.Primitive == PrimitiveTypes.Short && ElementIndex > 14) return "";
-			if (o.Owner.Primitive == PrimitiveTypes.UShort && ElementIndex > 15) return "";
-			if (o.Owner.Primitive == PrimitiveTypes.Int && ElementIndex > 30) return "";
-			if (o.Owner.Primitive == PrimitiveTypes.UInt && ElementIndex > 31) return "";
-			if (o.Owner.Primitive == PrimitiveTypes.Long && ElementIndex > 62) return "";
-			if (o.Owner.Primitive == PrimitiveTypes.ULong && ElementIndex > 63) return "";
+			if (ElementIndex > 62) return "";
 
 			var code = new StringBuilder();
-			code.Append("\t\t");
-			if (o.IsExcluded == false) code.Append("[EnumMember()] ");
+			if (!string.IsNullOrEmpty(o.Documentation)) code.AppendLine(string.Format("\t\t<summary>{0}</summary>", o.Documentation));
+			if (o.IsExcluded == false) code.Append("\t\t[EnumMember()] ");
 			code.Append(o.Name);
-			if (ElementIndex == 0) code.Append(" = 0");
-			if (ElementIndex == 1) code.Append(" = 1");
-			if (ElementIndex > 1) code.AppendFormat(" = {0}", Convert.ToInt32(Decimal.Round((decimal)Math.Pow(2, ElementIndex - 1))));
+			if (o.IsAutoValue)
+			{
+				if (ElementIndex == 0) code.Append(" = 0");
+				if (ElementIndex == 1) code.Append(" = 1");
+				if (ElementIndex > 1) code.AppendFormat(" = {0}", Convert.ToInt32(Decimal.Round((decimal) Math.Pow(2, ElementIndex - 1))));
+			}
+			if (o.IsCustomValue)
+				code.AppendFormat(" = {0}", o.ServerValue);
+			if (o.IsAggregateValue)
+				if (o.AggregateValues.Count > 0)
+				{
+					code.AppendFormat(" = {0}", o.AggregateValues[0]);
+					for (int i = 1; i < o.AggregateValues.Count; i++)
+						code.AppendFormat(" | {0}", o.AggregateValues[i]);
+				}
 			code.AppendLine(",");
 			return code.ToString();
 		}
 
 		public static string GenerateProxyCode30(Projects.Enum o)
 		{
-			var code = new StringBuilder();
-			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.Append("\t[DataContract(");
-			if (o.HasClientType) code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
-			code.AppendFormat("Namespace = \"{0}\"", o.Parent.FullURI);
-			code.AppendLine(")]");
-			if (o.IsFlags) code.AppendLine("[Flags]");
-			code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o.Scope), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
-			code.AppendLine("\t{");
-			int fv = 0;
-			foreach (EnumElement ee in o.Elements.Where(ee => !ee.IsHidden))
-				code.Append(o.IsFlags == false ? GenerateElementProxyCode(ee) : GenerateElementProxyCode(ee, fv++));
-			code.AppendLine("\t}");
-			return code.ToString();
+			return GenerateProxyCode35(o);
 		}
 
 		public static string GenerateProxyCode35(Projects.Enum o)
@@ -205,14 +134,13 @@ namespace WCFArchitect.Compiler.Generators
 		{
 			var code = new StringBuilder();
 			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
+			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 			code.Append("\t[DataContract(");
-			if (o.IsReference) code.AppendFormat("IsReference = true ");
 			if (o.HasClientType) code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
 			code.AppendFormat("Namespace = \"{0}\"", o.Parent.FullURI);
 			code.AppendLine(")]");
 			if (o.IsFlags) code.AppendLine("\t[Flags]");
-			code.AppendFormat("\t{0} enum {2} : {1}{3}", DataTypeCSGenerator.GenerateScope(o.Scope), DataTypeCSGenerator.GenerateType(o.BaseType), o.Name, Environment.NewLine);
+			code.AppendLine(string.Format("\t{0} enum {1} : ulong", DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine("\t{");
 			int fv = 0;
 			foreach (EnumElement ee in o.Elements.Where(ee => !ee.IsHidden))
@@ -225,8 +153,17 @@ namespace WCFArchitect.Compiler.Generators
 		{
 			if (o.IsExcluded) return "";
 			var code = new StringBuilder();
+			if (!string.IsNullOrEmpty(o.Documentation)) code.AppendLine(string.Format("\t\t<summary>{0}</summary>", o.Documentation));
 			code.AppendFormat("\t\t[EnumMember()] {0}", o.Name);
-			code.AppendFormat(" = {0}", string.IsNullOrEmpty(o.ContractValue) ? o.Value : o.ContractValue);
+			if (o.IsCustomValue)
+				code.AppendFormat(" = {0}", o.ClientValue ?? o.ServerValue);
+			if (o.IsAggregateValue)
+				if (o.AggregateValues.Count > 0)
+				{
+					code.AppendFormat(" = {0}", o.AggregateValues[0]);
+					for (int i = 1; i < o.AggregateValues.Count; i++)
+						code.AppendFormat(" | {0}", o.AggregateValues[i]);
+				}
 			code.AppendLine(",");
 			return code.ToString();
 		}
@@ -234,19 +171,26 @@ namespace WCFArchitect.Compiler.Generators
 		private static string GenerateElementProxyCode(EnumElement o, int ElementIndex)
 		{
 			if (o.IsExcluded) return "";
-			if (o.Owner.Primitive == PrimitiveTypes.Short && ElementIndex > 14) return "";
-			if (o.Owner.Primitive == PrimitiveTypes.UShort && ElementIndex > 15) return "";
-			if (o.Owner.Primitive == PrimitiveTypes.Int && ElementIndex > 30) return "";
-			if (o.Owner.Primitive == PrimitiveTypes.UInt && ElementIndex > 31) return "";
-			if (o.Owner.Primitive == PrimitiveTypes.Long && ElementIndex > 62) return "";
-			if (o.Owner.Primitive == PrimitiveTypes.ULong && ElementIndex > 63) return "";
+			if (ElementIndex > 62) return "";
 
 			var code = new StringBuilder();
-			code.Append("\t\t");
-			code.AppendFormat("[EnumMember()] {0}", o.Name);
-			if (ElementIndex == 0) code.Append(" = 0");
-			if (ElementIndex == 1) code.Append(" = 1");
-			if (ElementIndex > 1) code.AppendFormat(" = {0}", Convert.ToInt32(Decimal.Round((decimal)Math.Pow(2, ElementIndex - 1))));
+			if (!string.IsNullOrEmpty(o.Documentation)) code.AppendLine(string.Format("\t\t<summary>{0}</summary>", o.Documentation));
+			code.AppendFormat("\t\t[EnumMember()] {0}", o.Name);
+			if (o.IsAutoValue)
+			{
+				if (ElementIndex == 0) code.Append(" = 0");
+				if (ElementIndex == 1) code.Append(" = 1");
+				if (ElementIndex > 1) code.AppendFormat(" = {0}", Convert.ToInt32(Decimal.Round((decimal) Math.Pow(2, ElementIndex - 1))));
+			}
+			if (o.IsCustomValue)
+				code.AppendFormat(" = {0}", o.ClientValue ?? o.ServerValue);
+			if (o.IsAggregateValue)
+				if (o.AggregateValues.Count > 0)
+				{
+					code.AppendFormat(" = {0}", o.AggregateValues[0]);
+					for (int i = 1; i < o.AggregateValues.Count; i++)
+						code.AppendFormat(" | {0}", o.AggregateValues[i]);
+				}
 			code.AppendLine(",");
 			return code.ToString();
 		}

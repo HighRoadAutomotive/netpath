@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -10,9 +11,6 @@ namespace WCFArchitect.Projects
 {
 	public class Enum : DataType
 	{
-		public bool IsReference { get { return (bool)GetValue(IsReferenceProperty); } set { SetValue(IsReferenceProperty, value); } }
-		public static readonly DependencyProperty IsReferenceProperty = DependencyProperty.Register("IsReference", typeof(bool), typeof(Enum));
-
 		public bool IsFlags { get { return (bool)GetValue(IsFlagsProperty); } set { SetValue(IsFlagsProperty, value); } }
 		public static readonly DependencyProperty IsFlagsProperty = DependencyProperty.Register("IsFlags", typeof(bool), typeof(Enum));
 
@@ -27,6 +25,7 @@ namespace WCFArchitect.Projects
 
 		public Enum() : base(DataTypeMode.Enum)
 		{
+			Elements = new ObservableCollection<EnumElement>();
 		}
 
 		public Enum(string Name, Namespace Parent) : base(DataTypeMode.Enum)
@@ -125,6 +124,9 @@ namespace WCFArchitect.Projects
 	{
 		public Guid ID { get; set; }
 
+		public Enum Owner { get { return (Enum)GetValue(OwnerProperty); } set { SetValue(OwnerProperty, value); } }
+		public static readonly DependencyProperty OwnerProperty = DependencyProperty.Register("Owner", typeof (Enum), typeof (EnumElement));
+
 		//Basic
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value ?? "", @"")); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(EnumElement));
@@ -135,39 +137,87 @@ namespace WCFArchitect.Projects
 		public bool IsHidden { get { return (bool)GetValue(IsHiddenProperty); } set { SetValue(IsHiddenProperty, value); } }
 		public static readonly DependencyProperty IsHiddenProperty = DependencyProperty.Register("IsHidden", typeof(bool), typeof(EnumElement));
 
+		public bool IsAutoValue { get { return (bool)GetValue(IsAutoValueProperty); } set { SetValue(IsAutoValueProperty, value); } }
+		public static readonly DependencyProperty IsAutoValueProperty = DependencyProperty.Register("IsAutoValue", typeof(bool), typeof(EnumElement), new PropertyMetadata(false, IsAutoValueChangedCallback));
+
+		private static void IsAutoValueChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as EnumElement;
+			if (t == null) return;
+
+			if (!Convert.ToBoolean(e.NewValue)) return;
+			t.IsCustomValue = false;
+			t.IsAggregateValue = false;
+		}
+
+		public bool IsCustomValue { get { return (bool)GetValue(IsCustomValueProperty); } set { SetValue(IsCustomValueProperty, value); } }
+		public static readonly DependencyProperty IsCustomValueProperty = DependencyProperty.Register("IsCustomValue", typeof(bool), typeof(EnumElement), new PropertyMetadata(false, IsCustomValueChangedCallback));
+
+		private static void IsCustomValueChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as EnumElement;
+			if (t == null) return;
+
+			if (!Convert.ToBoolean(e.NewValue)) return;
+			t.IsAutoValue = false;
+			t.IsAggregateValue = false;
+		}
+
+		public bool IsAggregateValue { get { return (bool)GetValue(IsAggregateValueProperty); } set { SetValue(IsAggregateValueProperty, value); } }
+		public static readonly DependencyProperty IsAggregateValueProperty = DependencyProperty.Register("IsAggregateValue", typeof(bool), typeof(EnumElement), new PropertyMetadata(false, IsAggregateValueChangedCallback));
+
+		private static void IsAggregateValueChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as EnumElement;
+			if (t == null) return;
+
+			if (!Convert.ToBoolean(e.NewValue)) return;
+			t.IsAutoValue = false;
+			t.IsCustomValue = false;
+		}
+
+		public string Documentation { get { return (string)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
+		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(string), typeof(EnumElement), new PropertyMetadata(""));
+
 		//Regular Enums
-		public string Value { get { return (string)GetValue(ValueProperty); } set { SetValue(ValueProperty, value); } }
-		public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(string), typeof(EnumElement));
+		public long ServerValue { get { return (long)GetValue(ServerValueProperty); } set { SetValue(ServerValueProperty, value); } }
+		public static readonly DependencyProperty ServerValueProperty = DependencyProperty.Register("ServerValue", typeof(long), typeof(EnumElement));
 
-		public string ContractValue { get { return (string)GetValue(ContractValueProperty); } set { SetValue(ContractValueProperty, value); } }
-		public static readonly DependencyProperty ContractValueProperty = DependencyProperty.Register("ContractValue", typeof(string), typeof(EnumElement));
+		public long? ClientValue { get { return (long?)GetValue(ClientValueProperty); } set { SetValue(ClientValueProperty, value); } }
+		public static readonly DependencyProperty ClientValueProperty = DependencyProperty.Register("ClientValue", typeof(long?), typeof(EnumElement));
 
-		public Enum Owner { get; set; }
+		//Aggregate Enums
+		public ObservableCollection<EnumElement> AggregateValues { get { return (ObservableCollection<EnumElement>)GetValue(AggregateValuesProperty); } set { SetValue(AggregateValuesProperty, value); } }
+		public static readonly DependencyProperty AggregateValuesProperty = DependencyProperty.Register("AggregateValues", typeof(ObservableCollection<EnumElement>), typeof(EnumElement));
 
 		public EnumElement()
 		{
 			ID = Guid.NewGuid();
 			IsExcluded = false;
+			AggregateValues = new ObservableCollection<EnumElement>();
 		}
 
-		public EnumElement(string Name, string Value, string ContractValue, Enum Owner)
+		public EnumElement(Enum Owner, string Name, long ServerValue, long? ClientValue = null)
 		{
 			ID = Guid.NewGuid();
 			this.Name = Name;
-			this.Value = Value;
-			this.ContractValue = ContractValue;
+			IsCustomValue = true;
+			this.ServerValue = ServerValue;
+			this.ClientValue = ClientValue;
 			IsExcluded = false;
+			AggregateValues = new ObservableCollection<EnumElement>();
 			this.Owner = Owner;
 		}
 
-		public EnumElement(string Name, string Flags, Enum Owner)
+		public EnumElement(Enum Owner, string Name)
 		{
 			ID = Guid.NewGuid();
 			this.Name = Name;
 			IsExcluded = false;
+			IsAutoValue = true;
 			this.Owner = Owner;
+			AggregateValues = new ObservableCollection<EnumElement>();
 		}
-
 
 		public override string ToString()
 		{
@@ -183,48 +233,24 @@ namespace WCFArchitect.Projects
 				if (Args.UseRegex == false)
 				{
 					if (Args.MatchCase == false)
-					{
 						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) > 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
-						if (!string.IsNullOrEmpty(Value)) if (Value.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) > 0) results.Add(new FindReplaceResult("Server Value", Value, Owner.Parent.Owner, this));
-						if (!string.IsNullOrEmpty(ContractValue)) if (ContractValue.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) > 0) results.Add(new FindReplaceResult("Client Value", ContractValue, Owner.Parent.Owner, this));
-					}
 					else
-					{
 						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCulture) > 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
-						if (!string.IsNullOrEmpty(Value)) if (Value.IndexOf(Args.Search, StringComparison.CurrentCulture) > 0) results.Add(new FindReplaceResult("Server Value", Value, Owner.Parent.Owner, this));
-						if (!string.IsNullOrEmpty(ContractValue)) if (ContractValue.IndexOf(Args.Search, StringComparison.CurrentCulture) > 0) results.Add(new FindReplaceResult("Client Value", ContractValue, Owner.Parent.Owner, this));
-					}
 				}
 				else
-				{
 					if (!string.IsNullOrEmpty(Name)) if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
-					if (!string.IsNullOrEmpty(Value)) if (Args.RegexSearch.IsMatch(Value)) results.Add(new FindReplaceResult("Server Value", Value, Owner.Parent.Owner, this));
-					if (!string.IsNullOrEmpty(ContractValue)) if (Args.RegexSearch.IsMatch(ContractValue)) results.Add(new FindReplaceResult("Client Value", ContractValue, Owner.Parent.Owner, this));
-				}
 
 				if (Args.ReplaceAll)
 				{
 					if (Args.UseRegex == false)
 					{
 						if (Args.MatchCase == false)
-						{
 							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-							if (!string.IsNullOrEmpty(Value)) Value = Microsoft.VisualBasic.Strings.Replace(Value, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-							if (!string.IsNullOrEmpty(ContractValue)) ContractValue = Microsoft.VisualBasic.Strings.Replace(ContractValue, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-						}
 						else
-						{
 							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
-							if (!string.IsNullOrEmpty(Value)) Value = Microsoft.VisualBasic.Strings.Replace(Value, Args.Search, Args.Replace);
-							if (!string.IsNullOrEmpty(ContractValue)) ContractValue = Microsoft.VisualBasic.Strings.Replace(ContractValue, Args.Search, Args.Replace);
-						}
 					}
 					else
-					{
 						if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
-						if (!string.IsNullOrEmpty(Value)) Value = Args.RegexSearch.Replace(Value, Args.Replace);
-						if (!string.IsNullOrEmpty(ContractValue)) ContractValue = Args.RegexSearch.Replace(ContractValue, Args.Replace);
-					}
 				}
 			}
 
@@ -237,24 +263,12 @@ namespace WCFArchitect.Projects
 			if (Args.UseRegex == false)
 			{
 				if (Args.MatchCase == false)
-				{
 					if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-					if (Field == "Server Value") Value = Microsoft.VisualBasic.Strings.Replace(Value, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-					if (Field == "Client Value") ContractValue = Microsoft.VisualBasic.Strings.Replace(ContractValue, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-				}
 				else
-				{
 					if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
-					if (Field == "Server Value") Value = Microsoft.VisualBasic.Strings.Replace(Value, Args.Search, Args.Replace);
-					if (Field == "Client Value") ContractValue = Microsoft.VisualBasic.Strings.Replace(ContractValue, Args.Search, Args.Replace);
-				}
 			}
 			else
-			{
 				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-				if (Field == "Server Value") Value = Args.RegexSearch.Replace(Value, Args.Replace);
-				if (Field == "Client Value") ContractValue = Args.RegexSearch.Replace(ContractValue, Args.Replace);
-			}
 		}
 	}
 }

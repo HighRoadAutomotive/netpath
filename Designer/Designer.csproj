@@ -187,6 +187,9 @@
     <Compile Include="Interface\Documentation\Standard.xaml.cs">
       <DependentUpon>Standard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interface\Enum\Enum.xaml.cs">
+      <DependentUpon>Enum.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interface\Host\Converters.cs" />
     <Compile Include="Interface\Host\DebugBehavior.xaml.cs">
       <DependentUpon>DebugBehavior.xaml</DependentUpon>
@@ -272,6 +275,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Interface\Documentation\Standard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Enum\Enum.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
