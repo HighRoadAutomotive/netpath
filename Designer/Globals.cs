@@ -141,8 +141,6 @@ namespace WCFArchitect
 				if (UserProfile.AutomaticBackupsEnabled)
 					BackupTimer = new System.Threading.Timer(BackupSolution, null, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds);
 
-				//TODO: Setup Project Navigator here.
-
 				IsLoading = false;
 
 				FinishedAction(true);

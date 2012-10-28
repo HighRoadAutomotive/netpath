@@ -160,6 +160,9 @@ namespace WCFArchitect.Interface
 			if (Item.GetType() == typeof(Projects.Data))
 				ActivePage = new Data.Data(Item as Projects.Data);
 
+			if (Item.GetType() == typeof(Projects.Enum))
+				ActivePage = new Enum.Enum(Item as Projects.Enum);
+
 			//TODO: Finish adding screens as they are made.
 
 			if (Item.GetType() == typeof(Projects.Host))

@@ -26,7 +26,7 @@ namespace WCFArchitect.Projects
 		private static void HasXAMLTypeChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
 		{
 			var t = o as Data;
-			if(t==null) return;
+			if (t == null) return;
 
 			if (Convert.ToBoolean(e.NewValue) == false)
 				t.XAMLType = null; 
