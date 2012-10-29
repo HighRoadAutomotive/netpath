@@ -137,6 +137,7 @@ namespace WCFArchitect.Compiler.Generators
 			Type t = o.GetType();
 			return t == typeof(ServiceBindingWebHTTP) ? "" : GenerateCode35(o);
 		}
+
 		public static string GenerateCode35(ServiceBinding o)
 		{
 			Type t = o.GetType();
@@ -184,16 +185,16 @@ namespace WCFArchitect.Compiler.Generators
 				if (b == null) return "";
 				code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof (System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.MessageEncoding = WSMessageEncoding.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.WSMessageEncoding), b.MessageEncoding), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MessageEncoding = WSMessageEncoding.{0};{1}", System.Enum.GetName(typeof (System.ServiceModel.WSMessageEncoding), b.MessageEncoding), Environment.NewLine);
 				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof (ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof (System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
 				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode35(b.Security));
 			}
 			else if (t == typeof(ServiceBindingWSHTTP))
 			{
@@ -211,7 +212,7 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode35(b.Security));
 			}
 			else if (t == typeof(ServiceBindingWS2007HTTP))
 			{
@@ -229,7 +230,7 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode35(b.Security));
 			}
 			else if (t == typeof(ServiceBindingWSDualHTTP))
 			{
@@ -246,7 +247,7 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode35(b.Security));
 			}
 			else if (t == typeof(ServiceBindingWSFederationHTTP))
 			{
@@ -268,7 +269,7 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode35(b.Security));
 			}
 			else if (t == typeof(ServiceBindingWS2007FederationHTTP))
 			{
@@ -290,7 +291,7 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode35(b.Security));
 			}
 			else if (t == typeof(ServiceBindingTCP))
 			{
@@ -309,7 +310,7 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTransactionProtocol), b.TransactionProtocol), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode35(b.Security));
 			}
 			else if (t == typeof(ServiceBindingNamedPipe))
 			{
@@ -323,7 +324,7 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTransactionProtocol), b.TransactionProtocol), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode35(b.Security));
 			}
 			else if (t == typeof(ServiceBindingMSMQ))
 			{
@@ -346,7 +347,7 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendFormat("\t\t\tthis.UseMSMQTracing = {0};{1}", b.UseMSMQTracing ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.UseSourceJournal = {0};{1}", b.UseSourceJournal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				if (b.ValidityDuration != TimeSpan.Zero) code.AppendFormat("\t\t\tthis.ValidityDuration = new TimeSpan({0});{1}", b.ValidityDuration.Ticks, Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode35(b.Security));
 			}
 			else if (t == typeof(ServiceBindingPeerTCP))
 			{
@@ -356,7 +357,7 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.Port = {0};{1}", b.Port, Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode35(b.Security));
 			}
 			else if (t == typeof(ServiceBindingWebHTTP))
 			{
@@ -373,7 +374,7 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
 				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.WriteEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.WriteEncoding), Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode35(b.Security));
 			}
 			else if (t == typeof(ServiceBindingMSMQIntegration))
 			{
@@ -393,7 +394,7 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendFormat("\t\t\tthis.UseMSMQTracing = {0};{1}", b.UseMSMQTracing ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.UseSourceJournal = {0};{1}", b.UseSourceJournal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				if (b.ValidityDuration != TimeSpan.Zero) code.AppendFormat("\t\t\tthis.ValidityDuration = new TimeSpan({0});{1}", b.ValidityDuration.Ticks, Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode35(b.Security));
 			}
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t}");
@@ -413,7 +414,7 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
 			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
+			code.AppendLine(string.Format("\t{0}", DataTypeCSGenerator.GenerateTypeDeclaration(o)));
 			code.AppendLine("\t{");
 			code.AppendFormat("\t\tpublic {0}(){1}", o.Name, Environment.NewLine);
 			code.AppendLine("\t\t{");
@@ -438,101 +439,110 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendLine("\t\tprivate void SetDefaults()");
 			code.AppendLine("\t\t{");
 			// Generic Binding code.
-			code.AppendFormat("\t\t\tthis.CloseTimeout = new TimeSpan({0});{1}", o.CloseTimeout.Ticks, Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Name = \"{0}\";{1}", o.Name, Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.Namespace = \"{0}\";{1}", o.Namespace, Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.OpenTimeout = new TimeSpan({0});{1}", o.OpenTimeout.Ticks, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.ReceiveTimeout = new TimeSpan({0});{1}", o.ReceiveTimeout.Ticks, Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.CloseTimeout = new TimeSpan({0});{1}", o.CloseTimeout.Ticks, Environment.NewLine);
 			code.AppendFormat("\t\t\tthis.SendTimeout = new TimeSpan({0});{1}", o.SendTimeout.Ticks, Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.ReceiveTimeout = new TimeSpan({0});{1}", o.ReceiveTimeout.Ticks, Environment.NewLine);
 			// Binding Specific code.
 			if (t == typeof(ServiceBindingBasicHTTP))
 			{
 				var b = o as ServiceBindingBasicHTTP;
 				if (b == null) return "";
-				code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.MessageEncoding = WSMessageEncoding.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.WSMessageEncoding), b.MessageEncoding), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (Globals.CurrentGenerationTarget != ProjectGenerationFramework.WIN8)
+				{
+					code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof (System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.MessageEncoding = WSMessageEncoding.{0};{1}", System.Enum.GetName(typeof (System.ServiceModel.WSMessageEncoding), b.MessageEncoding), Environment.NewLine);
+					if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof (ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof (System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
+					if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
+				}
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			if (t == typeof(ServiceBindingBasicHTTPS))
 			{
+				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) return "";
 				var b = o as ServiceBindingBasicHTTPS;
 				if (b == null) return "";
 				code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof (System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.MessageEncoding = WSMessageEncoding.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.WSMessageEncoding), b.MessageEncoding), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.MessageEncoding = WSMessageEncoding.{0};{1}", System.Enum.GetName(typeof (System.ServiceModel.WSMessageEncoding), b.MessageEncoding), Environment.NewLine);
 				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof (ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof (System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
 				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\t = {0}.SetSecurity(this.Security);{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			else if (t == typeof(ServiceBindingNetHTTP))
 			{
 				var b = o as ServiceBindingNetHTTP;
 				if (b == null) return "";
 				code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.MessageEncoding = NetHttpMessageEncoding.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.NetHttpMessageEncoding), b.MessageEncoding), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.WebSocketSettings.CreateNotificationOnConnection = {0};{1}", b.CreateNotificationOnConnection ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.WebSocketSettings.DisablePayloadMasking = {0};{1}", b.DisablePayloadMasking ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.WebSocketSettings.KeepAliveInterval = new TimeSpan({0});{1}", b.KeepAliveInterval.Ticks, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.WebSocketSettings.MaxPendingConnections = {0};{1}", b.MaxPendingConnections, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.WebSocketSettings.SubProtocol = \"{0}\";{1}", b.SubProtocol, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.WebSocketSettings.TransportUsage = System.ServiceModel.Channels.WebSocketTransportUsage.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.Channels.WebSocketTransportUsage), b.TransportUsage), Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (Globals.CurrentGenerationTarget != ProjectGenerationFramework.WIN8)
+				{
+					code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+					if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
+					if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
+				}
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			else if (t == typeof(ServiceBindingNetHTTPS))
 			{
+				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) return "";
 				var b = o as ServiceBindingNetHTTPS;
 				if (b == null) return "";
 				code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.MessageEncoding = NetHttpMessageEncoding.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.NetHttpMessageEncoding), b.MessageEncoding), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.WebSocketSettings.CreateNotificationOnConnection = {0};{1}", b.CreateNotificationOnConnection ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.WebSocketSettings.DisablePayloadMasking = {0};{1}", b.DisablePayloadMasking ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.WebSocketSettings.KeepAliveInterval = new TimeSpan({0});{1}", b.KeepAliveInterval.Ticks, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.WebSocketSettings.MaxPendingConnections = {0};{1}", b.MaxPendingConnections, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.WebSocketSettings.SubProtocol = \"{0}\";{1}", b.SubProtocol, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.WebSocketSettings.TransportUsage = System.ServiceModel.Channels.WebSocketTransportUsage.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.Channels.WebSocketTransportUsage), b.TransportUsage), Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");{1}", b.ProxyAddress, Environment.NewLine);
+				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			else if (t == typeof(ServiceBindingWSHTTP))
 			{
+				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) return "";
 				var b = o as ServiceBindingWSHTTP;
 				if (b == null) return "";
 				code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
@@ -547,10 +557,11 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			else if (t == typeof(ServiceBindingWS2007HTTP))
 			{
+				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) return "";
 				var b = o as ServiceBindingWS2007HTTP;
 				if (b == null) return "";
 				code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
@@ -565,10 +576,11 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			else if (t == typeof(ServiceBindingWSDualHTTP))
 			{
+				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) return "";
 				var b = o as ServiceBindingWSDualHTTP;
 				if (b == null) return "";
 				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
@@ -582,10 +594,11 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			else if (t == typeof(ServiceBindingWSFederationHTTP))
 			{
+				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) return "";
 				var b = o as ServiceBindingWSFederationHTTP;
 				if (b == null) return "";
 				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
@@ -604,10 +617,11 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			else if (t == typeof(ServiceBindingWS2007FederationHTTP))
 			{
+				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) return "";
 				var b = o as ServiceBindingWS2007FederationHTTP;
 				if (b == null) return "";
 				code.AppendFormat("\t\t\tthis.BypassProxyOnLocal = {0};{1}", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
@@ -626,29 +640,33 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendFormat("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			else if (t == typeof(ServiceBindingTCP))
 			{
 				var b = o as ServiceBindingTCP;
 				if (b == null) return "";
-				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.ListenBacklog = {0};{1}", b.ListenBacklog, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.MaxBufferSize = {0};{1}", Convert.ToInt32(b.MaxBufferSize.BytesNormalized), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.MaxConnections = {0};{1}", b.MaxConnections, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.PortSharingEnabled = {0};{1}", b.PortSharingEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTransactionProtocol), b.TransactionProtocol), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (Globals.CurrentGenerationTarget != ProjectGenerationFramework.WIN8)
+				{
+					code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof (System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.ListenBacklog = {0};{1}", b.ListenBacklog, Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.MaxConnections = {0};{1}", b.MaxConnections, Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.PortSharingEnabled = {0};{1}", b.PortSharingEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.ReliableSession.Enabled = {0};{1}", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});{1}", b.ReliableSessionInactivityTimeout.Ticks, Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.ReliableSession.Ordered = {0};{1}", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+					code.AppendFormat("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};{1}", System.Enum.GetName(typeof (ServiceBindingTransactionProtocol), b.TransactionProtocol), Environment.NewLine);
+				}
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			else if (t == typeof(ServiceBindingNamedPipe))
 			{
+				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) return "";
 				var b = o as ServiceBindingNamedPipe;
 				if (b == null) return "";
 				code.AppendFormat("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode), Environment.NewLine);
@@ -659,10 +677,11 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendFormat("\t\t\tthis.TransactionFlow = {0};{1}", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTransactionProtocol), b.TransactionProtocol), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			else if (t == typeof(ServiceBindingMSMQ))
 			{
+				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) return "";
 				var b = o as ServiceBindingMSMQ;
 				if (b == null) return "";
 				code.AppendFormat("\t\t\tthis.CustomerDeadLetterQueue = new Uri(\"{0}\");{1}", b.CustomDeadLetterQueue, Environment.NewLine);
@@ -682,20 +701,22 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendFormat("\t\t\tthis.UseMSMQTracing = {0};{1}", b.UseMSMQTracing ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.UseSourceJournal = {0};{1}", b.UseSourceJournal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				if (b.ValidityDuration != TimeSpan.Zero) code.AppendFormat("\t\t\tthis.ValidityDuration = new TimeSpan({0});{1}", b.ValidityDuration.Ticks, Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			else if (t == typeof(ServiceBindingPeerTCP))
 			{
+				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) return "";
 				var b = o as ServiceBindingPeerTCP;
 				if (b == null) return "";
 				if (b.ListenIPAddress == "") { code.AppendLine("\t\t\tthis.ListenIPAddress = null;"); } else { code.AppendFormat("\t\t\tthis.ListenIPAddress = IPAddress.Parse(\"{0}\");{1}", b.ListenIPAddress, Environment.NewLine); }
 				code.AppendFormat("\t\t\tthis.MaxBufferPoolSize = {0};{1}", b.MaxBufferPoolSize.BytesNormalized, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.MaxReceivedMessageSize = {0};{1}", b.MaxReceivedMessageSize.BytesNormalized, Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.Port = {0};{1}", b.Port, Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			else if (t == typeof(ServiceBindingWebHTTP))
 			{
+				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) return "";
 				var b = o as ServiceBindingWebHTTP;
 				if (b == null) return "";
 				code.AppendFormat("\t\t\tthis.AllowCookies = {0};{1}", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
@@ -709,10 +730,11 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendFormat("\t\t\tthis.TransferMode = TransferMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode), Environment.NewLine);
 				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendFormat("\t\t\tthis.UseDefaultWebProxy = false;{0}", Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.WriteEncoding = System.Text.Encoding.{0};{1}", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.WriteEncoding), Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			else if (t == typeof(ServiceBindingMSMQIntegration))
 			{
+				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) return "";
 				var b = o as ServiceBindingMSMQIntegration;
 				if (b == null) return "";
 				code.AppendFormat("\t\t\tthis.CustomerDeadLetterQueue = new Uri(\"{0}\");{1}", b.CustomDeadLetterQueue, Environment.NewLine);
@@ -729,7 +751,7 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendFormat("\t\t\tthis.UseMSMQTracing = {0};{1}", b.UseMSMQTracing ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.UseSourceJournal = {0};{1}", b.UseSourceJournal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				if (b.ValidityDuration != TimeSpan.Zero) code.AppendFormat("\t\t\tthis.ValidityDuration = new TimeSpan({0});{1}", b.ValidityDuration.Ticks, Environment.NewLine);
-				if (b.Security != null) code.AppendFormat("\t\t\tthis.Security = new {0}();{1}", DataTypeCSGenerator.GenerateType(b.Security), Environment.NewLine);
+				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t}");
