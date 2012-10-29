@@ -160,6 +160,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Compiler.cs" />
+    <Compile Include="Interface\Bindings\Converters.cs" />
+    <Compile Include="Interface\Bindings\TCP.xaml.cs">
+      <DependentUpon>TCP.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interface\Data\Data.xaml.cs">
       <DependentUpon>Data.xaml</DependentUpon>
     </Compile>
@@ -242,6 +246,10 @@
     </Compile>
     <Compile Include="Globals.cs" />
     <Compile Include="Themes\DragAdorner.cs" />
+    <Page Include="Interface\Bindings\TCP.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Interface\Data\Data.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -746,9 +754,7 @@
     <Resource Include="Icons\X16\BehaviorMetadata.png" />
     <Resource Include="Icons\X16\BehaviorThrottling.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interface\Bindings\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

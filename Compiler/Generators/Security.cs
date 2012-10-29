@@ -10,15 +10,6 @@ namespace WCFArchitect.Compiler.Generators
 {
 	internal static class SecurityCSGenerator
 	{
-		public static void VerifyCode(BindingSecurity o)
-		{
-			if (string.IsNullOrEmpty(o.Name))
-				Program.AddMessage(new CompileMessage("GS7000", "A binding security element in the '" + o.Parent.Name + "' project has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-			else
-				if (RegExs.MatchCodeName.IsMatch(o.Name) == false)
-					Program.AddMessage(new CompileMessage("GS7001", "The binding security element '" + o.Name + "' in the '" + o.Parent.Name + "' project contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
-		}
-
 		public static string GenerateCode30(BindingSecurity o)
 		{
 			Type t = o.GetType();
@@ -134,31 +125,15 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode45(BindingSecurityBasicHTTP o)
 		{
 			var code = new StringBuilder();
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
-			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
-			code.AppendLine("\t{");
-			code.AppendFormat("\t\tpublic {0}(){1}", o.Name, Environment.NewLine);
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tthis.Mode = BasicHttpSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpSecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.ClientCredentialType = BasicHttpMessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpMessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.ClientCredentialType = HttpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.ProxyCredentialType = HttpProxyCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpProxyCredentialType), o.TransportProxyCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.Realm = \"{0}\";{1}", o.TransportRealm, Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t\tpublic static void SetSecurity(BasicHttpSecurity sec)");
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tsec.Mode = BasicHttpSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpSecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.ClientCredentialType = BasicHttpMessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpMessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.ClientCredentialType = HttpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.ProxyCredentialType = HttpProxyCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpProxyCredentialType), o.TransportProxyCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.Realm = \"{0}\";{1}", o.TransportRealm, Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t}");
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
+			code.AppendFormat("\t\t\tthis.Security.Mode = BasicHttpSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpSecurityMode), o.Mode), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Transport.ProxyCredentialType = HttpProxyCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpProxyCredentialType), o.TransportProxyCredentialType), Environment.NewLine);
+			if (Globals.CurrentGenerationTarget != ProjectGenerationFramework.WIN8)
+			{
+				code.AppendFormat("\t\t\tthis.Security.Transport.ClientCredentialType = HttpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.Security.Transport.Realm = \"{0}\";{1}", o.TransportRealm, Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.Security.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof (BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.{0};{1}", System.Enum.GetName(typeof (System.ServiceModel.BasicHttpMessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
+			}
 			return code.ToString();
 		}
 
@@ -182,31 +157,12 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode45(BindingSecurityBasicHTTPS o)
 		{
 			var code = new StringBuilder();
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
-			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
-			code.AppendLine("\t{");
-			code.AppendFormat("\t\tpublic {0}(){1}", o.Name, Environment.NewLine);
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tthis.Mode = BasicHttpSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpSecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.ClientCredentialType = BasicHttpMessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpMessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.ClientCredentialType = HttpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.ProxyCredentialType = HttpProxyCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpProxyCredentialType), o.TransportProxyCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.Realm = \"{0}\";{1}", o.TransportRealm, Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t\tpublic static void SetSecurity(BasicHttpSecurity sec)");
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tsec.Mode = BasicHttpSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpSecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.ClientCredentialType = BasicHttpMessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpMessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.ClientCredentialType = HttpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.ProxyCredentialType = HttpProxyCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpProxyCredentialType), o.TransportProxyCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.Realm = \"{0}\";{1}", o.TransportRealm, Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t}");
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
+			code.AppendFormat("\t\t\tthis.Security.Mode = BasicHttpSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpSecurityMode), o.Mode), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpMessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Transport.ClientCredentialType = HttpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Transport.ProxyCredentialType = HttpProxyCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpProxyCredentialType), o.TransportProxyCredentialType), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Transport.Realm = \"{0}\";{1}", o.TransportRealm, Environment.NewLine);
 			return code.ToString();
 		}
 	}
@@ -235,35 +191,14 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode45(BindingSecurityWSHTTP o)
 		{
 			var code = new StringBuilder();
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
-			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
-			code.AppendLine("\t{");
-			code.AppendFormat("\t\tpublic {0}(){1}", o.Name, Environment.NewLine);
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tthis.Mode = SecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.SecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.ClientCredentialType = BasicHttpMessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpMessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.EstablishSecurityContext = {0};{1}", o.MessageEstablishSecurityContext ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.NegotiateServiceCredential = {0};{1}", o.MessageNegotiateServiceCredential ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.ClientCredentialType = HttpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.ProxyCredentialType = HttpProxyCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpProxyCredentialType), o.TransportProxyCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.Realm = \"{0}\";{1}", o.TransportRealm, Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t\tpublic static void SetSecurity(WSHttpSecurity sec)");
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tsec.Mode = SecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.SecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.ClientCredentialType = BasicHttpMessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpMessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.EstablishSecurityContext = {0};{1}", o.MessageEstablishSecurityContext ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.NegotiateServiceCredential = {0};{1}", o.MessageNegotiateServiceCredential ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.ClientCredentialType = HttpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.ProxyCredentialType = HttpProxyCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpProxyCredentialType), o.TransportProxyCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.Realm = \"{0}\";{1}", o.TransportRealm, Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t}");
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
+			code.AppendFormat("\t\t\tthis.Security.Mode = SecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.SecurityMode), o.Mode), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpMessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Message.EstablishSecurityContext = {0};{1}", o.MessageEstablishSecurityContext ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Message.NegotiateServiceCredential = {0};{1}", o.MessageNegotiateServiceCredential ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Transport.ClientCredentialType = HttpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Transport.ProxyCredentialType = HttpProxyCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpProxyCredentialType), o.TransportProxyCredentialType), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Transport.Realm = \"{0}\";{1}", o.TransportRealm, Environment.NewLine);
 			return code.ToString();
 		}
 
@@ -302,27 +237,10 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode45(BindingSecurityWSDualHTTP o)
 		{
 			var code = new StringBuilder();
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
-			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
-			code.AppendLine("\t{");
-			code.AppendFormat("\t\tpublic {0}(){1}", o.Name, Environment.NewLine);
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tthis.Mode = WSDualHttpSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.WSDualHttpSecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.ClientCredentialType = BasicHttpMessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpMessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.NegotiateServiceCredential = {0};{1}", o.MessageNegotiateServiceCredential ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t\tpublic static void SetSecurity(WSDualHttpSecurity sec)");
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tsec.Mode = WSDualHttpSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.WSDualHttpSecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.ClientCredentialType = BasicHttpMessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpMessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.NegotiateServiceCredential = {0};{1}", o.MessageNegotiateServiceCredential ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t}");
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
+			code.AppendFormat("\t\t\tthis.Security.Mode = WSDualHttpSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.WSDualHttpSecurityMode), o.Mode), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpMessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Message.NegotiateServiceCredential = {0};{1}", o.MessageNegotiateServiceCredential ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			return code.ToString();
 		}
 
@@ -361,35 +279,14 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode45(BindingSecurityWSFederationHTTP o)
 		{
 			var code = new StringBuilder();
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
-			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
-			code.AppendLine("\t{");
-			code.AppendFormat("\t\tpublic {0}(){1}", o.Name, Environment.NewLine);
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tthis.Mode = WSFederationHttpSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.WSFederationHttpSecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.EstablishSecurityContext = {0};{1}", o.MessageEstablishSecurityContext ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.IssuedKeyType = System.IdentityModel.Tokens.SecurityKeyType.{0};{1}", System.Enum.GetName(typeof(System.IdentityModel.Tokens.SecurityKeyType), o.MessageIssuedKeyType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.IssuedTokenType = \"{0}\";{1}", o.MessageIssuedTokenType, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.IssuerAddress = new EndpointAddress(\"{0}\");{1}", o.MessageIssuerAddress, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.IssuerMetadataAddress = new EndpointAddress(\"{0}\");{1}", o.MessageIssuerMetadataAddress, Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.NegotiateServiceCredential = {0};{1}", o.MessageNegotiateServiceCredential ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t\tpublic static void SetSecurity(WSFederationHttpSecurity sec)");
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tsec.Mode = WSFederationHttpSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.WSFederationHttpSecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.EstablishSecurityContext = {0};{1}", o.MessageEstablishSecurityContext ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.IssuedKeyType = System.IdentityModel.Tokens.SecurityKeyType.{0};{1}", System.Enum.GetName(typeof(System.IdentityModel.Tokens.SecurityKeyType), o.MessageIssuedKeyType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.IssuedTokenType = \"{0}\";{1}", o.MessageIssuedTokenType, Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.IssuerAddress = new EndpointAddress(\"{0}\");{1}", o.MessageIssuerAddress, Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.IssuerMetadataAddress = new EndpointAddress(\"{0}\");{1}", o.MessageIssuerMetadataAddress, Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.NegotiateServiceCredential = {0};{1}", o.MessageNegotiateServiceCredential ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t}");
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
+			code.AppendFormat("\t\t\tthis.Security.Mode = WSFederationHttpSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.WSFederationHttpSecurityMode), o.Mode), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Message.EstablishSecurityContext = {0};{1}", o.MessageEstablishSecurityContext ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Message.IssuedKeyType = System.IdentityModel.Tokens.SecurityKeyType.{0};{1}", System.Enum.GetName(typeof(System.IdentityModel.Tokens.SecurityKeyType), o.MessageIssuedKeyType), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Message.IssuedTokenType = \"{0}\";{1}", o.MessageIssuedTokenType, Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Message.IssuerAddress = new EndpointAddress(\"{0}\");{1}", o.MessageIssuerAddress, Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Message.IssuerMetadataAddress = new EndpointAddress(\"{0}\");{1}", o.MessageIssuerMetadataAddress, Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Message.NegotiateServiceCredential = {0};{1}", o.MessageNegotiateServiceCredential ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 			return code.ToString();
 		}
 
@@ -417,31 +314,7 @@ namespace WCFArchitect.Compiler.Generators
 
 		public static string GenerateCode35(BindingSecurityTCP o)
 		{
-			var code = new StringBuilder();
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
-			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
-			code.AppendLine("\t{");
-			code.AppendFormat("\t\tpublic {0}(){1}", o.Name, Environment.NewLine);
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tthis.Mode = SecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.SecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.ClientCredentialType = MessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.ClientCredentialType = TcpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TcpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.ProtectionLevel = ProtectionLevel.{0};{1}", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.TransportProtectionLevel), Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t\tpublic static void SetSecurity(NetTcpSecurity sec)");
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tsec.Mode = SecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.SecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.ClientCredentialType = MessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.ClientCredentialType = TcpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TcpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.ProtectionLevel = ProtectionLevel.{0};{1}", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.TransportProtectionLevel), Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t}");
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
-			return code.ToString();
+			return GenerateCode40(o);
 		}
 
 		public static string GenerateCode40(BindingSecurityTCP o)
@@ -452,47 +325,14 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode45(BindingSecurityTCP o)
 		{
 			var code = new StringBuilder();
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
-			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
-			code.AppendLine("\t{");
-			code.AppendFormat("\t\tpublic {0}(){1}", o.Name, Environment.NewLine);
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tthis.Mode = SecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.SecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.ClientCredentialType = MessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.ClientCredentialType = TcpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TcpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.ProtectionLevel = ProtectionLevel.{0};{1}", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.TransportProtectionLevel), Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendFormat("\t\tpublic {0}(System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy Policy){1}", o.Name, Environment.NewLine);
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tthis.Mode = SecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.SecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.ClientCredentialType = MessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.ClientCredentialType = TcpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TcpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.ProtectionLevel = ProtectionLevel.{0};{1}", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.TransportProtectionLevel), Environment.NewLine);
-			code.AppendLine("\t\t\tthis.Transport.ExtendedProtectionPolicy = Policy;");
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t\tpublic static void SetSecurity(NetTcpSecurity sec)");
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tsec.Mode = SecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.SecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.ClientCredentialType = MessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.ClientCredentialType = TcpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TcpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.ProtectionLevel = ProtectionLevel.{0};{1}", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.TransportProtectionLevel), Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t\tpublic static void SetSecurity(NetTcpSecurity sec, System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy Policy)");
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tsec.Mode = SecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.SecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.ClientCredentialType = MessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.ClientCredentialType = TcpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.TcpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.ProtectionLevel = ProtectionLevel.{0};{1}", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.TransportProtectionLevel), Environment.NewLine);
-			code.AppendLine("\t\t\tsec.Transport.ExtendedProtectionPolicy = Policy;");
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t}");
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
+			code.AppendFormat("\t\t\tthis.Security.Mode = SecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.SecurityMode), o.Mode), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Transport.ClientCredentialType = TcpClientCredentialType.{0};{1}", System.Enum.GetName(typeof (System.ServiceModel.TcpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
+			if (Globals.CurrentGenerationTarget != ProjectGenerationFramework.WIN8)
+			{
+				code.AppendFormat("\t\t\tthis.Security.Transport.ProtectionLevel = ProtectionLevel.{0};{1}", System.Enum.GetName(typeof (System.Net.Security.ProtectionLevel), o.TransportProtectionLevel), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.Security.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof (BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
+			}
+			code.AppendFormat("\t\t\tthis.Security.Message.ClientCredentialType = MessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
 			return code.ToString();
 		}
 
@@ -531,23 +371,8 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode45(BindingSecurityNamedPipe o)
 		{
 			var code = new StringBuilder();
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
-			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
-			code.AppendLine("\t{");
-			code.AppendFormat("\t\tpublic {0}(){1}", o.Name, Environment.NewLine);
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tthis.Mode = NetNamedPipeSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.NetNamedPipeSecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.ProtectionLevel = ProtectionLevel.{0};{1}", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.TransportProtectionLevel), Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t\tpublic static void SetSecurity(NetNamedPipeSecurity sec)");
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tsec.Mode = NetNamedPipeSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.NetNamedPipeSecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.ProtectionLevel = ProtectionLevel.{0};{1}", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.TransportProtectionLevel), Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t}");
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
+			code.AppendFormat("\t\t\tthis.Security.Mode = NetNamedPipeSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.NetNamedPipeSecurityMode), o.Mode), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Transport.ProtectionLevel = ProtectionLevel.{0};{1}", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.TransportProtectionLevel), Environment.NewLine);
 			return code.ToString();
 		}
 
@@ -586,33 +411,13 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode45(BindingSecurityMSMQ o)
 		{
 			var code = new StringBuilder();
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
-			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
-			code.AppendLine("\t{");
-			code.AppendFormat("\t\tpublic {0}(){1}", o.Name, Environment.NewLine);
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tthis.Mode = NetMsmqSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.NetMsmqSecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Message.ClientCredentialType = MessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.MsmqAuthenticationMode = MsmqAuthenticationMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqAuthenticationMode), o.TransportAuthenticationMode), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.MsmqEncryptionAlgorithm = MsmqEncryptionAlgorithm.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqEncryptionAlgorithm), o.TransportEncryptionAlgorithm), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.MsmqProtectionLevel = MsmqProtectionLevel.{0};{1}", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.TransportProtectionLevel), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.MsmqSecureHashAlgorithm = MsmqSecureHashAlgorithm.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqSecureHashAlgorithm), o.TransportSecureHashAlgorithm), Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t\tpublic static void SetSecurity(NetMsmqSecurity sec)");
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tsec.Mode = NetMsmqSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.NetMsmqSecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Message.ClientCredentialType = MessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.MsmqAuthenticationMode = MsmqAuthenticationMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqAuthenticationMode), o.TransportAuthenticationMode), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.MsmqEncryptionAlgorithm = MsmqEncryptionAlgorithm.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqEncryptionAlgorithm), o.TransportEncryptionAlgorithm), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.MsmqProtectionLevel = MsmqProtectionLevel.{0};{1}", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.TransportProtectionLevel), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.MsmqSecureHashAlgorithm = MsmqSecureHashAlgorithm.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqSecureHashAlgorithm), o.TransportSecureHashAlgorithm), Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t}");
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
+			code.AppendFormat("\t\t\tthis.Security.Mode = NetMsmqSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.NetMsmqSecurityMode), o.Mode), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};{1}", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Message.ClientCredentialType = MessageCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MessageCredentialType), o.MessageClientCredentialType), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Transport.MsmqAuthenticationMode = MsmqAuthenticationMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqAuthenticationMode), o.TransportAuthenticationMode), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Transport.MsmqEncryptionAlgorithm = MsmqEncryptionAlgorithm.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqEncryptionAlgorithm), o.TransportEncryptionAlgorithm), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Transport.MsmqProtectionLevel = MsmqProtectionLevel.{0};{1}", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.TransportProtectionLevel), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Transport.MsmqSecureHashAlgorithm = MsmqSecureHashAlgorithm.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqSecureHashAlgorithm), o.TransportSecureHashAlgorithm), Environment.NewLine);
 			return code.ToString();
 		}
 
@@ -651,23 +456,8 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode45(BindingSecurityPeerTCP o)
 		{
 			var code = new StringBuilder();
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
-			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
-			code.AppendLine("\t{");
-			code.AppendFormat("\t\tpublic {0}(){1}", o.Name, Environment.NewLine);
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tthis.Mode = PeerTransportCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.PeerTransportCredentialType), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.CredentialType = PeerTransportCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.PeerTransportCredentialType), o.TransportClientCredentialType), Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t\tpublic static void SetSecurity(PeerSecuritySettings sec)");
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tsec.Mode = PeerTransportCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.PeerTransportCredentialType), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.CredentialType = PeerTransportCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.PeerTransportCredentialType), o.TransportClientCredentialType), Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t}");
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
+			code.AppendFormat("\t\t\tthis.Security.Mode = PeerTransportCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.PeerTransportCredentialType), o.Mode), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Transport.CredentialType = PeerTransportCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.PeerTransportCredentialType), o.TransportClientCredentialType), Environment.NewLine);
 			return code.ToString();
 		}
 
@@ -695,29 +485,7 @@ namespace WCFArchitect.Compiler.Generators
 
 		public static string GenerateCode35(BindingSecurityWebHTTP o)
 		{
-			var code = new StringBuilder();
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
-			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
-			code.AppendLine("\t{");
-			code.AppendFormat("\t\tpublic {0}(){1}", o.Name, Environment.NewLine);
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tthis.Mode = WebHttpSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.WebHttpSecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.ClientCredentialType = HttpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.ProxyCredentialType = HttpProxyCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpProxyCredentialType), o.TransportProxyCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.Realm = \"{0}\";{1}", o.TransportRealm, Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t\tpublic static void SetSecurity(WebHttpSecurity sec)");
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tsec.Mode = WebHttpSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.WebHttpSecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.ClientCredentialType = HttpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.ProxyCredentialType = HttpProxyCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpProxyCredentialType), o.TransportProxyCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.Realm = \"{0}\";{1}", o.TransportRealm, Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t}");
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
-			return code.ToString();
+			return GenerateCode40(o);
 		}
 
 		public static string GenerateCode40(BindingSecurityWebHTTP o)
@@ -728,43 +496,10 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode45(BindingSecurityWebHTTP o)
 		{
 			var code = new StringBuilder();
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
-			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
-			code.AppendLine("\t{");
-			code.AppendFormat("\t\tpublic {0}(){1}", o.Name, Environment.NewLine);
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tthis.Mode = WebHttpSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.WebHttpSecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.ClientCredentialType = HttpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.ProxyCredentialType = HttpProxyCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpProxyCredentialType), o.TransportProxyCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.Realm = \"{0}\";{1}", o.TransportRealm, Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendFormat("\t\tpublic {0}(System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy Policy){1}", o.Name, Environment.NewLine);
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tthis.Mode = WebHttpSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.WebHttpSecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.ClientCredentialType = HttpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.ProxyCredentialType = HttpProxyCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpProxyCredentialType), o.TransportProxyCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.Realm = \"{0}\";{1}", o.TransportRealm, Environment.NewLine);
-			code.AppendLine("\t\t\tthis.Transport.ExtendedProtectionPolicy = Policy;");
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t\tpublic static void SetSecurity(WebHttpSecurity sec)");
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tsec.Mode = WebHttpSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.WebHttpSecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.ClientCredentialType = HttpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.ProxyCredentialType = HttpProxyCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpProxyCredentialType), o.TransportProxyCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.Realm = \"{0}\";{1}", o.TransportRealm, Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t\tpublic static void SetSecurity(WebHttpSecurity sec, System.Security.Authentication.ExtendedProtection.ExtendedProtectionPolicy Policy)");
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tsec.Mode = WebHttpSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.WebHttpSecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.ClientCredentialType = HttpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.ProxyCredentialType = HttpProxyCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpProxyCredentialType), o.TransportProxyCredentialType), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.Realm = \"{0}\";{1}", o.TransportRealm, Environment.NewLine);
-			code.AppendLine("\t\t\tsec.Transport.ExtendedProtectionPolicy = Policy;");
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t}");
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
+			code.AppendFormat("\t\t\tthis.Security.Mode = WebHttpSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.WebHttpSecurityMode), o.Mode), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Transport.ClientCredentialType = HttpClientCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpClientCredentialType), o.TransportClientCredentialType), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Transport.ProxyCredentialType = HttpProxyCredentialType.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.HttpProxyCredentialType), o.TransportProxyCredentialType), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Transport.Realm = \"{0}\";{1}", o.TransportRealm, Environment.NewLine);
 			return code.ToString();
 		}
 
@@ -803,29 +538,11 @@ namespace WCFArchitect.Compiler.Generators
 		public static string GenerateCode45(BindingSecurityMSMQIntegration o)
 		{
 			var code = new StringBuilder();
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
-			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendFormat("[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]{2}", Globals.ApplicationTitle, Globals.ApplicationVersion, Environment.NewLine);
-			code.AppendFormat("\t{0}{1}", DataTypeCSGenerator.GenerateTypeDeclaration(o), Environment.NewLine);
-			code.AppendLine("\t{");
-			code.AppendFormat("\t\tpublic {0}(){1}", o.Name, Environment.NewLine);
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tthis.Mode = NetMsmqSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqIntegration.MsmqIntegrationSecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.MsmqAuthenticationMode = MsmqAuthenticationMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqAuthenticationMode), o.TransportAuthenticationMode), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.MsmqEncryptionAlgorithm = MsmqEncryptionAlgorithm.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqEncryptionAlgorithm), o.TransportEncryptionAlgorithm), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.MsmqProtectionLevel = MsmqProtectionLevel.{0};{1}", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.TransportProtectionLevel), Environment.NewLine);
-			code.AppendFormat("\t\t\tthis.Transport.MsmqSecureHashAlgorithm = MsmqSecureHashAlgorithm.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqSecureHashAlgorithm), o.TransportSecureHashAlgorithm), Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t\tpublic static void SetSecurity(System.ServiceModel.MsmqIntegration.MsmqIntegrationSecurity sec)");
-			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\tsec.Mode = NetMsmqSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqIntegration.MsmqIntegrationSecurityMode), o.Mode), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.MsmqAuthenticationMode = MsmqAuthenticationMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqAuthenticationMode), o.TransportAuthenticationMode), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.MsmqEncryptionAlgorithm = MsmqEncryptionAlgorithm.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqEncryptionAlgorithm), o.TransportEncryptionAlgorithm), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.MsmqProtectionLevel = MsmqProtectionLevel.{0};{1}", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.TransportProtectionLevel), Environment.NewLine);
-			code.AppendFormat("\t\t\tsec.Transport.MsmqSecureHashAlgorithm = MsmqSecureHashAlgorithm.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqSecureHashAlgorithm), o.TransportSecureHashAlgorithm), Environment.NewLine);
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t}");
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
+			code.AppendFormat("\t\t\tthis.Security.Mode = NetMsmqSecurityMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqIntegration.MsmqIntegrationSecurityMode), o.Mode), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Transport.MsmqAuthenticationMode = MsmqAuthenticationMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqAuthenticationMode), o.TransportAuthenticationMode), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Transport.MsmqEncryptionAlgorithm = MsmqEncryptionAlgorithm.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqEncryptionAlgorithm), o.TransportEncryptionAlgorithm), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Transport.MsmqProtectionLevel = MsmqProtectionLevel.{0};{1}", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.TransportProtectionLevel), Environment.NewLine);
+			code.AppendFormat("\t\t\tthis.Security.Transport.MsmqSecureHashAlgorithm = MsmqSecureHashAlgorithm.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.MsmqSecureHashAlgorithm), o.TransportSecureHashAlgorithm), Environment.NewLine);
 			return code.ToString();
 		}
 

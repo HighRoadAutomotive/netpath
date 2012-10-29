@@ -928,6 +928,7 @@ namespace WCFArchitect.Projects
 			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
 			InheritedTypes.Add(new DataType("System.ServiceModel.NetTcpBinding", DataTypeMode.Class));
+			Security = new BindingSecurityTCP();
 
 			CloseTimeout = new TimeSpan(0, 1, 0);
 			OpenTimeout = new TimeSpan(0, 1, 0);

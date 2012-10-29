@@ -541,11 +541,6 @@ namespace WCFArchitect.Interface
 				var T = frr.Item as ServiceBinding;
 				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
 			}
-			if (valueType == typeof(BindingSecurity))
-			{
-				var T = frr.Item as BindingSecurity;
-				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
-			}
 			if (valueType == typeof(Projects.Host))
 			{
 				var T = frr.Item as Projects.Host;
@@ -806,13 +801,6 @@ namespace WCFArchitect.Interface
 					return "Service Binding";
 				if (T != null) return T.Name;
 			}
-			if (valueType == typeof(BindingSecurity))
-			{
-				var T = value as BindingSecurity;
-				if (T != null && string.IsNullOrEmpty(T.Name))
-					return "Binding Security";
-				if (T != null) return T.Name;
-			}
 			if (valueType == typeof(Projects.Host))
 			{
 				var T = value as Projects.Host;
@@ -909,13 +897,6 @@ namespace WCFArchitect.Interface
 				var T = value as ServiceBinding;
 				if (T != null && string.IsNullOrEmpty(T.Parent.Name))
 					return "Service Binding";
-				if (T != null) return T.Parent.Name;
-			}
-			if (valueType == typeof(BindingSecurity))
-			{
-				var T = value as BindingSecurity;
-				if (T != null && string.IsNullOrEmpty(T.Parent.Name))
-					return "Binding Security";
 				if (T != null) return T.Parent.Name;
 			}
 			if (valueType == typeof(Projects.Host))

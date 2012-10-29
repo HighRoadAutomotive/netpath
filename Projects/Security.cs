@@ -30,61 +30,17 @@ namespace WCFArchitect.Projects
 		TripleDesSha256Rsa15
 	}
 
-	public abstract class BindingSecurity : DataType
+	public abstract class BindingSecurity : DependencyObject
 	{
-		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
-		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(BindingSecurity));
+		public Guid ID { get; set; }
+		public ServiceBinding Owner { get; set; }
 
-		public BindingSecurity() : base(DataTypeMode.Class)
+		public BindingSecurity() {}
+
+		public BindingSecurity(ServiceBinding Owner)
 		{
-			Documentation = new Documentation { IsClass = true };
-		}
-
-		public IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
-		{
-			var results = new List<FindReplaceResult>();
-
-			if (Args.Items == FindItems.Project || Args.Items == FindItems.Any)
-			{
-				if (Args.UseRegex == false)
-				{
-					if (Args.MatchCase == false)
-						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.InvariantCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
-					else
-						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search) >= 0) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
-				}
-				else
-					if (!string.IsNullOrEmpty(Name)) if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, Parent.Owner, this));
-
-				if (Args.ReplaceAll)
-				{
-					if (Args.UseRegex == false)
-					{
-						if (Args.MatchCase == false)
-							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-						else
-							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
-					}
-					else
-						if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
-				}
-			}
-
-			return results;
-		}
-
-		public void Replace (FindReplaceInfo Args, string Field)
-		{
-			if (Args.ReplaceAll != true) return;
-			if (Args.UseRegex == false)
-			{
-				if (Args.MatchCase == false)
-					if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-					else
-						if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
-			}
-			else
-				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
+			this.ID = Guid.NewGuid();
+			this.Owner = Owner;
 		}
 	}
 
@@ -110,18 +66,9 @@ namespace WCFArchitect.Projects
 		public string TransportRealm { get { return (string)GetValue(TransportRealmProperty); } set { SetValue(TransportRealmProperty, value); } }
 		public static readonly DependencyProperty TransportRealmProperty = DependencyProperty.Register("TransportRealm", typeof(string), typeof(BindingSecurityBasicHTTP));
 
-		public BindingSecurityBasicHTTP() : base() { }
+		public BindingSecurityBasicHTTP() { }
 
-		public BindingSecurityBasicHTTP(string Name, Namespace Parent) : base()
-		{
-			ID = Guid.NewGuid();
-			InheritedTypes.Add(new DataType("System.ServiceModel.BasicHttpSecurity", DataTypeMode.Class));
-			var r = new System.Text.RegularExpressions.Regex(@"\W+");
-			this.Name = r.Replace(Name, @"");
-			this.Parent = Parent;
-
-			Mode = System.ServiceModel.BasicHttpSecurityMode.None;
-		}
+		public BindingSecurityBasicHTTP(ServiceBinding Owner) : base(Owner) { }
 	}
 
 	#endregion
@@ -148,18 +95,9 @@ namespace WCFArchitect.Projects
 		public string TransportRealm { get { return (string)GetValue(TransportRealmProperty); } set { SetValue(TransportRealmProperty, value); } }
 		public static readonly DependencyProperty TransportRealmProperty = DependencyProperty.Register("TransportRealm", typeof(string), typeof(BindingSecurityBasicHTTP));
 
-		public BindingSecurityBasicHTTPS() : base() { }
+		public BindingSecurityBasicHTTPS() { }
 
-		public BindingSecurityBasicHTTPS(string Name, Namespace Parent) : base()
-		{
-			ID = Guid.NewGuid();
-			InheritedTypes.Add(new DataType("System.ServiceModel.BasicHttpSecurity", DataTypeMode.Class));
-			var r = new System.Text.RegularExpressions.Regex(@"\W+");
-			this.Name = r.Replace(Name, @"");
-			this.Parent = Parent;
-
-			Mode = System.ServiceModel.BasicHttpsSecurityMode.Transport;
-		}
+		public BindingSecurityBasicHTTPS(ServiceBinding Owner) : base(Owner) { }
 	}
 
 	#endregion
@@ -192,24 +130,9 @@ namespace WCFArchitect.Projects
 		public string TransportRealm { get { return (string)GetValue(TransportRealmProperty); } set { SetValue(TransportRealmProperty, value); } }
 		public static readonly DependencyProperty TransportRealmProperty = DependencyProperty.Register("TransportRealm", typeof(string), typeof(BindingSecurityWSHTTP));
 
-		public BindingSecurityWSHTTP() : base() { }
+		public BindingSecurityWSHTTP() { }
 
-		public BindingSecurityWSHTTP(string Name, Namespace Parent) : base()
-		{
-			ID = Guid.NewGuid();
-			InheritedTypes.Add(new DataType("System.ServiceModel.WSHttpSecurity", DataTypeMode.Class));
-			var r = new System.Text.RegularExpressions.Regex(@"\W+");
-			this.Name = r.Replace(Name, @"");
-			this.Parent = Parent;
-
-			Mode = System.ServiceModel.SecurityMode.Message;
-			MessageAlgorithmSuite = BindingSecurityAlgorithmSuite.Basic256;
-			MessageClientCredentialType = System.ServiceModel.MessageCredentialType.Windows;
-			MessageEstablishSecurityContext = true;
-			MessageNegotiateServiceCredential = true;
-			TransportClientCredentialType = System.ServiceModel.HttpClientCredentialType.None;
-			TransportProxyCredentialType = System.ServiceModel.HttpProxyCredentialType.None;
-		}
+		public BindingSecurityWSHTTP(ServiceBinding Owner) : base(Owner) { }
 	}
 
 	#endregion
@@ -229,22 +152,10 @@ namespace WCFArchitect.Projects
 
 		public bool MessageNegotiateServiceCredential { get { return (bool)GetValue(MessageNegotiateServiceCredentialProperty); } set { SetValue(MessageNegotiateServiceCredentialProperty, value); } }
 		public static readonly DependencyProperty MessageNegotiateServiceCredentialProperty = DependencyProperty.Register("MessageNegotiateServiceCredential", typeof(bool), typeof(BindingSecurityWSHTTP));
+		
+		public BindingSecurityWSDualHTTP() {}
 
-		public BindingSecurityWSDualHTTP() : base() { }
-
-		public BindingSecurityWSDualHTTP(string Name, Namespace Parent) : base()
-		{
-			ID = Guid.NewGuid();
-			InheritedTypes.Add(new DataType("System.ServiceModel.WSDualHttpSecurity", DataTypeMode.Class));
-			var r = new System.Text.RegularExpressions.Regex(@"\W+");
-			this.Name = r.Replace(Name, @"");
-			this.Parent = Parent;
-
-			Mode = System.ServiceModel.WSDualHttpSecurityMode.Message;
-			MessageAlgorithmSuite = BindingSecurityAlgorithmSuite.Basic256;
-			MessageClientCredentialType = System.ServiceModel.MessageCredentialType.Windows;
-			MessageNegotiateServiceCredential = true;
-		}
+		public BindingSecurityWSDualHTTP(ServiceBindingWSDualHTTP Owner) : base(Owner) { }
 	}
 
 	#endregion
@@ -280,22 +191,9 @@ namespace WCFArchitect.Projects
 		public bool MessageNegotiateServiceCredential { get { return (bool)GetValue(MessageNegotiateServiceCredentialProperty); } set { SetValue(MessageNegotiateServiceCredentialProperty, value); } }
 		public static readonly DependencyProperty MessageNegotiateServiceCredentialProperty = DependencyProperty.Register("MessageNegotiateServiceCredential", typeof(bool), typeof(BindingSecurityWSFederationHTTP));
 
-		public BindingSecurityWSFederationHTTP() : base() { }
+		public BindingSecurityWSFederationHTTP() {}
 
-		public BindingSecurityWSFederationHTTP(string Name, Namespace Parent) : base()
-		{
-			ID = Guid.NewGuid();
-			InheritedTypes.Add(new DataType("System.ServiceModel.WSFederationHttpSecurity", DataTypeMode.Class));
-			var r = new System.Text.RegularExpressions.Regex(@"\W+");
-			this.Name = r.Replace(Name, @"");
-			this.Parent = Parent;
-
-			Mode = System.ServiceModel.WSFederationHttpSecurityMode.Message;
-			MessageAlgorithmSuite = BindingSecurityAlgorithmSuite.Basic256Rsa15;
-			MessageEstablishSecurityContext = true;
-			MessageIssuedKeyType = System.IdentityModel.Tokens.SecurityKeyType.SymmetricKey;
-			MessageNegotiateServiceCredential = true;
-		}
+		public BindingSecurityWSFederationHTTP(ServiceBinding Owner) : base(Owner) { }
 	}
 
 	#endregion
@@ -319,20 +217,9 @@ namespace WCFArchitect.Projects
 		public System.Net.Security.ProtectionLevel TransportProtectionLevel { get { return (System.Net.Security.ProtectionLevel)GetValue(TransportProtectionLevelProperty); } set { SetValue(TransportProtectionLevelProperty, value); } }
 		public static readonly DependencyProperty TransportProtectionLevelProperty = DependencyProperty.Register("TransportProtectionLevel", typeof(System.Net.Security.ProtectionLevel), typeof(BindingSecurityTCP));
 		
-		public BindingSecurityTCP() : base() {}
+		public BindingSecurityTCP() {}
 
-		public BindingSecurityTCP(string Name, Namespace Parent) : base()
-		{
-			ID = Guid.NewGuid();
-			InheritedTypes.Add(new DataType("System.ServiceModel.NetTcpSecurity", DataTypeMode.Class));
-			var r = new System.Text.RegularExpressions.Regex(@"\W+");
-			this.Name = r.Replace(Name, @"");
-			this.Parent = Parent;
-
-			Mode = System.ServiceModel.SecurityMode.Transport;
-			TransportClientCredentialType = System.ServiceModel.TcpClientCredentialType.Windows;
-			TransportProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
-		}
+		public BindingSecurityTCP(ServiceBindingTCP Owner) : base(Owner) {}
 	}
 
 	#endregion
@@ -347,19 +234,9 @@ namespace WCFArchitect.Projects
 		public System.Net.Security.ProtectionLevel TransportProtectionLevel { get { return (System.Net.Security.ProtectionLevel)GetValue(TransportProtectionLevelProperty); } set { SetValue(TransportProtectionLevelProperty, value); } }
 		public static readonly DependencyProperty TransportProtectionLevelProperty = DependencyProperty.Register("TransportProtectionLevel", typeof(System.Net.Security.ProtectionLevel), typeof(BindingSecurityNamedPipe));
 
-		public BindingSecurityNamedPipe() : base() { }
+		public BindingSecurityNamedPipe() {}
 
-		public BindingSecurityNamedPipe(string Name, Namespace Parent) : base()
-		{
-			ID = Guid.NewGuid();
-			InheritedTypes.Add(new DataType("System.ServiceModel.NetNamedPipeSecurity", DataTypeMode.Class));
-			var r = new System.Text.RegularExpressions.Regex(@"\W+");
-			this.Name = r.Replace(Name, @"");
-			this.Parent = Parent;
-
-			Mode = System.ServiceModel.NetNamedPipeSecurityMode.Transport;
-			TransportProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
-		}
+		public BindingSecurityNamedPipe(ServiceBindingNamedPipe Owner) : base(Owner) { }
 	}
 
 	#endregion
@@ -389,22 +266,9 @@ namespace WCFArchitect.Projects
 		public System.ServiceModel.MsmqSecureHashAlgorithm TransportSecureHashAlgorithm { get { return (System.ServiceModel.MsmqSecureHashAlgorithm)GetValue(TransportSecureHashAlgorithmProperty); } set { SetValue(TransportSecureHashAlgorithmProperty, value); } }
 		public static readonly DependencyProperty TransportSecureHashAlgorithmProperty = DependencyProperty.Register("TransportSecureHashAlgorithm", typeof(System.ServiceModel.MsmqSecureHashAlgorithm), typeof(BindingSecurityMSMQ));
 
-		public BindingSecurityMSMQ() : base() { }
+		public BindingSecurityMSMQ() {}
 
-		public BindingSecurityMSMQ(string Name, Namespace Parent) : base()
-		{
-			ID = Guid.NewGuid();
-			InheritedTypes.Add(new DataType("System.ServiceModel.NetMsmqSecurity", DataTypeMode.Class));
-			var r = new System.Text.RegularExpressions.Regex(@"\W+");
-			this.Name = r.Replace(Name, @"");
-			this.Parent = Parent;
-
-			Mode = System.ServiceModel.NetMsmqSecurityMode.Transport;
-			TransportAuthenticationMode = System.ServiceModel.MsmqAuthenticationMode.WindowsDomain;
-			TransportEncryptionAlgorithm = System.ServiceModel.MsmqEncryptionAlgorithm.Aes;
-			TransportProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
-			TransportSecureHashAlgorithm = System.ServiceModel.MsmqSecureHashAlgorithm.Sha512;
-		}
+		public BindingSecurityMSMQ(ServiceBindingMSMQ Owner) : base(Owner) {}
 	}
 
 	#endregion
@@ -419,19 +283,9 @@ namespace WCFArchitect.Projects
 		public System.ServiceModel.PeerTransportCredentialType TransportClientCredentialType { get { return (System.ServiceModel.PeerTransportCredentialType)GetValue(TransportClientCredentialTypeProperty); } set { SetValue(TransportClientCredentialTypeProperty, value); } }
 		public static readonly DependencyProperty TransportClientCredentialTypeProperty = DependencyProperty.Register("TransportClientCredentialType", typeof(System.ServiceModel.PeerTransportCredentialType), typeof(BindingSecurityPeerTCP));
 
-		public BindingSecurityPeerTCP() { }
+		public BindingSecurityPeerTCP() {}
 
-		public BindingSecurityPeerTCP(string Name, Namespace Parent)
-		{
-			ID = Guid.NewGuid();
-			InheritedTypes.Add(new DataType("System.ServiceModel.PeerSecuritySettings", DataTypeMode.Class));
-			var r = new System.Text.RegularExpressions.Regex(@"\W+");
-			this.Name = r.Replace(Name, @"");
-			this.Parent = Parent;
-
-			Mode = System.ServiceModel.SecurityMode.Transport;
-			TransportClientCredentialType = System.ServiceModel.PeerTransportCredentialType.Password;
-		}
+		public BindingSecurityPeerTCP(ServiceBindingPeerTCP Owner) : base(Owner) {}
 	}
 
 	#endregion
@@ -452,18 +306,9 @@ namespace WCFArchitect.Projects
 		public string TransportRealm { get { return (string)GetValue(TransportRealmProperty); } set { SetValue(TransportRealmProperty, value); } }
 		public static readonly DependencyProperty TransportRealmProperty = DependencyProperty.Register("TransportRealm", typeof(string), typeof(BindingSecurityWebHTTP));
 
-		public BindingSecurityWebHTTP() : base() { }
+		public BindingSecurityWebHTTP() { }
 
-		public BindingSecurityWebHTTP(string Name, Namespace Parent) : base()
-		{
-			ID = Guid.NewGuid();
-			InheritedTypes.Add(new DataType("System.ServiceModel.WebHttpSecurity", DataTypeMode.Class));
-			System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\W+");
-			this.Name = r.Replace(Name, @"");
-			this.Parent = Parent;
-
-			Mode = System.ServiceModel.WebHttpSecurityMode.None;
-		}
+		public BindingSecurityWebHTTP(ServiceBindingWebHTTP Owner) : base(Owner) {}
 	}
 
 	#endregion
@@ -487,22 +332,9 @@ namespace WCFArchitect.Projects
 		public System.ServiceModel.MsmqSecureHashAlgorithm TransportSecureHashAlgorithm { get { return (System.ServiceModel.MsmqSecureHashAlgorithm)GetValue(TransportSecureHashAlgorithmProperty); } set { SetValue(TransportSecureHashAlgorithmProperty, value); } }
 		public static readonly DependencyProperty TransportSecureHashAlgorithmProperty = DependencyProperty.Register("TransportSecureHashAlgorithm", typeof(System.ServiceModel.MsmqSecureHashAlgorithm), typeof(BindingSecurityMSMQIntegration));
 
-		public BindingSecurityMSMQIntegration() : base() { }
+		public BindingSecurityMSMQIntegration() {}
 
-		public BindingSecurityMSMQIntegration(string Name, Namespace Parent) : base()
-		{
-			ID = Guid.NewGuid();
-			InheritedTypes.Add(new DataType("System.ServiceModel.MsmqIntegration.MsmqIntegrationSecurity", DataTypeMode.Class));
-			var r = new System.Text.RegularExpressions.Regex(@"\W+");
-			this.Name = r.Replace(Name, @"");
-			this.Parent = Parent;
-
-			Mode = System.ServiceModel.MsmqIntegration.MsmqIntegrationSecurityMode.Transport;
-			TransportAuthenticationMode = System.ServiceModel.MsmqAuthenticationMode.WindowsDomain;
-			TransportEncryptionAlgorithm = System.ServiceModel.MsmqEncryptionAlgorithm.Aes;
-			TransportProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
-			TransportSecureHashAlgorithm = System.ServiceModel.MsmqSecureHashAlgorithm.Sha512;
-		}
+		public BindingSecurityMSMQIntegration(ServiceBindingMSMQIntegration Owner) : base(Owner) { }
 	}
 	#endregion
 }
