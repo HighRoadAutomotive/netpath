@@ -5,7 +5,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" 
 	xmlns:c1="http://schemas.componentone.com/wpf/Basic"
 	xmlns:c1datetime="http://schemas.componentone.com/wpf/DateTimeEditors"
-	xmlns:pc="clr-namespace:Prospective.Controls;assembly=Prospective.Controls"
+	xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 	xmlns:Data="clr-namespace:WCFArchitect.Interface.Data"
 	xmlns:Docs="clr-namespace:WCFArchitect.Interface.Documentation"
 	xmlns:Bindings="clr-namespace:WCFArchitect.Interface.Bindings"
@@ -19,6 +19,7 @@
 		<Bindings:MessageCredentialTypeConverter x:Key="MessageCredentialTypeConverter" />
 		<Bindings:TcpClientCredentialTypeConverter x:Key="TcpClientCredentialTypeConverter" />
 		<Bindings:ProtectionLevelConverter x:Key="ProtectionLevelConverter" />
+		<pc:LongConverter x:Key="LongConverter" />
 	</Grid.Resources>
 	<Grid.RowDefinitions>
 		<RowDefinition Height="Auto" />
@@ -52,13 +53,13 @@
 		</Grid.ColumnDefinitions>
 		<Label Grid.Column="0" Content="Timeouts" FontSize="12pt" Margin="0,5,0,0" />
 		<Label Content="Open Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
-		<c1datetime:C1TimeEditor Value="{Binding Path=Binding.OpenTimeout, Mode=TwoWay}" Name="OpenTimeout" Margin="105,5,5,5" Format="TimeSpan" Height="24" VerticalAlignment="Top" Grid.Column="0" Grid.Row="1" />
+		<c1datetime:C1TimeEditor Value="{Binding Path=Binding.OpenTimeout, Mode=TwoWay}" Name="OpenTimeout" Margin="105,5,5,5" Format="TimeSpan" Height="24" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" FontSize="10pt" />
 		<Label Content="Close Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
-		<c1datetime:C1TimeEditor Value="{Binding Path=Binding.CloseTimeout, Mode=TwoWay}" Name="CloseTimeout" Margin="105,5,5,5" Format="TimeSpan" Height="24" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" />
+		<c1datetime:C1TimeEditor Value="{Binding Path=Binding.CloseTimeout, Mode=TwoWay}" Name="CloseTimeout" Margin="105,5,5,5" Format="TimeSpan" Height="24" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" FontSize="10pt" />
 		<Label Content="Send Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" />
-		<c1datetime:C1TimeEditor Value="{Binding Path=Binding.SendTimeout, Mode=TwoWay}" Name="SendTimeout" Margin="105,5,5,5" Format="TimeSpan" Height="24" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" />
+		<c1datetime:C1TimeEditor Value="{Binding Path=Binding.SendTimeout, Mode=TwoWay}" Name="SendTimeout" Margin="105,5,5,5" Format="TimeSpan" Height="24" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" FontSize="10pt" />
 		<Label Content="Receive Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="1" />
-		<c1datetime:C1TimeEditor Value="{Binding Path=Binding.ReceiveTimeout, Mode=TwoWay}" Name="ReceiveTimeout" Margin="115,5,5,5" Format="TimeSpan" Height="24" VerticalAlignment="Top" Grid.Column="3" Grid.Row="1" />
+		<c1datetime:C1TimeEditor Value="{Binding Path=Binding.ReceiveTimeout, Mode=TwoWay}" Name="ReceiveTimeout" Margin="115,5,5,5" Format="TimeSpan" Height="24" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="1" FontSize="10pt" />
 	</Grid>
 	<Grid Grid.Row="4">
 		<Grid.RowDefinitions>
@@ -89,9 +90,9 @@
 		<Label Grid.Column="0" Content="Connection" FontSize="12pt" Margin="0,5,0,0" />
 		<ToggleButton IsChecked="{Binding Path=Binding.PortSharingEnabled}" Name="PortSharingEnabled" Content="Port Sharing" Margin="5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
 		<Label Content="Max Connections:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
-		<c1:C1NumericBox Value="{Binding Path=Binding.MaxConnections}" Margin="125,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ShowButtons="False" Name="MaxConnections" ValueChanged="MaxConnections_ValueChanged" Grid.Column="1" Grid.Row="1" />
+		<c1:C1NumericBox Value="{Binding Path=Binding.MaxConnections}" Margin="125,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ShowButtons="False" Name="MaxConnections" ValueChanged="MaxConnections_ValueChanged" Grid.Column="1" Grid.Row="1" FontSize="10pt" />
 		<Label Content="Listen Backlog:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" />
-		<c1:C1NumericBox Value="{Binding Path=Binding.ListenBacklog}" Margin="105,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ShowButtons="False" Name="ListenBacklog" ValueChanged="ListenBacklog_ValueChanged" Grid.Column="2" Grid.Row="1" />
+		<c1:C1NumericBox Value="{Binding Path=Binding.ListenBacklog}" Margin="105,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ShowButtons="False" Name="ListenBacklog" ValueChanged="ListenBacklog_ValueChanged" Grid.Column="2" Grid.Row="1" FontSize="10pt" />
 	</Grid>
 	<Grid Grid.Row="6">
 		<Grid.RowDefinitions>
@@ -105,11 +106,11 @@
 		</Grid.ColumnDefinitions>
 		<Label Grid.Column="0" Content="Resources" FontSize="12pt" Margin="0,5,0,0" />
 		<Label Content="Max Buffer Pool Size:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
-		<pc:TextBox Name="MaxBufferPoolSize" Height="23" Margin="140,5,5,5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" TextChanged="MaxBufferPoolSize_TextChanged" />
+		<pc:TextBox Text="{Binding Path=Binding.MaxBufferPoolSize, Converter={StaticResource LongConverter}}" Name="MaxBufferPoolSize" Height="23" Margin="140,5,5,5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" Validate="MaxBufferPoolSize_Validate" />
 		<Label Content="Max Buffer Size:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
-		<pc:TextBox Name="MaxBufferSize" Height="23" Margin="125,5,5,5" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" TextChanged="MaxBufferSize_TextChanged" />
+		<pc:TextBox Text="{Binding Path=Binding.MaxBufferSize, Converter={StaticResource LongConverter}}" Name="MaxBufferSize" Height="23" Margin="125,5,5,5" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" Validate="MaxBufferSize_Validate" />
 		<Label Content="Max Received Message Size:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" />
-		<pc:TextBox Name="MaxReceivedMessageSize" Height="23" Margin="180,5,5,5" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" TextChanged="MaxReceivedMessageSize_TextChanged" />
+		<pc:TextBox Text="{Binding Path=Binding.MaxReceivedMessageSize, Converter={StaticResource LongConverter}}" Name="MaxReceivedMessageSize" Height="23" Margin="180,5,5,5" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" Validate="MaxReceivedMessageSize_Validate" />
 	</Grid>
 	<Grid Grid.Row="7">
 		<Grid.RowDefinitions>
@@ -131,7 +132,7 @@
 			</ComboBox.Items>
 		</ComboBox>
 		<Label Content="Transfer Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
-		<ComboBox Height="23" Margin="200,5,5,5" SelectedIndex="{Binding Path=Binding.TransferMode, Converter={StaticResource TransferModeConverter}}" Grid.Column="1" Grid.Row="1" >
+		<ComboBox Height="23" Margin="140,5,5,5" SelectedIndex="{Binding Path=Binding.TransferMode, Converter={StaticResource TransferModeConverter}}" Grid.Column="1" Grid.Row="1" >
 			<ComboBoxItem Content="Buffered" />
 			<ComboBoxItem Content="Streamed" />
 			<ComboBoxItem Content="Streamed Request" />

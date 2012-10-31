@@ -278,38 +278,6 @@ namespace WCFArchitect.Interface.Enum
 		}
 	}
 
-	[ValueConversion(typeof(long), typeof(string))]
-	public class NullLongConverter : IValueConverter
-	{
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			return value == null ? "" : System.Convert.ToString(value);
-		}
-
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			var lt = (string)value;
-			if (lt == "") return null;
-			try {return System.Convert.ToInt64(lt);}
-			catch { return null; }
-		}
-	}
-
-	[ValueConversion(typeof(long), typeof(string))]
-	public class LongConverter : IValueConverter
-	{
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			return System.Convert.ToString(value);
-		}
-
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			var lt = (string)value;
-			return lt == "" ? 0 : System.Convert.ToInt64(lt);
-		}
-	}
-
 	public class AvailableAggregatesConverter : IMultiValueConverter
 	{
 		public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
