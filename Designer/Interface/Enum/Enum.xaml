@@ -15,8 +15,8 @@
 				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Colors.xaml" />
 				<ResourceDictionary>
 					<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
-					<Enum:NullLongConverter x:Key="NullLongConverter" />
-					<Enum:LongConverter x:Key="LongConverter" />
+					<pc:NullLongConverter x:Key="NullLongConverter" />
+					<pc:LongConverter x:Key="LongConverter" />
 					<Enum:AvailableAggregatesConverter x:Key="AvailableAggregatesConverter" />
 				</ResourceDictionary>
 			</ResourceDictionary.MergedDictionaries>

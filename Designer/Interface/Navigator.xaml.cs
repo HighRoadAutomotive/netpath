@@ -163,12 +163,14 @@ namespace WCFArchitect.Interface
 			if (Item.GetType() == typeof(Projects.Enum))
 				ActivePage = new Enum.Enum(Item as Projects.Enum);
 
-			//TODO: Finish adding screens as they are made.
-
 			if (Item.GetType() == typeof(Projects.Host))
 				ActivePage = new Host.Host(Item as Projects.Host);
 
-			//Need to make all item pages before this function can be completed.
+			if (Item.GetType() == typeof(ServiceBindingTCP))
+				ActivePage = new Bindings.TCP(Item as ServiceBindingTCP);
+
+			//TODO: Finish adding screens as they are made.
+
 			Project.Namespace.SetSelectedItem(Item);
 		}
 

@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Prospective.Controls;
 using Prospective.Controls.Dialogs;
 using WCFArchitect.Projects;
 using WCFArchitect.Projects.Helpers;
@@ -31,10 +32,6 @@ namespace WCFArchitect.Interface.Bindings
 			this.Binding = Binding;
 
 			InitializeComponent();
-
-			MaxBufferPoolSize.Text = Binding.MaxBufferPoolSize.ValueRoundedBinary;
-			MaxBufferSize.Text = Binding.MaxBufferSize.ValueRoundedBinary;
-			MaxReceivedMessageSize.Text = Binding.MaxReceivedMessageSize.ValueRoundedBinary;
 		}
 
 		private void Namespace_TextChanged(object sender, TextChangedEventArgs e)
@@ -43,7 +40,7 @@ namespace WCFArchitect.Interface.Bindings
 			Binding.Namespace = RegExs.ReplaceSpaces.Replace(Namespace.Text, @"");
 		}
 
-		private void Namespace_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void Namespace_Validate(object sender, ValidateEventArgs e)
 		{
 			e.IsValid = RegExs.MatchHTTPURI.IsMatch(Namespace.Text);
 		}
@@ -54,7 +51,7 @@ namespace WCFArchitect.Interface.Bindings
 			Binding.EndpointAddress = RegExs.ReplaceSpaces.Replace(EndpointAddress.Text, @"");
 		}
 
-		private void EndpointAddress_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void EndpointAddress_Validate(object sender, ValidateEventArgs e)
 		{
 			e.IsValid = RegExs.MatchTCPURI.IsMatch(EndpointAddress.Text);
 		}
@@ -65,30 +62,9 @@ namespace WCFArchitect.Interface.Bindings
 			Binding.ListenAddress = RegExs.ReplaceSpaces.Replace(ListenAddress.Text, @"");
 		}
 
-		private void ListenAddress_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void ListenAddress_Validate(object sender, ValidateEventArgs e)
 		{
 			e.IsValid = RegExs.MatchTCPURI.IsMatch(ListenAddress.Text);
-		}
-
-		private void MaxBufferPoolSize_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			MaxBufferPoolSize.Background = Brushes.White;
-			Binding.MaxBufferPoolSize.ValueRoundedBinary = MaxBufferPoolSize.Text;
-			if (Binding.MaxBufferPoolSize.IsErrored == true) MaxBufferPoolSize.Background = Brushes.Red;
-		}
-
-		private void MaxBufferSize_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			MaxBufferSize.Background = Brushes.White;
-			Binding.MaxBufferSize.ValueRoundedBinary = MaxBufferSize.Text;
-			if (Binding.MaxBufferSize.IsErrored == true) MaxBufferSize.Background = Brushes.Red;
-		}
-
-		private void MaxReceivedMessageSize_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			MaxReceivedMessageSize.Background = Brushes.White;
-			Binding.MaxReceivedMessageSize.ValueRoundedBinary = MaxReceivedMessageSize.Text;
-			if (Binding.MaxReceivedMessageSize.IsErrored == true) MaxReceivedMessageSize.Background = Brushes.Red;
 		}
 
 		private void ListenBacklog_ValueChanged(object sender, C1.WPF.PropertyChangedEventArgs<double> e)
@@ -99,6 +75,27 @@ namespace WCFArchitect.Interface.Bindings
 		private void MaxConnections_ValueChanged(object sender, C1.WPF.PropertyChangedEventArgs<double> e)
 		{
 			Binding.MaxConnections = Convert.ToInt32(e.NewValue);
+		}
+
+		private void MaxBufferPoolSize_Validate(object sender, ValidateEventArgs e)
+		{
+			e.IsValid = true;
+			try { Convert.ToInt64(MaxBufferPoolSize.Text); }
+			catch (Exception) { e.IsValid = false; }
+		}
+
+		private void MaxBufferSize_Validate(object sender, ValidateEventArgs e)
+		{
+			e.IsValid = true;
+			try { Convert.ToInt64(MaxBufferSize.Text); }
+			catch (Exception) { e.IsValid = false; }
+		}
+
+		private void MaxReceivedMessageSize_Validate(object sender, ValidateEventArgs e)
+		{
+			e.IsValid = true;
+			try { Convert.ToInt64(MaxReceivedMessageSize.Text); }
+			catch (Exception) { e.IsValid = false; }
 		}
 	}
 }

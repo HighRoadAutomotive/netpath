@@ -122,6 +122,64 @@ namespace Test1
 
 
 	/**************************************************************************
+	*	Service Bindings
+	**************************************************************************/
+
+[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	public partial class TestBinding : System.ServiceModel.NetTcpBinding
+	{
+		public TestBinding()
+		{
+			SetDefaults();
+		}
+		public TestBinding(System.ServiceModel.NetTcpSecurity CustomSecurity)
+		{
+			SetDefaults();
+			this.Security = CustomSecurity;
+		}
+		public TestBinding(System.Xml.XmlDictionaryReaderQuotas ReaderQuotas)
+		{
+			SetDefaults();
+			this.ReaderQuotas = ReaderQuotas;
+		}
+		public TestBinding(System.ServiceModel.NetTcpSecurity CustomSecurity, System.Xml.XmlDictionaryReaderQuotas ReaderQuotas)
+		{
+			SetDefaults();
+			this.Security = CustomSecurity;
+			this.ReaderQuotas = ReaderQuotas;
+		}
+		private void SetDefaults()
+		{
+			this.Name = "TestBinding";
+			this.Namespace = "";
+			this.OpenTimeout = new TimeSpan(600000000);
+			this.CloseTimeout = new TimeSpan(600000000);
+			this.SendTimeout = new TimeSpan(600000000);
+			this.ReceiveTimeout = new TimeSpan(6000000000);
+			this.MaxBufferPoolSize = 524288;
+			this.MaxBufferSize = 65536;
+			this.MaxReceivedMessageSize = 65536;
+			this.TransferMode = TransferMode.Buffered;
+			this.HostNameComparisonMode = HostNameComparisonMode.StrongWildcard;
+			this.ListenBacklog = 10;
+			this.MaxConnections = 10;
+			this.PortSharingEnabled = false;
+			this.ReliableSession.Enabled = false;
+			this.ReliableSession.InactivityTimeout = new TimeSpan(6000000000);
+			this.ReliableSession.Ordered = false;
+			this.TransactionFlow = true;
+			this.TransactionProtocol = TransactionProtocol.Default;
+			this.Security.Mode = SecurityMode.Transport;
+			this.Security.Transport.ClientCredentialType = TcpClientCredentialType.None;
+			this.Security.Transport.ProtectionLevel = ProtectionLevel.None;
+			this.Security.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.Basic256;
+			this.Security.Message.ClientCredentialType = MessageCredentialType.Windows;
+
+		}
+	}
+
+
+	/**************************************************************************
 	*	Service Hosts
 	**************************************************************************/
 

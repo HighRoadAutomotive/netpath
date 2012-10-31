@@ -148,14 +148,14 @@ namespace WCFArchitect.Projects
 		public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
 		public static readonly DependencyProperty HostNameComparisonModeProperty = DependencyProperty.Register("HostNameComparisonMode", typeof(System.ServiceModel.HostNameComparisonMode), typeof(ServiceBindingBasicHTTP));
 
-		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
-		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingBasicHTTP));
+		public long MaxBufferPoolSize { get { return (long)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(long), typeof(ServiceBindingBasicHTTP));
 
-		public Prospective.Utilities.Types.Base2 MaxBufferSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
-		public static readonly DependencyProperty MaxBufferSizeProperty = DependencyProperty.Register("MaxBufferSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingBasicHTTP));
+		public long MaxBufferSize { get { return (long)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferSizeProperty = DependencyProperty.Register("MaxBufferSize", typeof(long), typeof(ServiceBindingBasicHTTP));
 
-		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
-		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingBasicHTTP));
+		public long MaxReceivedMessageSize { get { return (long)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(long), typeof(ServiceBindingBasicHTTP));
 
 		public System.ServiceModel.WSMessageEncoding MessageEncoding { get { return (System.ServiceModel.WSMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
 		public static readonly DependencyProperty MessageEncodingProperty = DependencyProperty.Register("MessageEncoding", typeof(System.ServiceModel.WSMessageEncoding), typeof(ServiceBindingBasicHTTP));
@@ -181,6 +181,7 @@ namespace WCFArchitect.Projects
 			ID = Guid.NewGuid();
 			this.Name = r.Replace(Name, @"");
 			this.Parent = Parent;
+			Security = new BindingSecurityBasicHTTP(this);
 
 			CloseTimeout = new TimeSpan(0, 1, 0);
 			OpenTimeout = new TimeSpan(0, 1, 0);
@@ -190,9 +191,9 @@ namespace WCFArchitect.Projects
 			AllowCookies = false;
 			BypassProxyOnLocal = false;
 			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
-			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxBufferPoolSize = 524288;
+			MaxBufferSize = 65536;
+			MaxReceivedMessageSize = 65536;
 			MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
 			TextEncoding = ServiceBindingTextEncoding.UTF8;
 			TransferMode = System.ServiceModel.TransferMode.Buffered;
@@ -218,14 +219,14 @@ namespace WCFArchitect.Projects
 		public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
 		public static readonly DependencyProperty HostNameComparisonModeProperty = DependencyProperty.Register("HostNameComparisonMode", typeof(System.ServiceModel.HostNameComparisonMode), typeof(ServiceBindingBasicHTTPS));
 
-		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
-		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingBasicHTTPS));
+		public long MaxBufferPoolSize { get { return (long)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(long), typeof(ServiceBindingBasicHTTPS));
 
-		public Prospective.Utilities.Types.Base2 MaxBufferSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
-		public static readonly DependencyProperty MaxBufferSizeProperty = DependencyProperty.Register("MaxBufferSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingBasicHTTPS));
+		public long MaxBufferSize { get { return (long)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferSizeProperty = DependencyProperty.Register("MaxBufferSize", typeof(long), typeof(ServiceBindingBasicHTTPS));
 
-		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
-		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingBasicHTTPS));
+		public long MaxReceivedMessageSize { get { return (long)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(long), typeof(ServiceBindingBasicHTTPS));
 
 		public System.ServiceModel.WSMessageEncoding MessageEncoding { get { return (System.ServiceModel.WSMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
 		public static readonly DependencyProperty MessageEncodingProperty = DependencyProperty.Register("MessageEncoding", typeof(System.ServiceModel.WSMessageEncoding), typeof(ServiceBindingBasicHTTPS));
@@ -251,6 +252,7 @@ namespace WCFArchitect.Projects
 			ID = Guid.NewGuid();
 			this.Name = r.Replace(Name, @"");
 			this.Parent = Parent;
+			Security = new BindingSecurityBasicHTTPS(this);
 
 			CloseTimeout = new TimeSpan(0, 1, 0);
 			OpenTimeout = new TimeSpan(0, 1, 0);
@@ -260,9 +262,9 @@ namespace WCFArchitect.Projects
 			AllowCookies = false;
 			BypassProxyOnLocal = false;
 			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
-			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxBufferPoolSize = 524288;
+			MaxBufferSize = 65536;
+			MaxReceivedMessageSize = 65536;
 			MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
 			TextEncoding = ServiceBindingTextEncoding.UTF8;
 			TransferMode = System.ServiceModel.TransferMode.Buffered;
@@ -288,14 +290,14 @@ namespace WCFArchitect.Projects
 		public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
 		public static readonly DependencyProperty HostNameComparisonModeProperty = DependencyProperty.Register("HostNameComparisonMode", typeof(System.ServiceModel.HostNameComparisonMode), typeof(ServiceBindingNetHTTP));
 
-		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
-		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingNetHTTP));
+		public long MaxBufferPoolSize { get { return (long)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(long), typeof(ServiceBindingNetHTTP));
 
-		public Prospective.Utilities.Types.Base2 MaxBufferSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
-		public static readonly DependencyProperty MaxBufferSizeProperty = DependencyProperty.Register("MaxBufferSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingNetHTTP));
+		public long MaxBufferSize { get { return (long)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferSizeProperty = DependencyProperty.Register("MaxBufferSize", typeof(long), typeof(ServiceBindingNetHTTP));
 
-		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
-		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingNetHTTP));
+		public long MaxReceivedMessageSize { get { return (long)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(long), typeof(ServiceBindingNetHTTP));
 
 		public System.ServiceModel.NetHttpMessageEncoding MessageEncoding { get { return (System.ServiceModel.NetHttpMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
 		public static readonly DependencyProperty MessageEncodingProperty = DependencyProperty.Register("MessageEncoding", typeof(System.ServiceModel.NetHttpMessageEncoding), typeof(ServiceBindingNetHTTP));
@@ -350,6 +352,7 @@ namespace WCFArchitect.Projects
 			ID = Guid.NewGuid();
 			this.Name = r.Replace(Name, @"");
 			this.Parent = Parent;
+			Security = new BindingSecurityBasicHTTP(this);
 
 			CloseTimeout = new TimeSpan(0, 1, 0);
 			OpenTimeout = new TimeSpan(0, 1, 0);
@@ -359,9 +362,9 @@ namespace WCFArchitect.Projects
 			AllowCookies = false;
 			BypassProxyOnLocal = false;
 			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
-			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxBufferPoolSize = 524288;
+			MaxBufferSize = 65536;
+			MaxReceivedMessageSize = 65536;
 			MessageEncoding = System.ServiceModel.NetHttpMessageEncoding.Text;
 			TextEncoding = ServiceBindingTextEncoding.UTF8;
 			TransferMode = System.ServiceModel.TransferMode.Buffered;
@@ -394,14 +397,14 @@ namespace WCFArchitect.Projects
 		public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
 		public static readonly DependencyProperty HostNameComparisonModeProperty = DependencyProperty.Register("HostNameComparisonMode", typeof(System.ServiceModel.HostNameComparisonMode), typeof(ServiceBindingNetHTTPS));
 
-		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
-		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingNetHTTPS));
+		public long MaxBufferPoolSize { get { return (long)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(long), typeof(ServiceBindingNetHTTPS));
 
-		public Prospective.Utilities.Types.Base2 MaxBufferSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
-		public static readonly DependencyProperty MaxBufferSizeProperty = DependencyProperty.Register("MaxBufferSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingNetHTTPS));
+		public long MaxBufferSize { get { return (long)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferSizeProperty = DependencyProperty.Register("MaxBufferSize", typeof(long), typeof(ServiceBindingNetHTTPS));
 
-		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
-		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingNetHTTPS));
+		public long MaxReceivedMessageSize { get { return (long)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(long), typeof(ServiceBindingNetHTTPS));
 
 		public System.ServiceModel.NetHttpMessageEncoding MessageEncoding { get { return (System.ServiceModel.NetHttpMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
 		public static readonly DependencyProperty MessageEncodingProperty = DependencyProperty.Register("MessageEncoding", typeof(System.ServiceModel.NetHttpMessageEncoding), typeof(ServiceBindingNetHTTPS));
@@ -456,6 +459,7 @@ namespace WCFArchitect.Projects
 			ID = Guid.NewGuid();
 			this.Name = r.Replace(Name, @"");
 			this.Parent = Parent;
+			Security = new BindingSecurityBasicHTTPS(this);
 
 			CloseTimeout = new TimeSpan(0, 1, 0);
 			OpenTimeout = new TimeSpan(0, 1, 0);
@@ -465,9 +469,9 @@ namespace WCFArchitect.Projects
 			AllowCookies = false;
 			BypassProxyOnLocal = false;
 			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
-			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxBufferPoolSize = 524288;
+			MaxBufferSize = 65536;
+			MaxReceivedMessageSize = 65536;
 			MessageEncoding = System.ServiceModel.NetHttpMessageEncoding.Text;
 			TextEncoding = ServiceBindingTextEncoding.UTF8;
 			TransferMode = System.ServiceModel.TransferMode.Buffered;
@@ -509,11 +513,11 @@ namespace WCFArchitect.Projects
 		public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionsOrderedProperty = DependencyProperty.Register("ReliableSessionsOrdered", typeof(bool), typeof(ServiceBindingWSHTTP));
 
-		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
-		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingWSHTTP));
+		public long MaxBufferPoolSize { get { return (long)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(long), typeof(ServiceBindingWSHTTP));
 
-		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
-		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingWSHTTP));
+		public long MaxReceivedMessageSize { get { return (long)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(long), typeof(ServiceBindingWSHTTP));
 
 		public System.ServiceModel.WSMessageEncoding MessageEncoding { get { return (System.ServiceModel.WSMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
 		public static readonly DependencyProperty MessageEncodingProperty = DependencyProperty.Register("MessageEncoding", typeof(System.ServiceModel.WSMessageEncoding), typeof(ServiceBindingWSHTTP));
@@ -539,6 +543,7 @@ namespace WCFArchitect.Projects
 			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
 			InheritedTypes.Add(new DataType("System.ServiceModel.WSHttpBinding", DataTypeMode.Class));
+			Security = new BindingSecurityWSHTTP(this);
 
 			CloseTimeout = new TimeSpan(0, 1, 0);
 			OpenTimeout = new TimeSpan(0, 1, 0);
@@ -548,8 +553,8 @@ namespace WCFArchitect.Projects
 			AllowCookies = false;
 			BypassProxyOnLocal = false;
 			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxBufferPoolSize = 524288;
+			MaxReceivedMessageSize = 65536;
 			MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
 			ReliableSessionEnabled = false;
 			ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
@@ -587,11 +592,11 @@ namespace WCFArchitect.Projects
 		public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionsOrderedProperty = DependencyProperty.Register("ReliableSessionsOrdered", typeof(bool), typeof(ServiceBindingWS2007HTTP));
 
-		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
-		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingWS2007HTTP));
+		public long MaxBufferPoolSize { get { return (long)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(long), typeof(ServiceBindingWS2007HTTP));
 
-		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
-		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingWS2007HTTP));
+		public long MaxReceivedMessageSize { get { return (long)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(long), typeof(ServiceBindingWS2007HTTP));
 
 		public System.ServiceModel.WSMessageEncoding MessageEncoding { get { return (System.ServiceModel.WSMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
 		public static readonly DependencyProperty MessageEncodingProperty = DependencyProperty.Register("MessageEncoding", typeof(System.ServiceModel.WSMessageEncoding), typeof(ServiceBindingWS2007HTTP));
@@ -617,6 +622,7 @@ namespace WCFArchitect.Projects
 			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
 			InheritedTypes.Add(new DataType("System.ServiceModel.WS2007HttpBinding", DataTypeMode.Class));
+			Security = new BindingSecurityWSHTTP(this);
 
 			CloseTimeout = new TimeSpan(0, 1, 0);
 			OpenTimeout = new TimeSpan(0, 1, 0);
@@ -626,8 +632,8 @@ namespace WCFArchitect.Projects
 			AllowCookies = false;
 			BypassProxyOnLocal = false;
 			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxBufferPoolSize = 524288;
+			MaxReceivedMessageSize = 65536;
 			MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
 			ReliableSessionEnabled = false;
 			ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
@@ -662,11 +668,11 @@ namespace WCFArchitect.Projects
 		public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionsOrderedProperty = DependencyProperty.Register("ReliableSessionsOrdered", typeof(bool), typeof(ServiceBindingWS2007HTTP));
 
-		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
-		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingWS2007HTTP));
+		public long MaxBufferPoolSize { get { return (long)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(long), typeof(ServiceBindingWS2007HTTP));
 
-		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
-		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingWS2007HTTP));
+		public long MaxReceivedMessageSize { get { return (long)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(long), typeof(ServiceBindingWS2007HTTP));
 
 		public System.ServiceModel.WSMessageEncoding MessageEncoding { get { return (System.ServiceModel.WSMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
 		public static readonly DependencyProperty MessageEncodingProperty = DependencyProperty.Register("MessageEncoding", typeof(System.ServiceModel.WSMessageEncoding), typeof(ServiceBindingWS2007HTTP));
@@ -692,6 +698,7 @@ namespace WCFArchitect.Projects
 			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
 			InheritedTypes.Add(new DataType("System.ServiceModel.WSDualHttpBinding", DataTypeMode.Class));
+			Security = new BindingSecurityWSDualHTTP(this);
 
 			CloseTimeout = new TimeSpan(0, 1, 0);
 			OpenTimeout = new TimeSpan(0, 1, 0);
@@ -700,8 +707,8 @@ namespace WCFArchitect.Projects
 
 			BypassProxyOnLocal = false;
 			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxBufferPoolSize = 524288;
+			MaxReceivedMessageSize = 65536;
 			MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
 			ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
 			ReliableSessionsOrdered = false;
@@ -735,11 +742,11 @@ namespace WCFArchitect.Projects
 		public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionsOrderedProperty = DependencyProperty.Register("ReliableSessionsOrdered", typeof(bool), typeof(ServiceBindingWSFederationHTTP));
 
-		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
-		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingWSFederationHTTP));
+		public long MaxBufferPoolSize { get { return (long)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(long), typeof(ServiceBindingWSFederationHTTP));
 
-		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
-		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBinding));
+		public long MaxReceivedMessageSize { get { return (long)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(long), typeof(ServiceBinding));
 
 		public System.ServiceModel.WSMessageEncoding MessageEncoding { get { return (System.ServiceModel.WSMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
 		public static readonly DependencyProperty MessageEncodingProperty = DependencyProperty.Register("MessageEncoding", typeof(System.ServiceModel.WSMessageEncoding), typeof(ServiceBindingWSFederationHTTP));
@@ -771,6 +778,7 @@ namespace WCFArchitect.Projects
 			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
 			InheritedTypes.Add(new DataType("System.ServiceModel.WSFederationHttpBinding", DataTypeMode.Class));
+			Security = new BindingSecurityWSFederationHTTP(this);
 
 			CloseTimeout = new TimeSpan(0, 1, 0);
 			OpenTimeout = new TimeSpan(0, 1, 0);
@@ -779,8 +787,8 @@ namespace WCFArchitect.Projects
 
 			BypassProxyOnLocal = false;
 			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxBufferPoolSize = 524288;
+			MaxReceivedMessageSize = 65536;
 			MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
 			ReliableSessionEnabled = false;
 			ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
@@ -815,11 +823,11 @@ namespace WCFArchitect.Projects
 		public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionsOrderedProperty = DependencyProperty.Register("ReliableSessionsOrdered", typeof(bool), typeof(ServiceBindingWS2007FederationHTTP));
 
-		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
-		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingWS2007FederationHTTP));
+		public long MaxBufferPoolSize { get { return (long)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(long), typeof(ServiceBindingWS2007FederationHTTP));
 
-		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
-		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBinding));
+		public long MaxReceivedMessageSize { get { return (long)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(long), typeof(ServiceBinding));
 
 		public System.ServiceModel.WSMessageEncoding MessageEncoding { get { return (System.ServiceModel.WSMessageEncoding)GetValue(MessageEncodingProperty); } set { SetValue(MessageEncodingProperty, value); } }
 		public static readonly DependencyProperty MessageEncodingProperty = DependencyProperty.Register("MessageEncoding", typeof(System.ServiceModel.WSMessageEncoding), typeof(ServiceBindingWS2007FederationHTTP));
@@ -851,6 +859,7 @@ namespace WCFArchitect.Projects
 			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
 			InheritedTypes.Add(new DataType("System.ServiceModel.WS2007FederationHttpBinding", DataTypeMode.Class));
+			Security = new BindingSecurityWSFederationHTTP(this);
 
 			CloseTimeout = new TimeSpan(0, 1, 0);
 			OpenTimeout = new TimeSpan(0, 1, 0);
@@ -859,8 +868,8 @@ namespace WCFArchitect.Projects
 
 			BypassProxyOnLocal = false;
 			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxBufferPoolSize = 524288;
+			MaxReceivedMessageSize = 65536;
 			MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
 			ReliableSessionEnabled = false;
 			ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
@@ -892,14 +901,14 @@ namespace WCFArchitect.Projects
 		public bool ReliableSessionsOrdered { get { return (bool)GetValue(ReliableSessionsOrderedProperty); } set { SetValue(ReliableSessionsOrderedProperty, value); } }
 		public static readonly DependencyProperty ReliableSessionsOrderedProperty = DependencyProperty.Register("ReliableSessionsOrdered", typeof(bool), typeof(ServiceBindingTCP));
 
-		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
-		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingTCP));
+		public long MaxBufferPoolSize { get { return (long)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(long), typeof(ServiceBindingTCP));
 
-		public Prospective.Utilities.Types.Base2 MaxBufferSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
-		public static readonly DependencyProperty MaxBufferSizeProperty = DependencyProperty.Register("MaxBufferSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingTCP));
+		public long MaxBufferSize { get { return (long)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferSizeProperty = DependencyProperty.Register("MaxBufferSize", typeof(long), typeof(ServiceBindingTCP));
 
-		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
-		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBinding));
+		public long MaxReceivedMessageSize { get { return (long)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(long), typeof(ServiceBinding));
 
 		public System.ServiceModel.TransferMode TransferMode { get { return (System.ServiceModel.TransferMode)GetValue(TransferModeProperty); } set { SetValue(TransferModeProperty, value); } }
 		public static readonly DependencyProperty TransferModeProperty = DependencyProperty.Register("TransferMode", typeof(System.ServiceModel.TransferMode), typeof(ServiceBindingTCP));
@@ -928,7 +937,7 @@ namespace WCFArchitect.Projects
 			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
 			InheritedTypes.Add(new DataType("System.ServiceModel.NetTcpBinding", DataTypeMode.Class));
-			Security = new BindingSecurityTCP();
+			Security = new BindingSecurityTCP(this);
 
 			CloseTimeout = new TimeSpan(0, 1, 0);
 			OpenTimeout = new TimeSpan(0, 1, 0);
@@ -937,9 +946,9 @@ namespace WCFArchitect.Projects
 
 			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
 			ListenBacklog = 10;
-			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
-			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxBufferPoolSize = 524288;
+			MaxBufferSize = 65536;
+			MaxReceivedMessageSize = 65536;
 			MaxConnections = 10;
 			PortSharingEnabled = false;
 			ReliableSessionEnabled = false;
@@ -963,14 +972,14 @@ namespace WCFArchitect.Projects
 		public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
 		public static readonly DependencyProperty HostNameComparisonModeProperty = DependencyProperty.Register("HostNameComparisonMode", typeof(System.ServiceModel.HostNameComparisonMode), typeof(ServiceBindingNamedPipe));
 
-		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
-		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingNamedPipe));
+		public long MaxBufferPoolSize { get { return (long)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(long), typeof(ServiceBindingNamedPipe));
 
-		public Prospective.Utilities.Types.Base2 MaxBufferSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
-		public static readonly DependencyProperty MaxBufferSizeProperty = DependencyProperty.Register("MaxBufferSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingNamedPipe));
+		public long MaxBufferSize { get { return (long)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferSizeProperty = DependencyProperty.Register("MaxBufferSize", typeof(long), typeof(ServiceBindingNamedPipe));
 
-		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
-		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingNamedPipe));
+		public long MaxReceivedMessageSize { get { return (long)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(long), typeof(ServiceBindingNamedPipe));
 
 		public System.ServiceModel.TransferMode TransferMode { get { return (System.ServiceModel.TransferMode)GetValue(TransferModeProperty); } set { SetValue(TransferModeProperty, value); } }
 		public static readonly DependencyProperty TransferModeProperty = DependencyProperty.Register("TransferMode", typeof(System.ServiceModel.TransferMode), typeof(ServiceBindingNamedPipe));
@@ -993,6 +1002,7 @@ namespace WCFArchitect.Projects
 			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
 			InheritedTypes.Add(new DataType("System.ServiceModel.NetNamedPipeBinding", DataTypeMode.Class));
+			Security = new BindingSecurityNamedPipe(this);
 
 			CloseTimeout = new TimeSpan(0, 1, 0);
 			OpenTimeout = new TimeSpan(0, 1, 0);
@@ -1000,9 +1010,9 @@ namespace WCFArchitect.Projects
 			SendTimeout = new TimeSpan(0, 1, 0);
 
 			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
-			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxBufferPoolSize = 524288;
+			MaxBufferSize = 65536;
+			MaxReceivedMessageSize = 65536;
 			MaxConnections = 10;
 			TransactionFlow = true;
 			TransactionProtocol = ServiceBindingTransactionProtocol.Default;
@@ -1019,11 +1029,11 @@ namespace WCFArchitect.Projects
 		public BindingSecurityMSMQ Security { get { return (BindingSecurityMSMQ)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
 		public static readonly DependencyProperty SecurityProperty = DependencyProperty.Register("Security", typeof(BindingSecurityMSMQ), typeof(ServiceBindingMSMQ));
 
-		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
-		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingMSMQ));
+		public long MaxBufferPoolSize { get { return (long)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(long), typeof(ServiceBindingMSMQ));
 
-		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
-		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingMSMQ));
+		public long MaxReceivedMessageSize { get { return (long)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(long), typeof(ServiceBindingMSMQ));
 
 		public string CustomDeadLetterQueue { get { return (string)GetValue(CustomDeadLetterQueueProperty); } set { SetValue(CustomDeadLetterQueueProperty, value); } }
 		public static readonly DependencyProperty CustomDeadLetterQueueProperty = DependencyProperty.Register("CustomDeadLetterQueue", typeof(string), typeof(ServiceBindingMSMQ));
@@ -1079,6 +1089,7 @@ namespace WCFArchitect.Projects
 			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
 			InheritedTypes.Add(new DataType("System.ServiceModel.NetMsmqBinding", DataTypeMode.Class));
+			Security = new BindingSecurityMSMQ(this);
 
 			CloseTimeout = new TimeSpan(0, 1, 0);
 			OpenTimeout = new TimeSpan(0, 1, 0);
@@ -1088,8 +1099,8 @@ namespace WCFArchitect.Projects
 			DeadLetterQueue = System.ServiceModel.DeadLetterQueue.System;		//This is the default if Durable is true
 			Durable = true;			//Must be true if ExactlyOnce is true.
 			ExactlyOnce = true;
-			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxBufferPoolSize = 524288;
+			MaxReceivedMessageSize = 65536;
 			MaxRetryCycles = 2;
 			QueueTransferProtocol = System.ServiceModel.QueueTransferProtocol.Native;
 			ReceiveContextEnabled = true;
@@ -1113,11 +1124,11 @@ namespace WCFArchitect.Projects
 		public BindingSecurityPeerTCP Security { get { return (BindingSecurityPeerTCP)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
 		public static readonly DependencyProperty SecurityProperty = DependencyProperty.Register("Security", typeof(BindingSecurityPeerTCP), typeof(ServiceBindingPeerTCP));
 
-		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
-		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingPeerTCP));
+		public long MaxBufferPoolSize { get { return (long)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(long), typeof(ServiceBindingPeerTCP));
 
-		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
-		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingPeerTCP));
+		public long MaxReceivedMessageSize { get { return (long)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(long), typeof(ServiceBindingPeerTCP));
 
 		public string ListenIPAddress { get { return (string)GetValue(ListenIPAddressProperty); } set { SetValue(ListenIPAddressProperty, value); } }
 		public static readonly DependencyProperty ListenIPAddressProperty = DependencyProperty.Register("ListenIPAddress", typeof(string), typeof(ServiceBindingPeerTCP));
@@ -1134,14 +1145,15 @@ namespace WCFArchitect.Projects
 			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
 			InheritedTypes.Add(new DataType("System.ServiceModel.NetPeerTcpBinding", DataTypeMode.Class));
+			Security = new BindingSecurityPeerTCP(this);
 
 			CloseTimeout = new TimeSpan(0, 1, 0);
 			OpenTimeout = new TimeSpan(0, 1, 0);
 			ReceiveTimeout = new TimeSpan(0, 10, 0);
 			SendTimeout = new TimeSpan(0, 1, 0);
 
-			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxBufferPoolSize = 524288;
+			MaxReceivedMessageSize = 65536;
 			ListenIPAddress = "";
 			Port = 31337;		
 		}
@@ -1165,14 +1177,14 @@ namespace WCFArchitect.Projects
 		public System.ServiceModel.HostNameComparisonMode HostNameComparisonMode { get { return (System.ServiceModel.HostNameComparisonMode)GetValue(HostNameComparisonModeProperty); } set { SetValue(HostNameComparisonModeProperty, value); } }
 		public static readonly DependencyProperty HostNameComparisonModeProperty = DependencyProperty.Register("HostNameComparisonMode", typeof(System.ServiceModel.HostNameComparisonMode), typeof(ServiceBindingWebHTTP));
 
-		public Prospective.Utilities.Types.Base2 MaxBufferPoolSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
-		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingWebHTTP));
+		public long MaxBufferPoolSize { get { return (long)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(long), typeof(ServiceBindingWebHTTP));
 
-		public Prospective.Utilities.Types.Base2 MaxBufferSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
-		public static readonly DependencyProperty MaxBufferSizeProperty = DependencyProperty.Register("MaxBufferSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingWebHTTP));
+		public long MaxBufferSize { get { return (long)GetValue(MaxBufferSizeProperty); } set { SetValue(MaxBufferSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferSizeProperty = DependencyProperty.Register("MaxBufferSize", typeof(long), typeof(ServiceBindingWebHTTP));
 
-		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
-		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingWebHTTP));
+		public long MaxReceivedMessageSize { get { return (long)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(long), typeof(ServiceBindingWebHTTP));
 
 		public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
 		public static readonly DependencyProperty ProxyAddressProperty = DependencyProperty.Register("ProxyAddress", typeof(string), typeof(ServiceBindingWebHTTP));
@@ -1198,6 +1210,7 @@ namespace WCFArchitect.Projects
 			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
 			InheritedTypes.Add(new DataType("System.ServiceModel.WebHttpBinding", DataTypeMode.Class));
+			Security = new BindingSecurityWebHTTP(this);
 
 			CloseTimeout = new TimeSpan(0, 1, 0);
 			OpenTimeout = new TimeSpan(0, 1, 0);
@@ -1208,9 +1221,9 @@ namespace WCFArchitect.Projects
 			BypassProxyOnLocal = false;
 			CrossDomainScriptAccessEnabled = false;
 			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
-			MaxBufferPoolSize = new Prospective.Utilities.Types.Base2(524288M);
-			MaxBufferSize = new Prospective.Utilities.Types.Base2(65536M);
-			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxBufferPoolSize = 524288;
+			MaxBufferSize = 65536;
+			MaxReceivedMessageSize = 65536;
 			TransferMode = System.ServiceModel.TransferMode.Buffered;
 			UseDefaultWebProxy = true;
 			WriteEncoding = ServiceBindingTextEncoding.UTF8;
@@ -1226,8 +1239,8 @@ namespace WCFArchitect.Projects
 		public BindingSecurityMSMQIntegration Security { get { return (BindingSecurityMSMQIntegration)GetValue(SecurityProperty); } set { SetValue(SecurityProperty, value); } }
 		public static readonly DependencyProperty SecurityProperty = DependencyProperty.Register("Security", typeof(BindingSecurityMSMQIntegration), typeof(ServiceBindingMSMQIntegration));
 
-		public Prospective.Utilities.Types.Base2 MaxReceivedMessageSize { get { return (Prospective.Utilities.Types.Base2)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
-		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(Prospective.Utilities.Types.Base2), typeof(ServiceBindingMSMQIntegration));
+		public long MaxReceivedMessageSize { get { return (long)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(long), typeof(ServiceBindingMSMQIntegration));
 
 		public string CustomDeadLetterQueue { get { return (string)GetValue(CustomDeadLetterQueueProperty); } set { SetValue(CustomDeadLetterQueueProperty, value); } }
 		public static readonly DependencyProperty CustomDeadLetterQueueProperty = DependencyProperty.Register("CustomDeadLetterQueue", typeof(string), typeof(ServiceBindingMSMQIntegration));
@@ -1280,6 +1293,7 @@ namespace WCFArchitect.Projects
 			var r = new System.Text.RegularExpressions.Regex(@"\W+");
 			this.Name = r.Replace(Name, @"");
 			InheritedTypes.Add(new DataType("System.ServiceModel.MsmqIntegration.MsmqIntegrationBinding", DataTypeMode.Class));
+			Security = new BindingSecurityMSMQIntegration(this);
 
 			CloseTimeout = new TimeSpan(0, 1, 0);
 			OpenTimeout = new TimeSpan(0, 1, 0);
@@ -1289,7 +1303,7 @@ namespace WCFArchitect.Projects
 			DeadLetterQueue = System.ServiceModel.DeadLetterQueue.System;		//This is the default if Durable is true
 			Durable = true;			//Must be true if ExactlyOnce is true.
 			ExactlyOnce = true;
-			MaxReceivedMessageSize = new Prospective.Utilities.Types.Base2(65536M);
+			MaxReceivedMessageSize = 65536;
 			MaxRetryCycles = 2;
 			ReceiveContextEnabled = true;
 			ReceiveErrorHandling = System.ServiceModel.ReceiveErrorHandling.Reject;
