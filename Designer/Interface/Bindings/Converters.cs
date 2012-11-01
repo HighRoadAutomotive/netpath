@@ -749,4 +749,26 @@ namespace WCFArchitect.Interface.Bindings
 			throw new NotImplementedException();
 		}
 	}
+
+	[ValueConversion(typeof(System.ServiceModel.Channels.WebSocketTransportUsage), typeof(int))]
+	public class WebSocketTransportUsageConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (System.ServiceModel.Channels.WebSocketTransportUsage)value;
+			if (lt == System.ServiceModel.Channels.WebSocketTransportUsage.WhenDuplex) return 0;
+			if (lt == System.ServiceModel.Channels.WebSocketTransportUsage.Always) return 1;
+			if (lt == System.ServiceModel.Channels.WebSocketTransportUsage.Never) return 2;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			int lt = (int)value;
+			if (lt == 0) return System.ServiceModel.Channels.WebSocketTransportUsage.WhenDuplex;
+			if (lt == 1) return System.ServiceModel.Channels.WebSocketTransportUsage.Always;
+			if (lt == 2) return System.ServiceModel.Channels.WebSocketTransportUsage.Never;
+			return System.ServiceModel.Channels.WebSocketTransportUsage.WhenDuplex;
+		}
+	}
 }

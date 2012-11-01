@@ -17,17 +17,17 @@ using WCFArchitect.Projects.Helpers;
 
 namespace WCFArchitect.Interface.Bindings
 {
-	internal partial class TCP : Grid
+	internal partial class NamedPipe : Grid
 	{
-		public ServiceBindingTCP Binding { get { return (ServiceBindingTCP)GetValue(BindingProperty); } set { SetValue(BindingProperty, value); } }
-		public static readonly DependencyProperty BindingProperty = DependencyProperty.Register("Binding", typeof(ServiceBindingTCP), typeof(TCP));
+		public ServiceBindingNamedPipe Binding { get { return (ServiceBindingNamedPipe)GetValue(BindingProperty); } set { SetValue(BindingProperty, value); } }
+		public static readonly DependencyProperty BindingProperty = DependencyProperty.Register("Binding", typeof(ServiceBindingTCP), typeof(NamedPipe));
 
-		public TCP()
+		public NamedPipe()
 		{
 			InitializeComponent();
 		}
 
-		public TCP(ServiceBindingTCP Binding)
+		public NamedPipe(ServiceBindingNamedPipe Binding)
 		{
 			this.Binding = Binding;
 
@@ -43,11 +43,6 @@ namespace WCFArchitect.Interface.Bindings
 		private void Namespace_Validate(object sender, ValidateEventArgs e)
 		{
 			e.IsValid = RegExs.MatchHTTPURI.IsMatch(Namespace.Text);
-		}
-
-		private void ListenBacklog_ValueChanged(object sender, C1.WPF.PropertyChangedEventArgs<double> e)
-		{
-			Binding.ListenBacklog = Convert.ToInt32(e.NewValue);
 		}
 
 		private void MaxConnections_ValueChanged(object sender, C1.WPF.PropertyChangedEventArgs<double> e)
