@@ -166,8 +166,50 @@ namespace WCFArchitect.Interface
 			if (Item.GetType() == typeof(Projects.Host))
 				ActivePage = new Host.Host(Item as Projects.Host);
 
+			if (Item.GetType() == typeof(ServiceBindingBasicHTTP))
+				ActivePage = new Bindings.BasicHTTP(Item as ServiceBindingBasicHTTP);
+
+			if (Item.GetType() == typeof(ServiceBindingBasicHTTPS))
+				ActivePage = new Bindings.BasicHTTPS(Item as ServiceBindingBasicHTTPS);
+
+			if (Item.GetType() == typeof(ServiceBindingNetHTTP))
+				ActivePage = new Bindings.NetHTTP(Item as ServiceBindingNetHTTP);
+
+			if (Item.GetType() == typeof(ServiceBindingNetHTTPS))
+				ActivePage = new Bindings.NetHTTPS(Item as ServiceBindingNetHTTPS);
+
+			if (Item.GetType() == typeof(ServiceBindingWSHTTP))
+				ActivePage = new Bindings.WSHTTP(Item as ServiceBindingWSHTTP);
+
+			if (Item.GetType() == typeof(ServiceBindingWS2007HTTP))
+				ActivePage = new Bindings.WS2007HTTP(Item as ServiceBindingWS2007HTTP);
+
+			if (Item.GetType() == typeof(ServiceBindingWSFederationHTTP))
+				ActivePage = new Bindings.WSFederationHTTP(Item as ServiceBindingWSFederationHTTP);
+
+			if (Item.GetType() == typeof(ServiceBindingWS2007FederationHTTP))
+				ActivePage = new Bindings.WS2007FederationHTTP(Item as ServiceBindingWS2007FederationHTTP);
+
+			if (Item.GetType() == typeof(ServiceBindingWSDualHTTP))
+				ActivePage = new Bindings.WSDualHTTP(Item as ServiceBindingWSDualHTTP);
+
+			if (Item.GetType() == typeof(ServiceBindingWebHTTP))
+				ActivePage = new Bindings.WebHTTP(Item as ServiceBindingWebHTTP);
+
 			if (Item.GetType() == typeof(ServiceBindingTCP))
 				ActivePage = new Bindings.TCP(Item as ServiceBindingTCP);
+
+			if (Item.GetType() == typeof(ServiceBindingNamedPipe))
+				ActivePage = new Bindings.NamedPipe(Item as ServiceBindingNamedPipe);
+
+			if (Item.GetType() == typeof(ServiceBindingPeerTCP))
+				ActivePage = new Bindings.PeerTCP(Item as ServiceBindingPeerTCP);
+
+			if (Item.GetType() == typeof(ServiceBindingMSMQ))
+				ActivePage = new Bindings.MSMQ(Item as ServiceBindingMSMQ);
+
+			if (Item.GetType() == typeof(ServiceBindingMSMQIntegration))
+				ActivePage = new Bindings.MSMQIntegration(Item as ServiceBindingMSMQIntegration);
 
 			//TODO: Finish adding screens as they are made.
 

@@ -1,9 +1,8 @@
-﻿<Grid x:Class="WCFArchitect.Interface.Bindings.TCP" x:ClassModifier="internal"
+﻿<Grid x:Class="WCFArchitect.Interface.Bindings.BasicHTTP" x:ClassModifier="internal"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" 
-	xmlns:c1="http://schemas.componentone.com/wpf/Basic"
 	xmlns:c1datetime="http://schemas.componentone.com/wpf/DateTimeEditors"
 	xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 	xmlns:Data="clr-namespace:WCFArchitect.Interface.Data"
@@ -12,18 +11,18 @@
 	d:DesignHeight="950" d:DesignWidth="1000" DataContext="{Binding RelativeSource={RelativeSource Self}}" UseLayoutRounding="True" >
 	<Grid.Resources>
 		<Bindings:HostNameComparisonModeConverter x:Key="HostNameComparisonModeConverter" />
+		<Bindings:WSMessageEncodingConverter x:Key="WSMessageEncodingConverter" />
+		<Bindings:ServiceBindingTextEncodingConverter x:Key="ServiceBindingTextEncodingConverter" />
 		<Bindings:TransferModeConverter x:Key="TransferModeConverter" />
-		<Bindings:ServiceBindingTransactionProtocolConverter x:Key="ServiceBindingTransactionProtocolConverter" />
-		<Bindings:SecurityModeConverter x:Key="SecurityModeConverter" />
+		<Bindings:BasicHttpSecurityModeConverter x:Key="BasicHttpSecurityModeConverter" />
 		<Bindings:BindingSecurityAlgorithmSuiteConverter x:Key="BindingSecurityAlgorithmSuiteConverter" />
-		<Bindings:MessageCredentialTypeConverter x:Key="MessageCredentialTypeConverter" />
-		<Bindings:TcpClientCredentialTypeConverter x:Key="TcpClientCredentialTypeConverter" />
-		<Bindings:ProtectionLevelConverter x:Key="ProtectionLevelConverter" />
+		<Bindings:BasicHttpMessageCredentialTypeConverter x:Key="BasicHttpMessageCredentialTypeConverter" />
+		<Bindings:HttpClientCredentialTypeConverter x:Key="HttpClientCredentialTypeConverter" />
+		<Bindings:HttpProxyCredentialTypeConverter x:Key="HttpProxyCredentialTypeConverter" />
 		<pc:LongConverter x:Key="LongConverter" />
 		<pc:IntConverter x:Key="IntConverter" />
 	</Grid.Resources>
 	<Grid.RowDefinitions>
-		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
@@ -71,28 +70,59 @@
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
-		<Label Grid.Column="0" Content="Reliable Sessions" FontSize="12pt" Margin="0,5,0,0" />
-		<ToggleButton Content="Enabled" IsChecked="{Binding Path=Binding.ReliableSessionEnabled}" Margin="5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" Name="ReliableSessionEnabled" />
-		<Label Content="Inactivity Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
-		<c1datetime:C1TimeEditor Format="TimeSpan" Margin="125,5,5,5" Value="{Binding Path=Binding.ReliableSessionInactivityTimeout, Mode=TwoWay}" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" IsEnabled="{Binding Path=Binding.ReliableSessionEnabled}" Name="ReliableSessionInactivityTimeout" />
-		<ToggleButton Content="Ordered" IsChecked="{Binding Path=Binding.ReliableSessionsOrdered}" Margin="5" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" IsEnabled="{Binding Path=Binding.ReliableSessionEnabled}" Name="ReliableSessionsOrdered" />
+		<Label Grid.Column="0" Content="Resources" FontSize="12pt" Margin="0,5,0,0" />
+		<Label Content="Max Buffer Pool Size:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
+		<pc:TextBox Text="{Binding Path=Binding.MaxBufferPoolSize, Converter={StaticResource LongConverter}}" Name="MaxBufferPoolSize" Height="23" Margin="140,5,5,5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" Validate="MaxBufferPoolSize_Validate" />
+		<Label Content="Max Buffer Size:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
+		<pc:TextBox Text="{Binding Path=Binding.MaxBufferSize, Converter={StaticResource LongConverter}}" Name="MaxBufferSize" Height="23" Margin="125,5,5,5" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" Validate="MaxBufferSize_Validate" />
+		<Label Content="Max Received Message Size:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" />
+		<pc:TextBox Text="{Binding Path=Binding.MaxReceivedMessageSize, Converter={StaticResource LongConverter}}" Name="MaxReceivedMessageSize" Height="23" Margin="180,5,5,5" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" Validate="MaxReceivedMessageSize_Validate" />
 	</Grid>
 	<Grid Grid.Row="5">
 		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
-		<Label Grid.Column="0" Content="Connection" FontSize="12pt" Margin="0,5,0,0" />
-		<ToggleButton IsChecked="{Binding Path=Binding.PortSharingEnabled}" Name="PortSharingEnabled" Content="Port Sharing" Margin="5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
-		<Label Content="Max Connections:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
-		<c1:C1NumericBox Value="{Binding Path=Binding.MaxConnections}" Margin="125,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ShowButtons="False" Name="MaxConnections" ValueChanged="MaxConnections_ValueChanged" Grid.Column="1" Grid.Row="1" FontSize="10pt" />
-		<Label Content="Listen Backlog:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" />
-		<c1:C1NumericBox Value="{Binding Path=Binding.ListenBacklog}" Margin="105,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ShowButtons="False" Name="ListenBacklog" ValueChanged="ListenBacklog_ValueChanged" Grid.Column="2" Grid.Row="1" FontSize="10pt" />
+		<Label Grid.Column="0" Content="Options" FontSize="12pt" Margin="0,5,0,0" />
+		<ToggleButton IsChecked="{Binding Path=Binding.AllowCookies}" Name="AllowCookies" Content="Allow Cookies" Margin="5" VerticalContentAlignment="Center" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" />
+		<Label Content="Host Name Comparison Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" />
+		<ComboBox Height="23" Margin="200,5,5,5" SelectedIndex="{Binding Path=Binding.HostNameComparisonMode, Converter={StaticResource HostNameComparisonModeConverter}}" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" >
+			<ComboBox.Items>
+				<ComboBoxItem Content="Strong Wildcard" />
+				<ComboBoxItem Content="Exact" />
+				<ComboBoxItem Content="Weak Wildcard" />
+			</ComboBox.Items>
+		</ComboBox>
+		<Label Content="Message Encoding:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="2" />
+		<ComboBox Height="23" Margin="130,5,5,5" SelectedIndex="{Binding Path=Binding.MessageEncoding, Converter={StaticResource WSMessageEncodingConverter}}" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="2" >
+			<ComboBox.Items>
+				<ComboBoxItem Content="Text" />
+				<ComboBoxItem Content="MTOM" />
+			</ComboBox.Items>
+		</ComboBox>
+		<Label Content="Text Encoding:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="3" />
+		<ComboBox Height="23" Margin="200,5,5,5" SelectedIndex="{Binding Path=Binding.TextEncoding, Converter={StaticResource ServiceBindingTextEncodingConverter}}" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="3" >
+			<ComboBox.Items>
+				<ComboBoxItem Content="ASCII" />
+				<ComboBoxItem Content="UTF7" />
+				<ComboBoxItem Content="UTF8" />
+				<ComboBoxItem Content="UTF16" />
+				<ComboBoxItem Content="UTF32" />
+			</ComboBox.Items>
+		</ComboBox>
+		<Label Content="Transfer Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="3" />
+		<ComboBox Height="23" Margin="130,5,5,5" SelectedIndex="{Binding Path=Binding.TransferMode, Converter={StaticResource TransferModeConverter}}" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="3" >
+			<ComboBoxItem Content="Buffered" />
+			<ComboBoxItem Content="Streamed" />
+			<ComboBoxItem Content="Streamed Request" />
+			<ComboBoxItem Content="Streamed Response" />
+		</ComboBox>
 	</Grid>
 	<Grid Grid.Row="6">
 		<Grid.RowDefinitions>
@@ -104,53 +134,15 @@
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
-		<Label Grid.Column="0" Content="Resources" FontSize="12pt" Margin="0,5,0,0" />
-		<Label Content="Max Buffer Pool Size:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
-		<pc:TextBox Text="{Binding Path=Binding.MaxBufferPoolSize, Converter={StaticResource LongConverter}}" Name="MaxBufferPoolSize" Height="23" Margin="140,5,5,5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" Validate="MaxBufferPoolSize_Validate" />
-		<Label Content="Max Buffer Size:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
-		<pc:TextBox Text="{Binding Path=Binding.MaxBufferSize, Converter={StaticResource LongConverter}}" Name="MaxBufferSize" Height="23" Margin="125,5,5,5" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" Validate="MaxBufferSize_Validate" />
-		<Label Content="Max Received Message Size:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" />
-		<pc:TextBox Text="{Binding Path=Binding.MaxReceivedMessageSize, Converter={StaticResource LongConverter}}" Name="MaxReceivedMessageSize" Height="23" Margin="180,5,5,5" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" Validate="MaxReceivedMessageSize_Validate" />
+		<Label Grid.Column="0" Content="Proxy" FontSize="12pt" Margin="0,5,0,0" />
+		<ToggleButton IsChecked="{Binding Path=Binding.BypassProxyOnLocal}" Name="BypassProxyOnLocal" Content="Bypass Proxy for Local Addresses" Margin="5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
+		<ToggleButton IsChecked="{Binding Path=Binding.UseDefaultWebProxy}" Name="UseDefaultWebProxy" Content="Use Default Web Proxy" Margin="5" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
+		<Label Content="Proxy Address:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" />
+		<pc:TextBox Text="{Binding Path=Binding.ProxyAddress}" Height="23" Margin="100,5,5,5" Name="ProxyAddress" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" TextChanged="ProxyAddress_TextChanged" Validate="ProxyAddress_Validate" ToolTip="{Binding Path=Binding.ProxyAddress}" />
 	</Grid>
-	<Grid Grid.Row="7">
+	<Grid Grid.Row="7" DataContext="{Binding Path=Binding.Security}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
-		<Label Grid.Column="0" Content="Options" FontSize="12pt" Margin="0,5,0,0" />
-		<Label Content="Host Name Comparison Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
-		<ComboBox Height="23" Margin="200,5,5,5" VerticalAlignment="Top" SelectedIndex="{Binding Path=Binding.HostNameComparisonMode, Converter={StaticResource HostNameComparisonModeConverter}}" Grid.Column="0" Grid.Row="1" >
-			<ComboBox.Items>
-				<ComboBoxItem Content="Strong Wildcard" />
-				<ComboBoxItem Content="Exact" />
-				<ComboBoxItem Content="Weak Wildcard" />
-			</ComboBox.Items>
-		</ComboBox>
-		<Label Content="Transfer Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
-		<ComboBox Height="23" Margin="140,5,5,5" SelectedIndex="{Binding Path=Binding.TransferMode, Converter={StaticResource TransferModeConverter}}" Grid.Column="1" Grid.Row="1" >
-			<ComboBoxItem Content="Buffered" />
-			<ComboBoxItem Content="Streamed" />
-			<ComboBoxItem Content="Streamed Request" />
-			<ComboBoxItem Content="Streamed Response" />
-		</ComboBox>
-		<ToggleButton Content="Transaction Flow" Height="23" IsChecked="{Binding Path=Binding.TransactionFlow}" Margin="5" Name="TransactionFlow"  Grid.Column="0" Grid.Row="2" />
-		<Label Content="Transaction Protocol:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="2" />
-		<ComboBox Height="23" Margin="140,5,5,5" VerticalAlignment="Top" SelectedIndex="{Binding Path=Binding.TransactionProtocol, Converter={StaticResource ServiceBindingTransactionProtocolConverter}}" IsEnabled="{Binding Path=Binding.TransactionFlow}" Grid.Column="1" Grid.Row="2" >
-			<ComboBox.Items>
-				<ComboBoxItem Content="Default" />
-				<ComboBoxItem Content="OLE Transactions" />
-				<ComboBoxItem Content="WS Atomic Transactions 1.1" />
-				<ComboBoxItem Content="WS Atomic Transactions October 2004" />
-			</ComboBox.Items>
-		</ComboBox>
-	</Grid>
-	<Grid Grid.Row="8" DataContext="{Binding Path=Binding.Security}">
-		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
@@ -162,12 +154,13 @@
 		</Grid.ColumnDefinitions>
 		<Label Grid.Column="0" Content="Security" FontSize="12pt" Margin="0,5,0,0" />
 		<Label Content="Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
-		<ComboBox Height="23" Margin="210,5,5,5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" SelectedIndex="{Binding Path=Mode, Converter={StaticResource SecurityModeConverter}}" >
+		<ComboBox Height="23" Margin="210,5,5,5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" SelectedIndex="{Binding Path=Mode, Converter={StaticResource BasicHttpSecurityModeConverter}}" >
 			<ComboBox.Items>
 				<ComboBoxItem Content="None" />
 				<ComboBoxItem Content="Transport" />
 				<ComboBoxItem Content="Message" />
 				<ComboBoxItem Content="Transport With Message Credential" />
+				<ComboBoxItem Content="Transport Credential Only" />
 			</ComboBox.Items>
 		</ComboBox>
 		<Label Content="Message Algorithm Suite:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" />
@@ -193,29 +186,33 @@
 			</ComboBox.Items>
 		</ComboBox>
 		<Label Content="Message Client Credential Type:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="2" />
-		<ComboBox Height="23" Margin="205,5,5,5" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="2" SelectedIndex="{Binding Path=MessageClientCredentialType, Converter={StaticResource MessageCredentialTypeConverter}}" >
+		<ComboBox Height="23" Margin="205,5,5,5" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="2" SelectedIndex="{Binding Path=MessageClientCredentialType, Converter={StaticResource BasicHttpMessageCredentialTypeConverter}}" >
 			<ComboBox.Items>
-				<ComboBoxItem Content="None" />
-				<ComboBoxItem Content="Windows" />
 				<ComboBoxItem Content="User Name" />
 				<ComboBoxItem Content="Certificate" />
-				<ComboBoxItem Content="Issued Token" />
 			</ComboBox.Items>
 		</ComboBox>
 		<Label Content="Transport Client Credential Type:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="3" />
-		<ComboBox Height="23" Margin="210,5,5,5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="3" SelectedIndex="{Binding Path=TransportClientCredentialType, Converter={StaticResource TcpClientCredentialTypeConverter}}" >
+		<ComboBox Height="23" Margin="210,5,5,5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="3" SelectedIndex="{Binding Path=TransportClientCredentialType, Converter={StaticResource HttpClientCredentialTypeConverter}}" >
 			<ComboBoxItem Content="None" />
+			<ComboBoxItem Content="Basic" />
+			<ComboBoxItem Content="Digest" />
+			<ComboBoxItem Content="NTLM" />
 			<ComboBoxItem Content="Windows" />
 			<ComboBoxItem Content="Certificate" />
 		</ComboBox>
 		<Label Content="Transport Protection Level:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="3" />
-		<ComboBox Height="23" Margin="205,5,5,5" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="3" SelectedIndex="{Binding Path=TransportProtectionLevel, Converter={StaticResource ProtectionLevelConverter}}" >
+		<ComboBox Height="23" Margin="205,5,5,5" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="3" SelectedIndex="{Binding Path=TransportProxyCredentialType, Converter={StaticResource HttpProxyCredentialTypeConverter}}" >
 			<ComboBoxItem Content="None" />
-			<ComboBoxItem Content="Sign" />
-			<ComboBoxItem Content="Encrypt and Sign" />
+			<ComboBoxItem Content="Basic" />
+			<ComboBoxItem Content="Digest" />
+			<ComboBoxItem Content="NTLM" />
+			<ComboBoxItem Content="Windows" />
 		</ComboBox>
+		<Label Content="Transport Realm:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="4" />
+		<pc:TextBox Text="{Binding Path=TransportRealm}" Height="23" Margin="210,5,5,5" Name="TransportRealm" VerticalContentAlignment="Center" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4" />
 	</Grid>
-	<Grid Grid.Row="9">
+	<Grid Grid.Row="8">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />

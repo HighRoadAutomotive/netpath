@@ -17,17 +17,17 @@ using WCFArchitect.Projects.Helpers;
 
 namespace WCFArchitect.Interface.Bindings
 {
-	internal partial class TCP : Grid
+	internal partial class WSHTTP : Grid
 	{
-		public ServiceBindingTCP Binding { get { return (ServiceBindingTCP)GetValue(BindingProperty); } set { SetValue(BindingProperty, value); } }
-		public static readonly DependencyProperty BindingProperty = DependencyProperty.Register("Binding", typeof(ServiceBindingTCP), typeof(TCP));
+		public ServiceBindingWSHTTP Binding { get { return (ServiceBindingWSHTTP)GetValue(BindingProperty); } set { SetValue(BindingProperty, value); } }
+		public static readonly DependencyProperty BindingProperty = DependencyProperty.Register("Binding", typeof(ServiceBindingWSHTTP), typeof(WSHTTP));
 
-		public TCP()
+		public WSHTTP()
 		{
 			InitializeComponent();
 		}
 
-		public TCP(ServiceBindingTCP Binding)
+		public WSHTTP(ServiceBindingWSHTTP Binding)
 		{
 			this.Binding = Binding;
 
@@ -45,27 +45,21 @@ namespace WCFArchitect.Interface.Bindings
 			e.IsValid = RegExs.MatchHTTPURI.IsMatch(Namespace.Text);
 		}
 
-		private void ListenBacklog_ValueChanged(object sender, C1.WPF.PropertyChangedEventArgs<double> e)
+		private void ProxyAddress_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			Binding.ListenBacklog = Convert.ToInt32(e.NewValue);
+			if (IsLoaded == false) return;
+			Binding.ProxyAddress = RegExs.ReplaceSpaces.Replace(ProxyAddress.Text, @"");
 		}
 
-		private void MaxConnections_ValueChanged(object sender, C1.WPF.PropertyChangedEventArgs<double> e)
+		private void ProxyAddress_Validate(object sender, ValidateEventArgs e)
 		{
-			Binding.MaxConnections = Convert.ToInt32(e.NewValue);
+			e.IsValid = RegExs.MatchHTTPURI.IsMatch(ProxyAddress.Text);
 		}
 
 		private void MaxBufferPoolSize_Validate(object sender, ValidateEventArgs e)
 		{
 			e.IsValid = true;
 			try { Convert.ToInt64(MaxBufferPoolSize.Text); }
-			catch (Exception) { e.IsValid = false; }
-		}
-
-		private void MaxBufferSize_Validate(object sender, ValidateEventArgs e)
-		{
-			e.IsValid = true;
-			try { Convert.ToInt64(MaxBufferSize.Text); }
 			catch (Exception) { e.IsValid = false; }
 		}
 

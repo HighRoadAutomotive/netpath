@@ -168,7 +168,6 @@ namespace WCFArchitect.Compiler.Generators
 			if (t == typeof(ServiceBindingMSMQIntegration)) code.AppendLine(string.Format("\t\tpublic {0}(System.ServiceModel.MsmqIntegration.MsmqIntegrationSecurity CustomSecurity)", o.Name));
 			code.AppendLine("\t\t{");
 			code.AppendLine("\t\t\tSetDefaults();");
-			code.AppendLine("\t\t\tBasicHttpSecurity sec = this.Security;");
 			code.AppendLine("\t\t\tsec = CustomSecurity;");
 			code.AppendLine("\t\t}");
 			code.AppendLine(string.Format("\t\tpublic {0}(System.Xml.XmlDictionaryReaderQuotas ReaderQuotas)", o.Name));
@@ -193,7 +192,6 @@ namespace WCFArchitect.Compiler.Generators
 			if (t == typeof(ServiceBindingMSMQIntegration)) code.AppendLine(string.Format("\t\tpublic {0}(System.ServiceModel.MsmqIntegration.MsmqIntegrationSecurity CustomSecurity, System.Xml.XmlDictionaryReaderQuotas ReaderQuotas)", o.Name));
 			code.AppendLine("\t\t{");
 			code.AppendLine("\t\t\tSetDefaults();");
-			code.AppendLine("\t\t\tBasicHttpSecurity sec = this.Security;");
 			code.AppendLine("\t\t\tsec = CustomSecurity;");
 			code.AppendLine("\t\t\tthis.ReaderQuotas = ReaderQuotas;");
 			code.AppendLine("\t\t}");
@@ -218,10 +216,13 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendLine(string.Format("\t\t\tthis.MaxBufferSize = {0};", Convert.ToInt32(b.MaxBufferSize)));
 				code.AppendLine(string.Format("\t\t\tthis.MaxReceivedMessageSize = {0};", b.MaxReceivedMessageSize));
 				code.AppendLine(string.Format("\t\t\tthis.MessageEncoding = WSMessageEncoding.{0};", System.Enum.GetName(typeof (System.ServiceModel.WSMessageEncoding), b.MessageEncoding)));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
 				code.AppendLine(string.Format("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};", System.Enum.GetName(typeof (ServiceBindingTextEncoding), b.TextEncoding)));
 				code.AppendLine(string.Format("\t\t\tthis.TransferMode = TransferMode.{0};", System.Enum.GetName(typeof (System.ServiceModel.TransferMode), b.TransferMode)));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				if (!string.IsNullOrEmpty(b.ProxyAddress) && b.UseDefaultWebProxy == false)
+				{
+					code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
+					code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				}
 				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode35(b.Security));
 			}
 			else if (t == typeof(ServiceBindingWSHTTP))
@@ -233,13 +234,16 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendLine(string.Format("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode)));
 				code.AppendLine(string.Format("\t\t\tthis.MaxBufferPoolSize = {0};", b.MaxBufferPoolSize));
 				code.AppendLine(string.Format("\t\t\tthis.MaxReceivedMessageSize = {0};", b.MaxReceivedMessageSize));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Enabled = {0};", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});", b.ReliableSessionInactivityTimeout.Ticks));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Ordered = {0};", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				code.AppendLine(string.Format("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding)));
 				code.AppendLine(string.Format("\t\t\tthis.TransactionFlow = {0};", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				if (!string.IsNullOrEmpty(b.ProxyAddress) && b.UseDefaultWebProxy == false)
+				{
+					code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
+					code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				}
 				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode35(b.Security));
 			}
 			else if (t == typeof(ServiceBindingWS2007HTTP))
@@ -251,13 +255,16 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendLine(string.Format("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode)));
 				code.AppendLine(string.Format("\t\t\tthis.MaxBufferPoolSize = {0};", b.MaxBufferPoolSize));
 				code.AppendLine(string.Format("\t\t\tthis.MaxReceivedMessageSize = {0};", b.MaxReceivedMessageSize));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Enabled = {0};", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});", b.ReliableSessionInactivityTimeout.Ticks));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Ordered = {0};", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				code.AppendLine(string.Format("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding)));
 				code.AppendLine(string.Format("\t\t\tthis.TransactionFlow = {0};", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				if (!string.IsNullOrEmpty(b.ProxyAddress) && b.UseDefaultWebProxy == false)
+				{
+					code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
+					code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				}
 				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode35(b.Security));
 			}
 			else if (t == typeof(ServiceBindingWSDualHTTP))
@@ -265,16 +272,19 @@ namespace WCFArchitect.Compiler.Generators
 				var b = o as ServiceBindingWSDualHTTP;
 				if (b == null) return "";
 				code.AppendLine(string.Format("\t\t\tthis.BypassProxyOnLocal = {0};", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-				if (b.ClientBaseAddress != "") code.AppendLine(string.Format("\t\t\tthis.ClientBaseAddress = new Uri(\"{0}\");", b.ClientBaseAddress));
+				if (!string.IsNullOrEmpty(b.ClientBaseAddress)) code.AppendLine(string.Format("\t\t\tthis.ClientBaseAddress = new Uri(\"{0}\");", b.ClientBaseAddress));
 				code.AppendLine(string.Format("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode)));
 				code.AppendLine(string.Format("\t\t\tthis.MaxBufferPoolSize = {0};", b.MaxBufferPoolSize));
 				code.AppendLine(string.Format("\t\t\tthis.MaxReceivedMessageSize = {0};", b.MaxReceivedMessageSize));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});", b.ReliableSessionInactivityTimeout.Ticks));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Ordered = {0};", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				code.AppendLine(string.Format("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding)));
 				code.AppendLine(string.Format("\t\t\tthis.TransactionFlow = {0};", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				if (!string.IsNullOrEmpty(b.ProxyAddress) && b.UseDefaultWebProxy == false)
+				{
+					code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
+					code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				}
 				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode35(b.Security));
 			}
 			else if (t == typeof(ServiceBindingWSFederationHTTP))
@@ -290,13 +300,16 @@ namespace WCFArchitect.Compiler.Generators
 					code.AppendLine(string.Format("\t\t\tthis.PrivacyNoticeAt = new Uri(\"{0}\");", b.PrivacyNoticeAt));
 					code.AppendLine(string.Format("\t\t\tthis.PrivacyNoticeVersion = {0};", b.PrivacyNoticeVersion));
 				}
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Enabled = {0};", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});", b.ReliableSessionInactivityTimeout.Ticks));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Ordered = {0};", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				code.AppendLine(string.Format("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding)));
 				code.AppendLine(string.Format("\t\t\tthis.TransactionFlow = {0};", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				if (!string.IsNullOrEmpty(b.ProxyAddress) && b.UseDefaultWebProxy == false)
+				{
+					code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
+					code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				}
 				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode35(b.Security));
 			}
 			else if (t == typeof(ServiceBindingWS2007FederationHTTP))
@@ -312,13 +325,16 @@ namespace WCFArchitect.Compiler.Generators
 					code.AppendLine(string.Format("\t\t\tthis.PrivacyNoticeAt = new Uri(\"{0}\");", b.PrivacyNoticeAt));
 					code.AppendLine(string.Format("\t\t\tthis.PrivacyNoticeVersion = {0};", b.PrivacyNoticeVersion));
 				}
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Enabled = {0};", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});", b.ReliableSessionInactivityTimeout.Ticks));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Ordered = {0};", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				code.AppendLine(string.Format("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding)));
 				code.AppendLine(string.Format("\t\t\tthis.TransactionFlow = {0};", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				if (!string.IsNullOrEmpty(b.ProxyAddress) && b.UseDefaultWebProxy == false)
+				{
+					code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
+					code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				}
 				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode35(b.Security));
 			}
 			else if (t == typeof(ServiceBindingTCP))
@@ -398,10 +414,13 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendLine(string.Format("\t\t\tthis.MaxBufferPoolSize = {0};", b.MaxBufferPoolSize));
 				code.AppendLine(string.Format("\t\t\tthis.MaxBufferSize = {0};", Convert.ToInt32(b.MaxBufferSize)));
 				code.AppendLine(string.Format("\t\t\tthis.MaxReceivedMessageSize = {0};", b.MaxReceivedMessageSize));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
 				code.AppendLine(string.Format("\t\t\tthis.TransferMode = TransferMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode)));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
 				code.AppendLine(string.Format("\t\t\tthis.WriteEncoding = System.Text.Encoding.{0};", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.WriteEncoding)));
+				if (!string.IsNullOrEmpty(b.ProxyAddress) && b.UseDefaultWebProxy == false)
+				{
+					code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
+					code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				}
 				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode35(b.Security));
 			}
 			else if (t == typeof(ServiceBindingMSMQIntegration))
@@ -515,10 +534,13 @@ namespace WCFArchitect.Compiler.Generators
 					code.AppendLine(string.Format("\t\t\tthis.MaxBufferSize = {0};", Convert.ToInt32(b.MaxBufferSize)));
 					code.AppendLine(string.Format("\t\t\tthis.MaxReceivedMessageSize = {0};", b.MaxReceivedMessageSize));
 					code.AppendLine(string.Format("\t\t\tthis.MessageEncoding = WSMessageEncoding.{0};", System.Enum.GetName(typeof (System.ServiceModel.WSMessageEncoding), b.MessageEncoding)));
-					if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
 					code.AppendLine(string.Format("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};", System.Enum.GetName(typeof (ServiceBindingTextEncoding), b.TextEncoding)));
 					code.AppendLine(string.Format("\t\t\tthis.TransferMode = TransferMode.{0};", System.Enum.GetName(typeof (System.ServiceModel.TransferMode), b.TransferMode)));
-					if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+					if (!string.IsNullOrEmpty(b.ProxyAddress) && b.UseDefaultWebProxy == false)
+					{
+						code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
+						code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+					}
 				}
 				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
@@ -534,10 +556,13 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendLine(string.Format("\t\t\tthis.MaxBufferSize = {0};", Convert.ToInt32(b.MaxBufferSize)));
 				code.AppendLine(string.Format("\t\t\tthis.MaxReceivedMessageSize = {0};", b.MaxReceivedMessageSize));
 				code.AppendLine(string.Format("\t\t\tthis.MessageEncoding = WSMessageEncoding.{0};", System.Enum.GetName(typeof (System.ServiceModel.WSMessageEncoding), b.MessageEncoding)));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
 				code.AppendLine(string.Format("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};", System.Enum.GetName(typeof (ServiceBindingTextEncoding), b.TextEncoding)));
 				code.AppendLine(string.Format("\t\t\tthis.TransferMode = TransferMode.{0};", System.Enum.GetName(typeof (System.ServiceModel.TransferMode), b.TransferMode)));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				if (!string.IsNullOrEmpty(b.ProxyAddress) && b.UseDefaultWebProxy == false)
+				{
+					code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
+					code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				}
 				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			else if (t == typeof(ServiceBindingNetHTTP))
@@ -552,20 +577,23 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendLine(string.Format("\t\t\tthis.MessageEncoding = NetHttpMessageEncoding.{0};", System.Enum.GetName(typeof(System.ServiceModel.NetHttpMessageEncoding), b.MessageEncoding)));
 				code.AppendLine(string.Format("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding)));
 				code.AppendLine(string.Format("\t\t\tthis.TransferMode = TransferMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode)));
-				code.AppendLine(string.Format("\t\t\tthis.WebSocketSettings.CreateNotificationOnConnection = {0};", b.CreateNotificationOnConnection ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				code.AppendLine(string.Format("\t\t\tthis.WebSocketSettings.DisablePayloadMasking = {0};", b.DisablePayloadMasking ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				code.AppendLine(string.Format("\t\t\tthis.WebSocketSettings.KeepAliveInterval = new TimeSpan({0});", b.KeepAliveInterval.Ticks));
-				code.AppendLine(string.Format("\t\t\tthis.WebSocketSettings.MaxPendingConnections = {0};", b.MaxPendingConnections));
 				code.AppendLine(string.Format("\t\t\tthis.WebSocketSettings.SubProtocol = \"{0}\";", b.SubProtocol));
 				code.AppendLine(string.Format("\t\t\tthis.WebSocketSettings.TransportUsage = System.ServiceModel.Channels.WebSocketTransportUsage.{0};", System.Enum.GetName(typeof(System.ServiceModel.Channels.WebSocketTransportUsage), b.TransportUsage)));
 				if (Globals.CurrentGenerationTarget != ProjectGenerationFramework.WIN8)
 				{
+					code.AppendLine(string.Format("\t\t\tthis.WebSocketSettings.CreateNotificationOnConnection = {0};", b.CreateNotificationOnConnection ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+					code.AppendLine(string.Format("\t\t\tthis.WebSocketSettings.MaxPendingConnections = {0};", b.MaxPendingConnections));
 					code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Enabled = {0};", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 					code.AppendLine(string.Format("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});", b.ReliableSessionInactivityTimeout.Ticks));
 					code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Ordered = {0};", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 					code.AppendLine(string.Format("\t\t\tthis.BypassProxyOnLocal = {0};", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-					if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
-					if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+					if (!string.IsNullOrEmpty(b.ProxyAddress) && b.UseDefaultWebProxy == false)
+					{
+						code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
+						code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+					}
 				}
 				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
@@ -592,8 +620,11 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendLine(string.Format("\t\t\tthis.WebSocketSettings.SubProtocol = \"{0}\";", b.SubProtocol));
 				code.AppendLine(string.Format("\t\t\tthis.WebSocketSettings.TransportUsage = System.ServiceModel.Channels.WebSocketTransportUsage.{0};", System.Enum.GetName(typeof(System.ServiceModel.Channels.WebSocketTransportUsage), b.TransportUsage)));
 				code.AppendLine(string.Format("\t\t\tthis.BypassProxyOnLocal = {0};", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				if (!string.IsNullOrEmpty(b.ProxyAddress) && b.UseDefaultWebProxy == false)
+				{
+					code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
+					code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				}
 				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			else if (t == typeof(ServiceBindingWSHTTP))
@@ -606,13 +637,16 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendLine(string.Format("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode)));
 				code.AppendLine(string.Format("\t\t\tthis.MaxBufferPoolSize = {0};", b.MaxBufferPoolSize));
 				code.AppendLine(string.Format("\t\t\tthis.MaxReceivedMessageSize = {0};", b.MaxReceivedMessageSize));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Enabled = {0};", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});", b.ReliableSessionInactivityTimeout.Ticks));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Ordered = {0};", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				code.AppendLine(string.Format("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding)));
 				code.AppendLine(string.Format("\t\t\tthis.TransactionFlow = {0};", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				if (!string.IsNullOrEmpty(b.ProxyAddress) && b.UseDefaultWebProxy == false)
+				{
+					code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
+					code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				}
 				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			else if (t == typeof(ServiceBindingWS2007HTTP))
@@ -625,13 +659,16 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendLine(string.Format("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode)));
 				code.AppendLine(string.Format("\t\t\tthis.MaxBufferPoolSize = {0};", b.MaxBufferPoolSize));
 				code.AppendLine(string.Format("\t\t\tthis.MaxReceivedMessageSize = {0};", b.MaxReceivedMessageSize));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Enabled = {0};", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});", b.ReliableSessionInactivityTimeout.Ticks));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Ordered = {0};", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				code.AppendLine(string.Format("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding)));
 				code.AppendLine(string.Format("\t\t\tthis.TransactionFlow = {0};", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				if (!string.IsNullOrEmpty(b.ProxyAddress) && b.UseDefaultWebProxy == false)
+				{
+					code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
+					code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				}
 				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			else if (t == typeof(ServiceBindingWSDualHTTP))
@@ -640,16 +677,19 @@ namespace WCFArchitect.Compiler.Generators
 				var b = o as ServiceBindingWSDualHTTP;
 				if (b == null) return "";
 				code.AppendLine(string.Format("\t\t\tthis.BypassProxyOnLocal = {0};", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-				if (b.ClientBaseAddress != "") code.AppendLine(string.Format("\t\t\tthis.ClientBaseAddress = new Uri(\"{0}\");", b.ClientBaseAddress));
+				if (!string.IsNullOrEmpty(b.ClientBaseAddress)) code.AppendLine(string.Format("\t\t\tthis.ClientBaseAddress = new Uri(\"{0}\");", b.ClientBaseAddress));
 				code.AppendLine(string.Format("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode)));
 				code.AppendLine(string.Format("\t\t\tthis.MaxBufferPoolSize = {0};", b.MaxBufferPoolSize));
 				code.AppendLine(string.Format("\t\t\tthis.MaxReceivedMessageSize = {0};", b.MaxReceivedMessageSize));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});", b.ReliableSessionInactivityTimeout.Ticks));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Ordered = {0};", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				code.AppendLine(string.Format("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding)));
 				code.AppendLine(string.Format("\t\t\tthis.TransactionFlow = {0};", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				if (!string.IsNullOrEmpty(b.ProxyAddress) && b.UseDefaultWebProxy == false)
+				{
+					code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
+					code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				}
 				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			else if (t == typeof(ServiceBindingWSFederationHTTP))
@@ -661,18 +701,21 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendLine(string.Format("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode)));
 				code.AppendLine(string.Format("\t\t\tthis.MaxBufferPoolSize = {0};", b.MaxBufferPoolSize));
 				code.AppendLine(string.Format("\t\t\tthis.MaxReceivedMessageSize = {0};", b.MaxReceivedMessageSize));
-				if (b.PrivacyNoticeAt != "")
+				if (!string.IsNullOrEmpty(b.PrivacyNoticeAt))
 				{
 					code.AppendLine(string.Format("\t\t\tthis.PrivacyNoticeAt = new Uri(\"{0}\");", b.PrivacyNoticeAt));
 					code.AppendLine(string.Format("\t\t\tthis.PrivacyNoticeVersion = {0};", b.PrivacyNoticeVersion));
 				}
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Enabled = {0};", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});", b.ReliableSessionInactivityTimeout.Ticks));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Ordered = {0};", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				code.AppendLine(string.Format("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding)));
 				code.AppendLine(string.Format("\t\t\tthis.TransactionFlow = {0};", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				if (!string.IsNullOrEmpty(b.ProxyAddress) && b.UseDefaultWebProxy == false)
+				{
+					code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
+					code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				}
 				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			else if (t == typeof(ServiceBindingWS2007FederationHTTP))
@@ -684,18 +727,21 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendLine(string.Format("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode)));
 				code.AppendLine(string.Format("\t\t\tthis.MaxBufferPoolSize = {0};", b.MaxBufferPoolSize));
 				code.AppendLine(string.Format("\t\t\tthis.MaxReceivedMessageSize = {0};", b.MaxReceivedMessageSize));
-				if (b.PrivacyNoticeAt != "")
+				if (!string.IsNullOrEmpty(b.PrivacyNoticeAt))
 				{
 					code.AppendLine(string.Format("\t\t\tthis.PrivacyNoticeAt = new Uri(\"{0}\");", b.PrivacyNoticeAt));
 					code.AppendLine(string.Format("\t\t\tthis.PrivacyNoticeVersion = {0};", b.PrivacyNoticeVersion));
 				}
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Enabled = {0};", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.InactivityTimeout = new TimeSpan({0});", b.ReliableSessionInactivityTimeout.Ticks));
 				code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Ordered = {0};", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				code.AppendLine(string.Format("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding)));
 				code.AppendLine(string.Format("\t\t\tthis.TransactionFlow = {0};", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				if (!string.IsNullOrEmpty(b.ProxyAddress) && b.UseDefaultWebProxy == false)
+				{
+					code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
+					code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				}
 				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			else if (t == typeof(ServiceBindingTCP))
@@ -782,10 +828,13 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendLine(string.Format("\t\t\tthis.MaxBufferPoolSize = {0};", b.MaxBufferPoolSize));
 				code.AppendLine(string.Format("\t\t\tthis.MaxBufferSize = {0};", Convert.ToInt32(b.MaxBufferSize)));
 				code.AppendLine(string.Format("\t\t\tthis.MaxReceivedMessageSize = {0};", b.MaxReceivedMessageSize));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
 				code.AppendLine(string.Format("\t\t\tthis.TransferMode = TransferMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode)));
-				if (b.ProxyAddress != "" && b.UseDefaultWebProxy == false) code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
 				code.AppendLine(string.Format("\t\t\tthis.WriteEncoding = System.Text.Encoding.{0};", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.WriteEncoding)));
+				if (!string.IsNullOrEmpty(b.ProxyAddress) && b.UseDefaultWebProxy == false)
+				{
+					code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
+					code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				}
 				if (b.Security != null) code.AppendLine(SecurityCSGenerator.GenerateCode45(b.Security));
 			}
 			else if (t == typeof(ServiceBindingMSMQIntegration))

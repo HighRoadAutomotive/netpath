@@ -31,12 +31,6 @@ namespace WCFArchitect.Projects
 		public string Namespace { get { return (string)GetValue(NamespaceProperty); } set { SetValue(NamespaceProperty, value); } }
 		public static readonly DependencyProperty NamespaceProperty = DependencyProperty.Register("Namespace", typeof(string), typeof(ServiceBinding));
 
-		public string EndpointAddress { get { return (string)GetValue(EndpointAddressProperty); } set { SetValue(EndpointAddressProperty, value); } }
-		public static readonly DependencyProperty EndpointAddressProperty = DependencyProperty.Register("EndpointAddress", typeof(string), typeof(ServiceBinding));
-
-		public string ListenAddress { get { return (string)GetValue(ListenAddressProperty); } set { SetValue(ListenAddressProperty, value); } }
-		public static readonly DependencyProperty ListenAddressProperty = DependencyProperty.Register("ListenAddress", typeof(string), typeof(ServiceBinding));
-
 		public TimeSpan CloseTimeout { get { return (TimeSpan)GetValue(CloseTimeoutProperty); } set { SetValue(CloseTimeoutProperty, value); } }
 		public static readonly DependencyProperty CloseTimeoutProperty = DependencyProperty.Register("CloseTimeout", typeof(TimeSpan), typeof(ServiceBinding), new PropertyMetadata(new TimeSpan(0, 1, 0)));
 
@@ -327,6 +321,12 @@ namespace WCFArchitect.Projects
 		public int MaxPendingConnections { get { return (int)GetValue(MaxPendingConnectionsProperty); } set { SetValue(MaxPendingConnectionsProperty, value); } }
 		public static readonly DependencyProperty MaxPendingConnectionsProperty = DependencyProperty.Register("MaxPendingConnections", typeof(int), typeof(ServiceBindingNetHTTP));
 
+		public int ReceiveBufferSize { get { return (int)GetValue(ReceiveBufferSizeProperty); } set { SetValue(ReceiveBufferSizeProperty, value); } }
+		public static readonly DependencyProperty ReceiveBufferSizeProperty = DependencyProperty.Register("ReceiveBufferSize", typeof(int), typeof(ServiceBindingNetHTTP));
+
+		public int SendBufferSize { get { return (int)GetValue(SendBufferSizeProperty); } set { SetValue(SendBufferSizeProperty, value); } }
+		public static readonly DependencyProperty SendBufferSizeProperty = DependencyProperty.Register("SendBufferSize", typeof(int), typeof(ServiceBindingNetHTTP));
+
 		public string SubProtocol { get { return (string)GetValue(SubProtocolProperty); } set { SetValue(SubProtocolProperty, value); } }
 		public static readonly DependencyProperty SubProtocolProperty = DependencyProperty.Register("SubProtocol", typeof(string), typeof(ServiceBindingNetHTTP));
 
@@ -433,6 +433,12 @@ namespace WCFArchitect.Projects
 
 		public int MaxPendingConnections { get { return (int)GetValue(MaxPendingConnectionsProperty); } set { SetValue(MaxPendingConnectionsProperty, value); } }
 		public static readonly DependencyProperty MaxPendingConnectionsProperty = DependencyProperty.Register("MaxPendingConnections", typeof(int), typeof(ServiceBindingNetHTTPS));
+
+		public int ReceiveBufferSize { get { return (int)GetValue(ReceiveBufferSizeProperty); } set { SetValue(ReceiveBufferSizeProperty, value); } }
+		public static readonly DependencyProperty ReceiveBufferSizeProperty = DependencyProperty.Register("ReceiveBufferSize", typeof(int), typeof(ServiceBindingNetHTTPS));
+
+		public int SendBufferSize { get { return (int)GetValue(SendBufferSizeProperty); } set { SetValue(SendBufferSizeProperty, value); } }
+		public static readonly DependencyProperty SendBufferSizeProperty = DependencyProperty.Register("SendBufferSize", typeof(int), typeof(ServiceBindingNetHTTPS));
 
 		public string SubProtocol { get { return (string)GetValue(SubProtocolProperty); } set { SetValue(SubProtocolProperty, value); } }
 		public static readonly DependencyProperty SubProtocolProperty = DependencyProperty.Register("SubProtocol", typeof(string), typeof(ServiceBindingNetHTTPS));
