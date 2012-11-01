@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
+using LogicNP.CryptoLicensing;
 using WCFArchitect.Projects;
 
 namespace WCFArchitect.Compiler
@@ -28,7 +29,7 @@ namespace WCFArchitect.Compiler
 		{
 			string appPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\";
 			Globals.ApplicationVersion = new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo(appPath + "wasc.exe").FileVersion);
-			Globals.ApplicationTitle = "WCF Architect Service Compiler";
+			Globals.ApplicationTitle = "WCF Architect Service Compiler - BETA";
 
 			if (args.GetLongLength(0) == 0) Environment.Exit(0);
 
@@ -38,6 +39,19 @@ namespace WCFArchitect.Compiler
 			ParseOptions(new List<string>(args));
 
 			PrintHeader();
+
+			const string vk = "AMAAMACnZigmLe9LpWcsYIBVFHYRZeUhr1oYyxDRFmL/qon4ijMx6X/xXyYldZs/A8Df9MsDAAEAAQ==";
+			var t = new CryptoLicense("NgAAAR34yUVouM0B89nN/6JGzgGHo04qSoBnf8S47pP6T/Awg2aOLNXVHFlxYaTAmetprPIDC9YxTuDJsAf3Er3NdiI=", vk);
+			if (t.Status != LicenseStatus.Valid)
+			{
+				Console.WriteLine("This copy of WCF Architect is BETA software and expired on {0}.", t.DateExpires.ToShortDateString());
+				Console.WriteLine("Please visit us at http://www.prospectivesoftware.com to purchase a license if you wish to continue to use this software.");
+				Environment.Exit(4);
+			}
+			else
+			{
+				Console.WriteLine("This copy of WCF Architect is BETA software and will expire on {0}.", t.DateExpires.ToShortDateString());
+			}
 
 			ErrorStream = Console.OpenStandardError();
 
