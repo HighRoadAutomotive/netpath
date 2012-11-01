@@ -30,7 +30,7 @@ namespace Test1
 	*	Enumerations
 	**************************************************************************/
 
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler - BETA", "2.0.2000.0")]
 	[DataContract(Namespace = "http://www.prospectivesoftware.com/Test1/")]
 	public enum TestEnum : ulong
 	{
@@ -45,7 +45,7 @@ namespace Test1
 	*	Data Contracts
 	**************************************************************************/
 
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler - BETA", "2.0.2000.0")]
 	[DataContract(Name = "TestData1", Namespace = "http://www.prospectivesoftware.com/Test1/")]
 	public partial class TestData1
 	{
@@ -57,7 +57,7 @@ namespace Test1
 	*	Service Contracts
 	**************************************************************************/
 
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler - BETA", "2.0.2000.0")]
 	[ServiceContract(CallbackContract = typeof(ITestServiceCallback), SessionMode = System.ServiceModel.SessionMode.Allowed, Namespace = "http://www.prospectivesoftware.com/Test1/")]
 	public interface ITestService
 	{
@@ -74,7 +74,7 @@ namespace Test1
 		Test1.TestData1 AwaitableTestAsync();
 
 	}
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler - BETA", "2.0.2000.0")]
 	public interface ITestServiceCallback
 	{
 		[OperationContract(IsInitiating = false)]
@@ -87,7 +87,7 @@ namespace Test1
 		ObservableCollection<Test1.TestData1> AwaitTestAsync();
 
 	}
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler - BETA", "2.0.2000.0")]
 	public partial class TestServiceCallback : ITestServiceCallback
 	{
 
@@ -125,7 +125,7 @@ namespace Test1
 	*	Service Bindings
 	**************************************************************************/
 
-[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler - BETA", "2.0.2000.0")]
 	public partial class TestBinding : System.ServiceModel.NetTcpBinding
 	{
 		public TestBinding()
@@ -183,7 +183,7 @@ namespace Test1
 	*	Service Hosts
 	**************************************************************************/
 
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler - BETA", "2.0.2000.0")]
 	public partial class TestHost : ServiceHost
 	{
 		public ServiceThrottlingBehavior TestT1 { get; private set; }

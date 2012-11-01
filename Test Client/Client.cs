@@ -33,7 +33,7 @@ namespace Test1
 	*	Enumeration Contracts
 	**************************************************************************/
 
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler - BETA", "2.0.2000.0")]
 	[DataContract(Namespace = "http://www.prospectivesoftware.com/Test1/")]
 	public enum TestEnum : ulong
 	{
@@ -49,7 +49,7 @@ namespace Test1
 	**************************************************************************/
 
 	[System.Diagnostics.DebuggerStepThroughAttribute]
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler - BETA", "2.0.2000.0")]
 	[DataContract(Name = "TestData1", Namespace = "http://www.prospectivesoftware.com/Test1/")]
 	public partial class TestData1 : System.Runtime.Serialization.IExtensibleDataObject
 	{
@@ -60,7 +60,7 @@ namespace Test1
 	}
 
 	//XAML Integration Object for the TestData1 DTO
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler - BETA", "2.0.2000.0")]
 	public partial class TestData1XAML : DependencyObject
 	{
 		//Properties
@@ -128,7 +128,7 @@ namespace Test1
 	*	Service Contracts
 	**************************************************************************/
 
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler - BETA", "2.0.2000.0")]
 	public interface ITestService
 	{
 		///<param name='asdsasd'></param>
@@ -152,7 +152,7 @@ namespace Test1
 
 	}
 
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler - BETA", "2.0.2000.0")]
 	public interface ITestServiceCallback
 	{
 		[OperationContract(Action = "http://www.prospectivesoftware.com/Test1/TestService/SyncTest", ReplyAction = "http://www.prospectivesoftware.com/Test1/TestService/SyncTestResponse")]
@@ -174,13 +174,13 @@ namespace Test1
 
 	}
 
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler - BETA", "2.0.2000.0")]
 	public interface ITestServiceChannel : ITestService, System.ServiceModel.IClientChannel
 	{
 	}
 
 	[System.Diagnostics.DebuggerStepThroughAttribute()]
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler - BETA", "2.0.2000.0")]
 	public partial class TestServiceProxy : System.ServiceModel.ClientBase<ITestService>, ITestService
 	{
 		public TestServiceProxy(string endpointConfigurationName) : base(endpointConfigurationName)
@@ -211,7 +211,7 @@ namespace Test1
 			onAsynchronousTestCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnAsynchronousTestCompleted);
 		}
 
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler - BETA", "2.0.2000.0")]
 	public partial class TestHost
 	{
 	}
@@ -277,7 +277,7 @@ namespace Test1
 	*	Service Bindings
 	**************************************************************************/
 
-[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler - BETA", "2.0.2000.0")]
 	public partial class TestBinding : System.ServiceModel.NetTcpBinding
 	{
 		public TestBinding()
@@ -335,7 +335,7 @@ namespace Test1
 	*	Service Hosts
 	**************************************************************************/
 
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler", "2.0.2000.0")]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler - BETA", "2.0.2000.0")]
 	public partial class TestHost
 	{
 	}
