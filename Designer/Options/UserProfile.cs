@@ -2,24 +2,15 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.IO;
+using System.Runtime.Serialization;
 using System.Text;
+using System.Threading.Tasks;
+using System.Xml;
 using System.Windows;
 
 namespace WCFArchitect.Options
 {
-	public enum UserProfileReferencePathFramework
-	{
-		Any,
-		NET30,
-		NET35,
-		NET35Client,
-		NET40,
-		NET40Client,
-		SL30,
-		SL40,
-		SL50,
-	}
-
 	public class UserProfile : DependencyObject
 	{
 		private Guid id;
@@ -49,34 +40,75 @@ namespace WCFArchitect.Options
 
 		public UserProfile()
 		{
-			this.AutomaticBackupsEnabled = true;
-			this.AutomaticBackupsInterval = new TimeSpan(0, 5, 0);
+			AutomaticBackupsEnabled = true;
+			AutomaticBackupsInterval = new TimeSpan(0, 5, 0);
 		}
 
 		public UserProfile(string User)
 		{
-			this.id = Guid.NewGuid();
+			id = Guid.NewGuid();
 			this.User = User;
-			this.ComputerName = Environment.MachineName;
-			this.RecentProjects = new List<RecentSolution>();
-			this.ImportantProjects = new List<RecentSolution>();
-			this.DefaultProjectFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			this.Monitor = 0;
-			this.AutomaticBackupsEnabled = true;
-			this.AutomaticBackupsInterval = new TimeSpan(0, 5, 0);
+			ComputerName = Environment.MachineName;
+			RecentProjects = new List<RecentSolution>();
+			ImportantProjects = new List<RecentSolution>();
+			DefaultProjectFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+			Monitor = 0;
+			AutomaticBackupsEnabled = true;
+			AutomaticBackupsInterval = new TimeSpan(0, 5, 0);
+		}
+
+		public static UserProfile Open(string Path)
+		{
+			//Check the file to make sure it exists
+			if (!File.Exists(Path))
+				throw new FileNotFoundException("Unable to locate file '" + Path + "'");
+
+			var kt = new List<Type>(new Type[] { 
+				typeof(UserProfile), typeof(RecentSolution)
+			});
+
+			var dcs = new DataContractSerializer(typeof(UserProfile), new DataContractSerializerSettings { KnownTypes = kt, MaxItemsInObjectGraph = Int32.MaxValue, IgnoreExtensionDataObject = true, SerializeReadOnlyTypes = true, PreserveObjectReferences = true });
+			var fs = new FileStream(Path, FileMode.Open, FileAccess.Read);
+			var tr = XmlReader.Create(fs, new XmlReaderSettings { CloseInput = true, Async = false });
+
+			var t = (UserProfile)dcs.ReadObject(tr);
+			tr.Close();
+			return t;
+		}
+
+		public static void Save(string Path, UserProfile Data)
+		{
+			//Make sure the solution isn't read-only.
+			if (File.Exists(Path))
+			{
+				var fi = new FileInfo(Path);
+				if (fi.IsReadOnly)
+					throw new IOException("The file '" + Path + "' is currently read-only. Please disable read-only mode on this file.");
+			}
+
+			var kt = new List<Type>(new Type[] { 
+				typeof(UserProfile), typeof(RecentSolution)
+			});
+
+			var dcs = new DataContractSerializer(typeof(UserProfile), new DataContractSerializerSettings { KnownTypes = kt, MaxItemsInObjectGraph = Int32.MaxValue, IgnoreExtensionDataObject = true, SerializeReadOnlyTypes = true, PreserveObjectReferences = true });
+			var fs = new FileStream(Path, FileMode.Create);
+			var xw = XmlWriter.Create(fs, new XmlWriterSettings { Encoding = Encoding.UTF8, NewLineChars = Environment.NewLine, NewLineHandling = NewLineHandling.Entitize, CloseOutput = true, WriteEndDocumentOnClose = true, Indent = true, Async = false });
+			dcs.WriteObject(xw, Data);
+			xw.Flush();
+			xw.Close();
 		}
 	}
 
 	public class RecentSolution : DependencyObject
 	{
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
-		public static DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(RecentSolution));
+		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(RecentSolution));
 
 		public string Path { get { return (string)GetValue(PathProperty); } set { SetValue(PathProperty, value); } }
-		public static DependencyProperty PathProperty = DependencyProperty.Register("Path", typeof(string), typeof(RecentSolution));
+		public static readonly DependencyProperty PathProperty = DependencyProperty.Register("Path", typeof(string), typeof(RecentSolution));
 
 		public DateTime LastAccessed { get { return (DateTime)GetValue(LastAccessedProperty); } set { SetValue(LastAccessedProperty, value); } }
-		public static DependencyProperty LastAccessedProperty = DependencyProperty.Register("LastAccessed", typeof(DateTime), typeof(RecentSolution));
+		public static readonly DependencyProperty LastAccessedProperty = DependencyProperty.Register("LastAccessed", typeof(DateTime), typeof(RecentSolution));
 
 		public RecentSolution() { }
 
@@ -84,7 +116,7 @@ namespace WCFArchitect.Options
 		{
 			this.Name = Name;
 			this.Path = Path;
-			this.LastAccessed = DateTime.Now;
+			LastAccessed = DateTime.Now;
 		}
 	}
 }
