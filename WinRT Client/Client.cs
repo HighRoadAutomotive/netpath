@@ -3,7 +3,7 @@
 // incorrect behavior and will be lost if the code is regenerated.
 //
 // WCF Architect Version:	2.0.2000.0
-// .NET Framework Version:	4.5
+// .NET Framework Version:	4.5 (Windows Runtime)
 //---------------------------------------------------------------------------
 
 using System;
@@ -13,7 +13,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Net;
-using System.Net.Security;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.CompilerServices;
@@ -22,7 +21,8 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.Text;
-using System.Windows;
+using Windows.UI.Xaml;
+using Windows.UI.Core;
 
 [assembly: System.Runtime.Serialization.ContractNamespaceAttribute("http://www.prospectivesoftware.com/Test1/", ClrNamespace="Test1")]
 
@@ -52,10 +52,8 @@ namespace Test1
 	[System.Diagnostics.DebuggerStepThroughAttribute]
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler - BETA", "2.0.2000.0")]
 	[DataContract(Name = "TestData1", Namespace = "http://www.prospectivesoftware.com/")]
-	public partial class TestData1 : System.Runtime.Serialization.IExtensibleDataObject
+	public partial class TestData1
 	{
-		public System.Runtime.Serialization.ExtensionDataObject ExtensionData { get; set; }
-
 		private Guid IDField;
 		[DataMember(Name = "ID")] public Guid ID { get { return IDField; } set { IDField = value; } }
 		private List<string> collectiontestField;
@@ -74,33 +72,31 @@ namespace Test1
 	{
 		//Properties
 		public Guid ID { get { return (Guid)GetValue(IDProperty); } set { SetValue(IDProperty, value); } }
-		public static readonly DependencyProperty IDProperty = DependencyProperty.Register("ID", typeof(Guid), typeof(Test1.TestData1XAML));
+		public static readonly DependencyProperty IDProperty = DependencyProperty.Register("ID", typeof(Guid), typeof(Test1.TestData1XAML), null);
 		public List<string> collectiontest { get { return (List<string>)GetValue(collectiontestProperty); } set { SetValue(collectiontestProperty, value); } }
-		public static readonly DependencyProperty collectiontestProperty = DependencyProperty.Register("collectiontest", typeof(List<string>), typeof(Test1.TestData1XAML));
+		public static readonly DependencyProperty collectiontestProperty = DependencyProperty.Register("collectiontest", typeof(List<string>), typeof(Test1.TestData1XAML), null);
 		public string[] arraytest { get { return (string[])GetValue(arraytestProperty); } set { SetValue(arraytestProperty, value); } }
-		public static readonly DependencyProperty arraytestProperty = DependencyProperty.Register("arraytest", typeof(string[]), typeof(Test1.TestData1XAML));
+		public static readonly DependencyProperty arraytestProperty = DependencyProperty.Register("arraytest", typeof(string[]), typeof(Test1.TestData1XAML), null);
 		public Dictionary<int, string> dictionarytest { get { return (Dictionary<int, string>)GetValue(dictionarytestProperty); } set { SetValue(dictionarytestProperty, value); } }
-		public static readonly DependencyProperty dictionarytestProperty = DependencyProperty.Register("dictionarytest", typeof(Dictionary<int, string>), typeof(Test1.TestData1XAML));
-		public byte[] asdas { get { return (byte[])GetValue(asdasProperty); } protected set { SetValue(asdasPropertyKey, value); } }
-		public static void Setasdas(DependencyObject obj, byte[] value) { obj.SetValue(asdasPropertyKey, value); }
-		private static readonly DependencyPropertyKey asdasPropertyKey = DependencyProperty.RegisterReadOnly("asdas", typeof(byte[]), typeof(Test1.TestData1XAML), null);
-		public static readonly DependencyProperty asdasProperty = asdasPropertyKey.DependencyProperty;
+		public static readonly DependencyProperty dictionarytestProperty = DependencyProperty.Register("dictionarytest", typeof(Dictionary<int, string>), typeof(Test1.TestData1XAML), null);
+		public byte[] asdas { get { return (byte[])GetValue(asdasProperty); } set { SetValue(asdasProperty, value); } }
+		public static readonly DependencyProperty asdasProperty = DependencyProperty.Register("asdas", typeof(byte[]), typeof(Test1.TestData1XAML), null);
 
 		//Implicit Conversion
 		public static implicit operator Test1.TestData1(Test1.TestData1XAML Data)
 		{
 			if (Data == null) return null;
 			TestData1 v = null;
-			if (Application.Current.Dispatcher.CheckAccess()) v = ConvertFromXAMLObject(Data);
-			else Application.Current.Dispatcher.Invoke(() => { v = ConvertFromXAMLObject(Data); }, System.Windows.Threading.DispatcherPriority.Normal);
+			if (Window.Current.Dispatcher.HasThreadAccess) v = ConvertFromXAMLObject(Data);
+			else Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { v = ConvertToXAMLObject(Data); });
 			return v;
 		}
 		public static implicit operator Test1.TestData1XAML(Test1.TestData1 Data)
 		{
 			if (Data == null) return null;
 			TestData1XAML v = null;
-			if (Application.Current.Dispatcher.CheckAccess()) v = ConvertToXAMLObject(Data);
-			else Application.Current.Dispatcher.Invoke(() => { v = ConvertToXAMLObject(Data); }, System.Windows.Threading.DispatcherPriority.Normal);
+			if (Window.Current.Dispatcher.HasThreadAccess) v = ConvertToXAMLObject(Data);
+			else Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { v = ConvertToXAMLObject(Data); });
 			return v;
 		}
 
@@ -121,7 +117,7 @@ namespace Test1
 			Dictionary<int, string> vdictionarytest = new Dictionary<int, string>();
 			foreach(KeyValuePair<int, string> a in Data.dictionarytest) { vdictionarytest.Add(a.Key, a.Value); }
 			dictionarytest = vdictionarytest;
-			Test1.TestData1XAML.Setasdas(this, Data.asdas);
+			asdas = Data.asdas;
 		}
 
 		//XAML/DTO Conversion Functions
@@ -154,7 +150,7 @@ namespace Test1
 			Dictionary<int, string> vdictionarytest = new Dictionary<int, string>();
 			foreach(KeyValuePair<int, string> a in Data.dictionarytest) { vdictionarytest.Add(a.Key, a.Value); }
 			XAML.dictionarytest = vdictionarytest;
-			Test1.TestData1XAML.Setasdas(XAML, Data.asdas);
+			XAML.asdas = Data.asdas;
 			return XAML;
 		}
 	}
@@ -348,19 +344,8 @@ namespace Test1
 			this.MaxBufferSize = 65536;
 			this.MaxReceivedMessageSize = 65536;
 			this.TransferMode = TransferMode.Buffered;
-			this.HostNameComparisonMode = HostNameComparisonMode.StrongWildcard;
-			this.ListenBacklog = 10;
-			this.MaxConnections = 10;
-			this.PortSharingEnabled = false;
-			this.ReliableSession.Enabled = false;
-			this.ReliableSession.InactivityTimeout = new TimeSpan(6000000000);
-			this.ReliableSession.Ordered = false;
-			this.TransactionFlow = true;
-			this.TransactionProtocol = TransactionProtocol.Default;
 			this.Security.Mode = SecurityMode.Transport;
 			this.Security.Transport.ClientCredentialType = TcpClientCredentialType.None;
-			this.Security.Transport.ProtectionLevel = ProtectionLevel.None;
-			this.Security.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.Basic256;
 			this.Security.Message.ClientCredentialType = MessageCredentialType.Windows;
 
 		}

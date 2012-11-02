@@ -43,11 +43,6 @@ namespace WCFArchitect.Interface.Data
 			AddMember.IsEnabled = (!string.IsNullOrEmpty(AddMemberName.Text) && !AddMemberName.IsInvalid && AddMemberType.IsValid);
 		}
 
-		private void AddMemberType_Selected(object sender, RoutedEventArgs e)
-		{
-			AddMemberName.Focus();
-		}
-
 		private void AddMemberName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
 		{
 			e.IsValid = true;
@@ -79,7 +74,7 @@ namespace WCFArchitect.Interface.Data
 		{
 			if (AddMember.IsEnabled == false) return;
 			
-			var t = new Projects.DataElement(Projects.DataScope.Public, AddMemberType.OpenType, AddMemberName.Text, OpenType);
+			var t = new Projects.DataElement(AddMemberType.OpenType, AddMemberName.Text, OpenType);
 			OpenType.Elements.Add(t);
 			
 			AddMemberType.Focus();
@@ -104,7 +99,8 @@ namespace WCFArchitect.Interface.Data
 
 		private void DeleteElement_Click(object sender, RoutedEventArgs e)
 		{
-			var op = ValuesList.SelectedItem as Projects.DataElement;
+			var lbi = Globals.GetVisualParent<ListBoxItem>(sender);
+			var op = lbi.Content as Projects.DataElement;
 			if (op == null) return;
 
 			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Data Member?", "Are you sure you wish to delete the '" + op.DataType + " " + op.DataName + "' data member?", new DialogAction("Yes", () => { ActiveElement = null; OpenType.Elements.Remove(op); }, true), new DialogAction("No", false, true));
@@ -273,65 +269,6 @@ namespace WCFArchitect.Interface.Data
 		}
 
 		#endregion
-	}
-
-	[ValueConversion(typeof(Projects.DataScope), typeof(int))]
-	public class DataScopeConverter : IValueConverter
-	{
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			if (value == null) return -1;
-			var lt = (Projects.DataScope)value;
-			if (lt == Projects.DataScope.Public) return 0;
-			if (lt == Projects.DataScope.Protected) return 1;
-			if (lt == Projects.DataScope.Private) return 2;
-			if (lt == Projects.DataScope.Internal) return 3;
-			if (lt == Projects.DataScope.ProtectedInternal) return 4;
-			if (lt == Projects.DataScope.Disabled) return -1;
-			return 0;
-		}
-
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			if (value == null) return null;
-			var lt = (int)value;
-			if (lt == -1) return Projects.DataScope.Disabled;
-			if (lt == 0) return Projects.DataScope.Public;
-			if (lt == 1) return Projects.DataScope.Protected;
-			if (lt == 2) return Projects.DataScope.Private;
-			if (lt == 3) return Projects.DataScope.Internal;
-			if (lt == 4) return Projects.DataScope.ProtectedInternal;
-			return Projects.DataScope.Public;
-		}
-	}
-
-	[ValueConversion(typeof(Projects.DataScope), typeof(string))]
-	public class DataScopeNameConverter : IValueConverter
-	{
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			var param = System.Convert.ToBoolean(parameter);
-			if (value == null) return "";
-			var lt = (Projects.DataScope)value;
-			if (lt == Projects.DataScope.Disabled) return "";
-			if (lt == Projects.DataScope.Public) return param ? "public" : "Public";
-			if (lt == Projects.DataScope.Protected) return param ? "protected" : "Protected";
-			if (lt == Projects.DataScope.Private) return param ? "private" : "Private";
-			if (lt == Projects.DataScope.Internal) return param ? "internal" : "Internal";
-			if (lt == Projects.DataScope.ProtectedInternal) return param ? "protected internal" : "Protected Internal";
-			return "";
-		}
-
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			var lt = (string)value;
-			if (lt == "Public" || lt == "public") return Projects.DataScope.Public;
-			if (lt == "Protected" || lt == "protected") return Projects.DataScope.Protected;
-			if (lt == "Private" || lt == "private") return Projects.DataScope.Private;
-			if (lt == "Internal" || lt == "internal") return Projects.DataScope.Internal;
-			if (lt == "Protected Internal" || lt == "protected internal") return Projects.DataScope.ProtectedInternal;
-			return Projects.DataScope.Disabled;
-		}
 	}
 
 	[ValueConversion(typeof(int), typeof(string))]

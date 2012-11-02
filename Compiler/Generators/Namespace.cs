@@ -863,8 +863,8 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendLine();
 				foreach (Data de in o.Data)
 				{
-					code.AppendLine(DataCSGenerator.GenerateProxyCode45(de));
-					code.AppendLine(DataCSGenerator.GenerateXAMLCode45(de));
+					code.AppendLine(Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8 ? DataCSGenerator.GenerateProxyCodeRT8(de) : DataCSGenerator.GenerateProxyCode45(de));
+					code.AppendLine(Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8 ? DataCSGenerator.GenerateXAMLCodeRT8(de) : DataCSGenerator.GenerateXAMLCode45(de));
 				}
 				code.AppendLine();
 			}

@@ -58,7 +58,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendFormat("Namespace = \"{0}\"", o.Parent.FullURI);
 			code.AppendLine(")]");
 			if (o.IsFlags) code.AppendLine("\t[Flags]");
-			code.AppendLine(string.Format("\t{0} enum {1} : ulong", DataTypeCSGenerator.GenerateScope(o.Scope), o.Name));
+			code.AppendLine(string.Format("\t{0} enum {1} : {2}", DataTypeCSGenerator.GenerateScope(o.Scope), o.Name, o.IsFlags ? "ulong" : "long"));
 			code.AppendLine("\t{");
 			int fv = 0;
 			foreach (EnumElement ee in o.Elements.Where(ee => !ee.IsHidden))
@@ -140,7 +140,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendFormat("Namespace = \"{0}\"", o.Parent.FullURI);
 			code.AppendLine(")]");
 			if (o.IsFlags) code.AppendLine("\t[Flags]");
-			code.AppendLine(string.Format("\t{0} enum {1} : ulong", DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine(string.Format("\t{0} enum {1} : {2}", DataTypeCSGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.IsFlags ? "ulong" : "long"));
 			code.AppendLine("\t{");
 			int fv = 0;
 			foreach (EnumElement ee in o.Elements.Where(ee => !ee.IsHidden))

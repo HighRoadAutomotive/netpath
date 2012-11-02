@@ -4,3 +4,5 @@
 *.was binary
 *.csproj binary
 *.vbproj binary
+*.netlicproj binary
+*.pfx binary

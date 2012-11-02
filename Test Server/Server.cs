@@ -32,7 +32,7 @@ namespace Test1
 
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler - BETA", "2.0.2000.0")]
 	[DataContract(Namespace = "http://www.prospectivesoftware.com/Test1/")]
-	public enum TestEnum : ulong
+	public enum TestEnum : long
 	{
 		[EnumMember()] _ssads = qweasd | sfsd,
 		[EnumMember()] asdas,
@@ -45,11 +45,16 @@ namespace Test1
 	*	Data Contracts
 	**************************************************************************/
 
+	[KnownType(typeof(string[]))]
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler - BETA", "2.0.2000.0")]
 	[DataContract(Name = "TestData1", Namespace = "http://www.prospectivesoftware.com/Test1/")]
 	public partial class TestData1
 	{
 		[DataMember(Name = "ID")] public Guid ID { get; set; }
+		[DataMember(Name = "collectiontest")] public List<string> collectiontest { get; set; }
+		[DataMember(Name = "arraytest")] public string[] arraytest { get; set; }
+		[DataMember(Name = "dictionarytest")] public Dictionary<int, string> dictionarytest { get; set; }
+		[DataMember(Name = "asdas")] public byte[] asdas { get; protected set; }
 	}
 
 
@@ -125,7 +130,7 @@ namespace Test1
 	*	Service Bindings
 	**************************************************************************/
 
-[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler - BETA", "2.0.2000.0")]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect Service Compiler - BETA", "2.0.2000.0")]
 	public partial class TestBinding : System.ServiceModel.NetTcpBinding
 	{
 		public TestBinding()

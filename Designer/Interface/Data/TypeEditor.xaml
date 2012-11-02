@@ -11,7 +11,7 @@
 			<ResourceDictionary.MergedDictionaries>
 				
 			</ResourceDictionary.MergedDictionaries>
-			<Data:DataScopeConverter x:Key="DataScopeConverter" />
+			<Data:ClassScopeConverter x:Key="ClassScopeConverter" />
 			<Data:ClassTypeConverter x:Key="ClassTypeConverter" />
 			<Data:StructTypeConverter x:Key="StructTypeConverter" />
 			<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
@@ -32,12 +32,9 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
-		<ComboBox x:Name="Scope" Grid.Column="0" Margin="5" Width="120" SelectedIndex="{Binding Path=OpenType.Scope, Converter={StaticResource DataScopeConverter}, FallbackValue='-1', TargetNullValue='-1'}" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" >
+		<ComboBox x:Name="Scope" Grid.Column="0" Margin="5" Width="120" SelectedIndex="{Binding Path=OpenType.Scope, Converter={StaticResource ClassScopeConverter}, FallbackValue='-1', TargetNullValue='-1'}" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" >
 			<ComboBoxItem IsSelected="True">Public</ComboBoxItem>
-			<ComboBoxItem>Protected</ComboBoxItem>
 			<ComboBoxItem>Internal</ComboBoxItem>
-			<ComboBoxItem>Protected Internal</ComboBoxItem>
-			<ComboBoxItem>Private</ComboBoxItem>
 		</ComboBox>
 		<CheckBox x:Name="Partial" IsChecked="{Binding Path=OpenType.Partial, FallbackValue=False}" Grid.Column="1" Content="Partial" Margin="5" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" />
 		<CheckBox x:Name="Abstract" IsChecked="{Binding Path=OpenType.Abstract, FallbackValue=False}" Grid.Column="2" Content="Abstract" Margin="5" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" Checked="Abstract_Checked" Unchecked="Abstract_Unchecked" />

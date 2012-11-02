@@ -246,10 +246,7 @@ namespace WCFArchitect.Projects
 		public string ToScopeString()
 		{
 			if (Scope == DataScope.Public) return "public";
-			if (Scope == DataScope.Protected) return "protected";
-			if (Scope == DataScope.ProtectedInternal) return "protected internal";
 			if (Scope == DataScope.Internal) return "internal";
-			if (Scope == DataScope.Private) return "private";
 			return "public";
 		}
 
