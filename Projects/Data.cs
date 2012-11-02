@@ -11,10 +11,7 @@ namespace WCFArchitect.Projects
 	public enum DataScope
 	{
 		Public,
-		Protected,
-		Private,
 		Internal,
-		ProtectedInternal,
 		Disabled,
 	}
 
@@ -206,9 +203,6 @@ namespace WCFArchitect.Projects
 		public Guid ID { get; set; }
 
 		//Basic Data-Type Settings
-		public DataScope DataScope { get { return (DataScope)GetValue(DataScopeProperty); } set { SetValue(DataScopeProperty, value); } }
-		public static readonly DependencyProperty DataScopeProperty = DependencyProperty.Register("DataScope", typeof(DataScope), typeof(DataElement), new PropertyMetadata(DataScope.Public));
-
 		public DataType DataType { get { return (DataType)GetValue(DataTypeProperty); } set { SetValue(DataTypeProperty, value); } }
 		public static readonly DependencyProperty DataTypeProperty = DependencyProperty.Register("DataType", typeof(DataType), typeof(DataElement), new PropertyMetadata(DataTypeChangedCallback));
 
@@ -241,7 +235,6 @@ namespace WCFArchitect.Projects
 
 			if (Convert.ToBoolean(e.NewValue))
 			{
-				t.ClientScope = t.DataScope;
 				t.ClientType = t.DataType;
 				t.ClientName = t.DataName;
 				if (t.ClientType == null || t.Owner == null) return;
@@ -256,15 +249,11 @@ namespace WCFArchitect.Projects
 					if (tct.TypeMode == DataTypeMode.Array && tct.CollectionGenericType.TypeMode == DataTypeMode.Primitive) t.Owner.RemoveKnownType(tct, true);
 					if (tct.TypeMode == DataTypeMode.Primitive && tct.Primitive == PrimitiveTypes.DateTimeOffset) t.Owner.RemoveKnownType(new DataType(PrimitiveTypes.DateTimeOffset), true);
 				}
-				t.ClientScope = DataScope.Disabled;
 				t.ClientName = "";
 				t.ClientType = null;
 				t.IsAttached = false;
 			}
 		}
-
-		public DataScope ClientScope { get { return (DataScope)GetValue(ClientScopeProperty); } set { SetValue(ClientScopeProperty, value); } }
-		public static readonly DependencyProperty ClientScopeProperty = DependencyProperty.Register("ClientScope", typeof(DataScope), typeof(DataElement), new PropertyMetadata(DataScope.Public));
 
 		public DataType ClientType { get { return (DataType)GetValue(ClientTypeProperty); } set { SetValue(ClientTypeProperty, value); } }
 		public static readonly DependencyProperty ClientTypeProperty = DependencyProperty.Register("ClientType", typeof(DataType), typeof(DataElement), new PropertyMetadata(ClientTypeChangedCallback));
@@ -297,21 +286,16 @@ namespace WCFArchitect.Projects
 
 			if (Convert.ToBoolean(e.NewValue))
 			{
-				t.XAMLScope = t.DataScope;
 				t.XAMLType = t.DataType;
 				t.XAMLName = t.DataName;
 			}
 			else
 			{
-				t.XAMLScope = DataScope.Disabled;
 				t.XAMLType = null;
 				t.XAMLName = "";
 				t.IsAttached = false;
 			}
 		}
-
-		public DataScope XAMLScope { get { return (DataScope)GetValue(XAMLScopeProperty); } set { SetValue(XAMLScopeProperty, value); } }
-		public static readonly DependencyProperty XAMLScopeProperty = DependencyProperty.Register("XAMLScope", typeof(DataScope), typeof(DataElement), new PropertyMetadata(DataScope.Public));
 
 		public DataType XAMLType { get { return (DataType)GetValue(XAMLTypeProperty); } set { SetValue(XAMLTypeProperty, value); } }
 		public static readonly DependencyProperty XAMLTypeProperty = DependencyProperty.Register("XAMLType", typeof(DataType), typeof(DataElement));
@@ -384,9 +368,6 @@ namespace WCFArchitect.Projects
 		{
 			ID = Guid.NewGuid();
 			DataType = new DataType(PrimitiveTypes.String);
-			DataScope = DataScope.Public;
-			ClientScope = DataScope.Disabled;
-			XAMLScope = DataScope.Public;
 			AttachedTargetTypes = "";
 			AttachedAttributeTypes = "";
 			EmitDefaultValue = false;
@@ -396,15 +377,12 @@ namespace WCFArchitect.Projects
 			HasXAMLType = true;
 		}
 
-		public DataElement(DataScope Scope, DataType DataType, string Name, Data Owner)
+		public DataElement(DataType DataType, string Name, Data Owner)
 		{
 			ID = Guid.NewGuid();
 			this.DataType = DataType;
 			this.Owner = Owner;
 			DataName = Name;
-			DataScope = Scope;
-			ClientScope = DataScope.Disabled;
-			XAMLScope = DataScope.Public;
 			AttachedTargetTypes = "";
 			AttachedAttributeTypes = "";
 			EmitDefaultValue = false;

@@ -9,16 +9,11 @@ namespace WCFArchitect.Compiler.Generators
 {
 	internal static class DataTypeCSGenerator
 	{
-		public static string GenerateScope(DataScope o, bool IsSilverlight = false)
+		public static string GenerateScope(DataScope o)
 		{
-			if (IsSilverlight && o == DataScope.Public) return "public";
-			if (IsSilverlight && o != DataScope.Public) return "internal";
 			if (o == DataScope.Internal) return "internal";
-			if (o == DataScope.Private) return "private";
-			if (o == DataScope.Protected) return "protected";
-			if (o == DataScope.ProtectedInternal) return "protected internal";
 			if (o == DataScope.Public) return "public";
-			return "private";
+			return "public";
 		}
 
 		public static string GenerateType(DataType o)
@@ -82,11 +77,8 @@ namespace WCFArchitect.Compiler.Generators
 			if (IsSilverlight && o == DataScope.Public) return "Public";
 			if (IsSilverlight && o != DataScope.Public) return "Friend";
 			if (o == DataScope.Internal) return "Friend";
-			if (o == DataScope.Private) return "Private";
-			if (o == DataScope.Protected) return "Protected";
-			if (o == DataScope.ProtectedInternal) return "ProtectedFriend";
 			if (o == DataScope.Public) return "Public";
-			return "Private";
+			return "Public";
 		}
 
 		public static string GenerateType(DataType o)

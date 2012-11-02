@@ -1,7 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:wap="clr-namespace:WCFArchitect.Projects;assembly=WCFArchitect.Projects"
-					xmlns:Data="clr-namespace:WCFArchitect.Interface.Data"
 					xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 					xmlns:local="clr-namespace:WCFArchitect.Interface">
 	<ResourceDictionary.MergedDictionaries>
@@ -9,7 +8,6 @@
 	</ResourceDictionary.MergedDictionaries>
 
 	<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
-	<Data:DataScopeNameConverter x:Key="DataScopeNameConverter" />
 	
 	<SolidColorBrush x:Key="MouseOverContainerColor" Color="#33FFFFFF" />
 	<SolidColorBrush x:Key="PressedContainerColor" Color="#33000000" />

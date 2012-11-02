@@ -233,8 +233,8 @@ namespace WCFArchitect.Interface.Data
 				if (OpenType != null && ((TypeName.Text.Contains("[") || TypeName.Text.Contains("]")) && (OpenType.TypeMode == DataTypeMode.Collection || OpenType.TypeMode == DataTypeMode.Dictionary)))
 					TypeName.Text = TypeName.Text.Replace("[", "").Replace("]", "");
 
-				if (OpenType != null && TypeName.Text.EndsWith("[]") && OpenType.TypeMode != DataTypeMode.Array)
-					OpenType = new DataType(DataTypeMode.Array) {CollectionGenericType = OpenType};
+				if (OpenType != null && TypeName.Text.EndsWith("[]") && TypeName.Text != "byte[]" && OpenType.TypeMode != DataTypeMode.Array)
+					OpenType = new DataType(DataTypeMode.Array) { CollectionGenericType = OpenType };
 			}
 			else
 			{
@@ -256,7 +256,7 @@ namespace WCFArchitect.Interface.Data
 
 		private void TypeName_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.Key == Key.Tab)
+			if (e.Key == Key.Enter || e.Key == Key.Tab)
 			{
 				SelectType();
 			}
@@ -264,10 +264,6 @@ namespace WCFArchitect.Interface.Data
 
 		private void TypeName_KeyUp(object sender, KeyEventArgs e)
 		{
-			if (e.Key == Key.Enter)
-			{
-				SelectType();
-			}
 
 			if (Results == null || Results.Count <= 1) return;
 			if (TypesList.SelectedIndex < 0) TypesList.SelectedIndex = 0;
@@ -334,6 +330,7 @@ namespace WCFArchitect.Interface.Data
 						OpenType = new DataType(sdt.Name, sdt.TypeMode) { DictionaryKeyGenericType = tdtk, DictionaryValueGenericType = tdtv };
 					}
 				}
+				else if (OpenType.TypeMode == DataTypeMode.Array) {}
 				else if ((SelectCollectionType || SelectDictionaryKey || SelectDictionaryType) && (OpenType.TypeMode == DataTypeMode.Collection || OpenType.TypeMode == DataTypeMode.Dictionary))
 				{
 					if (SelectCollectionType)
