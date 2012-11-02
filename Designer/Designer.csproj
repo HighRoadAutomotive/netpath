@@ -110,10 +110,6 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Karvonite40, Version=4.0.600.250, Culture=neutral, PublicKeyToken=a250635ee744b9fb, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Karvonite 4\Bin\Karvonite40.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.WindowsAPICodePack">
       <HintPath>..\..\..\..\Downloads\Controls\Windows API Code Pack\binaries\Microsoft.WindowsAPICodePack.dll</HintPath>

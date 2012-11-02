@@ -4,7 +4,6 @@ using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Windows;
-using MP.Karvonite;
 using System.IO;
 using Prospective.Controls.Dialogs;
 
@@ -12,28 +11,27 @@ namespace WCFArchitect
 {
 	public partial class App : Application
 	{
-		private ObjectSpace uos;
-
 		private void Application_Startup(object sender, StartupEventArgs e)
 		{
 			//Get executable data. 
 			Globals.ApplicationPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\";
 			Globals.ApplicationVersion = new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo(Globals.ApplicationPath + "WCFArchitect.exe").FileVersion);
 
-			//Check to see if the License Key path exists and make a folder if it does not.
-			Globals.LicenseKeyPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\Prospective Software\\WCF Architect\\key.dat";
-
 			//Check to see if the User Profile path exists and make a folder if it does not.
 			Globals.UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Prospective Software\\WCF Architect\\";
 			if (Directory.Exists(Globals.UserProfilePath) == false) Directory.CreateDirectory(Globals.UserProfilePath);
 
-			//Load the license data file
-			uos = new ObjectSpace("UserProfile.kvtmodel", "WCFArchitect");
-			if (!File.Exists(Globals.UserProfilePath + "UserProfile.dat"))
-				uos.CreateObjectLibrary(Globals.UserProfilePath + "UserProfile.dat", ExistingFileAction.DoNotOverwrite);
-			uos.EnableConcurrency = true;
-			uos.Open(Globals.UserProfilePath + "UserProfile.dat", ObjectSpaceOpenMode.ReadWrite);
-			Globals.UserProfileSpace = uos;
+			//Load the user profile if it exists or make a new one if it doesn't.
+			Globals.UserProfilePath = Path.Combine(Globals.UserProfilePath, "profile.dat");
+			if (File.Exists(Globals.UserProfilePath))
+			{
+				Globals.UserProfile = Options.UserProfile.Open(Globals.UserProfilePath);
+			}
+			else
+			{
+				Globals.UserProfile = new Options.UserProfile(Environment.UserDomainName + "\\" + Environment.UserName);
+				Options.UserProfile.Save(Globals.UserProfilePath, Globals.UserProfile);
+			}
 
 			//Process the command line
 			Globals.ArgSolutionPath = "";
@@ -49,39 +47,17 @@ namespace WCFArchitect
 						Globals.ArgSolutionPath = args[i + 1];
 				}
 			}
-
-			//Load the correct user profile or create a new one if no matching profile was found.
-			List<Options.UserProfile> pl = uos.OfType<Options.UserProfile>().Where(a => a.User == Environment.UserDomainName + "\\" + Environment.UserName).ToList();
-			if (pl.Count > 0)
-			{
-				Globals.UserProfile = pl[0];
-			}
-			else
-			{
-				Globals.UserProfile = new Options.UserProfile(Environment.UserDomainName + "\\" + Environment.UserName);
-				uos.Add(Globals.UserProfile);
-			}
 		}
 
 		private void Application_Exit(object sender, ExitEventArgs e)
 		{
-			uos.Save();
-			uos.Close();
+			Options.UserProfile.Save(Globals.UserProfilePath, Globals.UserProfile);
 		}
 
 		public void ResetUserProfile()
 		{
-			List<Options.UserProfile> pl = uos.OfType<Options.UserProfile>().Where(a => a.User == Environment.UserDomainName + "\\" + Environment.UserName).ToList();
-			if (pl.Count > 0)
-			{
-				pl[0] = new Options.UserProfile(Environment.UserDomainName + "\\" + Environment.UserName);
-			}
-			else
-			{
-				Globals.UserProfile = new Options.UserProfile(Environment.UserDomainName + "\\" + Environment.UserName);
-				uos.Add(Globals.UserProfile);
-			}
-			uos.Save();
+			Globals.UserProfile = new Options.UserProfile(Environment.UserDomainName + "\\" + Environment.UserName);
+			Options.UserProfile.Save(Globals.UserProfilePath, Globals.UserProfile);
 		}
 
 		private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

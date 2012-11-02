@@ -53,6 +53,7 @@ namespace WCFArchitect.Interface.Project
 			//Select the project
 			var ofd = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog("Select Project")
 				          {
+							  DefaultExtension = ".wap",
 					          AllowNonFileSystemItems = false,
 					          EnsurePathExists = true,
 					          IsFolderPicker = false,

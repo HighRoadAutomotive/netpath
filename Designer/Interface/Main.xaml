@@ -122,15 +122,10 @@
 							<MenuItem Header="Home" x:Name="SystemMenuHome" Click="SystemMenuHome_Click" />
 							<Separator/>
 							<MenuItem Header="Open" x:Name="SystemMenuOpen" Click="SystemMenuOpen_Click" />
-							<Separator/>
 							<MenuItem Header="Save" x:Name="SystemMenuSave" Click="SystemMenuSave_Click" IsEnabled="False" />
-							<MenuItem Header="Save As" x:Name="SystemMenuSaveAs" Click="SystemMenuSaveAs_Click" IsEnabled="False" />
-							<Separator/>
 							<MenuItem Header="Close" x:Name="SystemMenuClose" Click="SystemMenuClose_Click" IsEnabled="False" />
 							<Separator/>
 							<MenuItem Header="Options" x:Name="SystemMenuOptions" Click="SystemMenuOptions_Click" />
-							<Separator/>
-							<MenuItem Header="Help" x:Name="SystemMenuHelp" Click="SystemMenuHelp_Click" />
 							<Separator/>
 							<MenuItem Header="Exit" x:Name="SystemMenuExit" Click="SystemMenuExit_Click" />
 						</ContextMenu>
@@ -164,6 +159,7 @@
 					<Grid x:Name="HomeScreen" >
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
 							<RowDefinition Height="*" />
 						</Grid.RowDefinitions>
 						<Grid.ColumnDefinitions>
@@ -177,24 +173,6 @@
 								<Button Content="No" Height="27" HorizontalAlignment="Right" Margin="0,11,6,0" Name="UpdateNo" VerticalAlignment="Top" Width="75" Click="UpdateNo_Click" />
 							</Grid>
 						</Border>
-						<StackPanel Grid.Column="1" Grid.Row="1" Margin="5">
-							<Border Name="ImportantProjectsBlock" Visibility="Collapsed">
-								<StackPanel>
-									<TextBlock Text="Important" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="0,0,0,10" />
-									<ScrollViewer VerticalScrollBarVisibility="Auto">
-										<StackPanel Name="ImportantProjectsList" />
-									</ScrollViewer>
-								</StackPanel>
-							</Border>
-							<Border Name="RecentProjectsBlock">
-								<StackPanel>
-									<TextBlock Text="Recent" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="0,0,0,10" />
-									<ScrollViewer VerticalScrollBarVisibility="Auto">
-										<StackPanel Name="RecentProjectsList" />
-									</ScrollViewer>
-								</StackPanel>
-							</Border>
-						</StackPanel>
 						<StackPanel Grid.Column="0" Grid.Row="1" Margin="5">
 							<TextBlock Text="New" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="0,0,0,10" />
 							<Button x:Name="CreateSolution" Grid.Row="0" HorizontalContentAlignment="Left" Click="NewSolution_Click" >
@@ -223,6 +201,24 @@
 									</StackPanel>
 								</Grid>
 							</Button>
+						</StackPanel>
+						<StackPanel Grid.Column="0" Grid.Row="2" Margin="5">
+							<Border Name="ImportantProjectsBlock" Visibility="Collapsed">
+								<StackPanel>
+									<TextBlock Text="Important" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="0,0,0,10" />
+									<ScrollViewer VerticalScrollBarVisibility="Auto">
+										<StackPanel Name="ImportantProjectsList" />
+									</ScrollViewer>
+								</StackPanel>
+							</Border>
+							<Border Name="RecentProjectsBlock">
+								<StackPanel>
+									<TextBlock Text="Recent" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="0,0,0,10" />
+									<ScrollViewer VerticalScrollBarVisibility="Auto">
+										<StackPanel Name="RecentProjectsList" />
+									</ScrollViewer>
+								</StackPanel>
+							</Border>
 						</StackPanel>
 					</Grid>
 					<Grid x:Name="OptionsScreen" Visibility="Collapsed" >
@@ -283,12 +279,12 @@
 									<StackPanel Grid.Row="0">
 										<Label Content="Prospective Software WCF Architect Professional" Padding="4,0" Name="ProductTitle" />
 										<Label Name="AboutVersion" Content="Version: 1.0.0.0" Padding="4,0" />
-										<Label Content="© 2011 Prospective Software Inc." Padding="4,0" />
+										<Label Content="© 2012 Prospective Software Inc." Padding="4,0" />
 										<Label Content="All Rights Reserved." Padding="4,0" />
 									</StackPanel>
 									<StackPanel Grid.Row="2">
 										<Label Content="Licensed To:" Foreground="DodgerBlue" Padding="4,0" />
-										<Label Name="LicenseName" Content="" Padding="4,0" />
+										<Label Name="LicenseName" Content="" Padding="4,0" Visibility="Collapsed" />
 										<Label Name="LicenseCompany" Content="Prospective Software" Padding="4,0" />
 									</StackPanel>
 								</Grid>

@@ -7,7 +7,6 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
-using MP.Karvonite;
 using Prospective.Controls.Dialogs;
 using WCFArchitect.Projects;
 
@@ -27,7 +26,6 @@ namespace WCFArchitect
 		public static string LicenseKeyPath { get; set; }
 
 		public static Options.UserProfile UserProfile { get; set; }
-		public static ObjectSpace UserProfileSpace { get; set; }
 		public static string UserProfilePath { get; set; }
 
 		public enum WindowsVersion

@@ -185,15 +185,27 @@ namespace WCFArchitect.Interface
 
 		private void SystemMenuOpen_Click(object sender, RoutedEventArgs e)
 		{
+			string openpath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+			//Select the project
+			var ofd = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog("Open Solution")
+			{
+				DefaultExtension = ".was",
+				AllowNonFileSystemItems = false,
+				EnsurePathExists = true,
+				IsFolderPicker = false,
+				InitialDirectory = openpath,
+				Multiselect = false,
+				ShowPlacesList = true
+			};
+			if (ofd.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel) return;
+
+			OpenSolution(ofd.FileName);
 		}
 
 		private void SystemMenuSave_Click(object sender, RoutedEventArgs e)
 		{
 			Globals.SaveSolution();
-		}
-
-		private void SystemMenuSaveAs_Click(object sender, RoutedEventArgs e)
-		{
 		}
 
 		private void SystemMenuClose_Click(object sender, RoutedEventArgs e)
@@ -206,10 +218,6 @@ namespace WCFArchitect.Interface
 			ActiveProjectScreen.Visibility = Visibility.Collapsed;
 			HomeScreen.Visibility = Visibility.Collapsed;
 			OptionsScreen.Visibility = Visibility.Visible;
-		}
-
-		private void SystemMenuHelp_Click(object sender, RoutedEventArgs e)
-		{
 		}
 
 		private void SystemMenuExit_Click(object sender, RoutedEventArgs e)
@@ -444,7 +452,6 @@ namespace WCFArchitect.Interface
 
 			AddProject.IsEnabled = true;
 			SystemMenuSave.IsEnabled = true;
-			SystemMenuSaveAs.IsEnabled = true;
 			SystemMenuClose.IsEnabled = true;
 			Title = Globals.Solution.Name + " - Prospective Software WCF Architect";
 		}
@@ -456,7 +463,7 @@ namespace WCFArchitect.Interface
 			if (Globals.Solution == null) return;
 			if (AskBeforeClose)
 			{
-				DialogService.ShowMessageDialog(null, "Continue?", "In order to perform the requested action, the current project will be saved and closed. Would you like to continue?", new DialogAction("Yes", () => { Globals.CloseSolution(true); CloseSolutionFinished(); if (ContinueYes != null) ContinueYes(); }, true), new DialogAction("No", () => { Globals.CloseSolution(false); CloseSolutionFinished(); if (ContinueYes != null) ContinueNo(); }), new DialogAction("Cancel", false, true));
+				DialogService.ShowMessageDialog(null, "Continue?", "In order to perform the requested action, the current project will be saved and closed. Would you like to continue?", new DialogAction("Yes", () => { Globals.CloseSolution(true); CloseSolutionFinished(); if (ContinueYes != null) ContinueYes(); }, true), new DialogAction("No", () => { Globals.CloseSolution(false); CloseSolutionFinished(); if (ContinueNo != null) ContinueNo(); }), new DialogAction("Cancel", false, true));
 			}
 			else
 			{
@@ -477,7 +484,6 @@ namespace WCFArchitect.Interface
 			Globals.SolutionInfo = null;
 			AddProject.IsEnabled = false;
 			SystemMenuSave.IsEnabled = false;
-			SystemMenuSaveAs.IsEnabled = false;
 			SystemMenuClose.IsEnabled = false;
 			Title = "Prospective Software WCF Architect";
 
