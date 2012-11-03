@@ -21,6 +21,7 @@ namespace WCFArchitect.Compiler
 		public static Stream ErrorStream { get; private set; }
 		public static bool StdError { get; private set; }
 		public static bool Quiet { get; private set; }
+		public static bool Experimental { get; private set; }
 
 		private static List<CompileMessage> Messages { get; set; }
 		public static CompileMessageSeverity HighestSeverity { get; private set; }
@@ -126,6 +127,8 @@ namespace WCFArchitect.Compiler
 			Console.WriteLine();
 			Console.WriteLine("-q\tSupresses informational output.");
 			Console.WriteLine();
+			Console.WriteLine("-e\tBETA ONLY - Enables experimental features.");
+			Console.WriteLine();
 			Console.WriteLine("-?\tDisplay this message. Overrides all other options.");
 
 			Environment.Exit(0);
@@ -163,8 +166,10 @@ namespace WCFArchitect.Compiler
 
 			for(int i=1;i<args.Count;i++)
 			{
-				if(args[i]=="-q")
+				if (args[i] == "-q")
 					Quiet = true;
+				if (args[i] == "-e")
+					Experimental = true;
 				if (args[i] == "-stderr")
 					StdError = true;
 				if (args[i] == "-log")

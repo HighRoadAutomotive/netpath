@@ -53,21 +53,21 @@ namespace WCFArchitect.Projects
 
 		public ProjectUsingNamespace(string Namespace)
 		{
-			this.ID = Guid.NewGuid();
+			ID = Guid.NewGuid();
 			this.Namespace = Namespace;
-			this.IsFullFrameworkOnly = false;
-			this.Server = true;
-			this.Client = true;
-			this.NET = true;
-			this.SL = false;
-			this.RT = false;
+			IsFullFrameworkOnly = false;
+			Server = true;
+			Client = true;
+			NET = true;
+			SL = false;
+			RT = false;
 		}
 
 		public ProjectUsingNamespace(string Namespace, bool Server, bool Client, bool NET, bool SL, bool RT)
 		{
-			this.ID = Guid.NewGuid();
+			ID = Guid.NewGuid();
 			this.Namespace = Namespace;
-			this.IsFullFrameworkOnly = false;
+			IsFullFrameworkOnly = false;
 			this.Server = Server;
 			this.Client = Client;
 			this.NET = NET;
@@ -86,13 +86,6 @@ namespace WCFArchitect.Projects
 		{
 			IsSelected = false;
 		}
-	}
-
-	public enum ProjectTypeSearchMode
-	{
-		All,
-		Data,
-		Enum
 	}
 
 	public class Project : OpenableDocument
@@ -119,14 +112,8 @@ namespace WCFArchitect.Projects
 		public bool EnableDocumentationWarnings { get { return (bool)GetValue(EnableDocumentationWarningsProperty); } set { SetValue(EnableDocumentationWarningsProperty, value); } }
 		public static readonly DependencyProperty EnableDocumentationWarningsProperty = DependencyProperty.Register("EnableDocumentationWarnings", typeof(bool), typeof(Project), new PropertyMetadata(false));
 
-		public bool ServiceSerializeFaults { get { return (bool)GetValue(ServiceSerializeFaultsProperty); } set { SetValue(ServiceSerializeFaultsProperty, value); } }
-		public static readonly DependencyProperty ServiceSerializeFaultsProperty = DependencyProperty.Register("ServiceSerializeFaults", typeof(bool), typeof(Project), new PropertyMetadata(false));
-
 		public ProjectServiceSerializerType ServiceSerializer { get { return (ProjectServiceSerializerType)GetValue(ServiceSerializerProperty); } set { SetValue(ServiceSerializerProperty, value); } }
 		public static readonly DependencyProperty ServiceSerializerProperty = DependencyProperty.Register("ServiceSerializer", typeof(ProjectServiceSerializerType), typeof(Project));
-
-		public ProjectCollectionSerializationOverride CollectionSerializationOverride { get { return (ProjectCollectionSerializationOverride)GetValue(CollectionSerializationOverrideProperty); } set { SetValue(CollectionSerializationOverrideProperty, value); } }
-		public static readonly DependencyProperty CollectionSerializationOverrideProperty = DependencyProperty.Register("CollectionSerializationOverride", typeof(ProjectCollectionSerializationOverride), typeof(Project), new PropertyMetadata(ProjectCollectionSerializationOverride.None));
 
 		public ObservableCollection<DependencyProject> DependencyProjects { get { return (ObservableCollection<DependencyProject>)GetValue(DependencyProjectsProperty); } set { SetValue(DependencyProjectsProperty, value); } }
 		public static readonly DependencyProperty DependencyProjectsProperty = DependencyProperty.Register("DependencyProjects", typeof(ObservableCollection<DependencyProject>), typeof(Project));
@@ -138,8 +125,12 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty ClientGenerationTargetsProperty = DependencyProperty.Register("ClientGenerationTargets", typeof(ObservableCollection<ProjectGenerationTarget>), typeof(Project));
 
 		[IgnoreDataMember] public List<DataType> DefaultTypes { get; private set; }
-		[IgnoreDataMember] public List<DataType> InheritableTypes { get; private set; } 
-		[IgnoreDataMember] public DataType VoidType { get; private set; } 
+		[IgnoreDataMember] public List<DataType> InheritableTypes { get; private set; }
+		[IgnoreDataMember]
+		public DataType VoidType { get; private set; }
+
+		public bool EnableExperimental { get { return (bool)GetValue(EnableExperimentalProperty); } set { SetValue(EnableExperimentalProperty, value); } }
+		public static readonly DependencyProperty EnableExperimentalProperty = DependencyProperty.Register("EnableExperimental", typeof(bool), typeof(Project), new PropertyMetadata(false));
 
 		public Project()
 		{
@@ -523,10 +514,10 @@ namespace WCFArchitect.Projects
 
 		public ProjectGenerationTarget(Guid ProjectID, string Path, bool IsServerPath)
 		{
-			this.ID = Guid.NewGuid();
+			ID = Guid.NewGuid();
 			this.ProjectID = ProjectID;
 			this.Path = Path;
-			this.Framework = ProjectGenerationFramework.NET45;
+			Framework = ProjectGenerationFramework.NET45;
 			this.IsServerPath = IsServerPath;
 		}
 	}
