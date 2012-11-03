@@ -20,16 +20,14 @@ namespace WCFArchitect.Interface.Project
 {
 	internal partial class Project : Grid
 	{
-		public Projects.Project Settings { get; private set; }
+		public Projects.Project Settings { get { return (Projects.Project)GetValue(SettingsProperty); } set { SetValue(SettingsProperty, value); } }
+		public static readonly DependencyProperty SettingsProperty = DependencyProperty.Register("Settings", typeof(Projects.Project), typeof(Project));
 
 		public Project(Projects.Project Project)
 		{
 			Settings = Project;
 
 			InitializeComponent();
-
-			DependencyItems.ItemsSource = Settings.DependencyProjects;
-			UsingList.ItemsSource = Settings.UsingNamespaces;
 
 			Settings.ServerGenerationTargets.CollectionChanged += ServerOutputPaths_CollectionChanged;
 			Settings.ClientGenerationTargets.CollectionChanged += ClientOutputPaths_CollectionChanged;
@@ -39,7 +37,7 @@ namespace WCFArchitect.Interface.Project
 
 		#region - Project -
 
-		private void txtProjectNamespaceURI_TextChanged(object Sender, TextChangedEventArgs E)
+		private void ProjectNamespaceURI_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			foreach (Projects.Namespace ns in Settings.Namespace.Children)
 				ns.UpdateURI();
@@ -82,12 +80,14 @@ namespace WCFArchitect.Interface.Project
 			Settings.DependencyProjects.Add(ndp);
 		}
 
-		private void DependencyRemove_Click(object sender, RoutedEventArgs e)
+		private void DeleteSelectedReference_Click(object sender, RoutedEventArgs w)
 		{
-			var delete = DependencyItems.SelectedItems.Cast<DependencyProject>().ToList();
-			foreach (DependencyProject r in delete)
-				Settings.DependencyProjects.Remove(r);
-			delete.Clear();
+			DependencyProject to = null;
+			var clickedListBoxItem = Globals.GetVisualParent<ListBoxItem>(sender);
+			if (clickedListBoxItem != null) { to = clickedListBoxItem.Content as DependencyProject; }
+
+			if (to == null) return;
+			DialogService.ShowMessageDialog(Settings, "Delete Project Reference", "Are you sure you want to delete the '" + to.Project.Name + "' project reference?", new DialogAction("Yes", () => Settings.DependencyProjects.Remove(to), true), new DialogAction("No", false, true));
 		}
 
 		private void UsingNamespace_KeyUp(object sender, KeyEventArgs e)
