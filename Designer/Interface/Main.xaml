@@ -8,9 +8,7 @@
 		xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 		xmlns:local="clr-namespace:WCFArchitect.Interface"
         mc:Ignorable="d" d:DesignHeight="990" d:DesignWidth="1280"
-		DataContext="{Binding RelativeSource={RelativeSource Self}}"
-		Style="{StaticResource MainWindowStyle}"
-	    Title="WCF Architect" MinHeight="690" MinWidth="1280"
+		Title="WCF Architect" MinHeight="690" MinWidth="1280" DataContext="{Binding RelativeSource={RelativeSource Self}}" Style="{StaticResource MainWindowStyle}"
 		TextOptions.TextFormattingMode="Display" TextOptions.TextHintingMode="Fixed" TextOptions.TextRenderingMode="ClearType" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.ClearTypeHint="Enabled"
 		SourceInitialized="Main_SourceInitialized" StateChanged="Main_StateChanged" Closing="Main_Closing" KeyUp="Main_KeyUp">
 	<pc:WindowChrome.WindowChrome>

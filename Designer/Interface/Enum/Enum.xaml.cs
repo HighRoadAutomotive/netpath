@@ -192,6 +192,12 @@ namespace WCFArchitect.Interface.Enum
 			AddValue.IsEnabled = e.IsValid = RegExs.MatchCodeName.IsMatch(AddValueName.Text);
 		}
 
+		private void AddValueName_KeyUp(object sender, KeyEventArgs e)
+		{
+			if(e.Key == Key.Enter)
+				AddValue_Click(null, null);
+		}
+
 		private void AddValue_Click(object sender, RoutedEventArgs e)
 		{
 			if (AddValue.IsEnabled == false) return;
