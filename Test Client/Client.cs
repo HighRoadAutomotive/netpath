@@ -23,8 +23,27 @@ using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.Text;
 using System.Windows;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Net;
+using System.Net.Security;
+using System.Reflection;
+using System.Resources;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
+using System.ServiceModel;
+using System.ServiceModel.Description;
+using System.Text;
+using System.Windows;
 
 [assembly: System.Runtime.Serialization.ContractNamespaceAttribute("http://www.prospectivesoftware.com/Test1/", ClrNamespace="Test1")]
+[assembly: System.Runtime.Serialization.ContractNamespaceAttribute("http://www.prospectivesoftware.com/Test1/TestNS/", ClrNamespace="Test1.TestNS")]
+
 
 #pragma warning disable 1591
 namespace Test1
@@ -54,6 +73,7 @@ namespace Test1
 	[DataContract(Name = "TestData1", Namespace = "http://www.prospectivesoftware.com/")]
 	public partial class TestData1 : System.Runtime.Serialization.IExtensibleDataObject
 	{
+
 		public System.Runtime.Serialization.ExtensionDataObject ExtensionData { get; set; }
 
 		private Guid IDField;
@@ -103,6 +123,8 @@ namespace Test1
 			else Application.Current.Dispatcher.Invoke(() => { v = ConvertToXAMLObject(Data); }, System.Windows.Threading.DispatcherPriority.Normal);
 			return v;
 		}
+
+		//Automatic Data Update Support
 
 		//Constructors
 		public TestData1XAML()
@@ -378,5 +400,9 @@ namespace Test1
 
 
 }
+namespace Test1.TestNS
+{
+}
+
 
 #pragma warning restore 1591

@@ -22,6 +22,22 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.Text;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Net;
+using System.Net.Security;
+using System.Reflection;
+using System.Resources;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
+using System.ServiceModel;
+using System.ServiceModel.Description;
+using System.Text;
 
 #pragma warning disable 1591
 namespace Test1
@@ -452,5 +468,9 @@ namespace Test1
 
 
 }
+namespace Test1.TestNS
+{
+}
+
 
 #pragma warning restore 1591
