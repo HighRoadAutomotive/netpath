@@ -25,8 +25,8 @@ namespace WCFArchitect.Projects
 
 		public Solution(string Name)
 		{
-			this.Projects = new ObservableCollection<string>();
-			this.ID = Guid.NewGuid();
+			Projects = new ObservableCollection<string>();
+			ID = Guid.NewGuid();
 			this.Name = Name;
 		}
 
@@ -39,12 +39,12 @@ namespace WCFArchitect.Projects
 
 		public static void Save(Solution Data)
 		{
-			Storage.Save<Solution>(Data.AbsolutePath, Data);
+			Storage.Save(Data.AbsolutePath, Data);
 		}
 
 		public static void Save(Solution Data, string Path)
 		{
-			Storage.Save<Solution>(Path, Data);
+			Storage.Save(Path, Data);
 		}
 	}
 }

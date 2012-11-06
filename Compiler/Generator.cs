@@ -125,7 +125,7 @@ namespace WCFArchitect.Compiler
 			//Reenable XML documentation warnings
 			if (!Project.EnableDocumentationWarnings) code.AppendLine("#pragma warning restore 1591");
 
-			string op = Server ? new Uri(new Uri(Project.AbsolutePath), System.IO.Path.Combine(OutputDirectory, Project.ServerOutputFile + ".cs")).AbsolutePath : new Uri(new Uri(Project.AbsolutePath), System.IO.Path.Combine(OutputDirectory, Project.ClientOutputFile + ".cs")).AbsolutePath;
+			string op = Server ? new Uri(new Uri(Project.AbsolutePath), System.IO.Path.Combine(OutputDirectory, Project.ServerOutputFile + ".cs")).LocalPath : new Uri(new Uri(Project.AbsolutePath), System.IO.Path.Combine(OutputDirectory, Project.ClientOutputFile + ".cs")).LocalPath;
 			op = Uri.UnescapeDataString(op);
 			Console.WriteLine(Server ? "Writing Server Output: {0}" : "Writing Client Output: {0}", op);
 			System.IO.File.WriteAllText(op, code.ToString());

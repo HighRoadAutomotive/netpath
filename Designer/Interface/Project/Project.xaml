@@ -30,12 +30,12 @@
 		<RowDefinition Height="*" />
 		<RowDefinition Height="*" />
 	</Grid.RowDefinitions>
-	<Label Grid.Row="0" Margin="5" Padding="2" Content="Name:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="110" />
-	<TextBox Height="23" Margin="120,5,5,5" Text="{Binding Path=Settings.Name}" VerticalContentAlignment="Center" Grid.Row="0" Grid.ColumnSpan="2" />
-	<Label Grid.Row="1" Margin="5" Padding="2" Content="Namespace:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="110" />
-	<TextBox Height="23" Margin="120,5,5,5" VerticalContentAlignment="Center" Text="{Binding Path=Settings.Namespace.Name, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.ColumnSpan="2" />
-	<Label Grid.Row="2" Margin="5" Padding="2" Content="Namespace URI:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="110" />
-	<TextBox Height="23" Margin="120,5,5,5" VerticalContentAlignment="Center" Text="{Binding Path=Settings.Namespace.URI, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.ColumnSpan="2" TextChanged="ProjectNamespaceURI_TextChanged" />
+	<Label Grid.Row="0" Margin="5" Padding="2" Content="Name:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="90" />
+	<TextBox Height="23" Margin="100,5,5,5" Text="{Binding Path=Settings.Name}" VerticalContentAlignment="Center" Grid.Row="0" Grid.ColumnSpan="2" />
+	<Label Grid.Row="1" Margin="5" Padding="2" Content="Namespace:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="90" />
+	<TextBox Height="23" Margin="100,5,5,5" VerticalContentAlignment="Center" Text="{Binding Path=Settings.Namespace.Name, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.ColumnSpan="2" />
+	<Label Grid.Row="2" Margin="5" Padding="2" Content="Base URI:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="90" />
+	<TextBox Height="23" Margin="100,5,5,5" VerticalContentAlignment="Center" Text="{Binding Path=Settings.Namespace.URI, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.ColumnSpan="2" TextChanged="ProjectNamespaceURI_TextChanged" />
 	<Grid Grid.Row="3" Grid.ColumnSpan="2">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
@@ -179,9 +179,9 @@
 		</Grid.RowDefinitions>
 		<Label Content="Server Targets" FontSize="12pt" Margin="0,5,0,0" />
 		<Label Content="File:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
-		<TextBox Height="23" Margin="50,5,5,5" Name="ServerAssemblyName" VerticalAlignment="Top" Text="{Binding Path=Settings.ServerOutputFile}" Grid.Row="1"/>
+		<TextBox Height="23" Margin="50,5,5,5" Name="ServerAssemblyName" VerticalContentAlignment="Center" Text="{Binding Path=Settings.ServerOutputFile}" Grid.Row="1"/>
 		<Label Content="Path:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" />
-		<TextBox Height="23" Margin="50,5,175,5" Name="ServerOutputPath" VerticalAlignment="Top" ToolTip="{Binding ElementName=ServerOutputPath, Path=Text}" Grid.Row="2" />
+		<TextBox Height="23" Margin="50,5,175,5" Name="ServerOutputPath" VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="{Binding ElementName=ServerOutputPath, Path=Text}" Grid.Row="2" />
 		<Button Content="Browse..." Height="23" HorizontalAlignment="Right" Margin="5,5,90,5" Name="ServerOutputBrowse" VerticalAlignment="Top" Width="75" Grid.Row="2" Click="ServerOutputBrowse_Click"/>
 		<Button Content="Add" Height="23" HorizontalAlignment="Right" Margin="5" Name="ServerOutputAdd" VerticalAlignment="Top" Width="75" Grid.Row="2" Click="ServerOutputAdd_Click"/>
 		<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="3" Margin="5">
@@ -197,9 +197,9 @@
 		</Grid.RowDefinitions>
 		<Label Content="Client Targets" FontSize="12pt" Margin="0,5,0,0" />
 		<Label Content="File:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
-		<TextBox Height="23" Margin="50,5,5,5" Name="ClientAssemblyName" VerticalAlignment="Top" Text="{Binding Path=Settings.ClientOutputFile}" Grid.Row="1"/>
+		<TextBox Height="23" Margin="50,5,5,5" Name="ClientAssemblyName" VerticalContentAlignment="Center" Text="{Binding Path=Settings.ClientOutputFile}" Grid.Row="1"/>
 		<Label Content="Path:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" />
-		<TextBox Height="23" Margin="50,5,175,5" Name="ClientOutputPath" VerticalAlignment="Top" ToolTip="{Binding ElementName=ClientOutputPath, Path=Text}" Grid.Row="2" />
+		<TextBox Height="23" Margin="50,5,175,5" Name="ClientOutputPath" VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="{Binding ElementName=ClientOutputPath, Path=Text}" Grid.Row="2" />
 		<Button Content="Browse..." Height="23" HorizontalAlignment="Right" Margin="5,5,90,5" Name="ClientOutputBrowse" VerticalAlignment="Top" Width="75" Grid.Row="2" Click="ClientOutputBrowse_Click"/>
 		<Button Content="Add" Height="23" HorizontalAlignment="Right" Margin="5" Name="ClientOutputAdd" VerticalAlignment="Top" Width="75" Grid.Row="2" Click="ClientOutputAdd_Click"/>
 		<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="3" Margin="5">

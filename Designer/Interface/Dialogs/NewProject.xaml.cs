@@ -11,11 +11,21 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Prospective.Controls.Dialogs;
+using WCFArchitect.Projects.Helpers;
 
 namespace WCFArchitect.Interface.Dialogs
 {
-	public partial class NewProject : Grid
+	public partial class NewProject : Grid, IDialogContent
 	{
+		public System.Collections.ObjectModel.ObservableCollection<DialogAction> Actions { get; set; }
+		private ContentDialog _host;
+		public ContentDialog Host { get { return _host; } set { _host = value; ActionState(false); } }
+		public void SetFocus()
+		{
+			NewProjectName.Focus();
+		}
+
 		internal Type ProjectType { get; set; }
 		internal string FileName { get; set; }
 
@@ -24,14 +34,15 @@ namespace WCFArchitect.Interface.Dialogs
 			InitializeComponent();
 
 			this.ProjectType = ProjectType;
+			NewProjectName.Focus();
 		}
 
 		private void NewProjectBrowse_Click(object sender, RoutedEventArgs e)
 		{
 			string openpath = Globals.UserProfile.DefaultProjectFolder;
-			if (!(NewProjectLocation.Text == "" || NewProjectLocation.Text == null)) openpath = NewProjectLocation.Text;
+			if (!string.IsNullOrEmpty(NewProjectLocation.Text)) openpath = NewProjectLocation.Text;
 
-			Microsoft.WindowsAPICodePack.Dialogs.CommonSaveFileDialog sfd = new Microsoft.WindowsAPICodePack.Dialogs.CommonSaveFileDialog("Select a Location to Save the Project");
+			var sfd = new Microsoft.WindowsAPICodePack.Dialogs.CommonSaveFileDialog("Select a Location to Save the Project");
 			sfd.AlwaysAppendDefaultExtension = true;
 			sfd.EnsurePathExists = true;
 			sfd.InitialDirectory = openpath;
@@ -47,7 +58,23 @@ namespace WCFArchitect.Interface.Dialogs
 
 		internal void Create()
 		{
-				Globals.MainScreen.NewProject(NewProjectName.Text, FileName);
+			Globals.MainScreen.NewProject(NewProjectName.Text, FileName);
+		}
+
+		private void NewProjectName_TextChanged(object Sender, TextChangedEventArgs E)
+		{
+			ActionState(!string.IsNullOrEmpty(NewProjectName.Text) && RegExs.MatchFileName.IsMatch(NewProjectName.Text) && !string.IsNullOrEmpty(NewProjectLocation.Text));
+		}
+
+		private void NewProjectLocation_TextChanged(object Sender, TextChangedEventArgs E)
+		{
+			ActionState(!string.IsNullOrEmpty(NewProjectName.Text) && RegExs.MatchFileName.IsMatch(NewProjectName.Text) && !string.IsNullOrEmpty(NewProjectLocation.Text));
+		}
+
+		private void ActionState(bool Enabled)
+		{
+			foreach (DialogAction da in Actions.Where(a => !a.IsCancel))
+				da.IsEnabled = Enabled;
 		}
 	}
 }

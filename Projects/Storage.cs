@@ -42,7 +42,7 @@ namespace WCFArchitect.Projects
 			if (File.Exists(Path))
 			{
 				var fi = new FileInfo(Path);
-				if (fi.IsReadOnly == true)
+				if (fi.IsReadOnly)
 					throw new IOException("The file '" + Path + "' is currently read-only. Please disable read-only mode on this file.");
 			}
 

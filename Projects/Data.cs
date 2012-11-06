@@ -49,6 +49,13 @@ namespace WCFArchitect.Projects
 		public ObservableCollection<DataElement> Elements { get { return (ObservableCollection<DataElement>)GetValue(ElementsProperty); } set { SetValue(ElementsProperty, value); } }
 		public static readonly DependencyProperty ElementsProperty = DependencyProperty.Register("Elements", typeof(ObservableCollection<DataElement>), typeof(Data));
 
+		//AutoData
+		public bool AutoDataEnabled { get { return (bool)GetValue(AutoDataEnabledProperty); } set { SetValue(AutoDataEnabledProperty, value); } }
+		public static readonly DependencyProperty AutoDataEnabledProperty = DependencyProperty.Register("AutoDataEnabled", typeof(bool), typeof(Data), new PropertyMetadata(false));
+
+		[IgnoreDataMember] public bool HasAutoDataID { get { return Elements.Any(a => a.IsValidAutoDataID && a.IsAutoDataID); } }
+		[IgnoreDataMember] public DataElement AutoDataID { get { return Elements.FirstOrDefault(a => a.IsAutoDataID && a.IsValidAutoDataID); } }
+		
 		//System
 		[IgnoreDataMember] public bool HasWinFormsBindings { get { return Elements.Any(a => a.GenerateWinFormsSupport); } }
 		[IgnoreDataMember] public bool XAMLHasExtensionData { get { return HasXAMLType && (XAMLType.InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0)); } }
@@ -210,6 +217,9 @@ namespace WCFArchitect.Projects
 		{
 			var de = o as DataElement;
 			if (de == null) return;
+
+			de.UpdateValidAutoDataID();
+
 			if (de.Owner == null) return;
 			var nt = p.NewValue as DataType;
 			if (nt == null) return;
@@ -262,6 +272,9 @@ namespace WCFArchitect.Projects
 		{
 			var de = o as DataElement;
 			if (de == null) return;
+
+			de.UpdateValidAutoDataID();
+
 			var nt = p.NewValue as DataType;
 			if (nt == null) return;
 			var ot = p.OldValue as DataType;
@@ -298,7 +311,15 @@ namespace WCFArchitect.Projects
 		}
 
 		public DataType XAMLType { get { return (DataType)GetValue(XAMLTypeProperty); } set { SetValue(XAMLTypeProperty, value); } }
-		public static readonly DependencyProperty XAMLTypeProperty = DependencyProperty.Register("XAMLType", typeof(DataType), typeof(DataElement));
+		public static readonly DependencyProperty XAMLTypeProperty = DependencyProperty.Register("XAMLType", typeof(DataType), typeof(DataElement), new PropertyMetadata(XAMLTypeChangedCallback));
+
+		private static void XAMLTypeChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs p)
+		{
+			var de = o as DataElement;
+			if (de == null) return;
+
+			de.UpdateValidAutoDataID();
+		}
 
 		public string XAMLName { get { return (string)GetValue(XAMLNameProperty); } set { SetValue(XAMLNameProperty, value); } }
 		public static readonly DependencyProperty XAMLNameProperty = DependencyProperty.Register("XAMLName", typeof(string), typeof(DataElement), new PropertyMetadata(""));
@@ -358,6 +379,14 @@ namespace WCFArchitect.Projects
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(DataElement));
 
+		//AutoData
+		public bool IsValidAutoDataID { get { return (bool)GetValue(IsValidAutoDataIDProperty); } private set { SetValue(IsValidAutoDataIDPropertyKey, value); } }
+		public static readonly DependencyPropertyKey IsValidAutoDataIDPropertyKey = DependencyProperty.RegisterReadOnly("IsValidAutoDataID", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
+		public static readonly DependencyProperty IsValidAutoDataIDProperty = IsValidAutoDataIDPropertyKey.DependencyProperty;
+
+		public bool IsAutoDataID { get { return (bool)GetValue(IsAutoDataIDProperty); } set { SetValue(IsAutoDataIDProperty, value); } }
+		public static readonly DependencyProperty IsAutoDataIDProperty = DependencyProperty.Register("IsAutoDataID", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
+
 		//System
 		public bool IsSelected { get { return (bool)GetValue(IsSelectedProperty); } set { SetValue(IsSelectedProperty, value); } }
 		public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.Register("IsSelected", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
@@ -395,6 +424,16 @@ namespace WCFArchitect.Projects
 		public override string ToString()
 		{
 			return DataName;
+		}
+
+		private void UpdateValidAutoDataID()
+		{
+			bool dtp = DataType.Primitive == PrimitiveTypes.GUID;
+			bool ctp = true;
+			if (HasClientType) ctp = ClientType.Primitive == PrimitiveTypes.GUID;
+			bool xtp = true;
+			if (HasClientType) xtp = XAMLType.Primitive == PrimitiveTypes.GUID;
+			IsValidAutoDataID = dtp && ctp && xtp;
 		}
 
 		public IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)

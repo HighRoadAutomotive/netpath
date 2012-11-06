@@ -12,16 +12,22 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Prospective.Controls.Dialogs;
 using WCFArchitect.Interface;
 
 namespace WCFArchitect.Interface.Dialogs
 {
-	public partial class NewItem : Grid
+	public partial class NewItem : Grid, IDialogContent
 	{
+		public System.Collections.ObjectModel.ObservableCollection<DialogAction> Actions { get; set; }
+		public ContentDialog Host { get; set; }
+		public void SetFocus()
+		{
+			NewItemTypesList.Focus();
+		}
+
 		private bool IsNamespaceListUpdating { get; set; }
-
 		public Projects.Project ActiveProject { get; private set; }
-
 		private Action<Projects.OpenableDocument> OpenProjectItem { get; set; }
 
 		public NewItem(Projects.Project Project, Action<Projects.OpenableDocument> OpenItemAction)

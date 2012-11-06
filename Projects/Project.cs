@@ -287,8 +287,8 @@ namespace WCFArchitect.Projects
 
 		public static Project Open(string SolutionPath, string ProjectPath)
 		{
-			string abspath = new Uri(new Uri(SolutionPath), ProjectPath).AbsolutePath;
-			SolutionPath = GetRelativePath(abspath, SolutionPath);
+			string abspath = new Uri(new Uri(SolutionPath), ProjectPath).LocalPath;
+			//SolutionPath = GetRelativePath(abspath, SolutionPath);
 			//Check the file to make sure it exists
 			if (!File.Exists(abspath))
 				throw new FileNotFoundException("Unable to locate the Project file '" + abspath + "'");
