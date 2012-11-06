@@ -78,9 +78,9 @@ namespace WCFArchitect.Interface
 				if (t == null) return;
 				DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Enumeration?", "Are you sure you want to delete the '" + t.Declaration + "' enumeration?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Enums.Remove(t); }, true), new DialogAction("No", false, true));
 			}
-			if (dt == typeof(Projects.ServiceBinding))
+			if (dt == typeof(ServiceBinding))
 			{
-				var t = e.Parameter as Projects.ServiceBinding;
+				var t = e.Parameter as ServiceBinding;
 				if (t == null) return;
 				DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Binding?", "Are you sure you want to delete the '" + t.Declaration + "' binding?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Bindings.Remove(t); }, true), new DialogAction("No", false, true));
 			}

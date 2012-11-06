@@ -11,11 +11,22 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
+using Prospective.Controls.Dialogs;
+using WCFArchitect.Projects.Helpers;
 
 namespace WCFArchitect.Interface.Dialogs
 {
-	public partial class NewSolution : Grid
+	public partial class NewSolution : Grid, IDialogContent
 	{
+		public System.Collections.ObjectModel.ObservableCollection<DialogAction> Actions { get; set; }
+		private ContentDialog _host;
+		public ContentDialog Host { get { return _host; } set { _host = value; ActionState(false); } }
+		public void SetFocus()
+		{
+			NewSolutionOptionsName.Focus();
+		}
+
 		internal string FileName { get; set; }
 
 		public NewSolution()
@@ -26,9 +37,9 @@ namespace WCFArchitect.Interface.Dialogs
 		private void NewSolutionOptionsBrowse_Click(object sender, RoutedEventArgs e)
 		{
 			string openpath = Globals.UserProfile.DefaultProjectFolder;
-			if (!(NewSolutionOptionsLocation.Text == "" || NewSolutionOptionsLocation.Text == null)) openpath = NewSolutionOptionsLocation.Text;
+			if (!string.IsNullOrEmpty(NewSolutionOptionsLocation.Text)) openpath = NewSolutionOptionsLocation.Text;
 
-			Microsoft.WindowsAPICodePack.Dialogs.CommonSaveFileDialog sfd = new Microsoft.WindowsAPICodePack.Dialogs.CommonSaveFileDialog("Select a Location to Save the Solution");
+			var sfd = new Microsoft.WindowsAPICodePack.Dialogs.CommonSaveFileDialog("Select a Location to Save the Solution");
 			sfd.AlwaysAppendDefaultExtension = true;
 			sfd.EnsurePathExists = true;
 			sfd.InitialDirectory = openpath;
@@ -45,6 +56,27 @@ namespace WCFArchitect.Interface.Dialogs
 		internal void Create()
 		{
 			Globals.MainScreen.NewSolution(NewSolutionOptionsName.Text, FileName);
+		}
+
+		private void NewSolutionOptionsName_TextChanged(object Sender, TextChangedEventArgs E)
+		{
+			ActionState(!string.IsNullOrEmpty(NewSolutionOptionsName.Text) && RegExs.MatchFileName.IsMatch(NewSolutionOptionsName.Text) && !string.IsNullOrEmpty(NewSolutionOptionsLocation.Text));
+		}
+
+		private void NewSolutionOptionsLocation_TextChanged(object Sender, TextChangedEventArgs E)
+		{
+			ActionState(!string.IsNullOrEmpty(NewSolutionOptionsName.Text) && RegExs.MatchFileName.IsMatch(NewSolutionOptionsName.Text) && !string.IsNullOrEmpty(NewSolutionOptionsLocation.Text));
+		}
+
+		private void ActionState(bool Enabled)
+		{
+			foreach (DialogAction da in Actions.Where(a => !a.IsCancel))
+				da.IsEnabled = Enabled;
+		}
+
+		private void NewSolution_GotFocus(object Sender, RoutedEventArgs E)
+		{
+			NewSolutionOptionsName.Focus();
 		}
 	}
 }

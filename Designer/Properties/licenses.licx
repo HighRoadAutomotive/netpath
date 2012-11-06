@@ -8,3 +8,5 @@ C1.WPF.C1DropDownButton, C1.WPF.4
 C1.WPF.Extended.C1Accordion, C1.WPF.Extended.4
 C1.WPF.C1Window, C1.WPF.4
 C1.WPF.C1ComboBox, C1.WPF.4
+ActiproSoftware.Products.SyntaxEditor.SyntaxEditorLicenseToken, ActiproSoftware.SyntaxEditor.Wpf, Version=12.2.570.0, Culture=neutral, PublicKeyToken=36ff2196ab5654b9
+ActiproSoftware.Products.SyntaxEditor.Addons.DotNet.DotNetLanguagesAddonLicenseToken, ActiproSoftware.SyntaxEditor.Addons.DotNet.Wpf, Version=12.2.570.0, Culture=neutral, PublicKeyToken=36ff2196ab5654b9

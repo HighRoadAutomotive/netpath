@@ -77,110 +77,100 @@ namespace WCFArchitect
 
 		public static void OpenSolution(string Path, Action<bool> FinishedAction)
 		{
-			Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-			{
-				IsLoading = true;
+			IsLoading = true;
 
-				//Check for backups and open the solution.
-				if (File.Exists(System.IO.Path.ChangeExtension(Path, ".bak")))
+			//Check for backups and open the solution.
+			if (File.Exists(System.IO.Path.ChangeExtension(Path, ".bak")))
+			{
+				var fi = new FileInfo(Path);
+				var bfi = new FileInfo(System.IO.Path.ChangeExtension(Path, ".bak"));
+				if (fi.LastWriteTime < bfi.LastWriteTime)
+					DialogService.ShowMessageDialog(null, "Solution Load Error", "WCF Architect has detected that the solution '" + Path + "' was not properly closed. A newer backup exists. Would you like to use this backup?",
+						new DialogAction("Yes", () => { File.Delete(Path); File.Move(System.IO.Path.ChangeExtension(Path, ".bak"), Path); }, true), new DialogAction("No", () => File.Delete(System.IO.Path.ChangeExtension(Path, ".bak")), false, true));
+				else
+					File.Delete(System.IO.Path.ChangeExtension(Path, ".bak"));
+			}
+			try
+			{
+				SolutionPath = Path;
+				Solution = WCFArchitect.Projects.Solution.Open(Path);
+			}
+			catch (Exception ex)
+			{
+				DialogService.ShowMessageDialog(null, "Solution Load Error", ex.Message, new DialogAction("Ok", () => FinishedAction(false), true, true));
+				return;
+			}
+				
+			//Load projects
+			Projects = new ObservableCollectionSortable<Project>();
+			Projects.CollectionChanged += MainScreen.Projects_CollectionChanged;
+			foreach (string p in Solution.Projects)
+			{
+				if (File.Exists(System.IO.Path.ChangeExtension(p, ".bak")))
 				{
-					var fi = new FileInfo(Path);
-					var bfi = new FileInfo(System.IO.Path.ChangeExtension(Path, ".bak"));
+					var fi = new FileInfo(p);
+					var bfi = new FileInfo(System.IO.Path.ChangeExtension(p, ".bak"));
 					if (fi.LastWriteTime < bfi.LastWriteTime)
-						DialogService.ShowMessageDialog(null, "Solution Load Error", "WCF Architect has detected that the solution '" + Path + "' was not properly closed. A newer backup exists. Would you like to use this backup?",
+					{
+						DialogService.ShowMessageDialog(null, "Project Load Error", "WCF Architect has detected that the solution '" + Path + "' was not properly closed. A newer backup exists. Would you like to use this backup?",
 							new DialogAction("Yes", () => { File.Delete(Path); File.Move(System.IO.Path.ChangeExtension(Path, ".bak"), Path); }, true), new DialogAction("No", () => File.Delete(System.IO.Path.ChangeExtension(Path, ".bak")), false, true));
+					}
 					else
-						File.Delete(System.IO.Path.ChangeExtension(Path, ".bak"));
+					{
+						File.Delete(System.IO.Path.ChangeExtension(p, ".bak"));
+					}
 				}
+
+				//Open the project.
 				try
 				{
-					SolutionPath = Path;
-					Solution = WCFArchitect.Projects.Solution.Open(Path);
+					Projects.Add(WCFArchitect.Projects.Project.Open(SolutionPath, p));
 				}
 				catch (Exception ex)
 				{
-					DialogService.ShowMessageDialog(null, "Solution Load Error", ex.Message, new DialogAction("Ok", () => FinishedAction(false), true, true));
+					DialogService.ShowMessageDialog(null, "Project Load Error", ex.ToString(), new DialogAction("Ok", () => FinishedAction(false), true, true));
 					return;
 				}
-				
-				//Load projects
-				Projects = new ObservableCollectionSortable<Projects.Project>();
-				Projects.CollectionChanged += MainScreen.Projects_CollectionChanged;
-				foreach (string p in Solution.Projects)
-				{
-					if (File.Exists(System.IO.Path.ChangeExtension(p, ".bak")))
-					{
-						var fi = new FileInfo(p);
-						var bfi = new FileInfo(System.IO.Path.ChangeExtension(p, ".bak"));
-						if (fi.LastWriteTime < bfi.LastWriteTime)
-						{
-							DialogService.ShowMessageDialog(null, "Project Load Error", "WCF Architect has detected that the solution '" + Path + "' was not properly closed. A newer backup exists. Would you like to use this backup?",
-								new DialogAction("Yes", () => { File.Delete(Path); File.Move(System.IO.Path.ChangeExtension(Path, ".bak"), Path); }, true), new DialogAction("No", () => File.Delete(System.IO.Path.ChangeExtension(Path, ".bak")), false, true));
-						}
-						else
-						{
-							File.Delete(System.IO.Path.ChangeExtension(p, ".bak"));
-						}
-					}
+			}
+			Projects.Sort(a => a.Name);
 
-					//Open the project.
-					try
-					{
-						Projects.Add(WCFArchitect.Projects.Project.Open(SolutionPath, p));
-					}
-					catch (Exception ex)
-					{
-						DialogService.ShowMessageDialog(null, "Project Load Error", ex.ToString(), new DialogAction("Ok", () => FinishedAction(false), true, true));
-						return;
-					}
-				}
-				Projects.Sort(a => a.Name);
+			if (UserProfile.AutomaticBackupsEnabled)
+				BackupTimer = new System.Threading.Timer(BackupSolution, null, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds);
 
-				if (UserProfile.AutomaticBackupsEnabled)
-					BackupTimer = new System.Threading.Timer(BackupSolution, null, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds);
+			IsLoading = false;
 
-				IsLoading = false;
-
-				FinishedAction(true);
-			}), System.Windows.Threading.DispatcherPriority.Background);
+			FinishedAction(true);
 		}
 
 		public static void SaveSolution()
 		{
-			Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-			{
-				IsFinding = true;
-				IsSaving = true;
+			IsFinding = true;
+			IsSaving = true;
 
-				WCFArchitect.Projects.Solution.Save(Solution);
+			WCFArchitect.Projects.Solution.Save(Solution);
 
-				foreach (Projects.Project p in Projects)
-					WCFArchitect.Projects.Project.Save(p);
+			foreach (Project p in Projects)
+				WCFArchitect.Projects.Project.Save(p);
 
-				IsFinding = false;
-				IsSaving = false;
-
-			}), System.Windows.Threading.DispatcherPriority.Background);
+			IsFinding = false;
+			IsSaving = false;
 		}
 
 		public static void BackupSolution(object State)
 		{
-			Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-			{
-				IsFinding = true;
-				IsSaving = true;
+			IsFinding = true;
+			IsSaving = true;
 
-				WCFArchitect.Projects.Solution.Save(Solution, Path.ChangeExtension(SolutionPath, ".bak"));
+			WCFArchitect.Projects.Solution.Save(Solution, Path.ChangeExtension(SolutionPath, ".bak"));
 
-				foreach (Projects.Project p in Projects)
-					WCFArchitect.Projects.Project.Save(p, Path.ChangeExtension(p.AbsolutePath, ".bak"));
+			foreach (Project p in Projects)
+				WCFArchitect.Projects.Project.Save(p, Path.ChangeExtension(p.AbsolutePath, ".bak"));
 
-				IsFinding = false;
-				IsSaving = false;
-			}), System.Windows.Threading.DispatcherPriority.Background);
+			IsFinding = false;
+			IsSaving = false;
 		}
 
-		public static void CloseSolution(bool SaveData)
+		public static void CloseSolution()
 		{
 			if (UserProfile.AutomaticBackupsEnabled)
 				if(BackupTimer != null)
@@ -188,7 +178,7 @@ namespace WCFArchitect
 
 			WCFArchitect.Projects.Solution.Save(Solution);
 
-			foreach (Projects.Project p in Projects)
+			foreach (Project p in Projects)
 				WCFArchitect.Projects.Project.Save(p);
 		}
 	}

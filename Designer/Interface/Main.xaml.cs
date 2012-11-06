@@ -55,28 +55,12 @@ namespace WCFArchitect.Interface
 			UserProfile = Globals.UserProfile;
 			if (Globals.UserProfile.AutomaticBackupsEnabled) AutomaticBackupsEnabled.Content = "Yes";
 			AboutVersion.Content = "Version " + FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).FileVersion;
-#if TRIAL
-			ProductTitle.Content = "Prospective Software WCF Architect Trial Edition";
-#elif WINRT
-			ProductTitle.Content = "Prospective Software WCF Architect for Windows Runtime";
-#elif PROFESSIONAL
 			ProductTitle.Content = "Prospective Software WCF Architect Professional";
-#else
-			ProductTitle.Content = "Prospective Software WCF Architect Developer";
-#endif
 
 			//Set the logo in the options screen.
 			var logo = new BitmapImage();
 			logo.BeginInit();
-#if TRIAL
-			logo.UriSource = new Uri("pack://application:,,,/WCFArchitect;component/Icons/Odd/FullLogoTrial.png");
-#elif WINRT
-			logo.UriSource = new Uri("pack://application:,,,/WCFArchitect;component/Icons/Odd/FullLogoWinRT.png");
-#elif PROFESSIONAL
 			logo.UriSource = new Uri("pack://application:,,,/WCFArchitect;component/Icons/Odd/FullLogoProfessional.png");
-#else
-			logo.UriSource = new Uri("pack://application:,,,/WCFArchitect;component/Icons/Odd/FullLogoDeveloper.png");
-#endif
 			logo.EndInit();
 			SKULevel.Source = logo;
 		}
@@ -463,17 +447,17 @@ namespace WCFArchitect.Interface
 			if (Globals.Solution == null) return;
 			if (AskBeforeClose)
 			{
-				DialogService.ShowMessageDialog(null, "Continue?", "In order to perform the requested action, the current project will be saved and closed. Would you like to continue?", new DialogAction("Yes", () => { Globals.CloseSolution(true); CloseSolutionFinished(); if (ContinueYes != null) ContinueYes(); }, true), new DialogAction("No", () => { Globals.CloseSolution(false); CloseSolutionFinished(); if (ContinueNo != null) ContinueNo(); }), new DialogAction("Cancel", false, true));
+				DialogService.ShowMessageDialog(null, "Continue?", "In order to perform the requested action, the current project will be saved and closed. Would you like to continue?", new DialogAction("Yes", () => { Globals.CloseSolution(); CloseSolutionFinished(); if (ContinueYes != null) ContinueYes(); }, true), new DialogAction("No", () => { Globals.CloseSolution(); CloseSolutionFinished(); if (ContinueNo != null) ContinueNo(); }), new DialogAction("Cancel", false, true));
 			}
 			else
 			{
 				if (Closing)
 				{
-					DialogService.ShowMessageDialog(null, "Save Solution?", "Would you like to save your work?", new DialogAction("Yes", () => { Globals.CloseSolution(true); CloseSolutionFinished(); if (ContinueYes != null) ContinueYes(); }, true), new DialogAction("No", () => { Globals.CloseSolution(false); CloseSolutionFinished(); if (ContinueYes != null) ContinueNo(); }), new DialogAction("Cancel", false, true));
+					DialogService.ShowMessageDialog(null, "Save Solution?", "Would you like to save your work?", new DialogAction("Yes", () => { Globals.CloseSolution(); CloseSolutionFinished(); if (ContinueYes != null) ContinueYes(); }, true), new DialogAction("No", () => { Globals.CloseSolution(); CloseSolutionFinished(); if (ContinueYes != null) ContinueNo(); }), new DialogAction("Cancel", false, true));
 				}
 				else
 				{
-					Globals.CloseSolution(true);
+					Globals.CloseSolution();
 					CloseSolutionFinished();
 				}
 			}
