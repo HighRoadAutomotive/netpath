@@ -23,8 +23,27 @@ using System.ServiceModel.Description;
 using System.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Core;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Net;
+using System.Reflection;
+using System.Resources;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
+using System.ServiceModel;
+using System.ServiceModel.Description;
+using System.Text;
+using Windows.UI.Core;
+using Windows.UI.Xaml;
 
 [assembly: System.Runtime.Serialization.ContractNamespaceAttribute("http://www.prospectivesoftware.com/Test1/", ClrNamespace="Test1")]
+[assembly: System.Runtime.Serialization.ContractNamespaceAttribute("http://www.prospectivesoftware.com/Test1/TestNS/", ClrNamespace="Test1.TestNS")]
+
 
 #pragma warning disable 1591
 namespace Test1
@@ -54,6 +73,7 @@ namespace Test1
 	[DataContract(Name = "TestData1", Namespace = "http://www.prospectivesoftware.com/")]
 	public partial class TestData1
 	{
+
 		private Guid IDField;
 		[DataMember(Name = "ID")] public Guid ID { get { return IDField; } set { IDField = value; } }
 		private List<string> collectiontestField;
@@ -99,6 +119,8 @@ namespace Test1
 			else Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { v = ConvertToXAMLObject(Data); });
 			return v;
 		}
+
+		//Automatic Data Update Support
 
 		//Constructors
 		public TestData1XAML()
@@ -363,5 +385,9 @@ namespace Test1
 
 
 }
+namespace Test1.TestNS
+{
+}
+
 
 #pragma warning restore 1591

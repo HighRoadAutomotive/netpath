@@ -92,7 +92,7 @@ namespace WCFArchitect.Projects
 	{
 		public Guid ID { get; set; }
 		[IgnoreDataMember] public string AbsolutePath { get; private set; }
-		public string SolutionPath { get; private set; }
+		public string SolutionPath { get; set; }
 
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(Project));
@@ -126,8 +126,7 @@ namespace WCFArchitect.Projects
 
 		[IgnoreDataMember] public List<DataType> DefaultTypes { get; private set; }
 		[IgnoreDataMember] public List<DataType> InheritableTypes { get; private set; }
-		[IgnoreDataMember]
-		public DataType VoidType { get; private set; }
+		[IgnoreDataMember] public DataType VoidType { get; private set; }
 
 		public bool EnableExperimental { get { return (bool)GetValue(EnableExperimentalProperty); } set { SetValue(EnableExperimentalProperty, value); } }
 		public static readonly DependencyProperty EnableExperimentalProperty = DependencyProperty.Register("EnableExperimental", typeof(bool), typeof(Project), new PropertyMetadata(false));
@@ -288,7 +287,7 @@ namespace WCFArchitect.Projects
 		public static Project Open(string SolutionPath, string ProjectPath)
 		{
 			string abspath = new Uri(new Uri(SolutionPath), ProjectPath).LocalPath;
-			//SolutionPath = GetRelativePath(abspath, SolutionPath);
+
 			//Check the file to make sure it exists
 			if (!File.Exists(abspath))
 				throw new FileNotFoundException("Unable to locate the Project file '" + abspath + "'");
@@ -300,23 +299,6 @@ namespace WCFArchitect.Projects
 			// Open the project's dependencies
 			foreach(DependencyProject dp in t.DependencyProjects)
 				dp.Project = Open(SolutionPath, dp.Path);
-
-			return t;
-		}
-
-		public static Project Open(string ProjectPath)
-		{
-			//Check the file to make sure it exists
-			if (!File.Exists(ProjectPath))
-				throw new FileNotFoundException("Unable to locate the Project file '" + ProjectPath + "'");
-
-			//Open the project
-			var t = Storage.Open<Project>(ProjectPath);
-			t.AbsolutePath = ProjectPath;
-
-			// Open the project's dependencies
-			foreach (DependencyProject dp in t.DependencyProjects)
-				dp.Project = Open(t.SolutionPath, dp.Path);
 
 			return t;
 		}

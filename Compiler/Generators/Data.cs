@@ -26,6 +26,12 @@ namespace WCFArchitect.Compiler.Generators
 				if (RegExs.MatchCodeName.IsMatch(o.XAMLType.Name) == false)
 					Program.AddMessage(new CompileMessage("GS3003", "The data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
 
+			if (Program.Experimental && !o.HasAutoDataID)
+			{
+				Program.AddMessage(new CompileMessage("GS3003", "The data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace does not have an Automatic Data ID specified. A default ID will be used.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
+				o.Elements.Add(new DataElement(new DataType(PrimitiveTypes.GUID), "_ID", o) {IsAutoDataID = true, IsDataMember = true});
+			}
+
 			foreach (DataElement d in o.Elements)
 			{
 				if (RegExs.MatchCodeName.IsMatch(d.DataType.Name) == false && d.DataType.TypeMode != DataTypeMode.Array)
@@ -110,23 +116,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendLine(string.Format("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI));
 			code.AppendLine(string.Format("\t{0}", DataTypeCSGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, o.ClientHasImpliedExtensionData, o.HasWinFormsBindings)));
 			code.AppendLine("\t{");
-			if (Program.Experimental && o.AutoDataEnabled)
-			{
-				code.AppendLine(string.Format("\t\tprivate static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, {0}> __autodata;", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
-				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t__autodata = new System.Collections.Concurrent.ConcurrentDictionary<Guid, {0}>();", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
-				code.AppendLine("\t\t}");
-				code.AppendLine("\t\t[OnDeserialized]");
-				code.AppendLine("\t\tprivate void OnDeserialized(StreamingContext context)");
-				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t__autodata.TryAdd({0}, this);", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName));
-				code.AppendLine("\t\t}");
-				code.AppendLine(string.Format("\t\t~{0}()", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t{0} t;", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
-				code.AppendLine(string.Format("\t\t\t__autodata.TryRemove({0}, out t);", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName));
-				code.AppendLine("\t\t}");
-			}
+			code.AppendLine(GenerateProxyAutoDataCode(o));
 			if (o.ClientHasExtensionData || o.ClientHasImpliedExtensionData)
 			{
 				code.AppendLine("\t\tpublic System.Runtime.Serialization.ExtensionDataObject ExtensionData { get; set; }");
@@ -159,6 +149,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendLine(string.Format("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI));
 			code.AppendLine(string.Format("\t{0}", DataTypeCSGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, o.ClientHasImpliedExtensionData, o.HasWinFormsBindings)));
 			code.AppendLine("\t{");
+			code.AppendLine(GenerateProxyAutoDataCode(o));
 			if (o.ClientHasExtensionData || o.ClientHasImpliedExtensionData)
 			{
 				code.AppendLine("\t\tpublic System.Runtime.Serialization.ExtensionDataObject ExtensionData { get; set; }");
@@ -191,6 +182,7 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendLine(string.Format("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI));
 			code.AppendLine(string.Format("\t{0}", DataTypeCSGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, false, o.HasWinFormsBindings)));
 			code.AppendLine("\t{");
+			code.AppendLine(GenerateProxyAutoDataCode(o));
 			if (o.HasWinFormsBindings)
 			{
 				code.AppendLine("\t\tpublic event PropertyChangedEventHandler PropertyChanged;");
@@ -204,6 +196,49 @@ namespace WCFArchitect.Compiler.Generators
 			foreach (DataElement de in o.Elements)
 				code.Append(GenerateElementProxyCode45(de));
 			code.AppendLine("\t}");
+			return code.ToString();
+		}
+
+		public static string GenerateProxyAutoDataCode(Data o)
+		{
+			if (!Program.Experimental) return "";
+			if (!o.AutoDataEnabled) return "";
+
+			var code = new StringBuilder();
+			if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client)
+			{
+				code.AppendLine(string.Format("\t\tprivate static readonly System.Collections.Generic.Dictionary<Guid, {0}> __autodata;", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
+				code.AppendLine("\t\t{");
+				code.AppendLine(string.Format("\t\t\t__autodata = new System.Collections.Generic.Dictionary<Guid, {0}>();", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
+				code.AppendLine("\t\t}");
+				code.AppendLine("\t\t[OnDeserialized]");
+				code.AppendLine("\t\tprivate void OnDeserialized(StreamingContext context)");
+				code.AppendLine("\t\t{");
+				code.AppendLine(string.Format("\t\t\t__autodata.Add({0}, this);", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName));
+				code.AppendLine("\t\t}");
+				code.AppendLine(string.Format("\t\t~{0}()", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				code.AppendLine(string.Format("\t\t\t{0} t;", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
+				code.AppendLine(string.Format("\t\t\t__autodata.Remove({0}, out t);", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName));
+				code.AppendLine("\t\t}");
+			}
+			else
+			{
+				code.AppendLine(string.Format("\t\tprivate static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, {0}> __autodata;", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
+				code.AppendLine("\t\t{");
+				code.AppendLine(string.Format("\t\t\t__autodata = new System.Collections.Concurrent.ConcurrentDictionary<Guid, {0}>();", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
+				code.AppendLine("\t\t}");
+				code.AppendLine("\t\t[OnDeserialized]");
+				code.AppendLine("\t\tprivate void OnDeserialized(StreamingContext context)");
+				code.AppendLine("\t\t{");
+				code.AppendLine(string.Format("\t\t\t__autodata.TryAdd({0}, this);", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName));
+				code.AppendLine("\t\t}");
+				code.AppendLine(string.Format("\t\t~{0}()", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				code.AppendLine(string.Format("\t\t\t{0} t;", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
+				code.AppendLine(string.Format("\t\t\t__autodata.TryRemove({0}, out t);", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName));
+				code.AppendLine("\t\t}");
+			}
 			return code.ToString();
 		}
 
@@ -266,6 +301,9 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendLine("\t\t\treturn v;");
 			code.AppendLine("\t\t}");
 			code.AppendLine();
+
+			code.AppendLine("\t\t//Automatic Data Update Support");
+			code.AppendLine(GenerateXAMLAutoDataCode(o));
 
 			code.AppendLine("\t\t//Constructors");
 			code.AppendLine(string.Format("\t\tpublic {0}()", o.XAMLType.Name));
@@ -339,6 +377,9 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendLine("\t\t}");
 			code.AppendLine();
 
+			code.AppendLine("\t\t//Automatic Data Update Support");
+			code.AppendLine(GenerateXAMLAutoDataCode(o));
+
 			code.AppendLine("\t\t//Constructors");
 			code.AppendLine(string.Format("\t\tpublic {0}()", o.XAMLType.Name));
 			code.AppendLine("\t\t{");
@@ -369,6 +410,49 @@ namespace WCFArchitect.Compiler.Generators
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t}");
 
+			return code.ToString();
+		}
+
+		public static string GenerateXAMLAutoDataCode(Data o)
+		{
+			if (!Program.Experimental) return "";
+			if (!o.AutoDataEnabled) return "";
+
+			var code = new StringBuilder();
+			if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client)
+			{
+				code.AppendLine(string.Format("\t\tprivate static readonly System.Collections.Generic.Dictionary<Guid, {0}> __autodata;", DataTypeCSGenerator.GenerateType(o.XAMLType)));
+				code.AppendLine("\t\t{");
+				code.AppendLine(string.Format("\t\t\t__autodata = new System.Collections.Generic.Dictionary<Guid, {0}>();", DataTypeCSGenerator.GenerateType(o.XAMLType)));
+				code.AppendLine("\t\t}");
+				code.AppendLine("\t\t[OnDeserialized]");
+				code.AppendLine("\t\tprivate void OnDeserialized(StreamingContext context)");
+				code.AppendLine("\t\t{");
+				code.AppendLine(string.Format("\t\t\t__autodata.Add({0}, this);", o.AutoDataID.XAMLName));
+				code.AppendLine("\t\t}");
+				code.AppendLine(string.Format("\t\t~{0}()", o.XAMLType.Name));
+				code.AppendLine("\t\t{");
+				code.AppendLine(string.Format("\t\t\t{0} t;", DataTypeCSGenerator.GenerateType(o.XAMLType)));
+				code.AppendLine(string.Format("\t\t\t__autodata.Remove({0}, out t);", o.AutoDataID.XAMLName));
+				code.AppendLine("\t\t}");
+			}
+			else
+			{
+				code.AppendLine(string.Format("\t\tprivate static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, {0}> __autodata;", DataTypeCSGenerator.GenerateType(o.XAMLType)));
+				code.AppendLine("\t\t{");
+				code.AppendLine(string.Format("\t\t\t__autodata = new System.Collections.Concurrent.ConcurrentDictionary<Guid, {0}>();", DataTypeCSGenerator.GenerateType(o.XAMLType)));
+				code.AppendLine("\t\t}");
+				code.AppendLine("\t\t[OnDeserialized]");
+				code.AppendLine("\t\tprivate void OnDeserialized(StreamingContext context)");
+				code.AppendLine("\t\t{");
+				code.AppendLine(string.Format("\t\t\t__autodata.TryAdd({0}, this);", o.AutoDataID.XAMLName));
+				code.AppendLine("\t\t}");
+				code.AppendLine(string.Format("\t\t~{0}()", o.XAMLType));
+				code.AppendLine("\t\t{");
+				code.AppendLine(string.Format("\t\t\t{0} t;", DataTypeCSGenerator.GenerateType(o.XAMLType)));
+				code.AppendLine(string.Format("\t\t\t__autodata.TryRemove({0}, out t);", o.AutoDataID.XAMLName));
+				code.AppendLine("\t\t}");
+			}
 			return code.ToString();
 		}
 
