@@ -261,11 +261,6 @@ namespace WCFArchitect.Interface.Service
 			AddServiceProperty.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && AddServiceMemberType.OpenType.Primitive != PrimitiveTypes.Void && !AddServiceMemberName.IsInvalid && AddServiceMemberType.IsValid);
 		}
 
-		private void AddServiceMemberType_Selected(object sender, RoutedEventArgs e)
-		{
-			AddServiceMemberName.Focus();
-		}
-
 		private void AddServiceMemberName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
 		{
 			e.IsValid = true;
@@ -351,15 +346,6 @@ namespace WCFArchitect.Interface.Service
 
 		}
 
-		private void DeleteServiceOperation_Click(object sender, RoutedEventArgs e)
-		{
-			var lbi = Globals.GetVisualParent<ListBoxItem>(sender);
-			var OP = lbi.Content as Operation;
-			if (OP == null) return;
-
-			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Service Operation?", "Are you sure you want to delete the '" + OP.ReturnType + " " + OP.ServerName + "' service operation?", new DialogAction("Yes", () => ServiceType.ServiceOperations.Remove(OP), true), new DialogAction("No", false, true));
-		}
-
 		#endregion
 
 		#region - Callback Operation Handlers -
@@ -369,11 +355,6 @@ namespace WCFArchitect.Interface.Service
 			if (AddCallbackMemberType.OpenType == null) return;
 			AddCallbackMethod.IsEnabled = (!string.IsNullOrEmpty(AddCallbackMemberName.Text) && !AddCallbackMemberName.IsInvalid && AddCallbackMemberType.IsValid);
 			AddCallbackProperty.IsEnabled = (!string.IsNullOrEmpty(AddCallbackMemberName.Text) && AddCallbackMemberType.OpenType.Primitive != PrimitiveTypes.Void && !AddCallbackMemberName.IsInvalid && AddCallbackMemberType.IsValid);
-		}
-
-		private void AddCallbackMemberType_Selected(object sender, RoutedEventArgs e)
-		{
-			AddCallbackMemberName.Focus();
 		}
 
 		private void AddCallbackMemberName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
@@ -460,16 +441,25 @@ namespace WCFArchitect.Interface.Service
 			}
 		}
 
-		private void DeleteCallbackOperation_Click(object sender, RoutedEventArgs e)
+		#endregion
+
+		private void DeleteOperation_Click(object sender, RoutedEventArgs e)
 		{
 			var lbi = Globals.GetVisualParent<ListBoxItem>(sender);
 			var OP = lbi.Content as Operation;
 			if (OP == null) return;
 
-			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Callback Operation?", "Are you sure you want to delete the '" + OP.ReturnType + " " + OP.ServerName + "' callback operation?", new DialogAction("Yes", () => ServiceType.CallbackOperations.Remove(OP), true), new DialogAction("No", false, true));
+			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Method?", "Are you sure you want to delete the '" + OP.ReturnType + " " + OP.ServerName + "' method?", new DialogAction("Yes", () => { ServiceType.ServiceOperations.Remove(OP); ServiceType.CallbackOperations.Remove(OP); }, true), new DialogAction("No", false, true));
 		}
 
-		#endregion
+		private void DeleteProperty_Click(object sender, RoutedEventArgs e)
+		{
+			var lbi = Globals.GetVisualParent<ListBoxItem>(sender);
+			var OP = lbi.Content as Operation;
+			if (OP == null) return;
+
+			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Property?", "Are you sure you want to delete the '" + OP.ReturnType + " " + OP.ServerName + "' property?", new DialogAction("Yes", () => { ServiceType.ServiceOperations.Remove(OP); ServiceType.CallbackOperations.Remove(OP); }, true), new DialogAction("No", false, true));
+		}
 
 	}
 }

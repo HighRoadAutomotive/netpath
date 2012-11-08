@@ -104,16 +104,8 @@ namespace WCFArchitect.Interface
 				e.Cancel = true;
 				return;
 			}
-			if(CloseMode == SaveCloseMode.Save)
-			{
-				Globals.SaveSolution();
-				foreach(Projects.Project p in Globals.Projects)
-					Projects.Project.Save(p);
-			}
-			if(CloseMode == SaveCloseMode.NoSave)
-			{
-				Globals.SaveSolution();
-			}
+
+			Globals.SaveSolution(CloseMode == SaveCloseMode.Save);
 		}
 
 		private void Main_KeyUp(object sender, KeyEventArgs e)
@@ -189,7 +181,7 @@ namespace WCFArchitect.Interface
 
 		private void SystemMenuSave_Click(object sender, RoutedEventArgs e)
 		{
-			Globals.SaveSolution();
+			Globals.SaveSolution(true);
 		}
 
 		private void SystemMenuClose_Click(object sender, RoutedEventArgs e)
@@ -388,7 +380,7 @@ namespace WCFArchitect.Interface
 			Globals.Solution.Projects.Add(Globals.GetRelativePath(Globals.SolutionPath, Path));
 			Projects.Project.Save(NP, Path);
 			Globals.Projects.Add(Projects.Project.Open(Globals.SolutionPath, Path));
-			Globals.SaveSolution();
+			Globals.SaveSolution(false);
 		}
 
 		public void OpenSolution(string Path)

@@ -330,7 +330,7 @@ namespace WCFArchitect.Projects
 			results.AddRange(Namespace.SearchTypes(Search, DataOnly));
 
 			foreach (DependencyProject dp in DependencyProjects)
-				results.AddRange(dp.Project.SearchTypes(Search, false, true));
+				results.AddRange(dp.Project.SearchTypes(Search, false, false, true));
 
 			if (IncludeInheritable) results.RemoveAll(a => a.GetType() == typeof (Enum));
 

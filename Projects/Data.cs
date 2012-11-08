@@ -15,6 +15,12 @@ namespace WCFArchitect.Projects
 		Disabled,
 	}
 
+	public enum DataUpdateMode
+	{
+		Immediate,
+		Batch
+	}
+
 	public class Data : DataType
 	{
 		public bool HasXAMLType { get { return (bool)GetValue(HasXAMLTypeProperty); } set { SetValue(HasXAMLTypeProperty, value); } }
@@ -52,6 +58,9 @@ namespace WCFArchitect.Projects
 		//AutoData
 		public bool AutoDataEnabled { get { return (bool)GetValue(AutoDataEnabledProperty); } set { SetValue(AutoDataEnabledProperty, value); } }
 		public static readonly DependencyProperty AutoDataEnabledProperty = DependencyProperty.Register("AutoDataEnabled", typeof(bool), typeof(Data), new PropertyMetadata(false));
+
+		public int AutoDataBatchCount { get { return (int)GetValue(AutoDataBatchCountProperty); } set { SetValue(AutoDataBatchCountProperty, value); } }
+		public static readonly DependencyProperty AutoDataBatchCountProperty = DependencyProperty.Register("AutoDataBatchCount", typeof(int), typeof(Data), new PropertyMetadata(0));
 
 		[IgnoreDataMember] public bool HasAutoDataID { get { return Elements.Any(a => a.IsValidAutoDataID && a.IsAutoDataID); } }
 		[IgnoreDataMember] public DataElement AutoDataID { get { return Elements.FirstOrDefault(a => a.IsAutoDataID && a.IsValidAutoDataID); } }
@@ -380,12 +389,29 @@ namespace WCFArchitect.Projects
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(DataElement));
 
 		//AutoData
+		public bool AutoDataEnabled { get { return (bool)GetValue(AutoDataEnabledProperty); } set { SetValue(AutoDataEnabledProperty, value); } }
+		public static readonly DependencyProperty AutoDataEnabledProperty = DependencyProperty.Register("AutoDataEnabled", typeof(bool), typeof(DataElement), new PropertyMetadata(false, AutoDataEnabledChangedCallback));
+
+		private static void AutoDataEnabledChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs p)
+		{
+			var de = o as DataElement;
+			if (de == null) return;
+
+			de.UpdateValidAutoDataID();
+		}
+
 		public bool IsValidAutoDataID { get { return (bool)GetValue(IsValidAutoDataIDProperty); } private set { SetValue(IsValidAutoDataIDPropertyKey, value); } }
 		public static readonly DependencyPropertyKey IsValidAutoDataIDPropertyKey = DependencyProperty.RegisterReadOnly("IsValidAutoDataID", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
 		public static readonly DependencyProperty IsValidAutoDataIDProperty = IsValidAutoDataIDPropertyKey.DependencyProperty;
 
 		public bool IsAutoDataID { get { return (bool)GetValue(IsAutoDataIDProperty); } set { SetValue(IsAutoDataIDProperty, value); } }
 		public static readonly DependencyProperty IsAutoDataIDProperty = DependencyProperty.Register("IsAutoDataID", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
+
+		public DataUpdateMode AutoDataUpdateMode { get { return (DataUpdateMode)GetValue(AutoDataUpdateModeProperty); } set { SetValue(AutoDataUpdateModeProperty, value); } }
+		public static readonly DependencyProperty AutoDataUpdateModeProperty = DependencyProperty.Register("AutoDataUpdateMode", typeof(DataUpdateMode), typeof(DataElement), new PropertyMetadata(DataUpdateMode.Immediate));
+
+		public uint AutoDataTimeout { get { return (uint)GetValue(AutoDataTimeoutProperty); } set { SetValue(AutoDataTimeoutProperty, value); } }
+		public static readonly DependencyProperty AutoDataTimeoutProperty = DependencyProperty.Register("AutoDataTimeout", typeof(uint), typeof(DataElement), new PropertyMetadata((uint)0));
 
 		//System
 		public bool IsSelected { get { return (bool)GetValue(IsSelectedProperty); } set { SetValue(IsSelectedProperty, value); } }
@@ -433,7 +459,7 @@ namespace WCFArchitect.Projects
 			if (HasClientType) ctp = ClientType.Primitive == PrimitiveTypes.GUID;
 			bool xtp = true;
 			if (HasClientType) xtp = XAMLType.Primitive == PrimitiveTypes.GUID;
-			IsValidAutoDataID = dtp && ctp && xtp;
+			IsValidAutoDataID = dtp && ctp && xtp && AutoDataEnabled;
 		}
 
 		public IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)

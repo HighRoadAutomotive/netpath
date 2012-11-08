@@ -214,13 +214,15 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendLine("\t\t[OnDeserialized]");
 				code.AppendLine("\t\tprivate void OnDeserialized(StreamingContext context)");
 				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t__autodata.Add({0}, this);", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName));
+				code.AppendLine(string.Format("\t\t\tlock(((ICollection)__autodata).SyncRoot) {{ __autodata.Add({0}, this); }}", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName));
 				code.AppendLine("\t\t}");
 				code.AppendLine(string.Format("\t\t~{0}()", o.HasClientType ? o.ClientType.Name : o.Name));
 				code.AppendLine("\t\t{");
 				code.AppendLine(string.Format("\t\t\t{0} t;", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
-				code.AppendLine(string.Format("\t\t\t__autodata.Remove({0}, out t);", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName));
+				code.AppendLine(string.Format("\t\t\tlock(((ICollection)__autodata).SyncRoot) {{ __autodata.Remove({0}, out t); }}", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName));
 				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30 ? "\t\tprivate System.Threading.ReaderWriterLock __autodatalock = new System.Threading.ReaderWriterLock();" : "\t\tprivate System.Threading.ReaderWriterLockSlim __autodatalock = new System.Threading.ReaderWriterLockSlim();");
 			}
 			else
 			{
@@ -238,6 +240,8 @@ namespace WCFArchitect.Compiler.Generators
 				code.AppendLine(string.Format("\t\t\t{0} t;", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
 				code.AppendLine(string.Format("\t\t\t__autodata.TryRemove({0}, out t);", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName));
 				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine("\t\tprivate System.Threading.ReaderWriterLockSlim __autodatalock = new System.Threading.ReaderWriterLockSlim();");
 			}
 			return code.ToString();
 		}
@@ -421,36 +425,36 @@ namespace WCFArchitect.Compiler.Generators
 			var code = new StringBuilder();
 			if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client)
 			{
-				code.AppendLine(string.Format("\t\tprivate static readonly System.Collections.Generic.Dictionary<Guid, {0}> __autodata;", DataTypeCSGenerator.GenerateType(o.XAMLType)));
+				code.AppendLine(string.Format("\t\tprivate static readonly System.Collections.Generic.Dictionary<Guid, {0}> __autodata;", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
 				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t__autodata = new System.Collections.Generic.Dictionary<Guid, {0}>();", DataTypeCSGenerator.GenerateType(o.XAMLType)));
+				code.AppendLine(string.Format("\t\t\t__autodata = new System.Collections.Generic.Dictionary<Guid, {0}>();", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
 				code.AppendLine("\t\t}");
 				code.AppendLine("\t\t[OnDeserialized]");
 				code.AppendLine("\t\tprivate void OnDeserialized(StreamingContext context)");
 				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t__autodata.Add({0}, this);", o.AutoDataID.XAMLName));
+				code.AppendLine(string.Format("\t\t\tlock(((ICollection)__autodata).SyncRoot) {{ __autodata.Add({0}, this); }}", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName));
 				code.AppendLine("\t\t}");
-				code.AppendLine(string.Format("\t\t~{0}()", o.XAMLType.Name));
+				code.AppendLine(string.Format("\t\t~{0}()", o.HasClientType ? o.ClientType.Name : o.Name));
 				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t{0} t;", DataTypeCSGenerator.GenerateType(o.XAMLType)));
-				code.AppendLine(string.Format("\t\t\t__autodata.Remove({0}, out t);", o.AutoDataID.XAMLName));
+				code.AppendLine(string.Format("\t\t\t{0} t;", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
+				code.AppendLine(string.Format("\t\t\tlock(((ICollection)__autodata).SyncRoot) {{ __autodata.Remove({0}, out t); }}", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName));
 				code.AppendLine("\t\t}");
 			}
 			else
 			{
-				code.AppendLine(string.Format("\t\tprivate static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, {0}> __autodata;", DataTypeCSGenerator.GenerateType(o.XAMLType)));
+				code.AppendLine(string.Format("\t\tprivate static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, {0}> __autodata;", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
 				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t__autodata = new System.Collections.Concurrent.ConcurrentDictionary<Guid, {0}>();", DataTypeCSGenerator.GenerateType(o.XAMLType)));
+				code.AppendLine(string.Format("\t\t\t__autodata = new System.Collections.Concurrent.ConcurrentDictionary<Guid, {0}>();", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
 				code.AppendLine("\t\t}");
 				code.AppendLine("\t\t[OnDeserialized]");
 				code.AppendLine("\t\tprivate void OnDeserialized(StreamingContext context)");
 				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t__autodata.TryAdd({0}, this);", o.AutoDataID.XAMLName));
+				code.AppendLine(string.Format("\t\t\t__autodata.TryAdd({0}, this);", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName));
 				code.AppendLine("\t\t}");
-				code.AppendLine(string.Format("\t\t~{0}()", o.XAMLType));
+				code.AppendLine(string.Format("\t\t~{0}()", o.HasClientType ? o.ClientType.Name : o.Name));
 				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t{0} t;", DataTypeCSGenerator.GenerateType(o.XAMLType)));
-				code.AppendLine(string.Format("\t\t\t__autodata.TryRemove({0}, out t);", o.AutoDataID.XAMLName));
+				code.AppendLine(string.Format("\t\t\t{0} t;", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
+				code.AppendLine(string.Format("\t\t\t__autodata.TryRemove({0}, out t);", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName));
 				code.AppendLine("\t\t}");
 			}
 			return code.ToString();
@@ -497,13 +501,15 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.IsHidden) return "";
 			if (!o.IsDataMember) return "";
 			var code = new StringBuilder();
-			code.AppendFormat("\t\tprivate {0} {1}Field;{2}", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.DataName, Environment.NewLine);
+			if (Program.Experimental && o.AutoDataEnabled) code.AppendFormat("\t\tprivate int {0}Changed;", o.HasClientType ? o.ClientName : o.DataName);
+			code.AppendLine(string.Format("\t\tprivate {0} {1}Field;", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName));
 			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("\t\t[DataMember({0}{1}{2}Name = \"{3}\")] ", o.EmitDefaultValue ? "EmitDefaultValue = false, " : "", o.IsRequired ? "IsRequired = true, " : "", o.Order >= 0 ? string.Format("Order = {0}, ", o.Order) : "", o.HasClientType ? o.ClientName : o.DataName);
-			if (!o.GenerateWinFormsSupport)
-				code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return {1}Field; }} {2}set {{ {1}Field = value; }} }}", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : ""));
+			if (Program.Experimental && o.AutoDataEnabled)
+				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30) code.AppendLine(string.Format("public {0} {1} {{ get {{ __autodatalock.{4}; try {{ return {1}Field; }} finally {{ __autodatalock.ReleaseReaderLock(); }} }} {2}set {{ __autodatalock.{5}; try {{ {1}Field = value; System.Threading.Interlocked.Exchange(ref {1}Changed, 1); {3}}} finally {{ __autodatalock.ReleaseWriterLock(); }} }} }}", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : "", o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : "", string.Format("AcquireReaderLock({0})", o.AutoDataTimeout), string.Format("AcquireWriterLock({0})", o.AutoDataTimeout)));
+				else code.AppendLine(string.Format("public {0} {1} {{ get {{ __autodatalock.{4}; try {{ return {1}Field; }} finally {{ __autodatalock.ExitReadLock(); }} }} {2}set {{ __autodatalock.{5}; try {{ {1}Field = value; System.Threading.Interlocked.Exchange(ref {1}Changed, 1); {3}}} finally {{ __autodatalock.ExitWriteLock(); }} }} }}", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : "", o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : "", o.AutoDataTimeout == 0 ? "EnterReadLock()" : string.Format("TryEnterReadLock({0})", o.AutoDataTimeout), o.AutoDataTimeout == 0 ? "EnterWriteLock()" : string.Format("TryEnterWriteLock({0})", o.AutoDataTimeout)));
 			else
-				code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return {1}Field; }} {2}set {{ {1}Field = value; NotifyPropertyChanged(\"{1}\"); }} }}", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : ""));
+				code.AppendLine(string.Format("public {0} {1} {{ get {{ return {1}Field; }} {2}set {{ {1}Field = value; {3}}} }}", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : "", o.GenerateWinFormsSupport ? string.Format("NotifyPropertyChanged(\"{0}\"); ", o.HasClientType ? o.ClientName : o.DataName) : ""));
 			return code.ToString();
 		}
 
@@ -512,13 +518,14 @@ namespace WCFArchitect.Compiler.Generators
 			if (o.IsHidden) return "";
 			if (!o.IsDataMember) return "";
 			var code = new StringBuilder();
-			code.AppendFormat("\t\tprivate {0} {1}Field;{2}", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.DataName, Environment.NewLine);
+			if (Program.Experimental && o.AutoDataEnabled) code.AppendFormat("\t\tprivate int {0}Changed;", o.HasClientType ? o.ClientName : o.DataName);
+			code.AppendLine(string.Format("\t\tprivate {0} {1}Field;", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName));
 			if (o.Documentation != null) code.Append(DocumentationCSGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("\t\t[DataMember({0}{1}{2}Name = \"{3}\")] ", o.EmitDefaultValue ? "EmitDefaultValue = false, " : "", o.IsRequired ? "IsRequired = true, " : "", o.Order >= 0 ? string.Format("Order = {0}, ", o.Order) : "", o.HasClientType ? o.ClientName : o.DataName);
-			if (!o.GenerateWinFormsSupport)
-				code.AppendLine(string.Format("public {0} {1} {{ get {{ return {1}Field; }} {2}set {{ {1}Field = value; }} }}", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : ""));
+			if (Program.Experimental && o.AutoDataEnabled)
+				code.AppendLine(string.Format("public {0} {1} {{ get {{ __autodatalock.{4}; try {{ return {1}Field; }} finally {{ __autodatalock.ExitReadLock(); }} }} {2}set {{ __autodatalock.{5}; try {{ {1}Field = value; System.Threading.Interlocked.Exchange(ref {1}Changed, 1); {3}}} finally {{ __autodatalock.ExitWriteLock(); }} }} }}", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : "", o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : "", o.AutoDataTimeout == 0 ? "EnterReadLock()" : string.Format("TryEnterReadLock({0})", o.AutoDataTimeout), o.AutoDataTimeout == 0 ? "EnterWriteLock()" : string.Format("TryEnterWriteLock({0})", o.AutoDataTimeout)));
 			else
-				code.AppendLine(string.Format("public {0} {1} {{ get {{ return {1}Field; }} {2}set {{ {1}Field = value; NotifyPropertyChanged(); }} }}", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : ""));
+				code.AppendLine(string.Format("public {0} {1} {{ get {{ return {1}Field; }} {2}set {{ {1}Field = value; {3}}} }}", DataTypeCSGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : "", o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : ""));
 			return code.ToString();
 		}
 

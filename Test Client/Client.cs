@@ -23,23 +23,7 @@ using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.Text;
 using System.Windows;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Net;
-using System.Net.Security;
-using System.Reflection;
-using System.Resources;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
-using System.ServiceModel;
-using System.ServiceModel.Description;
-using System.Text;
-using System.Windows;
+using System.Collections.Concurrent;
 
 [assembly: System.Runtime.Serialization.ContractNamespaceAttribute("http://www.prospectivesoftware.com/Test1/", ClrNamespace="Test1")]
 [assembly: System.Runtime.Serialization.ContractNamespaceAttribute("http://www.prospectivesoftware.com/Test1/TestNS/", ClrNamespace="Test1.TestNS")]
