@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using C1.WPF;
 using WCFArchitect.Projects;
 using WCFArchitect.Projects.Helpers;
 
@@ -68,6 +70,31 @@ namespace WCFArchitect.Interface.Data
 		{
 			Element.XAMLType = null;
 			XAMLName.Text = "";
+		}
+
+		private void UpdateTimeout_ValueChanged(object Sender, PropertyChangedEventArgs<double> E)
+		{
+			Element.AutoDataTimeout = Convert.ToUInt32(E);
+		}
+	}
+
+	[ValueConversion(typeof(DataUpdateMode), typeof(int))]
+	public class AutoDataUpdateModeConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (DataUpdateMode)value;
+			if (lt == DataUpdateMode.Immediate) return 0;
+			if (lt == DataUpdateMode.Batch) return 1;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return DataUpdateMode.Immediate;
+			if (lt == 1) return DataUpdateMode.Batch;
+			return DataUpdateMode.Immediate;
 		}
 	}
 }

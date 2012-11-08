@@ -216,11 +216,6 @@ namespace WCFArchitect.Interface.Service
 			AddParameter.IsEnabled = (!string.IsNullOrEmpty(AddParameterName.Text) && !AddParameterName.IsInvalid && AddParameterType.IsValid);
 		}
 
-		private void AddParameterType_Selected(object sender, RoutedEventArgs e)
-		{
-			AddParameterName.Focus();
-		}
-
 		private void AddParameterName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
 		{
 			e.IsValid = true;

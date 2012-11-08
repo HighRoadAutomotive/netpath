@@ -159,9 +159,9 @@ namespace WCFArchitect.Compiler
 			}
 
 			foreach(Namespace n in Scan.Children)
-				refs.AddRange(ReferenceScan(n));
+				refs.AddRange(ReferenceScan(n).Where(a => refs.All(b => a.ToDeclarationString() != b.ToDeclarationString())));
 
-			return new List<DataType>(refs.Distinct(new ReferenceComparer()));
+			return refs;
 		}
 
 		private static DataType ReferenceRetrieve(Project Project, Namespace Namesapce, Guid TypeID)
@@ -238,35 +238,9 @@ namespace WCFArchitect.Compiler
 			var puns = new List<ProjectUsingNamespace>(CurProject.UsingNamespaces);
 
 			foreach (DependencyProject dp in CurProject.DependencyProjects)
-				puns.AddRange(GetUsingNamespaces(dp.Project));
+				puns.AddRange(GetUsingNamespaces(dp.Project).Where(a => puns.All(b => a.Namespace != b.Namespace)));
 
-			return new List<ProjectUsingNamespace>(puns.Distinct(new UsingNamespaceComparer()));
-		}
-	}
-
-	public class UsingNamespaceComparer : IEqualityComparer<ProjectUsingNamespace>
-	{
-		public bool Equals(ProjectUsingNamespace x, ProjectUsingNamespace y)
-		{
-			return x.Namespace == y.Namespace;
-		}
-
-		public int GetHashCode(ProjectUsingNamespace obj)
-		{
-			return obj.GetHashCode();
-		}
-	}
-
-	public class ReferenceComparer : IEqualityComparer<DataType>
-	{
-		public bool Equals(DataType x, DataType y)
-		{
-			return x.ID.CompareTo(y.ID) == 0;
-		}
-
-		public int GetHashCode(DataType obj)
-		{
-			return obj.GetHashCode();
+			return puns;
 		}
 	}
 }

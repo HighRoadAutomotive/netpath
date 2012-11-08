@@ -7,6 +7,7 @@
 		xmlns:c1datetime="clr-namespace:C1.WPF.DateTimeEditors;assembly=C1.WPF.DateTimeEditors.4"
 		xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 		xmlns:local="clr-namespace:WCFArchitect.Interface"
+		Icon="pack://application:,,,/WCFArchitect;component/Icons/DesignStudio.ico" 
         mc:Ignorable="d" d:DesignHeight="990" d:DesignWidth="1280"
 		Title="WCF Architect" MinHeight="690" MinWidth="1280" DataContext="{Binding RelativeSource={RelativeSource Self}}" Style="{StaticResource MainWindowStyle}"
 		TextOptions.TextFormattingMode="Display" TextOptions.TextHintingMode="Fixed" TextOptions.TextRenderingMode="ClearType" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.ClearTypeHint="Enabled"

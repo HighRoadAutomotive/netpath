@@ -7,6 +7,7 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Prospective.Controls.Dialogs;
 using WCFArchitect.Projects;
 
@@ -142,29 +143,33 @@ namespace WCFArchitect
 			FinishedAction(true);
 		}
 
-		public static void SaveSolution()
+		public static void SaveSolution(bool SaveProjects)
 		{
 			IsFinding = true;
 			IsSaving = true;
 
 			WCFArchitect.Projects.Solution.Save(Solution);
 
-			foreach (Project p in Projects)
-				WCFArchitect.Projects.Project.Save(p);
+			if (SaveProjects)
+				foreach (Project p in Projects)
+					WCFArchitect.Projects.Project.Save(p);
 
 			IsFinding = false;
 			IsSaving = false;
 		}
 
-		public static void BackupSolution(object State)
+		public static async void BackupSolution(object State)
 		{
 			IsFinding = true;
 			IsSaving = true;
 
-			WCFArchitect.Projects.Solution.Save(Solution, Path.ChangeExtension(SolutionPath, ".bak"));
+			await Application.Current.Dispatcher.InvokeAsync(() =>
+				                                                 {
+					                                                 WCFArchitect.Projects.Solution.Save(Solution, Path.ChangeExtension(SolutionPath, ".bak"));
 
-			foreach (Project p in Projects)
-				WCFArchitect.Projects.Project.Save(p, Path.ChangeExtension(p.AbsolutePath, ".bak"));
+					                                                 foreach (Project p in Projects)
+						                                                 WCFArchitect.Projects.Project.Save(p, Path.ChangeExtension(p.AbsolutePath, ".bak"));
+				                                                 }, DispatcherPriority.Send);
 
 			IsFinding = false;
 			IsSaving = false;
