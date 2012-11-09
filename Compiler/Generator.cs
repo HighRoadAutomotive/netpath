@@ -95,9 +95,9 @@ namespace WCFArchitect.Compiler
 
 			//Scan, verify, and generate references
 			var refs = new List<DataType>(ReferenceScan(Project.Namespace));
-			foreach(Projects.Enum e in refs)
+			foreach(Projects.Enum e in refs.Where(a => a.GetType() == typeof(Projects.Enum)))
 				EnumCSGenerator.VerifyCode(e);
-			foreach(Data d in refs)
+			foreach(Data d in refs.Where(a => a.GetType() == typeof(Data)))
 				DataCSGenerator.VerifyCode(d);
 			foreach (DataType dt in refs)
 				code.AppendLine(ReferenceGenerate(dt));
