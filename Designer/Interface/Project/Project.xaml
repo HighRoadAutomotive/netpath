@@ -12,8 +12,8 @@
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Colors.xaml" />
 				<ResourceDictionary>
-					<Project:ProjectCollectionSerializationOverrideConverter x:Key="ProjectCollectionTypeConverter" />
 					<Project:ProjectServiceSerializerTypeConverter x:Key="ProjectServiceSerializerTypeConverter" />
+					<Project:BoolDataTypeModeConverter x:Key="BoolDataTypeModeConverter" />
 				</ResourceDictionary>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
@@ -28,7 +28,7 @@
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="*" />
-		<RowDefinition Height="*" />
+		<RowDefinition Height="1.5*" />
 	</Grid.RowDefinitions>
 	<Label Grid.Row="0" Margin="5" Padding="2" Content="Name:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="90" />
 	<TextBox Height="23" Margin="100,5,5,5" Text="{Binding Path=Settings.Name}" VerticalContentAlignment="Center" Grid.Row="0" Grid.ColumnSpan="2" />
@@ -111,6 +111,98 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
+		<Label Content="External Types" FontSize="12pt" Margin="0,5,0,0" />
+		<Label Content="New:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
+		<TextBox Name="ExternalType" Height="23" Margin="50,5,66,5" VerticalContentAlignment="Center" KeyUp="ExternalType_KeyUp" Grid.Row="1"/>
+		<Button Grid.Row="1" Content="Add" Height="23" Margin="5" Name="AddExternalType" VerticalContentAlignment="Center" HorizontalAlignment="Right" Width="55" Click="AddExternalType_Click" />
+		<ListBox ItemsSource="{Binding Path=Settings.ExternalTypes}" Grid.Row="2" Margin="5" SelectionMode="Single" ItemContainerStyle="{StaticResource StretchedContainerStyle}" BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+			<ListBox.Resources>
+				<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+			</ListBox.Resources>
+			<ListBox.ItemTemplate>
+				<DataTemplate DataType="{x:Type Projects:DataType}">
+					<Border Name="BG" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="0">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" MinWidth="230" />
+								<ColumnDefinition Width="20" />
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="22" />
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
+							<TextBlock Text="{Binding Path=Name}" Grid.Column="0" Margin="3,0,0,0" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
+							<Button Name="DeleteSelectedExternalType" Grid.Column="1" Grid.RowSpan="2" Margin="0" Click="DeleteSelectedExternalType_Click" Padding="0" Visibility="Hidden" Background="Transparent">
+								<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+							</Button>
+							<Border x:Name="ExternalTypeDetails" Margin="5" Grid.Row="1" Grid.Column="0" Visibility="Collapsed">
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+									</Grid.RowDefinitions>
+									<RadioButton Grid.Column="0" Grid.Row="0" Margin="2" Content="Enumeration" VerticalAlignment="Center" IsChecked="{Binding Path=TypeMode, Converter={StaticResource BoolDataTypeModeConverter}, ConverterParameter={x:Static Projects:DataTypeMode.Enum}}" />
+									<RadioButton Grid.Column="1" Grid.Row="0" Margin="2" Content="Class" VerticalAlignment="Center" IsChecked="{Binding Path=TypeMode, Converter={StaticResource BoolDataTypeModeConverter}, ConverterParameter={x:Static Projects:DataTypeMode.Class}}" />
+									<RadioButton Grid.Column="2" Grid.Row="0" Margin="2" Content="Struct" VerticalAlignment="Center" IsChecked="{Binding Path=TypeMode, Converter={StaticResource BoolDataTypeModeConverter}, ConverterParameter={x:Static Projects:DataTypeMode.Struct}}" />
+									<RadioButton Grid.Column="0" Grid.Row="1" Margin="2" Content="Interface" VerticalAlignment="Center" IsChecked="{Binding Path=TypeMode, Converter={StaticResource BoolDataTypeModeConverter}, ConverterParameter={x:Static Projects:DataTypeMode.Interface}}" />
+									<RadioButton Grid.Column="1" Grid.Row="1" Margin="2" Content="Collection" VerticalAlignment="Center" IsChecked="{Binding Path=TypeMode, Converter={StaticResource BoolDataTypeModeConverter}, ConverterParameter={x:Static Projects:DataTypeMode.Collection}}" />
+									<RadioButton Grid.Column="2" Grid.Row="1" Margin="2" Content="Dictionary" VerticalAlignment="Center" IsChecked="{Binding Path=TypeMode, Converter={StaticResource BoolDataTypeModeConverter}, ConverterParameter={x:Static Projects:DataTypeMode.Dictionary}}" />
+								</Grid>
+							</Border>
+						</Grid>
+					</Border>
+					<DataTemplate.Triggers>
+						<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
+							<Setter TargetName="BG" Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
+							<Setter TargetName="DeleteSelectedExternalType" Property="Visibility" Value="Visible" />
+						</DataTrigger>
+						<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
+							<Setter TargetName="BG" Property="Background" Value="{StaticResource DefaultSelectionColor}" />
+							<Setter TargetName="DeleteSelectedExternalType" Property="Visibility" Value="Visible" />
+							<Setter TargetName="ExternalTypeDetails" Property="Visibility" Value="Visible" />
+						</DataTrigger>
+					</DataTemplate.Triggers>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</Grid>
+	<Grid Grid.Column="0" Grid.Row="5">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<Label Content="Generation Targets" FontSize="12pt" Margin="0,5,0,0" />
+		<Label Content="Server:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" />
+		<Button Content="Browse..." Height="23" HorizontalAlignment="Left" Margin="55,5,90,5" Name="OutputBrowse" VerticalAlignment="Top" Width="75" Grid.Row="1" Click="ServerOutputBrowse_Click"/>
+		<TextBox Height="23" Margin="140,5,175,5" Name="OutputPath" VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="{Binding ElementName=ServerOutputPath, Path=Text}" Grid.Row="1" />
+		<Button Content="Server" Height="23" HorizontalAlignment="Right" Margin="90,5" Name="ServerOutputAdd" VerticalAlignment="Top" Width="75" Grid.Row="1" Click="ServerOutputAdd_Click"/>
+		<Button Content="Client" Height="23" HorizontalAlignment="Right" Margin="5" Name="ClientOutputAdd" VerticalAlignment="Top" Width="75" Grid.Row="1" Click="ClientOutputAdd_Click"/>
+		<TextBox Height="23" Margin="55,5,5,5" Name="ServerAssemblyName" VerticalContentAlignment="Center" Text="{Binding Path=Settings.ServerOutputFile}" Grid.Row="2"/>
+		<Label Content="Path:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
+		<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="3" Margin="5,0">
+			<StackPanel Name="ServerOutputPathsList" Orientation="Vertical" />
+		</ScrollViewer>
+		<Label Content="Client:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="4" />
+		<TextBox Height="23" Margin="55,5,5,5" Name="ClientAssemblyName" VerticalContentAlignment="Center" Text="{Binding Path=Settings.ClientOutputFile}" Grid.Row="4"/>
+		<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="5" Margin="5,0,5,5">
+			<StackPanel Name="ClientOutputPathsList" Orientation="Vertical" />
+		</ScrollViewer>
+	</Grid>
+	<Grid Grid.Column="1" Grid.Row="5">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
 		<Label Content="Namespaces" FontSize="12pt" Margin="0,5,0,0" />
 		<Label Content="New:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
 		<TextBox Name="UsingNamespace" Height="23" Margin="50,5,66,5" VerticalContentAlignment="Center" KeyUp="UsingNamespace_KeyUp" Grid.Row="1"/>
@@ -169,41 +261,5 @@
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</ListBox>
-	</Grid>
-	<Grid Grid.Column="0" Grid.Row="5">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
-		<Label Content="Server Targets" FontSize="12pt" Margin="0,5,0,0" />
-		<Label Content="File:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
-		<TextBox Height="23" Margin="50,5,5,5" Name="ServerAssemblyName" VerticalContentAlignment="Center" Text="{Binding Path=Settings.ServerOutputFile}" Grid.Row="1"/>
-		<Label Content="Path:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" />
-		<TextBox Height="23" Margin="50,5,175,5" Name="ServerOutputPath" VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="{Binding ElementName=ServerOutputPath, Path=Text}" Grid.Row="2" />
-		<Button Content="Browse..." Height="23" HorizontalAlignment="Right" Margin="5,5,90,5" Name="ServerOutputBrowse" VerticalAlignment="Top" Width="75" Grid.Row="2" Click="ServerOutputBrowse_Click"/>
-		<Button Content="Add" Height="23" HorizontalAlignment="Right" Margin="5" Name="ServerOutputAdd" VerticalAlignment="Top" Width="75" Grid.Row="2" Click="ServerOutputAdd_Click"/>
-		<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="3" Margin="5">
-			<StackPanel Name="ServerOutputPathsList" Orientation="Vertical" />
-		</ScrollViewer>
-	</Grid>
-	<Grid Grid.Column="1" Grid.Row="5">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
-		<Label Content="Client Targets" FontSize="12pt" Margin="0,5,0,0" />
-		<Label Content="File:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
-		<TextBox Height="23" Margin="50,5,5,5" Name="ClientAssemblyName" VerticalContentAlignment="Center" Text="{Binding Path=Settings.ClientOutputFile}" Grid.Row="1"/>
-		<Label Content="Path:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" />
-		<TextBox Height="23" Margin="50,5,175,5" Name="ClientOutputPath" VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="{Binding ElementName=ClientOutputPath, Path=Text}" Grid.Row="2" />
-		<Button Content="Browse..." Height="23" HorizontalAlignment="Right" Margin="5,5,90,5" Name="ClientOutputBrowse" VerticalAlignment="Top" Width="75" Grid.Row="2" Click="ClientOutputBrowse_Click"/>
-		<Button Content="Add" Height="23" HorizontalAlignment="Right" Margin="5" Name="ClientOutputAdd" VerticalAlignment="Top" Width="75" Grid.Row="2" Click="ClientOutputAdd_Click"/>
-		<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="3" Margin="5">
-			<StackPanel Name="ClientOutputPathsList" Orientation="Vertical" />
-		</ScrollViewer>
 	</Grid>
 </Grid>

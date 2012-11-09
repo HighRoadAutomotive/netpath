@@ -108,9 +108,32 @@ namespace WCFArchitect.Interface.Project
 			ProjectUsingNamespace to = null;
 			var clickedListBoxItem = Globals.GetVisualParent<ListBoxItem>(sender);
 			if (clickedListBoxItem != null) { to = clickedListBoxItem.Content as ProjectUsingNamespace; }
-
 			if (to == null) return;
+
 			DialogService.ShowMessageDialog(Settings, "Delete Using Namespace", "Are you sure you want to delete the '" + to.Namespace + "' Namespace?", new DialogAction("Yes", () => Settings.UsingNamespaces.Remove(to), true), new DialogAction("No", false, true));
+		}
+
+		private void ExternalType_KeyUp(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Enter)
+				AddExternalType_Click(null, null);
+		}
+
+		private void AddExternalType_Click(object sender, RoutedEventArgs e)
+		{
+			var npun = new DataType(ExternalType.Text, DataTypeMode.Class);
+			Settings.ExternalTypes.Add(npun);
+			ExternalType.Text = "";
+		}
+
+		private void DeleteSelectedExternalType_Click(object sender, RoutedEventArgs e)
+		{
+			DataType to = null;
+			var clickedListBoxItem = Globals.GetVisualParent<ListBoxItem>(sender);
+			if (clickedListBoxItem != null) { to = clickedListBoxItem.Content as DataType; }
+			if (to == null) return;
+
+			DialogService.ShowMessageDialog(Settings, "Remove External Type", "Are you sure you want to remove the '" + to.Name + "' External Type?", new DialogAction("Yes", () => Settings.ExternalTypes.Remove(to), true), new DialogAction("No", false, true));
 		}
 
 		#endregion
@@ -133,13 +156,19 @@ namespace WCFArchitect.Interface.Project
 				          };
 			if (ofd.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel) return;
 
-			ServerOutputPath.Text = Globals.GetRelativePath(Settings.AbsolutePath, ofd.FileName + "\\");
+			OutputPath.Text = Globals.GetRelativePath(Settings.AbsolutePath, ofd.FileName + "\\");
 		}
 
 		private void ServerOutputAdd_Click(object sender, RoutedEventArgs e)
 		{
-			Settings.ServerGenerationTargets.Add(new ProjectGenerationTarget(Settings.ID, ServerOutputPath.Text, true));
-			ServerOutputPath.Text = "";
+			Settings.ServerGenerationTargets.Add(new ProjectGenerationTarget(Settings.ID, OutputPath.Text, true));
+			OutputPath.Text = "";
+		}
+
+		private void ClientOutputAdd_Click(object sender, RoutedEventArgs e)
+		{
+			Settings.ClientGenerationTargets.Add(new ProjectGenerationTarget(Settings.ID, OutputPath.Text, false));
+			OutputPath.Text = "";
 		}
 
 		private void ServerOutputPaths_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -147,31 +176,6 @@ namespace WCFArchitect.Interface.Project
 			ServerOutputPathsList.Children.Clear();
 			foreach (ProjectGenerationTarget pop in Settings.ServerGenerationTargets)
 				ServerOutputPathsList.Children.Add(new GenerationTarget(Settings, pop));
-		}
-
-		private void ClientOutputBrowse_Click(object sender, RoutedEventArgs e)
-		{
-			string openpath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			if (!string.IsNullOrEmpty(Settings.AbsolutePath)) openpath = Settings.AbsolutePath;
-
-			var ofd = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog("Select an Output Path")
-				          {
-					          AllowNonFileSystemItems = false,
-					          EnsurePathExists = true,
-					          IsFolderPicker = true,
-					          InitialDirectory = openpath,
-					          Multiselect = false,
-					          ShowPlacesList = true
-				          };
-			if (ofd.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel) return;
-
-			ClientOutputPath.Text = Globals.GetRelativePath(Settings.AbsolutePath, ofd.FileName + "\\");
-		}
-
-		private void ClientOutputAdd_Click(object sender, RoutedEventArgs e)
-		{
-			Settings.ClientGenerationTargets.Add(new ProjectGenerationTarget(Settings.ID, ClientOutputPath.Text, false));
-			ClientOutputPath.Text = "";
 		}
 
 		private void ClientOutputPaths_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -223,6 +227,36 @@ namespace WCFArchitect.Interface.Project
 			if (lt == 1) return ProjectCollectionSerializationOverride.List;
 			if (lt == 2) return ProjectCollectionSerializationOverride.Array;
 			return ProjectCollectionSerializationOverride.None;
+		}
+	}
+
+	[ValueConversion(typeof(DataTypeMode), typeof(bool))]
+	public class BoolDataTypeModeConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (DataTypeMode)value;
+			var dt = (DataTypeMode)parameter;
+			if (lt == DataTypeMode.Enum && dt == DataTypeMode.Enum) return true;
+			if (lt == DataTypeMode.Class && dt == DataTypeMode.Class) return true;
+			if (lt == DataTypeMode.Struct && dt == DataTypeMode.Struct) return true;
+			if (lt == DataTypeMode.Interface && dt == DataTypeMode.Interface) return true;
+			if (lt == DataTypeMode.Collection && dt == DataTypeMode.Collection) return true;
+			if (lt == DataTypeMode.Dictionary && dt == DataTypeMode.Dictionary) return true;
+			return false;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (bool) value;
+			var dt = (DataTypeMode) parameter;
+			if (lt && dt == DataTypeMode.Enum) return DataTypeMode.Enum;
+			if (lt && dt == DataTypeMode.Class) return DataTypeMode.Class;
+			if (lt && dt == DataTypeMode.Struct) return DataTypeMode.Struct;
+			if (lt && dt == DataTypeMode.Interface) return DataTypeMode.Interface;
+			if (lt && dt == DataTypeMode.Collection) return DataTypeMode.Collection;
+			if (lt && dt == DataTypeMode.Dictionary) return DataTypeMode.Dictionary;
+			return DataTypeMode.Class;
 		}
 	}
 }
