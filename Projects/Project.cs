@@ -118,6 +118,9 @@ namespace WCFArchitect.Projects
 		public ObservableCollection<DependencyProject> DependencyProjects { get { return (ObservableCollection<DependencyProject>)GetValue(DependencyProjectsProperty); } set { SetValue(DependencyProjectsProperty, value); } }
 		public static readonly DependencyProperty DependencyProjectsProperty = DependencyProperty.Register("DependencyProjects", typeof(ObservableCollection<DependencyProject>), typeof(Project));
 
+		public ObservableCollection<DataType> ExternalTypes { get { return (ObservableCollection<DataType>)GetValue(ExternalTypesProperty); } set { SetValue(ExternalTypesProperty, value); } }
+		public static readonly DependencyProperty ExternalTypesProperty = DependencyProperty.Register("ExternalTypes", typeof(ObservableCollection<DataType>), typeof(Project));
+
 		public ObservableCollection<ProjectGenerationTarget> ServerGenerationTargets { get { return (ObservableCollection<ProjectGenerationTarget>)GetValue(ServerGenerationTargetsProperty); } set { SetValue(ServerGenerationTargetsProperty, value); } }
 		public static readonly DependencyProperty ServerGenerationTargetsProperty = DependencyProperty.Register("ServerGenerationTargets", typeof(ObservableCollection<ProjectGenerationTarget>), typeof(Project));
 
@@ -136,6 +139,7 @@ namespace WCFArchitect.Projects
 			ID = Guid.NewGuid();
 			DependencyProjects = new ObservableCollection<DependencyProject>();
 			UsingNamespaces = new ObservableCollection<ProjectUsingNamespace>();
+			ExternalTypes = new ObservableCollection<DataType>();
 
 			ServerGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
 			ClientGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
@@ -195,6 +199,7 @@ namespace WCFArchitect.Projects
 		{
 			ID = Guid.NewGuid();
 			DependencyProjects = new ObservableCollection<DependencyProject>();
+			ExternalTypes = new ObservableCollection<DataType>();
 
 			ServerGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
 			ClientGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
@@ -333,6 +338,9 @@ namespace WCFArchitect.Projects
 				results.AddRange(dp.Project.SearchTypes(Search, false, false, true));
 
 			if (IncludeInheritable) results.RemoveAll(a => a.GetType() == typeof (Enum));
+
+			//Search External defined types
+			results.AddRange(from a in ExternalTypes where a.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0 select a);
 
 			if(IncludeVoid && VoidType.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0)  results.Add(VoidType);
 
