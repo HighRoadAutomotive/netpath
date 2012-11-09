@@ -22,7 +22,6 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.Text;
-using System.Collections.Concurrent;
 
 #pragma warning disable 1591
 namespace Test1

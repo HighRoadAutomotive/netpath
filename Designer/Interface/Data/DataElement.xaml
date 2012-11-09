@@ -81,6 +81,7 @@
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
@@ -91,11 +92,13 @@
 		<ToggleButton Grid.Column="0" Grid.Row="1" Content="Data Member" Margin="0,5,5,5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.IsDataMember}" Name="IsDataMember" ToolTip="Determines if the member is marked as a member of the data contract." />
 		<ToggleButton Grid.Column="1" Grid.Row="1" Content="Read-Only" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.IsReadOnly}" Name="IsReadOnly" ToolTip="The member is read-only." />
 		<ToggleButton Grid.Column="2" Grid.Row="1" Content="Required" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.IsRequired}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="IsRequired" ToolTip="The member is required by the data contract." />
-		<ToggleButton Grid.Column="3" Grid.Row="1" Content="Hidden" Margin="5,5,0,5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.IsHidden}" Name="Hidden" ToolTip="Tell the Service Compiler to completely ignore this element." />
-		<ToggleButton Grid.Column="0" Grid.Row="2" Content="Emit Default Value" Margin="0,5,5,5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.EmitDefaultValue}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="EmitDefaultValue" ToolTip="Force WCF emit the default value for the type if no value is provided." />
-		<ToggleButton Grid.Column="1" Grid.Row="2" Content="WinForms Binding" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.GenerateWinFormsSupport}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="GenerateWinFormsSupport" ToolTip="Generates support for WinForms databinding." />
-		<ToggleButton Grid.Column="2" Grid.Row="2" Content="Attached XAML" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.IsAttached}" IsEnabled="{Binding Path=Element.HasXAMLType}" Name="IsAttached" ToolTip="Tells WCF Architect to generate an Attached WPF Binding for this member." />
-		<pc:TextBox Grid.Column="3" Grid.Row="2" Margin="5,5,0,5" Name="Order" LabelText="Order" Text="{Binding Path=Element.Order, Converter={StaticResource ElementOrderConverter}}" Validate="Order_Validate" />
+		<ToggleButton Grid.Column="3" Grid.Row="1" Content="Hidden" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.IsHidden}" Name="Hidden" ToolTip="Tell the Service Compiler to completely ignore this element." />
+		<ToggleButton Grid.Column="4" Grid.Row="1" Content="Emit Default Value" Margin="5,5,0,5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.EmitDefaultValue}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="EmitDefaultValue" ToolTip="Force WCF emit the default value for the type if no value is provided." />
+		<ToggleButton Grid.Column="0" Grid.Row="2" Content="WinForms Binding" Margin="0,5,5,5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.GenerateWinFormsSupport}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="GenerateWinFormsSupport" ToolTip="Generates support for WinForms databinding." />
+		<ToggleButton Grid.Column="1" Grid.Row="2" Content="Attached XAML" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.IsAttached}" IsEnabled="{Binding Path=Element.HasXAMLType}" Name="IsAttached" ToolTip="Tells WCF Architect to generate an Attached WPF Binding for this member." />
+		<ToggleButton Grid.Column="2" Grid.Row="2" Content="Automatic Updates" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.AutoDataEnabled}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="AutomaticUpdates" ToolTip="The member is included in Automatic Data Updates." />
+		<ToggleButton Grid.Column="3" Grid.Row="2" Content="Protocol Buffer" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.ProtocolBufferEnabled}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="ProtocolBuffers" ToolTip="The member is included in Protocol Buffer serialization." />
+		<pc:TextBox Grid.Column="4" Grid.Row="2" Margin="5,5,0,5" Name="Order" LabelText="Order" Text="{Binding Path=Element.Order, Converter={StaticResource ElementOrderConverter}}" Validate="Order_Validate" />
 	</Grid>
 	<Grid Name="AttributeGrid" Grid.Row="5" Margin="0,5,0,0" Visibility="{Binding Path=Element.IsAttached, Converter={StaticResource BoolVisibilityConverter}}" >
 		<Grid.ColumnDefinitions>
@@ -133,6 +136,6 @@
 		<Label Content="Thread Lock Timeout:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="1" Grid.Column="2" />
 		<c1:C1NumericBox Value="{Binding Path=Element.AutoDataTimeout}" Format="G10" Margin="140,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ShowButtons="False" Name="UpdateTimeout" ValueChanged="UpdateTimeout_ValueChanged" Grid.Column="2" Grid.Row="1" FontSize="10pt" />
 	</Grid>
-	<Label Grid.Row="7" Content="Documentation" FontSize="12pt" Margin="0,5,0,0" />
-	<Docs:Standard x:Name="Docs" Grid.Row="8" Margin="0,5,0,0" IsProperty="True" MinHeight="200" Documentation="{Binding Path=Element.Documentation}" />
+	<Label Grid.Row="8" Content="Documentation" FontSize="12pt" Margin="0,5,0,0" />
+	<Docs:Standard x:Name="Docs" Grid.Row="9" Margin="0,5,0,0" IsProperty="True" MinHeight="200" Documentation="{Binding Path=Element.Documentation}" />
 </Grid>

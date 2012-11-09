@@ -331,6 +331,8 @@ namespace WCFArchitect.Projects
 				//Decide whether or not we want to include collections and dictionaries in the results.
 				if (IncludeCollections) results.AddRange(from a in DefaultTypes where a.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0 select a);
 				else results.AddRange(from a in DefaultTypes where a.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0 && a.TypeMode != DataTypeMode.Collection && a.TypeMode != DataTypeMode.Dictionary select a);
+				//Search Externally defined types
+				results.AddRange(from a in ExternalTypes where a.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0 select a);
 			}
 			results.AddRange(Namespace.SearchTypes(Search, DataOnly));
 
@@ -338,9 +340,6 @@ namespace WCFArchitect.Projects
 				results.AddRange(dp.Project.SearchTypes(Search, false, false, true));
 
 			if (IncludeInheritable) results.RemoveAll(a => a.GetType() == typeof (Enum));
-
-			//Search External defined types
-			results.AddRange(from a in ExternalTypes where a.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0 select a);
 
 			if(IncludeVoid && VoidType.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0)  results.Add(VoidType);
 

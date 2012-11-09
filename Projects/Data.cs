@@ -413,6 +413,10 @@ namespace WCFArchitect.Projects
 		public uint AutoDataTimeout { get { return (uint)GetValue(AutoDataTimeoutProperty); } set { SetValue(AutoDataTimeoutProperty, value); } }
 		public static readonly DependencyProperty AutoDataTimeoutProperty = DependencyProperty.Register("AutoDataTimeout", typeof(uint), typeof(DataElement), new PropertyMetadata((uint)0));
 
+		//Protocol Buffers 
+		public bool ProtocolBufferEnabled { get { return (bool)GetValue(ProtocolBufferEnabledProperty); } set { SetValue(ProtocolBufferEnabledProperty, value); } }
+		public static readonly DependencyProperty ProtocolBufferEnabledProperty = DependencyProperty.Register("ProtocolBufferEnabled", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
+
 		//System
 		public bool IsSelected { get { return (bool)GetValue(IsSelectedProperty); } set { SetValue(IsSelectedProperty, value); } }
 		public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.Register("IsSelected", typeof(bool), typeof(DataElement), new PropertyMetadata(false));

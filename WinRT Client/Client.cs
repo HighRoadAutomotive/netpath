@@ -23,7 +23,6 @@ using System.ServiceModel.Description;
 using System.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Core;
-using System.Collections.Concurrent;
 
 [assembly: System.Runtime.Serialization.ContractNamespaceAttribute("http://www.prospectivesoftware.com/Test1/", ClrNamespace="Test1")]
 [assembly: System.Runtime.Serialization.ContractNamespaceAttribute("http://www.prospectivesoftware.com/Test1/TestNS/", ClrNamespace="Test1.TestNS")]
@@ -57,17 +56,36 @@ namespace Test1
 	[DataContract(Name = "TestData1", Namespace = "http://www.prospectivesoftware.com/")]
 	public partial class TestData1
 	{
+		//Automatic Data Update Support
+		private readonly System.Threading.ReaderWriterLockSlim __autodatalock = new System.Threading.ReaderWriterLockSlim();
+		private static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, Test1.TestData1> __autodata;
+		static TestData1()
+		{
+			__autodata = new System.Collections.Concurrent.ConcurrentDictionary<Guid, Test1.TestData1>();
+		}
+		[OnDeserialized]
+		private void OnDeserialized(StreamingContext context)
+		{
+			__autodata.TryAdd(ID, this);
+		}
+		~TestData1()
+		{
+			Test1.TestData1 t;
+			__autodata.TryRemove(ID, out t);
+		}
 
+		private bool IDChanged;
 		private Guid IDField;
-		[DataMember(Name = "ID")] public Guid ID { get { return IDField; } set { IDField = value; } }
+		[DataMember(Name = "ID")] public Guid ID { get { __autodatalock.EnterReadLock(); try { return IDField; } finally { __autodatalock.ExitReadLock(); } } set { __autodatalock.EnterWriteLock(); try { IDField = value; IDChanged = true; } finally { __autodatalock.ExitWriteLock(); } } }
 		private List<string> collectiontestField;
 		[DataMember(Name = "collectiontest")] public List<string> collectiontest { get { return collectiontestField; } set { collectiontestField = value; } }
 		private string[] arraytestField;
 		[DataMember(Name = "arraytest")] public string[] arraytest { get { return arraytestField; } set { arraytestField = value; } }
 		private Dictionary<int, string> dictionarytestField;
 		[DataMember(Name = "dictionarytest")] public Dictionary<int, string> dictionarytest { get { return dictionarytestField; } set { dictionarytestField = value; } }
+		private bool asdasChanged;
 		private byte[] asdasField;
-		[DataMember(Name = "asdas")] public byte[] asdas { get { return asdasField; } protected set { asdasField = value; } }
+		[DataMember(Name = "asdas")] public byte[] asdas { get { __autodatalock.EnterReadLock(); try { return asdasField; } finally { __autodatalock.ExitReadLock(); } } protected set { __autodatalock.EnterWriteLock(); try { asdasField = value; asdasChanged = true; } finally { __autodatalock.ExitWriteLock(); } } }
 	}
 
 	//XAML Integration Object for the TestData1 DTO
@@ -105,6 +123,22 @@ namespace Test1
 		}
 
 		//Automatic Data Update Support
+		private readonly System.Threading.ReaderWriterLockSlim __autodatalock = new System.Threading.ReaderWriterLockSlim();
+		private static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, Test1.TestData1XAML> __autodata;
+		static TestData1XAML()
+		{
+			__autodata = new System.Collections.Concurrent.ConcurrentDictionary<Guid, Test1.TestData1XAML>();
+		}
+		[OnDeserialized]
+		private void OnDeserialized(StreamingContext context)
+		{
+			__autodata.TryAdd(ID, this);
+		}
+		~TestData1XAML()
+		{
+			Test1.TestData1XAML t;
+			__autodata.TryRemove(ID, out t);
+		}
 
 		//Constructors
 		public TestData1XAML()
