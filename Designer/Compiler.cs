@@ -32,7 +32,7 @@ namespace WCFArchitect
 
 			//Setup the basic process start info, this is reused.
 			psi = new ProcessStartInfo(Path.Combine(Globals.ApplicationPath, "wasc.exe"));
-			psi.Arguments = string.Format("{0} {1} -stderr", Globals.SolutionPath, NavWindow.Project.AbsolutePath);
+			psi.Arguments = string.Format("\"{0}\" \"{1}\" -stderr", Globals.SolutionPath, NavWindow.Project.AbsolutePath);
 			psi.WorkingDirectory = Globals.ApplicationPath;
 			psi.CreateNoWindow = true;
 			psi.RedirectStandardError = true;

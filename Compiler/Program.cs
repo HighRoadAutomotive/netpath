@@ -58,6 +58,8 @@ namespace WCFArchitect.Compiler
 
 			OpenProject = Project.Open(SolutionPath, ProjectPath);
 
+			Experimental = OpenProject.EnableExperimental;
+
 			//Build generators for the server and client
 			var serverGenerators = new List<Generator>(OverrideServerOutput.Count == 0 ? OpenProject.ServerGenerationTargets.Select(pgt => new Generator(OpenProject, pgt.Framework, pgt.Path, pgt.IsServerPath)) : OverrideServerOutput.Select(osc => new Generator(OpenProject, osc.Value, osc.Key)));
 			var clientGenerators = new List<Generator>(OverrideClientOutput.Count == 0 ? OpenProject.ClientGenerationTargets.Select(pgt => new Generator(OpenProject, pgt.Framework, pgt.Path, pgt.IsServerPath)) : OverrideClientOutput.Select(osc => new Generator(OpenProject, osc.Value, osc.Key, false)));
@@ -127,8 +129,6 @@ namespace WCFArchitect.Compiler
 			Console.WriteLine();
 			Console.WriteLine("-q\tSupresses informational output.");
 			Console.WriteLine();
-			Console.WriteLine("-e\tBETA ONLY - Enables experimental features.");
-			Console.WriteLine();
 			Console.WriteLine("-?\tDisplay this message. Overrides all other options.");
 
 			Environment.Exit(0);
@@ -175,8 +175,6 @@ namespace WCFArchitect.Compiler
 			{
 				if (args[i] == "-q")
 					Quiet = true;
-				if (args[i] == "-e")
-					Experimental = true;
 				if (args[i] == "-stderr")
 					StdError = true;
 				if (args[i] == "-log")
