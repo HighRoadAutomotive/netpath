@@ -47,6 +47,8 @@ namespace WCFArchitect
 						Globals.ArgSolutionPath = args[i + 1];
 				}
 			}
+
+			Globals.InitializeCodeGenerators("NgAAAR34yUVouM0B89nN/6JGzgGHo04qSoBnf8S47pP6T/Awg2aOLNXVHFlxYaTAmetprPIDC9YxTuDJsAf3Er3NdiI=");
 		}
 
 		private void Application_Exit(object sender, ExitEventArgs e)

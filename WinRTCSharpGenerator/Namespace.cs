@@ -146,8 +146,8 @@ namespace WCFArchitect.Generators.WinRT.CS
 				code.AppendLine();
 				foreach (Data de in o.Data)
 				{
-					DataGenerator.GenerateProxyCodeRT8(de);
-					DataGenerator.GenerateXAMLCodeRT8(de);
+					code.AppendLine(DataGenerator.GenerateProxyCodeRT8(de));
+					code.AppendLine(DataGenerator.GenerateXAMLCodeRT8(de));
 				}
 				code.AppendLine();
 			}

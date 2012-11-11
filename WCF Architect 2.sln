@@ -2,10 +2,18 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Designer", "Designer\Designer.csproj", "{26437A88-CCC9-4006-BE4E-2EB3EAC8D78D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EE9B9418-9440-4146-810A-548353A78790} = {EE9B9418-9440-4146-810A-548353A78790}
+		{70BD6FC1-706E-497B-8F89-AEAFA6DD285F} = {70BD6FC1-706E-497B-8F89-AEAFA6DD285F}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Projects", "Projects\Projects.csproj", "{FE02550C-5269-4327-A129-FB9D41316005}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Compiler", "Compiler\Compiler.csproj", "{E71D2BBF-AD76-4CFC-A70E-5F731A00DA70}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EE9B9418-9440-4146-810A-548353A78790} = {EE9B9418-9440-4146-810A-548353A78790}
+		{70BD6FC1-706E-497B-8F89-AEAFA6DD285F} = {70BD6FC1-706E-497B-8F89-AEAFA6DD285F}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interfaces", "Interfaces\Interfaces.csproj", "{6594CD45-2F17-4353-8CFC-8C314092821E}"
 EndProject

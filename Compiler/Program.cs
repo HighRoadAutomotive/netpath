@@ -7,6 +7,7 @@ using System.Text;
 using System.Xml;
 using LogicNP.CryptoLicensing;
 using WCFArchitect.Projects;
+using WCFArchitect.Generators.Interfaces;
 
 namespace WCFArchitect.Compiler
 {
@@ -60,35 +61,43 @@ namespace WCFArchitect.Compiler
 
 			Experimental = OpenProject.EnableExperimental;
 
-			//Build generators for the server and client
-			var serverGenerators = new List<Generator>(OverrideServerOutput.Count == 0 ? OpenProject.ServerGenerationTargets.Select(pgt => new Generator(OpenProject, pgt.Framework, pgt.Path, pgt.IsServerPath)) : OverrideServerOutput.Select(osc => new Generator(OpenProject, osc.Value, osc.Key)));
-			var clientGenerators = new List<Generator>(OverrideClientOutput.Count == 0 ? OpenProject.ClientGenerationTargets.Select(pgt => new Generator(OpenProject, pgt.Framework, pgt.Path, pgt.IsServerPath)) : OverrideClientOutput.Select(osc => new Generator(OpenProject, osc.Value, osc.Key, false)));
-
-			//Run project verification
-			foreach(Generator g in serverGenerators)
-				g.Verify();
-			foreach (Generator g in clientGenerators)
-				g.Verify();
-
-			//If the verification produced errors exit with an error code, we cannot proceed.
-			if (HighestSeverity == CompileMessageSeverity.ERROR)
-				Environment.Exit(2);
+			IGenerator NET = Loader.LoadModule(GenerationModule.NET, GenerationLanguage.CSharp);
+			NET.Initialize("NgAAAR34yUVouM0B89nN/6JGzgGHo04qSoBnf8S47pP6T/Awg2aOLNXVHFlxYaTAmetprPIDC9YxTuDJsAf3Er3NdiI=", OutputHandler, AddMessage);
+			IGenerator WinRT = Loader.LoadModule(GenerationModule.WindowsRuntime, GenerationLanguage.CSharp);
+			WinRT.Initialize("NgAAAR34yUVouM0B89nN/6JGzgGHo04qSoBnf8S47pP6T/Awg2aOLNXVHFlxYaTAmetprPIDC9YxTuDJsAf3Er3NdiI=", OutputHandler, AddMessage);
 
 			//Run project code generation
-			foreach (Generator g in serverGenerators)
-				g.Generate();
-			foreach (Generator g in clientGenerators)
-				g.Generate();
+			if (NET.IsInitialized && WinRT.IsInitialized)
+			{
+				NET.Build(OpenProject);
+				if(OpenProject.ClientGenerationTargets.Any(a => a.Framework == ProjectGenerationFramework.WIN8)) WinRT.Build(OpenProject, true);
+			}
+			else if (WinRT.IsInitialized)
+				WinRT.Build(OpenProject);
+			else
+			{
+				Console.WriteLine("FATAL ERROR: Unable to initialize any code generators.");
+				Environment.Exit(4);
+			}
 
 			//If the code generation produced any errors we need to exit with an error code.
-			if (HighestSeverity == CompileMessageSeverity.ERROR)
+			if (NET.HighestSeverity == CompileMessageSeverity.ERROR || WinRT.HighestSeverity == CompileMessageSeverity.ERROR)
 				Environment.Exit(3);
 
 			//Everything completed successfully
 			Environment.ExitCode = 0;
 		}
 
-		internal static void AddMessage(CompileMessage Message)
+		//TODO: Delete these when the generators are removed.
+		private static void OutputHandler(string S) {}
+		internal static void AddMessage(CompileMessage Message) {}
+
+		private static void OutputHandler(Guid ID, string S)
+		{
+			Console.WriteLine(S);
+		}
+
+		internal static void AddMessage(Guid ID, CompileMessage Message)
 		{
 			Messages.Add(Message);
 			if (Message.Severity == CompileMessageSeverity.ERROR && HighestSeverity != CompileMessageSeverity.ERROR) HighestSeverity = CompileMessageSeverity.ERROR;

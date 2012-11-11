@@ -14,13 +14,14 @@ namespace WCFArchitect.Generators.NET.CS
 {
     public class Generator : IGenerator
     {
-		public Action<string> NewOutput { get; private set; }
-		public Action<CompileMessage> NewMessage { get; private set; }
+		public Action<Guid, string> NewOutput { get; private set; }
+		public Action<Guid, CompileMessage> NewMessage { get; private set; }
 	    public ObservableCollection<CompileMessage> Messages { get; private set; }
 		public CompileMessageSeverity HighestSeverity { get; private set; }
 		public string Name { get; private set; }
 	    public GenerationLanguage Language { get; private set; }
 	    public GenerationModule Module { get; private set; }
+		public bool IsInitialized { get; private set; }
 
 		public Generator()
 		{
@@ -30,19 +31,21 @@ namespace WCFArchitect.Generators.NET.CS
 			Module = GenerationModule.WindowsRuntime;
 		}
 
-	    public void Initialize(string License, Action<string> OutputHandler, Action<CompileMessage> CompileMessageHandler)
+		public void Initialize(string License, Action<Guid, string> OutputHandler, Action<Guid, CompileMessage> CompileMessageHandler)
 	    {
 		    Globals.LicenseKey = License;
 		    NewOutput = OutputHandler;
 		    NewMessage = CompileMessageHandler;
-	    }
+			var t = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
+			IsInitialized = (t.Status == LicenseStatus.Valid);
+		}
 
-		public void Build(Project Data)
+		public void Build(Project Data, bool ClientOnly = false)
 		{
 			Messages.Clear();
-			NewOutput(Globals.ApplicationTitle);
-			NewOutput(string.Format("Version: {0}", Globals.ApplicationVersion));
-			NewOutput("Copyright © 2012-2013 Prospective Software Inc.");
+			NewOutput(Data.ID, Globals.ApplicationTitle);
+			NewOutput(Data.ID, string.Format("Version: {0}", Globals.ApplicationVersion));
+			NewOutput(Data.ID, "Copyright © 2012-2013 Prospective Software Inc.");
 
 			Verify(Data);
 
@@ -50,26 +53,27 @@ namespace WCFArchitect.Generators.NET.CS
 			if (HighestSeverity == CompileMessageSeverity.ERROR)
 				return;
 
-			foreach (ProjectGenerationTarget t in Data.ServerGenerationTargets)
-			{
-				string op = new Uri(new Uri(Data.AbsolutePath), System.IO.Path.Combine(t.Path, Data.ServerOutputFile + ".cs")).LocalPath;
-				op = Uri.UnescapeDataString(op);
-				NewOutput(string.Format("Writing Server Output: {0}", op));
-				System.IO.File.WriteAllText(op, GenerateServer(Data, t.Framework));
-			}
+			if(!ClientOnly)
+				foreach (ProjectGenerationTarget t in Data.ServerGenerationTargets)
+				{
+					string op = new Uri(new Uri(Data.AbsolutePath), System.IO.Path.Combine(t.Path, Data.ServerOutputFile + ".cs")).LocalPath;
+					op = Uri.UnescapeDataString(op);
+					NewOutput(Data.ID, string.Format("Writing Server Output: {0}", op));
+					System.IO.File.WriteAllText(op, GenerateServer(Data, t.Framework));
+				}
 
-			foreach (ProjectGenerationTarget t in Data.ClientGenerationTargets)
+			foreach (ProjectGenerationTarget t in Data.ClientGenerationTargets.Where(a => a.Framework != ProjectGenerationFramework.WIN8))
 			{
 				string op = new Uri(new Uri(Data.AbsolutePath), System.IO.Path.Combine(t.Path, Data.ClientOutputFile + ".cs")).LocalPath;
 				op = Uri.UnescapeDataString(op);
-				NewOutput(string.Format("Writing Client Output: {0}", op));
-				System.IO.File.WriteAllText(op, GenerateServer(Data, t.Framework));
+				NewOutput(Data.ID, string.Format("Writing Client Output: {0}", op));
+				System.IO.File.WriteAllText(op, GenerateClient(Data, t.Framework));
 			}
 		}
 
-		public Task BuildAsync(Project Data)
+		public Task BuildAsync(Project Data, bool ClientOnly = false)
 		{
-			return System.Windows.Application.Current == null ? null : Task.Run(() => System.Windows.Application.Current.Dispatcher.Invoke(() => Build(Data), DispatcherPriority.Normal));
+			return System.Windows.Application.Current == null ? null : Task.Run(() => System.Windows.Application.Current.Dispatcher.Invoke(() => Build(Data, ClientOnly), DispatcherPriority.Normal));
 		}
 
 	    public void Verify(Project Data)
@@ -176,17 +180,20 @@ namespace WCFArchitect.Generators.NET.CS
 			if (!Data.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
 
 			//Scan, verify, and generate references
-			code.AppendLine("\t/**************************************************************************");
-			code.AppendLine("\t*\tDependency Types");
-			code.AppendLine("\t**************************************************************************/");
-			code.AppendLine();
 			var refs = new List<DataType>(ReferenceScan(Data.Namespace));
-			foreach (Projects.Enum e in refs.Where(a => a.GetType() == typeof(Projects.Enum)))
-				EnumGenerator.VerifyCode(e, AddMessage);
-			foreach (Data d in refs.Where(a => a.GetType() == typeof(Data)))
-				DataGenerator.VerifyCode(d, AddMessage);
-			foreach (DataType dt in refs)
-				code.AppendLine(ReferenceGenerate(dt, Server, AddMessage));
+			if (refs.Count > 0)
+			{
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tDependency Types");
+				code.AppendLine("\t**************************************************************************/");
+				code.AppendLine();
+				foreach (Projects.Enum e in refs.Where(a => a.GetType() == typeof(Projects.Enum)))
+					EnumGenerator.VerifyCode(e, AddMessage);
+				foreach (Data d in refs.Where(a => a.GetType() == typeof(Data)))
+					DataGenerator.VerifyCode(d, AddMessage);
+				foreach (DataType dt in refs)
+					code.AppendLine(ReferenceGenerate(dt, Server, AddMessage));
+			}
 
 			//Generate project
 			if (Server)
@@ -219,8 +226,8 @@ namespace WCFArchitect.Generators.NET.CS
 			Messages.Add(Message);
 			if (Message.Severity == CompileMessageSeverity.ERROR && HighestSeverity != CompileMessageSeverity.ERROR) HighestSeverity = CompileMessageSeverity.ERROR;
 			if (Message.Severity == CompileMessageSeverity.WARN && HighestSeverity == CompileMessageSeverity.INFO) HighestSeverity = CompileMessageSeverity.WARN;
-			NewOutput(string.Format("{0} {1}: {2} Object: {3} Owner: {4}", Message.Severity, Message.Code, Message.Description, Message.ErrorObject, Message.Owner));
-			NewMessage(Message);
+			NewOutput(Message.OwnerID, string.Format("{0} {1}: {2} Object: {3} Owner: {4}", Message.Severity, Message.Code, Message.Description, Message.ErrorObject, Message.Owner));
+			NewMessage(Message.OwnerID, Message);
 		}
 
 		private static IEnumerable<DataType> ReferenceScan(Namespace Scan)
@@ -338,12 +345,19 @@ namespace WCFArchitect.Generators.NET.CS
 
 	internal static class Globals
 	{
-		public static readonly Version ApplicationVersion = new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().CodeBase), "WCFArchitect.Generators.NET.CS.dll")).FileVersion);
+		public static readonly Version ApplicationVersion;
 		public const string ApplicationTitle = "WCF Architect .NET CSharp Generator - BETA";
 
 		public static ProjectGenerationFramework CurrentGenerationTarget { get; set; }
 		
 		public static string LicenseKey { get; set; }
 		public const string LicenseVerification = "AMAAMACnZigmLe9LpWcsYIBVFHYRZeUhr1oYyxDRFmL/qon4ijMx6X/xXyYldZs/A8Df9MsDAAEAAQ==";
+
+		static Globals()
+		{
+			string asmfp = System.IO.Path.GetDirectoryName(new Uri(System.Reflection.Assembly.GetCallingAssembly().CodeBase).LocalPath);
+			if (asmfp == null) return;
+			ApplicationVersion = new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo(System.IO.Path.Combine(asmfp, "WCFArchitect.Generators.NET.CS.dll")).FileVersion);
+		}
 	}
 }

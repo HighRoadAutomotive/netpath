@@ -109,7 +109,7 @@ namespace WCFArchitect.Generators.WinRT.CS
 			return code.ToString();
 		}
 
-		public static string GenerateProxyAutoDataCode(Data o)
+		private static string GenerateProxyAutoDataCode(Data o)
 		{
 			if (!o.Parent.Owner.EnableExperimental) return "";
 			if (!o.AutoDataEnabled) return "";
