@@ -16,13 +16,12 @@ namespace WCFArchitect.Compiler
 		public static string SolutionPath { get; private set; }
 		public static string ProjectPath { get; private set; }
 		public static Project OpenProject { get; set; }
-		public static Dictionary<string, ProjectGenerationFramework> OverrideServerOutput { get; private set; }
-		public static Dictionary<string, ProjectGenerationFramework> OverrideClientOutput { get; private set; }
 		public static StreamWriter LogFile { get; private set; }
 		public static Stream ErrorStream { get; private set; }
 		public static bool StdError { get; private set; }
 		public static bool Quiet { get; private set; }
-		public static bool Experimental { get; private set; }
+		public static string ApplicationTitle { get; set; }
+		public static Version ApplicationVersion { get; set; }
 
 		private static List<CompileMessage> Messages { get; set; }
 		public static CompileMessageSeverity HighestSeverity { get; private set; }
@@ -30,8 +29,8 @@ namespace WCFArchitect.Compiler
 		public static void Main(string[] args)
 		{
 			string appPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\";
-			Globals.ApplicationVersion = new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo(appPath + "wasc.exe").FileVersion);
-			Globals.ApplicationTitle = "WCF Architect Service Compiler - BETA";
+			ApplicationVersion = new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo(appPath + "wasc.exe").FileVersion);
+			ApplicationTitle = "WCF Architect Service Compiler - BETA";
 
 			if (args.GetLongLength(0) == 0) Environment.Exit(0);
 
@@ -58,8 +57,6 @@ namespace WCFArchitect.Compiler
 			ErrorStream = Console.OpenStandardError();
 
 			OpenProject = Project.Open(SolutionPath, ProjectPath);
-
-			Experimental = OpenProject.EnableExperimental;
 
 			IGenerator NET = Loader.LoadModule(GenerationModule.NET, GenerationLanguage.CSharp);
 			NET.Initialize("NgAAAR34yUVouM0B89nN/6JGzgGHo04qSoBnf8S47pP6T/Awg2aOLNXVHFlxYaTAmetprPIDC9YxTuDJsAf3Er3NdiI=", OutputHandler, AddMessage);
@@ -139,14 +136,14 @@ namespace WCFArchitect.Compiler
 		public static void PrintHeader()
 		{
 			if (Quiet) return;
-			Console.WriteLine(Globals.ApplicationTitle);
-			Console.WriteLine("Version: {0}", Globals.ApplicationVersion);
+			Console.WriteLine(ApplicationTitle);
+			Console.WriteLine("Version: {0}", ApplicationVersion);
 			Console.WriteLine("Copyright © 2012-2013 Prospective Software Inc.");
 			Console.WriteLine();
 
 			if (LogFile == null) return;
-			LogFile.WriteLine(Globals.ApplicationTitle);
-			LogFile.WriteLine("Version: {0}", Globals.ApplicationVersion);
+			LogFile.WriteLine(ApplicationTitle);
+			LogFile.WriteLine("Version: {0}", ApplicationVersion);
 			LogFile.WriteLine("Copyright © 2012-2013 Prospective Software Inc.");
 			LogFile.WriteLine();
 		}
@@ -155,8 +152,6 @@ namespace WCFArchitect.Compiler
 		{
 			SolutionPath = args[0];
 			ProjectPath = args[1];
-			OverrideServerOutput = new Dictionary<string, ProjectGenerationFramework>();
-			OverrideClientOutput = new Dictionary<string, ProjectGenerationFramework>();
 			Messages = new List<CompileMessage>();
 			HighestSeverity = CompileMessageSeverity.INFO;
 
@@ -180,38 +175,6 @@ namespace WCFArchitect.Compiler
 					StdError = true;
 				if (args[i] == "-log")
 					LogFile = File.CreateText(args[i++]);
-				if (args[i] == "-os")
-				{
-					ProjectGenerationFramework pgf;
-					if(!System.Enum.TryParse(args[++i], true, out pgf))
-					{
-						Console.WriteLine("Unrecognized Target: " + args[i]);
-						continue;
-					}
-					string op = args[++i].Replace("\"", "");
-					if(!Directory.Exists(op))
-					{
-						Console.WriteLine("Unable to locate directory: " + op);
-						continue;
-					}
-					OverrideServerOutput.Add(op, pgf);
-				}
-				if (args[i] == "-oc")
-				{
-					ProjectGenerationFramework pgf;
-					if (!System.Enum.TryParse(args[++i], true, out pgf))
-					{
-						Console.WriteLine("Unrecognized Target: " + args[i]);
-						continue;
-					}
-					string op = args[++i];
-					if (!Directory.Exists(op))
-					{
-						Console.WriteLine("Unable to locate directory: " + op);
-						continue;
-					}
-					OverrideClientOutput.Add(op, pgf);
-				}
 			}
 		}
 	}
