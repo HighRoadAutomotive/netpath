@@ -9,8 +9,6 @@ namespace WCFArchitect.Compiler
 {
 	internal static class Globals
 	{
-		public static ProjectGenerationFramework CurrentGenerationTarget { get; set; }
-
 		public static string ApplicationTitle { get; set; }
 		public static Version ApplicationVersion { get; set; }
 	}
