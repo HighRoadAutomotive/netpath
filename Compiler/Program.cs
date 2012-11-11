@@ -115,14 +115,6 @@ namespace WCFArchitect.Compiler
 
 			Console.WriteLine("Usage: wasc <solution file> <project file> [options]");
 			Console.WriteLine();
-			Console.WriteLine("-os\tOverrides all server output targets and directories in the project.");
-			Console.WriteLine("\tTargets: NET30|NET35|NET35Client|NET40|NET40Client|NET45");
-			Console.WriteLine("\tCan be specified multiple times. Usage: -os <target> \"<directory>\".");
-			Console.WriteLine();
-			Console.WriteLine("-oc\tOverrides all client output targets and directories in the project.");
-			Console.WriteLine("\tTargets: NET30|NET35|NET35Client|NET40|NET40Client|NET45|WIN8");
-			Console.WriteLine("\tCan be specified multiple times. Usage: -oc <target> \"<directory>\".");
-			Console.WriteLine();
 			Console.WriteLine("-log\tSave the output to a log file. Usage: -log \"<directory>\".");
 			Console.WriteLine();
 			Console.WriteLine("-stderr\tEnables stderr output.");
