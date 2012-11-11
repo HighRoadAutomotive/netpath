@@ -12,6 +12,7 @@ using System.Runtime.Serialization;
 using System.Windows.Threading;
 using System.Xml;
 using WCFArchitect.Projects;
+using WCFArchitect.Generators.Interfaces;
 
 namespace WCFArchitect
 {
@@ -20,8 +21,8 @@ namespace WCFArchitect
 		private Interface.Navigator NavWindow { get; set; }
 		private Paragraph OutputBlock { get; set; }
 
-		private readonly ProcessStartInfo psi;
-		private readonly Process cp;
+		private readonly IGenerator NET;
+		private readonly IGenerator WinRT;
 
 		public Compiler(Interface.Navigator NavWindow)
 		{
@@ -30,19 +31,10 @@ namespace WCFArchitect
 			OutputBlock = new Paragraph();
 			this.NavWindow.OutputBox.Document.Blocks.Add(OutputBlock);
 
-			//Setup the basic process start info, this is reused.
-			psi = new ProcessStartInfo(Path.Combine(Globals.ApplicationPath, "wasc.exe"));
-			psi.Arguments = string.Format("\"{0}\" \"{1}\" -stderr", Globals.SolutionPath, NavWindow.Project.AbsolutePath);
-			psi.WorkingDirectory = Globals.ApplicationPath;
-			psi.CreateNoWindow = true;
-			psi.RedirectStandardError = true;
-			psi.RedirectStandardOutput = true;
-			psi.UseShellExecute = false;
-			psi.WindowStyle = ProcessWindowStyle.Hidden;
-			cp = new Process();
-			cp.StartInfo = psi;
-			cp.ErrorDataReceived += StdErr;
-			cp.OutputDataReceived += StdOut;
+			NET = Globals.NETGenerator;
+			WinRT = Globals.WinRTGenerator;
+
+			Globals.Compilers.TryAdd(NavWindow.Project.ID, this);
 		}
 
 		public async void Build()
@@ -53,61 +45,43 @@ namespace WCFArchitect
 			NavWindow.ErrorCount = 0;
 			NavWindow.ErrorList.Items.Clear();
 
-			//Run the process
-			cp.Start();
-			cp.BeginErrorReadLine();
-			cp.BeginOutputReadLine();
-			await BuildFinished();
-			cp.CancelErrorRead();
-			cp.CancelOutputRead();
-			cp.Close();
+			//Run project code generation
+			if (NET.IsInitialized && WinRT.IsInitialized)
+			{
+				await NET.BuildAsync(NavWindow.Project);
+				if (NavWindow.Project.ClientGenerationTargets.Any(a => a.Framework == ProjectGenerationFramework.WIN8)) await WinRT.BuildAsync(NavWindow.Project, true);
+			}
+			else if (WinRT.IsInitialized)
+				await WinRT.BuildAsync(NavWindow.Project);
+			else
+				GeneratorOutput("FATAL ERROR: Unable to initialize any code generators.");
 
 			if (NavWindow.ErrorCount == 0) NavWindow.ErrorCount = null;
 			OutputBlock.Inlines.Add(new Run(string.Format("====== Finished Project: {0} ======", NavWindow.Project.Name)));
 		}
 
-		private Task BuildFinished()
+	
+		public void GeneratorOutput(string output)
 		{
-			return Task.Run(() => cp.WaitForExit());
-		}
-		
-		private void StdOut(object sender, DataReceivedEventArgs e)
-		{
-			if (string.IsNullOrEmpty(e.Data)) return;
-
+			if (string.IsNullOrEmpty(output)) return;
 			Application.Current.Dispatcher.Invoke(() =>
-													  {
-														  var tr = new Run(e.Data);
-														  OutputBlock.Inlines.Add(tr);
-														  OutputBlock.Inlines.Add(new LineBreak());
-														  if (e.Data.IndexOf("ERROR", StringComparison.InvariantCulture) >= 0) tr.Foreground = Brushes.DarkRed;
-														  if (e.Data.IndexOf("WARN", StringComparison.InvariantCulture) >= 0) tr.Foreground = Brushes.DarkOrange;
-													  }, DispatcherPriority.Send);
+			{
+				var tr = new Run(output);
+				OutputBlock.Inlines.Add(tr);
+				OutputBlock.Inlines.Add(new LineBreak());
+				if (output.IndexOf("ERROR", StringComparison.InvariantCulture) >= 0) tr.Foreground = Brushes.DarkRed;
+				if (output.IndexOf("WARN", StringComparison.InvariantCulture) >= 0) tr.Foreground = Brushes.DarkOrange;
+			}, DispatcherPriority.Send);
 		}
 
-		private void StdErr(object sender, DataReceivedEventArgs e)
+		public void GeneratorMessage(CompileMessage message)
 		{
-			if (string.IsNullOrEmpty(e.Data)) return;
-
+			if (message == null) return;
 			Application.Current.Dispatcher.Invoke(() =>
-				                                      {
-					                                      try
-					                                      {
-															  var dcs = new DataContractSerializer(typeof (CompileMessage), new DataContractSerializerSettings {MaxItemsInObjectGraph = Int32.MaxValue, IgnoreExtensionDataObject = true, SerializeReadOnlyTypes = true, PreserveObjectReferences = true});
-															  var tr = XmlReader.Create(new StringReader(e.Data), new XmlReaderSettings() {CloseInput = true, Async = false});
-															  var t = (CompileMessage) dcs.ReadObject(tr);
-															  NavWindow.ErrorList.Items.Add(t);
-															  NavWindow.ErrorCount++;
-					                                      }
-					                                      catch (Exception)
-					                                      {
-															  var tr = new Run(e.Data);
-															  OutputBlock.Inlines.Add(tr);
-															  OutputBlock.Inlines.Add(new LineBreak());
-															  if (e.Data.IndexOf("ERROR", StringComparison.InvariantCulture) >= 0) tr.Foreground = Brushes.DarkRed;
-															  if (e.Data.IndexOf("WARN", StringComparison.InvariantCulture) >= 0) tr.Foreground = Brushes.DarkOrange;
-														  }
-													  }, DispatcherPriority.Send);
+			{
+				NavWindow.ErrorList.Items.Add(message);
+				NavWindow.ErrorCount++;
+			}, DispatcherPriority.Send);
 		}
 	}
 }

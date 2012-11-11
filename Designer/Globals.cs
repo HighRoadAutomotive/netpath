@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Prospective.Controls.Dialogs;
 using WCFArchitect.Projects;
+using WCFArchitect.Generators.Interfaces;
 
 namespace WCFArchitect
 {
@@ -36,6 +37,10 @@ namespace WCFArchitect
 			WinEight = 62,
 		}
 		public static WindowsVersion WindowsLevel { get; set; }
+
+		public static IGenerator NETGenerator { get; private set; }
+		public static IGenerator WinRTGenerator { get; private set; }
+		public static ConcurrentDictionary<Guid, Compiler> Compilers { get; private set; }
 
 		public static string SolutionPath { get; set; }
 		public static Projects.Solution Solution { get; set; }
@@ -74,6 +79,29 @@ namespace WCFArchitect
 			foreach (Project p in Projects)
 				sbl.AddRange(p.Namespace.GetBindings());
 			return sbl;
+		}
+
+		public static void InitializeCodeGenerators(string License)
+		{
+			Compilers = new ConcurrentDictionary<Guid, Compiler>();
+			NETGenerator = Loader.LoadModule(GenerationModule.NET, GenerationLanguage.CSharp);
+			NETGenerator.Initialize(License, GeneratorOutput, GeneratorMessage);
+			WinRTGenerator = Loader.LoadModule(GenerationModule.WindowsRuntime, GenerationLanguage.CSharp);
+			WinRTGenerator.Initialize(License, GeneratorOutput, GeneratorMessage);
+		}
+
+		private static void GeneratorOutput(Guid ID, string output)
+		{
+			Compiler t;
+			if(Compilers.TryGetValue(ID, out t))
+				t.GeneratorOutput(output);
+		}
+
+		private static void GeneratorMessage(Guid ID, CompileMessage message)
+		{
+			Compiler t;
+			if (Compilers.TryGetValue(ID, out t))
+				t.GeneratorMessage(message);
 		}
 
 		public static void OpenSolution(string Path, Action<bool> FinishedAction)
@@ -164,12 +192,12 @@ namespace WCFArchitect
 			IsSaving = true;
 
 			await Application.Current.Dispatcher.InvokeAsync(() =>
-				                                                 {
-					                                                 WCFArchitect.Projects.Solution.Save(Solution, Path.ChangeExtension(SolutionPath, ".bak"));
+			{
+				WCFArchitect.Projects.Solution.Save(Solution, Path.ChangeExtension(SolutionPath, ".bak"));
 
-					                                                 foreach (Project p in Projects)
-						                                                 WCFArchitect.Projects.Project.Save(p, Path.ChangeExtension(p.AbsolutePath, ".bak"));
-				                                                 }, DispatcherPriority.Send);
+				foreach (Project p in Projects)
+					WCFArchitect.Projects.Project.Save(p, Path.ChangeExtension(p.AbsolutePath, ".bak"));
+			}, DispatcherPriority.Send);
 
 			IsFinding = false;
 			IsSaving = false;
