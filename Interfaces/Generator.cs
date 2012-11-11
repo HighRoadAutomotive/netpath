@@ -32,7 +32,7 @@ namespace WCFArchitect.Generators.Interfaces
 			return Task.Run<IGenerator>(() =>
 			{
 				//Build the module path and and determine if it is available on this system.
-				string asmfp = System.Reflection.Assembly.GetCallingAssembly().Location;
+				string asmfp = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().CodeBase);
 				string mod = "NET";
 				if (Module == GenerationModule.Silverlight) mod = "SL";
 				if (Module == GenerationModule.WindowsRuntime) mod = "WinRT";
@@ -53,13 +53,20 @@ namespace WCFArchitect.Generators.Interfaces
 
 	public interface IGenerator
 	{
-		void Initialize(string License, Action<CompileMessage> CompileMessageHandler, bool Experimental);
+		void Initialize(string License, Action<string> OutputHandler, Action<CompileMessage> CompileMessageHandler);
 		void Verify(Project Data);
+		Task VerifyAsync(Project Data);
 		string GenerateServer(Project Data, ProjectGenerationFramework Framework);
 		string GenerateClient(Project Data, ProjectGenerationFramework Framework);
+		Task<string> GenerateServerAsync(Project Data, ProjectGenerationFramework Framework);
+		Task<string> GenerateClientAsync(Project Data, ProjectGenerationFramework Framework);
+		void Build(Project Data);
+		Task BuildAsync(Project Data);
 
+		Action<string> NewOutput { get; }
 		Action<CompileMessage> NewMessage { get; }
 		ObservableCollection<CompileMessage> Messages { get; }
+		CompileMessageSeverity HighestSeverity { get; }
 		string Name { get; }
 		GenerationLanguage Language { get; }
 		GenerationModule Module { get; }
