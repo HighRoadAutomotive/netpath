@@ -83,6 +83,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Interfaces\Interfaces.csproj">
+      <Project>{6594cd45-2f17-4353-8cfc-8c314092821e}</Project>
+      <Name>Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Projects\Projects.csproj">
       <Project>{fe02550c-5269-4327-a129-fb9d41316005}</Project>
       <Name>Projects</Name>
