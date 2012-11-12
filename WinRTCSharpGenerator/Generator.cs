@@ -180,8 +180,8 @@ namespace WCFArchitect.Generators.WinRT.CS
 			    foreach (Data d in refs.Where(a => a.GetType() == typeof (Data)))
 				    DataGenerator.VerifyCode(d, AddMessage);
 			    foreach (DataType dt in refs)
-				    code.AppendLine(ReferenceGenerate(dt, Server, AddMessage));
-		    }
+					code.AppendLine(ReferenceGenerate(dt, Data, Server, AddMessage));
+			}
 
 		    //Generate project
 		    code.AppendLine(Server ? NamespaceGenerator.GenerateServerCode45(Data.Namespace) : NamespaceGenerator.GenerateClientCode45(Data.Namespace));
@@ -234,26 +234,26 @@ namespace WCFArchitect.Generators.WinRT.CS
 			return refs;
 		}
 
-		private static DataType ReferenceRetrieve(Project Project, Namespace Namesapce, Guid TypeID)
+		private static DataType ReferenceRetrieve(Project Project, Namespace Namespace, Guid TypeID)
 		{
-			var d = Namesapce.Data.FirstOrDefault(a => a.ID == TypeID);
+			var d = Namespace.Data.FirstOrDefault(a => a.ID == TypeID);
 			if (d != null) return d;
-			var e = Namesapce.Enums.FirstOrDefault(a => a.ID == TypeID);
+			var e = Namespace.Enums.FirstOrDefault(a => a.ID == TypeID);
 			if (e != null) return e;
 
-			foreach (Namespace n in Namesapce.Children)
+			foreach (Namespace n in Namespace.Children)
 			{
 				var t = ReferenceRetrieve(Project, n, TypeID);
 				if (t != null) return t;
 			}
 
-			return !Equals(Namesapce, Project.Namespace) ? null : Project.DependencyProjects.Select(dp => ReferenceRetrieve(dp.Project, dp.Project.Namespace, TypeID)).FirstOrDefault(t => t != null);
+			return !Equals(Namespace, Project.Namespace) ? null : Project.DependencyProjects.Select(dp => ReferenceRetrieve(dp.Project, dp.Project.Namespace, TypeID)).FirstOrDefault(t => t != null);
 		}
 
-		private static string ReferenceGenerate(DataType Reference, bool Server, Action<CompileMessage> AddMessage)
+		private static string ReferenceGenerate(DataType Reference, Project RefProject, bool Server, Action<CompileMessage> AddMessage)
 		{
 			//Get the referenced type
-			DataType typeref = ReferenceRetrieve(Reference.Parent.Owner, Reference.Parent.Owner.Namespace, Reference.ID);
+			DataType typeref = ReferenceRetrieve(RefProject, RefProject.Namespace, Reference.ID);
 			if (typeref == null)
 			{
 				AddMessage(new CompileMessage("GS0008", string.Format("Unable to locate type '{0}'. Please ensure that you have added the project containing this type to the Dependency Projects list and that it has not been renamed or removed from the project.", Reference.Name), CompileMessageSeverity.ERROR, null, Reference.Parent.Owner, Reference.Parent.Owner.GetType(), Reference.ID, Reference.Parent.Owner.ID));

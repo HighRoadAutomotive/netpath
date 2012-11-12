@@ -85,10 +85,6 @@ namespace WCFArchitect.Compiler
 			Environment.ExitCode = 0;
 		}
 
-		//TODO: Delete these when the generators are removed.
-		private static void OutputHandler(string S) {}
-		internal static void AddMessage(CompileMessage Message) {}
-
 		private static void OutputHandler(Guid ID, string S)
 		{
 			Console.WriteLine(S);
