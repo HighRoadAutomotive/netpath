@@ -156,7 +156,7 @@ namespace WCFArchitect.Interface.Project
 				          };
 			if (ofd.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel) return;
 
-			OutputPath.Text = Globals.GetRelativePath(Settings.AbsolutePath, ofd.FileName + "\\");
+			OutputPath.Text = Globals.GetRelativePath(Settings.AbsolutePath, ofd.FileName);
 		}
 
 		private void ServerOutputAdd_Click(object sender, RoutedEventArgs e)
