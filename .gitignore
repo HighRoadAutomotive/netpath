@@ -9,5 +9,7 @@ obj/
 bin/
 Build/
 packages/
+Debug/
+Release/
 _ReSharper.WCF Architect 2/
 _ReSharper.WCF Architect Testing/
