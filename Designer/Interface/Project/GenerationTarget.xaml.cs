@@ -29,7 +29,7 @@ namespace WCFArchitect.Interface.Project
 			InitializeComponent();
 
 			OptionsGrid.IsEnabled = Path.IsEnabled;
-			if (Path.IsEnabled == true) EnableImage.Source = new BitmapImage(new Uri("pack://application:,,,/WCFArchitect;component/Icons/X16/ReferenceAdded.png"));
+			if (Path.IsEnabled) EnableImage.Source = new BitmapImage(new Uri("pack://application:,,,/WCFArchitect;component/Icons/X16/ReferenceAdded.png"));
 			else EnableImage.Source = new BitmapImage(new Uri("pack://application:,,,/WCFArchitect;component/Icons/X16/NotAvailable.png"));
 		}
 
@@ -37,34 +37,33 @@ namespace WCFArchitect.Interface.Project
 		{
 			Path.IsEnabled = !Path.IsEnabled;
 			OptionsGrid.IsEnabled = Path.IsEnabled;
-			if (Path.IsEnabled == true) EnableImage.Source = new BitmapImage(new Uri("pack://application:,,,/WCFArchitect;component/Icons/X16/ReferenceAdded.png"));
+			if (Path.IsEnabled) EnableImage.Source = new BitmapImage(new Uri("pack://application:,,,/WCFArchitect;component/Icons/X16/ReferenceAdded.png"));
 			else EnableImage.Source = new BitmapImage(new Uri("pack://application:,,,/WCFArchitect;component/Icons/X16/NotAvailable.png"));
 		}
 
 		private void Delete_Click(object sender, RoutedEventArgs e)
 		{
 			DialogService.ShowMessageDialog(Project, "Confirm Generation Target Deletion", "Are you sure you want to delete the generation target: " + Path.Path,
-				new DialogAction("Yes", new Action(() => { Project.ServerGenerationTargets.Remove(Path); Project.ClientGenerationTargets.Remove(Path); }), true), new DialogAction("No", false, true));
+				new DialogAction("Yes", () => { Project.ServerGenerationTargets.Remove(Path); Project.ClientGenerationTargets.Remove(Path); }, true), new DialogAction("No", false, true));
 		}
 
 		private void OutputBrowse_Click(object sender, RoutedEventArgs e)
 		{
-			string FileName = "";
 			string openpath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			if (!(Path.Path == "" || Path.Path == null)) openpath = Path.Path;
+			if (!string.IsNullOrEmpty(Project.AbsolutePath)) openpath = System.IO.Path.GetDirectoryName(Project.AbsolutePath);
 
-			Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog ofd = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog("Select an Generation Target Path");
-			ofd.AllowNonFileSystemItems = false;
-			ofd.EnsurePathExists = true;
-			ofd.IsFolderPicker = true;
-			ofd.InitialDirectory = openpath;
-			ofd.Multiselect = false;
-			ofd.ShowPlacesList = true;
+			var ofd = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog("Select an Output Path")
+			{
+				AllowNonFileSystemItems = false,
+				EnsurePathExists = true,
+				IsFolderPicker = true,
+				InitialDirectory = openpath,
+				Multiselect = false,
+				ShowPlacesList = true
+			};
 			if (ofd.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel) return;
 
-			FileName = Globals.GetRelativePath(System.IO.Path.GetDirectoryName(Project.AbsolutePath), ofd.FileName);
-			
-			Path.Path = FileName + "\\";
+			Path.Path = Globals.GetRelativePath(Project.AbsolutePath, ofd.FileName);
 		}
 	}
 
@@ -73,7 +72,7 @@ namespace WCFArchitect.Interface.Project
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			Projects.ProjectGenerationFramework lt = (Projects.ProjectGenerationFramework)value;
+			var lt = (Projects.ProjectGenerationFramework)value;
 			//Uncomment to enable Silverlight support
 			//if (lt == Projects.ProjectGenerationFramework.WIN8) return 0;
 			//if (lt == Projects.ProjectGenerationFramework.SL50) return 1;
