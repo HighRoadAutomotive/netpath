@@ -1,4 +1,4 @@
-﻿<Application x:Class="WCFArchitect.App"
+﻿<Application x:Class="WCFArchitect.App" x:ClassModifier="public"
 			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 StartupUri="Interface/Main.xaml" Startup="Application_Startup" Exit="Application_Exit" DispatcherUnhandledException="Application_DispatcherUnhandledException">

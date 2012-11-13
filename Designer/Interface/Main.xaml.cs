@@ -10,7 +10,7 @@ using WCFArchitect.Options;
 
 namespace WCFArchitect.Interface
 {
-	public partial class Main : Window
+	internal partial class Main : Window
 	{
 		private enum SaveCloseMode
 		{
