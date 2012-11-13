@@ -26,6 +26,7 @@ namespace WCFArchitect.Compiler
 		private static List<CompileMessage> Messages { get; set; }
 		public static CompileMessageSeverity HighestSeverity { get; private set; }
 
+		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
 		public static void Main(string[] args)
 		{
 			string appPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\";

@@ -31,8 +31,6 @@ namespace WCFArchitect.Interface.Enum
 			OpenType = Data;
 
 			InitializeComponent();
-
-			DataContext = this;
 		}
 
 		#region - Value Drag/Drop Support -

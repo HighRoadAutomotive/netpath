@@ -11,6 +11,7 @@ using System.Windows;
 
 namespace WCFArchitect.Options
 {
+	[System.Reflection.Obfuscation(Exclude = true, ApplyToMembers = true, StripAfterObfuscation = true)]
 	public class UserProfile : DependencyObject
 	{
 		private Guid id;
@@ -99,6 +100,7 @@ namespace WCFArchitect.Options
 		}
 	}
 
+	[System.Reflection.Obfuscation(Exclude = true, ApplyToMembers = true, StripAfterObfuscation = true)]
 	public class RecentSolution : DependencyObject
 	{
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }

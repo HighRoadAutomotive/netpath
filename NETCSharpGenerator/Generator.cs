@@ -40,8 +40,12 @@ namespace WCFArchitect.Generators.NET.CS
 			IsInitialized = (t.Status == LicenseStatus.Valid);
 		}
 
+		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
 		public void Build(Project Data, bool ClientOnly = false)
 		{
+			var l = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
+			if (l.Status != LicenseStatus.Valid) return;
+
 			Messages.Clear();
 			NewOutput(Data.ID, Globals.ApplicationTitle);
 			NewOutput(Data.ID, string.Format("Version: {0}", Globals.ApplicationVersion));
@@ -76,7 +80,8 @@ namespace WCFArchitect.Generators.NET.CS
 			return System.Windows.Application.Current == null ? null : Task.Run(() => System.Windows.Application.Current.Dispatcher.Invoke(() => Build(Data, ClientOnly), DispatcherPriority.Normal));
 		}
 
-	    public void Verify(Project Data)
+		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
+		public void Verify(Project Data)
 	    {
 			var t = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
 		    if (t.Status != LicenseStatus.Valid) return;
@@ -102,7 +107,8 @@ namespace WCFArchitect.Generators.NET.CS
 			return System.Windows.Application.Current == null ? null : Task.Run(() => System.Windows.Application.Current.Dispatcher.Invoke(() => Verify(Data), DispatcherPriority.Normal));
 		}
 
-	    public string GenerateServer(Project Data, ProjectGenerationFramework Framework)
+		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
+		public string GenerateServer(Project Data, ProjectGenerationFramework Framework)
 	    {
 			var t = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
 			if (t.Status != LicenseStatus.Valid) return "";
@@ -112,6 +118,7 @@ namespace WCFArchitect.Generators.NET.CS
 			return Generate(Data, Framework, true);
 		}
 
+		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
 		public string GenerateClient(Project Data, ProjectGenerationFramework Framework)
 		{
 			var t = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
