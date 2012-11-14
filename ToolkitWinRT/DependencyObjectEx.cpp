@@ -1,12 +1,16 @@
-﻿#include "DependencyObjectEx.h"
+﻿#include <collection.h>
+#include "DependencyObjectEx.h"
 
 using namespace WCFArchitect::Toolkit::WinRT;
 using namespace Platform;
+using namespace Platform::Collections;
 using namespace Windows::UI::Xaml;
 using namespace Windows::UI::Core;
+using namespace Windows::Foundation::Collections;
 
 DependencyObjectEx::DependencyObjectEx()
 {
+	values = ref new Platform::Collections::Map<int, Object^>();
 }
 
 Object^ DependencyObjectEx::GetValueThreaded(DependencyProperty^ dp)

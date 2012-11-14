@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -12,25 +10,27 @@ namespace System.Windows
 {
 	public class DependencyObjectEx : DependencyObject
 	{
-		private ConcurrentDictionary<int, object> values;
+		private readonly Dictionary<int, object> values;
+		private readonly ReaderWriterLockSlim exvallock;
 
 		public DependencyObjectEx()
 		{
-			values = new ConcurrentDictionary<int, object>();
+			values = new Dictionary<int, object>();
+			exvallock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
 		}
 
 		public object GetValueThreaded(DependencyProperty dp)
 		{
 			if (Application.Current.Dispatcher.CheckAccess()) return GetValue(dp);
 			object ret = null;
-			Application.Current.Dispatcher.Invoke(() => { ret = GetValue(dp); }, DispatcherPriority.Normal);
+			Application.Current.Dispatcher.Invoke(new Action(() => { ret = GetValue(dp); }), DispatcherPriority.Normal);
 			return ret;
 		}
 		
 		public void SetValueThreaded(DependencyProperty dp, object value)
 		{
 			if(Application.Current.Dispatcher.CheckAccess()) SetValue(dp, value);
-			Application.Current.Dispatcher.Invoke(() => SetValue(dp, value), DispatcherPriority.Normal);
+			Application.Current.Dispatcher.Invoke(new Action(() => SetValue(dp, value)), DispatcherPriority.Normal);
 		}
 
 
@@ -39,24 +39,54 @@ namespace System.Windows
 			if (de.IsUnset)
 				throw new ArgumentException(string.Format("External value '{0}' in type '{1}' is unset. You must set a value before accessing the property.", de.Name, de.OwnerType));
 
-			object value;
-			return values.TryGetValue(de.GetHashCode(), out value) == false ? de.DefaultValue : value;
+			exvallock.EnterReadLock();
+			try
+			{
+				object value;
+				return values.TryGetValue(de.GetHashCode(), out value) == false ? de.DefaultValue : value;
+			}
+			finally
+			{
+				exvallock.ExitWriteLock();
+			}
 		}
 		
 		public void SetValueExternal<T>(DependencyExternal<T> de, T value)
 		{
 			if (de.Metadata.UIValidateValueCallback != null && !de.Metadata.UIValidateValueCallback(this, value)) return;
 
-			if (EqualityComparer<T>.Default.Equals(value, de.DefaultValue))
+			exvallock.EnterWriteLock();
+			try
 			{
-				object temp;
-				values.TryRemove(de.GetHashCode(), out temp);
-				if (de.Metadata.UIPropertyChangedCallback != null) de.Metadata.UIPropertyChangedCallback(this, (T)temp, de.DefaultValue);
+				if (EqualityComparer<T>.Default.Equals(value, de.DefaultValue))
+				{
+					object temp;
+					if (values.TryGetValue(de.GetHashCode(), out temp) && de.Metadata.UIPropertyChangedCallback != null)
+					{
+						values.Remove(de.GetHashCode());
+						de.Metadata.UIPropertyChangedCallback(this, (T) temp, de.DefaultValue);
+					}
+				}
+				else
+				{
+					if (values.ContainsKey(de.GetHashCode()))
+					{
+						object temp;
+						values.TryGetValue(de.GetHashCode(), out temp);
+						values.Remove(de.GetHashCode());
+						values.Add(de.GetHashCode(), value);
+						if (de.Metadata.UIPropertyChangedCallback != null) de.Metadata.UIPropertyChangedCallback(this, (T)temp, value);
+					}
+					else
+					{
+						values.Add(de.GetHashCode(), value);
+						if (de.Metadata.UIPropertyChangedCallback != null) de.Metadata.UIPropertyChangedCallback(this, de.DefaultValue, value);
+					}
+				}
 			}
-			else
+			finally
 			{
-				object temp = values.AddOrUpdate(de.GetHashCode(), value, (p, v) => value);
-				if (de.Metadata.UIPropertyChangedCallback != null) de.Metadata.UIPropertyChangedCallback(this, (T)temp, value);
+				exvallock.ExitWriteLock();
 			}
 
 			de.IsUnset = false;
@@ -66,18 +96,28 @@ namespace System.Windows
 		{
 			de.IsUnset = true;
 
-			object temp;
-			if (values.TryRemove(de.GetHashCode(), out temp) && de.Metadata.UIPropertyChangedCallback != null) de.Metadata.UIPropertyChangedCallback(this, de.DefaultValue, (T)temp);
+			exvallock.EnterWriteLock();
+			try
+			{
+				object temp;
+				if (values.TryGetValue(de.GetHashCode(), out temp) && values.Remove(de.GetHashCode()) && de.Metadata.UIPropertyChangedCallback != null) de.Metadata.UIPropertyChangedCallback(this, de.DefaultValue, (T)temp);
+			}
+			finally
+			{
+				exvallock.ExitWriteLock();
+			}
 		}
 	}
 
 	public class DependencyExternalBase
 	{
-		protected static readonly ConcurrentDictionary<int, object> registered;
+		protected static readonly Dictionary<int, object> registered;
+		protected static readonly ReaderWriterLockSlim reglock;
 
 		static DependencyExternalBase()
 		{
-			registered = new ConcurrentDictionary<int, object>();
+			registered = new Dictionary<int, object>();
+			reglock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
 		}
 	}
 
@@ -123,24 +163,51 @@ namespace System.Windows
 		public static DependencyExternal<TType> RegisterExternal<TType>(string name, Type ownerType)
 		{
 			var np = new DependencyExternal<TType>(name, ownerType);
-			if (!registered.TryAdd(np.GetHashCode(), np))
-				throw new ArgumentException(string.Format("Unable to register the DependencyExternal '{0}' on type '{1}'. A DependencyExternal with the same Name and OwnerType has already been registered.", name, ownerType));
+			reglock.EnterWriteLock();
+			try
+			{
+				if (registered.ContainsKey(np.GetHashCode()))
+					throw new ArgumentException(string.Format("Unable to register the DependencyExternal '{0}' on type '{1}'. A DependencyExternal with the same Name and OwnerType has already been registered.", name, ownerType));
+				registered.Add(np.GetHashCode(), np);
+			}
+			finally
+			{
+				reglock.ExitWriteLock();
+			}
 			return np;
 		}
 
 		public static DependencyExternal<TType> RegisterExternal<TType>(string name, Type ownerType, TType defaultValue)
 		{
 			var np = new DependencyExternal<TType>(name, ownerType, defaultValue);
-			if (!registered.TryAdd(np.GetHashCode(), np))
-				throw new ArgumentException(string.Format("Unable to register the DependencyExternal '{0}' on type '{1}'. A DependencyExternal with the same Name and OwnerType has already been registered.", name, ownerType));
+			reglock.EnterWriteLock();
+			try
+			{
+				if (registered.ContainsKey(np.GetHashCode()))
+					throw new ArgumentException(string.Format("Unable to register the DependencyExternal '{0}' on type '{1}'. A DependencyExternal with the same Name and OwnerType has already been registered.", name, ownerType));
+				registered.Add(np.GetHashCode(), np);
+			}
+			finally
+			{
+				reglock.ExitWriteLock();
+			}
 			return np;
 		}
 
 		public static DependencyExternal<TType> RegisterExternal<TType>(string name, Type ownerType, TType defaultValue, DependencyExternalMetadata<TType> metadata)
 		{
 			var np = new DependencyExternal<TType>(name, ownerType, defaultValue, metadata);
-			if (!registered.TryAdd(np.GetHashCode(), np))
-				throw new ArgumentException(string.Format("Unable to register the DependencyExternal '{0}' on type '{1}'. A DependencyExternal with the same Name and OwnerType has already been registered.", name, ownerType));
+			reglock.EnterWriteLock();
+			try
+			{
+				if (registered.ContainsKey(np.GetHashCode()))
+					throw new ArgumentException(string.Format("Unable to register the DependencyExternal '{0}' on type '{1}'. A DependencyExternal with the same Name and OwnerType has already been registered.", name, ownerType));
+				registered.Add(np.GetHashCode(), np);
+			}
+			finally
+			{
+				reglock.ExitWriteLock();
+			}
 			return np;
 		}
 

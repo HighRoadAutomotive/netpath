@@ -5,6 +5,7 @@
 *.dll
 *.NET40.cs
 *.bak
+*.map
 obj/
 bin/
 Build/

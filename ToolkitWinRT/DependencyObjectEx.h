@@ -5,10 +5,12 @@ namespace WCFArchitect
 	namespace Toolkit
 	{
 		namespace WinRT
-		{
-			
+		{			
 			public ref class DependencyObjectEx : Windows::UI::Xaml::DependencyObject
 			{
+			private:
+				Platform::Collections::Map<int, Object^>^ values;
+
 			internal:
 				DependencyObjectEx();
 
