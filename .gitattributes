@@ -4,3 +4,11 @@
 *.pfx binary
 *.ism binary
 *.rtf binary
+*.netlicproj brinary
+*.cs text eol=crlf
+*.xaml text eol=crlf
+*.csproj text eol=crlf
+*.cpp text eol=crlf
+*.h text eol=crlf
+*.cvxproj text eol=crlf
+*.obproj text eol=crlf
