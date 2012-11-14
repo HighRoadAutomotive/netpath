@@ -1,8 +1,6 @@
 *.sln binary
 *.png binary
 *.ico binary
-*.was binary
-*.csproj binary
-*.vbproj binary
-*.netlicproj binary
 *.pfx binary
+*.ism binary
+*.rtf binary

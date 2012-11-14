@@ -23,14 +23,14 @@ namespace System.Windows
 		{
 			if (Application.Current.Dispatcher.CheckAccess()) return GetValue(dp);
 			object ret = null;
-			Application.Current.Dispatcher.Invoke(() => { ret = GetValue(dp); }, DispatcherPriority.Normal);
+			Application.Current.Dispatcher.Invoke(new Action(() => { ret = GetValue(dp); }), DispatcherPriority.Normal);
 			return ret;
 		}
 		
 		public void SetValueThreaded(DependencyProperty dp, object value)
 		{
 			if(Application.Current.Dispatcher.CheckAccess()) SetValue(dp, value);
-			Application.Current.Dispatcher.Invoke(() => SetValue(dp, value), DispatcherPriority.Normal);
+			Application.Current.Dispatcher.Invoke(new Action(() => SetValue(dp, value)), DispatcherPriority.Normal);
 		}
 
 
