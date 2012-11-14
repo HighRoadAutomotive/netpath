@@ -6,6 +6,8 @@
 *.NET40.cs
 *.bak
 *.map
+*.opensdf
+*.sdf
 obj/
 bin/
 Build/
