@@ -193,7 +193,7 @@ namespace WCFArchitect.Generators.NET.CS
 			var code = new StringBuilder();
 			code.AppendLine(string.Format("\t\t\tthis.Security.Mode = SecurityMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.SecurityMode), o.Mode)));
 			code.AppendLine(string.Format("\t\t\tthis.Security.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite)));
-			code.AppendLine(string.Format("\t\t\tthis.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.{0};", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpMessageCredentialType), o.MessageClientCredentialType)));
+			code.AppendLine(string.Format("\t\t\tthis.Security.Message.ClientCredentialType = MessageCredentialType.{0};", System.Enum.GetName(typeof(System.ServiceModel.MessageCredentialType), o.MessageClientCredentialType)));
 			code.AppendLine(string.Format("\t\t\tthis.Security.Message.EstablishSecurityContext = {0};", o.MessageEstablishSecurityContext ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 			code.AppendLine(string.Format("\t\t\tthis.Security.Message.NegotiateServiceCredential = {0};", o.MessageNegotiateServiceCredential ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 			code.AppendLine(string.Format("\t\t\tthis.Security.Transport.ClientCredentialType = HttpClientCredentialType.{0};", System.Enum.GetName(typeof(System.ServiceModel.HttpClientCredentialType), o.TransportClientCredentialType)));
@@ -239,7 +239,7 @@ namespace WCFArchitect.Generators.NET.CS
 			var code = new StringBuilder();
 			code.AppendLine(string.Format("\t\t\tthis.Security.Mode = WSDualHttpSecurityMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.WSDualHttpSecurityMode), o.Mode)));
 			code.AppendLine(string.Format("\t\t\tthis.Security.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite)));
-			code.AppendLine(string.Format("\t\t\tthis.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.{0};", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpMessageCredentialType), o.MessageClientCredentialType)));
+			code.AppendLine(string.Format("\t\t\tthis.Security.Message.ClientCredentialType = MessageCredentialType.{0};", System.Enum.GetName(typeof(System.ServiceModel.MessageCredentialType), o.MessageClientCredentialType)));
 			code.AppendLine(string.Format("\t\t\tthis.Security.Message.NegotiateServiceCredential = {0};", o.MessageNegotiateServiceCredential ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 			return code.ToString();
 		}

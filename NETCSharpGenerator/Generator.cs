@@ -283,7 +283,7 @@ namespace WCFArchitect.Generators.NET.CS
 				if (t != null) return t;
 			}
 
-			return !Equals(Namespace, Project.Namespace) ? null : Project.DependencyProjects.Select(dp => ReferenceRetrieve(dp.Project, dp.Project.Namespace, TypeID)).FirstOrDefault(t => t != null);
+			return !Equals(Namespace, Project.Namespace) ? null : Project.DependencyProjects.Where(a => a.GenerateReferences).Select(dp => ReferenceRetrieve(dp.Project, dp.Project.Namespace, TypeID)).FirstOrDefault(t => t != null);
 		}
 
 		private static string ReferenceGenerate(DataType Reference, Project RefProject, bool Server, Action<CompileMessage> AddMessage)
