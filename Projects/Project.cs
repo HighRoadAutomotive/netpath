@@ -463,7 +463,11 @@ namespace WCFArchitect.Projects
 		public string Path { get { return (string)GetValue(PathProperty); } set { SetValue(PathProperty, value); } }
 		public static readonly DependencyProperty PathProperty = DependencyProperty.Register("Path", typeof(string), typeof(DependencyProject), new PropertyMetadata(""));
 
-		[IgnoreDataMember()] public Project Project { get { return (Project)GetValue(ProjectProperty); } set { SetValue(ProjectProperty, value); if (value != null) ProjectID = Project.ID; } }
+		public bool GenerateReferences { get { return (bool)GetValue(GenerateReferencesProperty); } set { SetValue(GenerateReferencesProperty, value); } }
+		public static readonly DependencyProperty GenerateReferencesProperty = DependencyProperty.Register("GenerateReferences", typeof(bool), typeof(DependencyProject), new PropertyMetadata(true));
+
+		[IgnoreDataMember()]
+		public Project Project { get { return (Project)GetValue(ProjectProperty); } set { SetValue(ProjectProperty, value); if (value != null) ProjectID = Project.ID; } }
 		public static readonly DependencyProperty ProjectProperty = DependencyProperty.Register("Project", typeof(Project), typeof(DependencyProject));
 
 		public Guid ProjectID { get; set; }
