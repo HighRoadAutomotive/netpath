@@ -5,6 +5,7 @@ using System.Linq;
 using System.IO;
 using System.Windows;
 using System.Runtime.Serialization;
+using System.Windows.Threading;
 
 namespace WCFArchitect.Projects
 {
@@ -97,9 +98,6 @@ namespace WCFArchitect.Projects
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(Project));
 
-		public ObservableCollection<ProjectUsingNamespace> UsingNamespaces { get { return (ObservableCollection<ProjectUsingNamespace>)GetValue(UsingNamespacesProperty); } set { SetValue(UsingNamespacesProperty, value); } }
-		public static readonly DependencyProperty UsingNamespacesProperty = DependencyProperty.Register("UsingNamespaces", typeof(ObservableCollection<ProjectUsingNamespace>), typeof(Project));
-
 		public Namespace Namespace { get { return (Namespace)GetValue(NamespaceProperty); } set { SetValue(NamespaceProperty, value); } }
 		public static readonly DependencyProperty NamespaceProperty = DependencyProperty.Register("Namespace", typeof(Namespace), typeof(Project));
 
@@ -126,6 +124,9 @@ namespace WCFArchitect.Projects
 
 		public ObservableCollection<ProjectGenerationTarget> ClientGenerationTargets { get { return (ObservableCollection<ProjectGenerationTarget>)GetValue(ClientGenerationTargetsProperty); } set { SetValue(ClientGenerationTargetsProperty, value); } }
 		public static readonly DependencyProperty ClientGenerationTargetsProperty = DependencyProperty.Register("ClientGenerationTargets", typeof(ObservableCollection<ProjectGenerationTarget>), typeof(Project));
+
+		public ObservableCollection<ProjectUsingNamespace> UsingNamespaces { get { return (ObservableCollection<ProjectUsingNamespace>)GetValue(UsingNamespacesProperty); } set { SetValue(UsingNamespacesProperty, value); } }
+		public static readonly DependencyProperty UsingNamespacesProperty = DependencyProperty.Register("UsingNamespaces", typeof(ObservableCollection<ProjectUsingNamespace>), typeof(Project));
 
 		[IgnoreDataMember] public List<DataType> DefaultTypes { get; private set; }
 		[IgnoreDataMember] public List<DataType> InheritableTypes { get; private set; }
@@ -302,8 +303,13 @@ namespace WCFArchitect.Projects
 			t.AbsolutePath = abspath;
 
 			// Open the project's dependencies
-			foreach(DependencyProject dp in t.DependencyProjects)
+			foreach (DependencyProject dp in t.DependencyProjects)
+			{
+				dp.SolutionPath = SolutionPath;
 				dp.Project = Open(SolutionPath, dp.Path);
+			}
+			foreach (DependencyProject dp in t.DependencyProjects)
+				dp.EnableAutoReload = true;
 
 			return t;
 		}
@@ -334,7 +340,7 @@ namespace WCFArchitect.Projects
 				//Search Externally defined types
 				results.AddRange(from a in ExternalTypes where a.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0 select a);
 			}
-			results.AddRange(Namespace.SearchTypes(Search, DataOnly));
+			results.AddRange(Namespace.SearchTypes(Search));
 
 			foreach (DependencyProject dp in DependencyProjects)
 				results.AddRange(dp.Project.SearchTypes(Search, false, false, true));
@@ -466,11 +472,44 @@ namespace WCFArchitect.Projects
 		public bool GenerateReferences { get { return (bool)GetValue(GenerateReferencesProperty); } set { SetValue(GenerateReferencesProperty, value); } }
 		public static readonly DependencyProperty GenerateReferencesProperty = DependencyProperty.Register("GenerateReferences", typeof(bool), typeof(DependencyProject), new PropertyMetadata(true));
 
-		[IgnoreDataMember()]
-		public Project Project { get { return (Project)GetValue(ProjectProperty); } set { SetValue(ProjectProperty, value); if (value != null) ProjectID = Project.ID; } }
-		public static readonly DependencyProperty ProjectProperty = DependencyProperty.Register("Project", typeof(Project), typeof(DependencyProject));
-
 		public Guid ProjectID { get; set; }
+
+		[IgnoreDataMember]
+		public Project Project { get { return (Project)GetValue(ProjectProperty); } set { SetValue(ProjectProperty, value); } }
+		public static readonly DependencyProperty ProjectProperty = DependencyProperty.Register("Project", typeof(Project), typeof(DependencyProject), new PropertyMetadata(null, ProjectChangedCallback));
+
+		private static void ProjectChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as DependencyProject;
+			if (t == null) return;
+			var p = e.NewValue as Project;
+			if (p == null) return;
+
+			t.fsw.Path = System.IO.Path.GetDirectoryName(p.AbsolutePath);
+			t.fsw.Filter = System.IO.Path.GetFileName(p.AbsolutePath);
+			t.ProjectID = p.ID;
+		}
+
+		[IgnoreDataMember] private readonly FileSystemWatcher fsw;
+		[IgnoreDataMember] public bool EnableAutoReload { get { return fsw.EnableRaisingEvents; } set { fsw.EnableRaisingEvents = value; } }
+		[IgnoreDataMember] public string SolutionPath { get; set; }
+
+		public DependencyProject()
+		{
+			fsw = new FileSystemWatcher();
+			fsw.Changed += fsw_Changed;
+			EnableAutoReload = false;
+		}
+
+		private void fsw_Changed(object sender, FileSystemEventArgs e)
+		{
+			try
+			{
+				if (e.ChangeType != WatcherChangeTypes.Changed) return;
+				if (Dispatcher.CheckAccess()) Project = Project.Open(SolutionPath, Path);
+				else Dispatcher.Invoke(() => { Project = Project.Open(SolutionPath, Path); }, DispatcherPriority.Normal);
+			}
+			catch (Exception) { }}
 	}
 
 	public enum ProjectGenerationFramework

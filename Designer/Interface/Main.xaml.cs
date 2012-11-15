@@ -209,7 +209,10 @@ namespace WCFArchitect.Interface
 		{
 			if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
 			{
-				ScreenButtons.Items.Add(new SolutionItem(e.NewItems[0] as Projects.Project));
+				var t = new SolutionItem(e.NewItems[0] as Projects.Project);
+				ScreenButtons.Items.Add(t);
+				if (t.Project.IsSelected)
+					t.Command.Execute(t.Content);
 			}
 			if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
 			{
@@ -240,7 +243,7 @@ namespace WCFArchitect.Interface
 			OptionsScreen.Visibility = Visibility.Collapsed;
 
 			foreach (SolutionItem pi in ScreenButtons.Items)
-				pi.IsSelected = Equals(pi.Project, NewScreen.Project);
+				pi.IsSelected = NewScreen.Project.IsSelected = Equals(pi.Project, NewScreen.Project);
 		}
 
 		#endregion
@@ -377,6 +380,7 @@ namespace WCFArchitect.Interface
 		public void NewProject(string Name, string Path)
 		{
 			var NP = new Projects.Project(Name);
+			NP.IsSelected = true;
 			Globals.Solution.Projects.Add(Globals.GetRelativePath(Globals.SolutionPath, Path));
 			Projects.Project.Save(NP, Path);
 			Globals.Projects.Add(Projects.Project.Open(Globals.SolutionPath, Path));
@@ -429,7 +433,7 @@ namespace WCFArchitect.Interface
 			AddProject.IsEnabled = true;
 			SystemMenuSave.IsEnabled = true;
 			SystemMenuClose.IsEnabled = true;
-			Title = Globals.Solution.Name + " - Prospective Software WCF Architect";
+			Title = Globals.Solution.Name + " - WCF Architect 2 (BETA)";
 		}
 
 		public void CloseSolution(bool AskBeforeClose = false, bool Closing = false, Action ContinueYes = null, Action ContinueNo = null)

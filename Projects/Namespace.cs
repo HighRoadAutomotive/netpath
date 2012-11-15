@@ -111,22 +111,15 @@ namespace WCFArchitect.Projects
 				UpdateURI();
 		}
 
-		public IEnumerable<DataType> SearchTypes(string Search, bool DataOnly = false)
+		public IEnumerable<DataType> SearchTypes(string Search)
 		{
 			var results = new List<DataType>();
 
-			if (DataOnly == false)
-			{
-				results.AddRange(from a in Enums where a.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0 select a);
-				results.AddRange(from a in Data where a.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0 select a);
-			}
-			else
-			{
-				results.AddRange(from a in Data where a.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0 select a);
-			}
+			results.AddRange(from a in Enums where a.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0 select a);
+			results.AddRange(from a in Data where a.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0 select a);
 
 			foreach(Namespace n in Children)
-				results.AddRange(n.SearchTypes(Search, DataOnly));
+				results.AddRange(n.SearchTypes(Search));
 
 			return results;
 		}

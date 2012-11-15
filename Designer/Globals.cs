@@ -163,12 +163,26 @@ namespace WCFArchitect
 			}
 			Projects.Sort(a => a.Name);
 
+			foreach(Project p in Projects)
+				InitializeDependencies(p);
+
 			if (UserProfile.AutomaticBackupsEnabled)
 				BackupTimer = new System.Threading.Timer(BackupSolution, null, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds);
 
 			IsLoading = false;
 
 			FinishedAction(true);
+		}
+
+		private static void InitializeDependencies(Project Data)
+		{
+			foreach (DependencyProject dp in Data.DependencyProjects)
+			{
+				if (Projects.Any(a => a.ID == dp.ProjectID)) dp.Project = Projects.First(a => a.ID == dp.ProjectID);
+				else dp.EnableAutoReload = true;
+
+				InitializeDependencies(dp.Project);
+			}
 		}
 
 		public static void SaveSolution(bool SaveProjects)
