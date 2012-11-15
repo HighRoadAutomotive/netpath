@@ -60,7 +60,7 @@ namespace WCFArchitect.Generators.WinRT.CS
 			if(!ClientOnly)
 				foreach (ProjectGenerationTarget t in Data.ServerGenerationTargets.Where(a => a.Framework == ProjectGenerationFramework.NET45))
 				{
-					string op = new Uri(new Uri(Data.AbsolutePath), System.IO.Path.Combine(t.Path, Data.ServerOutputFile + ".cs")).LocalPath;
+					string op = new Uri(new Uri(Data.AbsolutePath), t.Path).LocalPath;
 					op = Uri.UnescapeDataString(op);
 					NewOutput(Data.ID, string.Format("Writing Server Output: {0}", op));
 					System.IO.File.WriteAllText(op, GenerateServer(Data, ProjectGenerationFramework.NET45));
@@ -68,7 +68,7 @@ namespace WCFArchitect.Generators.WinRT.CS
 
 			foreach (ProjectGenerationTarget t in Data.ClientGenerationTargets.Where(a => a.Framework == ProjectGenerationFramework.WIN8))
 			{
-				string op = new Uri(new Uri(Data.AbsolutePath), System.IO.Path.Combine(t.Path, Data.ClientOutputFile + ".cs")).LocalPath;
+				string op = new Uri(new Uri(Data.AbsolutePath), t.Path).LocalPath;
 				op = Uri.UnescapeDataString(op);
 				NewOutput(Data.ID, string.Format("Writing Client Output: {0}", op));
 				System.IO.File.WriteAllText(op, GenerateClient(Data, ProjectGenerationFramework.WIN8));
@@ -96,6 +96,12 @@ namespace WCFArchitect.Generators.WinRT.CS
 				AddMessage(new CompileMessage("GS0006", "The Client Assembly Name in '" + Data.Name + "' project is not set or contains invalid characters. You must specify a valid Windows file name.", CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Guid.Empty, Data.ID));
 			if ((Data.ServerOutputFile == Data.ClientOutputFile))
 				AddMessage(new CompileMessage("GS0007", "The '" + Data.Name + "' project Client and Server Assembly Names are the same. You must specify a different Server or Client Assembly Name.", CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Guid.Empty, Data.ID));
+
+			var refs = new List<DataType>(ReferenceScan(Data.Namespace));
+			if (refs.Count > 0)
+				foreach (DataType dt in refs)
+					if (ReferenceRetrieve(Data, Data.Namespace, dt.ID) == null)
+						AddMessage(new CompileMessage("GS0008", string.Format("Unable to locate type '{0}'. Please ensure that you have added the project containing this type to the Dependency Projects list and that it has not been renamed or removed from the project.", dt.Name), CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Data.ID, Data.ID));
 
 			NamespaceGenerator.VerifyCode(Data.Namespace, AddMessage);
 		}
@@ -261,11 +267,7 @@ namespace WCFArchitect.Generators.WinRT.CS
 		{
 			//Get the referenced type
 			DataType typeref = ReferenceRetrieve(RefProject, RefProject.Namespace, Reference.ID);
-			if (typeref == null)
-			{
-				AddMessage(new CompileMessage("GS0008", string.Format("Unable to locate type '{0}'. Please ensure that you have added the project containing this type to the Dependency Projects list and that it has not been renamed or removed from the project.", Reference.Name), CompileMessageSeverity.ERROR, null, Reference.Parent.Owner, Reference.Parent.Owner.GetType(), Reference.ID, Reference.Parent.Owner.ID));
-				return "";
-			}
+			if (typeref == null) return "";
 			Type rt = typeref.GetType();
 
 			//Generate a namespace wrapper for the type then generate the type inside the namespace

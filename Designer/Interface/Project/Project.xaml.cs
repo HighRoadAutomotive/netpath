@@ -149,8 +149,9 @@ namespace WCFArchitect.Interface.Project
 				          {
 					          AllowNonFileSystemItems = false,
 					          EnsurePathExists = true,
-					          IsFolderPicker = true,
-					          InitialDirectory = openpath,
+							  IsFolderPicker = false,
+							  DefaultExtension = "cs",
+							  InitialDirectory = openpath,
 					          Multiselect = false,
 					          ShowPlacesList = true
 				          };

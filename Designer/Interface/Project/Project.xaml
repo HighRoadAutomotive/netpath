@@ -183,18 +183,16 @@
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 		<Label Content="Generation Targets" FontSize="12pt" Margin="0,5,0,0" />
-		<Label Content="Server:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" />
+		<Label Content="Path:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
 		<Button Content="Browse..." Height="23" HorizontalAlignment="Left" Margin="55,5,90,5" Name="OutputBrowse" VerticalAlignment="Top" Width="75" Grid.Row="1" Click="ServerOutputBrowse_Click"/>
 		<TextBox Height="23" Margin="140,5,175,5" Name="OutputPath" VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="{Binding ElementName=ServerOutputPath, Path=Text}" Grid.Row="1" />
 		<Button Content="Server" Height="23" HorizontalAlignment="Right" Margin="90,5" Name="ServerOutputAdd" VerticalAlignment="Top" Width="75" Grid.Row="1" Click="ServerOutputAdd_Click"/>
 		<Button Content="Client" Height="23" HorizontalAlignment="Right" Margin="5" Name="ClientOutputAdd" VerticalAlignment="Top" Width="75" Grid.Row="1" Click="ClientOutputAdd_Click"/>
-		<TextBox Height="23" Margin="55,5,5,5" Name="ServerAssemblyName" VerticalContentAlignment="Center" Text="{Binding Path=Settings.ServerOutputFile}" Grid.Row="2"/>
-		<Label Content="Path:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
+		<Label Content="Server Paths" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" FontSize="11pt" Grid.Column="0" Grid.Row="2" />
 		<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="3" Margin="5,0">
 			<StackPanel Name="ServerOutputPathsList" Orientation="Vertical" />
 		</ScrollViewer>
-		<Label Content="Client:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="4" />
-		<TextBox Height="23" Margin="55,5,5,5" Name="ClientAssemblyName" VerticalContentAlignment="Center" Text="{Binding Path=Settings.ClientOutputFile}" Grid.Row="4"/>
+		<Label Content="Client Paths" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" FontSize="11pt" Grid.Column="0" Grid.Row="4" />
 		<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="5" Margin="5,0,5,5">
 			<StackPanel Name="ClientOutputPathsList" Orientation="Vertical" />
 		</ScrollViewer>

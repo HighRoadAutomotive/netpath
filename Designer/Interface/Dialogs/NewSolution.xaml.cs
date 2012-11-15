@@ -50,7 +50,7 @@ namespace WCFArchitect.Interface.Dialogs
 			if (sfd.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel) return;
 			FileName = sfd.FileName;
 
-			NewSolutionOptionsLocation.Text = new System.IO.FileInfo(FileName).Directory.FullName + "\\";
+			NewSolutionOptionsLocation.Text = new System.IO.FileInfo(FileName).Directory.FullName;
 		}
 
 		internal void Create()
