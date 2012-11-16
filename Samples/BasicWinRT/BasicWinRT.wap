@@ -869,7 +869,7 @@
             <Parent z:Ref="102" i:nil="true" />
             <ServerAddress i:nil="true" />
             <ServerPort>0</ServerPort>
-            <ServerUseHTTPS>true</ServerUseHTTPS>
+            <ServerUseHTTPS>false</ServerUseHTTPS>
           </HostEndpoint>
         </Endpoints>
         <ManualFlowControlLimit>0</ManualFlowControlLimit>

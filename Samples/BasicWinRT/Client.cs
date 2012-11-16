@@ -214,44 +214,40 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 		{
 		}
 
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect WinRT CSharp Generator - BETA", "2.0.2000.0")]
-	public partial class CustomerHost
-	{
-		public static Uri NetHttpEndpointURI { get { return new Uri(""); } }
+		public static Uri NetHttpEndpointURI { get { return new Uri("http://localhost/NetHttpEndpoint"); } }
 		public static System.ServiceModel.EndpointAddress CreateNetHttpEndpointEndpoint()
 		{
-			return new System.ServiceModel.EndpointAddress(new Uri(""));
+			return new System.ServiceModel.EndpointAddress(new Uri("http://localhost/NetHttpEndpoint"));
 		}
 		public static System.ServiceModel.EndpointAddress CreateNetHttpEndpointEndpoint(string Address)
 		{
-			return new System.ServiceModel.EndpointAddress(new Uri(""));
+			return new System.ServiceModel.EndpointAddress(new Uri(string.Format("http://{0}/NetHttpEndpoint", Address)));
 		}
 		public static System.ServiceModel.EndpointAddress CreateNetHttpEndpointEndpoint(int Port)
 		{
-			return new System.ServiceModel.EndpointAddress(new Uri(""));
+			return new System.ServiceModel.EndpointAddress(new Uri(string.Format("http://localhost{0}/NetHttpEndpoint", Port > 0 ? string.Format(":{0}", Port) : "")));
 		}
 		public static System.ServiceModel.EndpointAddress CreateNetHttpEndpointEndpoint(string Address, int Port)
 		{
-			return new System.ServiceModel.EndpointAddress(new Uri(""));
+			return new System.ServiceModel.EndpointAddress(new Uri(string.Format("http://{0}{1}/NetHttpEndpoint", Address, Port > 0 ? string.Format(":{0}", Port) : "")));
 		}
 		public static System.ServiceModel.EndpointAddress CreateNetHttpEndpointEndpoint(System.ServiceModel.EndpointIdentity Identity)
 		{
-			return new System.ServiceModel.EndpointAddress(new Uri(""), Identity);
+			return new System.ServiceModel.EndpointAddress(new Uri("http://localhost/NetHttpEndpoint"), Identity);
 		}
 		public static System.ServiceModel.EndpointAddress CreateNetHttpEndpointEndpoint(string Address, System.ServiceModel.EndpointIdentity Identity)
 		{
-			return new System.ServiceModel.EndpointAddress(new Uri(""), Identity);
+			return new System.ServiceModel.EndpointAddress(new Uri(string.Format("http://{0}/NetHttpEndpoint", Address)), Identity);
 		}
 		public static System.ServiceModel.EndpointAddress CreateNetHttpEndpointEndpoint(int Port, System.ServiceModel.EndpointIdentity Identity)
 		{
-			return new System.ServiceModel.EndpointAddress(new Uri(""), Identity);
+			return new System.ServiceModel.EndpointAddress(new Uri(string.Format("http://localhost{0}/NetHttpEndpoint", Port > 0 ? string.Format(":{0}", Port) : "")), Identity);
 		}
 		public static System.ServiceModel.EndpointAddress CreateNetHttpEndpointEndpoint(string Address, int Port, System.ServiceModel.EndpointIdentity Identity)
 		{
-			return new System.ServiceModel.EndpointAddress(new Uri(""), Identity);
+			return new System.ServiceModel.EndpointAddress(new Uri(string.Format("http://{0}{1}/NetHttpEndpoint", Address, Port > 0 ? string.Format(":{0}", Port) : "")), Identity);
 		}
 
-	}
 		///<param name='NewCustomer'></param>
 		public System.Threading.Tasks.Task AddCustomerAsync(WCFArchitect.SampleServer.BasicWinRT.Customer NewCustomer)
 		{
@@ -328,50 +324,6 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 			this.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
 
 		}
-	}
-
-
-	/**************************************************************************
-	*	Service Hosts
-	**************************************************************************/
-
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect WinRT CSharp Generator - BETA", "2.0.2000.0")]
-	public partial class CustomerHost
-	{
-		public static Uri NetHttpEndpointURI { get { return new Uri(""); } }
-		public static System.ServiceModel.EndpointAddress CreateNetHttpEndpointEndpoint()
-		{
-			return new System.ServiceModel.EndpointAddress(new Uri(""));
-		}
-		public static System.ServiceModel.EndpointAddress CreateNetHttpEndpointEndpoint(string Address)
-		{
-			return new System.ServiceModel.EndpointAddress(new Uri(""));
-		}
-		public static System.ServiceModel.EndpointAddress CreateNetHttpEndpointEndpoint(int Port)
-		{
-			return new System.ServiceModel.EndpointAddress(new Uri(""));
-		}
-		public static System.ServiceModel.EndpointAddress CreateNetHttpEndpointEndpoint(string Address, int Port)
-		{
-			return new System.ServiceModel.EndpointAddress(new Uri(""));
-		}
-		public static System.ServiceModel.EndpointAddress CreateNetHttpEndpointEndpoint(System.ServiceModel.EndpointIdentity Identity)
-		{
-			return new System.ServiceModel.EndpointAddress(new Uri(""), Identity);
-		}
-		public static System.ServiceModel.EndpointAddress CreateNetHttpEndpointEndpoint(string Address, System.ServiceModel.EndpointIdentity Identity)
-		{
-			return new System.ServiceModel.EndpointAddress(new Uri(""), Identity);
-		}
-		public static System.ServiceModel.EndpointAddress CreateNetHttpEndpointEndpoint(int Port, System.ServiceModel.EndpointIdentity Identity)
-		{
-			return new System.ServiceModel.EndpointAddress(new Uri(""), Identity);
-		}
-		public static System.ServiceModel.EndpointAddress CreateNetHttpEndpointEndpoint(string Address, int Port, System.ServiceModel.EndpointIdentity Identity)
-		{
-			return new System.ServiceModel.EndpointAddress(new Uri(""), Identity);
-		}
-
 	}
 
 

@@ -161,7 +161,7 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect .NET CSharp Generator - BETA", "2.0.2000.0")]
 	public partial class CustomerHost : ServiceHost
 	{
-		public static Uri NetHttpEndpointURI { get { return new Uri(""); } }
+		public static Uri NetHttpEndpointURI { get { return new Uri("http://" + Environment.MachineName + "/NetHttpEndpoint"); } }
 		public ServiceThrottlingBehavior NetHttpThrottlingBehavior { get; private set; }
 		public CustomerHost(object singletonInstance) : base(singletonInstance)
 		{

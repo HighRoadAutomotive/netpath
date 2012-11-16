@@ -58,7 +58,7 @@
 		<pc:TextBox Text="{Binding Path=Data.ServerAddress}" Name="ServerAddress" Height="23" Margin="65,5,5,5" VerticalAlignment="Top" LabelText="Use Machine Name" Grid.Row="1" Grid.ColumnSpan="2" ToolTip="{Binding Path=Data.ServerAddress}" />
 		<Label Content="Port:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Column="0" Grid.Row="2" />
 		<c1:C1NumericBox Margin="65,5,5,5" Value="{Binding Path=Data.ServerPort}" Grid.Row="2" ShowButtons="False" Name="ServerPort" HorizontalContentAlignment="Left" ValueChanged="ServerPort_ValueChanged"  />
-		<ToggleButton IsChecked="{Binding Path=Data.ServerUseHTTPS}" Content="Use HTTPS" Margin="5" Grid.Column="1" Grid.Row="2" Height="23" />
+		<ToggleButton IsChecked="{Binding Path=Data.ServerUseHTTPS}" Content="Use HTTPS" Margin="5" Grid.Column="1" Grid.Row="2" />
 	</Grid>
 	<Grid Grid.Row="3" >
 		<Grid.ColumnDefinitions>

@@ -13,34 +13,34 @@ namespace WCFArchitect.Generators.NET.CS
 		public static void VerifyCode(Host o, Action<CompileMessage> AddMessage)
 		{
 			if (string.IsNullOrEmpty(o.Name))
-				AddMessage(new CompileMessage("GS5000", "A host in the '" + o.Parent.Name + "' project has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
+				AddMessage(new CompileMessage("GS5000", "A host in the '" + o.Parent.Name + "' project has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 			else
 				if (RegExs.MatchCodeName.IsMatch(o.Name) == false)
-					AddMessage(new CompileMessage("GS5001", "The host '" + o.Name + "' in the '" + o.Parent.Name + "' project contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
+					AddMessage(new CompileMessage("GS5001", "The host '" + o.Name + "' in the '" + o.Parent.Name + "' project contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 			if (string.IsNullOrEmpty(o.Namespace)) { }
 			else
 				if (RegExs.MatchHTTPURI.IsMatch(o.Namespace) == false)
-					AddMessage(new CompileMessage("GS5002", "The Namespace URI '" + o.Namespace + "' for the '" + o.Name + "' host in the '" + o.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
+					AddMessage(new CompileMessage("GS5002", "The Namespace URI '" + o.Namespace + "' for the '" + o.Name + "' host in the '" + o.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 
 			if (o.Service == null)
-				AddMessage(new CompileMessage("GS5003", "The host '" + o.Name + "' in the '" + o.Parent.Name + "' project has no Service associated with it and will not be generated. A Service must be associated with this Host for it be generated.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
+				AddMessage(new CompileMessage("GS5003", "The host '" + o.Name + "' in the '" + o.Parent.Name + "' project has no Service associated with it and will not be generated. A Service must be associated with this Host for it be generated.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 
 			foreach (string ba in o.BaseAddresses)
 			{
 				bool baValid = RegExs.MatchHTTPURI.IsMatch(ba) || RegExs.MatchTCPURI.IsMatch(ba) || RegExs.MatchP2PURI.IsMatch(ba) || RegExs.MatchPipeURI.IsMatch(ba) || RegExs.MatchMSMQURI.IsMatch(ba);
 				if (baValid)
-					AddMessage(new CompileMessage("GS5003", "The URI '" + ba + "' for the '" + o.Name + "' host in the '" + o.Parent.Name + "' project is not a valid URI. Any associated services and data may not function properly.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
+					AddMessage(new CompileMessage("GS5003", "The URI '" + ba + "' for the '" + o.Name + "' host in the '" + o.Parent.Name + "' project is not a valid URI. Any associated services and data may not function properly.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 			}
 
 			foreach (HostEndpoint he in o.Endpoints)
 			{
 				if (string.IsNullOrEmpty(he.Name))
-					AddMessage(new CompileMessage("GS5004", "A host in the endpoint '" + he.Parent.Name + "' project has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, he.Parent, he, he.GetType(), he.Parent.ID, he.ID));
+					AddMessage(new CompileMessage("GS5004", "A host in the endpoint '" + he.Parent.Name + "' project has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, he.Parent, he, he.GetType(), he.Parent.Parent.Owner.ID));
 				else
 					if (RegExs.MatchCodeName.IsMatch(he.Name) == false)
-						AddMessage(new CompileMessage("GS5005", "The host endpoint '" + he.Name + "' in the '" + he.Parent.Name + "' project contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, he.Parent, he, he.GetType(), he.Parent.ID, he.ID));
+						AddMessage(new CompileMessage("GS5005", "The host endpoint '" + he.Name + "' in the '" + he.Parent.Name + "' project contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, he.Parent, he, he.GetType(), he.Parent.Parent.Owner.ID));
 				if (he.Binding == null)
-					AddMessage(new CompileMessage("GS5006", "The host endpoint'" + he.Name + "' in the '" + he.Parent.Name + "' must have a Binding. Please specify a Binding", CompileMessageSeverity.ERROR, he.Parent, he, he.GetType(), he.Parent.ID, he.ID));
+					AddMessage(new CompileMessage("GS5006", "The host endpoint'" + he.Name + "' in the '" + he.Parent.Name + "' must have a Binding. Please specify a Binding", CompileMessageSeverity.ERROR, he.Parent, he, he.GetType(), he.Parent.Parent.Owner.ID));
 			}
 
 			foreach (HostBehavior hb in o.Behaviors)
@@ -51,26 +51,26 @@ namespace WCFArchitect.Generators.NET.CS
 					var b = hb as HostDebugBehavior;
 					if (b == null) continue;
 					if (b.HttpHelpPageEnabled && RegExs.MatchHTTPURI.IsMatch(b.HttpHelpPageUrl) == false)
-						AddMessage(new CompileMessage("GS5007", "The HTTP Help Page URL '" + b.HttpHelpPageUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
+						AddMessage(new CompileMessage("GS5007", "The HTTP Help Page URL '" + b.HttpHelpPageUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.Parent.Owner.ID));
 					if (b.HttpsHelpPageEnabled && RegExs.MatchHTTPURI.IsMatch(b.HttpsHelpPageUrl) == false)
-						AddMessage(new CompileMessage("GS5008", "The HTTPS Help Page URL '" + b.HttpsHelpPageUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
+						AddMessage(new CompileMessage("GS5008", "The HTTPS Help Page URL '" + b.HttpsHelpPageUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.Parent.Owner.ID));
 					if (b.HttpHelpPageEnabled && b.HttpHelpPageBinding == null)
-						AddMessage(new CompileMessage("GS5011", "The HTTP Help Page Binding for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project cannot be empty. Please select a binding.", CompileMessageSeverity.ERROR, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
+						AddMessage(new CompileMessage("GS5011", "The HTTP Help Page Binding for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project cannot be empty. Please select a binding.", CompileMessageSeverity.ERROR, b.Parent, b, b.GetType(), b.Parent.Parent.Owner.ID));
 					if (b.HttpsHelpPageEnabled && b.HttpsHelpPageBinding == null)
-						AddMessage(new CompileMessage("GS5012", "The HTTPS Help Page Binding for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project cannot be empty. Please select a binding.", CompileMessageSeverity.ERROR, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
+						AddMessage(new CompileMessage("GS5012", "The HTTPS Help Page Binding for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project cannot be empty. Please select a binding.", CompileMessageSeverity.ERROR, b.Parent, b, b.GetType(), b.Parent.Parent.Owner.ID));
 				}
 				else if (t == typeof(HostMetadataBehavior))
 				{
 					var b = hb as HostMetadataBehavior;
 					if (b == null) continue;
 					if (b.HttpGetEnabled && RegExs.MatchHTTPURI.IsMatch(b.HttpGetUrl) == false)
-						AddMessage(new CompileMessage("GS5009", "The HTTP Get URL '" + b.HttpGetUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
+						AddMessage(new CompileMessage("GS5009", "The HTTP Get URL '" + b.HttpGetUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.Parent.Owner.ID));
 					if (b.HttpsGetEnabled && RegExs.MatchHTTPURI.IsMatch(b.HttpsGetUrl) == false)
-						AddMessage(new CompileMessage("GS5010", "The HTTPS Get URL '" + b.HttpsGetUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
+						AddMessage(new CompileMessage("GS5010", "The HTTPS Get URL '" + b.HttpsGetUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType(), b.Parent.Parent.Owner.ID));
 					if (b.HttpGetEnabled && b.HttpGetBinding == null)
-						AddMessage(new CompileMessage("GS5013", "The HTTP Get Binding for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project cannot be empty. Please select a binding.", CompileMessageSeverity.ERROR, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
+						AddMessage(new CompileMessage("GS5013", "The HTTP Get Binding for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project cannot be empty. Please select a binding.", CompileMessageSeverity.ERROR, b.Parent, b, b.GetType(), b.Parent.Parent.Owner.ID));
 					if (b.HttpsGetEnabled && RegExs.MatchHTTPURI.IsMatch(b.HttpsGetUrl) == false)
-						AddMessage(new CompileMessage("GS5014", "The HTTPS Get Binding for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project cannot be empty. Please select a binding.", CompileMessageSeverity.ERROR, b.Parent, b, b.GetType(), b.Parent.ID, b.ID));
+						AddMessage(new CompileMessage("GS5014", "The HTTPS Get Binding for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project cannot be empty. Please select a binding.", CompileMessageSeverity.ERROR, b.Parent, b, b.GetType(), b.Parent.Parent.Owner.ID));
 				}
 			}
 		} 
@@ -836,20 +836,12 @@ namespace WCFArchitect.Generators.NET.CS
 			if (o.Service == null) return "";
 
 			var code = new StringBuilder();
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
-			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o)));
-			code.AppendLine("\t{");
 
 			foreach (HostEndpoint he in o.Endpoints)
-				code.AppendFormat("\t\tpublic static Uri {0}URI {{ get {{ return new Uri(\"{1}\"); }} }}{2}", he.Name, GenerateClientEndpointURI(he, false, false), Environment.NewLine);
+				code.AppendFormat("\t\tpublic static Uri {0}URI {{ get {{ return new Uri({1}); }} }}{2}", he.Name, GenerateClientEndpointURI(he, false, false), Environment.NewLine);
 
 			foreach (HostEndpoint he in o.Endpoints)
 				code.AppendLine(GenerateEndpointClientCode(he));
-
-			code.AppendLine("\t}");
-			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning enable 1591");
 
 			return code.ToString();
 		}
@@ -902,7 +894,7 @@ namespace WCFArchitect.Generators.NET.CS
 				code.AppendFormat("\t\t\tSystem.ServiceModel.Channels.AddressHeader ah{0} = System.ServiceModel.Channels.AddressHeader.CreateAddressHeader(\"{1}\", \"{2}\", {0});{3}", i + 1, o.ClientAddressHeaders[i].Name, o.ClientAddressHeaders[i].Namespace, Environment.NewLine);
 				ahlist += (", ah" + i);
 			}
-			code.AppendFormat("\t\t\treturn new System.ServiceModel.EndpointAddress(new Uri(\"{0}\"){1}{2});{3}", GenerateClientEndpointURI(o, false, false), identity, ahlist, Environment.NewLine);
+			code.AppendFormat("\t\t\treturn new System.ServiceModel.EndpointAddress(new Uri({0}){1}{2});{3}", GenerateClientEndpointURI(o, false, false), identity, ahlist, Environment.NewLine);
 			code.AppendLine("\t\t}");
 
 			code.AppendFormat("\t\tpublic static System.ServiceModel.EndpointAddress Create{0}Endpoint(string Address{1}){2}", o.Name, certificateidentity, Environment.NewLine);
@@ -913,7 +905,7 @@ namespace WCFArchitect.Generators.NET.CS
 				code.AppendFormat("\t\t\tSystem.ServiceModel.Channels.AddressHeader ah{0} = System.ServiceModel.Channels.AddressHeader.CreateAddressHeader(\"{1}\", \"{2}\", {0});{3}", i + 1, o.ClientAddressHeaders[i].Name, o.ClientAddressHeaders[i].Namespace, Environment.NewLine);
 				ahlist += (", ah" + i);
 			}
-			code.AppendFormat("\t\t\treturn new System.ServiceModel.EndpointAddress(new Uri(\"{0}\"){1}{2});{3}", GenerateClientEndpointURI(o, true, false), identity, ahlist, Environment.NewLine);
+			code.AppendFormat("\t\t\treturn new System.ServiceModel.EndpointAddress(new Uri({0}){1}{2});{3}", GenerateClientEndpointURI(o, true, false), identity, ahlist, Environment.NewLine);
 			code.AppendLine("\t\t}");
 
 			code.AppendFormat("\t\tpublic static System.ServiceModel.EndpointAddress Create{0}Endpoint(int Port{1}){2}", o.Name, certificateidentity, Environment.NewLine);
@@ -924,7 +916,7 @@ namespace WCFArchitect.Generators.NET.CS
 				code.AppendFormat("\t\t\tSystem.ServiceModel.Channels.AddressHeader ah{0} = System.ServiceModel.Channels.AddressHeader.CreateAddressHeader(\"{1}\", \"{2}\", {0});{3}", i + 1, o.ClientAddressHeaders[i].Name, o.ClientAddressHeaders[i].Namespace, Environment.NewLine);
 				ahlist += (", ah" + i);
 			}
-			code.AppendFormat("\t\t\treturn new System.ServiceModel.EndpointAddress(new Uri(\"{0}\"){1}{2});{3}", GenerateClientEndpointURI(o, false, true), identity, ahlist, Environment.NewLine);
+			code.AppendFormat("\t\t\treturn new System.ServiceModel.EndpointAddress(new Uri({0}){1}{2});{3}", GenerateClientEndpointURI(o, false, true), identity, ahlist, Environment.NewLine);
 			code.AppendLine("\t\t}");
 
 			code.AppendFormat("\t\tpublic static System.ServiceModel.EndpointAddress Create{0}Endpoint(string Address, int Port{1}){2}", o.Name, certificateidentity, Environment.NewLine);
@@ -935,7 +927,7 @@ namespace WCFArchitect.Generators.NET.CS
 				code.AppendFormat("\t\t\tSystem.ServiceModel.Channels.AddressHeader ah{0} = System.ServiceModel.Channels.AddressHeader.CreateAddressHeader(\"{1}\", \"{2}\", {0});{3}", i + 1, o.ClientAddressHeaders[i].Name, o.ClientAddressHeaders[i].Namespace, Environment.NewLine);
 				ahlist += (", ah" + i);
 			}
-			code.AppendFormat("\t\t\treturn new System.ServiceModel.EndpointAddress(new Uri(\"{0}\"){1}{2});{3}", GenerateClientEndpointURI(o, true, true), identity, ahlist, Environment.NewLine);
+			code.AppendFormat("\t\t\treturn new System.ServiceModel.EndpointAddress(new Uri({0}){1}{2});{3}", GenerateClientEndpointURI(o, true, true), identity, ahlist, Environment.NewLine);
 			code.AppendLine("\t\t}");
 			#endregion
 
@@ -948,7 +940,7 @@ namespace WCFArchitect.Generators.NET.CS
 				code.AppendFormat("\t\t\tSystem.ServiceModel.Channels.AddressHeader ah{0} = System.ServiceModel.Channels.AddressHeader.CreateAddressHeader(\"{1}\", \"{2}\", {0});{3}", i + 1, o.ClientAddressHeaders[i].Name, o.ClientAddressHeaders[i].Namespace, Environment.NewLine);
 				ahlist += (", ah" + i);
 			}
-			code.AppendFormat("\t\t\treturn new System.ServiceModel.EndpointAddress(new Uri(\"{0}\"), Identity{1});{2}", GenerateClientEndpointURI(o, false, false), ahlist, Environment.NewLine);
+			code.AppendFormat("\t\t\treturn new System.ServiceModel.EndpointAddress(new Uri({0}), Identity{1});{2}", GenerateClientEndpointURI(o, false, false), ahlist, Environment.NewLine);
 			code.AppendLine("\t\t}");
 
 			code.AppendFormat("\t\tpublic static System.ServiceModel.EndpointAddress Create{0}Endpoint(string Address, System.ServiceModel.EndpointIdentity Identity{1}){2}", o.Name, certificateidentity, Environment.NewLine);
@@ -959,7 +951,7 @@ namespace WCFArchitect.Generators.NET.CS
 				code.AppendFormat("\t\t\tSystem.ServiceModel.Channels.AddressHeader ah{0} = System.ServiceModel.Channels.AddressHeader.CreateAddressHeader(\"{1}\", \"{2}\", {0});{3}", i + 1, o.ClientAddressHeaders[i].Name, o.ClientAddressHeaders[i].Namespace, Environment.NewLine);
 				ahlist += (", ah" + i);
 			}
-			code.AppendFormat("\t\t\treturn new System.ServiceModel.EndpointAddress(new Uri(\"{0}\"), Identity{1});{2}", GenerateClientEndpointURI(o, true, false), ahlist, Environment.NewLine);
+			code.AppendFormat("\t\t\treturn new System.ServiceModel.EndpointAddress(new Uri({0}), Identity{1});{2}", GenerateClientEndpointURI(o, true, false), ahlist, Environment.NewLine);
 			code.AppendLine("\t\t}");
 
 			code.AppendFormat("\t\tpublic static System.ServiceModel.EndpointAddress Create{0}Endpoint(int Port, System.ServiceModel.EndpointIdentity Identity){1}", o.Name, Environment.NewLine);
@@ -970,7 +962,7 @@ namespace WCFArchitect.Generators.NET.CS
 				code.AppendFormat("\t\t\tSystem.ServiceModel.Channels.AddressHeader ah{0} = System.ServiceModel.Channels.AddressHeader.CreateAddressHeader(\"{1}\", \"{2}\", {0});{3}", i + 1, o.ClientAddressHeaders[i].Name, o.ClientAddressHeaders[i].Namespace, Environment.NewLine);
 				ahlist += (", ah" + i);
 			}
-			code.AppendFormat("\t\t\treturn new System.ServiceModel.EndpointAddress(new Uri(\"{0}\"), Identity{1});{2}", GenerateClientEndpointURI(o, false, true), ahlist, Environment.NewLine);
+			code.AppendFormat("\t\t\treturn new System.ServiceModel.EndpointAddress(new Uri({0}), Identity{1});{2}", GenerateClientEndpointURI(o, false, true), ahlist, Environment.NewLine);
 			code.AppendLine("\t\t}");
 
 			code.AppendFormat("\t\tpublic static System.ServiceModel.EndpointAddress Create{0}Endpoint(string Address, int Port, System.ServiceModel.EndpointIdentity Identity){1}", o.Name, Environment.NewLine);
@@ -981,7 +973,7 @@ namespace WCFArchitect.Generators.NET.CS
 				code.AppendFormat("\t\t\tSystem.ServiceModel.Channels.AddressHeader ah{0} = System.ServiceModel.Channels.AddressHeader.CreateAddressHeader(\"{1}\", \"{2}\", {0});{3}", i + 1, o.ClientAddressHeaders[i].Name, o.ClientAddressHeaders[i].Namespace, Environment.NewLine);
 				ahlist += (", ah" + i);
 			}
-			code.AppendFormat("\t\t\treturn new System.ServiceModel.EndpointAddress(new Uri(\"{0}\"), Identity{1});{2}", GenerateClientEndpointURI(o, true, true), ahlist, Environment.NewLine);
+			code.AppendFormat("\t\t\treturn new System.ServiceModel.EndpointAddress(new Uri({0}), Identity{1});{2}", GenerateClientEndpointURI(o, true, true), ahlist, Environment.NewLine);
 			code.AppendLine("\t\t}");
 			#endregion
 
@@ -991,66 +983,74 @@ namespace WCFArchitect.Generators.NET.CS
 		#region - Generate Server Endpoint URI -
 		public static string GenerateServerEndpointURI(HostEndpoint o)
 		{
-			string uri = "";
+			string uri = string.Format("http://localhost{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
 
 			if (string.IsNullOrEmpty(o.ServerAddress))
 			{
-				if (o.Binding.GetType() == typeof(ServiceBindingBasicHTTP) || o.Binding.GetType() == typeof(ServiceBindingWebHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007HTTP) || o.Binding.GetType() == typeof(ServiceBindingWSDualHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSFederationHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007FederationHTTP))
+				if (o.Binding.GetType() == typeof(ServiceBindingBasicHTTP) || o.Binding.GetType() == typeof(ServiceBindingNetHTTP) || o.Binding.GetType() == typeof(ServiceBindingWebHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007HTTP) || o.Binding.GetType() == typeof(ServiceBindingWSDualHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSFederationHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007FederationHTTP))
 				{
 					if (o.ServerUseHTTPS == false)
 					{
-						uri = "http://\" + Environment.MachineName + \":" + o.ServerPort + "/" + o.Name;
+						uri = string.Format("http://\" + Environment.MachineName + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
 					}
 					else
 					{
-						uri = "https://\" + Environment.MachineName + \":" + o.ServerPort + "/" + o.Name;
+						uri = string.Format("https://\" + Environment.MachineName + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
 					}
+				}
+				else if (o.Binding.GetType() == typeof(ServiceBindingBasicHTTPS) || o.Binding.GetType() == typeof(ServiceBindingNetHTTPS))
+				{
+					uri = string.Format("https://\" + Environment.MachineName + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
 				}
 				else if (o.Binding.GetType() == typeof(ServiceBindingTCP))
 				{
-					uri = "net.tcp://\" + Environment.MachineName + \":" + o.ServerPort + "/" + o.Name;
+					uri = string.Format("net.tcp://\" + Environment.MachineName + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
 				}
 				else if (o.Binding.GetType() == typeof(ServiceBindingPeerTCP))
 				{
-					uri = "net.p2p://\" + Environment.MachineName + \":" + o.ServerPort + "/" + o.Name;
+					uri = string.Format("net.p2p://\" + Environment.MachineName + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
 				}
 				else if (o.Binding.GetType() == typeof(ServiceBindingMSMQ) || o.Binding.GetType() == typeof(ServiceBindingMSMQIntegration))
 				{
-					uri = "net.msmq://\" + Environment.MachineName + \":" + o.ServerPort + "/" + o.Name;
+					uri = string.Format("net.msmq://\" + Environment.MachineName + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
 				}
 				else if (o.Binding.GetType() == typeof(ServiceBindingNamedPipe))
 				{
-					uri = "net.pipe://\" + Environment.MachineName + \"/" + o.Name;
+					uri = string.Format("net.pipe://\" + Environment.MachineName + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
 				}
 			}
 			else
 			{
-				if (o.Binding.GetType() == typeof(ServiceBindingBasicHTTP) || o.Binding.GetType() == typeof(ServiceBindingWebHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007HTTP) || o.Binding.GetType() == typeof(ServiceBindingWSDualHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSFederationHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007FederationHTTP))
+				if (o.Binding.GetType() == typeof(ServiceBindingBasicHTTP) || o.Binding.GetType() == typeof(ServiceBindingNetHTTP) || o.Binding.GetType() == typeof(ServiceBindingWebHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007HTTP) || o.Binding.GetType() == typeof(ServiceBindingWSDualHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSFederationHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007FederationHTTP))
 				{
 					if (o.ServerUseHTTPS == false)
 					{
-						uri = "http://" + o.ServerAddress + ":" + o.ServerPort + "/" + o.Name;
+						uri = string.Format("http://{0}{1}/{2}", o.ServerAddress, o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
 					}
 					else
 					{
-						uri = "https://" + o.ServerAddress + ":" + o.ServerPort + "/" + o.Name;
+						uri = string.Format("https://{0}{1}/{2}", o.ServerAddress, o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
 					}
+				}
+				else if (o.Binding.GetType() == typeof(ServiceBindingBasicHTTPS) || o.Binding.GetType() == typeof(ServiceBindingNetHTTPS))
+				{
+					uri = string.Format("https://{0}{1}/{2}", o.ServerAddress, o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
 				}
 				else if (o.Binding.GetType() == typeof(ServiceBindingTCP))
 				{
-					uri = "net.tcp://" + o.ServerAddress + ":" + o.ServerPort + "/" + o.Name;
+					uri = string.Format("net.tcp://{0}{1}/{2}", o.ServerAddress, o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
 				}
 				else if (o.Binding.GetType() == typeof(ServiceBindingPeerTCP))
 				{
-					uri = "net.p2p://" + o.ServerAddress + ":" + o.ServerPort + "/" + o.Name;
+					uri = string.Format("net.p2p://{0}{1}/{2}", o.ServerAddress, o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
 				}
 				else if (o.Binding.GetType() == typeof(ServiceBindingMSMQ) || o.Binding.GetType() == typeof(ServiceBindingMSMQIntegration))
 				{
-					uri = "net.msmq://" + o.ServerAddress + ":" + o.ServerPort + "/" + o.Name;
+					uri = string.Format("net.msmq://{0}{1}/{2}", o.ServerAddress, o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
 				}
 				else if (o.Binding.GetType() == typeof(ServiceBindingNamedPipe))
 				{
-					uri = "net.pipe://" + o.ServerAddress + "/" + o.Name;
+					uri = string.Format("net.pipe://{0}{1}/{2}", o.ServerAddress, o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
 				}
 			}
 
@@ -1070,62 +1070,70 @@ namespace WCFArchitect.Generators.NET.CS
 			{
 				if (IgnoreAddress == false)
 				{
-					if (o.Binding.GetType() == typeof(ServiceBindingBasicHTTP) || o.Binding.GetType() == typeof(ServiceBindingWebHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007HTTP) || o.Binding.GetType() == typeof(ServiceBindingWSDualHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSFederationHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007FederationHTTP))
+					if (o.Binding.GetType() == typeof(ServiceBindingBasicHTTP) || o.Binding.GetType() == typeof(ServiceBindingNetHTTP) || o.Binding.GetType() == typeof(ServiceBindingWebHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007HTTP) || o.Binding.GetType() == typeof(ServiceBindingWSDualHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSFederationHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007FederationHTTP))
 					{
 						if (o.ServerUseHTTPS == false)
 						{
-							uri = "http://" + tca + ":" + o.ServerPort + "/" + o.Name;
+							uri = "\"http://" + tca + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\"";
 						}
 						else
 						{
-							uri = "https://" + tca + ":" + o.ServerPort + "/" + o.Name;
+							uri = "\"https://" + tca + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\"";
 						}
+					}
+					else if (o.Binding.GetType() == typeof(ServiceBindingBasicHTTPS) || o.Binding.GetType() == typeof(ServiceBindingNetHTTPS))
+					{
+						uri = "\"https://" + tca + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\"";
 					}
 					else if (o.Binding.GetType() == typeof(ServiceBindingTCP))
 					{
-						uri = "net.tcp://" + tca + ":" + o.ServerPort + "/" + o.Name;
+						uri = "\"net.tcp://" + tca + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\"";
 					}
 					else if (o.Binding.GetType() == typeof(ServiceBindingPeerTCP))
 					{
-						uri = "net.p2p://" + tca + ":" + o.ServerPort + "/" + o.Name;
+						uri = "\"net.p2p://" + tca + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\"";
 					}
 					else if (o.Binding.GetType() == typeof(ServiceBindingMSMQ) || o.Binding.GetType() == typeof(ServiceBindingMSMQIntegration))
 					{
-						uri = "net.msmq://" + tca + ":" + o.ServerPort + "/" + o.Name;
+						uri = "\"net.msmq://" + tca + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\"";
 					}
 					else if (o.Binding.GetType() == typeof(ServiceBindingNamedPipe))
 					{
-						uri = "net.pipe://" + tca + "/" + o.Name;
+						uri = "\"net.pipe://" + tca + "/" + o.Name + "\"";
 					}
 				}
 				else
 				{
-					if (o.Binding.GetType() == typeof(ServiceBindingBasicHTTP) || o.Binding.GetType() == typeof(ServiceBindingWebHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007HTTP) || o.Binding.GetType() == typeof(ServiceBindingWSDualHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSFederationHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007FederationHTTP))
+					if (o.Binding.GetType() == typeof(ServiceBindingBasicHTTP) || o.Binding.GetType() == typeof(ServiceBindingNetHTTP) || o.Binding.GetType() == typeof(ServiceBindingWebHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007HTTP) || o.Binding.GetType() == typeof(ServiceBindingWSDualHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSFederationHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007FederationHTTP))
 					{
 						if (o.ServerUseHTTPS == false)
 						{
-							uri = "http://\" + Address + \":" + o.ServerPort + "/" + o.Name;
+							uri = "string.Format(\"http://{0}" + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\", Address)";
 						}
 						else
 						{
-							uri = "https://\" + Address + \":" + o.ServerPort + "/" + o.Name;
+							uri = "string.Format(\"https://{0}" + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\", Address)";
 						}
+					}
+					else if (o.Binding.GetType() == typeof(ServiceBindingBasicHTTPS) || o.Binding.GetType() == typeof(ServiceBindingNetHTTPS))
+					{
+						uri = "string.Format(\"https://{0}" + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\", Address)";
 					}
 					else if (o.Binding.GetType() == typeof(ServiceBindingTCP))
 					{
-						uri = "net.tcp://\" + Address + \":" + o.ServerPort + "/" + o.Name;
+						uri = "string.Format(\"net.tcp://{0}" + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\", Address)";
 					}
 					else if (o.Binding.GetType() == typeof(ServiceBindingPeerTCP))
 					{
-						uri = "net.p2p://\" + Address + \":" + o.ServerPort + "/" + o.Name;
+						uri = "string.Format(\"net.p2p://{0}" + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\", Address)";
 					}
 					else if (o.Binding.GetType() == typeof(ServiceBindingMSMQ) || o.Binding.GetType() == typeof(ServiceBindingMSMQIntegration))
 					{
-						uri = "net.msmq://\" + Address + \":" + o.ServerPort + "/" + o.Name;
+						uri = "string.Format(\"net.msmq://{0}" + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\", Address)";
 					}
 					else if (o.Binding.GetType() == typeof(ServiceBindingNamedPipe))
 					{
-						uri = "net.pipe://\" + Address + \"/" + o.Name;
+						uri = "string.Format(\"net.p2p://{0}/" + o.Name + "\", Address)";
 					}
 				}
 			}
@@ -1133,62 +1141,70 @@ namespace WCFArchitect.Generators.NET.CS
 			{
 				if (IgnoreAddress == false)
 				{
-					if (o.Binding.GetType() == typeof(ServiceBindingBasicHTTP) || o.Binding.GetType() == typeof(ServiceBindingWebHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007HTTP) || o.Binding.GetType() == typeof(ServiceBindingWSDualHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSFederationHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007FederationHTTP))
+					if (o.Binding.GetType() == typeof(ServiceBindingBasicHTTP) || o.Binding.GetType() == typeof(ServiceBindingNetHTTP) || o.Binding.GetType() == typeof(ServiceBindingWebHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007HTTP) || o.Binding.GetType() == typeof(ServiceBindingWSDualHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSFederationHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007FederationHTTP))
 					{
 						if (o.ServerUseHTTPS == false)
 						{
-							uri = "http://" + tca + ":\" + Port.ToString() +\"/" + o.Name;
+							uri = "string.Format(\"http://" + tca + "{0}/" + o.Name + "\", Port > 0 ? string.Format(\":{0}\", Port) : \"\")";
 						}
 						else
 						{
-							uri = "https://" + tca + ":\" + Port.ToString() +\"/" + o.Name;
+							uri = "string.Format(\"https://" + tca + "{0}/" + o.Name + "\", Port > 0 ? string.Format(\":{0}\", Port) : \"\")";
 						}
+					}
+					else if (o.Binding.GetType() == typeof(ServiceBindingBasicHTTPS) || o.Binding.GetType() == typeof(ServiceBindingNetHTTPS))
+					{
+						uri = "string.Format(\"https://" + tca + "{0}/" + o.Name + "\", Port > 0 ? string.Format(\":{0}\", Port) : \"\")";
 					}
 					else if (o.Binding.GetType() == typeof(ServiceBindingTCP))
 					{
-						uri = "net.tcp://" + tca + ":\" + Port.ToString() +\"/" + o.Name;
+						uri = "string.Format(\"net.tcp://" + tca + "{0}/" + o.Name + "\", Port > 0 ? string.Format(\":{0}\", Port) : \"\")";
 					}
 					else if (o.Binding.GetType() == typeof(ServiceBindingPeerTCP))
 					{
-						uri = "net.p2p://" + tca + ":\" + Port.ToString() +\"/" + o.Name;
+						uri = "string.Format(\"net.p2p://" + tca + "{0}/" + o.Name + "\", Port > 0 ? string.Format(\":{0}\", Port) : \"\")";
 					}
 					else if (o.Binding.GetType() == typeof(ServiceBindingMSMQ) || o.Binding.GetType() == typeof(ServiceBindingMSMQIntegration))
 					{
-						uri = "net.msmq://" + tca + ":\" + Port.ToString() +\"/" + o.Name;
+						uri = "string.Format(\"net.msmq://" + tca + "{0}/" + o.Name + "\", Port > 0 ? string.Format(\":{0}\", Port) : \"\")";
 					}
 					else if (o.Binding.GetType() == typeof(ServiceBindingNamedPipe))
 					{
-						uri = "net.pipe://" + tca + "/" + o.Name;
+						uri = "\"net.p2p://" + tca + "/" + o.Name + "\"";
 					}
 				}
 				else
 				{
-					if (o.Binding.GetType() == typeof(ServiceBindingBasicHTTP) || o.Binding.GetType() == typeof(ServiceBindingWebHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007HTTP) || o.Binding.GetType() == typeof(ServiceBindingWSDualHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSFederationHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007FederationHTTP))
+					if (o.Binding.GetType() == typeof(ServiceBindingBasicHTTP) || o.Binding.GetType() == typeof(ServiceBindingNetHTTP) || o.Binding.GetType() == typeof(ServiceBindingWebHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007HTTP) || o.Binding.GetType() == typeof(ServiceBindingWSDualHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSFederationHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007FederationHTTP))
 					{
 						if (o.ServerUseHTTPS == false)
 						{
-							uri = "http://\" + Address + \":\" + Port.ToString() +\"/" + o.Name;
+							uri = "string.Format(\"http://{0}{1}/" + o.Name + "\", Address, Port > 0 ? string.Format(\":{0}\", Port) : \"\")";
 						}
 						else
 						{
-							uri = "https://\" + Address + \":\" + Port.ToString() +\"/" + o.Name;
+							uri = "string.Format(\"https://{0}{1}/" + o.Name + "\", Address, Port > 0 ? string.Format(\":{0}\", Port) : \"\")";
 						}
+					}
+					else if (o.Binding.GetType() == typeof(ServiceBindingBasicHTTPS) || o.Binding.GetType() == typeof(ServiceBindingNetHTTPS))
+					{
+						uri = "string.Format(\"https://{0}{1}/" + o.Name + "\", Address, Port > 0 ? string.Format(\":{0}\", Port) : \"\")";
 					}
 					else if (o.Binding.GetType() == typeof(ServiceBindingTCP))
 					{
-						uri = "net.tcp://\" + Address + \":\" + Port.ToString() +\"/" + o.Name;
+						uri = "string.Format(\"net.tcp://{0}{1}/" + o.Name + "\", Address, Port > 0 ? string.Format(\":{0}\", Port) : \"\")";
 					}
 					else if (o.Binding.GetType() == typeof(ServiceBindingPeerTCP))
 					{
-						uri = "net.p2p://\" + Address + \":\" + Port.ToString() +\"/" + o.Name;
+						uri = "string.Format(\"net.p2p://{0}{1}/" + o.Name + "\", Address, Port > 0 ? string.Format(\":{0}\", Port) : \"\")";
 					}
 					else if (o.Binding.GetType() == typeof(ServiceBindingMSMQ) || o.Binding.GetType() == typeof(ServiceBindingMSMQIntegration))
 					{
-						uri = "net.msmq://\" + Address + \":\" + Port.ToString() +\"/" + o.Name;
+						uri = "string.Format(\"net.msmq://{0}{1}/" + o.Name + "\", Address, Port > 0 ? string.Format(\":{0}\", Port) : \"\")";
 					}
 					else if (o.Binding.GetType() == typeof(ServiceBindingNamedPipe))
 					{
-						uri = "net.pipe://\" + Address + \"/" + o.Name;
+						uri = "string.Format(\"net.p2p://{0}/" + o.Name + "\", Address)";
 					}
 				}
 			}
