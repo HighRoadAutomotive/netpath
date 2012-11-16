@@ -185,7 +185,7 @@ namespace WCFArchitect.Interface.Enum
 
 		private void AddValueName_Validate(object sender, ValidateEventArgs e)
 		{
-			e.IsValid = true;
+			e.IsValid = false;
 			if (string.IsNullOrEmpty(AddValueName.Text)) return;
 			AddValue.IsEnabled = e.IsValid = RegExs.MatchCodeName.IsMatch(AddValueName.Text);
 		}
@@ -202,6 +202,7 @@ namespace WCFArchitect.Interface.Enum
 			OpenType.Elements.Add(new Projects.EnumElement(OpenType, AddValueName.Text));
 			AddValueName.Text = "";
 			AddValueName.Focus();
+			AddValue.IsEnabled = false;
 		}
 
 		private void ServerValue_Validate(object sender, ValidateEventArgs e)

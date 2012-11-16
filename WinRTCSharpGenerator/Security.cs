@@ -43,7 +43,7 @@ namespace WCFArchitect.Generators.WinRT.CS
 		{
 			var code = new StringBuilder();
 			code.AppendLine(string.Format("\t\t\tthis.Security.Mode = BasicHttpSecurityMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpSecurityMode), o.Mode)));
-			code.AppendLine(string.Format("\t\t\tthis.Security.Transport.ProxyCredentialType = HttpProxyCredentialType.{0};", System.Enum.GetName(typeof(System.ServiceModel.HttpProxyCredentialType), o.TransportProxyCredentialType)));
+			code.AppendLine(string.Format("\t\t\tthis.Security.Transport.ClientCredentialType = HttpClientCredentialType.{0};", System.Enum.GetName(typeof(System.ServiceModel.HttpClientCredentialType), o.TransportClientCredentialType)));
 			return code.ToString();
 		}
 

@@ -204,7 +204,6 @@ namespace WCFArchitect.Generators.WinRT.CS
 				var b = o as ServiceBindingNetHTTP;
 				if (b == null) return "";
 				code.AppendLine(string.Format("\t\t\tthis.AllowCookies = {0};", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-				code.AppendLine(string.Format("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode)));
 				code.AppendLine(string.Format("\t\t\tthis.MaxBufferPoolSize = {0};", b.MaxBufferPoolSize));
 				code.AppendLine(string.Format("\t\t\tthis.MaxBufferSize = {0};", Convert.ToInt32(b.MaxBufferSize)));
 				code.AppendLine(string.Format("\t\t\tthis.MaxReceivedMessageSize = {0};", b.MaxReceivedMessageSize));
@@ -217,6 +216,7 @@ namespace WCFArchitect.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t\tthis.WebSocketSettings.TransportUsage = System.ServiceModel.Channels.WebSocketTransportUsage.{0};", System.Enum.GetName(typeof(System.ServiceModel.Channels.WebSocketTransportUsage), b.TransportUsage)));
 				if (Globals.CurrentGenerationTarget != ProjectGenerationFramework.WIN8)
 				{
+					code.AppendLine(string.Format("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode)));
 					code.AppendLine(string.Format("\t\t\tthis.WebSocketSettings.CreateNotificationOnConnection = {0};", b.CreateNotificationOnConnection ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 					code.AppendLine(string.Format("\t\t\tthis.WebSocketSettings.MaxPendingConnections = {0};", b.MaxPendingConnections));
 					code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Enabled = {0};", b.ReliableSessionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
