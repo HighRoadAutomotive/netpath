@@ -13,10 +13,10 @@ namespace WCFArchitect.Generators.WinRT.CS
 		public static void VerifyCode(Namespace o, Action<CompileMessage> AddMessage)
 		{
 			if (string.IsNullOrEmpty(o.URI))
-				AddMessage(new CompileMessage("GS1000", "The '" + o.Name + "' namespace in the '" + o.Owner.Name + "' project does not have a URI. Namespaces MUST have a URI.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
+				AddMessage(new CompileMessage("GS1000", "The '" + o.Name + "' namespace in the '" + o.Owner.Name + "' project does not have a URI. Namespaces MUST have a URI.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 			else
 				if (RegExs.MatchHTTPURI.IsMatch(o.URI) == false)
-					AddMessage(new CompileMessage("GS1001", "The URI '" + o.URI + "' for the '" + o.Name + "' namespace in the '" + o.Owner.Name + "' project is not a valid URI. Any associated services and data may not function properly.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.ID, o.ID));
+					AddMessage(new CompileMessage("GS1001", "The URI '" + o.URI + "' for the '" + o.Name + "' namespace in the '" + o.Owner.Name + "' project is not a valid URI. Any associated services and data may not function properly.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 
 			foreach (Projects.Enum ee in o.Enums)
 				EnumGenerator.VerifyCode(ee, AddMessage);
@@ -171,17 +171,6 @@ namespace WCFArchitect.Generators.WinRT.CS
 				code.AppendLine();
 				foreach (ServiceBinding sb in o.Bindings)
 					code.AppendLine(BindingsGenerator.GenerateCode45(sb));
-				code.AppendLine();
-			}
-
-			if (o.Hosts.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Hosts");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (Host he in o.Hosts)
-					code.AppendLine(HostGenerator.GenerateClientCode45(he));
 				code.AppendLine();
 			}
 

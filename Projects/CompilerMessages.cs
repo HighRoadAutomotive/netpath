@@ -22,12 +22,11 @@ namespace WCFArchitect.Projects
 		[IgnoreDataMember] public object Owner { get; private set; }
 		[IgnoreDataMember] public object ErrorObject { get; private set; }
 		[IgnoreDataMember] public Type ErrorObjectType { get; private set; }
-		public Guid OwnerID { get; private set; }
-		public Guid ObjectID { get; private set; }
+		public Guid ProjectID { get; private set; }
 
 		public CompileMessage() { }
 
-		public CompileMessage(string Code, string Description, CompileMessageSeverity Severity, object Owner, object ErrorObject, Type ErrorObjectType, Guid OwnerID, Guid ObjectID)
+		public CompileMessage(string Code, string Description, CompileMessageSeverity Severity, object Owner, object ErrorObject, Type ErrorObjectType, Guid ProjectID)
 		{
 			this.Code = Code;
 			this.Description = Description;
@@ -35,8 +34,7 @@ namespace WCFArchitect.Projects
 			this.Owner = Owner;
 			this.ErrorObject = ErrorObject;
 			this.ErrorObjectType = ErrorObjectType;
-			this.OwnerID = OwnerID;
-			this.ObjectID = ObjectID;
+			this.ProjectID = ProjectID;
 		}
 	}
 }

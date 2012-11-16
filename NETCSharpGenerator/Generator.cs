@@ -46,6 +46,7 @@ namespace WCFArchitect.Generators.NET.CS
 			var l = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
 			if (l.Status != LicenseStatus.Valid) return;
 
+			HighestSeverity = CompileMessageSeverity.INFO;
 			Messages.Clear();
 			NewOutput(Data.ID, Globals.ApplicationTitle);
 			NewOutput(Data.ID, string.Format("Version: {0}", Globals.ApplicationVersion));
@@ -60,6 +61,8 @@ namespace WCFArchitect.Generators.NET.CS
 			if(!ClientOnly)
 				foreach (ProjectGenerationTarget t in Data.ServerGenerationTargets)
 				{
+					Globals.CurrentGenerationTarget = t.Framework;
+
 					string op = new Uri(new Uri(Data.AbsolutePath), t.Path).LocalPath;
 					op = Uri.UnescapeDataString(op);
 					NewOutput(Data.ID, string.Format("Writing Server Output: {0}", op));
@@ -87,23 +90,23 @@ namespace WCFArchitect.Generators.NET.CS
 		    if (t.Status != LicenseStatus.Valid) return;
 
 			if (string.IsNullOrEmpty(Data.ServerOutputFile))
-				AddMessage(new CompileMessage("GS0003", "The '" + Data.Name + "' project does not have a Server Assembly Name. You must specify a Server Assembly Name.", CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Guid.Empty, Data.ID));
+				AddMessage(new CompileMessage("GS0003", "The '" + Data.Name + "' project does not have a Server Assembly Name. You must specify a Server Assembly Name.", CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Data.ID));
 			else
 				if (RegExs.MatchFileName.IsMatch(Data.ServerOutputFile) == false)
-					AddMessage(new CompileMessage("GS0004", "The Server Assembly Name in '" + Data.Name + "' project is not set or contains invalid characters. You must specify a valid Windows file name.", CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Guid.Empty, Data.ID));
+					AddMessage(new CompileMessage("GS0004", "The Server Assembly Name in '" + Data.Name + "' project is not set or contains invalid characters. You must specify a valid Windows file name.", CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Data.ID));
 			if (string.IsNullOrEmpty(Data.ClientOutputFile))
-				AddMessage(new CompileMessage("GS0005", "The '" + Data.Name + "' project does not have a Client Assembly Name. You must specify a Client Assembly Name.", CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Guid.Empty, Data.ID));
+				AddMessage(new CompileMessage("GS0005", "The '" + Data.Name + "' project does not have a Client Assembly Name. You must specify a Client Assembly Name.", CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Data.ID));
 			else
 				if (RegExs.MatchFileName.IsMatch(Data.ClientOutputFile) == false)
-					AddMessage(new CompileMessage("GS0006", "The Client Assembly Name in '" + Data.Name + "' project is not set or contains invalid characters. You must specify a valid Windows file name.", CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Guid.Empty, Data.ID));
+					AddMessage(new CompileMessage("GS0006", "The Client Assembly Name in '" + Data.Name + "' project is not set or contains invalid characters. You must specify a valid Windows file name.", CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Data.ID));
 			if ((Data.ServerOutputFile == Data.ClientOutputFile))
-				AddMessage(new CompileMessage("GS0007", "The '" + Data.Name + "' project Client and Server Assembly Names are the same. You must specify a different Server or Client Assembly Name.", CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Guid.Empty, Data.ID));
+				AddMessage(new CompileMessage("GS0007", "The '" + Data.Name + "' project Client and Server Assembly Names are the same. You must specify a different Server or Client Assembly Name.", CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Data.ID));
 
 			var refs = new List<DataType>(ReferenceScan(Data.Namespace));
 			if (refs.Count > 0)
 				foreach (DataType dt in refs)
 					if (ReferenceRetrieve(Data, Data.Namespace, dt.ID) == null)
-						AddMessage(new CompileMessage("GS0008", string.Format("Unable to locate type '{0}'. Please ensure that you have added the project containing this type to the Dependency Projects list and that it has not been renamed or removed from the project.", dt.Name), CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Data.ID, Data.ID));
+						AddMessage(new CompileMessage("GS0008", string.Format("Unable to locate type '{0}'. Please ensure that you have added the project containing this type to the Dependency Projects list and that it has not been renamed or removed from the project.", dt.Name), CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Data.ID));
 
 			NamespaceGenerator.VerifyCode(Data.Namespace, AddMessage);
 	    }
@@ -239,8 +242,8 @@ namespace WCFArchitect.Generators.NET.CS
 			Messages.Add(Message);
 			if (Message.Severity == CompileMessageSeverity.ERROR && HighestSeverity != CompileMessageSeverity.ERROR) HighestSeverity = CompileMessageSeverity.ERROR;
 			if (Message.Severity == CompileMessageSeverity.WARN && HighestSeverity == CompileMessageSeverity.INFO) HighestSeverity = CompileMessageSeverity.WARN;
-			NewOutput(Message.OwnerID, string.Format("{0} {1}: {2} Object: {3} Owner: {4}", Message.Severity, Message.Code, Message.Description, Message.ErrorObject, Message.Owner));
-			NewMessage(Message.OwnerID, Message);
+			NewOutput(Message.ProjectID, string.Format("{0} {1}: {2} Object: {3} Owner: {4}", Message.Severity, Message.Code, Message.Description, Message.ErrorObject, Message.Owner));
+			NewMessage(Message.ProjectID, Message);
 		}
 
 		private static IEnumerable<DataType> ReferenceScan(Namespace Scan)

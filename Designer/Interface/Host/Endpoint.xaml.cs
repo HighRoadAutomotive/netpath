@@ -35,11 +35,6 @@ namespace WCFArchitect.Interface.Host
 			EndpointBinding.ItemsSource = Globals.GetBindings();
 			EndpointBinding.SelectedItem = Data.Binding;
 
-			Data.ServerUseHTTPS = false;
-			if (Data.Binding != null)
-				if (Data.Binding.GetType() == typeof(Projects.ServiceBindingNetHTTP) || Data.Binding.GetType() == typeof(Projects.ServiceBindingNetHTTPS) || Data.Binding.GetType() == typeof(Projects.ServiceBindingBasicHTTP) || Data.Binding.GetType() == typeof(Projects.ServiceBindingBasicHTTPS) || Data.Binding.GetType() == typeof(Projects.ServiceBindingWebHTTP) || Data.Binding.GetType() == typeof(Projects.ServiceBindingWSHTTP) || Data.Binding.GetType() == typeof(Projects.ServiceBindingWS2007HTTP) || Data.Binding.GetType() == typeof(Projects.ServiceBindingWSDualHTTP) || Data.Binding.GetType() == typeof(Projects.ServiceBindingWSFederationHTTP) || Data.Binding.GetType() == typeof(Projects.ServiceBindingWS2007FederationHTTP))
-					Data.ServerUseHTTPS = true;
-
 			AddressHeadersList.ItemsSource = Data.ClientAddressHeaders;
 			DataContext = this;
 		}
