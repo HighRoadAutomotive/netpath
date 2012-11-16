@@ -348,7 +348,7 @@ namespace WCFArchitect.Projects
 		public ServiceBindingNetHTTP(string Name, Namespace Parent) : base()
 		{
 			var r = new System.Text.RegularExpressions.Regex(@"\W+");
-			InheritedTypes.Add(new DataType("System.ServiceModel.NetHTTPBinding", DataTypeMode.Class));
+			InheritedTypes.Add(new DataType("System.ServiceModel.NetHttpBinding", DataTypeMode.Class));
 			ID = Guid.NewGuid();
 			this.Name = r.Replace(Name, @"");
 			this.Parent = Parent;
@@ -461,7 +461,7 @@ namespace WCFArchitect.Projects
 		public ServiceBindingNetHTTPS(string Name, Namespace Parent) : base()
 		{
 			var r = new System.Text.RegularExpressions.Regex(@"\W+");
-			InheritedTypes.Add(new DataType("System.ServiceModel.NetHTTPBinding", DataTypeMode.Class));
+			InheritedTypes.Add(new DataType("System.ServiceModel.NetHttpsBinding", DataTypeMode.Class));
 			ID = Guid.NewGuid();
 			this.Name = r.Replace(Name, @"");
 			this.Parent = Parent;

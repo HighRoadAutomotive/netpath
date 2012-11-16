@@ -78,7 +78,7 @@ namespace WCFArchitect.Interface
 				if (t == null) return;
 				DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Enumeration?", "Are you sure you want to delete the '" + t.Declaration + "' enumeration?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Enums.Remove(t); }, true), new DialogAction("No", false, true));
 			}
-			if (dt == typeof(ServiceBinding))
+			if (dt == typeof(ServiceBindingBasicHTTP) || dt == typeof(ServiceBindingBasicHTTPS) || dt == typeof(ServiceBindingNetHTTP) || dt == typeof(ServiceBindingNetHTTPS) || dt == typeof(ServiceBindingWSHTTP) || dt == typeof(ServiceBindingWS2007HTTP) || dt == typeof(ServiceBindingWSDualHTTP) || dt == typeof(ServiceBindingWSFederationHTTP) || dt == typeof(ServiceBindingWS2007FederationHTTP) || dt == typeof(ServiceBindingTCP) || dt == typeof(ServiceBindingNamedPipe) || dt == typeof(ServiceBindingMSMQ) || dt == typeof(ServiceBindingPeerTCP) || dt == typeof(ServiceBindingWebHTTP) || dt == typeof(ServiceBindingMSMQIntegration))
 			{
 				var t = e.Parameter as ServiceBinding;
 				if (t == null) return;
