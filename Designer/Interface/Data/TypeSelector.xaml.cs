@@ -217,7 +217,7 @@ namespace WCFArchitect.Interface.Data
 				else
 					Results = new ObservableCollection<DataType>(IntProject.SearchTypes(TypeName.Text.Replace("[", "").Replace("]", ""), true, AllowVoid));
 
-				if (Results.Count >= 1)
+				if (Results.Count == 1)
 				{
 					foreach (DataType dt in Results.Where(dt => dt.Name.Equals(sstr, StringComparison.CurrentCultureIgnoreCase)))
 					{
