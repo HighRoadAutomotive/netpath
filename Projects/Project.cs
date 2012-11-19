@@ -469,9 +469,6 @@ namespace WCFArchitect.Projects
 		public string Path { get { return (string)GetValue(PathProperty); } set { SetValue(PathProperty, value); } }
 		public static readonly DependencyProperty PathProperty = DependencyProperty.Register("Path", typeof(string), typeof(DependencyProject), new PropertyMetadata(""));
 
-		public bool GenerateReferences { get { return (bool)GetValue(GenerateReferencesProperty); } set { SetValue(GenerateReferencesProperty, value); } }
-		public static readonly DependencyProperty GenerateReferencesProperty = DependencyProperty.Register("GenerateReferences", typeof(bool), typeof(DependencyProject), new PropertyMetadata(true));
-
 		public Guid ProjectID { get; set; }
 
 		[IgnoreDataMember]
@@ -541,6 +538,9 @@ namespace WCFArchitect.Projects
 
 		public bool IsServerPath { get { return (bool)GetValue(IsServerPathProperty); } set { SetValue(IsServerPathProperty, value); } }
 		public static readonly DependencyProperty IsServerPathProperty = DependencyProperty.Register("IsServerPath", typeof(bool), typeof(ProjectGenerationTarget), new PropertyMetadata(true));
+
+		public bool GenerateReferences { get { return (bool)GetValue(GenerateReferencesProperty); } set { SetValue(GenerateReferencesProperty, value); } }
+		public static readonly DependencyProperty GenerateReferencesProperty = DependencyProperty.Register("GenerateReferences", typeof(bool), typeof(ProjectGenerationTarget), new PropertyMetadata(true));
 
 		public ProjectGenerationTarget() { }
 

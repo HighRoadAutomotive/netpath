@@ -31,6 +31,7 @@
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 			<Label Content="Output Path:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" />
 			<pc:TextBox Text="{Binding Path=Path.Path}" Height="23" Margin="95,5,90,5" Name="OutputPathName" IsReadOnly="True" VerticalAlignment="Top" ToolTip="{Binding Path=Path.Path}"  />
@@ -48,6 +49,7 @@
 				<ComboBoxItem Content=".NET Framework 3.5 Client Profile" />
 				<ComboBoxItem Content=".NET Framework 3.0" />
 			</ComboBox>
+			<CheckBox Content="Generate Referenced Types" Grid.Row="2" Margin="5" IsChecked="{Binding Path=Path.GenerateReferences}" />
 		</Grid>
 	
 		<Button Name="Delete" Grid.Column="2" Margin="5,5,0,5" Click="Delete_Click" Padding="0" HorizontalContentAlignment="Center" >

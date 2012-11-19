@@ -64,7 +64,7 @@ namespace WCFArchitect.Generators.WinRT.CS
 					string op = new Uri(new Uri(Data.AbsolutePath), t.Path).LocalPath;
 					op = Uri.UnescapeDataString(op);
 					NewOutput(Data.ID, string.Format("Writing Server Output: {0}", op));
-					System.IO.File.WriteAllText(op, GenerateServer(Data, ProjectGenerationFramework.NET45));
+					System.IO.File.WriteAllText(op, GenerateServer(Data, ProjectGenerationFramework.NET45, t.GenerateReferences));
 				}
 
 			foreach (ProjectGenerationTarget t in Data.ClientGenerationTargets.Where(a => a.Framework == ProjectGenerationFramework.WIN8))
@@ -72,7 +72,7 @@ namespace WCFArchitect.Generators.WinRT.CS
 				string op = new Uri(new Uri(Data.AbsolutePath), t.Path).LocalPath;
 				op = Uri.UnescapeDataString(op);
 				NewOutput(Data.ID, string.Format("Writing Client Output: {0}", op));
-				System.IO.File.WriteAllText(op, GenerateClient(Data, ProjectGenerationFramework.WIN8));
+				System.IO.File.WriteAllText(op, GenerateClient(Data, ProjectGenerationFramework.WIN8, t.GenerateReferences));
 			}
 		}
 
@@ -113,38 +113,38 @@ namespace WCFArchitect.Generators.WinRT.CS
 		}
 
 		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
-		public string GenerateServer(Project Data, ProjectGenerationFramework Framework)
+		public string GenerateServer(Project Data, ProjectGenerationFramework Framework, bool GenerateReferences)
 	    {
 			var t = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
 			if (t.Status != LicenseStatus.Valid) return "";
 
 			Globals.CurrentGenerationTarget = ProjectGenerationFramework.NET45;
 
-			return Generate(Data, ProjectGenerationFramework.NET45, true);
+			return Generate(Data, ProjectGenerationFramework.NET45, true, GenerateReferences);
 		}
 
 		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
-		public string GenerateClient(Project Data, ProjectGenerationFramework Framework)
+		public string GenerateClient(Project Data, ProjectGenerationFramework Framework, bool GenerateReferences)
 		{
 			var t = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
 			if (t.Status != LicenseStatus.Valid) return "";
 
 			Globals.CurrentGenerationTarget = ProjectGenerationFramework.WIN8;
 
-			return Generate(Data, ProjectGenerationFramework.WIN8, false);
+			return Generate(Data, ProjectGenerationFramework.WIN8, false, GenerateReferences);
 		}
 
-		public Task<string> GenerateServerAsync(Project Data, ProjectGenerationFramework Framework)
+		public Task<string> GenerateServerAsync(Project Data, ProjectGenerationFramework Framework, bool GenerateReferences)
 		{
-			return System.Windows.Application.Current == null ? null : Task.Run(() => System.Windows.Application.Current.Dispatcher.Invoke(() => GenerateServer(Data, Framework), DispatcherPriority.Normal));
+			return System.Windows.Application.Current == null ? null : Task.Run(() => System.Windows.Application.Current.Dispatcher.Invoke(() => GenerateServer(Data, Framework, GenerateReferences), DispatcherPriority.Normal));
 		}
 
-		public Task<string> GenerateClientAsync(Project Data, ProjectGenerationFramework Framework)
+		public Task<string> GenerateClientAsync(Project Data, ProjectGenerationFramework Framework, bool GenerateReferences)
 		{
-			return System.Windows.Application.Current == null ? null : Task.Run(() => System.Windows.Application.Current.Dispatcher.Invoke(() => GenerateClient(Data, Framework), DispatcherPriority.Normal));
+			return System.Windows.Application.Current == null ? null : Task.Run(() => System.Windows.Application.Current.Dispatcher.Invoke(() => GenerateClient(Data, Framework, GenerateReferences), DispatcherPriority.Normal));
 		}
 
-	    private string Generate(Project Data, ProjectGenerationFramework Framework, bool Server)
+	    private string Generate(Project Data, ProjectGenerationFramework Framework, bool Server, bool GenerateReferences)
 		{
 			Globals.CurrentGenerationTarget = Framework;
 
@@ -194,7 +194,7 @@ namespace WCFArchitect.Generators.WinRT.CS
 			    foreach (Data d in refs.Where(a => a.GetType() == typeof (Data)))
 				    DataGenerator.VerifyCode(d, AddMessage);
 			    foreach (DataType dt in refs)
-					code.AppendLine(ReferenceGenerate(dt, Data, Server, AddMessage));
+					code.AppendLine(ReferenceGenerate(dt, Data, Server, GenerateReferences, AddMessage));
 			}
 
 		    //Generate project
@@ -261,11 +261,13 @@ namespace WCFArchitect.Generators.WinRT.CS
 				if (t != null) return t;
 			}
 
-			return !Equals(Namespace, Project.Namespace) ? null : Project.DependencyProjects.Where(a => a.GenerateReferences).Select(dp => ReferenceRetrieve(dp.Project, dp.Project.Namespace, TypeID)).FirstOrDefault(t => t != null);
+			return !Equals(Namespace, Project.Namespace) ? null : Project.DependencyProjects.Select(dp => ReferenceRetrieve(dp.Project, dp.Project.Namespace, TypeID)).FirstOrDefault(t => t != null);
 		}
 
-		private static string ReferenceGenerate(DataType Reference, Project RefProject, bool Server, Action<CompileMessage> AddMessage)
+		private static string ReferenceGenerate(DataType Reference, Project RefProject, bool Server, bool GenerateReferences, Action<CompileMessage> AddMessage)
 		{
+			if (!GenerateReferences) return "";
+
 			//Get the referenced type
 			DataType typeref = ReferenceRetrieve(RefProject, RefProject.Namespace, Reference.ID);
 			if (typeref == null) return "";
