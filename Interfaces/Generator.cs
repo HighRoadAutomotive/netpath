@@ -59,10 +59,10 @@ namespace WCFArchitect.Generators.Interfaces
 		void Initialize(string License, Action<Guid, string> OutputHandler, Action<Guid, CompileMessage> CompileMessageHandler);
 		void Verify(Project Data);
 		Task VerifyAsync(Project Data);
-		string GenerateServer(Project Data, ProjectGenerationFramework Framework);
-		string GenerateClient(Project Data, ProjectGenerationFramework Framework);
-		Task<string> GenerateServerAsync(Project Data, ProjectGenerationFramework Framework);
-		Task<string> GenerateClientAsync(Project Data, ProjectGenerationFramework Framework);
+		string GenerateServer(Project Data, ProjectGenerationFramework Framework, bool GenerateReferences);
+		string GenerateClient(Project Data, ProjectGenerationFramework Framework, bool GenerateReferences);
+		Task<string> GenerateServerAsync(Project Data, ProjectGenerationFramework Framework, bool GenerateReferences);
+		Task<string> GenerateClientAsync(Project Data, ProjectGenerationFramework Framework, bool GenerateReferences);
 		void Build(Project Data, bool ClientOnly = false);
 		Task BuildAsync(Project Data, bool ClientOnly = false);
 
