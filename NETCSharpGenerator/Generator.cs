@@ -102,7 +102,8 @@ namespace WCFArchitect.Generators.NET.CS
 			if ((Data.ServerOutputFile == Data.ClientOutputFile))
 				AddMessage(new CompileMessage("GS0007", "The '" + Data.Name + "' project Client and Server Assembly Names are the same. You must specify a different Server or Client Assembly Name.", CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Data.ID));
 
-			var refs = new List<DataType>(ReferenceScan(Data.Namespace));
+			var refs = new List<DataType>(ReferenceScan(Data.Namespace, true));
+			refs.AddRange(ReferenceScan(Data.Namespace, false));
 			if (refs.Count > 0)
 				foreach (DataType dt in refs)
 					if (ReferenceRetrieve(Data, Data.Namespace, dt.ID) == null)
@@ -196,19 +197,23 @@ namespace WCFArchitect.Generators.NET.CS
 			if (!Data.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
 
 			//Scan, verify, and generate references
-			var refs = new List<DataType>(ReferenceScan(Data.Namespace));
-			if (refs.Count > 0)
+			var t = new List<DataType>(ReferenceScan(Data.Namespace, Server));
+			var refs = new List<DataType>();
+			foreach (DataType d in t.Where(a => a.TypeMode == DataTypeMode.Class || a.TypeMode == DataTypeMode.Struct))
+				refs.AddRange(ReferenceChildScan(ReferenceRetrieve(Data, Data.Namespace, d.ID) as Data, Server));
+			refs.AddRange(t);
+			if (refs.Count > 0 && GenerateReferences)
 			{
 				code.AppendLine("\t/**************************************************************************");
 				code.AppendLine("\t*\tDependency Types");
 				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
-				foreach (Projects.Enum e in refs.Where(a => a.GetType() == typeof(Projects.Enum)))
-					EnumGenerator.VerifyCode(e, AddMessage);
-				foreach (Data d in refs.Where(a => a.GetType() == typeof(Data)))
-					DataGenerator.VerifyCode(d, AddMessage);
+				foreach (DataType e in refs.Where(a => a.TypeMode == DataTypeMode.Enum))
+					EnumGenerator.VerifyCode(ReferenceRetrieve(Data, Data.Namespace, e.ID) as Projects.Enum, AddMessage);
+				foreach (DataType d in refs.Where(a => a.TypeMode == DataTypeMode.Class || a.TypeMode == DataTypeMode.Struct))
+					DataGenerator.VerifyCode(ReferenceRetrieve(Data, Data.Namespace, d.ID) as Data, AddMessage);
 				foreach (DataType dt in refs)
-					code.AppendLine(ReferenceGenerate(dt, Data, Server, GenerateReferences, AddMessage));
+					code.AppendLine(ReferenceGenerate(dt, Data, Server, AddMessage));
 			}
 
 			//Generate project
@@ -246,15 +251,19 @@ namespace WCFArchitect.Generators.NET.CS
 			NewMessage(Message.ProjectID, Message);
 		}
 
-		private static IEnumerable<DataType> ReferenceScan(Namespace Scan)
+		private static IEnumerable<DataType> ReferenceScan(Namespace Scan, bool IsServer)
 		{
 			var refs = new List<DataType>();
 
 			foreach (DataElement de in Scan.Data.SelectMany(d => d.Elements))
 			{
-				if (de.DataType.IsTypeReference) refs.Add(de.DataType);
-				if (de.ClientType != null && de.ClientType.IsTypeReference) refs.Add(de.ClientType);
-				if (de.XAMLType != null && de.XAMLType.IsTypeReference) refs.Add(de.XAMLType);
+				if (IsServer && de.DataType.IsTypeReference) refs.Add(de.DataType);
+				if (!IsServer && de.ClientType != null && de.ClientType.IsTypeReference) refs.Add(de.ClientType);
+				if (!IsServer && de.XAMLType != null && de.XAMLType.IsTypeReference)
+				{
+					refs.Add(de.XAMLType);
+					if (!de.HasClientType) refs.Add(de.DataType);
+				}
 			}
 
 			foreach (Service s in Scan.Services)
@@ -274,9 +283,38 @@ namespace WCFArchitect.Generators.NET.CS
 			}
 
 			foreach (Namespace n in Scan.Children)
-				refs.AddRange(ReferenceScan(n).Where(a => refs.All(b => a.ToDeclarationString() != b.ToDeclarationString())));
+				refs.AddRange(ReferenceScan(n, IsServer));
 
-			return refs;
+			return refs.GroupBy(a => a.ID).Select(b => b.First());
+		}
+
+		private static IEnumerable<DataType> ReferenceChildScan(Data t, bool IsServer)
+		{
+			var refs = new List<DataType>();
+
+			if (IsServer)
+			{
+				refs.AddRange(t.Elements.Where(a => (a.DataType.TypeMode == DataTypeMode.Class || a.DataType.TypeMode == DataTypeMode.Struct || a.DataType.TypeMode == DataTypeMode.Enum) && !a.DataType.IsExternalType).Select(de => de.DataType));
+				foreach (Data d in t.Elements.Where(a => (a.DataType.TypeMode == DataTypeMode.Class || a.DataType.TypeMode == DataTypeMode.Struct) && !a.ClientType.IsExternalType).Select(b => b.DataType))
+					refs.AddRange(ReferenceChildScan(d, IsServer));
+			}
+
+			if (!IsServer)
+			{
+				refs.AddRange(t.Elements.Where(a => a.HasClientType && (a.ClientType.TypeMode == DataTypeMode.Class || a.ClientType.TypeMode == DataTypeMode.Struct || a.ClientType.TypeMode == DataTypeMode.Enum) && !a.ClientType.IsExternalType).Select(de => de.ClientType));
+				foreach (Data d in t.Elements.Where(a => a.HasClientType && (a.ClientType.TypeMode == DataTypeMode.Class || a.ClientType.TypeMode == DataTypeMode.Struct) && !a.ClientType.IsExternalType).Select(b => b.ClientType))
+					refs.AddRange(ReferenceChildScan(d, IsServer));
+			}
+
+			if (!IsServer)
+				foreach (DataElement de in t.Elements.Where(a => a.HasXAMLType && (a.XAMLType.TypeMode == DataTypeMode.Class || a.XAMLType.TypeMode == DataTypeMode.Struct || a.XAMLType.TypeMode == DataTypeMode.Enum) && !a.XAMLType.IsExternalType))
+				{
+					refs.Add(de.XAMLType);
+					if (!de.HasClientType) refs.Add(de.XAMLType);
+					if (de.XAMLType.TypeMode == DataTypeMode.Class || de.XAMLType.TypeMode == DataTypeMode.Struct) refs.AddRange(ReferenceChildScan(de.XAMLType as Data, IsServer));
+				}
+
+			return refs.GroupBy(a => a.ID).Select(b => b.First());
 		}
 
 		private static DataType ReferenceRetrieve(Project Project, Namespace Namespace, Guid TypeID)
@@ -295,10 +333,8 @@ namespace WCFArchitect.Generators.NET.CS
 			return !Equals(Namespace, Project.Namespace) ? null : Project.DependencyProjects.Select(dp => ReferenceRetrieve(dp.Project, dp.Project.Namespace, TypeID)).FirstOrDefault(t => t != null);
 		}
 
-		private static string ReferenceGenerate(DataType Reference, Project RefProject, bool Server, bool GenerateReferences, Action<CompileMessage> AddMessage)
+		private static string ReferenceGenerate(DataType Reference, Project RefProject, bool Server, Action<CompileMessage> AddMessage)
 		{
-			if (!GenerateReferences) return "";
-
 			//Get the referenced type
 			DataType typeref = ReferenceRetrieve(RefProject, RefProject.Namespace, Reference.ID);
 			if (typeref == null) return "";

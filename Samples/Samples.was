@@ -2,7 +2,8 @@
 <Solution xmlns:i="http://www.w3.org/2001/XMLSchema-instance" z:Id="1" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/" xmlns="http://schemas.datacontract.org/2004/07/WCFArchitect.Projects">
   <ID>caa5846f-4b5d-4fb9-8f36-0d8965b1982b</ID>
   <Name z:Id="2">Samples</Name>
-  <Projects xmlns:d2p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" z:Id="3" z:Size="1">
+  <Projects xmlns:d2p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" z:Id="3" z:Size="2">
     <d2p1:string z:Id="4">BasicWinRT/BasicWinRT.wap</d2p1:string>
+    <d2p1:string z:Id="5">BasicNET/BasicNET.wap</d2p1:string>
   </Projects>
 </Solution>
