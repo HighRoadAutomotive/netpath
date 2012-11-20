@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleServer", "SampleServe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicWinRT", "BasicWinRT\BasicWinRT.csproj", "{BBBED47B-F6B5-4230-9E15-B18169416A3C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicNET", "BasicNET\BasicNET.csproj", "{0AF48012-484E-44D8-98DF-355BB7203BC5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,16 @@ Global
 		{BBBED47B-F6B5-4230-9E15-B18169416A3C}.Release|x86.ActiveCfg = Release|x86
 		{BBBED47B-F6B5-4230-9E15-B18169416A3C}.Release|x86.Build.0 = Release|x86
 		{BBBED47B-F6B5-4230-9E15-B18169416A3C}.Release|x86.Deploy.0 = Release|x86
+		{0AF48012-484E-44D8-98DF-355BB7203BC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AF48012-484E-44D8-98DF-355BB7203BC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AF48012-484E-44D8-98DF-355BB7203BC5}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{0AF48012-484E-44D8-98DF-355BB7203BC5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0AF48012-484E-44D8-98DF-355BB7203BC5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0AF48012-484E-44D8-98DF-355BB7203BC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AF48012-484E-44D8-98DF-355BB7203BC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AF48012-484E-44D8-98DF-355BB7203BC5}.Release|ARM.ActiveCfg = Release|Any CPU
+		{0AF48012-484E-44D8-98DF-355BB7203BC5}.Release|x64.ActiveCfg = Release|Any CPU
+		{0AF48012-484E-44D8-98DF-355BB7203BC5}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

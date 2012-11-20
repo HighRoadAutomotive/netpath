@@ -173,35 +173,6 @@ namespace WCFArchitect.Generators.NET.CS
 			return code.ToString();
 		}
 
-		public static string GenerateProxyCodeRT8(Data o)
-		{
-			var code = new StringBuilder();
-			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-			foreach (DataType dt in o.ClientType != null ? o.ClientType.KnownTypes : o.KnownTypes)
-				code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
-			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute]");
-			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI));
-			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, false, o.HasWinFormsBindings)));
-			code.AppendLine("\t{");
-			code.AppendLine("\t\t//Automatic Data Update Support");
-			code.AppendLine(GenerateProxyAutoDataCode(o));
-			if (o.HasWinFormsBindings)
-			{
-				code.AppendLine("\t\tpublic event PropertyChangedEventHandler PropertyChanged;");
-				code.AppendLine("\t\tprivate void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberNameAttribute] string propertyName = \"\")");
-				code.AppendLine("\t\t{");
-				code.AppendLine("\t\t\tif (PropertyChanged != null)");
-				code.AppendLine("\t\t\t\tPropertyChanged(this, new PropertyChangedEventArgs(propertyName));");
-				code.AppendLine("\t\t}");
-				code.AppendLine();
-			}
-			foreach (DataElement de in o.Elements)
-				code.Append(GenerateElementProxyCode45(de));
-			code.AppendLine("\t}");
-			return code.ToString();
-		}
-
 		public static string GenerateProxyAutoDataCode(Data o)
 		{
 			if (!o.Parent.Owner.EnableExperimental) return "";

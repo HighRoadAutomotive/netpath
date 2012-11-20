@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns:i="http://www.w3.org/2001/XMLSchema-instance" z:Id="1" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/" xmlns="http://schemas.datacontract.org/2004/07/WCFArchitect.Projects">
-  <IsSelected>true</IsSelected>
+  <IsSelected>false</IsSelected>
   <ClientGenerationTargets z:Id="2" z:Size="1">
     <ProjectGenerationTarget z:Id="3">
       <Framework>WIN8</Framework>
+      <GenerateReferences>true</GenerateReferences>
       <ID>9c2163b4-0750-49b9-943b-cec2245bb15c</ID>
       <IsEnabled>true</IsEnabled>
       <IsServerPath>false</IsServerPath>
@@ -776,7 +777,7 @@
     <FullName z:Ref="12" i:nil="true" />
     <Hosts z:Id="101" z:Size="1">
       <Host z:Id="102">
-        <IsSelected>true</IsSelected>
+        <IsSelected>false</IsSelected>
         <Abstract>false</Abstract>
         <ClientType i:nil="true" />
         <CollectionGenericType i:nil="true" />
@@ -1160,6 +1161,7 @@
   <ServerGenerationTargets z:Id="156" z:Size="1">
     <ProjectGenerationTarget z:Id="157">
       <Framework>NET45</Framework>
+      <GenerateReferences>true</GenerateReferences>
       <ID>a1f5220d-0127-4bd9-ba41-92d90336120b</ID>
       <IsEnabled>true</IsEnabled>
       <IsServerPath>true</IsServerPath>
