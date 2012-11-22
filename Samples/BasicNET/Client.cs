@@ -54,16 +54,58 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 	[System.Diagnostics.DebuggerStepThroughAttribute]
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect .NET CSharp Generator - BETA", "2.0.2000.0")]
 	[DataContract(Name = "Customer", Namespace = "http://tempuri.org/")]
-	public partial class Customer : System.Runtime.Serialization.IExtensibleDataObject
+	public partial class Customer : System.Runtime.Serialization.IExtensibleDataObject, IObjectReference
 	{
 		//Automatic Data Update Support
+		[DataMember()] private bool __isautoupdateobj;
+		public bool IsAutoUpdateObject { get { return __isautoupdateobj; } }
+		public CustomerXAML XAMLObject { get; private set; }
+		private readonly System.Threading.ReaderWriterLockSlim __autodatalock = new System.Threading.ReaderWriterLockSlim();
+		private static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, WCFArchitect.SampleServer.BasicWinRT.Customer> __autodata;
+		static Customer()
+		{
+			__autodata = new System.Collections.Concurrent.ConcurrentDictionary<Guid, WCFArchitect.SampleServer.BasicWinRT.Customer>();
+		}
+		[OnDeserialized]
+		private void OnDeserialized(StreamingContext context)
+		{
+			if (IsAutoUpdateObject) return;
+			__autodata.TryAdd(ID, this);
+			XAMLObject = this;
+		}
+		~Customer()
+		{
+			WCFArchitect.SampleServer.BasicWinRT.Customer t;
+			__autodata.TryRemove(ID, out t);
+		}
+		public object GetRealObject(StreamingContext context)
+		{
+			if (IsAutoUpdateObject)
+			{
+				Customer r;
+				if (__autodata.TryGetValue(ID, out r))
+				{
+					r.Name = Name;
+				}
+				return this;
+			}
+			Customer t;
+			return __autodata.TryGetValue(ID, out t) ? t : this;
+		}
+		public Customer GetAutoUpdateObject()
+		{
+			var au = new Customer();
+			if (NameChanged) au.Name = Name;
+			return au;
+		}
 
 		public System.Runtime.Serialization.ExtensionDataObject ExtensionData { get; set; }
 
 		private Guid IDField;
-		[DataMember(Name = "ID")] public Guid ID { get { return IDField; } set { IDField = value; } }
+		[DataMember(Name = "ID")] public Guid ID { get { __autodatalock.EnterReadLock(); try { return IDField; } finally { __autodatalock.ExitReadLock(); } } protected set { __autodatalock.EnterWriteLock(); try { IDField = value; } finally { __autodatalock.ExitWriteLock(); } } }
+		private bool NameChanged;
 		private string NameField;
-		[DataMember(Name = "Name")] public string Name { get { return NameField; } set { NameField = value; } }
+		[DataMember(Name = "Name")] public string Name { get { __autodatalock.EnterReadLock(); try { return NameField; } finally { __autodatalock.ExitReadLock(); } } set { __autodatalock.EnterWriteLock(); try { NameField = value; NameChanged = true; } finally { __autodatalock.ExitWriteLock(); } } }
 		private string AddressLine1Field;
 		[DataMember(Name = "AddressLine1")] public string AddressLine1 { get { return AddressLine1Field; } set { AddressLine1Field = value; } }
 		private string AddressLine2Field;
@@ -81,24 +123,28 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 
 	//XAML Integration Object for the Customer DTO
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect .NET CSharp Generator - BETA", "2.0.2000.0")]
-	public partial class CustomerXAML : DependencyObject
+	public partial class CustomerXAML : DependencyObjectEx
 	{
+		public Customer DataObject { get; private set; }
+
 		//Properties
-		public Guid ID { get { return (Guid)GetValue(IDProperty); } set { SetValue(IDProperty, value); } }
-		public static readonly DependencyProperty IDProperty = DependencyProperty.Register("ID", typeof(Guid), typeof(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML));
-		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
+		public Guid ID { get { return (Guid)GetValueThreaded(IDProperty); } protected set { SetValueThreaded(IDPropertyKey, value); } }
+		private static readonly DependencyPropertyKey IDPropertyKey = DependencyProperty.RegisterReadOnly("ID", typeof(Guid), typeof(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML), null);
+		public static readonly DependencyProperty IDProperty = IDPropertyKey.DependencyProperty;
+		private bool NameChanged;
+		public string Name { get { return (string)GetValueThreaded(NameProperty); } set { SetValueThreaded(NameProperty, value); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML));
-		public string AddressLine1 { get { return (string)GetValue(AddressLine1Property); } set { SetValue(AddressLine1Property, value); } }
+		public string AddressLine1 { get { return (string)GetValueThreaded(AddressLine1Property); } set { SetValueThreaded(AddressLine1Property, value); } }
 		public static readonly DependencyProperty AddressLine1Property = DependencyProperty.Register("AddressLine1", typeof(string), typeof(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML));
-		public string AddressLine2 { get { return (string)GetValue(AddressLine2Property); } set { SetValue(AddressLine2Property, value); } }
+		public string AddressLine2 { get { return (string)GetValueThreaded(AddressLine2Property); } set { SetValueThreaded(AddressLine2Property, value); } }
 		public static readonly DependencyProperty AddressLine2Property = DependencyProperty.Register("AddressLine2", typeof(string), typeof(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML));
-		public string City { get { return (string)GetValue(CityProperty); } set { SetValue(CityProperty, value); } }
+		public string City { get { return (string)GetValueThreaded(CityProperty); } set { SetValueThreaded(CityProperty, value); } }
 		public static readonly DependencyProperty CityProperty = DependencyProperty.Register("City", typeof(string), typeof(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML));
-		public string State { get { return (string)GetValue(StateProperty); } set { SetValue(StateProperty, value); } }
+		public string State { get { return (string)GetValueThreaded(StateProperty); } set { SetValueThreaded(StateProperty, value); } }
 		public static readonly DependencyProperty StateProperty = DependencyProperty.Register("State", typeof(string), typeof(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML));
-		public int ZipCode { get { return (int)GetValue(ZipCodeProperty); } set { SetValue(ZipCodeProperty, value); } }
+		public int ZipCode { get { return (int)GetValueThreaded(ZipCodeProperty); } set { SetValueThreaded(ZipCodeProperty, value); } }
 		public static readonly DependencyProperty ZipCodeProperty = DependencyProperty.Register("ZipCode", typeof(int), typeof(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML));
-		public WCFArchitect.SampleServer.BasicWinRT.Colors Color { get { return (WCFArchitect.SampleServer.BasicWinRT.Colors)GetValue(ColorProperty); } set { SetValue(ColorProperty, value); } }
+		public WCFArchitect.SampleServer.BasicWinRT.Colors Color { get { return (WCFArchitect.SampleServer.BasicWinRT.Colors)GetValueThreaded(ColorProperty); } set { SetValueThreaded(ColorProperty, value); } }
 		public static readonly DependencyProperty ColorProperty = DependencyProperty.Register("Color", typeof(WCFArchitect.SampleServer.BasicWinRT.Colors), typeof(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML));
 
 		//Implicit Conversion
@@ -126,6 +172,7 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 
 		public CustomerXAML(WCFArchitect.SampleServer.BasicWinRT.Customer Data)
 		{
+			DataObject = Data;
 			ID = Data.ID;
 			Name = Data.Name;
 			AddressLine1 = Data.AddressLine1;
@@ -140,7 +187,6 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 		public static Customer ConvertFromXAMLObject(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML Data)
 		{
 			WCFArchitect.SampleServer.BasicWinRT.Customer DTO = new WCFArchitect.SampleServer.BasicWinRT.Customer();
-			DTO.ID = Data.ID;
 			DTO.Name = Data.Name;
 			DTO.AddressLine1 = Data.AddressLine1;
 			DTO.AddressLine2 = Data.AddressLine2;

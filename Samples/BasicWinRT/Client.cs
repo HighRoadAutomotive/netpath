@@ -58,11 +58,29 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 	public partial class Customer
 	{
 		//Automatic Data Update Support
+		private readonly System.Threading.ReaderWriterLockSlim __autodatalock = new System.Threading.ReaderWriterLockSlim();
+		private static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, WCFArchitect.SampleServer.BasicWinRT.Customer> __autodata;
+		static Customer()
+		{
+			__autodata = new System.Collections.Concurrent.ConcurrentDictionary<Guid, WCFArchitect.SampleServer.BasicWinRT.Customer>();
+		}
+		[OnDeserialized]
+		private void OnDeserialized(StreamingContext context)
+		{
+			__autodata.TryAdd(ID, this);
+		}
+		~Customer()
+		{
+			WCFArchitect.SampleServer.BasicWinRT.Customer t;
+			__autodata.TryRemove(ID, out t);
+		}
 
+		private bool IDChanged;
 		private Guid IDField;
-		[DataMember(Name = "ID")] public Guid ID { get { return IDField; } set { IDField = value; } }
+		[DataMember(Name = "ID")] public Guid ID { get { __autodatalock.EnterReadLock(); try { return IDField; } finally { __autodatalock.ExitReadLock(); } } protected set { __autodatalock.EnterWriteLock(); try { IDField = value; IDChanged = true; } finally { __autodatalock.ExitWriteLock(); } } }
+		private bool NameChanged;
 		private string NameField;
-		[DataMember(Name = "Name")] public string Name { get { return NameField; } set { NameField = value; } }
+		[DataMember(Name = "Name")] public string Name { get { __autodatalock.EnterReadLock(); try { return NameField; } finally { __autodatalock.ExitReadLock(); } } set { __autodatalock.EnterWriteLock(); try { NameField = value; NameChanged = true; } finally { __autodatalock.ExitWriteLock(); } } }
 		private string AddressLine1Field;
 		[DataMember(Name = "AddressLine1")] public string AddressLine1 { get { return AddressLine1Field; } set { AddressLine1Field = value; } }
 		private string AddressLine2Field;
@@ -75,11 +93,13 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 		[DataMember(Name = "ZipCode")] public int ZipCode { get { return ZipCodeField; } set { ZipCodeField = value; } }
 		private WCFArchitect.SampleServer.BasicWinRT.Colors ColorField;
 		[DataMember(Name = "Color")] public WCFArchitect.SampleServer.BasicWinRT.Colors Color { get { return ColorField; } set { ColorField = value; } }
+		private int TestIntegerField;
+		[DataMember(Name = "TestInteger")] public int TestInteger { get { return TestIntegerField; } set { TestIntegerField = value; } }
 	}
 
 	//XAML Integration Object for the Customer DTO
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect WinRT CSharp Generator - BETA", "2.0.2000.0")]
-	public partial class CustomerXAML : DependencyObject
+	public partial class CustomerXAML : DependencyObjectEx
 	{
 		//Properties
 		public Guid ID { get { return (Guid)GetValue(IDProperty); } set { SetValue(IDProperty, value); } }
@@ -98,6 +118,8 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 		public static readonly DependencyProperty ZipCodeProperty = DependencyProperty.Register("ZipCode", typeof(int), typeof(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML), null);
 		public WCFArchitect.SampleServer.BasicWinRT.Colors Color { get { return (WCFArchitect.SampleServer.BasicWinRT.Colors)GetValue(ColorProperty); } set { SetValue(ColorProperty, value); } }
 		public static readonly DependencyProperty ColorProperty = DependencyProperty.Register("Color", typeof(WCFArchitect.SampleServer.BasicWinRT.Colors), typeof(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML), null);
+		public int TestInteger { get { return (int)GetValue(TestIntegerProperty); } set { SetValue(TestIntegerProperty, value); } }
+		public static readonly DependencyProperty TestIntegerProperty = DependencyProperty.Register("TestInteger", typeof(int), typeof(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML), null);
 
 		//Implicit Conversion
 		public static implicit operator WCFArchitect.SampleServer.BasicWinRT.Customer(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML Data)
@@ -132,13 +154,13 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 			State = Data.State;
 			ZipCode = Data.ZipCode;
 			Color = Data.Color;
+			TestInteger = Data.TestInteger;
 		}
 
 		//XAML/DTO Conversion Functions
 		public static Customer ConvertFromXAMLObject(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML Data)
 		{
 			WCFArchitect.SampleServer.BasicWinRT.Customer DTO = new WCFArchitect.SampleServer.BasicWinRT.Customer();
-			DTO.ID = Data.ID;
 			DTO.Name = Data.Name;
 			DTO.AddressLine1 = Data.AddressLine1;
 			DTO.AddressLine2 = Data.AddressLine2;
@@ -146,6 +168,7 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 			DTO.State = Data.State;
 			DTO.ZipCode = Data.ZipCode;
 			DTO.Color = Data.Color;
+			DTO.TestInteger = Data.TestInteger;
 			return DTO;
 		}
 
@@ -160,6 +183,7 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 			XAML.State = Data.State;
 			XAML.ZipCode = Data.ZipCode;
 			XAML.Color = Data.Color;
+			XAML.TestInteger = Data.TestInteger;
 			return XAML;
 		}
 	}

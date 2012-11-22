@@ -15,7 +15,7 @@
   <ClientOutputFile z:Id="5">Client</ClientOutputFile>
   <DependencyProjects z:Id="6" z:Size="0" />
   <EnableDocumentationWarnings>false</EnableDocumentationWarnings>
-  <EnableExperimental>false</EnableExperimental>
+  <EnableExperimental>true</EnableExperimental>
   <ExternalTypes z:Id="7" z:Size="0" />
   <ID>0b832ba8-5f23-4ad4-9667-243ac3c90977</ID>
   <Name z:Id="8">BasicWinRT</Name>
@@ -155,7 +155,7 @@
         <Sealed>false</Sealed>
         <TypeMode>Class</TypeMode>
         <AutoDataBatchCount>0</AutoDataBatchCount>
-        <AutoDataEnabled>false</AutoDataEnabled>
+        <AutoDataEnabled>true</AutoDataEnabled>
         <Documentation z:Id="30">
           <Example z:Ref="21" i:nil="true" />
           <IsClass>true</IsClass>
@@ -173,7 +173,7 @@
             <AttachedBrowsable>false</AttachedBrowsable>
             <AttachedBrowsableIncludeDescendants>false</AttachedBrowsableIncludeDescendants>
             <AttachedTargetTypes z:Ref="21" i:nil="true" />
-            <AutoDataEnabled>false</AutoDataEnabled>
+            <AutoDataEnabled>true</AutoDataEnabled>
             <AutoDataTimeout>0</AutoDataTimeout>
             <AutoDataUpdateMode>Immediate</AutoDataUpdateMode>
             <ClientName z:Ref="21" i:nil="true" />
@@ -217,12 +217,12 @@
             <HasXAMLType>true</HasXAMLType>
             <ID>8f6d2a62-dcf8-4a34-b32d-68f2660f0a2d</ID>
             <IsAttached>false</IsAttached>
-            <IsAutoDataID>false</IsAutoDataID>
+            <IsAutoDataID>true</IsAutoDataID>
             <IsDataMember>true</IsDataMember>
             <IsHidden>false</IsHidden>
-            <IsReadOnly>false</IsReadOnly>
+            <IsReadOnly>true</IsReadOnly>
             <IsRequired>false</IsRequired>
-            <IsSelected>false</IsSelected>
+            <IsSelected>true</IsSelected>
             <Order>-1</Order>
             <Owner z:Ref="26" i:nil="true" />
             <ProtocolBufferEnabled>false</ProtocolBufferEnabled>
@@ -234,7 +234,7 @@
             <AttachedBrowsable>false</AttachedBrowsable>
             <AttachedBrowsableIncludeDescendants>false</AttachedBrowsableIncludeDescendants>
             <AttachedTargetTypes z:Ref="21" i:nil="true" />
-            <AutoDataEnabled>false</AutoDataEnabled>
+            <AutoDataEnabled>true</AutoDataEnabled>
             <AutoDataTimeout>0</AutoDataTimeout>
             <AutoDataUpdateMode>Immediate</AutoDataUpdateMode>
             <ClientName z:Ref="21" i:nil="true" />
@@ -716,7 +716,7 @@
             <IsHidden>false</IsHidden>
             <IsReadOnly>false</IsReadOnly>
             <IsRequired>false</IsRequired>
-            <IsSelected>true</IsSelected>
+            <IsSelected>false</IsSelected>
             <Order>-1</Order>
             <Owner z:Ref="26" i:nil="true" />
             <ProtocolBufferEnabled>false</ProtocolBufferEnabled>
@@ -749,7 +749,7 @@
               <IsExternalType>true</IsExternalType>
               <IsTypeReference>false</IsTypeReference>
               <KnownTypes i:nil="true" />
-              <Name z:Id="97">DependencyObject</Name>
+              <Name z:Id="97">DependencyObjectEx</Name>
               <Parent i:nil="true" />
               <Partial>false</Partial>
               <Primitive>None</Primitive>

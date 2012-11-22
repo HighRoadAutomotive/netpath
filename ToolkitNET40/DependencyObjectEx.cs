@@ -33,6 +33,11 @@ namespace System.Windows
 			Application.Current.Dispatcher.Invoke(new Action(() => SetValue(dp, value)), DispatcherPriority.Normal);
 		}
 
+		public void SetValueThreaded(DependencyPropertyKey dp, object value)
+		{
+			if (Application.Current.Dispatcher.CheckAccess()) SetValue(dp, value);
+			Application.Current.Dispatcher.Invoke(new Action(() => SetValue(dp, value)), DispatcherPriority.Normal);
+		}
 
 		public object GetValueExternal<T>(DependencyExternal<T> de)
 		{

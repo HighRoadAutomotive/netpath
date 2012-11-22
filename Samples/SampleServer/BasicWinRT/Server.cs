@@ -53,7 +53,7 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 	[DataContract(Name = "Customer", Namespace = "http://tempuri.org/WCFArchitect/SampleServer/BasicWinRT/")]
 	public partial class Customer
 	{
-		[DataMember(Name = "ID")] public Guid ID { get; set; }
+		[DataMember(Name = "ID")] public Guid ID { get; protected set; }
 		[DataMember(Name = "Name")] public string Name { get; set; }
 		[DataMember(Name = "AddressLine1")] public string AddressLine1 { get; set; }
 		[DataMember(Name = "AddressLine2")] public string AddressLine2 { get; set; }
@@ -61,6 +61,7 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 		[DataMember(Name = "State")] public string State { get; set; }
 		[DataMember(Name = "ZipCode")] public int ZipCode { get; set; }
 		[DataMember(Name = "Color")] public WCFArchitect.SampleServer.BasicWinRT.Colors Color { get; set; }
+		[DataMember(Name = "TestInteger")] public int TestInteger { get; set; }
 	}
 
 
