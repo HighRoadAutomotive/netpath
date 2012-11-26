@@ -135,7 +135,7 @@ namespace WCFArchitect.Interface
 
 		private void DeleteProject_Click(object sender, RoutedEventArgs e)
 		{
-			DialogService.ShowMessageDialog(Project, "Permanently Delete Project?", "This project will be removed from the solution. Would you like to delete it from the disk as well?", new DialogAction("Yes", KillProject), new DialogAction("No", RemoveProject, true));
+			DialogService.ShowMessageDialog(Project, "Permanently Delete Project?", "This project will be removed from the solution. Would you like to delete it from the disk as well?", new DialogAction("Yes", KillProject), new DialogAction("No", RemoveProject, true), new DialogAction("Cancel", false, true));
 		}
 
 		private void BuildProject_Click(object sender, RoutedEventArgs e)
