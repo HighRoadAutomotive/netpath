@@ -75,10 +75,9 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 			__autodata.TryRemove(ID, out t);
 		}
 
-		private bool IDChanged;
 		private Guid IDField;
 		[DataMember(Name = "ID")] public Guid ID { get { __autodatalock.EnterReadLock(); try { return IDField; } finally { __autodatalock.ExitReadLock(); } } protected set { __autodatalock.EnterWriteLock(); try { IDField = value; IDChanged = true; } finally { __autodatalock.ExitWriteLock(); } } }
-		private bool NameChanged;
+		[DataMember]private bool NameChanged;
 		private string NameField;
 		[DataMember(Name = "Name")] public string Name { get { __autodatalock.EnterReadLock(); try { return NameField; } finally { __autodatalock.ExitReadLock(); } } set { __autodatalock.EnterWriteLock(); try { NameField = value; NameChanged = true; } finally { __autodatalock.ExitWriteLock(); } } }
 		private string AddressLine1Field;
@@ -93,8 +92,6 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 		[DataMember(Name = "ZipCode")] public int ZipCode { get { return ZipCodeField; } set { ZipCodeField = value; } }
 		private WCFArchitect.SampleServer.BasicWinRT.Colors ColorField;
 		[DataMember(Name = "Color")] public WCFArchitect.SampleServer.BasicWinRT.Colors Color { get { return ColorField; } set { ColorField = value; } }
-		private int TestIntegerField;
-		[DataMember(Name = "TestInteger")] public int TestInteger { get { return TestIntegerField; } set { TestIntegerField = value; } }
 	}
 
 	//XAML Integration Object for the Customer DTO
@@ -118,8 +115,6 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 		public static readonly DependencyProperty ZipCodeProperty = DependencyProperty.Register("ZipCode", typeof(int), typeof(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML), null);
 		public WCFArchitect.SampleServer.BasicWinRT.Colors Color { get { return (WCFArchitect.SampleServer.BasicWinRT.Colors)GetValue(ColorProperty); } set { SetValue(ColorProperty, value); } }
 		public static readonly DependencyProperty ColorProperty = DependencyProperty.Register("Color", typeof(WCFArchitect.SampleServer.BasicWinRT.Colors), typeof(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML), null);
-		public int TestInteger { get { return (int)GetValue(TestIntegerProperty); } set { SetValue(TestIntegerProperty, value); } }
-		public static readonly DependencyProperty TestIntegerProperty = DependencyProperty.Register("TestInteger", typeof(int), typeof(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML), null);
 
 		//Implicit Conversion
 		public static implicit operator WCFArchitect.SampleServer.BasicWinRT.Customer(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML Data)
@@ -154,7 +149,6 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 			State = Data.State;
 			ZipCode = Data.ZipCode;
 			Color = Data.Color;
-			TestInteger = Data.TestInteger;
 		}
 
 		//XAML/DTO Conversion Functions
@@ -168,7 +162,6 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 			DTO.State = Data.State;
 			DTO.ZipCode = Data.ZipCode;
 			DTO.Color = Data.Color;
-			DTO.TestInteger = Data.TestInteger;
 			return DTO;
 		}
 
@@ -183,7 +176,6 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 			XAML.State = Data.State;
 			XAML.ZipCode = Data.ZipCode;
 			XAML.Color = Data.Color;
-			XAML.TestInteger = Data.TestInteger;
 			return XAML;
 		}
 	}
