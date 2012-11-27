@@ -54,7 +54,7 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 	public partial class Customer
 	{
 		[DataMember(Name = "ID")] public Guid ID { get; protected set; }
-		[DataMember]private bool NameChanged;
+		[DataMember] private bool NameChanged;
 		[DataMember(Name = "Name")] public string Name { get; set; }
 		[DataMember(Name = "AddressLine1")] public string AddressLine1 { get; set; }
 		[DataMember(Name = "AddressLine2")] public string AddressLine2 { get; set; }

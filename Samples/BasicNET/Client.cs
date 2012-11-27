@@ -113,7 +113,7 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 
 		private Guid IDField;
 		[DataMember(Name = "ID")] public Guid ID { get { __autodatalock.EnterReadLock(); try { return IDField; } finally { __autodatalock.ExitReadLock(); } } protected set { __autodatalock.EnterWriteLock(); try { IDField = value; } finally { __autodatalock.ExitWriteLock(); } } }
-		[DataMember]private bool NameChanged;
+		[DataMember] private bool NameChanged;
 		private string NameField;
 		[DataMember(Name = "Name")] public string Name { get { __autodatalock.EnterReadLock(); try { return NameField; } finally { __autodatalock.ExitReadLock(); } } set { __autodatalock.EnterWriteLock(); try { NameField = value; NameChanged = true; } finally { __autodatalock.ExitWriteLock(); } } }
 		private string AddressLine1Field;
@@ -135,12 +135,20 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect .NET CSharp Generator - BETA", "2.0.2000.0")]
 	public partial class CustomerXAML : DependencyObjectEx
 	{
+		public WCFArchitect.SampleServer.BasicWinRT.Customer DataObject { get; set; }
+
 		//Properties
 		public Guid ID { get { return (Guid)GetValueThreaded(IDProperty); } protected set { SetValueThreaded(IDPropertyKey, value); } }
 		private static readonly DependencyPropertyKey IDPropertyKey = DependencyProperty.RegisterReadOnly("ID", typeof(Guid), typeof(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML), null);
 		public static readonly DependencyProperty IDProperty = IDPropertyKey.DependencyProperty;
 		public string Name { get { return (string)GetValueThreaded(NameProperty); } set { SetValueThreaded(NameProperty, value); } }
-		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML));
+		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML), new PropertyMetadata(NameChangedCallback));
+		private static void NameChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as WCFArchitect.SampleServer.BasicWinRT.CustomerXAML;
+			if (t == null) return;
+			t.DataObject.Name = (string) e.NewValue;
+		}
 		public string AddressLine1 { get { return (string)GetValueThreaded(AddressLine1Property); } set { SetValueThreaded(AddressLine1Property, value); } }
 		public static readonly DependencyProperty AddressLine1Property = DependencyProperty.Register("AddressLine1", typeof(string), typeof(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML));
 		public string AddressLine2 { get { return (string)GetValueThreaded(AddressLine2Property); } set { SetValueThreaded(AddressLine2Property, value); } }

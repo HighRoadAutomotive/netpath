@@ -1172,7 +1172,7 @@
   <ServerOutputFile z:Id="159">Server</ServerOutputFile>
   <ServiceSerializer>Auto</ServiceSerializer>
   <SolutionPath i:nil="true" />
-  <UsingNamespaces z:Id="160" z:Size="19">
+  <UsingNamespaces z:Id="160" z:Size="20">
     <ProjectUsingNamespace z:Id="161">
       <Client>true</Client>
       <ID>bc803178-0322-4acf-8bca-64084a2e9795</ID>
@@ -1359,6 +1359,16 @@
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>false</NET>
       <Namespace z:Id="198">Windows.UI.Xaml</Namespace>
+      <RT>true</RT>
+      <SL>false</SL>
+      <Server>false</Server>
+    </ProjectUsingNamespace>
+    <ProjectUsingNamespace z:Id="199">
+      <Client>true</Client>
+      <ID>447b32bd-9e01-4aa0-a845-f4f3dd87e1c2</ID>
+      <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
+      <NET>false</NET>
+      <Namespace z:Id="200">WCFArchitect.Toolkit.WinRT</Namespace>
       <RT>true</RT>
       <SL>false</SL>
       <Server>false</Server>

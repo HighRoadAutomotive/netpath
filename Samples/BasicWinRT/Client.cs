@@ -23,6 +23,7 @@ using System.ServiceModel.Description;
 using System.Text;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
+using WCFArchitect.Toolkit.WinRT;
 
 [assembly: System.Runtime.Serialization.ContractNamespaceAttribute("http://tempuri.org/WCFArchitect/SampleServer/BasicWinRT/", ClrNamespace="WCFArchitect.SampleServer.BasicWinRT")]
 
@@ -77,7 +78,7 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 
 		private Guid IDField;
 		[DataMember(Name = "ID")] public Guid ID { get { __autodatalock.EnterReadLock(); try { return IDField; } finally { __autodatalock.ExitReadLock(); } } protected set { __autodatalock.EnterWriteLock(); try { IDField = value; IDChanged = true; } finally { __autodatalock.ExitWriteLock(); } } }
-		[DataMember]private bool NameChanged;
+		[DataMember] private bool NameChanged;
 		private string NameField;
 		[DataMember(Name = "Name")] public string Name { get { __autodatalock.EnterReadLock(); try { return NameField; } finally { __autodatalock.ExitReadLock(); } } set { __autodatalock.EnterWriteLock(); try { NameField = value; NameChanged = true; } finally { __autodatalock.ExitWriteLock(); } } }
 		private string AddressLine1Field;
