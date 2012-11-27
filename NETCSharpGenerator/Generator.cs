@@ -295,7 +295,7 @@ namespace WCFArchitect.Generators.NET.CS
 			if (IsServer)
 			{
 				refs.AddRange(t.Elements.Where(a => (a.DataType.TypeMode == DataTypeMode.Class || a.DataType.TypeMode == DataTypeMode.Struct || a.DataType.TypeMode == DataTypeMode.Enum) && !a.DataType.IsExternalType).Select(de => de.DataType));
-				foreach (Data d in t.Elements.Where(a => (a.DataType.TypeMode == DataTypeMode.Class || a.DataType.TypeMode == DataTypeMode.Struct) && !a.ClientType.IsExternalType).Select(b => b.DataType))
+				foreach (Data d in t.Elements.Where(a => (a.DataType.TypeMode == DataTypeMode.Class || a.DataType.TypeMode == DataTypeMode.Struct) && !a.DataType.IsExternalType).Select(b => b.DataType))
 					refs.AddRange(ReferenceChildScan(d, IsServer));
 			}
 
