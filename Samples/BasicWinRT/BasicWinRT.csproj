@@ -135,11 +135,6 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="WCFArchitect.Toolkit.WinRT">
-      <HintPath>..\..\Build\Toolkit\WCFArchitect.Toolkit.WinRT.winmd</HintPath>
-    </Reference>
-  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
   </PropertyGroup>

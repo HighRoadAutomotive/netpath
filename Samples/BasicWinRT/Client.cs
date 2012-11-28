@@ -58,6 +58,8 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 	[DataContract(Name = "Customer", Namespace = "http://tempuri.org/")]
 	public partial class Customer
 	{
+		public WCFArchitect.SampleServer.BasicWinRT.CustomerXAML XAMLObject { get; private set; }
+
 		//Automatic Data Update Support
 		private readonly System.Threading.ReaderWriterLockSlim __autodatalock = new System.Threading.ReaderWriterLockSlim();
 		private static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, WCFArchitect.SampleServer.BasicWinRT.Customer> __autodata;
@@ -74,6 +76,24 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 		{
 			WCFArchitect.SampleServer.BasicWinRT.Customer t;
 			__autodata.TryRemove(ID, out t);
+		}
+
+		//Constuctors
+		public Customer()
+		{
+			XAMLObject = this;
+		}
+		public Customer(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML Data)
+		{
+			XAMLObject = Data;
+			ID = Data.ID;
+			Name = Data.Name;
+			AddressLine1 = Data.AddressLine1;
+			AddressLine2 = Data.AddressLine2;
+			City = Data.City;
+			State = Data.State;
+			ZipCode = Data.ZipCode;
+			Color = Data.Color;
 		}
 
 		private Guid IDField;
@@ -99,6 +119,8 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect WinRT CSharp Generator - BETA", "2.0.2000.0")]
 	public partial class CustomerXAML : DependencyObjectEx
 	{
+		public WCFArchitect.SampleServer.BasicWinRT.Customer DataObject { get; private set; }
+
 		//Properties
 		public Guid ID { get { return (Guid)GetValue(IDProperty); } set { SetValue(IDProperty, value); } }
 		public static readonly DependencyProperty IDProperty = DependencyProperty.Register("ID", typeof(Guid), typeof(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML), null);
@@ -142,6 +164,7 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 
 		public CustomerXAML(WCFArchitect.SampleServer.BasicWinRT.Customer Data)
 		{
+			DataObject = Data;
 			ID = Data.ID;
 			Name = Data.Name;
 			AddressLine1 = Data.AddressLine1;
@@ -155,29 +178,14 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 		//XAML/DTO Conversion Functions
 		public static Customer ConvertFromXAMLObject(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML Data)
 		{
-			WCFArchitect.SampleServer.BasicWinRT.Customer DTO = new WCFArchitect.SampleServer.BasicWinRT.Customer();
-			DTO.Name = Data.Name;
-			DTO.AddressLine1 = Data.AddressLine1;
-			DTO.AddressLine2 = Data.AddressLine2;
-			DTO.City = Data.City;
-			DTO.State = Data.State;
-			DTO.ZipCode = Data.ZipCode;
-			DTO.Color = Data.Color;
-			return DTO;
+			if (Data.DataObject != null) return Data.DataObject;
+			return new WCFArchitect.SampleServer.BasicWinRT.Customer(Data);
 		}
 
 		public static CustomerXAML ConvertToXAMLObject(WCFArchitect.SampleServer.BasicWinRT.Customer Data)
 		{
-			WCFArchitect.SampleServer.BasicWinRT.CustomerXAML XAML = new WCFArchitect.SampleServer.BasicWinRT.CustomerXAML();
-			XAML.ID = Data.ID;
-			XAML.Name = Data.Name;
-			XAML.AddressLine1 = Data.AddressLine1;
-			XAML.AddressLine2 = Data.AddressLine2;
-			XAML.City = Data.City;
-			XAML.State = Data.State;
-			XAML.ZipCode = Data.ZipCode;
-			XAML.Color = Data.Color;
-			return XAML;
+			if (Data.XAMLObject != null) return Data.XAMLObject;
+			return new WCFArchitect.SampleServer.BasicWinRT.CustomerXAML(Data);
 		}
 	}
 

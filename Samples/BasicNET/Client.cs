@@ -56,10 +56,11 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 	[DataContract(Name = "Customer", Namespace = "http://tempuri.org/")]
 	public partial class Customer : System.Runtime.Serialization.IExtensibleDataObject
 	{
+		public WCFArchitect.SampleServer.BasicWinRT.CustomerXAML XAMLObject { get; private set; }
+
 		//Automatic Data Update Support
 		[DataMember] private bool __isautoupdateobj;
 		public bool IsAutoUpdateObject { get { return __isautoupdateobj; } }
-		public WCFArchitect.SampleServer.BasicWinRT.CustomerXAML XAMLObject { get; private set; }
 		private readonly System.Threading.ReaderWriterLockSlim __autodatalock = new System.Threading.ReaderWriterLockSlim();
 		private static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, WCFArchitect.SampleServer.BasicWinRT.Customer> __autodata;
 		static Customer()
@@ -97,19 +98,29 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 		{
 			var au = new WCFArchitect.SampleServer.BasicWinRT.Customer();
 			au.__isautoupdateobj = true;
-			__autodatalock.EnterReadLock();
-			try
-			{
-				if (NameChanged) au.Name = Name;
-				return au;
-			}
-			finally
-			{
-				__autodatalock.ExitReadLock();
-			}
+			if (NameChanged) au.Name = Name;
+			return au;
 		}
 
 		public System.Runtime.Serialization.ExtensionDataObject ExtensionData { get; set; }
+
+		//Constuctors
+		public Customer()
+		{
+			XAMLObject = this;
+		}
+		public Customer(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML Data)
+		{
+			XAMLObject = Data;
+			ID = Data.ID;
+			Name = Data.Name;
+			AddressLine1 = Data.AddressLine1;
+			AddressLine2 = Data.AddressLine2;
+			City = Data.City;
+			State = Data.State;
+			ZipCode = Data.ZipCode;
+			Color = Data.Color;
+		}
 
 		private Guid IDField;
 		[DataMember(Name = "ID")] public Guid ID { get { __autodatalock.EnterReadLock(); try { return IDField; } finally { __autodatalock.ExitReadLock(); } } protected set { __autodatalock.EnterWriteLock(); try { IDField = value; } finally { __autodatalock.ExitWriteLock(); } } }
@@ -135,7 +146,7 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect .NET CSharp Generator - BETA", "2.0.2000.0")]
 	public partial class CustomerXAML : DependencyObjectEx
 	{
-		public WCFArchitect.SampleServer.BasicWinRT.Customer DataObject { get; set; }
+		public WCFArchitect.SampleServer.BasicWinRT.Customer DataObject { get; private set; }
 
 		//Properties
 		public Guid ID { get { return (Guid)GetValueThreaded(IDProperty); } protected set { SetValueThreaded(IDPropertyKey, value); } }
@@ -187,6 +198,7 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 
 		public CustomerXAML(WCFArchitect.SampleServer.BasicWinRT.Customer Data)
 		{
+			DataObject = Data;
 			ID = Data.ID;
 			Name = Data.Name;
 			AddressLine1 = Data.AddressLine1;
@@ -200,29 +212,14 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 		//XAML/DTO Conversion Functions
 		public static Customer ConvertFromXAMLObject(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML Data)
 		{
-			WCFArchitect.SampleServer.BasicWinRT.Customer DTO = new WCFArchitect.SampleServer.BasicWinRT.Customer();
-			DTO.Name = Data.Name;
-			DTO.AddressLine1 = Data.AddressLine1;
-			DTO.AddressLine2 = Data.AddressLine2;
-			DTO.City = Data.City;
-			DTO.State = Data.State;
-			DTO.ZipCode = Data.ZipCode;
-			DTO.Color = Data.Color;
-			return DTO;
+			if (Data.DataObject != null) return Data.DataObject;
+			return new WCFArchitect.SampleServer.BasicWinRT.Customer(Data);
 		}
 
 		public static CustomerXAML ConvertToXAMLObject(WCFArchitect.SampleServer.BasicWinRT.Customer Data)
 		{
-			WCFArchitect.SampleServer.BasicWinRT.CustomerXAML XAML = new WCFArchitect.SampleServer.BasicWinRT.CustomerXAML();
-			XAML.ID = Data.ID;
-			XAML.Name = Data.Name;
-			XAML.AddressLine1 = Data.AddressLine1;
-			XAML.AddressLine2 = Data.AddressLine2;
-			XAML.City = Data.City;
-			XAML.State = Data.State;
-			XAML.ZipCode = Data.ZipCode;
-			XAML.Color = Data.Color;
-			return XAML;
+			if (Data.XAMLObject != null) return Data.XAMLObject;
+			return new WCFArchitect.SampleServer.BasicWinRT.CustomerXAML(Data);
 		}
 	}
 
