@@ -31,11 +31,40 @@ namespace WCFArchitect.SampleServer.BasicNET
 	**************************************************************************/
 
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect .NET CSharp Generator - BETA", "2.0.2000.0")]
-	[ServiceContract(SessionMode = System.ServiceModel.SessionMode.Allowed, Namespace = "http://tempuri.org/WCFArchitect/SampleServer/BasicNET/")]
+	[ServiceContract(CallbackContract = typeof(ITestNETCallback), SessionMode = System.ServiceModel.SessionMode.Allowed, Namespace = "http://tempuri.org/WCFArchitect/SampleServer/BasicNET/")]
 	public interface ITestNET
 	{
 		[OperationContract(IsInitiating = false)]
 		WCFArchitect.SampleServer.BasicWinRT.Customer RefTestAsync();
+
+	}
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect .NET CSharp Generator - BETA", "2.0.2000.0")]
+	public interface ITestNETCallback
+	{
+		[OperationContract(IsInitiating = false)]
+		WCFArchitect.SampleServer.BasicWinRT.Customer RetTestCallbackAsync();
+
+	}
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect .NET CSharp Generator - BETA", "2.0.2000.0")]
+	public partial class TestNETCallback : ITestNETCallback
+	{
+
+		private readonly ITestNETCallback __callback;
+
+		public TestNETCallback()
+		{
+			__callback = System.ServiceModel.OperationContext.Current.GetCallbackChannel<ITestNETCallback>();
+		}
+
+		public TestNETCallback(ITestNETCallback callback)
+		{
+			__callback = callback;
+		}
+
+		public WCFArchitect.SampleServer.BasicWinRT.Customer RetTestCallbackAsync()
+		{
+			return __callback.RetTestCallbackAsync();
+		}
 
 	}
 
