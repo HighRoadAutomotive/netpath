@@ -16,7 +16,7 @@
     <PropertyGroup>
         <AssemblyFileMajorVersion>2</AssemblyFileMajorVersion>
         <AssemblyFileMinorVersion>0</AssemblyFileMinorVersion>
-        <AssemblyFileBuildNumber>0</AssemblyFileBuildNumber>
+        <AssemblyFileBuildNumber></AssemblyFileBuildNumber>
         <AssemblyFileRevision>0</AssemblyFileRevision>
         <AssemblyFileBuildNumberType>NoIncrement</AssemblyFileBuildNumberType>
         <AssemblyFileBuildNumberFormat>0</AssemblyFileBuildNumberFormat>
