@@ -72,6 +72,8 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 	[ServiceContract(SessionMode = System.ServiceModel.SessionMode.Required, Namespace = "http://tempuri.org/WCFArchitect/SampleServer/BasicWinRT/")]
 	public interface ICustomers
 	{
+		WCFArchitect.SampleServer.BasicWinRT.Customer LastCustomer { [OperationContract(Name = "GetLastCustomer")] get;  }
+
 		///<param name='NewCustomer'></param>
 		[OperationContract(IsInitiating = false, IsOneWay = true)]
 		void AddCustomerAsync(WCFArchitect.SampleServer.BasicWinRT.Customer NewCustomer);

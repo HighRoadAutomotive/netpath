@@ -35,12 +35,19 @@ namespace WCFArchitect.Generators.NET.CS
 			foreach (HostEndpoint he in o.Endpoints)
 			{
 				if (string.IsNullOrEmpty(he.Name))
-					AddMessage(new CompileMessage("GS5004", "A host in the endpoint '" + he.Parent.Name + "' project has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, he.Parent, he, he.GetType(), he.Parent.Parent.Owner.ID));
-				else
-					if (RegExs.MatchCodeName.IsMatch(he.Name) == false)
-						AddMessage(new CompileMessage("GS5005", "The host endpoint '" + he.Name + "' in the '" + he.Parent.Name + "' project contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, he.Parent, he, he.GetType(), he.Parent.Parent.Owner.ID));
+					AddMessage(new CompileMessage("GS5004", "A host in the endpoint '" + he.Parent.Name + "' Service Host has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, he.Parent, he, he.GetType(), he.Parent.Parent.Owner.ID));
+				else if (RegExs.MatchCodeName.IsMatch(he.Name) == false)
+					AddMessage(new CompileMessage("GS5005", "The host endpoint '" + he.Name + "' in the '" + he.Parent.Name + "' Service Host contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, he.Parent, he, he.GetType(), he.Parent.Parent.Owner.ID));
 				if (he.Binding == null)
-					AddMessage(new CompileMessage("GS5006", "The host endpoint'" + he.Name + "' in the '" + he.Parent.Name + "' must have a Binding. Please specify a Binding", CompileMessageSeverity.ERROR, he.Parent, he, he.GetType(), he.Parent.Parent.Owner.ID));
+					AddMessage(new CompileMessage("GS5006", "The host endpoint'" + he.Name + "' in the '" + he.Parent.Name + "' Service Host must have a Binding. Please specify a Binding", CompileMessageSeverity.ERROR, he.Parent, he, he.GetType(), he.Parent.Parent.Owner.ID));
+				else
+				{
+					Type bt = he.Binding.GetType();
+					if (o.Service.HasCallbackOperations && !(bt == typeof (ServiceBindingNetHTTP) || bt == typeof (ServiceBindingNetHTTPS) || bt == typeof (ServiceBindingWSDualHTTP) || bt == typeof (ServiceBindingTCP) || bt == typeof (ServiceBindingNamedPipe) || bt == typeof (ServiceBindingPeerTCP)))
+					{
+						AddMessage(new CompileMessage("GS5007", "The binding specified for the host endpoint'" + he.Name + "' in the '" + he.Parent.Name + "' Service Host does not support callback interfaces. Please specify a Binding that supports callbacks.", CompileMessageSeverity.ERROR, he.Parent, he, he.GetType(), he.Parent.Parent.Owner.ID));
+					}
+				}
 			}
 
 			foreach (HostBehavior hb in o.Behaviors)

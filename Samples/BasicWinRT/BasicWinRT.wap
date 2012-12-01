@@ -877,7 +877,7 @@
         <Namespace z:Id="117">http://tempuri.org/</Namespace>
         <OpenTimeout>PT1M</OpenTimeout>
         <Service z:Id="118">
-          <IsSelected>false</IsSelected>
+          <IsSelected>true</IsSelected>
           <Abstract>false</Abstract>
           <ClientType i:nil="true" />
           <CollectionGenericType i:nil="true" />
@@ -1080,7 +1080,7 @@
               <HasClientType>false</HasClientType>
               <ID>1e0d199f-ebf2-43c2-87a7-8ebe8e1a31c4</ID>
               <IsOneWay>false</IsOneWay>
-              <IsSelected>true</IsSelected>
+              <IsSelected>false</IsSelected>
               <Owner z:Ref="118" i:nil="true" />
               <ProtectionLevel>None</ProtectionLevel>
               <ReturnType z:Id="147">
