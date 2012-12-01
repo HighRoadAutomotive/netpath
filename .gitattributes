@@ -14,3 +14,4 @@
 *.cvxproj text eol=crlf
 *.obproj text eol=crlf
 *.appxmanifest text eol=crlf
+*.targets text eol=crlf

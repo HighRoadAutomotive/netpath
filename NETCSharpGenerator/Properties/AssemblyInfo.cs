@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("WCF Architect .NET CSharp Generator")]
 [assembly: AssemblyDescription("C# code generation support for the .NET Framework.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Prospective Software LLC")]
-[assembly: AssemblyProduct("WCF Architect")]
-[assembly: AssemblyCopyright("Copyright © Prospective Software LLC 2012")]
+[assembly: AssemblyCompany("Prospective Software Inc.")]
+[assembly: AssemblyProduct("WCF Architect 2")]
+[assembly: AssemblyCopyright("Copyright © 2012-2013 Prospective Software Inc.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.1130.06")]
-[assembly: AssemblyFileVersion("1.0.1130.06")]
+[assembly: AssemblyVersion("2.0.0.0")]
+[assembly: AssemblyFileVersion("2.0.0.12495")]
