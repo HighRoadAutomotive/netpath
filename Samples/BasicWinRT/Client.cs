@@ -172,6 +172,9 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect WinRT CSharp Generator - BETA", "2.0.2000.0")]
 	public interface ICustomers
 	{
+		[OperationContract(Action = "http://tempuri.org/WCFArchitect/SampleServer/BasicWinRT/Customers/GetLastCustomer", ReplyAction = "http://tempuri.org/WCFArchitect/SampleServer/BasicWinRT/Customers/SetLastCustomerResponse")]
+		WCFArchitect.SampleServer.BasicWinRT.Customer GetLastCustomer();
+
 		///<param name='NewCustomer'></param>
 		[OperationContract(IsOneWay = true, Action = "http://tempuri.org/WCFArchitect/SampleServer/BasicWinRT/Customers/AddCustomerAsync")]
 		System.Threading.Tasks.Task AddCustomerAsync(WCFArchitect.SampleServer.BasicWinRT.Customer NewCustomer);
@@ -247,6 +250,12 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 		{
 			return new System.ServiceModel.EndpointAddress(new Uri(string.Format("http://{0}{1}/NetHttpEndpoint", Address, Port > 0 ? string.Format(":{0}", Port) : "")), Identity);
 		}
+
+		WCFArchitect.SampleServer.BasicWinRT.Customer ICustomers.GetLastCustomer()
+		{
+			return base.Channel.GetLastCustomer();
+		}
+		public WCFArchitect.SampleServer.BasicWinRT.Customer LastCustomer { get { return ((ICustomers)this).GetLastCustomer(); } }
 
 		///<param name='NewCustomer'></param>
 		public System.Threading.Tasks.Task AddCustomerAsync(WCFArchitect.SampleServer.BasicWinRT.Customer NewCustomer)

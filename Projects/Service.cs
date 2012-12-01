@@ -338,8 +338,8 @@ namespace WCFArchitect.Projects
 			base.OnPropertyChanged(e);
 
 			if (e.Property == DeclarationProperty || e.Property == ClientDeclarationProperty) return;
-			Declaration = string.Format("{0} {1}{{ get; {2}}}", ReturnType, ServerName, IsReadOnly ? "set; " : "");
-			ClientDeclaration = string.Format("{0} {1}{{ get; {2}}}", ReturnType, ClientName, IsReadOnly ? "set; " : "");
+			Declaration = string.Format("{0} {1}{{ get; {2}}}", ReturnType, ServerName, IsReadOnly ? "" : "set; ");
+			ClientDeclaration = string.Format("{0} {1}{{ get; {2}}}", ReturnType, ClientName, IsReadOnly ? "" : "set; ");
 		}
 	}
 

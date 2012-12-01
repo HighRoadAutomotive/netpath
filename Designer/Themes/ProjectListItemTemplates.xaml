@@ -1,5 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:wap="clr-namespace:WCFArchitect.Projects;assembly=WCFArchitect.Projects"
 					xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 					xmlns:local="clr-namespace:WCFArchitect.Interface">
