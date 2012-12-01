@@ -120,12 +120,22 @@
 	<!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
 			 Other similar extension points exist, see Microsoft.Common.targets. -->
 	<Target Name="BeforeBuild">
-		<Message Text="Updating AssemblyInfo..."></Message>
+		<Message Text="Updating AssemblyFileBuildNumber to $(BuildNumber)"></Message>
 		<AssemblyInfo AssemblyInfoFiles="@(AssemblyInfoFiles)"
 									AssemblyCopyright="$(AssemblyCopyright)"
 									AssemblyCompany="$(AssemblyCompany)"
-									AssemblyVersion="$(AssemblyVersion)"
-									AssemblyFileVersion="$(AssemblyFileVersion)">
+									AssemblyMajorVersion="2"
+									AssemblyMinorVersion="0"
+									AssemblyBuildNumber="0"
+									AssemblyBuildNumberType="NoIncrement"
+									AssemblyRevision="0"
+									AssemblyRevisionType="NoIncrement"
+									AssemblyFileMajorVersion="2"
+									AssemblyFileMinorVersion="0"
+									AssemblyFileBuildNumber="$(BuildNumber)"
+									AssemblyFileBuildNumberType="NoIncrement"
+									AssemblyFileRevisionType="YearWeekDay"
+									>
 		</AssemblyInfo>
 	</Target>
 	<!-- <Target Name="AfterBuild">
