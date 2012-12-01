@@ -81,13 +81,12 @@
 	<!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
 			 Other similar extension points exist, see Microsoft.Common.targets. -->
 	<Target Name="BeforeBuild">
-		<Message Text="Updating AssemblyInfo to Version $(VersionNumber)"></Message>
-		<Message Text="Writing to AssemblyInfo files in $(SolutionRoot)"></Message>
+		<Message Text="Updating AssemblyInfo..."></Message>
 		<AssemblyInfo AssemblyInfoFiles="@(AssemblyInfoFiles)"
 									AssemblyCopyright="$(AssemblyCopyright)"
 									AssemblyCompany="$(AssemblyCompany)"
-									AssemblyFileVersion="$(VersionNumber)"
-									>
+									AssemblyVersion="$(AssemblyVersion)"
+									AssemblyFileVersion="$(AssemblyFileVersion)">
 		</AssemblyInfo>
 	</Target>
 	<!-- <Target Name="AfterBuild">
