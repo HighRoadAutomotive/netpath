@@ -247,7 +247,7 @@ namespace WCFArchitect.Generators.NET.CS
 			code.AppendLine(string.Format("\t//XAML Integration Object for the {0} DTO", o.HasClientType ? o.ClientType.Name : o.Name));
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.XAMLType)));
+			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.XAMLType, false, false, true)));
 			code.AppendLine("\t{");
 
 			if (o.XAMLHasExtensionData)
@@ -382,6 +382,44 @@ namespace WCFArchitect.Generators.NET.CS
 			return code.ToString();
 		}
 
+		private static DataType GetPreferredXAMLType(DataType value)
+		{
+			if (value.TypeMode == DataTypeMode.Collection)
+			{
+				if (value.CollectionGenericType.TypeMode == DataTypeMode.Class || value.CollectionGenericType.TypeMode == DataTypeMode.Struct)
+				{
+					var t = value.CollectionGenericType as Data;
+					if (t == null) return value;
+					return t.HasXAMLType ? new DataType(value.Name, DataTypeMode.Collection) { Name = value.Name, CollectionGenericType = t.XAMLType } : new DataType(value.Name, DataTypeMode.Collection) { Name = value.Name, CollectionGenericType = t.HasClientType ? t.ClientType : t };
+				}
+			}
+			else if (value.TypeMode == DataTypeMode.Dictionary)
+			{
+				DataType dk = value.DictionaryKeyGenericType;
+				DataType dv = value.DictionaryValueGenericType;
+				if (value.DictionaryKeyGenericType.TypeMode == DataTypeMode.Class || value.DictionaryKeyGenericType.TypeMode == DataTypeMode.Struct)
+				{
+					var t = value.DictionaryKeyGenericType as Data;
+					if (t == null) return value;
+					dk = t.HasXAMLType ? t.XAMLType : t.HasClientType ? t.ClientType : t;
+				}
+				if (value.DictionaryValueGenericType.TypeMode == DataTypeMode.Class || value.DictionaryValueGenericType.TypeMode == DataTypeMode.Struct)
+				{
+					var t = value.DictionaryValueGenericType as Data;
+					if (t == null) return value;
+					dv = t.HasXAMLType ? t.XAMLType : t.HasClientType ? t.ClientType : t;
+				}
+				return new DataType(value.Name, DataTypeMode.Dictionary) { Name = value.Name, DictionaryKeyGenericType = dk, DictionaryValueGenericType = dv };
+			}
+			else if (value.TypeMode == DataTypeMode.Class || value.TypeMode == DataTypeMode.Struct)
+			{
+				var t = value as Data;
+				if (t == null) return value;
+				return t.HasXAMLType ? t.XAMLType : t.HasClientType ? t.ClientType : t;
+			}
+			return value;
+		}
+
 		private static string GenerateElementXAMLCode30(DataElement o)
 		{
 			return GenerateElementXAMLCode35(o);
@@ -408,13 +446,13 @@ namespace WCFArchitect.Generators.NET.CS
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 			if (o.IsReadOnly == false && o.IsAttached == false)
 			{
-				code.AppendFormat("\t\tpublic {0} {1} {{ get {{ return ({0})GetValue({1}Property); }} set {{ SetValue({1}Property, value); }} }}{2}", DataTypeGenerator.GenerateType(o.XAMLType), o.XAMLName, Environment.NewLine);
-				code.AppendFormat("\t\tpublic static readonly DependencyProperty {1}Property = DependencyProperty.Register(\"{1}\", typeof({0}), typeof({2}));{3}", DataTypeGenerator.GenerateType(o.XAMLType), o.XAMLName, DataTypeGenerator.GenerateType(o.Owner.XAMLType), Environment.NewLine);
+				code.AppendFormat("\t\tpublic {0} {1} {{ get {{ return ({0})GetValue({1}Property); }} set {{ SetValue({1}Property, value); }} }}{2}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName, Environment.NewLine);
+				code.AppendFormat("\t\tpublic static readonly DependencyProperty {1}Property = DependencyProperty.Register(\"{1}\", typeof({0}), typeof({2}));{3}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName, DataTypeGenerator.GenerateType(o.Owner.XAMLType), Environment.NewLine);
 			}
 			if (o.IsReadOnly && o.IsAttached == false)
 			{
 				code.AppendFormat("\t\tpublic {0} {1} {{ get {{ return ({0})GetValue({1}Property); }} protected set {{ SetValue({1}PropertyKey, value); }} }}{2}", DataTypeGenerator.GenerateType(o.XAMLType), o.XAMLName, Environment.NewLine);
-				code.AppendFormat("\t\tpublic static void Set{1}(DependencyObject obj, {0} value) {{ obj.SetValue({1}PropertyKey, value); }}{2}", DataTypeGenerator.GenerateType(o.XAMLType), o.XAMLName, Environment.NewLine);
+				code.AppendFormat("\t\tpublic static void Set{1}(DependencyObject obj, {0} value) {{ obj.SetValue({1}PropertyKey, value); }}{2}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName, Environment.NewLine);
 				code.AppendFormat("\t\tprivate static readonly DependencyPropertyKey {1}PropertyKey = DependencyProperty.RegisterReadOnly(\"{1}\", typeof({0}), typeof({2}), null);{3}", DataTypeGenerator.GenerateType(o.XAMLType), o.XAMLName, DataTypeGenerator.GenerateType(o.Owner.XAMLType), Environment.NewLine);
 				code.AppendFormat("\t\tpublic static readonly DependencyProperty {0}Property = {0}PropertyKey.DependencyProperty;{1}", o.XAMLName, Environment.NewLine);
 			}
@@ -434,8 +472,8 @@ namespace WCFArchitect.Generators.NET.CS
 					foreach (string tt in ttl)
 						code.AppendLine(string.Format("\t\t[AttachedPropertyBrowsableWhenAttributePresent(typeof({0}))]", tt.Trim()));
 				}
-				code.AppendFormat("\t\tpublic static {0} Get{1}(DependencyObject obj) {{ return ({0})obj.GetValue({1}Property); }}{2}", DataTypeGenerator.GenerateType(o.XAMLType), o.XAMLName, Environment.NewLine);
-				code.AppendFormat("\t\tpublic static void Set{1}(DependencyObject obj, {0} value) {{ obj.SetValue({1}Property, value); }}{2}", DataTypeGenerator.GenerateType(o.XAMLType), o.XAMLName, Environment.NewLine);
+				code.AppendFormat("\t\tpublic static {0} Get{1}(DependencyObject obj) {{ return ({0})obj.GetValue({1}Property); }}{2}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName, Environment.NewLine);
+				code.AppendFormat("\t\tpublic static void Set{1}(DependencyObject obj, {0} value) {{ obj.SetValue({1}Property, value); }}{2}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName, Environment.NewLine);
 				code.AppendFormat("\t\tpublic static readonly DependencyProperty {1}Property = DependencyProperty.RegisterAttached(\"{1}\", typeof({0}), typeof({2}), null);{3}", DataTypeGenerator.GenerateType(o.XAMLType), o.XAMLName, DataTypeGenerator.GenerateType(o.Owner.XAMLType), Environment.NewLine);
 			}
 			if (o.IsReadOnly && o.IsAttached)
@@ -454,46 +492,10 @@ namespace WCFArchitect.Generators.NET.CS
 					foreach (string tt in ttl)
 						code.AppendLine(string.Format("\t\t[AttachedPropertyBrowsableWhenAttributePresent(typeof({0}))]", tt.Trim()));
 				}
-				code.AppendFormat("\t\tpublic static {0} Get{1}(DependencyObject obj) {{ return ({0})obj.GetValue({1}Property); }}{2}", DataTypeGenerator.GenerateType(o.XAMLType), o.XAMLName, Environment.NewLine);
-				code.AppendFormat("\t\tpublic static void Set{1}(DependencyObject obj, {0} value) {{ obj.SetValue({1}PropertyKey, value); }}{2}", DataTypeGenerator.GenerateType(o.XAMLType), o.XAMLName, Environment.NewLine);
+				code.AppendFormat("\t\tpublic static {0} Get{1}(DependencyObject obj) {{ return ({0})obj.GetValue({1}Property); }}{2}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName, Environment.NewLine);
+				code.AppendFormat("\t\tpublic static void Set{1}(DependencyObject obj, {0} value) {{ obj.SetValue({1}PropertyKey, value); }}{2}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName, Environment.NewLine);
 				code.AppendFormat("\t\tprivate static readonly DependencyPropertyKey {1}PropertyKey = DependencyProperty.RegisterAttachedReadOnly(\"{1}\", typeof({0}), typeof({2}), null);{3}", DataTypeGenerator.GenerateType(o.XAMLType), o.XAMLName, DataTypeGenerator.GenerateType(o.Owner.XAMLType), Environment.NewLine);
 				code.AppendFormat("\t\tpublic static readonly DependencyProperty {0}Property = {0}PropertyKey.DependencyProperty;{1}", o.XAMLName, Environment.NewLine);
-			}
-			return code.ToString();
-		}
-
-		private static string GenerateElementXAMLCodeRT8(DataElement o)
-		{
-			if (o.IsHidden) return "";
-			if (!o.IsDataMember) return "";
-			if (!o.HasXAMLType) return "";
-
-			var code = new StringBuilder();
-			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-			if (o.IsAttached)
-			{
-				if (o.AttachedBrowsable)
-					code.AppendLine(string.Format("\t\t[AttachedPropertyBrowsableForChildren(IncludeDescendants={0})]", o.AttachedBrowsableIncludeDescendants ? "true" : "false"));
-				if (o.AttachedTargetTypes != "")
-				{
-					var ttl = new List<string>(o.AttachedTargetTypes.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries));
-					foreach (string tt in ttl)
-						code.AppendLine(string.Format("\t\t[AttachedPropertyBrowsableForType(typeof({0}))]", tt.Trim()));
-				}
-				if (o.AttachedAttributeTypes != "")
-				{
-					var ttl = new List<string>(o.AttachedAttributeTypes.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries));
-					foreach (string tt in ttl)
-						code.AppendLine(string.Format("\t\t[AttachedPropertyBrowsableWhenAttributePresent(typeof({0}))]", tt.Trim()));
-				}
-				code.AppendLine(string.Format("\t\tpublic static {0} Get{1}(DependencyObject obj) {{ return ({0})obj.GetValue({1}Property); }}", DataTypeGenerator.GenerateType(o.XAMLType), o.XAMLName));
-				code.AppendLine(string.Format("\t\tpublic static void Set{1}(DependencyObject obj, {0} value) {{ obj.SetValue({1}Property, value); }}", DataTypeGenerator.GenerateType(o.XAMLType), o.XAMLName));
-				code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty {1}Property = DependencyProperty.RegisterAttached(\"{1}\", typeof({0}), typeof({2}), null)", DataTypeGenerator.GenerateType(o.XAMLType), o.XAMLName, DataTypeGenerator.GenerateType(o.Owner.XAMLType)));
-			}
-			else
-			{
-				code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return ({0})GetValue({1}Property); }} set {{ SetValue({1}Property, value); }} }}", DataTypeGenerator.GenerateType(o.XAMLType), o.XAMLName));
-				code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty {1}Property = DependencyProperty.Register(\"{1}\", typeof({0}), typeof({2}), null);", DataTypeGenerator.GenerateType(o.XAMLType), o.XAMLName, DataTypeGenerator.GenerateType(o.Owner.XAMLType)));
 			}
 			return code.ToString();
 		}
