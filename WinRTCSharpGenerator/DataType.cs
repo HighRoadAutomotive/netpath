@@ -21,10 +21,10 @@ namespace WCFArchitect.Generators.WinRT.CS
 			return o.ToString();
 		}
 
-		public static string GenerateTypeDeclaration(DataType o, bool ImpliedExtensionData = false, bool HasWinFormsDatabinding = false)
+		public static string GenerateTypeDeclaration(DataType o, bool ImpliedExtensionData = false, bool HasWinFormsDatabinding = false, bool ForceClass = false)
 		{
 			var sb = new StringBuilder();
-			if (o.TypeMode == DataTypeMode.Class)
+			if (o.TypeMode == DataTypeMode.Class || ForceClass)
 			{
 				sb.AppendFormat("{0} {1}{2}{3}class {4}", GenerateScope(o.Scope), o.Partial ? "partial " : "", o.Abstract ? "abstract " : "", o.Sealed ? "sealed " : "", o.Name);
 				if (o.InheritedTypes.Any() || ImpliedExtensionData || HasWinFormsDatabinding)
