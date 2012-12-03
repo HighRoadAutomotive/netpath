@@ -896,7 +896,7 @@
           <Scope>Public</Scope>
           <Sealed>false</Sealed>
           <TypeMode>Class</TypeMode>
-          <AsynchronyMode>Client</AsynchronyMode>
+          <AsynchronyMode>Both</AsynchronyMode>
           <CallbackDocumentation z:Id="122">
             <Example z:Ref="21" i:nil="true" />
             <IsClass>true</IsClass>
@@ -908,30 +908,16 @@
             <Summary z:Ref="21" i:nil="true" />
             <Value z:Ref="21" i:nil="true" />
           </CallbackDocumentation>
-          <CallbackOperations z:Id="123" z:Size="0" />
-          <ConfigurationName z:Ref="21" i:nil="true" />
-          <ProtectionLevel>None</ProtectionLevel>
-          <ServiceDocumentation z:Id="124">
-            <Example z:Ref="21" i:nil="true" />
-            <IsClass>true</IsClass>
-            <IsMethod>false</IsMethod>
-            <IsParameter>false</IsParameter>
-            <IsProperty>false</IsProperty>
-            <Remarks z:Ref="21" i:nil="true" />
-            <Returns z:Ref="21" i:nil="true" />
-            <Summary z:Ref="21" i:nil="true" />
-            <Value z:Ref="21" i:nil="true" />
-          </ServiceDocumentation>
-          <ServiceOperations z:Id="125" z:Size="4">
-            <Operation z:Id="126" i:type="Method">
+          <CallbackOperations z:Id="123" z:Size="1">
+            <Operation z:Id="124" i:type="Method">
               <ClientName z:Ref="21" i:nil="true" />
               <HasClientType>false</HasClientType>
-              <ID>fd6baeb9-3c38-4740-a865-99339918a98b</ID>
-              <IsOneWay>true</IsOneWay>
-              <IsSelected>false</IsSelected>
+              <ID>c0484be2-ec18-48c6-b8ce-20a564a19670</ID>
+              <IsOneWay>false</IsOneWay>
+              <IsSelected>true</IsSelected>
               <Owner z:Ref="118" i:nil="true" />
               <ProtectionLevel>None</ProtectionLevel>
-              <ReturnType z:Id="127">
+              <ReturnType z:Id="125">
                 <IsSelected>false</IsSelected>
                 <Abstract>false</Abstract>
                 <ClientType i:nil="true" />
@@ -944,16 +930,16 @@
                 <IsExternalType>false</IsExternalType>
                 <IsTypeReference>false</IsTypeReference>
                 <KnownTypes i:nil="true" />
-                <Name z:Id="128">void</Name>
+                <Name z:Id="126">bool</Name>
                 <Parent i:nil="true" />
                 <Partial>false</Partial>
-                <Primitive>Void</Primitive>
+                <Primitive>Bool</Primitive>
                 <Scope>Public</Scope>
                 <Sealed>false</Sealed>
                 <TypeMode>Primitive</TypeMode>
               </ReturnType>
-              <ServerName z:Id="129">AddCustomer</ServerName>
-              <Documentation z:Id="130">
+              <ServerName z:Id="127">AsyncCallbackTest</ServerName>
+              <Documentation z:Id="128">
                 <Example z:Ref="21" i:nil="true" />
                 <IsClass>false</IsClass>
                 <IsMethod>true</IsMethod>
@@ -967,9 +953,74 @@
               <IsInitiating>false</IsInitiating>
               <IsRESTMethod>false</IsRESTMethod>
               <IsTerminating>false</IsTerminating>
-              <Parameters z:Id="131" z:Size="1">
-                <MethodParameter z:Id="132">
-                  <Documentation z:Id="133">
+              <Parameters z:Id="129" z:Size="0" />
+              <REST i:nil="true" />
+              <UseAsyncPattern>true</UseAsyncPattern>
+              <UseAwaitPattern>false</UseAwaitPattern>
+              <UseSyncPattern>false</UseSyncPattern>
+            </Operation>
+          </CallbackOperations>
+          <ConfigurationName z:Ref="21" i:nil="true" />
+          <ProtectionLevel>None</ProtectionLevel>
+          <ServiceDocumentation z:Id="130">
+            <Example z:Ref="21" i:nil="true" />
+            <IsClass>true</IsClass>
+            <IsMethod>false</IsMethod>
+            <IsParameter>false</IsParameter>
+            <IsProperty>false</IsProperty>
+            <Remarks z:Ref="21" i:nil="true" />
+            <Returns z:Ref="21" i:nil="true" />
+            <Summary z:Ref="21" i:nil="true" />
+            <Value z:Ref="21" i:nil="true" />
+          </ServiceDocumentation>
+          <ServiceOperations z:Id="131" z:Size="4">
+            <Operation z:Id="132" i:type="Method">
+              <ClientName z:Ref="21" i:nil="true" />
+              <HasClientType>false</HasClientType>
+              <ID>fd6baeb9-3c38-4740-a865-99339918a98b</ID>
+              <IsOneWay>true</IsOneWay>
+              <IsSelected>false</IsSelected>
+              <Owner z:Ref="118" i:nil="true" />
+              <ProtectionLevel>None</ProtectionLevel>
+              <ReturnType z:Id="133">
+                <IsSelected>false</IsSelected>
+                <Abstract>false</Abstract>
+                <ClientType i:nil="true" />
+                <CollectionGenericType i:nil="true" />
+                <DictionaryKeyGenericType i:nil="true" />
+                <DictionaryValueGenericType i:nil="true" />
+                <HasClientType>false</HasClientType>
+                <ID>00000000-0000-0000-0000-000000000000</ID>
+                <InheritedTypes i:nil="true" />
+                <IsExternalType>false</IsExternalType>
+                <IsTypeReference>false</IsTypeReference>
+                <KnownTypes i:nil="true" />
+                <Name z:Id="134">void</Name>
+                <Parent i:nil="true" />
+                <Partial>false</Partial>
+                <Primitive>Void</Primitive>
+                <Scope>Public</Scope>
+                <Sealed>false</Sealed>
+                <TypeMode>Primitive</TypeMode>
+              </ReturnType>
+              <ServerName z:Id="135">AddCustomer</ServerName>
+              <Documentation z:Id="136">
+                <Example z:Ref="21" i:nil="true" />
+                <IsClass>false</IsClass>
+                <IsMethod>true</IsMethod>
+                <IsParameter>false</IsParameter>
+                <IsProperty>false</IsProperty>
+                <Remarks z:Ref="21" i:nil="true" />
+                <Returns z:Ref="21" i:nil="true" />
+                <Summary z:Ref="21" i:nil="true" />
+                <Value z:Ref="21" i:nil="true" />
+              </Documentation>
+              <IsInitiating>false</IsInitiating>
+              <IsRESTMethod>false</IsRESTMethod>
+              <IsTerminating>false</IsTerminating>
+              <Parameters z:Id="137" z:Size="1">
+                <MethodParameter z:Id="138">
+                  <Documentation z:Id="139">
                     <Example z:Ref="21" i:nil="true" />
                     <IsClass>false</IsClass>
                     <IsMethod>false</IsMethod>
@@ -983,9 +1034,9 @@
                   <ID>006f9500-f226-4fa2-90a1-c0bcff11afaa</ID>
                   <IsHidden>false</IsHidden>
                   <IsRESTInvalid>false</IsRESTInvalid>
-                  <Name z:Id="134">NewCustomer</Name>
+                  <Name z:Id="140">NewCustomer</Name>
                   <Owner z:Ref="118" i:nil="true" />
-                  <Parent z:Ref="126" i:nil="true" />
+                  <Parent z:Ref="132" i:nil="true" />
                   <Type z:Ref="26" i:nil="true" />
                 </MethodParameter>
               </Parameters>
@@ -994,7 +1045,7 @@
               <UseAwaitPattern>true</UseAwaitPattern>
               <UseSyncPattern>false</UseSyncPattern>
             </Operation>
-            <Operation z:Id="135" i:type="Method">
+            <Operation z:Id="141" i:type="Method">
               <ClientName z:Ref="21" i:nil="true" />
               <HasClientType>false</HasClientType>
               <ID>0f8b91f9-106f-43d8-acac-b7ec1f7c6aad</ID>
@@ -1003,8 +1054,8 @@
               <Owner z:Ref="118" i:nil="true" />
               <ProtectionLevel>None</ProtectionLevel>
               <ReturnType z:Ref="26" i:nil="true" />
-              <ServerName z:Id="136">GetCustomer</ServerName>
-              <Documentation z:Id="137">
+              <ServerName z:Id="142">GetCustomer</ServerName>
+              <Documentation z:Id="143">
                 <Example z:Ref="21" i:nil="true" />
                 <IsClass>false</IsClass>
                 <IsMethod>true</IsMethod>
@@ -1018,13 +1069,13 @@
               <IsInitiating>false</IsInitiating>
               <IsRESTMethod>false</IsRESTMethod>
               <IsTerminating>false</IsTerminating>
-              <Parameters z:Id="138" z:Size="0" />
+              <Parameters z:Id="144" z:Size="0" />
               <REST i:nil="true" />
               <UseAsyncPattern>false</UseAsyncPattern>
               <UseAwaitPattern>true</UseAwaitPattern>
               <UseSyncPattern>false</UseSyncPattern>
             </Operation>
-            <Operation z:Id="139" i:type="Method">
+            <Operation z:Id="145" i:type="Method">
               <ClientName z:Ref="21" i:nil="true" />
               <HasClientType>false</HasClientType>
               <ID>6ae684b3-0c8f-4780-9582-69832e170863</ID>
@@ -1032,9 +1083,9 @@
               <IsSelected>false</IsSelected>
               <Owner z:Ref="118" i:nil="true" />
               <ProtectionLevel>None</ProtectionLevel>
-              <ReturnType z:Ref="127" i:nil="true" />
-              <ServerName z:Id="140">UpdateCustomer</ServerName>
-              <Documentation z:Id="141">
+              <ReturnType z:Ref="133" i:nil="true" />
+              <ServerName z:Id="146">UpdateCustomer</ServerName>
+              <Documentation z:Id="147">
                 <Example z:Ref="21" i:nil="true" />
                 <IsClass>false</IsClass>
                 <IsMethod>true</IsMethod>
@@ -1048,9 +1099,9 @@
               <IsInitiating>false</IsInitiating>
               <IsRESTMethod>false</IsRESTMethod>
               <IsTerminating>false</IsTerminating>
-              <Parameters z:Id="142" z:Size="1">
-                <MethodParameter z:Id="143">
-                  <Documentation z:Id="144">
+              <Parameters z:Id="148" z:Size="1">
+                <MethodParameter z:Id="149">
+                  <Documentation z:Id="150">
                     <Example z:Ref="21" i:nil="true" />
                     <IsClass>false</IsClass>
                     <IsMethod>false</IsMethod>
@@ -1064,9 +1115,9 @@
                   <ID>b162373f-79f7-4bcf-97c4-2e91e74e8400</ID>
                   <IsHidden>false</IsHidden>
                   <IsRESTInvalid>false</IsRESTInvalid>
-                  <Name z:Id="145">Updated</Name>
+                  <Name z:Id="151">Updated</Name>
                   <Owner z:Ref="118" i:nil="true" />
-                  <Parent z:Ref="139" i:nil="true" />
+                  <Parent z:Ref="145" i:nil="true" />
                   <Type z:Ref="26" i:nil="true" />
                 </MethodParameter>
               </Parameters>
@@ -1075,7 +1126,7 @@
               <UseAwaitPattern>true</UseAwaitPattern>
               <UseSyncPattern>false</UseSyncPattern>
             </Operation>
-            <Operation z:Id="146" i:type="Method">
+            <Operation z:Id="152" i:type="Method">
               <ClientName z:Ref="21" i:nil="true" />
               <HasClientType>false</HasClientType>
               <ID>1e0d199f-ebf2-43c2-87a7-8ebe8e1a31c4</ID>
@@ -1083,7 +1134,7 @@
               <IsSelected>false</IsSelected>
               <Owner z:Ref="118" i:nil="true" />
               <ProtectionLevel>None</ProtectionLevel>
-              <ReturnType z:Id="147">
+              <ReturnType z:Id="153">
                 <IsSelected>false</IsSelected>
                 <Abstract>false</Abstract>
                 <ClientType i:nil="true" />
@@ -1096,7 +1147,7 @@
                 <IsExternalType>false</IsExternalType>
                 <IsTypeReference>false</IsTypeReference>
                 <KnownTypes i:nil="true" />
-                <Name z:Id="148">bool</Name>
+                <Name z:Id="154">bool</Name>
                 <Parent i:nil="true" />
                 <Partial>false</Partial>
                 <Primitive>Bool</Primitive>
@@ -1104,8 +1155,8 @@
                 <Sealed>false</Sealed>
                 <TypeMode>Primitive</TypeMode>
               </ReturnType>
-              <ServerName z:Id="149">DeleteCustomer</ServerName>
-              <Documentation z:Id="150">
+              <ServerName z:Id="155">DeleteCustomer</ServerName>
+              <Documentation z:Id="156">
                 <Example z:Ref="21" i:nil="true" />
                 <IsClass>false</IsClass>
                 <IsMethod>true</IsMethod>
@@ -1119,9 +1170,9 @@
               <IsInitiating>false</IsInitiating>
               <IsRESTMethod>false</IsRESTMethod>
               <IsTerminating>false</IsTerminating>
-              <Parameters z:Id="151" z:Size="1">
-                <MethodParameter z:Id="152">
-                  <Documentation z:Id="153">
+              <Parameters z:Id="157" z:Size="1">
+                <MethodParameter z:Id="158">
+                  <Documentation z:Id="159">
                     <Example z:Ref="21" i:nil="true" />
                     <IsClass>false</IsClass>
                     <IsMethod>false</IsMethod>
@@ -1135,9 +1186,9 @@
                   <ID>0b40694c-8677-4695-9b64-115df9273601</ID>
                   <IsHidden>false</IsHidden>
                   <IsRESTInvalid>false</IsRESTInvalid>
-                  <Name z:Id="154">CustomerID</Name>
+                  <Name z:Id="160">CustomerID</Name>
                   <Owner z:Ref="118" i:nil="true" />
-                  <Parent z:Ref="146" i:nil="true" />
+                  <Parent z:Ref="152" i:nil="true" />
                   <Type z:Ref="34" i:nil="true" />
                 </MethodParameter>
               </Parameters>
@@ -1153,212 +1204,212 @@
     </Hosts>
     <IsTreeExpanded>false</IsTreeExpanded>
     <Owner z:Ref="1" i:nil="true" />
-    <Services z:Id="155" z:Size="1">
+    <Services z:Id="161" z:Size="1">
       <Service z:Ref="118" i:nil="true" />
     </Services>
     <URI z:Ref="117" i:nil="true" />
   </Namespace>
-  <ServerGenerationTargets z:Id="156" z:Size="1">
-    <ProjectGenerationTarget z:Id="157">
+  <ServerGenerationTargets z:Id="162" z:Size="1">
+    <ProjectGenerationTarget z:Id="163">
       <Framework>NET45</Framework>
       <GenerateReferences>true</GenerateReferences>
       <ID>a1f5220d-0127-4bd9-ba41-92d90336120b</ID>
       <IsEnabled>true</IsEnabled>
       <IsServerPath>true</IsServerPath>
-      <Path z:Id="158">../SampleServer/BasicWinRT/Server.cs</Path>
+      <Path z:Id="164">../SampleServer/BasicWinRT/Server.cs</Path>
       <ProjectID>0b832ba8-5f23-4ad4-9667-243ac3c90977</ProjectID>
     </ProjectGenerationTarget>
   </ServerGenerationTargets>
-  <ServerOutputFile z:Id="159">Server</ServerOutputFile>
+  <ServerOutputFile z:Id="165">Server</ServerOutputFile>
   <ServiceSerializer>Auto</ServiceSerializer>
   <SolutionPath i:nil="true" />
-  <UsingNamespaces z:Id="160" z:Size="19">
-    <ProjectUsingNamespace z:Id="161">
+  <UsingNamespaces z:Id="166" z:Size="19">
+    <ProjectUsingNamespace z:Id="167">
       <Client>true</Client>
       <ID>bc803178-0322-4acf-8bca-64084a2e9795</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
-      <Namespace z:Id="162">System</Namespace>
-      <RT>true</RT>
-      <SL>true</SL>
-      <Server>true</Server>
-    </ProjectUsingNamespace>
-    <ProjectUsingNamespace z:Id="163">
-      <Client>true</Client>
-      <ID>e9dc2012-8fea-4b23-a9df-452fb0b88992</ID>
-      <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
-      <NET>true</NET>
-      <Namespace z:Id="164">System.Collections</Namespace>
-      <RT>true</RT>
-      <SL>true</SL>
-      <Server>true</Server>
-    </ProjectUsingNamespace>
-    <ProjectUsingNamespace z:Id="165">
-      <Client>true</Client>
-      <ID>155bcded-b0f3-44e5-acd7-49508cbad67a</ID>
-      <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
-      <NET>true</NET>
-      <Namespace z:Id="166">System.Collections.Generic</Namespace>
-      <RT>true</RT>
-      <SL>true</SL>
-      <Server>true</Server>
-    </ProjectUsingNamespace>
-    <ProjectUsingNamespace z:Id="167">
-      <Client>true</Client>
-      <ID>3af539d0-b81b-41ab-9c14-5147d88925e7</ID>
-      <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
-      <NET>true</NET>
-      <Namespace z:Id="168">System.Collections.ObjectModel</Namespace>
+      <Namespace z:Id="168">System</Namespace>
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
     <ProjectUsingNamespace z:Id="169">
       <Client>true</Client>
-      <ID>b0938c1f-af7a-43ad-9d9b-3a71a9bebb37</ID>
+      <ID>e9dc2012-8fea-4b23-a9df-452fb0b88992</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
-      <Namespace z:Id="170">System.Collections.Specialized</Namespace>
+      <Namespace z:Id="170">System.Collections</Namespace>
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
     <ProjectUsingNamespace z:Id="171">
       <Client>true</Client>
-      <ID>44cfb4bf-841f-4c08-a426-afc6a3ff9d81</ID>
+      <ID>155bcded-b0f3-44e5-acd7-49508cbad67a</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
-      <Namespace z:Id="172">System.ComponentModel</Namespace>
+      <Namespace z:Id="172">System.Collections.Generic</Namespace>
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
     <ProjectUsingNamespace z:Id="173">
       <Client>true</Client>
-      <ID>2064dd36-9fb2-441b-bc8f-ee3e8e2149db</ID>
+      <ID>3af539d0-b81b-41ab-9c14-5147d88925e7</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
-      <Namespace z:Id="174">System.Net</Namespace>
+      <Namespace z:Id="174">System.Collections.ObjectModel</Namespace>
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
     <ProjectUsingNamespace z:Id="175">
       <Client>true</Client>
-      <ID>2922a5e7-eafd-450e-8e64-d7f1adae3f9a</ID>
+      <ID>b0938c1f-af7a-43ad-9d9b-3a71a9bebb37</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
-      <Namespace z:Id="176">System.Net.Security</Namespace>
-      <RT>false</RT>
+      <Namespace z:Id="176">System.Collections.Specialized</Namespace>
+      <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
     <ProjectUsingNamespace z:Id="177">
       <Client>true</Client>
-      <ID>098b9361-ec40-456d-806b-d59d34ff8787</ID>
+      <ID>44cfb4bf-841f-4c08-a426-afc6a3ff9d81</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
-      <Namespace z:Id="178">System.Reflection</Namespace>
+      <Namespace z:Id="178">System.ComponentModel</Namespace>
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
     <ProjectUsingNamespace z:Id="179">
       <Client>true</Client>
-      <ID>7e7c5ced-a704-4a18-aeec-8d48ff1ec813</ID>
+      <ID>2064dd36-9fb2-441b-bc8f-ee3e8e2149db</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
-      <Namespace z:Id="180">System.Resources</Namespace>
+      <Namespace z:Id="180">System.Net</Namespace>
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
     <ProjectUsingNamespace z:Id="181">
       <Client>true</Client>
-      <ID>cccc0da6-affe-4fc8-84d8-e29dd8d9895a</ID>
+      <ID>2922a5e7-eafd-450e-8e64-d7f1adae3f9a</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
-      <Namespace z:Id="182">System.Runtime.CompilerServices</Namespace>
-      <RT>true</RT>
+      <Namespace z:Id="182">System.Net.Security</Namespace>
+      <RT>false</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
     <ProjectUsingNamespace z:Id="183">
       <Client>true</Client>
-      <ID>078ca632-bbe9-45f5-ad5d-e5ad94906919</ID>
+      <ID>098b9361-ec40-456d-806b-d59d34ff8787</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
-      <Namespace z:Id="184">System.Runtime.InteropServices</Namespace>
+      <Namespace z:Id="184">System.Reflection</Namespace>
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
     <ProjectUsingNamespace z:Id="185">
       <Client>true</Client>
-      <ID>6fe2f054-7b83-4748-9eb0-e6d7949a0dfc</ID>
+      <ID>7e7c5ced-a704-4a18-aeec-8d48ff1ec813</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
-      <Namespace z:Id="186">System.Runtime.Serialization</Namespace>
+      <Namespace z:Id="186">System.Resources</Namespace>
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
     <ProjectUsingNamespace z:Id="187">
       <Client>true</Client>
-      <ID>f6bb480c-f725-4c12-8a9f-15e71272248b</ID>
+      <ID>cccc0da6-affe-4fc8-84d8-e29dd8d9895a</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
-      <Namespace z:Id="188">System.ServiceModel</Namespace>
+      <Namespace z:Id="188">System.Runtime.CompilerServices</Namespace>
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
     <ProjectUsingNamespace z:Id="189">
       <Client>true</Client>
-      <ID>54cbb064-e7ad-4ec6-ad55-d5ca4420282a</ID>
+      <ID>078ca632-bbe9-45f5-ad5d-e5ad94906919</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
-      <Namespace z:Id="190">System.ServiceModel.Description</Namespace>
+      <Namespace z:Id="190">System.Runtime.InteropServices</Namespace>
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
     <ProjectUsingNamespace z:Id="191">
       <Client>true</Client>
-      <ID>62bdc8ec-4618-45ba-87aa-5ea5784e06b9</ID>
+      <ID>6fe2f054-7b83-4748-9eb0-e6d7949a0dfc</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
-      <Namespace z:Id="192">System.Text</Namespace>
+      <Namespace z:Id="192">System.Runtime.Serialization</Namespace>
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
     <ProjectUsingNamespace z:Id="193">
       <Client>true</Client>
+      <ID>f6bb480c-f725-4c12-8a9f-15e71272248b</ID>
+      <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
+      <NET>true</NET>
+      <Namespace z:Id="194">System.ServiceModel</Namespace>
+      <RT>true</RT>
+      <SL>true</SL>
+      <Server>true</Server>
+    </ProjectUsingNamespace>
+    <ProjectUsingNamespace z:Id="195">
+      <Client>true</Client>
+      <ID>54cbb064-e7ad-4ec6-ad55-d5ca4420282a</ID>
+      <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
+      <NET>true</NET>
+      <Namespace z:Id="196">System.ServiceModel.Description</Namespace>
+      <RT>true</RT>
+      <SL>true</SL>
+      <Server>true</Server>
+    </ProjectUsingNamespace>
+    <ProjectUsingNamespace z:Id="197">
+      <Client>true</Client>
+      <ID>62bdc8ec-4618-45ba-87aa-5ea5784e06b9</ID>
+      <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
+      <NET>true</NET>
+      <Namespace z:Id="198">System.Text</Namespace>
+      <RT>true</RT>
+      <SL>true</SL>
+      <Server>true</Server>
+    </ProjectUsingNamespace>
+    <ProjectUsingNamespace z:Id="199">
+      <Client>true</Client>
       <ID>7c5b04a5-86df-4096-b192-e816173caf36</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
-      <Namespace z:Id="194">System.Windows</Namespace>
+      <Namespace z:Id="200">System.Windows</Namespace>
       <RT>false</RT>
       <SL>true</SL>
       <Server>false</Server>
     </ProjectUsingNamespace>
-    <ProjectUsingNamespace z:Id="195">
+    <ProjectUsingNamespace z:Id="201">
       <Client>true</Client>
       <ID>0dc96037-e615-4e33-97af-59f233f50df9</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>false</NET>
-      <Namespace z:Id="196">Windows.UI.Core</Namespace>
+      <Namespace z:Id="202">Windows.UI.Core</Namespace>
       <RT>true</RT>
       <SL>false</SL>
       <Server>false</Server>
     </ProjectUsingNamespace>
-    <ProjectUsingNamespace z:Id="197">
+    <ProjectUsingNamespace z:Id="203">
       <Client>true</Client>
       <ID>bfb27dd7-a9a0-4d08-abd4-6eb5cd4d521c</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>false</NET>
-      <Namespace z:Id="198">Windows.UI.Xaml</Namespace>
+      <Namespace z:Id="204">Windows.UI.Xaml</Namespace>
       <RT>true</RT>
       <SL>false</SL>
       <Server>false</Server>
