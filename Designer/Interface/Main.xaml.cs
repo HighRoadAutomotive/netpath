@@ -333,8 +333,8 @@ namespace WCFArchitect.Interface
 
 		private void SLink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
 		{
-			string navigateUri = SLink.NavigateUri.ToString();
-			Process.Start(new ProcessStartInfo(navigateUri));
+			var nr = new Dialogs.ReportSuggestion();
+			DialogService.ShowContentDialog(null, "Feature Requests and Trouble Reporting.", nr, new DialogAction("Send Report", nr.SendReport, true), new DialogAction("Close", false, true));
 			e.Handled = true;
 		}
 
