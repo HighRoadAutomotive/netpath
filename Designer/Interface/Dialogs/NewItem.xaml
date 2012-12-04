@@ -1,12 +1,12 @@
 ﻿<Grid x:Class="WCFArchitect.Interface.Dialogs.NewItem"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 	xmlns:Root="clr-namespace:WCFArchitect.Interface"
 	xmlns:Projects="clr-namespace:WCFArchitect.Projects;assembly=WCFArchitect.Projects"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-    mc:Ignorable="d" d:DesignHeight="400" d:DesignWidth="1200" >
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+	mc:Ignorable="d" d:DesignHeight="400" d:DesignWidth="1200" >
 	<Grid.Resources>
 		<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
 		<DataTemplate x:Key="ListBoxItemTemplate">

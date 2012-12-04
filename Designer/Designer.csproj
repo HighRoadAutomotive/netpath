@@ -138,10 +138,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\LogicNP Software\CryptoLicensing For .Net 2012 R2\LogicNP.CryptoLicensing.dll</HintPath>
     </Reference>
-    <Reference Include="LogicNP.CryptoObfuscator.ExceptionReporting, Version=1.0.0.0, Culture=neutral, PublicKeyToken=4a3c0a4c668b48b4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\LogicNP Software\Crypto Obfuscator For .Net 2012 R2\LogicNP.CryptoObfuscator.ExceptionReporting.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.WindowsAPICodePack">
       <HintPath>..\..\..\..\Downloads\Controls\Windows API Code Pack\binaries\Microsoft.WindowsAPICodePack.dll</HintPath>
@@ -242,6 +238,9 @@
     <Compile Include="Interface\Data\TypeSelector.xaml.cs">
       <DependentUpon>TypeSelector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interface\Dialogs\ReportSuggestion.xaml.cs">
+      <DependentUpon>ReportSuggestion.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interface\Dialogs\NewItem.xaml.cs">
       <DependentUpon>NewItem.xaml</DependentUpon>
     </Compile>
@@ -250,6 +249,9 @@
     </Compile>
     <Compile Include="Interface\Dialogs\NewSolution.xaml.cs">
       <DependentUpon>NewSolution.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Dialogs\ReportError.xaml.cs">
+      <DependentUpon>ReportError.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interface\Documentation\Class.xaml.cs">
       <DependentUpon>Class.xaml</DependentUpon>
@@ -388,6 +390,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Interface\Dialogs\ReportSuggestion.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Interface\Dialogs\NewItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -397,6 +403,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Interface\Dialogs\NewSolution.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Interface\Dialogs\ReportError.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

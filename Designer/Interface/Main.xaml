@@ -1,14 +1,14 @@
 ﻿<Window x:Class="WCFArchitect.Interface.Main" x:ClassModifier="internal"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-        xmlns:c1="http://schemas.componentone.com/winfx/2006/xaml"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+		xmlns:c1="http://schemas.componentone.com/winfx/2006/xaml"
 		xmlns:c1datetime="clr-namespace:C1.WPF.DateTimeEditors;assembly=C1.WPF.DateTimeEditors.4"
 		xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 		xmlns:local="clr-namespace:WCFArchitect.Interface"
 		Icon="pack://application:,,,/WCFArchitect;component/Icons/DesignStudio.ico" 
-        mc:Ignorable="d" d:DesignHeight="980" d:DesignWidth="1280"
+		mc:Ignorable="d" d:DesignHeight="980" d:DesignWidth="1280"
 		Title="WCF Architect 2 - BETA" MinHeight="980" MinWidth="1280" DataContext="{Binding RelativeSource={RelativeSource Self}}" Style="{StaticResource MainWindowStyle}"
 		TextOptions.TextFormattingMode="Display" TextOptions.TextHintingMode="Fixed" TextOptions.TextRenderingMode="ClearType" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.ClearTypeHint="Enabled"
 		SourceInitialized="Main_SourceInitialized" StateChanged="Main_StateChanged" Closing="Main_Closing" KeyUp="Main_KeyUp">
@@ -313,9 +313,9 @@
 										</Hyperlink>
 									</TextBlock>
 									<TextBlock Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" Margin="0,5,0,5" Grid.Row="5" Padding="4,0">
-										Please use the following link to report any problems you may encounter:<LineBreak />
-										<Hyperlink Name="SLink" NavigateUri="http://tracker.prospectivesoftware.net/" RequestNavigate="SLink_RequestNavigate">
-											Prospective Software Issue Reporting Page
+										Do you have a new idea or feature request that you would just love to see in WCF Architect? We'd love to hear from you:<LineBreak />
+										<Hyperlink Name="SLink" NavigateUri="http://tracker.prospectivesoftware.net" RequestNavigate="SLink_RequestNavigate">
+											Prospective Software Feature Request and Issue Reporting Tool
 										</Hyperlink>
 									</TextBlock>
 								</Grid>

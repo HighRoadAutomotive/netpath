@@ -140,6 +140,7 @@ namespace WCFArchitect.Interface
 
 		private void BuildProject_Click(object sender, RoutedEventArgs e)
 		{
+			throw new ArgumentException("Testing exception reporting.");
 			ShowOutput.IsChecked = true;
 			Compiler.Build();
 		}
