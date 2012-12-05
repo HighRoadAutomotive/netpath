@@ -889,6 +889,9 @@
     <Resource Include="Icons\X16\BehaviorMetadata.png" />
     <Resource Include="Icons\X16\BehaviorThrottling.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\Thumbnails\Intro.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
