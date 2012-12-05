@@ -245,7 +245,32 @@
 								</c1media:C1MediaPlayer>
 							</TabItem>
 							<TabItem Header="LATEST NEWS" FontSize="12pt">
-								
+								<TabItem.Resources>
+									<XmlDataProvider x:Key="Blog" Source="http://ps.prospectivesoftware.com/?feed=rss2"/>
+									<pc:XmlDateConverter x:Key="XmlDateConverter" />
+								</TabItem.Resources>
+								<ListBox ItemsSource="{Binding Source={StaticResource Blog}, XPath=/rss/channel/item }" BorderThickness="0" Margin="0,5" Padding="-1" SelectionMode="Single" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.IsVirtualizing="False" ItemContainerStyle="{StaticResource StretchedContainerStyle}" >
+									<ListBox.Resources>
+										<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+									</ListBox.Resources>
+									<ListBox.ItemTemplate>
+										<DataTemplate>
+											<StackPanel Margin="0,0,0,10">
+												<Grid>
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="*" />
+														<ColumnDefinition Width="Auto" />
+													</Grid.ColumnDefinitions>
+													<TextBlock Grid.Column="0">
+														<Hyperlink NavigateUri="{Binding XPath=link}" RequestNavigate="Hyperlink_RequestNavigate" ><TextBlock Text="{Binding XPath=title}" FontSize="16pt" Style="{StaticResource HyperlinkTextBlock}"/></Hyperlink>
+													</TextBlock>
+													<TextBlock Text="{Binding XPath=pubDate, StringFormat={}{0: MMMM dd, yyyy HH:mm}, Converter={StaticResource XmlDateConverter}}" Foreground="{StaticResource DefaultFontColor}" FontSize="10pt" TextWrapping="NoWrap" Grid.Column="1"/>
+												</Grid>
+												<TextBlock Text="{Binding XPath=description}" Foreground="{StaticResource DefaultFontColor}" FontSize="12pt" TextWrapping="Wrap"/>
+											</StackPanel>
+										</DataTemplate>
+									</ListBox.ItemTemplate>
+								</ListBox>
 							</TabItem>
 						</TabControl>
 					</Grid>
