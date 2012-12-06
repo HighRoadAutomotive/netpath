@@ -360,7 +360,7 @@ namespace WCFArchitect.Generators.WinRT.CS
 			return code.ToString();
 		}
 
-		private static string GenerateElementProxyConstructorCode45(DataElement o, Data c)
+		private static string GenerateElementXAMLConstructorCode45(DataElement o, Data c)
 		{
 			if (o.IsHidden) return "";
 			if (!o.IsDataMember) return "";
