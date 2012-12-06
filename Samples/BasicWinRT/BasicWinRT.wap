@@ -1223,13 +1223,9 @@
   <ServerOutputFile z:Id="165">Server</ServerOutputFile>
   <ServiceSerializer>Auto</ServiceSerializer>
   <SolutionPath i:nil="true" />
-<<<<<<< HEAD
-  <UsingNamespaces z:Id="160" z:Size="20">
-    <ProjectUsingNamespace z:Id="161">
-=======
-  <UsingNamespaces z:Id="166" z:Size="19">
+
+  <UsingNamespaces z:Id="166" z:Size="20">
     <ProjectUsingNamespace z:Id="167">
->>>>>>> master
       <Client>true</Client>
       <ID>bc803178-0322-4acf-8bca-64084a2e9795</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
@@ -1419,12 +1415,12 @@
       <SL>false</SL>
       <Server>false</Server>
     </ProjectUsingNamespace>
-    <ProjectUsingNamespace z:Id="199">
+    <ProjectUsingNamespace z:Id="205">
       <Client>true</Client>
       <ID>447b32bd-9e01-4aa0-a845-f4f3dd87e1c2</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>false</NET>
-      <Namespace z:Id="200">WCFArchitect.Toolkit.WinRT</Namespace>
+      <Namespace z:Id="206">WCFArchitect.Toolkit.WinRT</Namespace>
       <RT>true</RT>
       <SL>false</SL>
       <Server>false</Server>

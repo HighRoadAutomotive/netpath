@@ -360,6 +360,43 @@ namespace WCFArchitect.Generators.WinRT.CS
 			return code.ToString();
 		}
 
+		private static string GenerateElementProxyConstructorCode45(DataElement o, Data c)
+		{
+			if (o.IsHidden) return "";
+			if (!o.IsDataMember) return "";
+			if (!o.HasXAMLType) return "";
+			var code = new StringBuilder();
+
+			if (o.XAMLType.TypeMode == DataTypeMode.Array)
+			{
+				code.AppendLine(string.Format("\t\t\t{0} v{3} = new {1}[Data.{2}.GetLength(0)];", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)).Replace("[]", ""), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
+				code.AppendLine(string.Format("\t\t\tfor(int i = 0; i < Data.{0}.GetLength(0); i++) {{ v{1}[i] = Data.{0}[i]; }}", o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
+				if (!o.IsAttached && !o.IsReadOnly) code.AppendLine(string.Format("\t\t\t{0} = v{0};", o.XAMLName));
+				else code.AppendLine(string.Format("t\t\t{0}.Set{1}(this, v{1});", DataTypeGenerator.GenerateType(c.XAMLType), o.XAMLName));
+			}
+			else if (o.XAMLType.TypeMode == DataTypeMode.Collection)
+			{
+				code.AppendLine(string.Format("\t\t\t{0} v{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName));
+				code.AppendLine(string.Format("\t\t\tforeach({0} a in Data.{1}) {{ v{2}.Add(a); }}", DataTypeGenerator.GenerateTypeGenerics(GetPreferredXAMLType(o.XAMLType)), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
+				if (!o.IsAttached && !o.IsReadOnly) code.AppendLine(string.Format("\t\t\t{0} = v{0};", o.XAMLName));
+				else code.AppendLine(string.Format("t\t\t{0}.Set{1}(this, v{1});", DataTypeGenerator.GenerateType(c.XAMLType), o.XAMLName));
+			}
+			else if (o.XAMLType.TypeMode == DataTypeMode.Dictionary)
+			{
+				code.AppendLine(string.Format("\t\t\t{0} v{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName));
+				code.AppendLine(string.Format("\t\t\tforeach(KeyValuePair<{0}> a in Data.{1}) {{ v{2}.Add(a.Key, a.Value); }}", DataTypeGenerator.GenerateTypeGenerics(GetPreferredXAMLType(o.XAMLType)), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
+				if (!o.IsAttached && !o.IsReadOnly) code.AppendLine(string.Format("\t\t\t{0} = v{0};", o.XAMLName));
+				else code.AppendLine(string.Format("t\t\t{0}.Set{1}(this, v{1});", DataTypeGenerator.GenerateType(c.XAMLType), o.XAMLName));
+			}
+			else
+			{
+				if (!o.IsAttached) code.AppendLine(string.Format("\t\t\t{0} = Data.{1};", o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
+				else code.AppendLine(string.Format("\t\t\t{2}.Set{0}(this, Data.{1});", o.HasClientType ? o.ClientName : o.DataName, o.XAMLName, DataTypeGenerator.GenerateType(c.HasClientType ? c.ClientType : c)));
+			}
+
+			return code.ToString();
+		}
+
 		private static string GenerateElementXAMLConstructorCode45(DataElement o, Data c)
 		{
 			if (o.IsHidden) return "";
