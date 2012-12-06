@@ -2,9 +2,12 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
+using System.Windows.Navigation;
+
 using Prospective.Controls.Dialogs;
 using WCFArchitect.Options;
 
@@ -294,6 +297,17 @@ namespace WCFArchitect.Interface
 				RecentProjectsList.Children.Add(nrpi);
 			}
 		}
+		
+		private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+		{
+			var hlink = sender as Hyperlink;
+			if (hlink != null)
+			{
+				string navigateUri = hlink.NavigateUri.ToString();
+				Process.Start(new ProcessStartInfo(navigateUri));
+			}
+			e.Handled = true;
+		}
 
 		#endregion
 
@@ -317,24 +331,10 @@ namespace WCFArchitect.Interface
 			DefaultProjectFolder.Text = Globals.UserProfile.DefaultProjectFolder;
 		}
 
-		private void MILink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
-		{
-			string navigateUri = MILink.NavigateUri.ToString();
-			Process.Start(new ProcessStartInfo(navigateUri));
-			e.Handled = true;
-		}
-
-		private void OILLink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
-		{
-			string navigateUri = OILLink.NavigateUri.ToString();
-			Process.Start(new ProcessStartInfo(navigateUri));
-			e.Handled = true;
-		}
-
 		private void SLink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
 		{
-			string navigateUri = SLink.NavigateUri.ToString();
-			Process.Start(new ProcessStartInfo(navigateUri));
+			var nr = new Dialogs.ReportSuggestion();
+			DialogService.ShowContentDialog(null, "Feature Requests and Trouble Reporting.", nr, new DialogAction("Send Report", nr.SendReport, true), new DialogAction("Close", false, true));
 			e.Handled = true;
 		}
 

@@ -48,6 +48,7 @@ namespace WCFArchitect.Projects
 		[IgnoreDataMember] public bool HasCallback { get { return CallbackOperations.Count > 0; } }
 		[IgnoreDataMember] public bool HasAsyncServiceOperations { get { return ServiceOperations.Where(a => a.GetType() == typeof (Method)).Any(a => ((Method) a).UseAsyncPattern); } }
 		[IgnoreDataMember] public bool HasAsyncCallbackOperations { get { return CallbackOperations.Where(a => a.GetType() == typeof (Method)).Any(a => ((Method) a).UseAsyncPattern); } }
+		[IgnoreDataMember] public bool HasCallbackOperations { get { return CallbackOperations.Count > 0; } }
 
 		public Service() : base(DataTypeMode.Class)
 		{
@@ -338,8 +339,8 @@ namespace WCFArchitect.Projects
 			base.OnPropertyChanged(e);
 
 			if (e.Property == DeclarationProperty || e.Property == ClientDeclarationProperty) return;
-			Declaration = string.Format("{0} {1}{{ get; {2}}}", ReturnType, ServerName, IsReadOnly ? "set; " : "");
-			ClientDeclaration = string.Format("{0} {1}{{ get; {2}}}", ReturnType, ClientName, IsReadOnly ? "set; " : "");
+			Declaration = string.Format("{0} {1}{{ get; {2}}}", ReturnType, ServerName, IsReadOnly ? "" : "set; ");
+			ClientDeclaration = string.Format("{0} {1}{{ get; {2}}}", ReturnType, ClientName, IsReadOnly ? "" : "set; ");
 		}
 	}
 

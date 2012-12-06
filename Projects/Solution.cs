@@ -32,7 +32,7 @@ namespace WCFArchitect.Projects
 
 		public static Solution Open(string Path)
 		{
-			Solution t = Storage.Open<Solution>(Path);
+			var t = Storage.Open<Solution>(Path);
 			t.AbsolutePath = Path;
 			return t;
 		}
@@ -45,6 +45,11 @@ namespace WCFArchitect.Projects
 		public static void Save(Solution Data, string Path)
 		{
 			Storage.Save(Path, Data);
+		}
+
+		public static byte[] Dump(Solution Data)
+		{
+			return Storage.Dump(Data);
 		}
 	}
 }

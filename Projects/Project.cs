@@ -324,6 +324,11 @@ namespace WCFArchitect.Projects
 			Storage.Save(Path, Data);
 		}
 
+		public static byte[] Dump(Project Data)
+		{
+			return Storage.Dump(Data);
+		}
+
 		public List<DataType> SearchTypes(string Search, bool IncludeCollections = true, bool IncludeVoid = false, bool DataOnly = false, bool IncludeInheritable = false)
 		{
 			if (string.IsNullOrEmpty(Search)) return new List<DataType>();

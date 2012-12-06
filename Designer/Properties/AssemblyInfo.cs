@@ -11,8 +11,8 @@ using System.Windows;
 [assembly: AssemblyDescription("A design environment and code generator for WCF Services.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Prospective Software Inc.")]
-[assembly: AssemblyProduct("WCF Architect")]
-[assembly: AssemblyCopyright("Copyright © 2010-2012 Prospective Software")]
+[assembly: AssemblyProduct("WCF Architect 2")]
+[assembly: AssemblyCopyright("Copyright © 2012-2013 Prospective Software Inc.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -52,4 +52,4 @@ using System.Windows;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.2100.0")]
+[assembly: AssemblyFileVersion("2.0.2100.12503")]

@@ -5,6 +5,8 @@ using System.Data;
 using System.Linq;
 using System.Windows;
 using System.IO;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Prospective.Controls.Dialogs;
 
 namespace WCFArchitect
@@ -12,7 +14,7 @@ namespace WCFArchitect
 	public partial class App : Application
 	{
 		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
-		private void Application_Startup(object sender, StartupEventArgs e)
+		public void Application_Startup(object sender, StartupEventArgs e)
 		{
 			//Get executable data. 
 			Globals.ApplicationPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\";
@@ -65,9 +67,27 @@ namespace WCFArchitect
 
 		private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
 		{
+			//Take a screenshot
+			var targetBitmap = new RenderTargetBitmap((int)Globals.MainScreen.ActualWidth, (int)Globals.MainScreen.ActualHeight, 96d, 96d, PixelFormats.Default);
+			targetBitmap.Render(Globals.MainScreen);
+			var encoder = new PngBitmapEncoder();
+			encoder.Frames.Add(BitmapFrame.Create(targetBitmap));
+			var ms = new MemoryStream();
+			encoder.Save(ms);
+
+			//Get project files
+			var pfd = new Dictionary<string, byte[]>();
+			if (Globals.Solution != null)
+			{
+				pfd.Add(Path.GetFileName(Globals.Solution.AbsolutePath) ?? Globals.Solution.Name + ".was", Projects.Solution.Dump(Globals.Solution));
+				foreach (Projects.Project p in Globals.Projects)
+					pfd.Add(Path.GetFileName(p.AbsolutePath) ?? p.Name + ".wap", Projects.Project.Dump(p));
+			}
+
+			var nr = new Interface.Dialogs.ReportError(e.Exception, ms.ToArray(), pfd);
+
 			//TODO: Add reporting functionality when the licensing integration is built.
-			DialogService.ShowMessageDialog(null,"We've Encountered an Unknown Problem.", "The following exception was caught by WCF Architect. Please report this error to support@prospectivesoftware.com." + Environment.NewLine + Environment.NewLine + e.Exception,
-				new DialogAction("Copy To Clipboard", () => Clipboard.SetText(e.Exception.ToString(), TextDataFormat.UnicodeText), true), new DialogAction("Dismiss", false, true));
+			DialogService.ShowContentDialog(null,"We've Encountered an Unknown Problem.", nr, new DialogAction("Send Report", nr.SendReport, true), new DialogAction("Dismiss", false, true));
 			e.Handled = true;
 		}
 	}

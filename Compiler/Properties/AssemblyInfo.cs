@@ -9,8 +9,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("The compiler for WCF Architect")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Prospective Software Inc.")]
-[assembly: AssemblyProduct("WCF Architect")]
-[assembly: AssemblyCopyright("Copyright © 2013 Prospective Software Inc.")]
+[assembly: AssemblyProduct("WCF Architect 2")]
+[assembly: AssemblyCopyright("Copyright © 2012-2013 Prospective Software Inc.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,4 +33,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.2000.0")]
+[assembly: AssemblyFileVersion("2.0.0.12503")]
