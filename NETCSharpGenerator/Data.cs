@@ -722,7 +722,7 @@ namespace WCFArchitect.Generators.NET.CS
 			return code.ToString();
 		}
 
-		private static string GenerateElementXAMLConversionFromXAML30(DataElement o, Data c)
+		private static string GenerateElementXAMLConstructorCode30(DataElement o, Data c)
 		{
 			return GenerateElementXAMLConstructorCode35(o, c);
 		}
