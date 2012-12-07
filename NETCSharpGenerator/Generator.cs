@@ -12,15 +12,15 @@ using WCFArchitect.Projects.Helpers;
 
 namespace WCFArchitect.Generators.NET.CS
 {
-    public class Generator : IGenerator
-    {
+	public class Generator : IGenerator
+	{
 		public Action<Guid, string> NewOutput { get; private set; }
 		public Action<Guid, CompileMessage> NewMessage { get; private set; }
-	    public ObservableCollection<CompileMessage> Messages { get; private set; }
+		public ObservableCollection<CompileMessage> Messages { get; private set; }
 		public CompileMessageSeverity HighestSeverity { get; private set; }
 		public string Name { get; private set; }
-	    public GenerationLanguage Language { get; private set; }
-	    public GenerationModule Module { get; private set; }
+		public GenerationLanguage Language { get; private set; }
+		public GenerationModule Module { get; private set; }
 		public bool IsInitialized { get; private set; }
 
 		public Generator()
@@ -32,10 +32,10 @@ namespace WCFArchitect.Generators.NET.CS
 		}
 
 		public void Initialize(string License, Action<Guid, string> OutputHandler, Action<Guid, CompileMessage> CompileMessageHandler)
-	    {
-		    Globals.LicenseKey = License;
-		    NewOutput = OutputHandler;
-		    NewMessage = CompileMessageHandler;
+		{
+			Globals.LicenseKey = License;
+			NewOutput = OutputHandler;
+			NewMessage = CompileMessageHandler;
 			var t = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
 			IsInitialized = (t.Status == LicenseStatus.Valid);
 		}
@@ -85,9 +85,9 @@ namespace WCFArchitect.Generators.NET.CS
 
 		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
 		public void Verify(Project Data)
-	    {
+		{
 			var t = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
-		    if (t.Status != LicenseStatus.Valid) return;
+			if (t.Status != LicenseStatus.Valid) return;
 
 			if (string.IsNullOrEmpty(Data.ServerOutputFile))
 				AddMessage(new CompileMessage("GS0003", "The '" + Data.Name + "' project does not have a Server Assembly Name. You must specify a Server Assembly Name.", CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Data.ID));
@@ -110,7 +110,7 @@ namespace WCFArchitect.Generators.NET.CS
 						AddMessage(new CompileMessage("GS0008", string.Format("Unable to locate type '{0}'. Please ensure that you have added the project containing this type to the Dependency Projects list and that it has not been renamed or removed from the project.", dt.Name), CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Data.ID));
 
 			NamespaceGenerator.VerifyCode(Data.Namespace, AddMessage);
-	    }
+		}
 
 		public Task VerifyAsync(Project Data)
 		{
@@ -119,11 +119,12 @@ namespace WCFArchitect.Generators.NET.CS
 
 		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
 		public string GenerateServer(Project Data, ProjectGenerationFramework Framework, bool GenerateReferences)
-	    {
+		{
 			var t = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
 			if (t.Status != LicenseStatus.Valid) return "";
 
 			Globals.CurrentGenerationTarget = Framework;
+			Globals.ExperimentalEnabled = Data.EnableExperimental;
 
 			return Generate(Data, Framework, true, GenerateReferences);
 		}
@@ -135,6 +136,7 @@ namespace WCFArchitect.Generators.NET.CS
 			if (t.Status != LicenseStatus.Valid) return "";
 
 			Globals.CurrentGenerationTarget = Framework;
+			Globals.ExperimentalEnabled = Data.EnableExperimental;
 
 			return Generate(Data, Framework, false, GenerateReferences);
 		}
@@ -239,7 +241,7 @@ namespace WCFArchitect.Generators.NET.CS
 			//Reenable XML documentation warnings
 			if (!Data.EnableDocumentationWarnings) code.AppendLine("#pragma warning restore 1591");
 
-		    return code.ToString();
+			return code.ToString();
 		}
 
 		private void AddMessage(CompileMessage Message)
@@ -399,6 +401,7 @@ namespace WCFArchitect.Generators.NET.CS
 		public const string ApplicationTitle = "WCF Architect .NET CSharp Generator - BETA";
 
 		public static ProjectGenerationFramework CurrentGenerationTarget { get; set; }
+		public static bool ExperimentalEnabled { get; set; }
 		
 		public static string LicenseKey { get; set; }
 		public const string LicenseVerification = "AMAAMACnZigmLe9LpWcsYIBVFHYRZeUhr1oYyxDRFmL/qon4ijMx6X/xXyYldZs/A8Df9MsDAAEAAQ==";

@@ -1,8 +1,8 @@
 ﻿<ContentControl x:Class="WCFArchitect.Interface.Data.Data" x:ClassModifier="internal"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" 
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" 
 	xmlns:c1="http://schemas.componentone.com/wpf/Basic"
 	xmlns:Data="clr-namespace:WCFArchitect.Interface.Data"
 	xmlns:Projects="clr-namespace:WCFArchitect.Projects;assembly=WCFArchitect.Projects"
@@ -38,9 +38,9 @@
 				<ColumnDefinition Width="*" />
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
-			<ToggleButton Content="Automatic Data Updates Enabled" IsChecked="{Binding Path=OpenType.AutoDataEnabled}" Margin="5" Grid.Column="0" Grid.Row="0" />
-			<Label Content="Update Batch Size:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Column="1" />
-			<c1:C1NumericBox Value="{Binding Path=OpenType.AutoDataBatchCount}" Format="G10" Margin="130,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ShowButtons="False" Name="UpdateBatchSize" ValueChanged="UpdateBatchSize_ValueChanged" Grid.Column="1" FontSize="10pt" />
+			<ToggleButton Content="Data Change Messaging Enabled" IsChecked="{Binding Path=OpenType.AutoDataEnabled}" Margin="5" Grid.Column="0" Grid.Row="0" />
+			<Label Content="Data Change Batch Size:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Column="1" />
+			<c1:C1NumericBox Value="{Binding Path=OpenType.AutoDataBatchCount}" Format="G10" Margin="155,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ShowButtons="False" Name="UpdateBatchSize" ValueChanged="UpdateBatchSize_ValueChanged" Grid.Column="1" FontSize="10pt" />
 		</Grid>
 		<TabControl Grid.Row="4" Margin="0,10,0,0">
 			<TabItem Header="Members" FontSize="12pt" IsSelected="True">
