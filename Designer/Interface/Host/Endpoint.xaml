@@ -37,11 +37,13 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<Label Content="Name:" Height="Auto" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalContentAlignment="Center" Grid.Row="0" />
 		<pc:TextBox Text="{Binding Path=Data.Name}" Name="DisplayName" Height="23" Margin="5" VerticalAlignment="Top" Grid.Column="1" ToolTip="{Binding Path=Data.Name}" TextChanged="Name_TextChanged" Validate="Name_Validate" />
 		<Label Content="Binding:" Grid.Row="1" Height="Auto" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalContentAlignment="Center" Width="Auto" />
 		<ComboBox x:Name="EndpointBinding" Margin="5" Grid.Row="1" Grid.Column="1" DisplayMemberPath="TypeName" IsEnabled="{Binding Path=Data.Binding}" SelectionChanged="EndpointBinding_SelectionChanged" />
+		<ToggleButton IsChecked="{Binding Path=Data.UseProtocolBufferSerialization}" Content="Use Protocol Buffer Serialization" Margin="5" Grid.Column="1" Grid.Row="2" />
 	</Grid>
 	<Grid Grid.Row="2">
 		<Grid.ColumnDefinitions>
