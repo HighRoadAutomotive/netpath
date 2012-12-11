@@ -71,37 +71,58 @@
   </Assembly>
   <Assembly Load="true" Path=".\Build\WCFArchitect.Toolkit.NET30.dll" XapEntryName="" KeyFilePath="" CertFilePath="" TimeStampURL="" Embed="True" AddExceptionReporting="False" PfxPassword="" PfxPasswordCert="">
 <<<<<<< HEAD
+<<<<<<< HEAD
     <ObfuscationSettings EncryptStrings="True" EncryptMethods="False" EncryptConstants="True" SuppressReflector="True" ReduceMetaData="False" ObfuscationDisposition="1" FlowObfuscation="3" SuppressILDASM="True" SuppressReflection="True" CombineResources="True" EncryptResources="True" CompressResources="True" MarkAsSealed="False" EnableTamperDetection="False" EnableAntiDebugging="True" SymbolRenaming="True" HideExternalCalls="True" HideInternalCalls="True" GeneratePdbFile="True" ObfuscatePdbFileNames="True" IncludeLocalVariablesInPdbFile="False" Encrypt="False" Compress="False" MSBuild="False" ObfuscatedNamespace="A" RetainNamespace="False" ModuleInitializationMethod="" DisableControlSetName="False">
 =======
     <ObfuscationSettings EncryptStrings="True" EncryptMethods="True" EncryptConstants="True" SuppressReflector="True" ReduceMetaData="False" ObfuscationDisposition="1" FlowObfuscation="3" SuppressILDASM="True" SuppressReflection="True" CombineResources="True" EncryptResources="True" CompressResources="True" MarkAsSealed="True" EnableTamperDetection="False" EnableAntiDebugging="True" SymbolRenaming="True" HideExternalCalls="True" HideInternalCalls="True" GeneratePdbFile="True" ObfuscatePdbFileNames="True" IncludeLocalVariablesInPdbFile="False" Encrypt="False" Compress="False" MSBuild="False" ObfuscatedNamespace="A" RetainNamespace="False" ModuleInitializationMethod="" DisableControlSetName="False" LicensingMerge="False">
 >>>>>>> d1c4636... Fixed WA-118. Fixed wrong server method signatures. Add all known future needed assemblies. Updated the obfuscator.
+=======
+    <ObfuscationSettings EncryptStrings="True" EncryptMethods="True" EncryptConstants="True" SuppressReflector="True" ReduceMetaData="False" ObfuscationDisposition="1" FlowObfuscation="3" SuppressILDASM="True" SuppressReflection="True" CombineResources="True" EncryptResources="True" CompressResources="True" MarkAsSealed="False" EnableTamperDetection="False" EnableAntiDebugging="True" SymbolRenaming="True" HideExternalCalls="True" HideInternalCalls="True" GeneratePdbFile="True" ObfuscatePdbFileNames="True" IncludeLocalVariablesInPdbFile="False" Encrypt="False" Compress="False" MSBuild="False" ObfuscatedNamespace="A" RetainNamespace="False" ModuleInitializationMethod="" DisableControlSetName="False" LicensingMerge="False">
+>>>>>>> b221d00... Merged files from autodata branch and modifed the obfuscator and installer projects to match.
       <Watermarks Watermark0="" Watermark1="" Watermark2="" Watermark3="" Watermark4="" Watermark5="" Watermark6="" Watermark7="" Watermark8="" Watermark9="" />
     </ObfuscationSettings>
   </Assembly>
   <Assembly Load="true" Path=".\Build\WCFArchitect.Toolkit.NET35.dll" XapEntryName="" KeyFilePath="" CertFilePath="" TimeStampURL="" Embed="True" AddExceptionReporting="False" PfxPassword="" PfxPasswordCert="">
 <<<<<<< HEAD
+<<<<<<< HEAD
     <ObfuscationSettings EncryptStrings="True" EncryptMethods="False" EncryptConstants="True" SuppressReflector="True" ReduceMetaData="False" ObfuscationDisposition="1" FlowObfuscation="3" SuppressILDASM="True" SuppressReflection="True" CombineResources="True" EncryptResources="True" CompressResources="True" MarkAsSealed="False" EnableTamperDetection="False" EnableAntiDebugging="True" SymbolRenaming="True" HideExternalCalls="True" HideInternalCalls="True" GeneratePdbFile="True" ObfuscatePdbFileNames="True" IncludeLocalVariablesInPdbFile="False" Encrypt="False" Compress="False" MSBuild="False" ObfuscatedNamespace="A" RetainNamespace="False" ModuleInitializationMethod="" DisableControlSetName="False">
 =======
     <ObfuscationSettings EncryptStrings="True" EncryptMethods="True" EncryptConstants="True" SuppressReflector="True" ReduceMetaData="False" ObfuscationDisposition="1" FlowObfuscation="3" SuppressILDASM="True" SuppressReflection="True" CombineResources="True" EncryptResources="True" CompressResources="True" MarkAsSealed="True" EnableTamperDetection="False" EnableAntiDebugging="True" SymbolRenaming="True" HideExternalCalls="True" HideInternalCalls="True" GeneratePdbFile="True" ObfuscatePdbFileNames="True" IncludeLocalVariablesInPdbFile="False" Encrypt="False" Compress="False" MSBuild="False" ObfuscatedNamespace="A" RetainNamespace="False" ModuleInitializationMethod="" DisableControlSetName="False" LicensingMerge="False">
 >>>>>>> d1c4636... Fixed WA-118. Fixed wrong server method signatures. Add all known future needed assemblies. Updated the obfuscator.
+=======
+    <ObfuscationSettings EncryptStrings="True" EncryptMethods="True" EncryptConstants="True" SuppressReflector="True" ReduceMetaData="False" ObfuscationDisposition="1" FlowObfuscation="3" SuppressILDASM="True" SuppressReflection="True" CombineResources="True" EncryptResources="True" CompressResources="True" MarkAsSealed="False" EnableTamperDetection="False" EnableAntiDebugging="True" SymbolRenaming="True" HideExternalCalls="True" HideInternalCalls="True" GeneratePdbFile="True" ObfuscatePdbFileNames="True" IncludeLocalVariablesInPdbFile="False" Encrypt="False" Compress="False" MSBuild="False" ObfuscatedNamespace="A" RetainNamespace="False" ModuleInitializationMethod="" DisableControlSetName="False" LicensingMerge="False">
+>>>>>>> b221d00... Merged files from autodata branch and modifed the obfuscator and installer projects to match.
       <Watermarks Watermark0="" Watermark1="" Watermark2="" Watermark3="" Watermark4="" Watermark5="" Watermark6="" Watermark7="" Watermark8="" Watermark9="" />
     </ObfuscationSettings>
   </Assembly>
   <Assembly Load="true" Path=".\Build\WCFArchitect.Toolkit.NET40.dll" XapEntryName="" KeyFilePath="" CertFilePath="" TimeStampURL="" Embed="True" AddExceptionReporting="False" PfxPassword="" PfxPasswordCert="">
 <<<<<<< HEAD
-    <ObfuscationSettings EncryptStrings="True" EncryptMethods="False" EncryptConstants="True" SuppressReflector="True" ReduceMetaData="False" ObfuscationDisposition="1" FlowObfuscation="3" SuppressILDASM="True" SuppressReflection="True" CombineResources="True" EncryptResources="True" CompressResources="True" MarkAsSealed="False" EnableTamperDetection="False" EnableAntiDebugging="True" SymbolRenaming="True" HideExternalCalls="True" HideInternalCalls="True" GeneratePdbFile="True" ObfuscatePdbFileNames="True" IncludeLocalVariablesInPdbFile="False" Encrypt="False" Compress="False" MSBuild="False" ObfuscatedNamespace="A" RetainNamespace="False" ModuleInitializationMethod="" DisableControlSetName="False">
-=======
-    <ObfuscationSettings EncryptStrings="True" EncryptMethods="True" EncryptConstants="True" SuppressReflector="True" ReduceMetaData="False" ObfuscationDisposition="1" FlowObfuscation="3" SuppressILDASM="True" SuppressReflection="True" CombineResources="True" EncryptResources="True" CompressResources="True" MarkAsSealed="True" EnableTamperDetection="False" EnableAntiDebugging="True" SymbolRenaming="True" HideExternalCalls="True" HideInternalCalls="True" GeneratePdbFile="True" ObfuscatePdbFileNames="True" IncludeLocalVariablesInPdbFile="False" Encrypt="False" Compress="False" MSBuild="False" ObfuscatedNamespace="A" RetainNamespace="False" ModuleInitializationMethod="" DisableControlSetName="False" LicensingMerge="False">
->>>>>>> d1c4636... Fixed WA-118. Fixed wrong server method signatures. Add all known future needed assemblies. Updated the obfuscator.
-      <Watermarks Watermark0="" Watermark1="" Watermark2="" Watermark3="" Watermark4="" Watermark5="" Watermark6="" Watermark7="" Watermark8="" Watermark9="" />
-    </ObfuscationSettings>
-  </Assembly>
-  <Assembly Load="true" Path=".\Build\WCFArchitect.Toolkit.NET45.dll" XapEntryName="" KeyFilePath="" CertFilePath="" TimeStampURL="" Embed="True" AddExceptionReporting="False" PfxPassword="" PfxPasswordCert="">
 <<<<<<< HEAD
     <ObfuscationSettings EncryptStrings="True" EncryptMethods="False" EncryptConstants="True" SuppressReflector="True" ReduceMetaData="False" ObfuscationDisposition="1" FlowObfuscation="3" SuppressILDASM="True" SuppressReflection="True" CombineResources="True" EncryptResources="True" CompressResources="True" MarkAsSealed="False" EnableTamperDetection="False" EnableAntiDebugging="True" SymbolRenaming="True" HideExternalCalls="True" HideInternalCalls="True" GeneratePdbFile="True" ObfuscatePdbFileNames="True" IncludeLocalVariablesInPdbFile="False" Encrypt="False" Compress="False" MSBuild="False" ObfuscatedNamespace="A" RetainNamespace="False" ModuleInitializationMethod="" DisableControlSetName="False">
 =======
     <ObfuscationSettings EncryptStrings="True" EncryptMethods="True" EncryptConstants="True" SuppressReflector="True" ReduceMetaData="False" ObfuscationDisposition="1" FlowObfuscation="3" SuppressILDASM="True" SuppressReflection="True" CombineResources="True" EncryptResources="True" CompressResources="True" MarkAsSealed="True" EnableTamperDetection="False" EnableAntiDebugging="True" SymbolRenaming="True" HideExternalCalls="True" HideInternalCalls="True" GeneratePdbFile="True" ObfuscatePdbFileNames="True" IncludeLocalVariablesInPdbFile="False" Encrypt="False" Compress="False" MSBuild="False" ObfuscatedNamespace="A" RetainNamespace="False" ModuleInitializationMethod="" DisableControlSetName="False" LicensingMerge="False">
 >>>>>>> d1c4636... Fixed WA-118. Fixed wrong server method signatures. Add all known future needed assemblies. Updated the obfuscator.
+=======
+    <ObfuscationSettings EncryptStrings="True" EncryptMethods="True" EncryptConstants="True" SuppressReflector="True" ReduceMetaData="False" ObfuscationDisposition="1" FlowObfuscation="3" SuppressILDASM="True" SuppressReflection="True" CombineResources="True" EncryptResources="True" CompressResources="True" MarkAsSealed="False" EnableTamperDetection="False" EnableAntiDebugging="True" SymbolRenaming="True" HideExternalCalls="True" HideInternalCalls="True" GeneratePdbFile="True" ObfuscatePdbFileNames="True" IncludeLocalVariablesInPdbFile="False" Encrypt="False" Compress="False" MSBuild="False" ObfuscatedNamespace="A" RetainNamespace="False" ModuleInitializationMethod="" DisableControlSetName="False" LicensingMerge="False">
+>>>>>>> b221d00... Merged files from autodata branch and modifed the obfuscator and installer projects to match.
+      <Watermarks Watermark0="" Watermark1="" Watermark2="" Watermark3="" Watermark4="" Watermark5="" Watermark6="" Watermark7="" Watermark8="" Watermark9="" />
+    </ObfuscationSettings>
+  </Assembly>
+  <Assembly Load="true" Path=".\Build\WCFArchitect.Toolkit.NET45.dll" XapEntryName="" KeyFilePath="" CertFilePath="" TimeStampURL="" Embed="True" AddExceptionReporting="False" PfxPassword="" PfxPasswordCert="">
+<<<<<<< HEAD
+<<<<<<< HEAD
+    <ObfuscationSettings EncryptStrings="True" EncryptMethods="False" EncryptConstants="True" SuppressReflector="True" ReduceMetaData="False" ObfuscationDisposition="1" FlowObfuscation="3" SuppressILDASM="True" SuppressReflection="True" CombineResources="True" EncryptResources="True" CompressResources="True" MarkAsSealed="False" EnableTamperDetection="False" EnableAntiDebugging="True" SymbolRenaming="True" HideExternalCalls="True" HideInternalCalls="True" GeneratePdbFile="True" ObfuscatePdbFileNames="True" IncludeLocalVariablesInPdbFile="False" Encrypt="False" Compress="False" MSBuild="False" ObfuscatedNamespace="A" RetainNamespace="False" ModuleInitializationMethod="" DisableControlSetName="False">
+=======
+    <ObfuscationSettings EncryptStrings="True" EncryptMethods="True" EncryptConstants="True" SuppressReflector="True" ReduceMetaData="False" ObfuscationDisposition="1" FlowObfuscation="3" SuppressILDASM="True" SuppressReflection="True" CombineResources="True" EncryptResources="True" CompressResources="True" MarkAsSealed="True" EnableTamperDetection="False" EnableAntiDebugging="True" SymbolRenaming="True" HideExternalCalls="True" HideInternalCalls="True" GeneratePdbFile="True" ObfuscatePdbFileNames="True" IncludeLocalVariablesInPdbFile="False" Encrypt="False" Compress="False" MSBuild="False" ObfuscatedNamespace="A" RetainNamespace="False" ModuleInitializationMethod="" DisableControlSetName="False" LicensingMerge="False">
+>>>>>>> d1c4636... Fixed WA-118. Fixed wrong server method signatures. Add all known future needed assemblies. Updated the obfuscator.
+=======
+    <ObfuscationSettings EncryptStrings="True" EncryptMethods="True" EncryptConstants="True" SuppressReflector="True" ReduceMetaData="False" ObfuscationDisposition="1" FlowObfuscation="3" SuppressILDASM="True" SuppressReflection="True" CombineResources="True" EncryptResources="True" CompressResources="True" MarkAsSealed="False" EnableTamperDetection="False" EnableAntiDebugging="True" SymbolRenaming="True" HideExternalCalls="True" HideInternalCalls="True" GeneratePdbFile="True" ObfuscatePdbFileNames="True" IncludeLocalVariablesInPdbFile="False" Encrypt="False" Compress="False" MSBuild="False" ObfuscatedNamespace="A" RetainNamespace="False" ModuleInitializationMethod="" DisableControlSetName="False" LicensingMerge="False">
+      <Watermarks Watermark0="" Watermark1="" Watermark2="" Watermark3="" Watermark4="" Watermark5="" Watermark6="" Watermark7="" Watermark8="" Watermark9="" />
+    </ObfuscationSettings>
+  </Assembly>
+  <Assembly Load="true" Path=".\Build\WCFArchitect.Toolkit.WinRT8.dll" XapEntryName="" KeyFilePath="" CertFilePath="" TimeStampURL="" Embed="True" AddExceptionReporting="False" PfxPassword="" PfxPasswordCert="">
+    <ObfuscationSettings EncryptStrings="True" EncryptMethods="True" EncryptConstants="True" SuppressReflector="True" ReduceMetaData="False" ObfuscationDisposition="1" FlowObfuscation="3" SuppressILDASM="True" SuppressReflection="True" CombineResources="True" EncryptResources="True" CompressResources="True" MarkAsSealed="False" EnableTamperDetection="False" EnableAntiDebugging="True" SymbolRenaming="True" HideExternalCalls="True" HideInternalCalls="True" GeneratePdbFile="True" ObfuscatePdbFileNames="True" IncludeLocalVariablesInPdbFile="False" Encrypt="False" Compress="False" MSBuild="False" ObfuscatedNamespace="A" RetainNamespace="False" ModuleInitializationMethod="" DisableControlSetName="False" LicensingMerge="False">
+>>>>>>> b221d00... Merged files from autodata branch and modifed the obfuscator and installer projects to match.
       <Watermarks Watermark0="" Watermark1="" Watermark2="" Watermark3="" Watermark4="" Watermark5="" Watermark6="" Watermark7="" Watermark8="" Watermark9="" />
     </ObfuscationSettings>
   </Assembly>
@@ -110,34 +131,34 @@
     <WS ID="WCFArchitect.Interface.Dialogs.NewItem.NewItemBindingTypesList_SelectionChanged(Object sender, SelectionChangedEventArgs e)597" />
     <WS ID="WCFArchitect.Interface.Host.MetadataBehavior..ctor(HostMetadataBehavior Data)5925" />
     <WS ID="WCFArchitect.Interface.Host.DebugBehavior..ctor(HostDebugBehavior Data)5925" />
-    <WS ID="WCFArchitect.Interface.Host.ThrottlingBehavior..ctor()549" />
     <WS ID="WCFArchitect.Generators.Interfaces.Loader.LoadModule(GenerationModule Module, GenerationLanguage Language)1485" />
     <WS ID="WCFArchitect.Interface.Dialogs.NewItem.NewItemProjectNamespaceRoot_Checked(Object sender, RoutedEventArgs e)5912" />
     <WS ID="WCFArchitect.Interface.Host.DebugBehavior..ctor(HostDebugBehavior Data)5914" />
     <WS ID="WCFArchitect.Interface.Bindings.WS2007FederationHTTP..ctor(ServiceBindingWS2007FederationHTTP Binding)5914" />
     <WS ID="WCFArchitect.Interface.Host.Endpoint..ctor(HostEndpoint Data)5430" />
     <WS ID="WCFArchitect.Interface.Dialogs.NewItem.NewItemTypesList_SelectionChanged(Object sender, SelectionChangedEventArgs e)59114" />
+    <WS ID="WCFArchitect.Interface.Service.Property..ctor()549" />
     <WS ID="WCFArchitect.Interface.Host.Endpoint..ctor(HostEndpoint Data)5914" />
     <WS ID="WCFArchitect.Interface.Host.Endpoint..ctor(HostEndpoint Data)59118" />
-    <WS ID="WCFArchitect.Interface.Service.Method..ctor(Method Data)5426" />
-    <WS ID="WCFArchitect.Interface.Bindings.WSFederationHTTP..ctor(ServiceBindingWSFederationHTTP Binding)5914" />
-    <WS ID="WCFArchitect.Interface.Host.MetadataBehavior..ctor(HostMetadataBehavior Data)5914" />
     <WS ID="WCFArchitect.Interface.Data.TypeEditor..ctor()5419" />
+    <WS ID="WCFArchitect.Interface.Bindings.WSFederationHTTP..ctor(ServiceBindingWSFederationHTTP Binding)5914" />
+    <WS ID="WCFArchitect.Interface.Service.Method..ctor(Method Data)5426" />
     <WS ID="WCFArchitect.Interface.Host.WebHTTPBehavior..ctor(HostWebHTTPBehavior Data)5413" />
+    <WS ID="WCFArchitect.Interface.Host.DebugBehavior..ctor(HostDebugBehavior Data)5435" />
     <WS ID="WCFArchitect.Interface.Host.MetadataBehavior..ctor(HostMetadataBehavior Data)5435" />
     <WS ID="WCFArchitect.Interface.Service.Method..ctor(Method Data)5922" />
-    <WS ID="WCFArchitect.Interface.Dialogs.NewItem.NewItemTypesList_SelectionChanged(Object sender, SelectionChangedEventArgs e)59172" />
+    <WS ID="WCFArchitect.Interface.Data.TypeSelector..ctor()5414" />
     <WS ID="WCFArchitect.Interface.Documentation.Class..ctor()549" />
     <WS ID="WCFArchitect.Interface.Host.Host..ctor(Host Data)5946" />
     <WS ID="WCFArchitect.Interface.Dialogs.NewItem.NewItemTypesList_SelectionChanged(Object sender, SelectionChangedEventArgs e)5931" />
     <WS ID="WCFArchitect.Interface.Host.ThrottlingBehavior..ctor(HostThrottlingBehavior Data)5413" />
     <WS ID="WCFArchitect.Interface.Host.DebugBehavior..ctor()549" />
-    <WS ID="WCFArchitect.Interface.Service.Property..ctor()549" />
+    <WS ID="WCFArchitect.Interface.Host.ThrottlingBehavior..ctor()549" />
     <WS ID="WCFArchitect.Interface.Host.WebHTTPBehavior..ctor()549" />
     <WS ID="WCFArchitect.Interface.Host.Endpoint..ctor()549" />
     <WS ID="WCFArchitect.Interface.Host.MetadataBehavior..ctor()549" />
-    <WS ID="WCFArchitect.Interface.Host.DebugBehavior..ctor(HostDebugBehavior Data)5435" />
-    <WS ID="WCFArchitect.Interface.Data.TypeSelector..ctor()5414" />
+    <WS ID="WCFArchitect.Interface.Dialogs.NewItem.NewItemTypesList_SelectionChanged(Object sender, SelectionChangedEventArgs e)59172" />
+    <WS ID="WCFArchitect.Interface.Host.MetadataBehavior..ctor(HostMetadataBehavior Data)5914" />
     <WS ID="WCFArchitect.Interface.Service.Property..ctor(Property Data)5420" />
   </WarningSuppressions>
   <Warnings SaveWarningsToFile="" FailOnUnsuppressedWarning="False" SaveSuppressedWarnings="True" SaveUnsuppressedWarnings="True" />
