@@ -12,7 +12,7 @@ namespace WCFArchitect
 	public partial class App : Application
 	{
 		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
-		private void Application_Startup(object sender, StartupEventArgs e)
+		public void Application_Startup(object sender, StartupEventArgs e)
 		{
 			//Get executable data. 
 			Globals.ApplicationPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\";
