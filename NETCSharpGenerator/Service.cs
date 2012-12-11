@@ -433,20 +433,6 @@ namespace WCFArchitect.Generators.NET.CS
 			code.AppendLine();
 			if (o.HasAsyncServiceOperations && CanGenerateAsync(o, false))
 			{
-<<<<<<< HEAD
-				code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-				code.AppendLine("\tpublic class AsyncOperationCompletedArgs<T>");
-				code.AppendLine("\t{");
-				code.AppendLine("\t\tprivate T result;");
-				code.AppendLine("\t\tpublic T Result { get { return result; } private set { result = value; } }");
-				code.AppendLine("\t\tprivate System.Exception error;");
-				code.AppendLine("\t\tpublic System.Exception Error { get { return error; } private set { error = value; } }");
-				code.AppendLine("\t\tprivate bool cancelled;");
-				code.AppendLine("\t\tpublic bool Cancelled { get { return cancelled; } private set { cancelled = value; } }");
-				code.AppendLine("\t\tprivate object userState;");
-				code.AppendLine("\t\tpublic object UserState { get { return userState; } private set { userState = value; } }");
-				code.AppendLine("\t\tpublic AsyncOperationCompletedArgs(T result, System.Exception error, bool cancelled, Object userState)");
-=======
 				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance) : base(callbackInstance)", o.HasClientType ? o.ClientType.Name : o.Name));
 				code.AppendLine("\t\t{");
 				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
@@ -478,14 +464,11 @@ namespace WCFArchitect.Generators.NET.CS
 				code.AppendLine("\t\t}");
 				code.AppendLine();
 				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance, System.ServiceModel.Description.ServiceEndpoint endpoint) : base(callbackInstance, endpoint)", o.HasClientType ? o.ClientType.Name : o.Name));
->>>>>>> 6696ce9... WA-78 Rewrote Endpoint generation code to support Protocol Buffer Serialization.
 				code.AppendLine("\t\t{");
-				code.AppendLine("\t\t\tResult = result;");
-				code.AppendLine("\t\t\tError = error;");
-				code.AppendLine("\t\t\tCancelled = cancelled;");
-				code.AppendLine("\t\t\tUserState = userState;");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
 				code.AppendLine("\t\t}");
-				code.AppendLine("\t}");
+				code.AppendLine();
 			}
 			//Generate the Proxy Class
 			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute()]");
