@@ -431,7 +431,12 @@ namespace WCFArchitect.Generators.NET.CS
 			code.AppendLine("\t{");
 			code.AppendLine("\t}");
 			code.AppendLine();
-			if (o.HasAsyncServiceOperations && CanGenerateAsync(o, false))
+			//Generate the Proxy Class
+			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute()]");
+			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
+			code.AppendLine(string.Format("\t{0} partial class {1}Proxy : System.ServiceModel.{2}<I{1}>, I{1}", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.HasCallbackOperations ? "DuplexClientBase" : "ClientBase"));
+			code.AppendLine("\t{");
+			if (o.HasCallbackOperations)
 			{
 				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance) : base(callbackInstance)", o.HasClientType ? o.ClientType.Name : o.Name));
 				code.AppendLine("\t\t{");
@@ -470,54 +475,31 @@ namespace WCFArchitect.Generators.NET.CS
 				code.AppendLine("\t\t}");
 				code.AppendLine();
 			}
-			//Generate the Proxy Class
-			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute()]");
-			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t{0} partial class {1}Proxy : System.ServiceModel.ClientBase<I{1}>, I{1}", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name));
-			code.AppendLine("\t{");
-			code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName) : base(endpointConfigurationName)", o.HasClientType ? o.ClientType.Name : o.Name));
-			code.AppendLine("\t\t{");
-			code.AppendLine("\t\t}");
-			code.AppendLine();
-			code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName, string remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
-			code.AppendLine("\t\t{");
-			code.AppendLine("\t\t}");
-			code.AppendLine();
-			code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
-			code.AppendLine("\t\t{");
-			code.AppendLine("\t\t}");
-			code.AppendLine();
-			code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : base(binding, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
-			code.AppendLine("\t\t{");
-			code.AppendLine("\t\t}");
-			code.AppendLine();
-			if (o.HasAsyncServiceOperations && CanGenerateAsync(o, false))
+
+			else
 			{
-				code.AppendLine("\t\tprotected class InvokeAsyncCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs");
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName) : base(endpointConfigurationName)", o.HasClientType ? o.ClientType.Name : o.Name));
 				code.AppendLine("\t\t{");
-				code.AppendLine("\t\t\tpublic object[] Results { get; set; }");
-				code.AppendLine("\t\t\tpublic InvokeAsyncCompletedEventArgs(object[] results, System.Exception error, bool cancelled, Object userState) : base(error, cancelled, userState)");
-				code.AppendLine("\t\t\t{");
-				code.AppendLine("\t\t\t\tResults = results;");
-				code.AppendLine("\t\t\t}");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
 				code.AppendLine("\t\t}");
 				code.AppendLine();
-				code.AppendLine("\t\tprotected delegate IAsyncResult BeginOperationDelegate(object[] inValues, AsyncCallback asyncCallback, Object state);");
-				code.AppendLine("\t\tprotected delegate object[] EndOperationDelegate(IAsyncResult result);");
-				code.AppendLine();
-				code.AppendLine("\t\tprotected void InvokeAsync(BeginOperationDelegate beginOperationDelegate, object[] inValues, EndOperationDelegate endOperationDelegate, System.Threading.SendOrPostCallback operationCompletedCallback, object userState)");
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName, string remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
 				code.AppendLine("\t\t{");
-				code.AppendLine("\t\t\tif (beginOperationDelegate == null) throw new ArgumentNullException(\"Argument 'beginOperationDelegate' cannot be null.\");");
-				code.AppendLine("\t\t\tif (endOperationDelegate == null) throw new ArgumentNullException(\"Argument 'endOperationDelegate' cannot be null.\");");
-				code.AppendLine("\t\t\tAsyncCallback cb = delegate(IAsyncResult ar)");
-				code.AppendLine("\t\t\t{");
-				code.AppendLine("\t\t\t\tobject[] results = null;");
-				code.AppendLine("\t\t\t\tException error = null;");
-				code.AppendLine("\t\t\t\ttry { results = endOperationDelegate(ar); }");
-				code.AppendLine("\t\t\t\tcatch (Exception ex) { error = ex; }");
-				code.AppendLine("\t\t\t\tif (operationCompletedCallback != null) operationCompletedCallback(new InvokeAsyncCompletedEventArgs(results, error, false, userState));");
-				code.AppendLine("\t\t\t};");
-				code.AppendLine("\t\t\tbeginOperationDelegate(inValues, cb, userState);");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : base(binding, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
 				code.AppendLine("\t\t}");
 				code.AppendLine();
 				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.Description.ServiceEndpoint endpoint) : base(endpoint)", o.HasClientType ? o.ClientType.Name : o.Name));
@@ -588,32 +570,86 @@ namespace WCFArchitect.Generators.NET.CS
 			//Generate the Proxy Class
 			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute()]");
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t{0} partial class {1}Proxy : System.ServiceModel.ClientBase<I{1}>, I{1}", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine(string.Format("\t{0} partial class {1}Proxy : System.ServiceModel.{2}<I{1}>, I{1}", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.HasCallbackOperations ? "DuplexClientBase" : "ClientBase"));
 			code.AppendLine("\t{");
-			code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName) : base(endpointConfigurationName)", o.HasClientType ? o.ClientType.Name : o.Name));
-			code.AppendLine("\t\t{");
-			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-				code.Append(GenerateMethodProxyConstructorCode(m, false));
-			code.AppendLine("\t\t}");
-			code.AppendLine();
-			code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName, string remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
-			code.AppendLine("\t\t{");
-			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-				code.Append(GenerateMethodProxyConstructorCode(m, false));
-			code.AppendLine("\t\t}");
-			code.AppendLine();
-			code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
-			code.AppendLine("\t\t{");
-			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-				code.Append(GenerateMethodProxyConstructorCode(m, false));
-			code.AppendLine("\t\t}");
-			code.AppendLine();
-			code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : base(binding, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
-			code.AppendLine("\t\t{");
-			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-				code.Append(GenerateMethodProxyConstructorCode(m, false));
-			code.AppendLine("\t\t}");
-			code.AppendLine();
+			if (o.HasCallbackOperations)
+			{
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName, string remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance) : base(callbackInstance)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName) : base(callbackInstance, endpointConfigurationName)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, string remoteAddress) : base(callbackInstance, endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : base(callbackInstance, endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance, System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : base(callbackInstance, binding, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.Description.ServiceEndpoint endpoint) : base(endpoint)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance, System.ServiceModel.Description.ServiceEndpoint endpoint) : base(callbackInstance, endpoint)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+			}
+			else
+			{
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName) : base(endpointConfigurationName)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName, string remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : base(binding, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+			}
 			Host h = o.Parent.Owner.Namespace.GetServiceHost(o);
 			if (h != null)
 				code.Append(HostGenerator.GenerateClientCode40(h));
@@ -668,32 +704,86 @@ namespace WCFArchitect.Generators.NET.CS
 			//Generate the Proxy Class
 			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute()]");
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t{0} partial class {1}Proxy : System.ServiceModel.ClientBase<I{1}>, I{1}", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine(string.Format("\t{0} partial class {1}Proxy : System.ServiceModel.{2}<I{1}>, I{1}", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.HasCallbackOperations ? "DuplexClientBase" : "ClientBase"));
 			code.AppendLine("\t{");
-			code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName) : base(endpointConfigurationName)", o.HasClientType ? o.ClientType.Name : o.Name));
-			code.AppendLine("\t\t{");
-			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-				code.Append(GenerateMethodProxyConstructorCode(m, false));
-			code.AppendLine("\t\t}");
-			code.AppendLine();
-			code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName, string remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
-			code.AppendLine("\t\t{");
-			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-				code.Append(GenerateMethodProxyConstructorCode(m, false));
-			code.AppendLine("\t\t}");
-			code.AppendLine();
-			code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
-			code.AppendLine("\t\t{");
-			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-				code.Append(GenerateMethodProxyConstructorCode(m, false));
-			code.AppendLine("\t\t}");
-			code.AppendLine();
-			code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : base(binding, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
-			code.AppendLine("\t\t{");
-			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-				code.Append(GenerateMethodProxyConstructorCode(m, false));
-			code.AppendLine("\t\t}");
-			code.AppendLine();
+			if (o.HasCallbackOperations)
+			{
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName, string remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance) : base(callbackInstance)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName) : base(callbackInstance, endpointConfigurationName)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, string remoteAddress) : base(callbackInstance, endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : base(callbackInstance, endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance, System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : base(callbackInstance, binding, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.Description.ServiceEndpoint endpoint) : base(endpoint)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance, System.ServiceModel.Description.ServiceEndpoint endpoint) : base(callbackInstance, endpoint)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+			}
+			else
+			{
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName) : base(endpointConfigurationName)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName, string remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : base(binding, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+			}
 			Host h = o.Parent.Owner.Namespace.GetServiceHost(o);
 			if (h != null)
 				code.Append(HostGenerator.GenerateClientCode45(h));

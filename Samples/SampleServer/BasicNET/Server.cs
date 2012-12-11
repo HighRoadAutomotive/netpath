@@ -32,6 +32,7 @@ namespace WCFArchitect.SampleServer.BasicNET
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect .NET CSharp Generator - BETA", "2.0.2000.0")]
 	[ServiceContract(SessionMode = System.ServiceModel.SessionMode.Allowed, Namespace = "http://tempuri.org/WCFArchitect/SampleServer/BasicNET/")]
 =======
@@ -41,6 +42,10 @@ namespace WCFArchitect.SampleServer.BasicNET
 >>>>>>> 6696ce9... WA-78 Rewrote Endpoint generation code to support Protocol Buffer Serialization.
 	[ServiceContract(CallbackContract = typeof(ITestNETCallback), SessionMode = System.ServiceModel.SessionMode.Allowed, Namespace = "http://tempuri.org/WCFArchitect/SampleServer/BasicNET/")]
 >>>>>>> fefd949... Refixed WA-112
+=======
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect .NET CSharp Generator - BETA", "2.0.0.12504")]
+	[ServiceContract(CallbackContract = typeof(ITestNETCallback), SessionMode = System.ServiceModel.SessionMode.Allowed, Namespace = "http://tempuri.org/WCFArchitect/SampleServer/BasicNET/")]
+>>>>>>> origin/master
 	public interface ITestNET
 	{
 		[OperationContract(ProtectionLevel = System.Net.Security.ProtectionLevel.None)]
@@ -49,11 +54,15 @@ namespace WCFArchitect.SampleServer.BasicNET
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect .NET CSharp Generator - BETA", "2.0.0.12501")]
 =======
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect .NET CSharp Generator - BETA", "2.0.0.12504")]
 >>>>>>> 6696ce9... WA-78 Rewrote Endpoint generation code to support Protocol Buffer Serialization.
+=======
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("WCF Architect .NET CSharp Generator - BETA", "2.0.0.12504")]
+>>>>>>> origin/master
 	public interface ITestNETCallback
 	{
 		[OperationContract(ProtectionLevel = System.Net.Security.ProtectionLevel.None)]
@@ -82,7 +91,10 @@ namespace WCFArchitect.SampleServer.BasicNET
 		}
 
 	}
+<<<<<<< HEAD
 >>>>>>> fefd949... Refixed WA-112
+=======
+>>>>>>> origin/master
 
 
 }

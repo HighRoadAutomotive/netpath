@@ -54,7 +54,11 @@
     <Owner z:Ref="1" i:nil="true" />
     <Services z:Id="20" z:Size="1">
       <Service z:Id="21">
+<<<<<<< HEAD
         <IsSelected>false</IsSelected>
+=======
+        <IsSelected>true</IsSelected>
+>>>>>>> origin/master
         <Abstract>false</Abstract>
         <ClientType i:nil="true" />
         <CollectionGenericType i:nil="true" />
@@ -85,30 +89,22 @@
           <Summary z:Ref="26" i:nil="true" />
           <Value z:Ref="26" i:nil="true" />
         </CallbackDocumentation>
+<<<<<<< HEAD
         <CallbackOperations z:Id="27" z:Size="0" />
         <ConfigurationName z:Ref="26" i:nil="true" />
         <ProtectionLevel>None</ProtectionLevel>
         <ServiceDocumentation z:Id="28">
-          <Example z:Ref="26" i:nil="true" />
-          <IsClass>true</IsClass>
-          <IsMethod>false</IsMethod>
-          <IsParameter>false</IsParameter>
-          <IsProperty>false</IsProperty>
-          <Remarks z:Ref="26" i:nil="true" />
-          <Returns z:Ref="26" i:nil="true" />
-          <Summary z:Ref="26" i:nil="true" />
-          <Value z:Ref="26" i:nil="true" />
-        </ServiceDocumentation>
-        <ServiceOperations z:Id="29" z:Size="1">
-          <Operation z:Id="30" i:type="Method">
+=======
+        <CallbackOperations z:Id="27" z:Size="1">
+          <Operation z:Id="28" i:type="Method">
             <ClientName z:Ref="26" i:nil="true" />
             <HasClientType>false</HasClientType>
-            <ID>2a0c9b0f-eb59-486d-84df-c88741aefa21</ID>
+            <ID>689970d9-8527-4e56-8369-59559c8ad4fb</ID>
             <IsOneWay>false</IsOneWay>
             <IsSelected>true</IsSelected>
             <Owner z:Ref="21" i:nil="true" />
             <ProtectionLevel>None</ProtectionLevel>
-            <ReturnType z:Id="31">
+            <ReturnType z:Id="29">
               <IsSelected>false</IsSelected>
               <Abstract>false</Abstract>
               <ClientType i:nil="true" />
@@ -117,11 +113,11 @@
               <DictionaryValueGenericType i:nil="true" />
               <HasClientType>false</HasClientType>
               <ID>844dca51-b2ad-46c0-8e34-6f2eb8bc600c</ID>
-              <InheritedTypes z:Id="32" z:Size="0" />
+              <InheritedTypes z:Id="30" z:Size="0" />
               <IsExternalType>false</IsExternalType>
               <IsTypeReference>true</IsTypeReference>
-              <KnownTypes z:Id="33" z:Size="0" />
-              <Name z:Id="34">WCFArchitect.SampleServer.BasicWinRT.Customer</Name>
+              <KnownTypes z:Id="31" z:Size="0" />
+              <Name z:Id="32">WCFArchitect.SampleServer.BasicWinRT.Customer</Name>
               <Parent i:nil="true" />
               <Partial>true</Partial>
               <Primitive>None</Primitive>
@@ -129,8 +125,8 @@
               <Sealed>false</Sealed>
               <TypeMode>Class</TypeMode>
             </ReturnType>
-            <ServerName z:Id="35">RefTest</ServerName>
-            <Documentation z:Id="36">
+            <ServerName z:Id="33">RetTestCallback</ServerName>
+            <Documentation z:Id="34">
               <Example z:Ref="26" i:nil="true" />
               <IsClass>false</IsClass>
               <IsMethod>true</IsMethod>
@@ -144,7 +140,99 @@
             <IsInitiating>false</IsInitiating>
             <IsRESTMethod>false</IsRESTMethod>
             <IsTerminating>false</IsTerminating>
+            <Parameters z:Id="35" z:Size="0" />
+            <REST i:nil="true" />
+            <UseAsyncPattern>false</UseAsyncPattern>
+            <UseAwaitPattern>true</UseAwaitPattern>
+            <UseSyncPattern>false</UseSyncPattern>
+          </Operation>
+        </CallbackOperations>
+        <ConfigurationName z:Ref="26" i:nil="true" />
+        <ProtectionLevel>None</ProtectionLevel>
+        <ServiceDocumentation z:Id="36">
+>>>>>>> origin/master
+          <Example z:Ref="26" i:nil="true" />
+          <IsClass>true</IsClass>
+          <IsMethod>false</IsMethod>
+          <IsParameter>false</IsParameter>
+          <IsProperty>false</IsProperty>
+          <Remarks z:Ref="26" i:nil="true" />
+          <Returns z:Ref="26" i:nil="true" />
+          <Summary z:Ref="26" i:nil="true" />
+          <Value z:Ref="26" i:nil="true" />
+        </ServiceDocumentation>
+<<<<<<< HEAD
+        <ServiceOperations z:Id="29" z:Size="1">
+          <Operation z:Id="30" i:type="Method">
+=======
+        <ServiceOperations z:Id="37" z:Size="1">
+          <Operation z:Id="38" i:type="Method">
+>>>>>>> origin/master
+            <ClientName z:Ref="26" i:nil="true" />
+            <HasClientType>false</HasClientType>
+            <ID>2a0c9b0f-eb59-486d-84df-c88741aefa21</ID>
+            <IsOneWay>false</IsOneWay>
+            <IsSelected>true</IsSelected>
+            <Owner z:Ref="21" i:nil="true" />
+            <ProtectionLevel>None</ProtectionLevel>
+<<<<<<< HEAD
+            <ReturnType z:Id="31">
+=======
+            <ReturnType z:Id="39">
+>>>>>>> origin/master
+              <IsSelected>false</IsSelected>
+              <Abstract>false</Abstract>
+              <ClientType i:nil="true" />
+              <CollectionGenericType i:nil="true" />
+              <DictionaryKeyGenericType i:nil="true" />
+              <DictionaryValueGenericType i:nil="true" />
+              <HasClientType>false</HasClientType>
+              <ID>844dca51-b2ad-46c0-8e34-6f2eb8bc600c</ID>
+<<<<<<< HEAD
+              <InheritedTypes z:Id="32" z:Size="0" />
+              <IsExternalType>false</IsExternalType>
+              <IsTypeReference>true</IsTypeReference>
+              <KnownTypes z:Id="33" z:Size="0" />
+              <Name z:Id="34">WCFArchitect.SampleServer.BasicWinRT.Customer</Name>
+=======
+              <InheritedTypes z:Id="40" z:Size="0" />
+              <IsExternalType>false</IsExternalType>
+              <IsTypeReference>true</IsTypeReference>
+              <KnownTypes z:Id="41" z:Size="0" />
+              <Name z:Id="42">WCFArchitect.SampleServer.BasicWinRT.Customer</Name>
+>>>>>>> origin/master
+              <Parent i:nil="true" />
+              <Partial>true</Partial>
+              <Primitive>None</Primitive>
+              <Scope>Public</Scope>
+              <Sealed>false</Sealed>
+              <TypeMode>Class</TypeMode>
+            </ReturnType>
+<<<<<<< HEAD
+            <ServerName z:Id="35">RefTest</ServerName>
+            <Documentation z:Id="36">
+=======
+            <ServerName z:Id="43">RefTest</ServerName>
+            <Documentation z:Id="44">
+>>>>>>> origin/master
+              <Example z:Ref="26" i:nil="true" />
+              <IsClass>false</IsClass>
+              <IsMethod>true</IsMethod>
+              <IsParameter>false</IsParameter>
+              <IsProperty>false</IsProperty>
+              <Remarks z:Ref="26" i:nil="true" />
+              <Returns z:Ref="26" i:nil="true" />
+              <Summary z:Ref="26" i:nil="true" />
+              <Value z:Ref="26" i:nil="true" />
+            </Documentation>
+            <IsInitiating>false</IsInitiating>
+            <IsRESTMethod>false</IsRESTMethod>
+            <IsTerminating>false</IsTerminating>
+<<<<<<< HEAD
             <Parameters z:Id="37" z:Size="0" />
+=======
+            <Parameters z:Id="45" z:Size="0" />
+>>>>>>> origin/master
             <REST i:nil="true" />
             <UseAsyncPattern>false</UseAsyncPattern>
             <UseAwaitPattern>true</UseAwaitPattern>
@@ -154,15 +242,23 @@
         <SessionMode>Allowed</SessionMode>
       </Service>
     </Services>
+<<<<<<< HEAD
     <URI z:Id="38">http://tempuri.org/</URI>
   </Namespace>
   <ServerGenerationTargets z:Id="39" z:Size="1">
     <ProjectGenerationTarget z:Id="40">
+=======
+    <URI z:Id="46">http://tempuri.org/</URI>
+  </Namespace>
+  <ServerGenerationTargets z:Id="47" z:Size="1">
+    <ProjectGenerationTarget z:Id="48">
+>>>>>>> origin/master
       <Framework>NET45</Framework>
       <GenerateReferences>false</GenerateReferences>
       <ID>a9048ca8-16cd-4356-9496-e25631a1063a</ID>
       <IsEnabled>true</IsEnabled>
       <IsServerPath>true</IsServerPath>
+<<<<<<< HEAD
       <Path z:Id="41">../SampleServer/BasicNET/Server.cs</Path>
       <ProjectID>3e7ff01a-323e-41ff-b966-89c13271cfbd</ProjectID>
     </ProjectGenerationTarget>
@@ -172,191 +268,350 @@
   <SolutionPath i:nil="true" />
   <UsingNamespaces z:Id="43" z:Size="19">
     <ProjectUsingNamespace z:Id="44">
+=======
+      <Path z:Id="49">../SampleServer/BasicNET/Server.cs</Path>
+      <ProjectID>3e7ff01a-323e-41ff-b966-89c13271cfbd</ProjectID>
+    </ProjectGenerationTarget>
+  </ServerGenerationTargets>
+  <ServerOutputFile z:Id="50">Server</ServerOutputFile>
+  <ServiceSerializer>Auto</ServiceSerializer>
+  <SolutionPath i:nil="true" />
+  <UsingNamespaces z:Id="51" z:Size="19">
+    <ProjectUsingNamespace z:Id="52">
+>>>>>>> origin/master
       <Client>true</Client>
       <ID>a9720405-a2a0-41d6-995a-635f7981a2d6</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
+<<<<<<< HEAD
       <Namespace z:Id="45">System</Namespace>
+=======
+      <Namespace z:Id="53">System</Namespace>
+>>>>>>> origin/master
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
+<<<<<<< HEAD
     <ProjectUsingNamespace z:Id="46">
+=======
+    <ProjectUsingNamespace z:Id="54">
+>>>>>>> origin/master
       <Client>true</Client>
       <ID>94a8ef75-ecb2-4c90-bbe3-764938920722</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
+<<<<<<< HEAD
       <Namespace z:Id="47">System.Collections</Namespace>
+=======
+      <Namespace z:Id="55">System.Collections</Namespace>
+>>>>>>> origin/master
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
+<<<<<<< HEAD
     <ProjectUsingNamespace z:Id="48">
+=======
+    <ProjectUsingNamespace z:Id="56">
+>>>>>>> origin/master
       <Client>true</Client>
       <ID>95a29cb0-f613-45e2-bcbf-eac4fa1e27cb</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
+<<<<<<< HEAD
       <Namespace z:Id="49">System.Collections.Generic</Namespace>
+=======
+      <Namespace z:Id="57">System.Collections.Generic</Namespace>
+>>>>>>> origin/master
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
+<<<<<<< HEAD
     <ProjectUsingNamespace z:Id="50">
+=======
+    <ProjectUsingNamespace z:Id="58">
+>>>>>>> origin/master
       <Client>true</Client>
       <ID>6dc9e5aa-7ab9-4b01-a8e0-e62e751627a9</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
+<<<<<<< HEAD
       <Namespace z:Id="51">System.Collections.ObjectModel</Namespace>
+=======
+      <Namespace z:Id="59">System.Collections.ObjectModel</Namespace>
+>>>>>>> origin/master
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
+<<<<<<< HEAD
     <ProjectUsingNamespace z:Id="52">
+=======
+    <ProjectUsingNamespace z:Id="60">
+>>>>>>> origin/master
       <Client>true</Client>
       <ID>a24eac68-6a35-427b-bf3a-573da27eab36</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
+<<<<<<< HEAD
       <Namespace z:Id="53">System.Collections.Specialized</Namespace>
+=======
+      <Namespace z:Id="61">System.Collections.Specialized</Namespace>
+>>>>>>> origin/master
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
+<<<<<<< HEAD
     <ProjectUsingNamespace z:Id="54">
+=======
+    <ProjectUsingNamespace z:Id="62">
+>>>>>>> origin/master
       <Client>true</Client>
       <ID>5c0fdca7-9dc8-4b80-a974-73f24704832d</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
+<<<<<<< HEAD
       <Namespace z:Id="55">System.ComponentModel</Namespace>
+=======
+      <Namespace z:Id="63">System.ComponentModel</Namespace>
+>>>>>>> origin/master
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
+<<<<<<< HEAD
     <ProjectUsingNamespace z:Id="56">
+=======
+    <ProjectUsingNamespace z:Id="64">
+>>>>>>> origin/master
       <Client>true</Client>
       <ID>33fa16c6-ee04-426c-bb63-7ff24e653fb3</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
+<<<<<<< HEAD
       <Namespace z:Id="57">System.Net</Namespace>
+=======
+      <Namespace z:Id="65">System.Net</Namespace>
+>>>>>>> origin/master
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
+<<<<<<< HEAD
     <ProjectUsingNamespace z:Id="58">
+=======
+    <ProjectUsingNamespace z:Id="66">
+>>>>>>> origin/master
       <Client>true</Client>
       <ID>859d570d-aff8-411a-b622-1c37f3ad617e</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
+<<<<<<< HEAD
       <Namespace z:Id="59">System.Net.Security</Namespace>
+=======
+      <Namespace z:Id="67">System.Net.Security</Namespace>
+>>>>>>> origin/master
       <RT>false</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
+<<<<<<< HEAD
     <ProjectUsingNamespace z:Id="60">
+=======
+    <ProjectUsingNamespace z:Id="68">
+>>>>>>> origin/master
       <Client>true</Client>
       <ID>cc6d426b-0cc4-464c-845c-9b481fb72168</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
+<<<<<<< HEAD
       <Namespace z:Id="61">System.Reflection</Namespace>
+=======
+      <Namespace z:Id="69">System.Reflection</Namespace>
+>>>>>>> origin/master
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
+<<<<<<< HEAD
     <ProjectUsingNamespace z:Id="62">
+=======
+    <ProjectUsingNamespace z:Id="70">
+>>>>>>> origin/master
       <Client>true</Client>
       <ID>1538234a-2e00-4e7e-b9a7-2958280425fd</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
+<<<<<<< HEAD
       <Namespace z:Id="63">System.Resources</Namespace>
+=======
+      <Namespace z:Id="71">System.Resources</Namespace>
+>>>>>>> origin/master
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
+<<<<<<< HEAD
     <ProjectUsingNamespace z:Id="64">
+=======
+    <ProjectUsingNamespace z:Id="72">
+>>>>>>> origin/master
       <Client>true</Client>
       <ID>644b5bf5-0098-48b2-b373-97c1400ace0d</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
+<<<<<<< HEAD
       <Namespace z:Id="65">System.Runtime.CompilerServices</Namespace>
+=======
+      <Namespace z:Id="73">System.Runtime.CompilerServices</Namespace>
+>>>>>>> origin/master
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
+<<<<<<< HEAD
     <ProjectUsingNamespace z:Id="66">
+=======
+    <ProjectUsingNamespace z:Id="74">
+>>>>>>> origin/master
       <Client>true</Client>
       <ID>6a03346d-42a5-4dcb-abc7-d24fd01cb7a3</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
+<<<<<<< HEAD
       <Namespace z:Id="67">System.Runtime.InteropServices</Namespace>
+=======
+      <Namespace z:Id="75">System.Runtime.InteropServices</Namespace>
+>>>>>>> origin/master
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
+<<<<<<< HEAD
     <ProjectUsingNamespace z:Id="68">
+=======
+    <ProjectUsingNamespace z:Id="76">
+>>>>>>> origin/master
       <Client>true</Client>
       <ID>f1432f34-7268-4de5-b3fb-1389111f094d</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
+<<<<<<< HEAD
       <Namespace z:Id="69">System.Runtime.Serialization</Namespace>
+=======
+      <Namespace z:Id="77">System.Runtime.Serialization</Namespace>
+>>>>>>> origin/master
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
+<<<<<<< HEAD
     <ProjectUsingNamespace z:Id="70">
+=======
+    <ProjectUsingNamespace z:Id="78">
+>>>>>>> origin/master
       <Client>true</Client>
       <ID>8443af7a-8467-42b6-bc3e-db5753647feb</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
+<<<<<<< HEAD
       <Namespace z:Id="71">System.ServiceModel</Namespace>
+=======
+      <Namespace z:Id="79">System.ServiceModel</Namespace>
+>>>>>>> origin/master
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
+<<<<<<< HEAD
     <ProjectUsingNamespace z:Id="72">
+=======
+    <ProjectUsingNamespace z:Id="80">
+>>>>>>> origin/master
       <Client>true</Client>
       <ID>3e7ddc5b-a5d3-4306-86ab-e901ae931711</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
+<<<<<<< HEAD
       <Namespace z:Id="73">System.ServiceModel.Description</Namespace>
+=======
+      <Namespace z:Id="81">System.ServiceModel.Description</Namespace>
+>>>>>>> origin/master
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
+<<<<<<< HEAD
     <ProjectUsingNamespace z:Id="74">
+=======
+    <ProjectUsingNamespace z:Id="82">
+>>>>>>> origin/master
       <Client>true</Client>
       <ID>d4d23dc2-81d5-4d4e-8d19-4ecacb7d9482</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
+<<<<<<< HEAD
       <Namespace z:Id="75">System.Text</Namespace>
+=======
+      <Namespace z:Id="83">System.Text</Namespace>
+>>>>>>> origin/master
       <RT>true</RT>
       <SL>true</SL>
       <Server>true</Server>
     </ProjectUsingNamespace>
+<<<<<<< HEAD
     <ProjectUsingNamespace z:Id="76">
+=======
+    <ProjectUsingNamespace z:Id="84">
+>>>>>>> origin/master
       <Client>true</Client>
       <ID>36c754c4-3fc8-4843-bae8-8060b490716f</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>true</NET>
+<<<<<<< HEAD
       <Namespace z:Id="77">System.Windows</Namespace>
+=======
+      <Namespace z:Id="85">System.Windows</Namespace>
+>>>>>>> origin/master
       <RT>false</RT>
       <SL>true</SL>
       <Server>false</Server>
     </ProjectUsingNamespace>
+<<<<<<< HEAD
     <ProjectUsingNamespace z:Id="78">
+=======
+    <ProjectUsingNamespace z:Id="86">
+>>>>>>> origin/master
       <Client>true</Client>
       <ID>b5395eb2-5eb8-471d-acb2-db17f34bb8fb</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>false</NET>
+<<<<<<< HEAD
       <Namespace z:Id="79">Windows.UI.Core</Namespace>
+=======
+      <Namespace z:Id="87">Windows.UI.Core</Namespace>
+>>>>>>> origin/master
       <RT>true</RT>
       <SL>false</SL>
       <Server>false</Server>
     </ProjectUsingNamespace>
+<<<<<<< HEAD
     <ProjectUsingNamespace z:Id="80">
+=======
+    <ProjectUsingNamespace z:Id="88">
+>>>>>>> origin/master
       <Client>true</Client>
       <ID>d5edd409-e5e3-4d9c-948f-a1c210d8295e</ID>
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>false</NET>
+<<<<<<< HEAD
       <Namespace z:Id="81">Windows.UI.Xaml</Namespace>
+=======
+      <Namespace z:Id="89">Windows.UI.Xaml</Namespace>
+>>>>>>> origin/master
       <RT>true</RT>
       <SL>false</SL>
       <Server>false</Server>
