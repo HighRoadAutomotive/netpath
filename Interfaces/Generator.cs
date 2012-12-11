@@ -5,9 +5,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WCFArchitect.Projects;
+using NETPath.Projects;
 
-namespace WCFArchitect.Generators.Interfaces
+namespace NETPath.Generators.Interfaces
 {
 	public enum GenerationLanguage
 	{
@@ -23,8 +23,8 @@ namespace WCFArchitect.Generators.Interfaces
 		WindowsRuntime,
 	}
 	
-    public static class Loader
-    {
+	public static class Loader
+	{
 		public static readonly ConcurrentDictionary<string, IGenerator> LoadedModules = new ConcurrentDictionary<string, IGenerator>();
 
 		public static IGenerator LoadModule(GenerationModule Module, GenerationLanguage Language)
@@ -38,11 +38,11 @@ namespace WCFArchitect.Generators.Interfaces
 			string lang = "CS";
 			if (Language == GenerationLanguage.VisualBasic) lang = "VB";
 			if (Language == GenerationLanguage.CPlusPlus) lang = "CPP";
-			string modpath = System.IO.Path.Combine(asmfp, string.Format("WCFArchitect.Generators.{0}.{1}.dll", mod, lang));
+			string modpath = System.IO.Path.Combine(asmfp, string.Format("NETPath.Generators.{0}.{1}.dll", mod, lang));
 			if (!System.IO.File.Exists(modpath)) return null;
 			//Load and initialize the module
 			System.Reflection.Assembly moduleDLL = System.Reflection.Assembly.LoadFile(modpath);
-			var cm = moduleDLL.CreateInstance(string.Format("WCFArchitect.Generators.{0}.{1}.Generator", mod, lang)) as IGenerator;
+			var cm = moduleDLL.CreateInstance(string.Format("NETPath.Generators.{0}.{1}.Generator", mod, lang)) as IGenerator;
 			if (cm == null) return null;
 			LoadedModules.TryAdd(cm.Name, cm);
 			return cm;
@@ -52,7 +52,7 @@ namespace WCFArchitect.Generators.Interfaces
 		{
 			return Task.Run<IGenerator>(() => LoadModule(Module, Language));
 		}
-    }
+	}
 
 	public interface IGenerator
 	{

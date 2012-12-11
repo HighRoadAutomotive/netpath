@@ -11,9 +11,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Prospective.Controls.Dialogs;
-using WCFArchitect.Projects.Helpers;
+using NETPath.Projects.Helpers;
 
-namespace WCFArchitect.Interface.Host
+namespace NETPath.Interface.Host
 {
 	internal partial class Endpoint : Grid
 	{
@@ -95,7 +95,7 @@ namespace WCFArchitect.Interface.Host
 			var OP = lbi.Content as Projects.HostEndpointAddressHeader;
 			if (OP == null) return;
 
-			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Endpoint Address Header?", "Are you sure you want to delete the address header '" + OP.Name + "'?", new DialogAction("Yes", () => Data.ClientAddressHeaders.Remove(OP), true), new DialogAction("No", false, true));
+			DialogService.ShowMessageDialog("NETPath", "Delete Endpoint Address Header?", "Are you sure you want to delete the address header '" + OP.Name + "'?", new DialogAction("Yes", () => Data.ClientAddressHeaders.Remove(OP), true), new DialogAction("No", false, true));
 		}
 
 		private bool IsAddressHeaderValid()

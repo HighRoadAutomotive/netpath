@@ -5,7 +5,7 @@
 			xmlns:c1="clr-namespace:C1.WPF;assembly=C1.WPF.4" >
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="pack://application:,,,/Prospective.Controls;component/Themes/Defaults.xaml" />
-		<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Colors.xaml" />
+		<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/Colors.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 	<Style x:Key="{x:Type c1:C1NumericBox}" TargetType="{x:Type c1:C1NumericBox}">

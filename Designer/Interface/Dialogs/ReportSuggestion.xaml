@@ -1,4 +1,4 @@
-﻿<Grid x:Class="WCFArchitect.Interface.Dialogs.ReportSuggestion"
+﻿<Grid x:Class="NETPath.Interface.Dialogs.ReportSuggestion"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:pc="http://schemas.propsectivesoftware.com/pc"

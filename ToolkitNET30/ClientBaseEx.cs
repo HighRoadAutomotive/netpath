@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.ServiceModel;
 
-namespace WCFArchitect.Toolkit.NET30
+namespace NETPath.Toolkit.NET30
 {
 	public class ClientBaseEx<T> : ClientBase<T> where T : class
 	{

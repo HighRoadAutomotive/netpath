@@ -12,9 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Prospective.Controls.Dialogs;
-using WCFArchitect.Projects.Helpers;
+using NETPath.Projects.Helpers;
 
-namespace WCFArchitect.Interface.Dialogs
+namespace NETPath.Interface.Dialogs
 {
 	public partial class NewProject : Grid, IDialogContent
 	{
@@ -49,7 +49,7 @@ namespace WCFArchitect.Interface.Dialogs
 			sfd.ShowPlacesList = true;
 			sfd.DefaultFileName = NewProjectName.Text;
 			sfd.DefaultExtension = ".wap";
-			sfd.Filters.Add(new Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogFilter("WCF Architect Project Files", ".wap"));
+			sfd.Filters.Add(new Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogFilter("NETPath Project Files", ".wap"));
 			if (sfd.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel) return;
 			FileName = sfd.FileName;
 

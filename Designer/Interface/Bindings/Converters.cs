@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Data;
 
-namespace WCFArchitect.Interface.Bindings
+namespace NETPath.Interface.Bindings
 {
 	[ValueConversion(typeof(System.ServiceModel.HostNameComparisonMode), typeof(int))]
 	public class HostNameComparisonModeConverter : IValueConverter
@@ -701,20 +701,20 @@ namespace WCFArchitect.Interface.Bindings
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if (value == null) return "pack://application:,,,/WCFArchitect;component/Icons/Blank.png";
+			if (value == null) return "pack://application:,,,/NETPath;component/Icons/Blank.png";
 			Projects.BindingSecurity lt = (Projects.BindingSecurity)value;
 			Type valueType = lt.GetType();
-			if (valueType == typeof(Projects.BindingSecurityBasicHTTP)) return "pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png";
-			if (valueType == typeof(Projects.BindingSecurityWSHTTP)) return "pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png";
-			if (valueType == typeof(Projects.BindingSecurityWSDualHTTP)) return "pack://application:,,,/WCFArchitect;component/Icons/X32/WSDualHTTP.png";
-			if (valueType == typeof(Projects.BindingSecurityWSFederationHTTP)) return "pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png";
-			if (valueType == typeof(Projects.BindingSecurityTCP)) return "pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png";
-			if (valueType == typeof(Projects.BindingSecurityNamedPipe)) return "pack://application:,,,/WCFArchitect;component/Icons/X32/NamedPipe.png";
-			if (valueType == typeof(Projects.BindingSecurityMSMQ)) return "pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQ.png";
-			if (valueType == typeof(Projects.BindingSecurityPeerTCP)) return "pack://application:,,,/WCFArchitect;component/Icons/X32/PeerTCP.png";
-			if (valueType == typeof(Projects.BindingSecurityWebHTTP)) return "pack://application:,,,/WCFArchitect;component/Icons/X32/WebHTTP.png";
-			if (valueType == typeof(Projects.BindingSecurityMSMQIntegration)) return "pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQIntegration.png";
-			return "pack://application:,,,/WCFArchitect;component/Icons/Blank.png";
+			if (valueType == typeof(Projects.BindingSecurityBasicHTTP)) return "pack://application:,,,/NETPath;component/Icons/X32/BasicHTTP.png";
+			if (valueType == typeof(Projects.BindingSecurityWSHTTP)) return "pack://application:,,,/NETPath;component/Icons/X32/WSHTTP.png";
+			if (valueType == typeof(Projects.BindingSecurityWSDualHTTP)) return "pack://application:,,,/NETPath;component/Icons/X32/WSDualHTTP.png";
+			if (valueType == typeof(Projects.BindingSecurityWSFederationHTTP)) return "pack://application:,,,/NETPath;component/Icons/X32/WSFederationHTTP.png";
+			if (valueType == typeof(Projects.BindingSecurityTCP)) return "pack://application:,,,/NETPath;component/Icons/X32/TCP.png";
+			if (valueType == typeof(Projects.BindingSecurityNamedPipe)) return "pack://application:,,,/NETPath;component/Icons/X32/NamedPipe.png";
+			if (valueType == typeof(Projects.BindingSecurityMSMQ)) return "pack://application:,,,/NETPath;component/Icons/X32/MSMQ.png";
+			if (valueType == typeof(Projects.BindingSecurityPeerTCP)) return "pack://application:,,,/NETPath;component/Icons/X32/PeerTCP.png";
+			if (valueType == typeof(Projects.BindingSecurityWebHTTP)) return "pack://application:,,,/NETPath;component/Icons/X32/WebHTTP.png";
+			if (valueType == typeof(Projects.BindingSecurityMSMQIntegration)) return "pack://application:,,,/NETPath;component/Icons/X32/MSMQIntegration.png";
+			return "pack://application:,,,/NETPath;component/Icons/Blank.png";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -741,7 +741,7 @@ namespace WCFArchitect.Interface.Bindings
 			if (valueType == typeof(Projects.BindingSecurityPeerTCP)) return "Peer TCP Security";
 			if (valueType == typeof(Projects.BindingSecurityWebHTTP)) return "Web HTTP Security";
 			if (valueType == typeof(Projects.BindingSecurityMSMQIntegration)) return "MSMQ Integration Security";
-			return "pack://application:,,,/WCFArchitect;component/Icons/Blank.png";
+			return "pack://application:,,,/NETPath;component/Icons/Blank.png";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

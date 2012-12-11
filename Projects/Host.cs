@@ -6,7 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Runtime.Serialization;
 
-namespace WCFArchitect.Projects
+namespace NETPath.Projects
 {
 	public enum HostEndpointIdentityType
 	{

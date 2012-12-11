@@ -9,10 +9,10 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Prospective.Controls.Dialogs;
-using WCFArchitect.Projects;
-using WCFArchitect.Generators.Interfaces;
+using NETPath.Projects;
+using NETPath.Generators.Interfaces;
 
-namespace WCFArchitect
+namespace NETPath
 {
 	internal static class Globals
 	{
@@ -114,7 +114,7 @@ namespace WCFArchitect
 				var fi = new FileInfo(Path);
 				var bfi = new FileInfo(System.IO.Path.ChangeExtension(Path, ".bak"));
 				if (fi.LastWriteTime < bfi.LastWriteTime)
-					DialogService.ShowMessageDialog(null, "Solution Load Error", "WCF Architect has detected that the solution '" + Path + "' was not properly closed. A newer backup exists. Would you like to use this backup?",
+					DialogService.ShowMessageDialog(null, "Solution Load Error", "NETPath has detected that the solution '" + Path + "' was not properly closed. A newer backup exists. Would you like to use this backup?",
 						new DialogAction("Yes", () => { File.Delete(Path); File.Move(System.IO.Path.ChangeExtension(Path, ".bak"), Path); }, true), new DialogAction("No", () => File.Delete(System.IO.Path.ChangeExtension(Path, ".bak")), false, true));
 				else
 					File.Delete(System.IO.Path.ChangeExtension(Path, ".bak"));
@@ -122,7 +122,7 @@ namespace WCFArchitect
 			try
 			{
 				SolutionPath = Path;
-				Solution = WCFArchitect.Projects.Solution.Open(Path);
+				Solution = NETPath.Projects.Solution.Open(Path);
 			}
 			catch (Exception ex)
 			{
@@ -141,7 +141,7 @@ namespace WCFArchitect
 					var bfi = new FileInfo(System.IO.Path.ChangeExtension(p, ".bak"));
 					if (fi.LastWriteTime < bfi.LastWriteTime)
 					{
-						DialogService.ShowMessageDialog(null, "Project Load Error", "WCF Architect has detected that the solution '" + Path + "' was not properly closed. A newer backup exists. Would you like to use this backup?",
+						DialogService.ShowMessageDialog(null, "Project Load Error", "NETPath has detected that the solution '" + Path + "' was not properly closed. A newer backup exists. Would you like to use this backup?",
 							new DialogAction("Yes", () => { File.Delete(Path); File.Move(System.IO.Path.ChangeExtension(Path, ".bak"), Path); }, true), new DialogAction("No", () => File.Delete(System.IO.Path.ChangeExtension(Path, ".bak")), false, true));
 					}
 					else
@@ -153,7 +153,7 @@ namespace WCFArchitect
 				//Open the project.
 				try
 				{
-					Projects.Add(WCFArchitect.Projects.Project.Open(SolutionPath, p));
+					Projects.Add(NETPath.Projects.Project.Open(SolutionPath, p));
 				}
 				catch (Exception ex)
 				{
@@ -190,11 +190,11 @@ namespace WCFArchitect
 			IsFinding = true;
 			IsSaving = true;
 
-			WCFArchitect.Projects.Solution.Save(Solution);
+			NETPath.Projects.Solution.Save(Solution);
 
 			if (SaveProjects)
 				foreach (Project p in Projects)
-					WCFArchitect.Projects.Project.Save(p);
+					NETPath.Projects.Project.Save(p);
 
 			IsFinding = false;
 			IsSaving = false;
@@ -207,10 +207,10 @@ namespace WCFArchitect
 
 			await Application.Current.Dispatcher.InvokeAsync(() =>
 			{
-				WCFArchitect.Projects.Solution.Save(Solution, Path.ChangeExtension(SolutionPath, ".bak"));
+				NETPath.Projects.Solution.Save(Solution, Path.ChangeExtension(SolutionPath, ".bak"));
 
 				foreach (Project p in Projects)
-					WCFArchitect.Projects.Project.Save(p, Path.ChangeExtension(p.AbsolutePath, ".bak"));
+					NETPath.Projects.Project.Save(p, Path.ChangeExtension(p.AbsolutePath, ".bak"));
 			}, DispatcherPriority.Send);
 
 			IsFinding = false;
@@ -223,10 +223,10 @@ namespace WCFArchitect
 				if(BackupTimer != null)
 					BackupTimer.Dispose();
 
-			WCFArchitect.Projects.Solution.Save(Solution);
+			NETPath.Projects.Solution.Save(Solution);
 
 			foreach (Project p in Projects)
-				WCFArchitect.Projects.Project.Save(p);
+				NETPath.Projects.Project.Save(p);
 		}
 	}
 }

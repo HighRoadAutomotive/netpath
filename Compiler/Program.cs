@@ -6,10 +6,10 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 using LogicNP.CryptoLicensing;
-using WCFArchitect.Projects;
-using WCFArchitect.Generators.Interfaces;
+using NETPath.Projects;
+using NETPath.Generators.Interfaces;
 
-namespace WCFArchitect.Compiler
+namespace NETPath.Compiler
 {
 	public static class Program
 	{
@@ -30,8 +30,8 @@ namespace WCFArchitect.Compiler
 		public static void Main(string[] args)
 		{
 			string appPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\";
-			ApplicationVersion = new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo(appPath + "wasc.exe").FileVersion);
-			ApplicationTitle = "WCF Architect Service Compiler - BETA";
+			ApplicationVersion = new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo(appPath + "npsc.exe").FileVersion);
+			ApplicationTitle = "NETPath Service Compiler - BETA";
 
 			if (args.GetLongLength(0) == 0) Environment.Exit(0);
 
@@ -46,13 +46,13 @@ namespace WCFArchitect.Compiler
 			var t = new CryptoLicense("NgAAAR34yUVouM0B89nN/6JGzgGHo04qSoBnf8S47pP6T/Awg2aOLNXVHFlxYaTAmetprPIDC9YxTuDJsAf3Er3NdiI=", vk);
 			if (t.Status != LicenseStatus.Valid)
 			{
-				Console.WriteLine("This copy of WCF Architect is BETA software and expired on {0}.", t.DateExpires.ToShortDateString());
+				Console.WriteLine("This copy of NETPath is BETA software and expired on {0}.", t.DateExpires.ToShortDateString());
 				Console.WriteLine("Please visit us at http://www.prospectivesoftware.com to purchase a license if you wish to continue to use this software.");
 				Environment.Exit(4);
 			}
 			else
 			{
-				Console.WriteLine("This copy of WCF Architect is BETA software and will expire on {0}.", t.DateExpires.ToShortDateString());
+				Console.WriteLine("This copy of NETPath is BETA software and will expire on {0}.", t.DateExpires.ToShortDateString());
 			}
 
 			ErrorStream = Console.OpenStandardError();

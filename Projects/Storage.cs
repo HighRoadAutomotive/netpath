@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace WCFArchitect.Projects
+namespace NETPath.Projects
 {
 	internal static class Storage
 	{

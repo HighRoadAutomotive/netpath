@@ -19,7 +19,7 @@ using System.Windows.Shapes;
 using Prospective.Controls;
 using Prospective.Controls.Dialogs;
 
-namespace WCFArchitect.Interface.Dialogs
+namespace NETPath.Interface.Dialogs
 {
 	public partial class ReportError : Grid, IDialogContent
 	{
@@ -104,7 +104,7 @@ namespace WCFArchitect.Interface.Dialogs
 
 		private void ReporterEmail_Validate(object Sender, ValidateEventArgs E)
 		{
-			E.IsValid = WCFArchitect.Projects.Helpers.RegExs.MatchEmail.IsMatch(ReporterEmail.Text);
+			E.IsValid = NETPath.Projects.Helpers.RegExs.MatchEmail.IsMatch(ReporterEmail.Text);
 			Report_TextChanged(null, null);
 		}
 

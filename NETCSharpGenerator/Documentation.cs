@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WCFArchitect.Generators.NET.CS
+namespace NETPath.Generators.NET.CS
 {
 	internal static class DocumentationGenerator
 	{

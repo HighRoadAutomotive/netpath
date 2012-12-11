@@ -12,9 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WCFArchitect.Projects;
+using NETPath.Projects;
 
-namespace WCFArchitect.Interface.Documentation
+namespace NETPath.Interface.Documentation
 {
 	public partial class Standard : Grid
 	{

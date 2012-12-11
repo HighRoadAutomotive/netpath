@@ -1,14 +1,14 @@
-﻿﻿<Application x:Class="WCFArchitect.App" x:ClassModifier="public"
+﻿<Application x:Class="NETPath.App" x:ClassModifier="public"
 			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 StartupUri="Interface//Main.xaml" Startup="Application_Startup" Exit="Application_Exit" DispatcherUnhandledException="Application_DispatcherUnhandledException">
+			 StartupUri="Interface/Main.xaml" Startup="Application_Startup" Exit="Application_Exit" DispatcherUnhandledException="Application_DispatcherUnhandledException">
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="pack://application:,,,/Prospective.Controls;component/Themes/Generic.xaml" />
-				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/Colors.xaml" />
-				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/C1NumericBox.xaml" />
-				<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/C1TimeEditor.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/Colors.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/C1NumericBox.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/C1TimeEditor.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>

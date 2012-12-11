@@ -1,384 +1,384 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
-  <Class Name="WCFArchitect.Projects.Project">
+  <Class Name="NETPath.Projects.Project">
     <Position X="0.5" Y="0.5" Width="4.75" />
     <TypeIdentifier>
       <HashCode>AAEAAggAAAIAgAECKAgAVkQAABBQKAIQgAAABJEgADA=</HashCode>
       <FileName>Project.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.Service">
+  <Class Name="NETPath.Projects.Service">
     <Position X="0.5" Y="36" Width="4.75" />
     <TypeIdentifier>
       <HashCode>AAAYAAgSQAIQAAAKKAAAFAAAABACGAAQgAIEBAAgQCA=</HashCode>
       <FileName>Service.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.Data">
+  <Class Name="NETPath.Projects.Data">
     <Position X="6" Y="36" Width="3.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAgAAIIAAEACKAEQFAAAABACCAAQgAAABAAyCCA=</HashCode>
       <FileName>Data.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.DataElement">
+  <Class Name="NETPath.Projects.DataElement">
     <Position X="6" Y="44.25" Width="3.5" />
     <TypeIdentifier>
       <HashCode>gEEAIAyiAAYEgGgSKBCAEAQwFAACmEAQiAAABAARGiA=</HashCode>
       <FileName>Data.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.Enum">
+  <Class Name="NETPath.Projects.Enum">
     <Position X="10.25" Y="36" Width="3.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAgAAIIAAAACKAEQFAAAABAACAAYgAAABEAiADA=</HashCode>
       <FileName>Enum.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.EnumElement">
+  <Class Name="NETPath.Projects.EnumElement">
     <Position X="10.25" Y="44.25" Width="3.5" />
     <TypeIdentifier>
       <HashCode>AAgAAAiAAAIAgAgCKAAQEEQAAAAACAAQgAAgBACQEiA=</HashCode>
       <FileName>Enum.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.MethodParameter">
+  <Class Name="NETPath.Projects.MethodParameter">
     <Position X="0.5" Y="55.5" Width="4.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAiAAAAAgAgAIAAAAAQAAAAAAAAAgQAAAAAAEiA=</HashCode>
       <FileName>Service.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.Operation">
+  <Class Name="NETPath.Projects.Operation">
     <Position X="0.5" Y="44.25" Width="4.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAiAAAIAigAKKAACEAQAAAABCAAQgAAABAAEAiA=</HashCode>
       <FileName>Service.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.Reference">
+  <Class Name="NETPath.Projects.Reference">
     <Position X="6" Y="0.5" Width="3.5" />
     <TypeIdentifier>
       <HashCode>IAAAAAAAAAQAgAIkAAAAAAQAAAgAAAgAACAABAAQAiA=</HashCode>
       <FileName>Project.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.BindingSecurityTCP">
+  <Class Name="NETPath.Projects.BindingSecurityTCP">
     <Position X="30.25" Y="37.5" Width="5" />
     <TypeIdentifier>
       <HashCode>QAAAAAgAAIABAAAAIAgAAAACAgAAAAAAAAAAAQEAAEQ=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.BindingSecurityMSMQ">
+  <Class Name="NETPath.Projects.BindingSecurityMSMQ">
     <Position X="30.25" Y="50" Width="5" />
     <TypeIdentifier>
       <HashCode>QAIAgAgAAIADAAAAIAAAAAADAgAAIAAAAAAAAQAABEQ=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.BindingSecurityPeerTCP">
+  <Class Name="NETPath.Projects.BindingSecurityPeerTCP">
     <Position X="30.25" Y="57.5" Width="5" />
     <TypeIdentifier>
       <HashCode>QAAAAAAAAIAAAAAAIAgAAAAAAgAAAAAAAAAAAAEAAAA=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.BindingSecurityMSMQIntegration">
+  <Class Name="NETPath.Projects.BindingSecurityMSMQIntegration">
     <Position X="30.25" Y="69.5" Width="5" />
     <TypeIdentifier>
       <HashCode>QAIAgAgAAIACAAAAIAAAAAADAgAAIAAAAAAAAAAABAA=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.BindingSecurity">
+  <Class Name="NETPath.Projects.BindingSecurity">
     <Position X="30.25" Y="0.5" Width="5" />
     <TypeIdentifier>
       <HashCode>AAAAAAgAAAIAAAACCAAAEAAAAgAACAAQgAAABAAAACA=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.BindingSecurityBasicHTTP">
+  <Class Name="NETPath.Projects.BindingSecurityBasicHTTP">
     <Position X="30.25" Y="7.75" Width="5" />
     <TypeIdentifier>
       <HashCode>QAAQABAAAIABAAAAIAgAAAAAAgAIAAAAAAAAAQEAAkQ=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.BindingSecurityWSHTTP">
+  <Class Name="NETPath.Projects.BindingSecurityWSHTTP">
     <Position X="30.25" Y="15" Width="5" />
     <TypeIdentifier>
       <HashCode>QAAQABAAIIABAAAAIAgAAAAAAgAIAAIAAAAAAcEAAkQ=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.BindingSecurityWSDualHTTP">
+  <Class Name="NETPath.Projects.BindingSecurityWSDualHTTP">
     <Position X="30.25" Y="22.75" Width="5" />
     <TypeIdentifier>
       <HashCode>QAAAAAAAAIABAAAAIAAAAAAAAgAAAAIAAAAAAYAAAEQ=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.BindingSecurityWSFederationHTTP">
+  <Class Name="NETPath.Projects.BindingSecurityWSFederationHTTP">
     <Position X="30.25" Y="29" Width="5" />
     <TypeIdentifier>
       <HashCode>QAAAAgAAIIIBAAAAICABAAAAAmAAAAIAEAAAAcAAAEQ=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.BindingSecurityNamedPipe">
+  <Class Name="NETPath.Projects.BindingSecurityNamedPipe">
     <Position X="30.25" Y="44.25" Width="5" />
     <TypeIdentifier>
       <HashCode>QAAAAAgAAIAAAAAAIAAAAAACAgAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.BindingSecurityWebHTTP">
+  <Class Name="NETPath.Projects.BindingSecurityWebHTTP">
     <Position X="30.25" Y="63" Width="5" />
     <TypeIdentifier>
       <HashCode>QAAQABAAAIAAAAAAIAgAAAAAAgAIAAAAAAAAAAEAAgA=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.ServiceBinding">
+  <Class Name="NETPath.Projects.ServiceBinding">
     <Position X="22" Y="0.5" Width="5" />
     <TypeIdentifier>
       <HashCode>AAQAEAgAkAIAAAACCAAgEAgAAgkAKAAQgCCABAQAACA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.ServiceBindingBasicHTTP">
+  <Class Name="NETPath.Projects.ServiceBindingBasicHTTP">
     <Position X="22" Y="10.5" Width="5" />
     <TypeIdentifier>
       <HashCode>ABCgAAAACAAICAIAIAABAICKgiBAAAgIAAAEAAB4AAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.ServiceBindingWSHTTP">
+  <Class Name="NETPath.Projects.ServiceBindingWSHTTP">
     <Position X="22" Y="20" Width="5" />
     <TypeIdentifier>
       <HashCode>QBCgAEAACAAICBAAYAABAIKCgiBAAAgIAAAEAIBKAAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.ServiceBindingWS2007HTTP">
+  <Class Name="NETPath.Projects.ServiceBindingWS2007HTTP">
     <Position X="22" Y="30" Width="5" />
     <TypeIdentifier>
       <HashCode>QBCgAEAACAAICBAAYAABAIKCgiBAAAgIAAAEAIBKAAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.ServiceBindingWSDualHTTP">
+  <Class Name="NETPath.Projects.ServiceBindingWSDualHTTP">
     <Position X="22" Y="40.25" Width="5" />
     <TypeIdentifier>
       <HashCode>ABCgAEAACAAICBAAYIABAIACgiBAAAgAAAAEAJBKAAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.ServiceBindingWSFederationHTTP">
+  <Class Name="NETPath.Projects.ServiceBindingWSFederationHTTP">
     <Position X="22" Y="50" Width="5" />
     <TypeIdentifier>
       <HashCode>QBCgAEAACAAICBAAYAEBCIIKgiBAAAgAAAAEAIBKAAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.ServiceBindingWS2007FederationHTTP">
+  <Class Name="NETPath.Projects.ServiceBindingWS2007FederationHTTP">
     <Position X="22" Y="60.5" Width="5" />
     <TypeIdentifier>
       <HashCode>QBCgAEAACAAICBAAYAEBCIIKgiBAAAgAAAAEAIBKAAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.ServiceBindingTCP">
+  <Class Name="NETPath.Projects.ServiceBindingTCP">
     <Position X="22" Y="71.25" Width="5" />
     <TypeIdentifier>
       <HashCode>QBAAAEAAAEAAABJAYAAAAIIIgiAIAAAAAABEAJB6AAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.ServiceBindingNamedPipe">
+  <Class Name="NETPath.Projects.ServiceBindingNamedPipe">
     <Position X="22" Y="81.75" Width="5" />
     <TypeIdentifier>
       <HashCode>ABAAAEAAAEAAAAIAIAAAAIAIgiAIAAAAAAAEABB4AAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.ServiceBindingMSMQ">
+  <Class Name="NETPath.Projects.ServiceBindingMSMQ">
     <Position X="22" Y="90.5" Width="5" />
     <TypeIdentifier>
       <HashCode>KBQgAABIACEAJAIAIAgAAIBAkiAYEkAAAiA9AwBIAAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.ServiceBindingPeerTCP">
+  <Class Name="NETPath.Projects.ServiceBindingPeerTCP">
     <Position X="22" Y="102.5" Width="5" />
     <TypeIdentifier>
       <HashCode>ABAAACAAAAAAAACAIAAEAIAACiAAAAAAAAAEAABIAAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.ServiceBindingWebHTTP">
+  <Class Name="NETPath.Projects.ServiceBindingWebHTTP">
     <Position X="22" Y="109.5" Width="5" />
     <TypeIdentifier>
       <HashCode>ABCgAAAAACAASAIAIAABAICqgiBAAAAIAAAEAAB4AAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.ServiceBindingMSMQIntegration">
+  <Class Name="NETPath.Projects.ServiceBindingMSMQIntegration">
     <Position X="22" Y="119" Width="5" />
     <TypeIdentifier>
       <HashCode>CAQgAgBIAAEAJAIAIAAAAIBAkiAYEkABAiA9AwBAAAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.Host">
+  <Class Name="NETPath.Projects.Host">
     <Position X="14.5" Y="0.5" Width="5" />
     <TypeIdentifier>
       <HashCode>QEIgAAgAkBIAAAIiKUAAMAAAAAEGaAAQgCCFBAAAADA=</HashCode>
       <FileName>Host.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.HostCredentials">
+  <Class Name="NETPath.Projects.HostCredentials">
     <Position X="14.5" Y="13.25" Width="5" />
     <TypeIdentifier>
       <HashCode>QCDBAAyCyGGAiAAFMAoQARgjAkAAIsEADIAgoSGASAM=</HashCode>
       <FileName>Host.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.HostDebugBehavior">
+  <Class Name="NETPath.Projects.HostDebugBehavior">
     <Position X="14.5" Y="33.25" Width="5" />
     <TypeIdentifier>
       <HashCode>AAAgAAAAAgAQQAAAIAACAAAAACQEAIAAADAAQAAAAAw=</HashCode>
       <FileName>Host.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.HostBehavior">
+  <Class Name="NETPath.Projects.HostBehavior">
     <Position X="14.5" Y="28.25" Width="5" />
     <TypeIdentifier>
       <HashCode>AgAAAQgAAAAAgAAAAAAAQAQAAAAAAAAAgAAAAAAAAiA=</HashCode>
       <FileName>Host.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.HostMetadataBehavior">
+  <Class Name="NETPath.Projects.HostMetadataBehavior">
     <Position X="14.5" Y="39.5" Width="5" />
     <TypeIdentifier>
       <HashCode>AAAAABAAUAQAAAAAIAAAEAAABAQQCCAAgBAQAIAAAAA=</HashCode>
       <FileName>Host.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.HostThrottlingBehavior">
+  <Class Name="NETPath.Projects.HostThrottlingBehavior">
     <Position X="14.5" Y="45.75" Width="5" />
     <TypeIdentifier>
       <HashCode>AAAAAwAAAAAAAAAAIAAAAABAAAwAAAgAAAAAAAAAAAA=</HashCode>
       <FileName>Host.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.Solution">
+  <Class Name="NETPath.Projects.Solution">
     <Position X="6" Y="12.5" Width="3.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAgAAAAAgAAAAAAAAAQAAAgAAAAAAAAAAAAAAgA=</HashCode>
       <FileName>Project.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.HostEndpoint">
+  <Class Name="NETPath.Projects.HostEndpoint">
     <Position X="14.5" Y="50.75" Width="5" />
     <TypeIdentifier>
       <HashCode>AgCIAAggDAAAgAgAIABAQASQBAAAAACAgAEAwAAAAiA=</HashCode>
       <FileName>Host.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.HostEndpointAddressHeader">
+  <Class Name="NETPath.Projects.HostEndpointAddressHeader">
     <Position X="14.5" Y="59.25" Width="5" />
     <TypeIdentifier>
       <HashCode>AAAAAAgAAAAAgAAAAAAAAAQAAAAAIAAAAAAAAAAAAgA=</HashCode>
       <FileName>Host.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.Namespace">
+  <Class Name="NETPath.Projects.Namespace">
     <Position X="6" Y="18.75" Width="3.5" />
     <TypeIdentifier>
       <HashCode>gACAgAjAAAIQBIAiqAhUlIAAADAACBAYgkAEBAAgCCA=</HashCode>
       <FileName>Namespace.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.Property">
+  <Class Name="NETPath.Projects.Property">
     <Position X="0.5" Y="62.75" Width="4.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAQIAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
       <FileName>Service.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.DataType">
+  <Class Name="NETPath.Projects.DataType">
     <Position X="0.5" Y="18.75" Width="4.75" />
     <TypeIdentifier>
       <HashCode>CAAAARwgAADggCAAAAAAQIQAAIAAkFAwAACAgMAAAgA=</HashCode>
       <FileName>DataType.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WCFArchitect.Projects.ProjectNETOutputPath">
+  <Class Name="NETPath.Projects.ProjectNETOutputPath">
     <Position X="6" Y="5.5" Width="3.5" />
     <TypeIdentifier>
       <HashCode>AAAAAEAAAAAAgAIIAAEEAAAABYAAAAAAAAAAAAAAAgA=</HashCode>
       <FileName>Project.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Enum Name="WCFArchitect.Projects.BindingSecurityAlgorithmSuite">
+  <Enum Name="NETPath.Projects.BindingSecurityAlgorithmSuite">
     <Position X="36" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ACgIACAAAAAAAAAAAAAAIAEAARAAAAEgJQKQAAAQAAA=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="WCFArchitect.Projects.ServiceBindingTextEncoding">
+  <Enum Name="NETPath.Projects.ServiceBindingTextEncoding">
     <Position X="27.75" Y="2.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAABgAAAEAAAAAAAAAAAAARAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="WCFArchitect.Projects.ServiceBindingTransactionProtocol">
+  <Enum Name="NETPath.Projects.ServiceBindingTransactionProtocol">
     <Position X="27.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>BAAAAAAAAAAAAEAAAAAAIAAAAAAAAAAAAAAAAAAEAAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="WCFArchitect.Projects.ProjectNETOutputFramework">
+  <Enum Name="NETPath.Projects.ProjectNETOutputFramework">
     <Position X="10" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAEAAAAAAAAAAAAaBAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Project.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="WCFArchitect.Projects.ProjectServiceSerializerType">
+  <Enum Name="NETPath.Projects.ProjectServiceSerializerType">
     <Position X="10" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAgCAAAAAAAAAAAAAAACAAAAA=</HashCode>
       <FileName>Project.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="WCFArchitect.Projects.DataScope">
+  <Enum Name="NETPath.Projects.DataScope">
     <Position X="6" Y="61" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAIEAAAAAEAAAAAAAAAAACAAAQAA=</HashCode>
       <FileName>Data.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="WCFArchitect.Projects.HostEndpointIdentityType">
+  <Enum Name="NETPath.Projects.HostEndpointIdentityType">
     <Position X="19.75" Y="50.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>IAAAAAAAAAAAAAAAAAAQAAAAAIMAAAABAAAAAAAAAAA=</HashCode>
       <FileName>Host.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="WCFArchitect.Projects.DataTypeMode">
+  <Enum Name="NETPath.Projects.DataTypeMode">
     <Position X="0.5" Y="26.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAASAAwAAIAAAAAAAAABAAAAAAAAIAACAA=</HashCode>
       <FileName>DataType.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="WCFArchitect.Projects.PrimitiveTypes">
+  <Enum Name="NETPath.Projects.PrimitiveTypes">
     <Position X="3.25" Y="26.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>MABAAAEAAAAgABiwQQAAAAAABCACACQAAAQAAAEiCCA=</HashCode>

@@ -4,11 +4,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WCFArchitect.Projects;
-using WCFArchitect.Projects.Helpers;
+using NETPath.Projects;
+using NETPath.Projects.Helpers;
 using System.ServiceModel;
 
-namespace WCFArchitect.Generators.WinRT.CS
+namespace NETPath.Generators.WinRT.CS
 {
 	internal static class ServiceGenerator
 	{

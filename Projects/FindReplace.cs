@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Text.RegularExpressions;
 
-namespace WCFArchitect.Projects
+namespace NETPath.Projects
 {
 	public enum FindItems
 	{

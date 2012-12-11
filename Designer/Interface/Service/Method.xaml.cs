@@ -15,9 +15,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Prospective.Controls.Dialogs;
-using WCFArchitect.Projects.Helpers;
+using NETPath.Projects.Helpers;
 
-namespace WCFArchitect.Interface.Service
+namespace NETPath.Interface.Service
 {
 	internal partial class Method : Grid
 	{
@@ -289,7 +289,7 @@ namespace WCFArchitect.Interface.Service
 			var OP = lbi.Content as Projects.MethodParameter;
 			if (OP == null) return;
 
-			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Method Parameter?", "Are you sure you want to delete the '" + OP.Type + " " + OP.Name + "' method parameter?", new DialogAction("Yes", () => MethodData.Parameters.Remove(OP), true), new DialogAction("No", false, true));
+			DialogService.ShowMessageDialog("NETPath", "Delete Method Parameter?", "Are you sure you want to delete the '" + OP.Type + " " + OP.Name + "' method parameter?", new DialogAction("Yes", () => MethodData.Parameters.Remove(OP), true), new DialogAction("No", false, true));
 		}
 	}
 }

@@ -17,7 +17,7 @@ using System.Windows.Shapes;
 using Prospective.Controls;
 using Prospective.Controls.Dialogs;
 
-namespace WCFArchitect.Interface.Dialogs
+namespace NETPath.Interface.Dialogs
 {
 	public partial class ReportSuggestion : Grid, IDialogContent
 	{

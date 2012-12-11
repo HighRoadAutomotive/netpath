@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WCF Architect 2 Windows Runtime 8 Toolkit")]
-[assembly: AssemblyDescription("WCF Architect 2 Programmer Toolkit for the Window Runtime 8")]
+[assembly: AssemblyTitle("NETPath 2 Windows Runtime 8 Toolkit")]
+[assembly: AssemblyDescription("NETPath 2 Programmer Toolkit for the Window Runtime 8")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Prospective Software")]
-[assembly: AssemblyProduct("WCF Architect 2")]
+[assembly: AssemblyProduct("NETPath 2")]
 [assembly: AssemblyCopyright("Copyright © Prospective Software 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

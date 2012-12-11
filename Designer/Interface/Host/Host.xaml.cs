@@ -12,10 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Prospective.Controls.Dialogs;
-using WCFArchitect.Projects;
-using WCFArchitect.Projects.Helpers;
+using NETPath.Projects;
+using NETPath.Projects.Helpers;
 
-namespace WCFArchitect.Interface.Host
+namespace NETPath.Interface.Host
 {
 	internal partial class Host : Grid
 	{
@@ -142,7 +142,7 @@ namespace WCFArchitect.Interface.Host
 			var OP = lbi.Content as HostEndpoint;
 			if (OP == null) return;
 
-			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Endpoint?", "Are you sure you want to delete the '" + OP.Name + "' endpoint?", new DialogAction("Yes", () => Data.Endpoints.Remove(OP), true), new DialogAction("No", false, true));
+			DialogService.ShowMessageDialog("NETPath", "Delete Endpoint?", "Are you sure you want to delete the '" + OP.Name + "' endpoint?", new DialogAction("Yes", () => Data.Endpoints.Remove(OP), true), new DialogAction("No", false, true));
 		}
 
 		#endregion
@@ -264,7 +264,7 @@ namespace WCFArchitect.Interface.Host
 			var OP = lbi.Content as HostBehavior;
 			if (OP == null) return;
 
-			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Endpoint?", "Are you sure you want to delete the '" + OP.Name + "' behavior?", new DialogAction("Yes", () => Data.Behaviors.Remove(OP), true), new DialogAction("No", false, true));
+			DialogService.ShowMessageDialog("NETPath", "Delete Endpoint?", "Are you sure you want to delete the '" + OP.Name + "' behavior?", new DialogAction("Yes", () => Data.Behaviors.Remove(OP), true), new DialogAction("No", false, true));
 		}
 
 		#endregion

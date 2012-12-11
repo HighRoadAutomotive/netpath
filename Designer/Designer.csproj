@@ -8,8 +8,8 @@
     <ProjectGuid>{26437A88-CCC9-4006-BE4E-2EB3EAC8D78D}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WCFArchitect</RootNamespace>
-    <AssemblyName>WCFArchitect</AssemblyName>
+    <RootNamespace>NETPath</RootNamespace>
+    <AssemblyName>NETPath</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -40,7 +40,7 @@
     <ApplicationIcon>Icons\DesignStudio.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>WCFArchitect.App</StartupObject>
+    <StartupObject>NETPath.App</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>

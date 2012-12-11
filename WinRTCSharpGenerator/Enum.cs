@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-using WCFArchitect.Projects;
-using WCFArchitect.Projects.Helpers;
+using NETPath.Projects;
+using NETPath.Projects.Helpers;
 
-namespace WCFArchitect.Generators.WinRT.CS
+namespace NETPath.Generators.WinRT.CS
 {
 	internal static class EnumGenerator
 	{

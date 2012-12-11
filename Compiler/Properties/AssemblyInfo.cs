@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WCF Architect Compiler")]
-[assembly: AssemblyDescription("The compiler for WCF Architect")]
+[assembly: AssemblyTitle("NETPath Compiler")]
+[assembly: AssemblyDescription("The compiler for NETPath")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Prospective Software Inc.")]
-[assembly: AssemblyProduct("WCF Architect 2")]
+[assembly: AssemblyProduct("NETPath 2")]
 [assembly: AssemblyCopyright("Copyright © 2012-2013 Prospective Software Inc.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

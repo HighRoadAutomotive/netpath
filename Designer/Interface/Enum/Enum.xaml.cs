@@ -16,10 +16,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Prospective.Controls;
 using Prospective.Controls.Dialogs;
-using WCFArchitect.Projects.Helpers;
+using NETPath.Projects.Helpers;
 using Button = System.Windows.Controls.Button;
 
-namespace WCFArchitect.Interface.Enum
+namespace NETPath.Interface.Enum
 {
 	internal partial class Enum : Grid
 	{
@@ -241,7 +241,7 @@ namespace WCFArchitect.Interface.Enum
 			var OP = lbi.Content as Projects.EnumElement;
 			if (OP == null) return;
 
-			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Enumeration Value?", "Are you sure you want to delete the '" + OP.Name + "' enumeration value?", new DialogAction("Yes", () => OpenType.Elements.Remove(OP), true), new DialogAction("No", false, true));
+			DialogService.ShowMessageDialog("NETPath", "Delete Enumeration Value?", "Are you sure you want to delete the '" + OP.Name + "' enumeration value?", new DialogAction("Yes", () => OpenType.Elements.Remove(OP), true), new DialogAction("No", false, true));
 		}
 
 		private void AddAggregateValue_Click(object sender, RoutedEventArgs e)
@@ -272,7 +272,7 @@ namespace WCFArchitect.Interface.Enum
 			var hop = hlbi.Content as Projects.EnumElement;
 			if (hop == null) return;
 
-			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Aggregate Enumeration Value?", "Are you sure you want to delete the '" + OP.Name + "' aggregate value from the enumeration value'" + hop.Name + "'?", new DialogAction("Yes", () =>
+			DialogService.ShowMessageDialog("NETPath", "Delete Aggregate Enumeration Value?", "Are you sure you want to delete the '" + OP.Name + "' aggregate value from the enumeration value'" + hop.Name + "'?", new DialogAction("Yes", () =>
 				                                                                                                                                                                                                                                       {
 																																																														   hop.AggregateValues.Remove(OP); 
 																																																														   var AggSel = Globals.GetVisualChild<System.Windows.Controls.ComboBox>(hlbi);

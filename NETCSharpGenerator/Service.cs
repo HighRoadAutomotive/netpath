@@ -5,10 +5,10 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
-using WCFArchitect.Projects;
-using WCFArchitect.Projects.Helpers;
+using NETPath.Projects;
+using NETPath.Projects.Helpers;
 
-namespace WCFArchitect.Generators.NET.CS
+namespace NETPath.Generators.NET.CS
 {
 	internal static class ServiceGenerator
 	{

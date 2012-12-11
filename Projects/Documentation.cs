@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace WCFArchitect.Projects
+namespace NETPath.Projects
 {
 	public class Documentation : DependencyObject
 	{

@@ -1,16 +1,16 @@
-﻿<ContentControl x:Class="WCFArchitect.Interface.Navigator"
+﻿<ContentControl x:Class="NETPath.Interface.Navigator"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-	xmlns:local="clr-namespace:WCFArchitect.Interface"
+	xmlns:local="clr-namespace:NETPath.Interface"
 	DataContext="{Binding RelativeSource={RelativeSource Self}}"
 	mc:Ignorable="d" d:DesignHeight="950" d:DesignWidth="1280">
     <Grid>
 		<Grid.Resources>
 			<ResourceDictionary>
 				<ResourceDictionary.MergedDictionaries>
-					<ResourceDictionary Source="pack://application:,,,/WCFArchitect;component/Themes/ProjectListItemTemplates.xaml" />
+					<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/ProjectListItemTemplates.xaml" />
 					<ResourceDictionary>
 						<local:CompileMessageSeverityImageConverter x:Key="CompileMessageSeverityImageConverter" />
 						<local:ErrorObjectNameConverter x:Key="ErrorObjectNameConverter" />
@@ -32,21 +32,21 @@
 		<Button Grid.Column="0" Grid.Row="0" Padding="2" Margin="0,0,5,0" Background="#22FFFFFF" Style="{StaticResource ProjectContainerTemplate}" Command="{x:Static local:Navigator.ChangeActivePageCommand}" CommandParameter="{Binding Path=Project}">
 			<StackPanel Orientation="Vertical">
 				<StackPanel Orientation="Horizontal" Margin="0,0,0,3">
-					<Image x:Name="Icon" Source="pack://application:,,,/WCFArchitect;component/Icons/X32/Project.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,5,3" />
+					<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X32/Project.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,5,3" />
 					<TextBlock Text="{Binding Path=Project.Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="16pt" VerticalAlignment="Center" />
 				</StackPanel>
 				<StackPanel Orientation="Horizontal">
 					<Button x:Name="NewItem" Background="Transparent" Width="40" Padding="0" Click="NewItem_Click" ToolTip="New Item" >
-						<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/NewItem.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" />
+						<Image Source="pack://application:,,,/NETPath;component/Icons/X32/NewItem.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" />
 					</Button>
 					<Button x:Name="SaveProject" Background="Transparent" Width="38" Padding="0" Click="SaveProject_Click" ToolTip="Save Project" >
-						<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/Save.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" />
+						<Image Source="pack://application:,,,/NETPath;component/Icons/X32/Save.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" />
 					</Button>
 					<Button x:Name="BuildProject" Background="Transparent" Width="38" Padding="0" Click="BuildProject_Click" ToolTip="Build Project" >
-						<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/BuildSolution.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" />
+						<Image Source="pack://application:,,,/NETPath;component/Icons/X32/BuildSolution.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" />
 					</Button>
 					<Button x:Name="DeleteProject" Background="Transparent" Width="38" Padding="0" Click="DeleteProject_Click" ToolTip="Remove Project from Solution" >
-						<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/Delete.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" />
+						<Image Source="pack://application:,,,/NETPath;component/Icons/X32/Delete.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" />
 					</Button>
 				</StackPanel>
 			</StackPanel>

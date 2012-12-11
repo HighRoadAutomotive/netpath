@@ -9,7 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Prospective.Controls.Dialogs;
 
-namespace WCFArchitect
+namespace NETPath
 {
 	public partial class App : Application
 	{
@@ -18,10 +18,10 @@ namespace WCFArchitect
 		{
 			//Get executable data. 
 			Globals.ApplicationPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\";
-			Globals.ApplicationVersion = new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo(Globals.ApplicationPath + "WCFArchitect.exe").FileVersion);
+			Globals.ApplicationVersion = new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo(Globals.ApplicationPath + "NETPath.exe").FileVersion);
 
 			//Check to see if the User Profile path exists and make a folder if it does not.
-			Globals.UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Prospective Software\\WCF Architect\\";
+			Globals.UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Prospective Software\\NETPath\\";
 			if (Directory.Exists(Globals.UserProfilePath) == false) Directory.CreateDirectory(Globals.UserProfilePath);
 
 			//Load the user profile if it exists or make a new one if it doesn't.
