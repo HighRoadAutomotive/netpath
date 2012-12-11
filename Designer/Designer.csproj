@@ -113,6 +113,9 @@
       <HintPath>C:\Program Files (x86)\Actipro Software\WPF-Controls\v12.2.0571\Assemblies\ActiproSoftware.SyntaxEditor.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ActiproSoftware.Text.LLParser.Wpf, Version=12.2.571.0, Culture=neutral, PublicKeyToken=36ff2196ab5654b9, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="ActiproSoftware.Text.Wpf, Version=12.2.571.0, Culture=neutral, PublicKeyToken=36ff2196ab5654b9, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\Actipro Software\WPF-Controls\v12.2.0571\Assemblies\ActiproSoftware.Text.Wpf.dll</HintPath>
