@@ -9,9 +9,9 @@ using System.Diagnostics;
 using System.Windows.Navigation;
 
 using Prospective.Controls.Dialogs;
-using WCFArchitect.Options;
+using NETPath.Options;
 
-namespace WCFArchitect.Interface
+namespace NETPath.Interface
 {
 	internal partial class Main : Window
 	{
@@ -47,7 +47,7 @@ namespace WCFArchitect.Interface
 
 			InitializeComponent();
 
-			DialogService.Initialize("WCF ARCHITECT", DialogViewer);
+			DialogService.Initialize("NETPath", DialogViewer);
 
 			Globals.MainScreen = this;
 
@@ -58,12 +58,12 @@ namespace WCFArchitect.Interface
 			UserProfile = Globals.UserProfile;
 			if (Globals.UserProfile.AutomaticBackupsEnabled) AutomaticBackupsEnabled.Content = "Yes";
 			AboutVersion.Content = "Version " + FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).FileVersion;
-			ProductTitle.Content = "Prospective Software WCF Architect Professional";
+			ProductTitle.Content = "Prospective Software NETPath Professional";
 
 			//Set the logo in the options screen.
 			var logo = new BitmapImage();
 			logo.BeginInit();
-			logo.UriSource = new Uri("pack://application:,,,/WCFArchitect;component/Icons/Odd/FullLogoProfessional.png");
+			logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoProfessional.png");
 			logo.EndInit();
 			SKULevel.Source = logo;
 		}
@@ -103,7 +103,7 @@ namespace WCFArchitect.Interface
 			if (Globals.Solution == null) return;
 			if (CloseMode == SaveCloseMode.None)
 			{
-				DialogService.ShowMessageDialog("WCF ARCHITECT", "Save Solution?", "Would you like to save your work before closing?", new DialogAction("Yes", () => { CloseMode = SaveCloseMode.Save; Application.Current.Shutdown(0); }, true), new DialogAction("No", () => { CloseMode = SaveCloseMode.NoSave; Application.Current.Shutdown(0); }), new DialogAction("Cancel", false, true));
+				DialogService.ShowMessageDialog("NETPath", "Save Solution?", "Would you like to save your work before closing?", new DialogAction("Yes", () => { CloseMode = SaveCloseMode.Save; Application.Current.Shutdown(0); }, true), new DialogAction("No", () => { CloseMode = SaveCloseMode.NoSave; Application.Current.Shutdown(0); }), new DialogAction("Cancel", false, true));
 				e.Cancel = true;
 				return;
 			}
@@ -433,7 +433,7 @@ namespace WCFArchitect.Interface
 			AddProject.IsEnabled = true;
 			SystemMenuSave.IsEnabled = true;
 			SystemMenuClose.IsEnabled = true;
-			Title = Globals.Solution.Name + " - WCF Architect 2 (BETA)";
+			Title = Globals.Solution.Name + " - NETPath 2 (BETA)";
 		}
 
 		public void CloseSolution(bool AskBeforeClose = false, bool Closing = false, Action ContinueYes = null, Action ContinueNo = null)
@@ -465,7 +465,7 @@ namespace WCFArchitect.Interface
 			AddProject.IsEnabled = false;
 			SystemMenuSave.IsEnabled = false;
 			SystemMenuClose.IsEnabled = false;
-			Title = "Prospective Software WCF Architect";
+			Title = "Prospective Software NETPath";
 
 			if (!string.IsNullOrEmpty(Globals.SolutionPath))
 				System.IO.File.Delete(System.IO.Path.ChangeExtension(Globals.SolutionPath, ".bak"));
@@ -508,7 +508,7 @@ namespace WCFArchitect.Interface
 		public static readonly DependencyProperty ItemPathProperty = DependencyProperty.Register("ItemPath", typeof(string), typeof(RecentProjectItem), new PropertyMetadata(""));
 
 		public string ItemFlag { get { return (string)GetValue(ItemFlagProperty); } set { SetValue(ItemFlagProperty, value); } }
-		public static readonly DependencyProperty ItemFlagProperty = DependencyProperty.Register("ItemFlag", typeof(string), typeof(RecentProjectItem), new PropertyMetadata("pack://application:,,,/WCFArchitect;component/Icons/X32/FlagRecent.png"));
+		public static readonly DependencyProperty ItemFlagProperty = DependencyProperty.Register("ItemFlag", typeof(string), typeof(RecentProjectItem), new PropertyMetadata("pack://application:,,,/NETPath;component/Icons/X32/FlagRecent.png"));
 
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static readonly RoutedCommand OpenCommand = new RoutedCommand();
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static readonly RoutedCommand FlagCommand = new RoutedCommand();
@@ -563,7 +563,7 @@ namespace WCFArchitect.Interface
 			ItemTitle = Data.Name;
 			ItemPath = Data.Path;
 
-			if (IsImportant) ItemFlag = "pack://application:,,,/WCFArchitect;component/Icons/X32/FlagImportant.png";
+			if (IsImportant) ItemFlag = "pack://application:,,,/NETPath;component/Icons/X32/FlagImportant.png";
 		}
 
 		private void FlagImportant()
@@ -573,14 +573,14 @@ namespace WCFArchitect.Interface
 				Globals.UserProfile.ImportantProjects.Remove(Data);
 				Globals.UserProfile.RecentProjects.Add(Data);
 
-				ItemFlag = "pack://application:,,,/WCFArchitect;component/Icons/X32/FlagImportant.png";
+				ItemFlag = "pack://application:,,,/NETPath;component/Icons/X32/FlagImportant.png";
 			}
 			else
 			{
 				Globals.UserProfile.RecentProjects.Remove(Data);
 				Globals.UserProfile.ImportantProjects.Add(Data);
 
-				ItemFlag = "pack://application:,,,/WCFArchitect;component/Icons/X32/FlagRecent.png";
+				ItemFlag = "pack://application:,,,/NETPath;component/Icons/X32/FlagRecent.png";
 			}
 
 			Globals.MainScreen.RefreshRecentList();

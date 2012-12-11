@@ -16,9 +16,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Prospective.Controls.Dialogs;
-using WCFArchitect.Projects;
+using NETPath.Projects;
 
-namespace WCFArchitect.Interface
+namespace NETPath.Interface
 {
 	public partial class Navigator : ContentControl
 	{
@@ -58,37 +58,37 @@ namespace WCFArchitect.Interface
 			{
 				var t = e.Parameter as Projects.Namespace;
 				if (t == null) return;
-				DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Namespace?", "Are you sure you want to delete the '" + t.FullName + "' namespace?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Children.Remove(t); }, true), new DialogAction("No", false, true));
+				DialogService.ShowMessageDialog("NETPath", "Delete Namespace?", "Are you sure you want to delete the '" + t.FullName + "' namespace?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Children.Remove(t); }, true), new DialogAction("No", false, true));
 			}
 			if (dt == typeof(Projects.Service))
 			{
 				var t = e.Parameter as Projects.Service;
 				if (t == null) return;
-				DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Service?", "Are you sure you want to delete the '" + t.Declaration + "' service?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Services.Remove(t); }, true), new DialogAction("No", false, true));
+				DialogService.ShowMessageDialog("NETPath", "Delete Service?", "Are you sure you want to delete the '" + t.Declaration + "' service?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Services.Remove(t); }, true), new DialogAction("No", false, true));
 			}
 			if (dt == typeof(Projects.Data))
 			{
 				var t = e.Parameter as Projects.Data;
 				if (t == null) return;
-				DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Data?", "Are you sure you want to delete the '" + t.Declaration + "' data?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Data.Remove(t); }, true), new DialogAction("No", false, true));
+				DialogService.ShowMessageDialog("NETPath", "Delete Data?", "Are you sure you want to delete the '" + t.Declaration + "' data?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Data.Remove(t); }, true), new DialogAction("No", false, true));
 			}
 			if (dt == typeof(Projects.Enum))
 			{
 				var t = e.Parameter as Projects.Enum;
 				if (t == null) return;
-				DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Enumeration?", "Are you sure you want to delete the '" + t.Declaration + "' enumeration?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Enums.Remove(t); }, true), new DialogAction("No", false, true));
+				DialogService.ShowMessageDialog("NETPath", "Delete Enumeration?", "Are you sure you want to delete the '" + t.Declaration + "' enumeration?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Enums.Remove(t); }, true), new DialogAction("No", false, true));
 			}
 			if (dt == typeof(ServiceBindingBasicHTTP) || dt == typeof(ServiceBindingBasicHTTPS) || dt == typeof(ServiceBindingNetHTTP) || dt == typeof(ServiceBindingNetHTTPS) || dt == typeof(ServiceBindingWSHTTP) || dt == typeof(ServiceBindingWS2007HTTP) || dt == typeof(ServiceBindingWSDualHTTP) || dt == typeof(ServiceBindingWSFederationHTTP) || dt == typeof(ServiceBindingWS2007FederationHTTP) || dt == typeof(ServiceBindingTCP) || dt == typeof(ServiceBindingNamedPipe) || dt == typeof(ServiceBindingMSMQ) || dt == typeof(ServiceBindingPeerTCP) || dt == typeof(ServiceBindingWebHTTP) || dt == typeof(ServiceBindingMSMQIntegration))
 			{
 				var t = e.Parameter as ServiceBinding;
 				if (t == null) return;
-				DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Binding?", "Are you sure you want to delete the '" + t.Declaration + "' binding?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Bindings.Remove(t); }, true), new DialogAction("No", false, true));
+				DialogService.ShowMessageDialog("NETPath", "Delete Binding?", "Are you sure you want to delete the '" + t.Declaration + "' binding?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Bindings.Remove(t); }, true), new DialogAction("No", false, true));
 			}
 			if (dt == typeof(Projects.Host))
 			{
 				var t = e.Parameter as Projects.Host;
 				if (t == null) return;
-				DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Host?", "Are you sure you want to delete the '" + t.Declaration + "' host?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Hosts.Remove(t); }, true), new DialogAction("No", false, true));
+				DialogService.ShowMessageDialog("NETPath", "Delete Host?", "Are you sure you want to delete the '" + t.Declaration + "' host?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Hosts.Remove(t); }, true), new DialogAction("No", false, true));
 			}
 		}
 
@@ -812,9 +812,9 @@ namespace WCFArchitect.Interface
 		{
 			if (value == null) return "";
 			var lt = (CompileMessageSeverity)value;
-			if (lt == CompileMessageSeverity.ERROR) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Error.png";
-			if (lt == CompileMessageSeverity.WARN) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Warning.png";
-			if (lt == CompileMessageSeverity.INFO) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Message.png";
+			if (lt == CompileMessageSeverity.ERROR) return "pack://application:,,,/NETPath;component/Icons/X16/Error.png";
+			if (lt == CompileMessageSeverity.WARN) return "pack://application:,,,/NETPath;component/Icons/X16/Warning.png";
+			if (lt == CompileMessageSeverity.INFO) return "pack://application:,,,/NETPath;component/Icons/X16/Message.png";
 			return "";
 		}
 
@@ -992,20 +992,20 @@ namespace WCFArchitect.Interface
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if (value == null) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Project.png";
+			if (value == null) return "pack://application:,,,/NETPath;component/Icons/X16/Project.png";
 			Type valueType = value.GetType();
-			if (valueType == typeof(Projects.Project)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Project.png";
-			if (valueType == typeof(DependencyProject)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/DependencyProject.png";
-			if (valueType == typeof(Projects.Namespace)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Namespace.png";
-			if (valueType == typeof(Projects.Service)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Service.png";
-			if (valueType == typeof(Operation)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Operation.png";
-			if (valueType == typeof(MethodParameter)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Property.png";
-			if (valueType == typeof(Property)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Property.png";
-			if (valueType == typeof(Projects.Data)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Data.png";
-			if (valueType == typeof(DataElement)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Property.png";
-			if (valueType == typeof(Projects.Enum)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Enum.png";
-			if (valueType == typeof(EnumElement)) return "pack://application:,,,/WCFArchitect;component/Icons/X16/Property.png";
-			return "pack://application:,,,/WCFArchitect;component/Icons/X16/Project.png";
+			if (valueType == typeof(Projects.Project)) return "pack://application:,,,/NETPath;component/Icons/X16/Project.png";
+			if (valueType == typeof(DependencyProject)) return "pack://application:,,,/NETPath;component/Icons/X16/DependencyProject.png";
+			if (valueType == typeof(Projects.Namespace)) return "pack://application:,,,/NETPath;component/Icons/X16/Namespace.png";
+			if (valueType == typeof(Projects.Service)) return "pack://application:,,,/NETPath;component/Icons/X16/Service.png";
+			if (valueType == typeof(Operation)) return "pack://application:,,,/NETPath;component/Icons/X16/Operation.png";
+			if (valueType == typeof(MethodParameter)) return "pack://application:,,,/NETPath;component/Icons/X16/Property.png";
+			if (valueType == typeof(Property)) return "pack://application:,,,/NETPath;component/Icons/X16/Property.png";
+			if (valueType == typeof(Projects.Data)) return "pack://application:,,,/NETPath;component/Icons/X16/Data.png";
+			if (valueType == typeof(DataElement)) return "pack://application:,,,/NETPath;component/Icons/X16/Property.png";
+			if (valueType == typeof(Projects.Enum)) return "pack://application:,,,/NETPath;component/Icons/X16/Enum.png";
+			if (valueType == typeof(EnumElement)) return "pack://application:,,,/NETPath;component/Icons/X16/Property.png";
+			return "pack://application:,,,/NETPath;component/Icons/X16/Project.png";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

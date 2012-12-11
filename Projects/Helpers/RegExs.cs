@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace WCFArchitect.Projects.Helpers
+namespace NETPath.Projects.Helpers
 {
 	public static class RegExs
 	{

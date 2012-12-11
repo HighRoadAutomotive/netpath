@@ -8,7 +8,7 @@ using System.Windows;
 using System.Runtime.Serialization;
 using System.ServiceModel.Web;
 
-namespace WCFArchitect.Projects
+namespace NETPath.Projects
 {
 	public enum ServiceAsynchronyMode
 	{

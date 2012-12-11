@@ -1,4 +1,4 @@
-﻿<Window x:Class="WCFArchitect.Interface.Main" x:ClassModifier="internal"
+﻿<Window x:Class="NETPath.Interface.Main" x:ClassModifier="internal"
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,10 +7,10 @@
 		xmlns:c1datetime="clr-namespace:C1.WPF.DateTimeEditors;assembly=C1.WPF.DateTimeEditors.4"
 		xmlns:c1media="clr-namespace:C1.WPF.MediaPlayer;assembly=C1.WPF.MediaPlayer.4"
 		xmlns:pc="http://schemas.propsectivesoftware.com/pc"
-		xmlns:local="clr-namespace:WCFArchitect.Interface"
-		Icon="pack://application:,,,/WCFArchitect;component/Icons/DesignStudio.ico" 
+		xmlns:local="clr-namespace:NETPath.Interface"
+		Icon="pack://application:,,,/NETPath;component/Icons/DesignStudio.ico" 
 		mc:Ignorable="d" d:DesignHeight="980" d:DesignWidth="1280"
-		Title="WCF Architect 2 - BETA" MinHeight="980" MinWidth="1280" DataContext="{Binding RelativeSource={RelativeSource Self}}" Style="{StaticResource MainWindowStyle}"
+		Title="NETPath 2 - BETA" MinHeight="980" MinWidth="1280" DataContext="{Binding RelativeSource={RelativeSource Self}}" Style="{StaticResource MainWindowStyle}"
 		TextOptions.TextFormattingMode="Display" TextOptions.TextHintingMode="Fixed" TextOptions.TextRenderingMode="ClearType" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.ClearTypeHint="Enabled"
 		SourceInitialized="Main_SourceInitialized" StateChanged="Main_StateChanged" Closing="Main_Closing" KeyUp="Main_KeyUp">
 	<pc:WindowChrome.WindowChrome>
@@ -130,7 +130,7 @@
 							<MenuItem Header="Exit" x:Name="SystemMenuExit" Click="SystemMenuExit_Click" />
 						</ContextMenu>
 					</Button.ContextMenu>
-					<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X32/LogoIcon.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="1" />
+					<Image Source="pack://application:,,,/NETPath;component/Icons/X32/LogoIcon.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="1" />
 				</Button>
 				<ItemsControl x:Name="ScreenButtons" Grid.Column="1" Margin="20,0" pc:WindowChrome.IsHitTestVisibleInChrome="True" >
 					<ItemsControl.ItemsPanel>
@@ -168,7 +168,7 @@
 						</Grid.ColumnDefinitions>
 						<Border Name="UpdateAvailable" Height="50" Grid.ColumnSpan="2" Grid.Row="0" Visibility="Collapsed" Background="{StaticResource DefaultBackgroundColor}" BorderBrush="Transparent">
 							<Grid>
-								<Label Content="There is a new version of WCF Architect available. Would you like to download it now?" FontSize="16" FontWeight="SemiBold" Height="Auto" HorizontalAlignment="Left" Margin="10,8,0,0" VerticalAlignment="Top" />
+								<Label Content="There is a new version of NETPath available. Would you like to download it now?" FontSize="16" FontWeight="SemiBold" Height="Auto" HorizontalAlignment="Left" Margin="10,8,0,0" VerticalAlignment="Top" />
 								<Button Content="Yes" Height="27" HorizontalAlignment="Right" Margin="0,11,87,0" Name="UpdateYes" VerticalAlignment="Top" Width="75" Click="UpdateYes_Click" />
 								<Button Content="No" Height="27" HorizontalAlignment="Right" Margin="0,11,6,0" Name="UpdateNo" VerticalAlignment="Top" Width="75" Click="UpdateNo_Click" />
 							</Grid>
@@ -181,10 +181,10 @@
 										<ColumnDefinition Width="Auto" />
 										<ColumnDefinition Width="*" />
 									</Grid.ColumnDefinitions>
-									<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X64/Solution.png" Margin="10,5" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="64" Width="64" Stretch="None" Grid.Column="0" />
+									<Image Source="pack://application:,,,/NETPath;component/Icons/X64/Solution.png" Margin="10,5" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="64" Width="64" Stretch="None" Grid.Column="0" />
 									<StackPanel Grid.Column="1" Margin="10">
 										<Label Content="New Solution" Foreground="Gray" FontSize="14pt" FontWeight="Bold" Padding="0"/>
-										<Label Content="Create a new WCF Architect Solution." Padding="0" />
+										<Label Content="Create a new NETPath Solution." Padding="0" />
 									</StackPanel>
 								</Grid>
 							</Button>
@@ -194,7 +194,7 @@
 										<ColumnDefinition Width="Auto" />
 										<ColumnDefinition Width="*" />
 									</Grid.ColumnDefinitions>
-									<Image Source="pack://application:,,,/WCFArchitect;component/Icons/X64/Project.png" Margin="10,5" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="64" Width="64" Stretch="None" Grid.Column="0" />
+									<Image Source="pack://application:,,,/NETPath;component/Icons/X64/Project.png" Margin="10,5" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="64" Width="64" Stretch="None" Grid.Column="0" />
 									<StackPanel Grid.Column="1" Margin="10">
 										<Label Content="Add Project" Foreground="Gray" FontSize="14pt" FontWeight="Bold" Padding="0"/>
 										<TextBlock Text="Add a project to the current solution." Padding="0" TextWrapping="Wrap" />
@@ -241,7 +241,7 @@
 							</TabItem>
 							<TabItem Header="HOW-TO VIDEOS" FontSize="12pt">
 								<c1media:C1MediaPlayer AutoPlay="False">
-									<c1media:C1MediaItem MediaSource="./Videos/wcfa2intro.mp4" NaturalDuration="00:02:04" Title="Introdution" ThumbnailSource="pack://application:,,,/WCFArchitect;component/Icons/Thumbnails/Intro.png"></c1media:C1MediaItem>
+									<c1media:C1MediaItem MediaSource="./Videos/wcfa2intro.mp4" NaturalDuration="00:02:04" Title="Introdution" ThumbnailSource="pack://application:,,,/NETPath;component/Icons/Thumbnails/Intro.png"></c1media:C1MediaItem>
 								</c1media:C1MediaPlayer>
 							</TabItem>
 							<TabItem Header="LATEST NEWS" FontSize="12pt">
@@ -317,9 +317,9 @@
 								<RowDefinition Height="Auto" />
 								<RowDefinition Height="*" />
 							</Grid.RowDefinitions>
-							<TextBlock Text="About WCF Architect" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="0,0,0,10" Grid.Row="0"/>
+							<TextBlock Text="About NETPath" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="0,0,0,10" Grid.Row="0"/>
 							<StackPanel Grid.Row="1" Margin="5,0">
-								<Image Name="SKULevel" Source="pack://application:,,,/WCFArchitect;component/Icons/Odd/FullLogoDeveloper.png" Margin="0,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="100" Width="450" Stretch="None" Grid.Column="0" />
+								<Image Name="SKULevel" Source="pack://application:,,,/NETPath;component/Icons/Odd/FullLogoDeveloper.png" Margin="0,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="100" Width="450" Stretch="None" Grid.Column="0" />
 								<Grid UseLayoutRounding="True" Margin="0,0,0,10">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition Width="*" />
@@ -330,7 +330,7 @@
 										<RowDefinition Height="Auto" />
 									</Grid.RowDefinitions>
 									<StackPanel Grid.Row="0">
-										<Label Content="Prospective Software WCF Architect Professional" Padding="4,0" Name="ProductTitle" />
+										<Label Content="Prospective Software NETPath Professional" Padding="4,0" Name="ProductTitle" />
 										<Label Name="AboutVersion" Content="Version: 1.0.0.0" Padding="4,0" />
 										<Label Content="© 2012 Prospective Software Inc." Padding="4,0" />
 										<Label Content="All Rights Reserved." Padding="4,0" />
@@ -354,7 +354,7 @@
 										<RowDefinition Height="Auto" />
 									</Grid.RowDefinitions>
 									<TextBlock Text="Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it, may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law." Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" />
-									<TextBlock Text="WCF Architect makes use of the open-source Oxygen Icons. Due to the licensing of these icons we are required to post the modified versions of these icons for download on our website. You can use the link below to download the icons or you can head over the Open Icon Library project to download the unaltered icons." Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" Margin="0,10,0,5" Grid.Row="1" />
+									<TextBlock Text="NETPath makes use of the open-source Oxygen Icons. Due to the licensing of these icons we are required to post the modified versions of these icons for download on our website. You can use the link below to download the icons or you can head over the Open Icon Library project to download the unaltered icons." Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" Margin="0,10,0,5" Grid.Row="1" />
 									<TextBlock Text="Windows is a registered trademark of Microsoft Corporation in the United States and other countries." Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" Margin="0,10,0,5" Grid.Row="2" />
 									<TextBlock Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" Margin="0,5,0,5" Grid.Row="3" Padding="4,0">
 										<Hyperlink Name="MILink" NavigateUri="http://www.prospectivesoftware.com/architect/downloads/ModifiedIcons.zip" RequestNavigate="Hyperlink_RequestNavigate" >
@@ -367,7 +367,7 @@
 										</Hyperlink>
 									</TextBlock>
 									<TextBlock Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" Margin="0,5,0,5" Grid.Row="5" Padding="4,0">
-										Do you have a new idea or feature request that you would just love to see in WCF Architect? We'd love to hear from you:<LineBreak />
+										Do you have a new idea or feature request that you would just love to see in NETPath? We'd love to hear from you:<LineBreak />
 										<Hyperlink Name="SLink" NavigateUri="http://tracker.prospectivesoftware.net" RequestNavigate="SLink_RequestNavigate">
 											Prospective Software Feature Request and Issue Reporting Tool
 										</Hyperlink>

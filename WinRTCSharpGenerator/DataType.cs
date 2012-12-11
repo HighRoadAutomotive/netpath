@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WCFArchitect.Projects;
+using NETPath.Projects;
 
-namespace WCFArchitect.Generators.WinRT.CS
+namespace NETPath.Generators.WinRT.CS
 {
 	internal static class DataTypeGenerator
 	{

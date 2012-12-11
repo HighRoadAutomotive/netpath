@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project xmlns:i="http://www.w3.org/2001/XMLSchema-instance" z:Id="1" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/" xmlns="http://schemas.datacontract.org/2004/07/WCFArchitect.Projects">
+<Project xmlns:i="http://www.w3.org/2001/XMLSchema-instance" z:Id="1" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/" xmlns="http://schemas.datacontract.org/2004/07/NETPath.Projects">
   <IsSelected>false</IsSelected>
   <ClientGenerationTargets z:Id="2" z:Size="1">
     <ProjectGenerationTarget z:Id="3">
@@ -225,6 +225,11 @@
             <IsSelected>true</IsSelected>
             <Order>-1</Order>
             <Owner z:Ref="26" i:nil="true" />
+            <ProtoAsReference>false</ProtoAsReference>
+            <ProtoDataFormat>Default</ProtoDataFormat>
+            <ProtoDynamicType>false</ProtoDynamicType>
+            <ProtoIsPacked>false</ProtoIsPacked>
+            <ProtoOverwriteList>true</ProtoOverwriteList>
             <ProtocolBufferEnabled>false</ProtocolBufferEnabled>
             <XAMLName z:Ref="33" i:nil="true" />
             <XAMLType z:Ref="34" i:nil="true" />
@@ -286,6 +291,11 @@
             <IsSelected>false</IsSelected>
             <Order>-1</Order>
             <Owner z:Ref="26" i:nil="true" />
+            <ProtoAsReference>false</ProtoAsReference>
+            <ProtoDataFormat>Default</ProtoDataFormat>
+            <ProtoDynamicType>false</ProtoDynamicType>
+            <ProtoIsPacked>false</ProtoIsPacked>
+            <ProtoOverwriteList>true</ProtoOverwriteList>
             <ProtocolBufferEnabled>false</ProtocolBufferEnabled>
             <XAMLName z:Ref="38" i:nil="true" />
             <XAMLType z:Ref="39" i:nil="true" />
@@ -327,6 +337,11 @@
             <IsSelected>false</IsSelected>
             <Order>-1</Order>
             <Owner z:Ref="26" i:nil="true" />
+            <ProtoAsReference>false</ProtoAsReference>
+            <ProtoDataFormat>Default</ProtoDataFormat>
+            <ProtoDynamicType>false</ProtoDynamicType>
+            <ProtoIsPacked>false</ProtoIsPacked>
+            <ProtoOverwriteList>true</ProtoOverwriteList>
             <ProtocolBufferEnabled>false</ProtocolBufferEnabled>
             <XAMLName z:Ref="43" i:nil="true" />
             <XAMLType z:Ref="39" i:nil="true" />
@@ -368,6 +383,11 @@
             <IsSelected>false</IsSelected>
             <Order>-1</Order>
             <Owner z:Ref="26" i:nil="true" />
+            <ProtoAsReference>false</ProtoAsReference>
+            <ProtoDataFormat>Default</ProtoDataFormat>
+            <ProtoDynamicType>false</ProtoDynamicType>
+            <ProtoIsPacked>false</ProtoIsPacked>
+            <ProtoOverwriteList>true</ProtoOverwriteList>
             <ProtocolBufferEnabled>false</ProtocolBufferEnabled>
             <XAMLName z:Ref="46" i:nil="true" />
             <XAMLType z:Ref="39" i:nil="true" />
@@ -409,6 +429,11 @@
             <IsSelected>false</IsSelected>
             <Order>-1</Order>
             <Owner z:Ref="26" i:nil="true" />
+            <ProtoAsReference>false</ProtoAsReference>
+            <ProtoDataFormat>Default</ProtoDataFormat>
+            <ProtoDynamicType>false</ProtoDynamicType>
+            <ProtoIsPacked>false</ProtoIsPacked>
+            <ProtoOverwriteList>true</ProtoOverwriteList>
             <ProtocolBufferEnabled>false</ProtocolBufferEnabled>
             <XAMLName z:Ref="49" i:nil="true" />
             <XAMLType z:Ref="39" i:nil="true" />
@@ -450,6 +475,11 @@
             <IsSelected>false</IsSelected>
             <Order>-1</Order>
             <Owner z:Ref="26" i:nil="true" />
+            <ProtoAsReference>false</ProtoAsReference>
+            <ProtoDataFormat>Default</ProtoDataFormat>
+            <ProtoDynamicType>false</ProtoDynamicType>
+            <ProtoIsPacked>false</ProtoIsPacked>
+            <ProtoOverwriteList>true</ProtoOverwriteList>
             <ProtocolBufferEnabled>false</ProtocolBufferEnabled>
             <XAMLName z:Ref="52" i:nil="true" />
             <XAMLType z:Ref="39" i:nil="true" />
@@ -511,6 +541,11 @@
             <IsSelected>false</IsSelected>
             <Order>-1</Order>
             <Owner z:Ref="26" i:nil="true" />
+            <ProtoAsReference>false</ProtoAsReference>
+            <ProtoDataFormat>Default</ProtoDataFormat>
+            <ProtoDynamicType>false</ProtoDynamicType>
+            <ProtoIsPacked>false</ProtoIsPacked>
+            <ProtoOverwriteList>true</ProtoOverwriteList>
             <ProtocolBufferEnabled>false</ProtocolBufferEnabled>
             <XAMLName z:Ref="55" i:nil="true" />
             <XAMLType z:Ref="56" i:nil="true" />
@@ -719,13 +754,22 @@
             <IsSelected>false</IsSelected>
             <Order>-1</Order>
             <Owner z:Ref="26" i:nil="true" />
+            <ProtoAsReference>false</ProtoAsReference>
+            <ProtoDataFormat>Default</ProtoDataFormat>
+            <ProtoDynamicType>false</ProtoDynamicType>
+            <ProtoIsPacked>false</ProtoIsPacked>
+            <ProtoOverwriteList>true</ProtoOverwriteList>
             <ProtocolBufferEnabled>false</ProtocolBufferEnabled>
             <XAMLName z:Ref="60" i:nil="true" />
             <XAMLType z:Ref="61" i:nil="true" />
           </DataElement>
         </Elements>
+        <EnableProtocolBuffers>false</EnableProtocolBuffers>
         <HasXAMLType>true</HasXAMLType>
         <IsReference>false</IsReference>
+        <ProtoIgnoreListHandling>false</ProtoIgnoreListHandling>
+        <ProtoMembersOnly>false</ProtoMembersOnly>
+        <ProtoSkipConstructor>false</ProtoSkipConstructor>
         <XAMLType z:Id="94">
           <IsSelected>false</IsSelected>
           <Abstract>false</Abstract>
@@ -871,6 +915,7 @@
             <ServerAddress i:nil="true" />
             <ServerPort>0</ServerPort>
             <ServerUseHTTPS>false</ServerUseHTTPS>
+            <UseProtocolBufferSerialization>false</UseProtocolBufferSerialization>
           </HostEndpoint>
         </Endpoints>
         <ManualFlowControlLimit>0</ManualFlowControlLimit>
@@ -1223,7 +1268,6 @@
   <ServerOutputFile z:Id="165">Server</ServerOutputFile>
   <ServiceSerializer>Auto</ServiceSerializer>
   <SolutionPath i:nil="true" />
-
   <UsingNamespaces z:Id="166" z:Size="20">
     <ProjectUsingNamespace z:Id="167">
       <Client>true</Client>

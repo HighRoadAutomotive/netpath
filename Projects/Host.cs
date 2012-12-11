@@ -6,7 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Runtime.Serialization;
 
-namespace WCFArchitect.Projects
+namespace NETPath.Projects
 {
 	public enum HostEndpointIdentityType
 	{
@@ -170,6 +170,9 @@ namespace WCFArchitect.Projects
 
 		public ServiceBinding Binding { get { return (ServiceBinding)GetValue(BindingProperty); } set { SetValue(BindingProperty, value); } }
 		public static readonly DependencyProperty BindingProperty = DependencyProperty.Register("Binding", typeof(ServiceBinding), typeof(HostEndpoint));
+
+		public bool UseProtocolBufferSerialization { get { return (bool)GetValue(UseProtocolBufferSerializationProperty); } set { SetValue(UseProtocolBufferSerializationProperty, value); } }
+		public static readonly DependencyProperty UseProtocolBufferSerializationProperty = DependencyProperty.Register("UseProtocolBufferSerialization", typeof(bool), typeof(HostEndpoint), new PropertyMetadata(false));
 
 		public string ServerAddress { get { return (string)GetValue(ServerAddressProperty); } set { SetValue(ServerAddressProperty, value); } }
 		public static readonly DependencyProperty ServerAddressProperty = DependencyProperty.Register("ServerAddress", typeof(string), typeof(HostEndpoint));

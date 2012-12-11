@@ -6,7 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Runtime.Serialization;
 
-namespace WCFArchitect.Projects
+namespace NETPath.Projects
 {
 	public enum DataScope
 	{
@@ -19,6 +19,15 @@ namespace WCFArchitect.Projects
 	{
 		Immediate,
 		Batch
+	}
+
+	public enum ProtoBufDataFormat
+	{
+		Default,
+		FixedSize,
+		Group,
+		TwosComplement,
+		ZigZag,
 	}
 
 	public class Data : DataType
@@ -78,7 +87,20 @@ namespace WCFArchitect.Projects
 
 		[IgnoreDataMember] public bool HasAutoDataID { get { return Elements.Any(a => a.IsValidAutoDataID && a.IsAutoDataID); } }
 		[IgnoreDataMember] public DataElement AutoDataID { get { return Elements.FirstOrDefault(a => a.IsAutoDataID && a.IsValidAutoDataID); } }
-		
+
+		//Protocol Buffers
+		public bool EnableProtocolBuffers { get { return (bool)GetValue(EnableProtocolBuffersProperty); } set { SetValue(EnableProtocolBuffersProperty, value); } }
+		public static readonly DependencyProperty EnableProtocolBuffersProperty = DependencyProperty.Register("EnableProtocolBuffers", typeof(bool), typeof(Data), new PropertyMetadata(false));
+
+		public bool ProtoSkipConstructor { get { return (bool)GetValue(ProtoSkipConstructorProperty); } set { SetValue(ProtoSkipConstructorProperty, value); } }
+		public static readonly DependencyProperty ProtoSkipConstructorProperty = DependencyProperty.Register("ProtoSkipConstructor", typeof(bool), typeof(Data), new PropertyMetadata(false));
+
+		public bool ProtoMembersOnly { get { return (bool)GetValue(ProtoMembersOnlyProperty); } set { SetValue(ProtoMembersOnlyProperty, value); } }
+		public static readonly DependencyProperty ProtoMembersOnlyProperty = DependencyProperty.Register("ProtoMembersOnly", typeof(bool), typeof(Data), new PropertyMetadata(false));
+
+		public bool ProtoIgnoreListHandling { get { return (bool)GetValue(ProtoIgnoreListHandlingProperty); } set { SetValue(ProtoIgnoreListHandlingProperty, value); } }
+		public static readonly DependencyProperty ProtoIgnoreListHandlingProperty = DependencyProperty.Register("ProtoIgnoreListHandling", typeof(bool), typeof(Data), new PropertyMetadata(false));
+
 		//System
 		[IgnoreDataMember] public bool HasWinFormsBindings { get { return Elements.Any(a => a.GenerateWinFormsSupport); } }
 		[IgnoreDataMember] public bool XAMLHasExtensionData { get { return HasXAMLType && (XAMLType.InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0)); } }
@@ -430,6 +452,21 @@ namespace WCFArchitect.Projects
 		//Protocol Buffers 
 		public bool ProtocolBufferEnabled { get { return (bool)GetValue(ProtocolBufferEnabledProperty); } set { SetValue(ProtocolBufferEnabledProperty, value); } }
 		public static readonly DependencyProperty ProtocolBufferEnabledProperty = DependencyProperty.Register("ProtocolBufferEnabled", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
+
+		public ProtoBufDataFormat ProtoDataFormat { get { return (ProtoBufDataFormat)GetValue(ProtoDataFormatProperty); } set { SetValue(ProtoDataFormatProperty, value); } }
+		public static readonly DependencyProperty ProtoDataFormatProperty = DependencyProperty.Register("ProtoDataFormat", typeof(ProtoBufDataFormat), typeof(DataElement), new PropertyMetadata(ProtoBufDataFormat.Default));
+
+		public bool ProtoIsPacked { get { return (bool)GetValue(ProtoIsPackedProperty); } set { SetValue(ProtoIsPackedProperty, value); } }
+		public static readonly DependencyProperty ProtoIsPackedProperty = DependencyProperty.Register("ProtoIsPacked", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
+
+		public bool ProtoOverwriteList { get { return (bool)GetValue(ProtoOverwriteListProperty); } set { SetValue(ProtoOverwriteListProperty, value); } }
+		public static readonly DependencyProperty ProtoOverwriteListProperty = DependencyProperty.Register("ProtoOverwriteList", typeof(bool), typeof(DataElement), new PropertyMetadata(true));
+
+		public bool ProtoAsReference { get { return (bool)GetValue(ProtoAsReferenceProperty); } set { SetValue(ProtoAsReferenceProperty, value); } }
+		public static readonly DependencyProperty ProtoAsReferenceProperty = DependencyProperty.Register("ProtoAsReference", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
+
+		public bool ProtoDynamicType { get { return (bool)GetValue(ProtoDynamicTypeProperty); } set { SetValue(ProtoDynamicTypeProperty, value); } }
+		public static readonly DependencyProperty ProtoDynamicTypeProperty = DependencyProperty.Register("ProtoDynamicType", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
 
 		//System
 		public bool IsSelected { get { return (bool)GetValue(IsSelectedProperty); } set { SetValue(IsSelectedProperty, value); } }

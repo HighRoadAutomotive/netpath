@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,9 +15,9 @@ using System.Windows.Shapes;
 using System.Globalization;
 using C1.WPF;
 using Prospective.Controls.Dialogs;
-using WCFArchitect.Projects.Helpers;
+using NETPath.Projects.Helpers;
 
-namespace WCFArchitect.Interface.Data
+namespace NETPath.Interface.Data
 {
 	internal partial class Data : ContentControl
 	{
@@ -109,7 +109,7 @@ namespace WCFArchitect.Interface.Data
 			var op = lbi.Content as Projects.DataElement;
 			if (op == null) return;
 
-			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Data Member?", "Are you sure you wish to delete the '" + op.DataType + " " + op.DataName + "' data member?", new DialogAction("Yes", () => { ActiveElement = null; OpenType.Elements.Remove(op); }, true), new DialogAction("No", false, true));
+			DialogService.ShowMessageDialog("NETPath", "Delete Data Member?", "Are you sure you wish to delete the '" + op.DataType + " " + op.DataName + "' data member?", new DialogAction("Yes", () => { ActiveElement = null; OpenType.Elements.Remove(op); }, true), new DialogAction("No", false, true));
 		}
 
 		#region - Drag/Drop Support -

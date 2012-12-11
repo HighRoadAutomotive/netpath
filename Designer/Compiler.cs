@@ -11,10 +11,10 @@ using System.Windows.Documents;
 using System.Runtime.Serialization;
 using System.Windows.Threading;
 using System.Xml;
-using WCFArchitect.Projects;
-using WCFArchitect.Generators.Interfaces;
+using NETPath.Projects;
+using NETPath.Generators.Interfaces;
 
-namespace WCFArchitect
+namespace NETPath
 {
 	public class Compiler
 	{

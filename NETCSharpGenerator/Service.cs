@@ -5,10 +5,10 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
-using WCFArchitect.Projects;
-using WCFArchitect.Projects.Helpers;
+using NETPath.Projects;
+using NETPath.Projects.Helpers;
 
-namespace WCFArchitect.Generators.NET.CS
+namespace NETPath.Generators.NET.CS
 {
 	internal static class ServiceGenerator
 	{
@@ -438,12 +438,6 @@ namespace WCFArchitect.Generators.NET.CS
 			code.AppendLine("\t{");
 			if (o.HasCallbackOperations)
 			{
-				code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName, string remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t{");
-				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-					code.Append(GenerateMethodProxyConstructorCode(m, false));
-				code.AppendLine("\t\t}");
-				code.AppendLine();
 				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance) : base(callbackInstance)", o.HasClientType ? o.ClientType.Name : o.Name));
 				code.AppendLine("\t\t{");
 				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
@@ -474,12 +468,6 @@ namespace WCFArchitect.Generators.NET.CS
 					code.Append(GenerateMethodProxyConstructorCode(m, false));
 				code.AppendLine("\t\t}");
 				code.AppendLine();
-				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.Description.ServiceEndpoint endpoint) : base(endpoint)", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t{");
-				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-					code.Append(GenerateMethodProxyConstructorCode(m, false));
-				code.AppendLine("\t\t}");
-				code.AppendLine();
 				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance, System.ServiceModel.Description.ServiceEndpoint endpoint) : base(callbackInstance, endpoint)", o.HasClientType ? o.ClientType.Name : o.Name));
 				code.AppendLine("\t\t{");
 				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
@@ -487,6 +475,7 @@ namespace WCFArchitect.Generators.NET.CS
 				code.AppendLine("\t\t}");
 				code.AppendLine();
 			}
+
 			else
 			{
 				code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName) : base(endpointConfigurationName)", o.HasClientType ? o.ClientType.Name : o.Name));
@@ -508,6 +497,12 @@ namespace WCFArchitect.Generators.NET.CS
 				code.AppendLine("\t\t}");
 				code.AppendLine();
 				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : base(binding, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.Description.ServiceEndpoint endpoint) : base(endpoint)", o.HasClientType ? o.ClientType.Name : o.Name));
 				code.AppendLine("\t\t{");
 				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
 					code.Append(GenerateMethodProxyConstructorCode(m, false));

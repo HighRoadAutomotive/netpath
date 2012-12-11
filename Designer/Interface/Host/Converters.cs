@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Data;
 
-namespace WCFArchitect.Interface.Host
+namespace NETPath.Interface.Host
 {
 	[ValueConversion(typeof(System.ServiceModel.Description.PrincipalPermissionMode), typeof(int))]
 	public class PrincipalPermissionModeConverter : IValueConverter

@@ -13,9 +13,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Prospective.Controls.Dialogs;
-using WCFArchitect.Projects.Helpers;
+using NETPath.Projects.Helpers;
 
-namespace WCFArchitect.Interface.Dialogs
+namespace NETPath.Interface.Dialogs
 {
 	public partial class NewSolution : Grid, IDialogContent
 	{
@@ -46,7 +46,7 @@ namespace WCFArchitect.Interface.Dialogs
 			sfd.ShowPlacesList = true;
 			sfd.DefaultFileName = NewSolutionOptionsName.Text;
 			sfd.DefaultExtension = ".was";
-			sfd.Filters.Add(new Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogFilter("WCF Architect Solution Files", ".was"));
+			sfd.Filters.Add(new Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogFilter("NETPath Solution Files", ".was"));
 			if (sfd.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel) return;
 			FileName = sfd.FileName;
 

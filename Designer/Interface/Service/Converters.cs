@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace WCFArchitect.Interface.Service
+namespace NETPath.Interface.Service
 {
 	[ValueConversion(typeof(System.Net.Security.ProtectionLevel), typeof(int))]
 	public class ProtectionLevelConverter : IValueConverter

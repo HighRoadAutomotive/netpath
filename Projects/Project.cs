@@ -7,7 +7,7 @@ using System.Windows;
 using System.Runtime.Serialization;
 using System.Windows.Threading;
 
-namespace WCFArchitect.Projects
+namespace NETPath.Projects
 {
 	public enum ProjectServiceSerializerType
 	{

@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Windows;
 
-namespace WCFArchitect.Options
+namespace NETPath.Options
 {
 	[System.Reflection.Obfuscation(Exclude = true, ApplyToMembers = true, StripAfterObfuscation = true)]
 	public class UserProfile : DependencyObject

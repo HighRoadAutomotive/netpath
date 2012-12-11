@@ -14,9 +14,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 using Prospective.Controls.Dialogs;
-using WCFArchitect.Projects;
+using NETPath.Projects;
 
-namespace WCFArchitect.Interface.Project
+namespace NETPath.Interface.Project
 {
 	internal partial class Project : Grid
 	{

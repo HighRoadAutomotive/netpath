@@ -13,9 +13,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WCFArchitect.Projects;
+using NETPath.Projects;
 
-namespace WCFArchitect.Interface.Data
+namespace NETPath.Interface.Data
 {
 	internal partial class TypeEditor : ContentControl
 	{

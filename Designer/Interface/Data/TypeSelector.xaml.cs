@@ -14,9 +14,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WCFArchitect.Projects;
+using NETPath.Projects;
 
-namespace WCFArchitect.Interface.Data
+namespace NETPath.Interface.Data
 {
 	internal partial class TypeSelector : ContentControl
 	{
@@ -415,12 +415,12 @@ namespace WCFArchitect.Interface.Data
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			var lt = (DataType)value;
-			if (lt.TypeMode == DataTypeMode.Class || lt.TypeMode == DataTypeMode.Struct) return new BitmapImage(new Uri("pack://application:,,,/WCFArchitect;component/Icons/X16/Data.png"));
-			if (lt.TypeMode == DataTypeMode.Enum) return new BitmapImage(new Uri("pack://application:,,,/WCFArchitect;component/Icons/X16/Enum.png"));
-			if (lt.TypeMode == DataTypeMode.Primitive) return new BitmapImage(new Uri("pack://application:,,,/WCFArchitect;component/Icons/X16/Property.png"));
-			if (lt.TypeMode == DataTypeMode.Array) return new BitmapImage(new Uri("pack://application:,,,/WCFArchitect;component/Icons/X16/Collection.png"));
-			if (lt.IsExternalType && (lt.TypeMode == DataTypeMode.Collection || lt.TypeMode == DataTypeMode.Dictionary)) return new BitmapImage(new Uri("pack://application:,,,/WCFArchitect;component/Icons/X16/Collection.png"));
-			if (lt.IsExternalType) return new BitmapImage(new Uri("pack://application:,,,/WCFArchitect;component/Icons/X16/External.png"));
+			if (lt.TypeMode == DataTypeMode.Class || lt.TypeMode == DataTypeMode.Struct) return new BitmapImage(new Uri("pack://application:,,,/NETPath;component/Icons/X16/Data.png"));
+			if (lt.TypeMode == DataTypeMode.Enum) return new BitmapImage(new Uri("pack://application:,,,/NETPath;component/Icons/X16/Enum.png"));
+			if (lt.TypeMode == DataTypeMode.Primitive) return new BitmapImage(new Uri("pack://application:,,,/NETPath;component/Icons/X16/Property.png"));
+			if (lt.TypeMode == DataTypeMode.Array) return new BitmapImage(new Uri("pack://application:,,,/NETPath;component/Icons/X16/Collection.png"));
+			if (lt.IsExternalType && (lt.TypeMode == DataTypeMode.Collection || lt.TypeMode == DataTypeMode.Dictionary)) return new BitmapImage(new Uri("pack://application:,,,/NETPath;component/Icons/X16/Collection.png"));
+			if (lt.IsExternalType) return new BitmapImage(new Uri("pack://application:,,,/NETPath;component/Icons/X16/External.png"));
 			return 0;
 		}
 

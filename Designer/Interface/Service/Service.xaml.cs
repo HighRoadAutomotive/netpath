@@ -12,10 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Prospective.Controls.Dialogs;
-using WCFArchitect.Projects;
-using WCFArchitect.Projects.Helpers;
+using NETPath.Projects;
+using NETPath.Projects.Helpers;
 
-namespace WCFArchitect.Interface.Service
+namespace NETPath.Interface.Service
 {
 	internal partial class Service : Grid
 	{
@@ -449,7 +449,7 @@ namespace WCFArchitect.Interface.Service
 			var OP = lbi.Content as Operation;
 			if (OP == null) return;
 
-			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Method?", "Are you sure you want to delete the '" + OP.ReturnType + " " + OP.ServerName + "' method?", new DialogAction("Yes", () => { ServiceType.ServiceOperations.Remove(OP); ServiceType.CallbackOperations.Remove(OP); }, true), new DialogAction("No", false, true));
+			DialogService.ShowMessageDialog("NETPath", "Delete Method?", "Are you sure you want to delete the '" + OP.ReturnType + " " + OP.ServerName + "' method?", new DialogAction("Yes", () => { ServiceType.ServiceOperations.Remove(OP); ServiceType.CallbackOperations.Remove(OP); }, true), new DialogAction("No", false, true));
 		}
 
 		private void DeleteProperty_Click(object sender, RoutedEventArgs e)
@@ -458,7 +458,7 @@ namespace WCFArchitect.Interface.Service
 			var OP = lbi.Content as Operation;
 			if (OP == null) return;
 
-			DialogService.ShowMessageDialog("WCF ARCHITECT", "Delete Property?", "Are you sure you want to delete the '" + OP.ReturnType + " " + OP.ServerName + "' property?", new DialogAction("Yes", () => { ServiceType.ServiceOperations.Remove(OP); ServiceType.CallbackOperations.Remove(OP); }, true), new DialogAction("No", false, true));
+			DialogService.ShowMessageDialog("NETPath", "Delete Property?", "Are you sure you want to delete the '" + OP.ReturnType + " " + OP.ServerName + "' property?", new DialogAction("Yes", () => { ServiceType.ServiceOperations.Remove(OP); ServiceType.CallbackOperations.Remove(OP); }, true), new DialogAction("No", false, true));
 		}
 
 	}

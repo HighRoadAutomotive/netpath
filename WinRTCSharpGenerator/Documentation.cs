@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WCFArchitect.Generators.WinRT.CS
+namespace NETPath.Generators.WinRT.CS
 {
 	internal static class DocumentationGenerator
 	{

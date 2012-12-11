@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace WCFArchitect.Helpers{
+namespace NETPath.Helpers{
 
 	// GAC Interfaces - IAssemblyCache. As a sample, non used vtable entries declared as dummy.
 	[ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("e707dcde-d1cd-11d2-bab9-00c04f8eceae")]

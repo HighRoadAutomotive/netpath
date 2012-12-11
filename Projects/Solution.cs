@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Runtime.Serialization;
 
-namespace WCFArchitect.Projects
+namespace NETPath.Projects
 {
 	public class Solution : DependencyObject
 	{

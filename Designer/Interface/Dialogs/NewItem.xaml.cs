@@ -13,9 +13,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Prospective.Controls.Dialogs;
-using WCFArchitect.Interface;
+using NETPath.Interface;
 
-namespace WCFArchitect.Interface.Dialogs
+namespace NETPath.Interface.Dialogs
 {
 	public partial class NewItem : Grid, IDialogContent
 	{
@@ -47,39 +47,39 @@ namespace WCFArchitect.Interface.Dialogs
 				ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET40Client) || 
 				ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET45))
 			{
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png", "Basic HTTP Binding", "A binding that can be used with any web service that conforms to the WS-I Basic Profile.", 1));
+				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/BasicHTTP.png", "Basic HTTP Binding", "A binding that can be used with any web service that conforms to the WS-I Basic Profile.", 1));
 				if (ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET45))
 				{
-					NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png", "Basic HTTPS Binding", "A binding that can be used with any web service that conforms to the WS-I Basic Profile.", 2));
-					NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/NetHTTP.png", "Net HTTP Binding", "A binding that can be used with any web service that conforms to the WebSockets Profile.", 3));
-					NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/NetHTTP.png", "Net HTTPS Binding", "A binding that can be used with any web service that conforms to the WebSockets Profile.", 4));
+					NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/BasicHTTP.png", "Basic HTTPS Binding", "A binding that can be used with any web service that conforms to the WS-I Basic Profile.", 2));
+					NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/NetHTTP.png", "Net HTTP Binding", "A binding that can be used with any web service that conforms to the WebSockets Profile.", 3));
+					NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/NetHTTP.png", "Net HTTPS Binding", "A binding that can be used with any web service that conforms to the WebSockets Profile.", 4));
 				}
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png", "TCP Binding", "A binding that provides security and reliability for cross-machine communications.", 5));
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/NamedPipe.png", "Named Pipe Binding", "A binding that provides security and reliability for intra-machine communications.", 6));
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQ.png", "MSMQ Binding", "A queued binding for cross-machine communications.", 7));
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/PeerTCP.png", "Peer TCP Binding", "A secure binding for peer-to-peer applications", 8));
+				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/TCP.png", "TCP Binding", "A binding that provides security and reliability for cross-machine communications.", 5));
+				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/NamedPipe.png", "Named Pipe Binding", "A binding that provides security and reliability for intra-machine communications.", 6));
+				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/MSMQ.png", "MSMQ Binding", "A queued binding for cross-machine communications.", 7));
+				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/PeerTCP.png", "Peer TCP Binding", "A secure binding for peer-to-peer applications", 8));
 				if (ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET35) || ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET35Client) || ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET40) || ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET45))
-					NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WebHTTP.png", "Web HTTP Binding", "A binding that provides the use of HTTP requests instead SOAP messags.", 9));
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/MSMQIntegration.png", "MSMQ Integration Binding", "A binding for mapping MSMQ messages to WCF messages.", 10));
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png", "WS HTTP Binding", "A binding that supports, security, reliable sessions, and distributed transactions over HTTP.", 11));
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSHTTP.png", "WS 2007 HTTP Binding", "A binding that derives from the WS HTTP Binding and provides updated support for Security, Reliable Sessions, and Transaction Flows.", 12));
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSDualHTTP.png", "WS Dual HTTP Binding", "A binding that supports duplex contracts over HTTP.", 13));
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png", "WS Federation HTTP Binding", "A binding that supports federated security over HTTP.", 14));
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/WSFederationHTTP.png", "WS 2007 Federation HTTP Binding", "A binding that derives from the WS 2007 HTTP Binding and supports federated security.", 15));
+					NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/WebHTTP.png", "Web HTTP Binding", "A binding that provides the use of HTTP requests instead SOAP messags.", 9));
+				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/MSMQIntegration.png", "MSMQ Integration Binding", "A binding for mapping MSMQ messages to WCF messages.", 10));
+				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/WSHTTP.png", "WS HTTP Binding", "A binding that supports, security, reliable sessions, and distributed transactions over HTTP.", 11));
+				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/WSHTTP.png", "WS 2007 HTTP Binding", "A binding that derives from the WS HTTP Binding and provides updated support for Security, Reliable Sessions, and Transaction Flows.", 12));
+				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/WSDualHTTP.png", "WS Dual HTTP Binding", "A binding that supports duplex contracts over HTTP.", 13));
+				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/WSFederationHTTP.png", "WS Federation HTTP Binding", "A binding that supports federated security over HTTP.", 14));
+				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/WSFederationHTTP.png", "WS 2007 Federation HTTP Binding", "A binding that derives from the WS 2007 HTTP Binding and supports federated security.", 15));
 			}
 			if (ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.SL50) || ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.SL40))
 			{
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png", "Basic HTTP Binding", "A binding that can be used with any web service that conforms to the WS-I Basic Profile.", 1));
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png", "TCP Binding", "A binding that provides security and reliability for cross-machine communications.", 5));
+				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/BasicHTTP.png", "Basic HTTP Binding", "A binding that can be used with any web service that conforms to the WS-I Basic Profile.", 1));
+				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/TCP.png", "TCP Binding", "A binding that provides security and reliability for cross-machine communications.", 5));
 			}
 			if (ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.WIN8))
 			{
 #endif
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png", "Basic HTTP Binding", "A binding that can be used with any web service that conforms to the WS-I Basic Profile.", 1));
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/BasicHTTP.png", "Basic HTTPS Binding", "A binding that can be used with any web service that conforms to the WS-I Basic Profile.", 2));
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/NetHTTP.png", "Net HTTP Binding", "A binding that can be used with any web service that conforms to the WebSockets Profile.", 3));
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/NetHTTP.png", "Net HTTPS Binding", "A binding that can be used with any web service that conforms to the WebSockets Profile.", 4));
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/WCFArchitect;component/Icons/X32/TCP.png", "TCP Binding", "A binding that provides security and reliability for cross-machine communications.", 5));
+				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/BasicHTTP.png", "Basic HTTP Binding", "A binding that can be used with any web service that conforms to the WS-I Basic Profile.", 1));
+				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/BasicHTTP.png", "Basic HTTPS Binding", "A binding that can be used with any web service that conforms to the WS-I Basic Profile.", 2));
+				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/NetHTTP.png", "Net HTTP Binding", "A binding that can be used with any web service that conforms to the WebSockets Profile.", 3));
+				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/NetHTTP.png", "Net HTTPS Binding", "A binding that can be used with any web service that conforms to the WebSockets Profile.", 4));
+				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/TCP.png", "TCP Binding", "A binding that provides security and reliability for cross-machine communications.", 5));
 #if !WINRT
 			}
 #endif

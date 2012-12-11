@@ -14,7 +14,7 @@ using System.Windows.Shapes;
 using Microsoft.Win32;
 using Prospective.Controls.Dialogs;
 
-namespace WCFArchitect.Interface.Project
+namespace NETPath.Interface.Project
 {
 	internal partial class GenerationTarget : Grid
 	{
@@ -29,16 +29,16 @@ namespace WCFArchitect.Interface.Project
 			InitializeComponent();
 
 			OptionsGrid.IsEnabled = Path.IsEnabled;
-			if (Path.IsEnabled) EnableImage.Source = new BitmapImage(new Uri("pack://application:,,,/WCFArchitect;component/Icons/X16/ReferenceAdded.png"));
-			else EnableImage.Source = new BitmapImage(new Uri("pack://application:,,,/WCFArchitect;component/Icons/X16/NotAvailable.png"));
+			if (Path.IsEnabled) EnableImage.Source = new BitmapImage(new Uri("pack://application:,,,/NETPath;component/Icons/X16/ReferenceAdded.png"));
+			else EnableImage.Source = new BitmapImage(new Uri("pack://application:,,,/NETPath;component/Icons/X16/NotAvailable.png"));
 		}
 
 		private void Enable_Click(object sender, RoutedEventArgs e)
 		{
 			Path.IsEnabled = !Path.IsEnabled;
 			OptionsGrid.IsEnabled = Path.IsEnabled;
-			if (Path.IsEnabled) EnableImage.Source = new BitmapImage(new Uri("pack://application:,,,/WCFArchitect;component/Icons/X16/ReferenceAdded.png"));
-			else EnableImage.Source = new BitmapImage(new Uri("pack://application:,,,/WCFArchitect;component/Icons/X16/NotAvailable.png"));
+			if (Path.IsEnabled) EnableImage.Source = new BitmapImage(new Uri("pack://application:,,,/NETPath;component/Icons/X16/ReferenceAdded.png"));
+			else EnableImage.Source = new BitmapImage(new Uri("pack://application:,,,/NETPath;component/Icons/X16/NotAvailable.png"));
 		}
 
 		private void Delete_Click(object sender, RoutedEventArgs e)

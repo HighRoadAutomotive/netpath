@@ -13,10 +13,10 @@ using System.Windows.Shapes;
 using C1.WPF;
 using Prospective.Controls;
 using Prospective.Controls.Dialogs;
-using WCFArchitect.Projects;
-using WCFArchitect.Projects.Helpers;
+using NETPath.Projects;
+using NETPath.Projects.Helpers;
 
-namespace WCFArchitect.Interface.Bindings
+namespace NETPath.Interface.Bindings
 {
 	internal partial class PeerTCP : Grid
 	{
