@@ -225,16 +225,16 @@
 								<FlowDocumentScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" >
 									<FlowDocument FontFamily="Segoe UI">
 										<Paragraph>
-											<Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/WADOC/Introduction" RequestNavigate="Hyperlink_RequestNavigate">Introduction</Hyperlink>
+											<Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/Introduction" RequestNavigate="Hyperlink_RequestNavigate">Introduction</Hyperlink>
 										</Paragraph>
 										<Paragraph>
-											<Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/WADOC/Solutions+and+Projects" RequestNavigate="Hyperlink_RequestNavigate">Solutions and Projects</Hyperlink>
+											<Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/Solutions+and+Projects" RequestNavigate="Hyperlink_RequestNavigate">Solutions and Projects</Hyperlink>
 										</Paragraph>
 										<List>
-											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/WADOC/Creating+A+Solution" RequestNavigate="Hyperlink_RequestNavigate">Creating a Solution</Hyperlink></Paragraph></ListItem>
-											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/WADOC/Adding+a+Project+to+a+Solution" RequestNavigate="Hyperlink_RequestNavigate">Adding Project to a Solution</Hyperlink></Paragraph></ListItem>
-											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/WADOC/The+Project+Navigator" RequestNavigate="Hyperlink_RequestNavigate">The Project Navigator</Hyperlink></Paragraph></ListItem>
-											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/WADOC/Configuring+a+Project" RequestNavigate="Hyperlink_RequestNavigate">Configuring a Project</Hyperlink></Paragraph></ListItem>
+											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/Creating+A+Solution" RequestNavigate="Hyperlink_RequestNavigate">Creating a Solution</Hyperlink></Paragraph></ListItem>
+											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/Adding+a+Project+to+a+Solution" RequestNavigate="Hyperlink_RequestNavigate">Adding Project to a Solution</Hyperlink></Paragraph></ListItem>
+											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/The+Project+Navigator" RequestNavigate="Hyperlink_RequestNavigate">The Project Navigator</Hyperlink></Paragraph></ListItem>
+											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/Configuring+a+Project" RequestNavigate="Hyperlink_RequestNavigate">Configuring a Project</Hyperlink></Paragraph></ListItem>
 										</List>
 									</FlowDocument>
 								</FlowDocumentScrollViewer>
