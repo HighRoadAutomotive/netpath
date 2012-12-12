@@ -433,7 +433,7 @@ namespace NETPath.Interface
 			AddProject.IsEnabled = true;
 			SystemMenuSave.IsEnabled = true;
 			SystemMenuClose.IsEnabled = true;
-			Title = Globals.Solution.Name + " - NETPath 2 (BETA)";
+			Title = Globals.Solution.Name + " - NETPath 2 - BETA";
 		}
 
 		public void CloseSolution(bool AskBeforeClose = false, bool Closing = false, Action ContinueYes = null, Action ContinueNo = null)
@@ -465,7 +465,7 @@ namespace NETPath.Interface
 			AddProject.IsEnabled = false;
 			SystemMenuSave.IsEnabled = false;
 			SystemMenuClose.IsEnabled = false;
-			Title = "Prospective Software NETPath";
+			Title = "NETPath 2 - BETA";
 
 			if (!string.IsNullOrEmpty(Globals.SolutionPath))
 				System.IO.File.Delete(System.IO.Path.ChangeExtension(Globals.SolutionPath, ".bak"));
