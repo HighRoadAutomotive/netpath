@@ -136,6 +136,31 @@
 		<Label Content="Thread Lock Timeout:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="1" Grid.Column="2" />
 		<c1:C1NumericBox Value="{Binding Path=Element.AutoDataTimeout}" Format="G10" Margin="140,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ShowButtons="False" Name="UpdateTimeout" ValueChanged="UpdateTimeout_ValueChanged" Grid.Column="2" Grid.Row="1" FontSize="10pt" />
 	</Grid>
+	<Grid Name="ProtoBufGrid" Grid.Row="7" Margin="0,5,0,0" Visibility="{Binding Path=Element.ProtocolBufferEnabled, Converter={StaticResource BoolVisibilityConverter}}" >
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		<Label Grid.ColumnSpan="2" Grid.Row="0" Content="Protocol Buffers" FontSize="12pt" />
+		<Label Content="Data Format:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="1" Grid.Column="0" />
+		<ComboBox Margin="95,5,5,5" VerticalContentAlignment="Center" Height="23" SelectedIndex="{Binding Path=Element.AutoDataUpdateMode, Converter={StaticResource AutoDataUpdateModeConverter}}" Grid.Column="0" Grid.Row="1" >
+			<ComboBoxItem Content="Default" IsSelected="True" />
+			<ComboBoxItem Content="FixedSize" />
+			<ComboBoxItem Content="Group" />
+			<ComboBoxItem Content="TwosComplment" />
+			<ComboBoxItem Content="ZigZag" />
+		</ComboBox>
+		<ToggleButton Grid.Row="1" Grid.Column="1" Content="Is Packed" VerticalContentAlignment="Center" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.ProtoIsPacked}" ToolTip="Specifies packed encoding layout. Especially useful for Arrays or Lists of primitives." />
+		<ToggleButton Grid.Row="1" Grid.Column="2" Content="Overwrite List" VerticalContentAlignment="Center" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.ProtoOverwriteList}" ToolTip="Specifies that the list to to be reinitialized during deserialization." />
+		<ToggleButton Grid.Row="2" Grid.Column="0" Content="As Reference" VerticalContentAlignment="Center" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.ProtoAsReference}" ToolTip="Specifies reference tracking of sub-objects. Can siginificantly reduce message size in object graphs that have many common references." />
+		<ToggleButton Grid.Row="2" Grid.Column="1" Content="Dynamic Type" VerticalContentAlignment="Center" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.ProtoDynamicType}" ToolTip="Enables dymanic typing. Allows the use of object as long as only non-inherited contract types are used." />
+	</Grid>
 	<Label Grid.Row="8" Content="Documentation" FontSize="12pt" Margin="0,5,0,0" />
 	<Docs:Standard x:Name="Docs" Grid.Row="9" Margin="0,5" IsProperty="True" MinHeight="200" Documentation="{Binding Path=Element.Documentation}" />
 </Grid>

@@ -135,7 +135,7 @@
     <Children z:Id="24" z:Size="0" />
     <Data z:Id="25" z:Size="1">
       <Data z:Id="26">
-        <IsSelected>false</IsSelected>
+        <IsSelected>true</IsSelected>
         <Abstract>false</Abstract>
         <ClientType i:nil="true" />
         <CollectionGenericType i:nil="true" />
@@ -225,6 +225,11 @@
             <IsSelected>false</IsSelected>
             <Order>-1</Order>
             <Owner z:Ref="26" i:nil="true" />
+            <ProtoAsReference>false</ProtoAsReference>
+            <ProtoDataFormat>Default</ProtoDataFormat>
+            <ProtoDynamicType>false</ProtoDynamicType>
+            <ProtoIsPacked>false</ProtoIsPacked>
+            <ProtoOverwriteList>true</ProtoOverwriteList>
             <ProtocolBufferEnabled>false</ProtocolBufferEnabled>
             <XAMLName z:Ref="33" i:nil="true" />
             <XAMLType z:Ref="34" i:nil="true" />
@@ -286,6 +291,11 @@
             <IsSelected>false</IsSelected>
             <Order>-1</Order>
             <Owner z:Ref="26" i:nil="true" />
+            <ProtoAsReference>false</ProtoAsReference>
+            <ProtoDataFormat>Default</ProtoDataFormat>
+            <ProtoDynamicType>false</ProtoDynamicType>
+            <ProtoIsPacked>false</ProtoIsPacked>
+            <ProtoOverwriteList>true</ProtoOverwriteList>
             <ProtocolBufferEnabled>false</ProtocolBufferEnabled>
             <XAMLName z:Ref="38" i:nil="true" />
             <XAMLType z:Ref="39" i:nil="true" />
@@ -327,6 +337,11 @@
             <IsSelected>false</IsSelected>
             <Order>-1</Order>
             <Owner z:Ref="26" i:nil="true" />
+            <ProtoAsReference>false</ProtoAsReference>
+            <ProtoDataFormat>Default</ProtoDataFormat>
+            <ProtoDynamicType>false</ProtoDynamicType>
+            <ProtoIsPacked>false</ProtoIsPacked>
+            <ProtoOverwriteList>true</ProtoOverwriteList>
             <ProtocolBufferEnabled>false</ProtocolBufferEnabled>
             <XAMLName z:Ref="43" i:nil="true" />
             <XAMLType z:Ref="39" i:nil="true" />
@@ -368,6 +383,11 @@
             <IsSelected>false</IsSelected>
             <Order>-1</Order>
             <Owner z:Ref="26" i:nil="true" />
+            <ProtoAsReference>false</ProtoAsReference>
+            <ProtoDataFormat>Default</ProtoDataFormat>
+            <ProtoDynamicType>false</ProtoDynamicType>
+            <ProtoIsPacked>false</ProtoIsPacked>
+            <ProtoOverwriteList>true</ProtoOverwriteList>
             <ProtocolBufferEnabled>false</ProtocolBufferEnabled>
             <XAMLName z:Ref="46" i:nil="true" />
             <XAMLType z:Ref="39" i:nil="true" />
@@ -409,6 +429,11 @@
             <IsSelected>false</IsSelected>
             <Order>-1</Order>
             <Owner z:Ref="26" i:nil="true" />
+            <ProtoAsReference>false</ProtoAsReference>
+            <ProtoDataFormat>Default</ProtoDataFormat>
+            <ProtoDynamicType>false</ProtoDynamicType>
+            <ProtoIsPacked>false</ProtoIsPacked>
+            <ProtoOverwriteList>true</ProtoOverwriteList>
             <ProtocolBufferEnabled>false</ProtocolBufferEnabled>
             <XAMLName z:Ref="49" i:nil="true" />
             <XAMLType z:Ref="39" i:nil="true" />
@@ -447,10 +472,15 @@
             <IsHidden>false</IsHidden>
             <IsReadOnly>false</IsReadOnly>
             <IsRequired>false</IsRequired>
-            <IsSelected>false</IsSelected>
+            <IsSelected>true</IsSelected>
             <Order>-1</Order>
             <Owner z:Ref="26" i:nil="true" />
-            <ProtocolBufferEnabled>false</ProtocolBufferEnabled>
+            <ProtoAsReference>true</ProtoAsReference>
+            <ProtoDataFormat>Default</ProtoDataFormat>
+            <ProtoDynamicType>true</ProtoDynamicType>
+            <ProtoIsPacked>true</ProtoIsPacked>
+            <ProtoOverwriteList>true</ProtoOverwriteList>
+            <ProtocolBufferEnabled>true</ProtocolBufferEnabled>
             <XAMLName z:Ref="52" i:nil="true" />
             <XAMLType z:Ref="39" i:nil="true" />
           </DataElement>
@@ -511,7 +541,12 @@
             <IsSelected>false</IsSelected>
             <Order>-1</Order>
             <Owner z:Ref="26" i:nil="true" />
-            <ProtocolBufferEnabled>false</ProtocolBufferEnabled>
+            <ProtoAsReference>false</ProtoAsReference>
+            <ProtoDataFormat>Default</ProtoDataFormat>
+            <ProtoDynamicType>false</ProtoDynamicType>
+            <ProtoIsPacked>false</ProtoIsPacked>
+            <ProtoOverwriteList>true</ProtoOverwriteList>
+            <ProtocolBufferEnabled>true</ProtocolBufferEnabled>
             <XAMLName z:Ref="55" i:nil="true" />
             <XAMLType z:Ref="56" i:nil="true" />
           </DataElement>
@@ -716,16 +751,25 @@
             <IsHidden>false</IsHidden>
             <IsReadOnly>false</IsReadOnly>
             <IsRequired>false</IsRequired>
-            <IsSelected>true</IsSelected>
+            <IsSelected>false</IsSelected>
             <Order>-1</Order>
             <Owner z:Ref="26" i:nil="true" />
-            <ProtocolBufferEnabled>false</ProtocolBufferEnabled>
+            <ProtoAsReference>false</ProtoAsReference>
+            <ProtoDataFormat>Default</ProtoDataFormat>
+            <ProtoDynamicType>false</ProtoDynamicType>
+            <ProtoIsPacked>false</ProtoIsPacked>
+            <ProtoOverwriteList>true</ProtoOverwriteList>
+            <ProtocolBufferEnabled>true</ProtocolBufferEnabled>
             <XAMLName z:Ref="60" i:nil="true" />
             <XAMLType z:Ref="61" i:nil="true" />
           </DataElement>
         </Elements>
+        <EnableProtocolBuffers>true</EnableProtocolBuffers>
         <HasXAMLType>true</HasXAMLType>
         <IsReference>false</IsReference>
+        <ProtoIgnoreListHandling>false</ProtoIgnoreListHandling>
+        <ProtoMembersOnly>true</ProtoMembersOnly>
+        <ProtoSkipConstructor>false</ProtoSkipConstructor>
         <XAMLType z:Id="94">
           <IsSelected>false</IsSelected>
           <Abstract>false</Abstract>
@@ -871,13 +915,14 @@
             <ServerAddress i:nil="true" />
             <ServerPort>0</ServerPort>
             <ServerUseHTTPS>false</ServerUseHTTPS>
+            <UseProtocolBufferSerialization>false</UseProtocolBufferSerialization>
           </HostEndpoint>
         </Endpoints>
         <ManualFlowControlLimit>0</ManualFlowControlLimit>
         <Namespace z:Id="117">http://tempuri.org/</Namespace>
         <OpenTimeout>PT1M</OpenTimeout>
         <Service z:Id="118">
-          <IsSelected>true</IsSelected>
+          <IsSelected>false</IsSelected>
           <Abstract>false</Abstract>
           <ClientType i:nil="true" />
           <CollectionGenericType i:nil="true" />
