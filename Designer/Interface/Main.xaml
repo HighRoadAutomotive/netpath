@@ -319,7 +319,7 @@
 							</Grid.RowDefinitions>
 							<TextBlock Text="About NETPath" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="0,0,0,10" Grid.Row="0"/>
 							<StackPanel Grid.Row="1" Margin="5,0">
-								<Image Name="SKULevel" Source="pack://application:,,,/NETPath;component/Icons/Odd/FullLogoDeveloper.png" Margin="0,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="100" Width="450" Stretch="None" Grid.Column="0" />
+								<Image Name="SKULevel" Source="pack://application:,,,/NETPath;component/Icons/Odd/FullLogoDeveloper.png" Margin="0,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="150" Width="600" Stretch="None" Grid.Column="0" />
 								<Grid UseLayoutRounding="True" Margin="0,0,0,10">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition Width="*" />
