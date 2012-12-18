@@ -135,7 +135,7 @@
     <Children z:Id="24" z:Size="0" />
     <Data z:Id="25" z:Size="1">
       <Data z:Id="26">
-        <IsSelected>true</IsSelected>
+        <IsSelected>false</IsSelected>
         <Abstract>false</Abstract>
         <ClientType i:nil="true" />
         <CollectionGenericType i:nil="true" />
@@ -222,7 +222,7 @@
             <IsHidden>false</IsHidden>
             <IsReadOnly>false</IsReadOnly>
             <IsRequired>false</IsRequired>
-            <IsSelected>false</IsSelected>
+            <IsSelected>true</IsSelected>
             <Order>-1</Order>
             <Owner z:Ref="26" i:nil="true" />
             <ProtoAsReference>false</ProtoAsReference>
@@ -472,7 +472,7 @@
             <IsHidden>false</IsHidden>
             <IsReadOnly>false</IsReadOnly>
             <IsRequired>false</IsRequired>
-            <IsSelected>true</IsSelected>
+            <IsSelected>false</IsSelected>
             <Order>-1</Order>
             <Owner z:Ref="26" i:nil="true" />
             <ProtoAsReference>true</ProtoAsReference>
@@ -562,7 +562,7 @@
             <ClientType i:nil="true" />
             <DataName z:Id="60">Color</DataName>
             <DataType z:Id="61" i:type="Enum">
-              <IsSelected>false</IsSelected>
+              <IsSelected>true</IsSelected>
               <Abstract>false</Abstract>
               <ClientType i:nil="true" />
               <CollectionGenericType i:nil="true" />
