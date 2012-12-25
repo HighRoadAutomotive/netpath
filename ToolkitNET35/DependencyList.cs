@@ -35,78 +35,78 @@ namespace System.Collections.Generic
 		{
 			il = new List<T>();
 			ocl = new ReaderWriterLockSlim();
-			Added = (items => { });
-			Inserted = ((index, items) => { });
-			Moved = ((oldindex, newindex, item) => { });
+			Added = (ItemList => { });
+			Inserted = ((Index, ItemList) => { });
+			Moved = ((OldIndex, NewIndex, Item) => { });
 			Removed = (items => { });
-			RemovedAt = ((index, items) => { });
+			RemovedAt = ((Index, Item) => { });
 			Cleared = (count => { });
-			Replaced = ((index, olditem, newitem) => { });
+			Replaced = ((Index, New, Old) => { });
 		}
 
 		public DependencyList(int Capacity)
 		{
 			il = new List<T>(Capacity);
 			ocl = new ReaderWriterLockSlim();
-			Added = (items => { });
-			Inserted = ((index, items) => { });
-			Moved = ((oldindex, newindex, item) => { });
+			Added = (ItemList => { });
+			Inserted = ((Index, ItemList) => { });
+			Moved = ((OldIndex, NewIndex, Item) => { });
 			Removed = (items => { });
-			RemovedAt = ((index, items) => { });
+			RemovedAt = ((Index, Item) => { });
 			Cleared = (count => { });
-			Replaced = ((index, olditem, newitem) => { });
+			Replaced = ((Index, New, Old) => { });
 		}
 
 		public DependencyList(IEnumerable<T> Items)
 		{
 			il = new List<T>(Items);
 			ocl = new ReaderWriterLockSlim();
-			Added = (items => { });
-			Inserted = ((index, items) => { });
-			Moved = ((oldindex, newindex, item) => { });
+			Added = (ItemList => { });
+			Inserted = ((Index, ItemList) => { });
+			Moved = ((OldIndex, NewIndex, Item) => { });
 			Removed = (items => { });
-			RemovedAt = ((index, items) => { });
+			RemovedAt = ((Index, Item) => { });
 			Cleared = (count => { });
-			Replaced = ((index, olditem, newitem) => { });
+			Replaced = ((Index, New, Old) => { });
 		}
 
 		public DependencyList(Action<IEnumerable<T>> Added, Action<int, IEnumerable<T>> Inserted, Action<int, int, T> Moved, Action<IEnumerable<T>> Removed, Action<int, IEnumerable<T>> RemovedAt, Action<int> Cleared, Action<int, T, T> Replaced)
 		{
 			il = new List<T>();
 			ocl = new ReaderWriterLockSlim();
-			this.Added = Added;
-			this.Inserted = Inserted;
-			this.Moved = Moved;
-			this.Removed = Removed;
-			this.RemovedAt = RemovedAt;
-			this.Cleared = Cleared;
-			this.Replaced = Replaced;
+			this.Added = Added ?? (ItemList => { });
+			this.Inserted = Inserted ?? ((Index, ItemList) => { });
+			this.Moved = Moved ?? ((OldIndex, NewIndex, Item) => { });
+			this.Removed = Removed ?? (items => { });
+			this.RemovedAt = RemovedAt ?? ((Index, Item) => { });
+			this.Cleared = Cleared ?? (count => { });
+			this.Replaced = Replaced ?? ((Index, New, Old) => { });
 		}
 
 		public DependencyList(int Capacity, Action<IEnumerable<T>> Added, Action<int, IEnumerable<T>> Inserted, Action<int, int, T> Moved, Action<IEnumerable<T>> Removed, Action<int, IEnumerable<T>> RemovedAt, Action<int> Cleared, Action<int, T, T> Replaced)
 		{
 			il = new List<T>(Capacity);
 			ocl = new ReaderWriterLockSlim();
-			this.Added = Added;
-			this.Inserted = Inserted;
-			this.Moved = Moved;
-			this.Removed = Removed;
-			this.RemovedAt = RemovedAt;
-			this.Cleared = Cleared;
-			this.Replaced = Replaced;
+			this.Added = Added ?? (ItemList => { });
+			this.Inserted = Inserted ?? ((Index, ItemList) => { });
+			this.Moved = Moved ?? ((OldIndex, NewIndex, Item) => { });
+			this.Removed = Removed ?? (items => { });
+			this.RemovedAt = RemovedAt ?? ((Index, Item) => { });
+			this.Cleared = Cleared ?? (count => { });
+			this.Replaced = Replaced ?? ((Index, New, Old) => { });
 		}
 
 		public DependencyList(IEnumerable<T> Items, Action<IEnumerable<T>> Added, Action<int, IEnumerable<T>> Inserted, Action<int, int, T> Moved, Action<IEnumerable<T>> Removed, Action<int, IEnumerable<T>> RemovedAt, Action<int> Cleared, Action<int, T, T> Replaced)
 		{
 			il = new List<T>(Items);
 			ocl = new ReaderWriterLockSlim();
-			this.Added = Added;
-			this.Inserted = Inserted;
-			this.Moved = Moved;
-			this.Removed = Removed;
-			this.RemovedAt = RemovedAt;
-			this.Cleared = Cleared;
-			this.Replaced = Replaced;
+			this.Added = Added ?? (ItemList => { });
+			this.Inserted = Inserted ?? ((Index, ItemList) => { });
+			this.Moved = Moved ?? ((OldIndex, NewIndex, Item) => { });
+			this.Removed = Removed ?? (items => { });
+			this.RemovedAt = RemovedAt ?? ((Index, Item) => { });
+			this.Cleared = Cleared ?? (count => { });
+			this.Replaced = Replaced ?? ((Index, New, Old) => { });
 		}
 
 		public void Add(T item)
