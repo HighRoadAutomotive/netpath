@@ -45,7 +45,7 @@ namespace NETPath
 		public static string SolutionPath { get; set; }
 		public static Projects.Solution Solution { get; set; }
 		public static Options.RecentSolution SolutionInfo { get; set; }
-		public static ObservableCollectionSortable<Projects.Project> Projects { get; set; }
+		public static ObservableCollection<Projects.Project> Projects { get; set; }
 
 		public static bool IsLoading { get; set; }
 		public static bool IsFinding { get; set; }
@@ -131,7 +131,7 @@ namespace NETPath
 			}
 				
 			//Load projects
-			Projects = new ObservableCollectionSortable<Project>();
+			Projects = new ObservableCollection<Project>();
 			Projects.CollectionChanged += MainScreen.Projects_CollectionChanged;
 			foreach (string p in Solution.Projects)
 			{
