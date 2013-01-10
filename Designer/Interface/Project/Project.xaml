@@ -141,6 +141,7 @@
 										<ColumnDefinition Width="*" />
 										<ColumnDefinition Width="*" />
 										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="*" />
 									</Grid.ColumnDefinitions>
 									<Grid.RowDefinitions>
 										<RowDefinition Height="Auto" />
@@ -149,9 +150,11 @@
 									<RadioButton Grid.Column="0" Grid.Row="0" Margin="2" Content="Enumeration" VerticalAlignment="Center" IsChecked="{Binding Path=TypeMode, Converter={StaticResource BoolDataTypeModeConverter}, ConverterParameter={x:Static Projects:DataTypeMode.Enum}}" />
 									<RadioButton Grid.Column="1" Grid.Row="0" Margin="2" Content="Class" VerticalAlignment="Center" IsChecked="{Binding Path=TypeMode, Converter={StaticResource BoolDataTypeModeConverter}, ConverterParameter={x:Static Projects:DataTypeMode.Class}}" />
 									<RadioButton Grid.Column="2" Grid.Row="0" Margin="2" Content="Struct" VerticalAlignment="Center" IsChecked="{Binding Path=TypeMode, Converter={StaticResource BoolDataTypeModeConverter}, ConverterParameter={x:Static Projects:DataTypeMode.Struct}}" />
-									<RadioButton Grid.Column="0" Grid.Row="1" Margin="2" Content="Interface" VerticalAlignment="Center" IsChecked="{Binding Path=TypeMode, Converter={StaticResource BoolDataTypeModeConverter}, ConverterParameter={x:Static Projects:DataTypeMode.Interface}}" />
-									<RadioButton Grid.Column="1" Grid.Row="1" Margin="2" Content="Collection" VerticalAlignment="Center" IsChecked="{Binding Path=TypeMode, Converter={StaticResource BoolDataTypeModeConverter}, ConverterParameter={x:Static Projects:DataTypeMode.Collection}}" />
-									<RadioButton Grid.Column="2" Grid.Row="1" Margin="2" Content="Dictionary" VerticalAlignment="Center" IsChecked="{Binding Path=TypeMode, Converter={StaticResource BoolDataTypeModeConverter}, ConverterParameter={x:Static Projects:DataTypeMode.Dictionary}}" />
+									<RadioButton Grid.Column="3" Grid.Row="0" Margin="2" Content="Interface" VerticalAlignment="Center" IsChecked="{Binding Path=TypeMode, Converter={StaticResource BoolDataTypeModeConverter}, ConverterParameter={x:Static Projects:DataTypeMode.Interface}}" />
+									<RadioButton Grid.Column="0" Grid.Row="1" Margin="2" Content="Collection" VerticalAlignment="Center" IsChecked="{Binding Path=TypeMode, Converter={StaticResource BoolDataTypeModeConverter}, ConverterParameter={x:Static Projects:DataTypeMode.Collection}}" />
+									<RadioButton Grid.Column="1" Grid.Row="1" Margin="2" Content="Dictionary" VerticalAlignment="Center" IsChecked="{Binding Path=TypeMode, Converter={StaticResource BoolDataTypeModeConverter}, ConverterParameter={x:Static Projects:DataTypeMode.Dictionary}}" />
+									<RadioButton Grid.Column="2" Grid.Row="1" Margin="2" Content="Stack" VerticalAlignment="Center" IsChecked="{Binding Path=TypeMode, Converter={StaticResource BoolDataTypeModeConverter}, ConverterParameter={x:Static Projects:DataTypeMode.Collection}}" />
+									<RadioButton Grid.Column="3" Grid.Row="1" Margin="2" Content="Queue" VerticalAlignment="Center" IsChecked="{Binding Path=TypeMode, Converter={StaticResource BoolDataTypeModeConverter}, ConverterParameter={x:Static Projects:DataTypeMode.Dictionary}}" />
 								</Grid>
 							</Border>
 						</Grid>

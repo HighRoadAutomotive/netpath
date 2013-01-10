@@ -90,7 +90,24 @@ namespace NETPath.Projects
 
 		//Protocol Buffers
 		public bool EnableProtocolBuffers { get { return (bool)GetValue(EnableProtocolBuffersProperty); } set { SetValue(EnableProtocolBuffersProperty, value); } }
-		public static readonly DependencyProperty EnableProtocolBuffersProperty = DependencyProperty.Register("EnableProtocolBuffers", typeof(bool), typeof(Data), new PropertyMetadata(false));
+		public static readonly DependencyProperty EnableProtocolBuffersProperty = DependencyProperty.Register("EnableProtocolBuffers", typeof(bool), typeof(Data), new PropertyMetadata(false, EnableProtocolBuffersChangedCallback));
+
+		private static void EnableProtocolBuffersChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as Data;
+			if (t == null) return;
+
+			if (Convert.ToBoolean(e.NewValue) == false)
+			{
+				t.ProtoSkipConstructor = false;
+				t.ProtoMembersOnly = false;
+				t.ProtoIgnoreListHandling = false;
+			}
+			else
+			{
+				t.ProtoMembersOnly = true;
+			}
+		}
 
 		public bool ProtoSkipConstructor { get { return (bool)GetValue(ProtoSkipConstructorProperty); } set { SetValue(ProtoSkipConstructorProperty, value); } }
 		public static readonly DependencyProperty ProtoSkipConstructorProperty = DependencyProperty.Register("ProtoSkipConstructor", typeof(bool), typeof(Data), new PropertyMetadata(false));

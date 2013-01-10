@@ -19,7 +19,9 @@ namespace NETPath.Projects
 		Interface,
 		Array,
 		Collection,
-		Dictionary
+		Dictionary,
+		Stack,
+		Queue,
 	}
 
 	public enum PrimitiveTypes
@@ -48,6 +50,19 @@ namespace NETPath.Projects
 		URI,
 		Version,
 		ByteArray
+	}
+
+	[Flags]
+	public enum SupportedFrameworks
+	{
+		None = 0x0,
+		NET30 = 0x1,
+		NET35 = 0x2,
+		NET40 = 0x4,
+		NET45 = 0x8,
+		SL40 = 0x10,
+		SL50 = 0x20,
+		WIN8 = 0x40
 	}
 
 	public class DataType : OpenableDocument
@@ -138,6 +153,7 @@ namespace NETPath.Projects
 		public bool IsExternalType { get; set; }
 		public PrimitiveTypes Primitive { get; set; }
 		public bool IsTypeReference { get; set; }
+		public SupportedFrameworks SupportedFrameworks { get; set; }
 
 		[IgnoreDataMember] public bool DataHasExtensionData { get { return InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0); } }
 		[IgnoreDataMember] public bool ClientHasExtensionData { get { return HasClientType && (ClientType.InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0)); } }
@@ -165,6 +181,7 @@ namespace NETPath.Projects
 			IsDataObject = false;
 			InheritedTypes = new ObservableCollection<DataType>();
 			KnownTypes = new ObservableCollection<DataType>();
+			SupportedFrameworks = SupportedFrameworks.None;
 		}
 
 		public DataType(DataTypeMode Mode)
@@ -182,6 +199,7 @@ namespace NETPath.Projects
 			IsDataObject = false;
 			InheritedTypes = new ObservableCollection<DataType>();
 			KnownTypes = new ObservableCollection<DataType>();
+			SupportedFrameworks = SupportedFrameworks.None;
 		}
 
 		public DataType(PrimitiveTypes Primitive)
@@ -194,6 +212,7 @@ namespace NETPath.Projects
 			TypeMode = DataTypeMode.Primitive;
 			IsExternalType = false;
 			IsDataObject = false;
+			SupportedFrameworks = SupportedFrameworks.None;
 			if (TypeMode != DataTypeMode.Primitive) return;
 			if (this.Primitive == PrimitiveTypes.Void) Name = "void";
 			if (this.Primitive == PrimitiveTypes.Object) Name = "object";
@@ -220,7 +239,7 @@ namespace NETPath.Projects
 			if (this.Primitive == PrimitiveTypes.ByteArray) Name = "byte[]";
 		}
 
-		public DataType(string External, DataTypeMode ExternalType)
+		public DataType(string External, DataTypeMode ExternalType, SupportedFrameworks SupportedFrameworks = SupportedFrameworks.None)
 		{
 			if (ExternalType == DataTypeMode.Primitive) throw new ArgumentException("Cannot use DataTypeMode.Primitive as an external type. Please use the Primitive Type constructor.");
 			if (ExternalType == DataTypeMode.Namespace) throw new ArgumentException("Cannot use DataTypeMode.Namespace as an external type. Please use the Mode Type constructor.");
@@ -232,6 +251,7 @@ namespace NETPath.Projects
 			IsDataObject = false;
 			TypeMode = ExternalType;
 			HasClientType = false;
+			this.SupportedFrameworks = SupportedFrameworks;
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -241,6 +261,30 @@ namespace NETPath.Projects
 			if (e.Property == DeclarationProperty || e.Property == TypeNameProperty) return;
 			TypeName = ToString();
 			Declaration = ToDeclarationString();
+		}
+
+		public bool IsFrameworkSupported(ProjectGenerationFramework CurrentFramework)
+		{
+			if (SupportedFrameworks == SupportedFrameworks.None) return true;
+			if (CurrentFramework == ProjectGenerationFramework.NET30 || CurrentFramework == ProjectGenerationFramework.NET35 || CurrentFramework == ProjectGenerationFramework.NET35Client || CurrentFramework == ProjectGenerationFramework.NET40 || CurrentFramework == ProjectGenerationFramework.NET40Client || CurrentFramework == ProjectGenerationFramework.NET45)
+			{
+				if (CurrentFramework == ProjectGenerationFramework.NET30) return SupportedFrameworks.HasFlag(SupportedFrameworks.NET30);
+				if (CurrentFramework == ProjectGenerationFramework.NET35) return SupportedFrameworks.HasFlag(SupportedFrameworks.NET35);
+				if (CurrentFramework == ProjectGenerationFramework.NET35Client) return SupportedFrameworks.HasFlag(SupportedFrameworks.NET35);
+				if (CurrentFramework == ProjectGenerationFramework.NET40) return SupportedFrameworks.HasFlag(SupportedFrameworks.NET40);
+				if (CurrentFramework == ProjectGenerationFramework.NET40Client) return SupportedFrameworks.HasFlag(SupportedFrameworks.NET40);
+				if (CurrentFramework == ProjectGenerationFramework.NET45) return SupportedFrameworks.HasFlag(SupportedFrameworks.NET45);
+			}
+			else if (CurrentFramework == ProjectGenerationFramework.SL40 || CurrentFramework == ProjectGenerationFramework.SL50)
+			{
+				if (CurrentFramework == ProjectGenerationFramework.SL40) return SupportedFrameworks.HasFlag(SupportedFrameworks.SL40);
+				if (CurrentFramework == ProjectGenerationFramework.SL50) return SupportedFrameworks.HasFlag(SupportedFrameworks.SL50);
+			}
+			else
+			{
+				if (CurrentFramework == ProjectGenerationFramework.WIN8) return SupportedFrameworks.HasFlag(SupportedFrameworks.WIN8);
+			}
+			return true;
 		}
 
 		public string ToScopeString()
@@ -305,7 +349,7 @@ namespace NETPath.Projects
 				return string.Format("{0} {1}{2}{3}{4} {5}{6}", ToScopeString(), Partial ? "partial " : "", Abstract ? "abstract " : "", Sealed ? "sealed " : "", ToStorageClassString(), Name, ToInheritedString());
 			else if (TypeMode == DataTypeMode.Array)
 				return string.Format("{0} {1}[] {2}", ToScopeString(), CollectionGenericType, Name);
-			else if (TypeMode == DataTypeMode.Collection)
+			else if (TypeMode == DataTypeMode.Collection || TypeMode == DataTypeMode.Stack || TypeMode == DataTypeMode.Queue)
 				return string.Format("{0} {1}<{2}>", ToScopeString(), Name, CollectionGenericType);
 			else if (TypeMode == DataTypeMode.Dictionary)
 				return string.Format("{0} {1}<{2}, {3}>", ToScopeString(), Name, DictionaryKeyGenericType, DictionaryValueGenericType);
@@ -350,7 +394,7 @@ namespace NETPath.Projects
 				return Parent != null ? string.Format("{0}.{1}", Parent.FullName, Name) : Name;
 			else if (TypeMode == DataTypeMode.Array)
 				return string.Format("{0}[]", CollectionGenericType);
-			else if (TypeMode == DataTypeMode.Collection)
+			else if (TypeMode == DataTypeMode.Collection || TypeMode == DataTypeMode.Stack || TypeMode == DataTypeMode.Queue)
 				return string.Format("{0}<{1}>", Name, CollectionGenericType != null ? CollectionGenericType.ToString() : "");
 			else if (TypeMode == DataTypeMode.Dictionary)
 				return string.Format("{0}<{1}, {2}>", Name, DictionaryKeyGenericType != null ? DictionaryKeyGenericType.ToString() : "", DictionaryValueGenericType != null ? DictionaryValueGenericType.ToString() : "");

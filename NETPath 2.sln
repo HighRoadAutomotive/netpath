@@ -26,6 +26,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NET CSharp Generator", "NET
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinRT CSharp Generator", "WinRTCSharpGenerator\WinRT CSharp Generator.csproj", "{70BD6FC1-706E-497B-8F89-AEAFA6DD285F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FC3718BA-4EB5-4E27-AFD9-67E35D37BD44} = {FC3718BA-4EB5-4E27-AFD9-67E35D37BD44}
+		{4ABBCBD5-723C-4E2C-B9FC-FE4EBB76F2DB} = {4ABBCBD5-723C-4E2C-B9FC-FE4EBB76F2DB}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Toolkit - NET45", "ToolkitNET45\Toolkit - NET45.csproj", "{FC3718BA-4EB5-4E27-AFD9-67E35D37BD44}"
 EndProject

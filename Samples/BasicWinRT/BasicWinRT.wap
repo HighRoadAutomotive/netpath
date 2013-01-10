@@ -15,7 +15,7 @@
   <ClientOutputFile z:Id="5">Client</ClientOutputFile>
   <DependencyProjects z:Id="6" z:Size="0" />
   <EnableDocumentationWarnings>false</EnableDocumentationWarnings>
-  <EnableExperimental>true</EnableExperimental>
+  <EnableExperimental>false</EnableExperimental>
   <ExternalTypes z:Id="7" z:Size="0" />
   <ID>0b832ba8-5f23-4ad4-9667-243ac3c90977</ID>
   <Name z:Id="8">BasicWinRT</Name>
@@ -155,7 +155,7 @@
         <Sealed>false</Sealed>
         <TypeMode>Class</TypeMode>
         <AutoDataBatchCount>0</AutoDataBatchCount>
-        <AutoDataEnabled>true</AutoDataEnabled>
+        <AutoDataEnabled>false</AutoDataEnabled>
         <Documentation z:Id="30">
           <Example z:Ref="21" i:nil="true" />
           <IsClass>true</IsClass>
@@ -173,7 +173,7 @@
             <AttachedBrowsable>false</AttachedBrowsable>
             <AttachedBrowsableIncludeDescendants>false</AttachedBrowsableIncludeDescendants>
             <AttachedTargetTypes z:Ref="21" i:nil="true" />
-            <AutoDataEnabled>true</AutoDataEnabled>
+            <AutoDataEnabled>false</AutoDataEnabled>
             <AutoDataTimeout>0</AutoDataTimeout>
             <AutoDataUpdateMode>Immediate</AutoDataUpdateMode>
             <ClientName z:Ref="21" i:nil="true" />
@@ -217,10 +217,10 @@
             <HasXAMLType>true</HasXAMLType>
             <ID>8f6d2a62-dcf8-4a34-b32d-68f2660f0a2d</ID>
             <IsAttached>false</IsAttached>
-            <IsAutoDataID>true</IsAutoDataID>
+            <IsAutoDataID>false</IsAutoDataID>
             <IsDataMember>true</IsDataMember>
             <IsHidden>false</IsHidden>
-            <IsReadOnly>true</IsReadOnly>
+            <IsReadOnly>false</IsReadOnly>
             <IsRequired>false</IsRequired>
             <IsSelected>true</IsSelected>
             <Order>-1</Order>
@@ -239,7 +239,7 @@
             <AttachedBrowsable>false</AttachedBrowsable>
             <AttachedBrowsableIncludeDescendants>false</AttachedBrowsableIncludeDescendants>
             <AttachedTargetTypes z:Ref="21" i:nil="true" />
-            <AutoDataEnabled>true</AutoDataEnabled>
+            <AutoDataEnabled>false</AutoDataEnabled>
             <AutoDataTimeout>0</AutoDataTimeout>
             <AutoDataUpdateMode>Immediate</AutoDataUpdateMode>
             <ClientName z:Ref="21" i:nil="true" />
@@ -475,12 +475,12 @@
             <IsSelected>false</IsSelected>
             <Order>-1</Order>
             <Owner z:Ref="26" i:nil="true" />
-            <ProtoAsReference>false</ProtoAsReference>
+            <ProtoAsReference>true</ProtoAsReference>
             <ProtoDataFormat>Default</ProtoDataFormat>
-            <ProtoDynamicType>false</ProtoDynamicType>
-            <ProtoIsPacked>false</ProtoIsPacked>
+            <ProtoDynamicType>true</ProtoDynamicType>
+            <ProtoIsPacked>true</ProtoIsPacked>
             <ProtoOverwriteList>true</ProtoOverwriteList>
-            <ProtocolBufferEnabled>false</ProtocolBufferEnabled>
+            <ProtocolBufferEnabled>true</ProtocolBufferEnabled>
             <XAMLName z:Ref="52" i:nil="true" />
             <XAMLType z:Ref="39" i:nil="true" />
           </DataElement>
@@ -546,7 +546,7 @@
             <ProtoDynamicType>false</ProtoDynamicType>
             <ProtoIsPacked>false</ProtoIsPacked>
             <ProtoOverwriteList>true</ProtoOverwriteList>
-            <ProtocolBufferEnabled>false</ProtocolBufferEnabled>
+            <ProtocolBufferEnabled>true</ProtocolBufferEnabled>
             <XAMLName z:Ref="55" i:nil="true" />
             <XAMLType z:Ref="56" i:nil="true" />
           </DataElement>
@@ -562,7 +562,7 @@
             <ClientType i:nil="true" />
             <DataName z:Id="60">Color</DataName>
             <DataType z:Id="61" i:type="Enum">
-              <IsSelected>false</IsSelected>
+              <IsSelected>true</IsSelected>
               <Abstract>false</Abstract>
               <ClientType i:nil="true" />
               <CollectionGenericType i:nil="true" />
@@ -759,16 +759,16 @@
             <ProtoDynamicType>false</ProtoDynamicType>
             <ProtoIsPacked>false</ProtoIsPacked>
             <ProtoOverwriteList>true</ProtoOverwriteList>
-            <ProtocolBufferEnabled>false</ProtocolBufferEnabled>
+            <ProtocolBufferEnabled>true</ProtocolBufferEnabled>
             <XAMLName z:Ref="60" i:nil="true" />
             <XAMLType z:Ref="61" i:nil="true" />
           </DataElement>
         </Elements>
-        <EnableProtocolBuffers>false</EnableProtocolBuffers>
+        <EnableProtocolBuffers>true</EnableProtocolBuffers>
         <HasXAMLType>true</HasXAMLType>
         <IsReference>false</IsReference>
         <ProtoIgnoreListHandling>false</ProtoIgnoreListHandling>
-        <ProtoMembersOnly>false</ProtoMembersOnly>
+        <ProtoMembersOnly>true</ProtoMembersOnly>
         <ProtoSkipConstructor>false</ProtoSkipConstructor>
         <XAMLType z:Id="94">
           <IsSelected>false</IsSelected>
@@ -793,7 +793,7 @@
               <IsExternalType>true</IsExternalType>
               <IsTypeReference>false</IsTypeReference>
               <KnownTypes i:nil="true" />
-              <Name z:Id="97">DependencyObjectEx</Name>
+              <Name z:Id="97">DependencyObject</Name>
               <Parent i:nil="true" />
               <Partial>false</Partial>
               <Primitive>None</Primitive>
@@ -922,7 +922,7 @@
         <Namespace z:Id="117">http://tempuri.org/</Namespace>
         <OpenTimeout>PT1M</OpenTimeout>
         <Service z:Id="118">
-          <IsSelected>true</IsSelected>
+          <IsSelected>false</IsSelected>
           <Abstract>false</Abstract>
           <ClientType i:nil="true" />
           <CollectionGenericType i:nil="true" />
@@ -1268,7 +1268,7 @@
   <ServerOutputFile z:Id="165">Server</ServerOutputFile>
   <ServiceSerializer>Auto</ServiceSerializer>
   <SolutionPath i:nil="true" />
-  <UsingNamespaces z:Id="166" z:Size="20">
+  <UsingNamespaces z:Id="166" z:Size="19">
     <ProjectUsingNamespace z:Id="167">
       <Client>true</Client>
       <ID>bc803178-0322-4acf-8bca-64084a2e9795</ID>
@@ -1455,16 +1455,6 @@
       <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
       <NET>false</NET>
       <Namespace z:Id="204">Windows.UI.Xaml</Namespace>
-      <RT>true</RT>
-      <SL>false</SL>
-      <Server>false</Server>
-    </ProjectUsingNamespace>
-    <ProjectUsingNamespace z:Id="205">
-      <Client>true</Client>
-      <ID>447b32bd-9e01-4aa0-a845-f4f3dd87e1c2</ID>
-      <IsFullFrameworkOnly>false</IsFullFrameworkOnly>
-      <NET>false</NET>
-      <Namespace z:Id="206">WCFArchitect.Toolkit.WinRT</Namespace>
       <RT>true</RT>
       <SL>false</SL>
       <Server>false</Server>

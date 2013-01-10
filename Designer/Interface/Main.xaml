@@ -225,16 +225,16 @@
 								<FlowDocumentScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" >
 									<FlowDocument FontFamily="Segoe UI">
 										<Paragraph>
-											<Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/WADOC/Introduction" RequestNavigate="Hyperlink_RequestNavigate">Introduction</Hyperlink>
+											<Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/Introduction" RequestNavigate="Hyperlink_RequestNavigate">Introduction</Hyperlink>
 										</Paragraph>
 										<Paragraph>
-											<Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/WADOC/Solutions+and+Projects" RequestNavigate="Hyperlink_RequestNavigate">Solutions and Projects</Hyperlink>
+											<Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/Solutions+and+Projects" RequestNavigate="Hyperlink_RequestNavigate">Solutions and Projects</Hyperlink>
 										</Paragraph>
 										<List>
-											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/WADOC/Creating+A+Solution" RequestNavigate="Hyperlink_RequestNavigate">Creating a Solution</Hyperlink></Paragraph></ListItem>
-											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/WADOC/Adding+a+Project+to+a+Solution" RequestNavigate="Hyperlink_RequestNavigate">Adding Project to a Solution</Hyperlink></Paragraph></ListItem>
-											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/WADOC/The+Project+Navigator" RequestNavigate="Hyperlink_RequestNavigate">The Project Navigator</Hyperlink></Paragraph></ListItem>
-											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/WADOC/Configuring+a+Project" RequestNavigate="Hyperlink_RequestNavigate">Configuring a Project</Hyperlink></Paragraph></ListItem>
+											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/Creating+A+Solution" RequestNavigate="Hyperlink_RequestNavigate">Creating a Solution</Hyperlink></Paragraph></ListItem>
+											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/Adding+a+Project+to+a+Solution" RequestNavigate="Hyperlink_RequestNavigate">Adding Project to a Solution</Hyperlink></Paragraph></ListItem>
+											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/The+Project+Navigator" RequestNavigate="Hyperlink_RequestNavigate">The Project Navigator</Hyperlink></Paragraph></ListItem>
+											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/Configuring+a+Project" RequestNavigate="Hyperlink_RequestNavigate">Configuring a Project</Hyperlink></Paragraph></ListItem>
 										</List>
 									</FlowDocument>
 								</FlowDocumentScrollViewer>
@@ -319,7 +319,7 @@
 							</Grid.RowDefinitions>
 							<TextBlock Text="About NETPath" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="0,0,0,10" Grid.Row="0"/>
 							<StackPanel Grid.Row="1" Margin="5,0">
-								<Image Name="SKULevel" Source="pack://application:,,,/NETPath;component/Icons/Odd/FullLogoDeveloper.png" Margin="0,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="100" Width="450" Stretch="None" Grid.Column="0" />
+								<Image Name="SKULevel" Source="pack://application:,,,/NETPath;component/Icons/Odd/FullLogoDeveloper.png" Margin="0,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="150" Width="600" Stretch="None" Grid.Column="0" />
 								<Grid UseLayoutRounding="True" Margin="0,0,0,10">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition Width="*" />
