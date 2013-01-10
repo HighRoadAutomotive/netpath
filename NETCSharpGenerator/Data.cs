@@ -35,15 +35,39 @@ namespace NETPath.Generators.NET.CS
 			foreach (DataElement d in o.Elements)
 			{
 				if (RegExs.MatchCodeName.IsMatch(d.DataType.Name) == false && d.DataType.TypeMode != DataTypeMode.Array)
-					AddMessage(new CompileMessage("GS3001", "The data element '" + d.DataType.Name + "' in the '" + o.Name + "' data object contains invalid characters in the Name.", CompileMessageSeverity.ERROR, o, d, d.GetType(), o.Parent.Owner.ID));
+					AddMessage(new CompileMessage("GS3001", "The data element '" + d.DataName + "' in the '" + o.Name + "' data object contains invalid characters in the Name.", CompileMessageSeverity.ERROR, o, d, d.GetType(), o.Parent.Owner.ID));
 
 				if (d.HasClientType)
 					if (RegExs.MatchCodeName.IsMatch(d.ClientType.Name) == false && d.DataType.TypeMode != DataTypeMode.Array)
-						AddMessage(new CompileMessage("GS3002", "The data object '" + d.ClientType.Name + "' in the '" + o.Name + "' namespace contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+						AddMessage(new CompileMessage("GS3002", "The data element '" + d.ClientName + "' in the '" + o.Name + "' data object contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 
 				if (d.HasXAMLType)
 					if (RegExs.MatchCodeName.IsMatch(d.XAMLType.Name) == false && d.DataType.TypeMode != DataTypeMode.Array)
-						AddMessage(new CompileMessage("GS3003", "The data object '" + d.XAMLType.Name + "' in the '" + o.Name + "' namespace contains invalid characters in the XAML Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+						AddMessage(new CompileMessage("GS3003", "The data element '" + d.XAMLName + "' in the '" + o.Name + "' data object contains invalid characters in the XAML Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+
+				if (d.DataType.SupportedFrameworks != SupportedFrameworks.None && d.ClientType.SupportedFrameworks != SupportedFrameworks.None && d.XAMLType.SupportedFrameworks != SupportedFrameworks.None)
+				{
+					if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30 && !(d.DataType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET30) || d.ClientType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET30) || d.XAMLType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET30)))
+						AddMessage(new CompileMessage("GS3009", "The data element type '" + d.XAMLType.TypeName + "' for the element'" + d.DataName + "' in the '" + o.Name + "' data object is unsupported in the .NET 3.0 Generation Target. Please replace it with a valid type.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+					if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 && !(d.DataType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET35) || d.ClientType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET35) || d.XAMLType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET35)))
+						AddMessage(new CompileMessage("GS3009", "The data element type '" + d.XAMLType.TypeName + "' for the element'" + d.DataName + "' in the '" + o.Name + "' data object is unsupported in the .NET 3.5 Generation Target. Please replace it with a valid type.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+					if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client && !(d.DataType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET35) || d.ClientType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET35) || d.XAMLType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET35)))
+						AddMessage(new CompileMessage("GS3009", "The data element type '" + d.XAMLType.TypeName + "' for the element'" + d.DataName + "' in the '" + o.Name + "' data object is unsupported in the .NET 3.5 Client Generation Target. Please replace it with a valid type.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+					if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 && !(d.DataType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET40) || d.ClientType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET40) || d.XAMLType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET40)))
+						AddMessage(new CompileMessage("GS3009", "The data element type '" + d.XAMLType.TypeName + "' for the element'" + d.DataName + "' in the '" + o.Name + "' data object is unsupported in the .NET 4.0 Generation Target. Please replace it with a valid type.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+					if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40Client && !(d.DataType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET40) || d.ClientType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET40) || d.XAMLType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET40)))
+						AddMessage(new CompileMessage("GS3009", "The data element type '" + d.XAMLType.TypeName + "' for the element'" + d.DataName + "' in the '" + o.Name + "' data object is unsupported in the .NET 4.0 Client Generation Target. Please replace it with a valid type.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+					if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45 && !(d.DataType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET45) || d.ClientType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET45) || d.XAMLType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET45)))
+						AddMessage(new CompileMessage("GS3009", "The data element type '" + d.XAMLType.TypeName + "' for the element'" + d.DataName + "' in the '" + o.Name + "' data object is unsupported in the .NET 4.5 Generation Target. Please replace it with a valid type.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+
+					if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.SL40 && !(d.DataType.SupportedFrameworks.HasFlag(SupportedFrameworks.SL40) || d.ClientType.SupportedFrameworks.HasFlag(SupportedFrameworks.SL40) || d.XAMLType.SupportedFrameworks.HasFlag(SupportedFrameworks.SL40)))
+						AddMessage(new CompileMessage("GS3009", "The data element type '" + d.XAMLType.TypeName + "' for the element'" + d.DataName + "' in the '" + o.Name + "' data object is unsupported in the Silverlight 4 Generation Target. Please replace it with a valid type.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+					if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.SL50 && !(d.DataType.SupportedFrameworks.HasFlag(SupportedFrameworks.SL50) || d.ClientType.SupportedFrameworks.HasFlag(SupportedFrameworks.SL50) || d.XAMLType.SupportedFrameworks.HasFlag(SupportedFrameworks.SL50)))
+						AddMessage(new CompileMessage("GS3009", "The data element type '" + d.XAMLType.TypeName + "' for the element'" + d.DataName + "' in the '" + o.Name + "' data object is unsupported in the Silverlight 5 Generation Target. Please replace it with a valid type.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+
+					if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8 && !(d.DataType.SupportedFrameworks.HasFlag(SupportedFrameworks.WIN8) || d.ClientType.SupportedFrameworks.HasFlag(SupportedFrameworks.WIN8) || d.XAMLType.SupportedFrameworks.HasFlag(SupportedFrameworks.WIN8)))
+						AddMessage(new CompileMessage("GS3009", "The data element type '" + d.XAMLType.TypeName + "' for the element'" + d.DataName + "' in the '" + o.Name + "' data object is unsupported in the Windows 8 Runtime Generation Target. Please replace it with a valid type.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+				}
 			}
 
 			if (o.InheritedTypes.Any(a => a.Name.IndexOf("INotifyPropertyChanged", StringComparison.CurrentCultureIgnoreCase) >= 0))
