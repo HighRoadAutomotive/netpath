@@ -159,8 +159,23 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine("\t\t}");
 				code.AppendLine();
 			}
+			code.AppendLine("\t\t//Constuctors");
+			code.AppendLine(string.Format("\t\tpublic {0}()", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tXAMLObject = this;");
+			code.AppendLine("\t\t}");
+			if (o.HasXAMLType)
+			{
+				code.AppendLine(string.Format("\t\tpublic {0}({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, DataTypeGenerator.GenerateType(o.XAMLType)));
+				code.AppendLine("\t\t{");
+				code.AppendLine("\t\t\tXAMLObject = Data;");
+				foreach (DataElement de in o.Elements)
+					code.Append(GenerateElementXAMLConstructorCode45(de, o));
+				code.AppendLine("\t\t}");
+			}
+			code.AppendLine();
 			foreach (DataElement de in o.Elements)
-				code.Append(GenerateElementProxyCode40(de));
+				code.Append(GenerateElementProxyCode45(de));
 			code.AppendLine("\t}");
 			return code.ToString();
 		}
@@ -194,6 +209,21 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine("\t\t}");
 				code.AppendLine();
 			}
+			code.AppendLine("\t\t//Constuctors");
+			code.AppendLine(string.Format("\t\tpublic {0}()", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tXAMLObject = this;");
+			code.AppendLine("\t\t}");
+			if (o.HasXAMLType)
+			{
+				code.AppendLine(string.Format("\t\tpublic {0}({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, DataTypeGenerator.GenerateType(o.XAMLType)));
+				code.AppendLine("\t\t{");
+				code.AppendLine("\t\t\tXAMLObject = Data;");
+				foreach (DataElement de in o.Elements)
+					code.Append(GenerateElementXAMLConstructorCode45(de, o));
+				code.AppendLine("\t\t}");
+			}
+			code.AppendLine();
 			foreach (DataElement de in o.Elements)
 				code.Append(GenerateElementProxyCode45(de));
 			code.AppendLine("\t}");
@@ -276,6 +306,8 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.XAMLType, false, false, true)));
 			code.AppendLine("\t{");
+			code.AppendLine(string.Format("\t\tpublic {0} DataObject {{ get; private set; }}", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
+			code.AppendLine();
 
 			if (o.XAMLHasExtensionData)
 			{
@@ -322,18 +354,14 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine("\t\t//XAML/DTO Conversion Functions");
 			code.AppendLine(string.Format("\t\tpublic static {0} ConvertFromXAMLObject({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, DataTypeGenerator.GenerateType(o.XAMLType)));
 			code.AppendLine("\t\t{");
-			code.AppendLine(string.Format("\t\t\t{0} DTO = new {0}();", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
-			foreach (DataElement de in o.Elements)
-				code.Append(GenerateElementXAMLConversionFromXAML45(de, o));
-			code.AppendLine("\t\t\treturn DTO;");
+			code.AppendLine("\t\t\tif (Data.DataObject != null) return Data.DataObject;");
+			code.AppendLine(string.Format("\t\t\treturn new {0}(Data);", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
 			code.AppendLine("\t\t}");
 			code.AppendLine();
 			code.AppendLine(string.Format("\t\tpublic static {0} ConvertToXAMLObject({1} Data)", o.XAMLType.Name, DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
 			code.AppendLine("\t\t{");
-			code.AppendLine(string.Format("\t\t\t{0} XAML = new {0}();", DataTypeGenerator.GenerateType(o.XAMLType)));
-			foreach (DataElement de in o.Elements)
-				code.Append(GenerateElementXAMLConversionToXAML45(de, o));
-			code.AppendLine("\t\t\treturn XAML;");
+			code.AppendLine("\t\t\tif (Data.XAMLObject != null) return Data.XAMLObject;");
+			code.AppendLine(string.Format("\t\t\treturn new {0}(Data);", DataTypeGenerator.GenerateType(o.XAMLType)));
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t}");
 

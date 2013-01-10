@@ -145,7 +145,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine("\t\t{");
 				code.AppendLine("\t\t\tXAMLObject = Data;");
 				foreach (DataElement de in o.Elements)
-					code.Append(GenerateElementProxyConstructorCode45(de, o));
+					code.Append(GenerateElementXAMLConstructorCode45(de, o));
 				code.AppendLine("\t\t}");
 			}
 			code.AppendLine();
