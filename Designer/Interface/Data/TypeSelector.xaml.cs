@@ -419,7 +419,7 @@ namespace NETPath.Interface.Data
 			if (lt.TypeMode == DataTypeMode.Enum) return new BitmapImage(new Uri("pack://application:,,,/NETPath;component/Icons/X16/Enum.png"));
 			if (lt.TypeMode == DataTypeMode.Primitive) return new BitmapImage(new Uri("pack://application:,,,/NETPath;component/Icons/X16/Property.png"));
 			if (lt.TypeMode == DataTypeMode.Array) return new BitmapImage(new Uri("pack://application:,,,/NETPath;component/Icons/X16/Collection.png"));
-			if (lt.IsExternalType && (lt.TypeMode == DataTypeMode.Collection || lt.TypeMode == DataTypeMode.Dictionary)) return new BitmapImage(new Uri("pack://application:,,,/NETPath;component/Icons/X16/Collection.png"));
+			if (lt.IsExternalType && (lt.TypeMode == DataTypeMode.Collection || lt.TypeMode == DataTypeMode.Dictionary || lt.TypeMode == DataTypeMode.Stack) || lt.TypeMode == DataTypeMode.Queue) return new BitmapImage(new Uri("pack://application:,,,/NETPath;component/Icons/X16/Collection.png"));
 			if (lt.IsExternalType) return new BitmapImage(new Uri("pack://application:,,,/NETPath;component/Icons/X16/External.png"));
 			return 0;
 		}

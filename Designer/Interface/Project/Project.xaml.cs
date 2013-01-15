@@ -244,6 +244,8 @@ namespace NETPath.Interface.Project
 			if (lt == DataTypeMode.Interface && dt == DataTypeMode.Interface) return true;
 			if (lt == DataTypeMode.Collection && dt == DataTypeMode.Collection) return true;
 			if (lt == DataTypeMode.Dictionary && dt == DataTypeMode.Dictionary) return true;
+			if (lt == DataTypeMode.Stack && dt == DataTypeMode.Stack) return true;
+			if (lt == DataTypeMode.Queue && dt == DataTypeMode.Queue) return true;
 			return false;
 		}
 
@@ -257,6 +259,8 @@ namespace NETPath.Interface.Project
 			if (lt && dt == DataTypeMode.Interface) return DataTypeMode.Interface;
 			if (lt && dt == DataTypeMode.Collection) return DataTypeMode.Collection;
 			if (lt && dt == DataTypeMode.Dictionary) return DataTypeMode.Dictionary;
+			if (lt && dt == DataTypeMode.Stack) return DataTypeMode.Stack;
+			if (lt && dt == DataTypeMode.Queue) return DataTypeMode.Queue;
 			return DataTypeMode.Class;
 		}
 	}

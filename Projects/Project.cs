@@ -175,18 +175,22 @@ namespace NETPath.Projects
 					                    new DataType("LinkedList", DataTypeMode.Collection),
 					                    new DataType("List", DataTypeMode.Collection),
 					                    new DataType("HashSet", DataTypeMode.Collection),
-					                    new DataType("Queue", DataTypeMode.Collection),
 					                    new DataType("SortedSet", DataTypeMode.Collection),
-					                    new DataType("Stack", DataTypeMode.Collection),
 					                    new DataType("SynchronizedCollection", DataTypeMode.Collection),
 					                    new DataType("Dictionary", DataTypeMode.Dictionary),
 					                    new DataType("SortedDictionary", DataTypeMode.Dictionary),
 					                    new DataType("SortedList", DataTypeMode.Dictionary),
 					                    new DataType("SynchronizedKeyedCollection", DataTypeMode.Dictionary),
+					                    new DataType("Stack", DataTypeMode.Stack),
+					                    new DataType("Queue", DataTypeMode.Queue),
 										//System.Collections.ObjectModel Types
 					                    new DataType("Collection", DataTypeMode.Collection),
 					                    new DataType("ObservableCollection", DataTypeMode.Collection),
-					                    new DataType("KeyedCollection", DataTypeMode.Dictionary)
+					                    new DataType("KeyedCollection", DataTypeMode.Dictionary),
+										//System.Collections.Concurrent Types
+					                    new DataType("System.Collections.Concurrent.ConcurrentDictionary", DataTypeMode.Dictionary, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
+					                    new DataType("System.Collections.Concurrent.ConcurrentStack", DataTypeMode.Stack, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
+					                    new DataType("System.Collections.Concurrent.ConcurrentQueue", DataTypeMode.Queue, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
 				                    };
 
 			//Add the default inheritable types.
@@ -238,18 +242,22 @@ namespace NETPath.Projects
 					                    new DataType("LinkedList", DataTypeMode.Collection),
 					                    new DataType("List", DataTypeMode.Collection),
 					                    new DataType("HashSet", DataTypeMode.Collection),
-					                    new DataType("Queue", DataTypeMode.Collection),
 					                    new DataType("SortedSet", DataTypeMode.Collection),
-					                    new DataType("Stack", DataTypeMode.Collection),
 					                    new DataType("SynchronizedCollection", DataTypeMode.Collection),
 					                    new DataType("Dictionary", DataTypeMode.Dictionary),
 					                    new DataType("SortedDictionary", DataTypeMode.Dictionary),
 					                    new DataType("SortedList", DataTypeMode.Dictionary),
 					                    new DataType("SynchronizedKeyedCollection", DataTypeMode.Dictionary),
+					                    new DataType("Stack", DataTypeMode.Stack),
+					                    new DataType("Queue", DataTypeMode.Queue),
 										//System.Collections.ObjectModel Types
 					                    new DataType("Collection", DataTypeMode.Collection),
 					                    new DataType("ObservableCollection", DataTypeMode.Collection),
-					                    new DataType("KeyedCollection", DataTypeMode.Dictionary)
+					                    new DataType("KeyedCollection", DataTypeMode.Dictionary),
+										//System.Collections.Concurrent Types
+					                    new DataType("System.Collections.Concurrent.ConcurrentDictionary", DataTypeMode.Dictionary, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
+					                    new DataType("System.Collections.Concurrent.ConcurrentStack", DataTypeMode.Stack, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
+					                    new DataType("System.Collections.Concurrent.ConcurrentQueue", DataTypeMode.Queue, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
 				                    };
 
 			//Add the default inheritable types.

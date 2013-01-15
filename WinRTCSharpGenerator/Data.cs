@@ -35,15 +35,39 @@ namespace NETPath.Generators.WinRT.CS
 			foreach (DataElement d in o.Elements)
 			{
 				if (RegExs.MatchCodeName.IsMatch(d.DataType.Name) == false && d.DataType.TypeMode != DataTypeMode.Array)
-					AddMessage(new CompileMessage("GS3001", "The data element '" + d.DataType.Name + "' in the '" + o.Name + "' data object contains invalid characters in the Name.", CompileMessageSeverity.ERROR, o, d, d.GetType(), o.Parent.Owner.ID));
+					AddMessage(new CompileMessage("GS3001", "The data element '" + d.DataName + "' in the '" + o.Name + "' data object contains invalid characters in the Name.", CompileMessageSeverity.ERROR, o, d, d.GetType(), o.Parent.Owner.ID));
 
 				if (d.HasClientType)
 					if (RegExs.MatchCodeName.IsMatch(d.ClientType.Name) == false && d.DataType.TypeMode != DataTypeMode.Array)
-						AddMessage(new CompileMessage("GS3002", "The data object '" + d.ClientType.Name + "' in the '" + o.Name + "' namespace contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+						AddMessage(new CompileMessage("GS3002", "The data element '" + d.ClientName + "' in the '" + o.Name + "' data object contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 
 				if (d.HasXAMLType)
 					if (RegExs.MatchCodeName.IsMatch(d.XAMLType.Name) == false && d.DataType.TypeMode != DataTypeMode.Array)
-						AddMessage(new CompileMessage("GS3003", "The data object '" + d.XAMLType.Name + "' in the '" + o.Name + "' namespace contains invalid characters in the XAML Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+						AddMessage(new CompileMessage("GS3003", "The data element '" + d.XAMLName + "' in the '" + o.Name + "' data object contains invalid characters in the XAML Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+
+				if (d.DataType.SupportedFrameworks != SupportedFrameworks.None && d.ClientType.SupportedFrameworks != SupportedFrameworks.None && d.XAMLType.SupportedFrameworks != SupportedFrameworks.None)
+				{
+					if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30 && !(d.DataType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET30) || d.ClientType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET30) || d.XAMLType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET30)))
+						AddMessage(new CompileMessage("GS3009", "The data element type '" + d.XAMLType.TypeName + "' for the element'" + d.DataName + "' in the '" + o.Name + "' data object is unsupported in the .NET 3.0 Generation Target. Please replace it with a valid type.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+					if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 && !(d.DataType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET35) || d.ClientType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET35) || d.XAMLType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET35)))
+						AddMessage(new CompileMessage("GS3009", "The data element type '" + d.XAMLType.TypeName + "' for the element'" + d.DataName + "' in the '" + o.Name + "' data object is unsupported in the .NET 3.5 Generation Target. Please replace it with a valid type.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+					if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client && !(d.DataType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET35) || d.ClientType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET35) || d.XAMLType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET35)))
+						AddMessage(new CompileMessage("GS3009", "The data element type '" + d.XAMLType.TypeName + "' for the element'" + d.DataName + "' in the '" + o.Name + "' data object is unsupported in the .NET 3.5 Client Generation Target. Please replace it with a valid type.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+					if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 && !(d.DataType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET40) || d.ClientType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET40) || d.XAMLType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET40)))
+						AddMessage(new CompileMessage("GS3009", "The data element type '" + d.XAMLType.TypeName + "' for the element'" + d.DataName + "' in the '" + o.Name + "' data object is unsupported in the .NET 4.0 Generation Target. Please replace it with a valid type.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+					if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40Client && !(d.DataType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET40) || d.ClientType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET40) || d.XAMLType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET40)))
+						AddMessage(new CompileMessage("GS3009", "The data element type '" + d.XAMLType.TypeName + "' for the element'" + d.DataName + "' in the '" + o.Name + "' data object is unsupported in the .NET 4.0 Client Generation Target. Please replace it with a valid type.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+					if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45 && !(d.DataType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET45) || d.ClientType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET45) || d.XAMLType.SupportedFrameworks.HasFlag(SupportedFrameworks.NET45)))
+						AddMessage(new CompileMessage("GS3009", "The data element type '" + d.XAMLType.TypeName + "' for the element'" + d.DataName + "' in the '" + o.Name + "' data object is unsupported in the .NET 4.5 Generation Target. Please replace it with a valid type.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+
+					if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.SL40 && !(d.DataType.SupportedFrameworks.HasFlag(SupportedFrameworks.SL40) || d.ClientType.SupportedFrameworks.HasFlag(SupportedFrameworks.SL40) || d.XAMLType.SupportedFrameworks.HasFlag(SupportedFrameworks.SL40)))
+						AddMessage(new CompileMessage("GS3009", "The data element type '" + d.XAMLType.TypeName + "' for the element'" + d.DataName + "' in the '" + o.Name + "' data object is unsupported in the Silverlight 4 Generation Target. Please replace it with a valid type.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+					if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.SL50 && !(d.DataType.SupportedFrameworks.HasFlag(SupportedFrameworks.SL50) || d.ClientType.SupportedFrameworks.HasFlag(SupportedFrameworks.SL50) || d.XAMLType.SupportedFrameworks.HasFlag(SupportedFrameworks.SL50)))
+						AddMessage(new CompileMessage("GS3009", "The data element type '" + d.XAMLType.TypeName + "' for the element'" + d.DataName + "' in the '" + o.Name + "' data object is unsupported in the Silverlight 5 Generation Target. Please replace it with a valid type.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+
+					if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8 && !(d.DataType.SupportedFrameworks.HasFlag(SupportedFrameworks.WIN8) || d.ClientType.SupportedFrameworks.HasFlag(SupportedFrameworks.WIN8) || d.XAMLType.SupportedFrameworks.HasFlag(SupportedFrameworks.WIN8)))
+						AddMessage(new CompileMessage("GS3009", "The data element type '" + d.XAMLType.TypeName + "' for the element'" + d.DataName + "' in the '" + o.Name + "' data object is unsupported in the Windows 8 Runtime Generation Target. Please replace it with a valid type.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+				}
 			}
 
 			if (o.InheritedTypes.Any(a => a.Name.IndexOf("INotifyPropertyChanged", StringComparison.CurrentCultureIgnoreCase) >= 0))
@@ -260,22 +284,13 @@ namespace NETPath.Generators.WinRT.CS
 
 		private static DataType GetPreferredXAMLType(DataType value)
 		{
-			if (value.TypeMode == DataTypeMode.Array)
+			if (value.TypeMode == DataTypeMode.Array || value.TypeMode == DataTypeMode.Collection || value.TypeMode == DataTypeMode.Stack || value.TypeMode == DataTypeMode.Queue)
 			{
 				if (value.CollectionGenericType.TypeMode == DataTypeMode.Class || value.CollectionGenericType.TypeMode == DataTypeMode.Struct)
 				{
 					var t = value.CollectionGenericType as Data;
 					if (t == null) return value;
-					return t.HasXAMLType ? new DataType(value.Name, DataTypeMode.Array) { Name = value.Name, CollectionGenericType = t.XAMLType } : new DataType(value.Name, DataTypeMode.Array) { Name = value.Name, CollectionGenericType = t.HasClientType ? t.ClientType : t };
-				}
-			}
-			if (value.TypeMode == DataTypeMode.Collection)
-			{
-				if (value.CollectionGenericType.TypeMode == DataTypeMode.Class || value.CollectionGenericType.TypeMode == DataTypeMode.Struct)
-				{
-					var t = value.CollectionGenericType as Data;
-					if (t == null) return value;
-					return t.HasXAMLType ? new DataType(value.Name, DataTypeMode.Collection) { Name = value.Name, CollectionGenericType = t.XAMLType } : new DataType(value.Name, DataTypeMode.Collection) { Name = value.Name, CollectionGenericType = t.HasClientType ? t.ClientType : t };
+					return t.HasXAMLType ? new DataType(value.Name, value.TypeMode) { Name = value.Name, CollectionGenericType = t.XAMLType } : new DataType(value.Name, value.TypeMode) { Name = value.Name, CollectionGenericType = t.HasClientType ? t.ClientType : t };
 				}
 			}
 			else if (value.TypeMode == DataTypeMode.Dictionary)
@@ -362,10 +377,24 @@ namespace NETPath.Generators.WinRT.CS
 				if (!o.IsAttached && (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8)) code.AppendLine(string.Format("\t\t\t{0} = v{0};", o.XAMLName));
 				else code.AppendLine(string.Format("t\t\t{0}.Set{1}(this, v{1});", DataTypeGenerator.GenerateType(c.XAMLType), o.XAMLName));
 			}
+			else if (o.XAMLType.TypeMode == DataTypeMode.Stack)
+			{
+				code.AppendLine(string.Format("\t\t\t{0} v{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName));
+				code.AppendLine(string.Format("\t\t\tforeach({0} a in Data.{1}) {{ v{2}.Push(a); }}", DataTypeGenerator.GenerateTypeGenerics(GetPreferredXAMLType(o.XAMLType)), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
+				if (!o.IsAttached && (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8)) code.AppendLine(string.Format("\t\t\t{0} = v{0};", o.XAMLName));
+				else code.AppendLine(string.Format("t\t\t{0}.Set{1}(this, v{1});", DataTypeGenerator.GenerateType(c.XAMLType), o.XAMLName));
+			}
+			else if (o.XAMLType.TypeMode == DataTypeMode.Queue)
+			{
+				code.AppendLine(string.Format("\t\t\t{0} v{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName));
+				code.AppendLine(string.Format("\t\t\tforeach({0} a in Data.{1}) {{ v{2}.Enqueue(a); }}", DataTypeGenerator.GenerateTypeGenerics(GetPreferredXAMLType(o.XAMLType)), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
+				if (!o.IsAttached && (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8)) code.AppendLine(string.Format("\t\t\t{0} = v{0};", o.XAMLName));
+				else code.AppendLine(string.Format("t\t\t{0}.Set{1}(this, v{1});", DataTypeGenerator.GenerateType(c.XAMLType), o.XAMLName));
+			}
 			else if (o.XAMLType.TypeMode == DataTypeMode.Dictionary)
 			{
 				code.AppendLine(string.Format("\t\t\t{0} v{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName));
-				code.AppendLine(string.Format("\t\t\tforeach(KeyValuePair<{0}> a in Data.{1}) {{ v{2}.Add(a.Key, a.Value); }}", DataTypeGenerator.GenerateTypeGenerics(GetPreferredXAMLType(o.XAMLType)), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
+				code.AppendLine(o.XAMLType.Name == "System.Collections.Concurrent.ConcurrentDictionary" ? string.Format("\t\t\tforeach(KeyValuePair<{0}> a in Data.{1}) {{ v{2}.TryAdd(a.Key, a.Value); }}", DataTypeGenerator.GenerateTypeGenerics(GetPreferredXAMLType(o.XAMLType)), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName) : string.Format("\t\t\tforeach(KeyValuePair<{0}> a in Data.{1}) {{ v{2}.Add(a.Key, a.Value); }}", DataTypeGenerator.GenerateTypeGenerics(GetPreferredXAMLType(o.XAMLType)), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
 				if (!o.IsAttached && (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8)) code.AppendLine(string.Format("\t\t\t{0} = v{0};", o.XAMLName));
 				else code.AppendLine(string.Format("t\t\t{0}.Set{1}(this, v{1});", DataTypeGenerator.GenerateType(c.XAMLType), o.XAMLName));
 			}
@@ -399,10 +428,24 @@ namespace NETPath.Generators.WinRT.CS
 				if (!o.IsAttached && (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8)) code.AppendLine(string.Format("\t\t\tXAML.{0} = v{0};", o.XAMLName));
 				else code.AppendLine(string.Format("t\t\t{0}.Set{1}(XAML, v{1});", DataTypeGenerator.GenerateType(c.XAMLType), o.XAMLName));
 			}
+			else if (o.XAMLType.TypeMode == DataTypeMode.Stack)
+			{
+				code.AppendLine(string.Format("\t\t\t{0} v{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName));
+				code.AppendLine(string.Format("\t\t\tforeach({0} a in Data.{1}) {{ v{2}.Push(a); }}", DataTypeGenerator.GenerateTypeGenerics(GetPreferredXAMLType(o.XAMLType)), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
+				if (!o.IsAttached && (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8)) code.AppendLine(string.Format("\t\t\tXAML.{0} = v{0};", o.XAMLName));
+				else code.AppendLine(string.Format("t\t\t{0}.Set{1}(XAML, v{1});", DataTypeGenerator.GenerateType(c.XAMLType), o.XAMLName));
+			}
+			else if (o.XAMLType.TypeMode == DataTypeMode.Queue)
+			{
+				code.AppendLine(string.Format("\t\t\t{0} v{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName));
+				code.AppendLine(string.Format("\t\t\tforeach({0} a in Data.{1}) {{ v{2}.Enqueue(a); }}", DataTypeGenerator.GenerateTypeGenerics(GetPreferredXAMLType(o.XAMLType)), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
+				if (!o.IsAttached && (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8)) code.AppendLine(string.Format("\t\t\tXAML.{0} = v{0};", o.XAMLName));
+				else code.AppendLine(string.Format("t\t\t{0}.Set{1}(XAML, v{1});", DataTypeGenerator.GenerateType(c.XAMLType), o.XAMLName));
+			}
 			else if (o.XAMLType.TypeMode == DataTypeMode.Dictionary)
 			{
 				code.AppendLine(string.Format("\t\t\t{0} v{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName));
-				code.AppendLine(string.Format("\t\t\tforeach(KeyValuePair<{0}> a in Data.{1}) {{ v{2}.Add(a.Key, a.Value); }}", DataTypeGenerator.GenerateTypeGenerics(GetPreferredXAMLType(o.XAMLType)), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
+				code.AppendLine(o.XAMLType.Name == "System.Collections.Concurrent.ConcurrentDictionary" ? string.Format("\t\t\tforeach(KeyValuePair<{0}> a in Data.{1}) {{ v{2}.TryAdd(a.Key, a.Value); }}", DataTypeGenerator.GenerateTypeGenerics(GetPreferredXAMLType(o.XAMLType)), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName) : string.Format("\t\t\tforeach(KeyValuePair<{0}> a in Data.{1}) {{ v{2}.Add(a.Key, a.Value); }}", DataTypeGenerator.GenerateTypeGenerics(GetPreferredXAMLType(o.XAMLType)), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
 				if (!o.IsAttached && (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8)) code.AppendLine(string.Format("\t\t\tXAML.{0} = v{0};", o.XAMLName));
 				else code.AppendLine(string.Format("t\t\t{0}.Set{1}(XAML, v{1});", DataTypeGenerator.GenerateType(c.XAMLType), o.XAMLName));
 			}
@@ -427,28 +470,34 @@ namespace NETPath.Generators.WinRT.CS
 			{
 				code.AppendLine(string.Format("\t\t\t{0} v{3} = new {1}[Data.{2}.GetLength(0)];", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType).Replace("[]", ""), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
 				code.AppendLine(string.Format("\t\t\tfor(int i = 0; i < Data.{0}.GetLength(0); i++) {{ v{1}[i] = Data.{0}[i]; }}", o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
-				if (!o.IsAttached && (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8)) code.AppendLine(string.Format("\t\t\tDTO.{0} = v{0};", o.XAMLName));
-				else code.AppendLine(string.Format("t\t\t{0}.Set{1}(DTO, v{1});", DataTypeGenerator.GenerateType(c.XAMLType), o.XAMLName));
+				if (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) code.AppendLine(string.Format("\t\t\tDTO.{0} = v{0};", o.XAMLName));
 			}
 			else if (o.XAMLType.TypeMode == DataTypeMode.Collection)
 			{
 				code.AppendLine(string.Format("\t\t\t{0} v{1} = new {0}();", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.XAMLName));
 				code.AppendLine(string.Format("\t\t\tforeach({0} a in Data.{1}) {{ v{2}.Add(a); }}", DataTypeGenerator.GenerateTypeGenerics(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
-				if (!o.IsAttached && (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8)) code.AppendLine(string.Format("\t\t\tDTO.{0} = v{0};", o.XAMLName));
-				else code.AppendLine(string.Format("t\t\t{0}.Set{1}(DTO, v{1});", DataTypeGenerator.GenerateType(c.XAMLType), o.XAMLName));
+				if (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) code.AppendLine(string.Format("\t\t\tDTO.{0} = v{0};", o.XAMLName));
+			}
+			else if (o.XAMLType.TypeMode == DataTypeMode.Stack)
+			{
+				code.AppendLine(string.Format("\t\t\t{0} v{1} = new {0}();", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.XAMLName));
+				code.AppendLine(string.Format("\t\t\tforeach({0} a in Data.{1}) {{ v{2}.Push(a); }}", DataTypeGenerator.GenerateTypeGenerics(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
+				if (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) code.AppendLine(string.Format("\t\t\tDTO.{0} = v{0};", o.XAMLName));
+			}
+			else if (o.XAMLType.TypeMode == DataTypeMode.Queue)
+			{
+				code.AppendLine(string.Format("\t\t\t{0} v{1} = new {0}();", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.XAMLName));
+				code.AppendLine(string.Format("\t\t\tforeach({0} a in Data.{1}) {{ v{2}.Enqueue(a); }}", DataTypeGenerator.GenerateTypeGenerics(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
+				if (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) code.AppendLine(string.Format("\t\t\tDTO.{0} = v{0};", o.XAMLName));
 			}
 			else if (o.XAMLType.TypeMode == DataTypeMode.Dictionary)
 			{
 				code.AppendLine(string.Format("\t\t\t{0} v{1} = new {0}();", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.XAMLName));
-				code.AppendLine(string.Format("\t\t\tforeach(KeyValuePair<{0}> a in Data.{1}) {{ v{2}.Add(a.Key, a.Value); }}", DataTypeGenerator.GenerateTypeGenerics(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
-				if (!o.IsAttached && (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8)) code.AppendLine(string.Format("\t\t\tDTO.{0} = v{0};", o.XAMLName));
-				else code.AppendLine(string.Format("t\t\t{0}.Set{1}(DTO, v{1});", DataTypeGenerator.GenerateType(c.XAMLType), o.XAMLName));
+				code.AppendLine(o.XAMLType.Name == "System.Collections.Concurrent.ConcurrentDictionary" ? string.Format("\t\t\tforeach(KeyValuePair<{0}> a in Data.{1}) {{ v{2}.TryAdd(a.Key, a.Value); }}", DataTypeGenerator.GenerateTypeGenerics(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName) : string.Format("\t\t\tforeach(KeyValuePair<{0}> a in Data.{1}) {{ v{2}.Add(a.Key, a.Value); }}", DataTypeGenerator.GenerateTypeGenerics(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
+				if (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) code.AppendLine(string.Format("\t\t\tDTO.{0} = v{0};", o.XAMLName));
 			}
 			else
-			{
-				if (!o.IsAttached && (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8)) code.AppendLine(string.Format("\t\t\tDTO.{1} = Data.{0};", o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
-				else code.AppendLine(string.Format("\t\t\t{2}.Set{1}(DTO, Data.{0});", o.HasClientType ? o.ClientName : o.DataName, o.XAMLName, DataTypeGenerator.GenerateType(c.XAMLType)));
-			}
+				if (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) code.AppendLine(string.Format("\t\t\tDTO.{1} = Data.{0};", o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
 
 			return code.ToString();
 		}
