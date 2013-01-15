@@ -183,12 +183,12 @@
 									</Grid.ColumnDefinitions>
 									<Image Source="pack://application:,,,/NETPath;component/Icons/X64/Solution.png" Margin="10,5" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="64" Width="64" Stretch="None" Grid.Column="0" />
 									<StackPanel Grid.Column="1" Margin="10">
-										<Label Content="New Solution" Foreground="Gray" FontSize="14pt" FontWeight="Bold" Padding="0"/>
-										<Label Content="Create a new NETPath Solution." Padding="0" />
+										<TextBlock Text="New Solution" Foreground="Gray" FontSize="14pt" FontWeight="Bold" Padding="0"/>
+										<TextBlock Text="Create a new NETPath Solution." Padding="0" FontSize="10pt" />
 									</StackPanel>
 								</Grid>
 							</Button>
-							<Button x:Name="AddProject" Grid.Row="0" Margin="0,10,0,0" IsEnabled="False" HorizontalContentAlignment="Left" Click="AddProject_Click" >
+							<Button x:Name="AddProject" Margin="0,10,0,0" IsEnabled="False" HorizontalContentAlignment="Left" Click="AddProject_Click" >
 								<Grid>
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition Width="Auto" />
@@ -196,8 +196,21 @@
 									</Grid.ColumnDefinitions>
 									<Image Source="pack://application:,,,/NETPath;component/Icons/X64/Project.png" Margin="10,5" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="64" Width="64" Stretch="None" Grid.Column="0" />
 									<StackPanel Grid.Column="1" Margin="10">
-										<Label Content="Add Project" Foreground="Gray" FontSize="14pt" FontWeight="Bold" Padding="0"/>
-										<TextBlock Text="Add a project to the current solution." Padding="0" TextWrapping="Wrap" />
+										<TextBlock Text="Add New Project" Foreground="Gray" FontSize="14pt" FontWeight="Bold" Padding="0"/>
+										<TextBlock Text="Add a new project to the current solution." Padding="0" TextWrapping="Wrap" FontSize="10pt" />
+									</StackPanel>
+								</Grid>
+							</Button>
+							<Button x:Name="AddExistingProject" Margin="0,10,0,0" IsEnabled="False" HorizontalContentAlignment="Left" Click="AddExistingProject_Click" >
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="Auto" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+									<Image Source="pack://application:,,,/NETPath;component/Icons/X64/Project.png" Margin="10,5" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="64" Width="64" Stretch="None" Grid.Column="0" />
+									<StackPanel Grid.Column="1" Margin="10">
+										<TextBlock Text="Add Existing Project" Foreground="Gray" FontSize="14pt" FontWeight="Bold" Padding="0"/>
+										<TextBlock Text="Add an existing project to the current solution." Padding="0" TextWrapping="Wrap" FontSize="10pt" />
 									</StackPanel>
 								</Grid>
 							</Button>
@@ -223,7 +236,7 @@
 						<TabControl Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Margin="5,0,0,0">
 							<TabItem Header="GETTING STARTED" FontSize="12pt">
 								<FlowDocumentScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" >
-									<FlowDocument FontFamily="Segoe UI">
+									<FlowDocument FontFamily="Segoe UI" FontSize="12pt">
 										<Paragraph>
 											<Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/Introduction" RequestNavigate="Hyperlink_RequestNavigate">Introduction</Hyperlink>
 										</Paragraph>
@@ -235,6 +248,12 @@
 											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/Adding+a+Project+to+a+Solution" RequestNavigate="Hyperlink_RequestNavigate">Adding Project to a Solution</Hyperlink></Paragraph></ListItem>
 											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/The+Project+Navigator" RequestNavigate="Hyperlink_RequestNavigate">The Project Navigator</Hyperlink></Paragraph></ListItem>
 											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/Configuring+a+Project" RequestNavigate="Hyperlink_RequestNavigate">Configuring a Project</Hyperlink></Paragraph></ListItem>
+										</List>
+										<Paragraph>
+											<Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/Creating+a+Service" RequestNavigate="Hyperlink_RequestNavigate">Creating A Service</Hyperlink>
+										</Paragraph>
+										<List>
+											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/Enumeration+Contracts" RequestNavigate="Hyperlink_RequestNavigate">Enumeration Contracts</Hyperlink></Paragraph></ListItem>
 										</List>
 									</FlowDocument>
 								</FlowDocumentScrollViewer>

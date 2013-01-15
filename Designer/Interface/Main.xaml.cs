@@ -265,6 +265,27 @@ namespace NETPath.Interface
 			DialogService.ShowContentDialog(null, "New Project", np, new DialogAction("Create", np.Create, true), new DialogAction("Cancel", false, true));
 		}
 
+		private void AddExistingProject_Click(object Sender, RoutedEventArgs E)
+		{
+			string openpath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+			//Select the project
+			var ofd = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog("Select Project")
+			{
+				DefaultExtension = ".wap",
+				AllowNonFileSystemItems = false,
+				EnsurePathExists = true,
+				IsFolderPicker = false,
+				InitialDirectory = openpath,
+				Multiselect = false,
+				ShowPlacesList = true
+			};
+			if (ofd.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel) return;
+
+			Globals.Projects.Add(Projects.Project.Open(Globals.SolutionPath, ofd.FileName));
+			Globals.SaveSolution(false);
+		}
+
 		private void UpdateYes_Click(object sender, RoutedEventArgs e)
 		{
 			Process.Start(new ProcessStartInfo(Globals.NewVersionPath));
@@ -431,6 +452,7 @@ namespace NETPath.Interface
 			}
 
 			AddProject.IsEnabled = true;
+			AddExistingProject.IsEnabled = true;
 			SystemMenuSave.IsEnabled = true;
 			SystemMenuClose.IsEnabled = true;
 			Title = Globals.Solution.Name + " - NETPath 2 - BETA";
@@ -463,6 +485,7 @@ namespace NETPath.Interface
 		{
 			Globals.SolutionInfo = null;
 			AddProject.IsEnabled = false;
+			AddExistingProject.IsEnabled = false;
 			SystemMenuSave.IsEnabled = false;
 			SystemMenuClose.IsEnabled = false;
 			Title = "NETPath 2 - BETA";
