@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientBaseEx.cs" />
+    <Compile Include="DependencyQueue.cs" />
     <Compile Include="DependencyDictionary.cs" />
     <Compile Include="DependencyList.cs" />
     <Compile Include="DependencyObjectEx.cs" />

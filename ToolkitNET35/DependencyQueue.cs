@@ -8,27 +8,27 @@ using System.Windows.Threading;
 
 namespace System.Collections.Generic
 {
-	public class DependencyStack<T> : IEnumerable<T>, ICollection
+	public class DependencyQueue<T> : IEnumerable<T>, ICollection
 	{
-		private readonly Stack<T> il;
+		private readonly Queue<T> il;
 		private readonly ReaderWriterLockSlim ocl;
-		private readonly Action<IEnumerable<T>> Pushed;
-		private readonly Action<IEnumerable<T>> Popped;
+		private readonly Action<IEnumerable<T>> Enqueued;
+		private readonly Action<IEnumerable<T>> Dequeued;
 		private readonly Action<int> Cleared;
 
-		public DependencyStack(Action<IEnumerable<T>> Pushed, Action<IEnumerable<T>> Popped, Action<int> Cleared)
+		public DependencyQueue(Action<IEnumerable<T>> Enqueued, Action<IEnumerable<T>> Dequeued, Action<int> Cleared)
 		{
-			il = new Stack<T>();
-			this.Pushed = Pushed ?? (ItemList => { });
-			this.Popped = Popped ?? ((Index, ItemList) => { });
+			il = new Queue<T>();
+			this.Enqueued = Enqueued ?? (ItemList => { });
+			this.Dequeued = Dequeued ?? ((Index, ItemList) => { });
 			this.Cleared = Cleared ?? (count => { });
 		}
 
-		public DependencyStack(IEnumerable<T> Items, Action<IEnumerable<T>> Pushed, Action<IEnumerable<T>> Popped, Action<int> Cleared)
+		public DependencyQueue(IEnumerable<T> Items, Action<IEnumerable<T>> Enqueued, Action<IEnumerable<T>> Dequeued, Action<int> Cleared)
 		{
-			il = new Stack<T>(Items);
-			this.Pushed = Pushed ?? (ItemList => { });
-			this.Popped = Popped ?? ((Index, ItemList) => { });
+			il = new Queue<T>(Items);
+			this.Enqueued = Enqueued ?? (ItemList => { });
+			this.Dequeued = Dequeued ?? ((Index, ItemList) => { });
 			this.Cleared = Cleared ?? (count => { });
 		}
 
@@ -74,13 +74,13 @@ namespace System.Collections.Generic
 			}
 		}
 
-		public void Push(T Item)
+		public void Enqueue(T Item)
 		{
 			ocl.EnterWriteLock();
 			try
 			{
-				il.Push(Item);
-				CallPushed(Item);
+				il.Enqueue(Item);
+				CallEnqueued(Item);
 			}
 			finally
 			{
@@ -88,14 +88,14 @@ namespace System.Collections.Generic
 			}
 		}
 
-		public void PushRange(T[] Items)
+		public void EnqueueRange(T[] Items)
 		{
 			ocl.EnterWriteLock();
 			try
 			{
 				foreach(T t in Items)
-					il.Push(t);
-				CallPushed(Items);
+					il.Enqueue(t);
+				CallEnqueued(Items);
 			}
 			finally
 			{
@@ -103,7 +103,7 @@ namespace System.Collections.Generic
 			}
 		}
 
-		public void PushRange(T[] Items, int Start, int Count)
+		public void EnqueueRange(T[] Items, int Start, int Count)
 		{
 			if (Items == null) throw new ArgumentNullException("Items");
 			if (Start < 0) throw new ArgumentOutOfRangeException("Start", "Start cannot be negative.");
@@ -115,8 +115,8 @@ namespace System.Collections.Generic
 			try
 			{
 				for (int i = Start; i < (Count+i); i++)
-					il.Push(Items[i]);
-				CallPushed(Items);
+					il.Enqueue(Items[i]);
+				CallEnqueued(Items);
 			}
 			finally
 			{
@@ -124,13 +124,13 @@ namespace System.Collections.Generic
 			}
 		}
 
-		public T Pop()
+		public T Dequeue()
 		{
 			ocl.EnterReadLock();
 			try
 			{
-				T t = il.Pop();
-				CallPopped(t);
+				T t = il.Dequeue();
+				CallDequeued(t);
 				return t;
 			}
 			finally
@@ -139,7 +139,7 @@ namespace System.Collections.Generic
 			}
 		}
 
-		public int PopRange(T[] Items, int Start, int Count)
+		public int DequeueRange(T[] Items, int Start, int Count)
 		{
 			if (Items == null) throw new ArgumentNullException("Items");
 			if (Start < 0) throw new ArgumentOutOfRangeException("Start", "Start cannot be negative.");
@@ -153,8 +153,8 @@ namespace System.Collections.Generic
 				var tl = new T[Count];
 				int c = 0;
 				for (int i = Start; i < (Count + i); i++)
-					tl[c++] = Items[i] = il.Pop();
-				CallPopped(tl);
+					tl[c++] = Items[i] = il.Dequeue();
+				CallDequeued(tl);
 				return Count;
 			}
 			finally
@@ -165,32 +165,32 @@ namespace System.Collections.Generic
 
 		#region - Update Calls -
 
-		private void CallPushed(T item)
+		private void CallEnqueued(T item)
 		{
-			if (Application.Current.Dispatcher == null) { Pushed(new List<T> { item }); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { Pushed(new List<T> { item }); }
-			else Application.Current.Dispatcher.Invoke(new Action(() => Pushed(new List<T> { item })), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { Enqueued(new List<T> { item }); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { Enqueued(new List<T> { item }); }
+			else Application.Current.Dispatcher.Invoke(new Action(() => Enqueued(new List<T> { item })), DispatcherPriority.Normal);
 		}
 
-		private void CallPushed(IEnumerable<T> items)
+		private void CallEnqueued(IEnumerable<T> items)
 		{
-			if (Application.Current.Dispatcher == null) { Pushed(items); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { Pushed(items); }
-			else Application.Current.Dispatcher.Invoke(new Action(() => Pushed(items)), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { Enqueued(items); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { Enqueued(items); }
+			else Application.Current.Dispatcher.Invoke(new Action(() => Enqueued(items)), DispatcherPriority.Normal);
 		}
 
-		private void CallPopped(T item)
+		private void CallDequeued(T item)
 		{
-			if (Application.Current.Dispatcher == null) { Popped(new List<T> { item }); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { Popped(new List<T> { item }); }
-			else Application.Current.Dispatcher.Invoke(new Action(() => Popped(new List<T> { item })), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { Dequeued(new List<T> { item }); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { Dequeued(new List<T> { item }); }
+			else Application.Current.Dispatcher.Invoke(new Action(() => Dequeued(new List<T> { item })), DispatcherPriority.Normal);
 		}
 
-		private void CallPopped(IEnumerable<T> items)
+		private void CallDequeued(IEnumerable<T> items)
 		{
-			if (Application.Current.Dispatcher == null) { Popped(items); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { Popped(items); }
-			else Application.Current.Dispatcher.Invoke(new Action(() => Popped(items)), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { Dequeued(items); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { Dequeued(items); }
+			else Application.Current.Dispatcher.Invoke(new Action(() => Dequeued(items)), DispatcherPriority.Normal);
 		}
 
 		private void CallCleared(int count, IEnumerable<T> items)

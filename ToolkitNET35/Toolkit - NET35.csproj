@@ -42,6 +42,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DependencyQueue.cs" />
     <Compile Include="DependencyDictionary.cs" />
     <Compile Include="DependencyList.cs" />
     <Compile Include="DependencyObjectEx.cs" />
