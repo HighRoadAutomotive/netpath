@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -11,7 +10,7 @@ namespace System.Collections.Generic
 	public class DependencyStack<T> : IEnumerable<T>, ICollection
 	{
 		private readonly Stack<T> il;
-		private readonly ReaderWriterLockSlim ocl;
+		private readonly ReaderWriterLock ocl;
 		private readonly Action<IEnumerable<T>> Pushed;
 		private readonly Action<IEnumerable<T>> Popped;
 		private readonly Action<int> Cleared;
@@ -34,7 +33,7 @@ namespace System.Collections.Generic
 
 		public void Clear()
 		{
-			ocl.EnterWriteLock();
+			ocl.AcquireWriterLock(0);
 			try
 			{
 				int t = il.Count;
@@ -44,26 +43,26 @@ namespace System.Collections.Generic
 			}
 			finally 
 			{
-				ocl.ExitWriteLock();
+				ocl.ReleaseWriterLock();
 			}
 		}
 
 		public bool Contains(T Item)
 		{
-			ocl.EnterReadLock();
+			ocl.AcquireReaderLock(0);
 			try
 			{
 				return il.Contains(Item);
 			}
 			finally 
 			{
-				ocl.ExitReadLock();
+				ocl.ReleaseReaderLock();
 			}
 		}
 
 		public void Push(T Item)
 		{
-			ocl.EnterWriteLock();
+			ocl.AcquireWriterLock(0);
 			try
 			{
 				il.Push(Item);
@@ -71,13 +70,13 @@ namespace System.Collections.Generic
 			}
 			finally
 			{
-				ocl.ExitWriteLock();
+				ocl.ReleaseWriterLock();
 			}
 		}
 
 		public void PushRange(T[] Items)
 		{
-			ocl.EnterWriteLock();
+			ocl.AcquireWriterLock(0);
 			try
 			{
 				foreach(T t in Items)
@@ -86,7 +85,7 @@ namespace System.Collections.Generic
 			}
 			finally
 			{
-				ocl.ExitWriteLock();
+				ocl.ReleaseWriterLock();
 			}
 		}
 
@@ -98,7 +97,7 @@ namespace System.Collections.Generic
 			if (Start > Items.Length) throw new ArgumentOutOfRangeException("Start", "Start cannot be greater than the length of Items.");
 			if (Start + Count > Items.Length) throw new ArgumentException("Start + Count cannot be greater than the length of Items.");
 
-			ocl.EnterWriteLock();
+			ocl.AcquireWriterLock(0);
 			try
 			{
 				for (int i = Start; i < (Count+i); i++)
@@ -107,13 +106,13 @@ namespace System.Collections.Generic
 			}
 			finally
 			{
-				ocl.ExitWriteLock();
+				ocl.ReleaseWriterLock();
 			}
 		}
 
 		public T Pop()
 		{
-			ocl.EnterReadLock();
+			ocl.AcquireReaderLock(0);
 			try
 			{
 				T t = il.Pop();
@@ -122,7 +121,7 @@ namespace System.Collections.Generic
 			}
 			finally
 			{
-				ocl.ExitReadLock();
+				ocl.ReleaseReaderLock();
 			}
 		}
 
@@ -134,7 +133,7 @@ namespace System.Collections.Generic
 			if (Start > Items.Length) throw new ArgumentOutOfRangeException("Start", "Start cannot be greater than the length of Items.");
 			if (Start + Count > Items.Length) throw new ArgumentException("Start + Count cannot be greater than the length of Items.");
 
-			ocl.EnterReadLock();
+			ocl.AcquireReaderLock(0);
 			try
 			{
 				var tl = new T[Count];
@@ -146,7 +145,7 @@ namespace System.Collections.Generic
 			}
 			finally
 			{
-				ocl.ExitReadLock();
+				ocl.ReleaseReaderLock();
 			}
 		}
 
@@ -156,35 +155,35 @@ namespace System.Collections.Generic
 		{
 			if (Application.Current.Dispatcher == null) { Pushed(new List<T> { item }); return; }
 			if (Application.Current.Dispatcher.CheckAccess()) { Pushed(new List<T> { item }); }
-			else Application.Current.Dispatcher.Invoke(new Action(() => Pushed(new List<T> { item })), DispatcherPriority.Normal);
+			else Application.Current.Dispatcher.Invoke(new Action<IEnumerable<T>>(c => Pushed(new List<T> { item })), DispatcherPriority.Normal);
 		}
 
 		private void CallPushed(IEnumerable<T> items)
 		{
 			if (Application.Current.Dispatcher == null) { Pushed(items); return; }
 			if (Application.Current.Dispatcher.CheckAccess()) { Pushed(items); }
-			else Application.Current.Dispatcher.Invoke(new Action(() => Pushed(items)), DispatcherPriority.Normal);
+			else Application.Current.Dispatcher.Invoke(new Action<IEnumerable<T>>(c => Pushed(items)), DispatcherPriority.Normal);
 		}
 
 		private void CallPopped(T item)
 		{
 			if (Application.Current.Dispatcher == null) { Popped(new List<T> { item }); return; }
 			if (Application.Current.Dispatcher.CheckAccess()) { Popped(new List<T> { item }); }
-			else Application.Current.Dispatcher.Invoke(new Action(() => Popped(new List<T> { item })), DispatcherPriority.Normal);
+			else Application.Current.Dispatcher.Invoke(new Action<IEnumerable<T>>(c => Popped(new List<T> { item })), DispatcherPriority.Normal);
 		}
 
 		private void CallPopped(IEnumerable<T> items)
 		{
 			if (Application.Current.Dispatcher == null) { Popped(items); return; }
 			if (Application.Current.Dispatcher.CheckAccess()) { Popped(items); }
-			else Application.Current.Dispatcher.Invoke(new Action(() => Popped(items)), DispatcherPriority.Normal);
+			else Application.Current.Dispatcher.Invoke(new Action<IEnumerable<T>>(c => Popped(items)), DispatcherPriority.Normal);
 		}
 
 		private void CallCleared(int count, IEnumerable<T> items)
 		{
 			if (Application.Current.Dispatcher == null) { Cleared(count); return; }
 			if (Application.Current.Dispatcher.CheckAccess()) { Cleared(count); }
-			else Application.Current.Dispatcher.Invoke(new Action(() => Cleared(count)), DispatcherPriority.Normal);
+			else Application.Current.Dispatcher.Invoke(new Action<int>(c => Cleared(count)), DispatcherPriority.Normal);
 		}
 		#endregion
 
@@ -192,72 +191,72 @@ namespace System.Collections.Generic
 
 		public void CopyTo(T[] array, int index)
 		{
-			ocl.EnterReadLock();
+			ocl.AcquireReaderLock(0);
 			try
 			{
 				il.CopyTo(array, index);
 			}
 			finally 
 			{
-				ocl.ExitReadLock();
+				ocl.ReleaseReaderLock();
 			}
 		}
 
 		public T[] ToArray()
 		{
-			ocl.EnterReadLock();
+			ocl.AcquireReaderLock(0);
 			try
 			{
 				return il.ToArray();
 			}
 			finally 
 			{
-				ocl.ExitReadLock();
+				ocl.ReleaseReaderLock();
 			}
 		}
 
 		public IEnumerator<T> GetEnumerator()
 		{
-			ocl.EnterReadLock();
+			ocl.AcquireReaderLock(0);
 			try
 			{
 				return il.GetEnumerator();
 			}
 			finally
 			{
-				ocl.ExitReadLock();
+				ocl.ReleaseReaderLock();
 			}
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			ocl.EnterReadLock();
+			ocl.AcquireReaderLock(0);
 			try
 			{
 				return ((ICollection) il).GetEnumerator();
 			}
 			finally
 			{
-				ocl.ExitReadLock();
+				ocl.ReleaseReaderLock();
 			}
 		}
 
 		void ICollection.CopyTo(Array array, int index)
 		{
-			ocl.EnterReadLock();
+			ocl.AcquireReaderLock(0);
 			try
 			{
 				((ICollection) il).CopyTo(array, index);
 			}
 			finally
 			{
-				ocl.ExitReadLock();
+				ocl.ReleaseReaderLock();
 			}
 		}
 
 		public int Count
 		{
-			get { ocl.EnterReadLock(); try { return il.Count; } finally { ocl.ExitReadLock(); } }
+			get { ocl.AcquireReaderLock(0); try { return il.Count; } finally { ocl.ReleaseReaderLock(); } }
 		}
 
 		bool ICollection.IsSynchronized
