@@ -221,18 +221,18 @@ namespace NETPath.Generators.NET.CS
 			//Generate project
 			if (Server)
 			{
-				if (Framework == ProjectGenerationFramework.NET30) code.AppendLine(NamespaceGenerator.GenerateServerCode30(Data.Namespace));
-				if (Framework == ProjectGenerationFramework.NET35) code.AppendLine(NamespaceGenerator.GenerateServerCode35(Data.Namespace));
-				if (Framework == ProjectGenerationFramework.NET35Client) code.AppendLine(NamespaceGenerator.GenerateServerCode35Client(Data.Namespace));
+				//if (Framework == ProjectGenerationFramework.NET30) code.AppendLine(NamespaceGenerator.GenerateServerCode30(Data.Namespace));
+				//if (Framework == ProjectGenerationFramework.NET35) code.AppendLine(NamespaceGenerator.GenerateServerCode35(Data.Namespace));
+				//if (Framework == ProjectGenerationFramework.NET35Client) code.AppendLine(NamespaceGenerator.GenerateServerCode35Client(Data.Namespace));
 				if (Framework == ProjectGenerationFramework.NET40) code.AppendLine(NamespaceGenerator.GenerateServerCode40(Data.Namespace));
 				if (Framework == ProjectGenerationFramework.NET40Client) code.AppendLine(NamespaceGenerator.GenerateServerCode40Client(Data.Namespace));
 				if (Framework == ProjectGenerationFramework.NET45) code.AppendLine(NamespaceGenerator.GenerateServerCode45(Data.Namespace));
 			}
 			else
 			{
-				if (Framework == ProjectGenerationFramework.NET30) code.AppendLine(NamespaceGenerator.GenerateClientCode30(Data.Namespace));
-				if (Framework == ProjectGenerationFramework.NET35) code.AppendLine(NamespaceGenerator.GenerateClientCode35(Data.Namespace));
-				if (Framework == ProjectGenerationFramework.NET35Client) code.AppendLine(NamespaceGenerator.GenerateClientCode35Client(Data.Namespace));
+				//if (Framework == ProjectGenerationFramework.NET30) code.AppendLine(NamespaceGenerator.GenerateClientCode30(Data.Namespace));
+				//if (Framework == ProjectGenerationFramework.NET35) code.AppendLine(NamespaceGenerator.GenerateClientCode35(Data.Namespace));
+				//if (Framework == ProjectGenerationFramework.NET35Client) code.AppendLine(NamespaceGenerator.GenerateClientCode35Client(Data.Namespace));
 				if (Framework == ProjectGenerationFramework.NET40) code.AppendLine(NamespaceGenerator.GenerateClientCode40(Data.Namespace));
 				if (Framework == ProjectGenerationFramework.NET40Client) code.AppendLine(NamespaceGenerator.GenerateClientCode40Client(Data.Namespace));
 				if (Framework == ProjectGenerationFramework.NET45) code.AppendLine(NamespaceGenerator.GenerateClientCode45(Data.Namespace));
@@ -348,34 +348,34 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine("{");
 			if (Server && rt == typeof(Data))
 			{
-				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30) code.AppendLine(DataGenerator.GenerateServerCode30(typeref as Data));
-				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client) code.AppendLine(DataGenerator.GenerateServerCode35(typeref as Data));
+				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30) code.AppendLine(DataGenerator.GenerateServerCode30(typeref as Data));
+				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client) code.AppendLine(DataGenerator.GenerateServerCode35(typeref as Data));
 				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40Client) code.AppendLine(DataGenerator.GenerateServerCode40(typeref as Data));
 				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45) code.AppendLine(DataGenerator.GenerateServerCode45(typeref as Data));
 			}
 			else if (!Server && rt == typeof(Data))
 			{
-				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30) code.AppendLine(DataGenerator.GenerateProxyCode30(typeref as Data));
-				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client) code.AppendLine(DataGenerator.GenerateProxyCode35(typeref as Data));
+				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30) code.AppendLine(DataGenerator.GenerateProxyCode30(typeref as Data));
+				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client) code.AppendLine(DataGenerator.GenerateProxyCode35(typeref as Data));
 				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40Client) code.AppendLine(DataGenerator.GenerateProxyCode40(typeref as Data));
 				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45) code.AppendLine(DataGenerator.GenerateProxyCode45(typeref as Data));
 				code.AppendLine();
-				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30) code.AppendLine(DataGenerator.GenerateXAMLCode30(typeref as Data));
-				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client) code.AppendLine(DataGenerator.GenerateXAMLCode35(typeref as Data));
+				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30) code.AppendLine(DataGenerator.GenerateXAMLCode30(typeref as Data));
+				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client) code.AppendLine(DataGenerator.GenerateXAMLCode35(typeref as Data));
 				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40Client) code.AppendLine(DataGenerator.GenerateXAMLCode40(typeref as Data));
 				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45) code.AppendLine(DataGenerator.GenerateXAMLCode45(typeref as Data));
 			}
 			else if (Server && rt == typeof(Projects.Enum))
 			{
-				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30) code.AppendLine(EnumGenerator.GenerateServerCode30(typeref as Projects.Enum));
-				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client) code.AppendLine(EnumGenerator.GenerateServerCode35(typeref as Projects.Enum));
+				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30) code.AppendLine(EnumGenerator.GenerateServerCode30(typeref as Projects.Enum));
+				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client) code.AppendLine(EnumGenerator.GenerateServerCode35(typeref as Projects.Enum));
 				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40Client) code.AppendLine(EnumGenerator.GenerateServerCode40(typeref as Projects.Enum));
 				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45) code.AppendLine(EnumGenerator.GenerateServerCode45(typeref as Projects.Enum));
 			}
 			else if (!Server && rt == typeof(Projects.Enum))
 			{
-				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30) code.AppendLine(EnumGenerator.GenerateProxyCode30(typeref as Projects.Enum));
-				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client) code.AppendLine(EnumGenerator.GenerateProxyCode35(typeref as Projects.Enum));
+				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30) code.AppendLine(EnumGenerator.GenerateProxyCode30(typeref as Projects.Enum));
+				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client) code.AppendLine(EnumGenerator.GenerateProxyCode35(typeref as Projects.Enum));
 				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40Client) code.AppendLine(EnumGenerator.GenerateProxyCode40(typeref as Projects.Enum));
 				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45) code.AppendLine(EnumGenerator.GenerateProxyCode45(typeref as Projects.Enum));
 			}

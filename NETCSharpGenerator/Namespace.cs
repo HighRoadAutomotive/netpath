@@ -50,215 +50,219 @@ namespace NETPath.Generators.NET.CS
 			return code.ToString();
 		}
 
-		public static string GenerateServerCode30(Namespace o)
-		{
-			var code = new StringBuilder();
+		#region - Obsolete .NET 3.x Code -
 
-			code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
-			code.AppendLine("{");
+		//public static string GenerateServerCode30(Namespace o)
+		//{
+		//	var code = new StringBuilder();
 
-			if (o.Enums.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tEnumerations");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (Projects.Enum ee in o.Enums)
-					code.AppendLine(EnumGenerator.GenerateServerCode30(ee));
-				code.AppendLine();
-			}
+		//	code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
+		//	code.AppendLine("{");
 
-			if (o.Data.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tData Contracts");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (Data de in o.Data)
-					code.AppendLine(DataGenerator.GenerateServerCode30(de));
-				code.AppendLine();
-			}
+		//	if (o.Enums.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tEnumerations");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (Projects.Enum ee in o.Enums)
+		//			code.AppendLine(EnumGenerator.GenerateServerCode30(ee));
+		//		code.AppendLine();
+		//	}
 
-			if (o.Services.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Contracts");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (Service se in o.Services)
-					code.AppendLine(ServiceGenerator.GenerateServerCode30(se));
-				code.AppendLine();
-			}
+		//	if (o.Data.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tData Contracts");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (Data de in o.Data)
+		//			code.AppendLine(DataGenerator.GenerateServerCode30(de));
+		//		code.AppendLine();
+		//	}
 
-			if (o.Bindings.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Bindings");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (ServiceBinding sb in o.Bindings)
-					code.AppendLine(BindingsGenerator.GenerateCode30(sb));
-				code.AppendLine();
-			}
+		//	if (o.Services.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tService Contracts");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (Service se in o.Services)
+		//			code.AppendLine(ServiceGenerator.GenerateServerCode30(se));
+		//		code.AppendLine();
+		//	}
 
-			if (o.Hosts.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Hosts");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (Host he in o.Hosts)
-					code.AppendLine(HostGenerator.GenerateServerCode30(he));
-				code.AppendLine();
-			}
+		//	if (o.Bindings.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tService Bindings");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (ServiceBinding sb in o.Bindings)
+		//			code.AppendLine(BindingsGenerator.GenerateCode30(sb));
+		//		code.AppendLine();
+		//	}
 
-			code.AppendLine("}");
+		//	if (o.Hosts.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tService Hosts");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (Host he in o.Hosts)
+		//			code.AppendLine(HostGenerator.GenerateServerCode30(he));
+		//		code.AppendLine();
+		//	}
 
-			foreach (Namespace tn in o.Children)
-				code.AppendLine(GenerateServerCode30(tn));
+		//	code.AppendLine("}");
 
-			return code.ToString();
-		}
+		//	foreach (Namespace tn in o.Children)
+		//		code.AppendLine(GenerateServerCode30(tn));
 
-		public static string GenerateServerCode35(Namespace o)
-		{
-			var code = new StringBuilder();
+		//	return code.ToString();
+		//}
 
-			code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
-			code.AppendLine("{");
+		//public static string GenerateServerCode35(Namespace o)
+		//{
+		//	var code = new StringBuilder();
 
-			if (o.Enums.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tEnumerations");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (Projects.Enum ee in o.Enums)
-					code.AppendLine(EnumGenerator.GenerateServerCode35(ee));
-				code.AppendLine();
-			}
+		//	code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
+		//	code.AppendLine("{");
 
-			if (o.Data.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tData Contracts");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (Data de in o.Data)
-					code.AppendLine(DataGenerator.GenerateServerCode35(de));
-				code.AppendLine();
-			}
+		//	if (o.Enums.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tEnumerations");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (Projects.Enum ee in o.Enums)
+		//			code.AppendLine(EnumGenerator.GenerateServerCode35(ee));
+		//		code.AppendLine();
+		//	}
 
-			if (o.Services.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Contracts");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (Service se in o.Services)
-					code.AppendLine(ServiceGenerator.GenerateServerCode35(se));
-				code.AppendLine();
-			}
+		//	if (o.Data.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tData Contracts");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (Data de in o.Data)
+		//			code.AppendLine(DataGenerator.GenerateServerCode35(de));
+		//		code.AppendLine();
+		//	}
 
-			if (o.Bindings.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Bindings");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (ServiceBinding sb in o.Bindings)
-					code.AppendLine(BindingsGenerator.GenerateCode35(sb));
-				code.AppendLine();
-			}
+		//	if (o.Services.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tService Contracts");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (Service se in o.Services)
+		//			code.AppendLine(ServiceGenerator.GenerateServerCode35(se));
+		//		code.AppendLine();
+		//	}
 
-			if (o.Hosts.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Hosts");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (Host he in o.Hosts)
-					code.AppendLine(HostGenerator.GenerateServerCode35(he));
-				code.AppendLine();
-			}
+		//	if (o.Bindings.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tService Bindings");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (ServiceBinding sb in o.Bindings)
+		//			code.AppendLine(BindingsGenerator.GenerateCode35(sb));
+		//		code.AppendLine();
+		//	}
 
-			code.AppendLine("}");
+		//	if (o.Hosts.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tService Hosts");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (Host he in o.Hosts)
+		//			code.AppendLine(HostGenerator.GenerateServerCode35(he));
+		//		code.AppendLine();
+		//	}
 
-			foreach (Namespace tn in o.Children)
-				code.AppendLine(GenerateServerCode35(tn));
+		//	code.AppendLine("}");
 
-			return code.ToString();
-		}
+		//	foreach (Namespace tn in o.Children)
+		//		code.AppendLine(GenerateServerCode35(tn));
 
-		public static string GenerateServerCode35Client(Namespace o)
-		{
-			var code = new StringBuilder();
+		//	return code.ToString();
+		//}
 
-			code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
-			code.AppendLine("{");
+		//public static string GenerateServerCode35Client(Namespace o)
+		//{
+		//	var code = new StringBuilder();
 
-			if (o.Enums.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tEnumerations");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (Projects.Enum ee in o.Enums)
-					code.AppendLine(EnumGenerator.GenerateServerCode35(ee));
-				code.AppendLine();
-			}
+		//	code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
+		//	code.AppendLine("{");
 
-			if (o.Data.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tData Contracts");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (Data de in o.Data)
-					code.AppendLine(DataGenerator.GenerateServerCode35(de));
-				code.AppendLine();
-			}
+		//	if (o.Enums.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tEnumerations");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (Projects.Enum ee in o.Enums)
+		//			code.AppendLine(EnumGenerator.GenerateServerCode35(ee));
+		//		code.AppendLine();
+		//	}
 
-			if (o.Services.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Contracts");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (Service se in o.Services)
-					code.AppendLine(ServiceGenerator.GenerateServerCode35(se));
-				code.AppendLine();
-			}
+		//	if (o.Data.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tData Contracts");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (Data de in o.Data)
+		//			code.AppendLine(DataGenerator.GenerateServerCode35(de));
+		//		code.AppendLine();
+		//	}
 
-			if (o.Bindings.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Bindings");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (ServiceBinding sb in o.Bindings)
-					code.AppendLine(BindingsGenerator.GenerateCode35Client(sb));
-				code.AppendLine();
-			}
+		//	if (o.Services.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tService Contracts");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (Service se in o.Services)
+		//			code.AppendLine(ServiceGenerator.GenerateServerCode35(se));
+		//		code.AppendLine();
+		//	}
 
-			if (o.Hosts.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Hosts");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (Host he in o.Hosts)
-					code.AppendLine(HostGenerator.GenerateServerCode35Client(he));
-				code.AppendLine();
-			}
+		//	if (o.Bindings.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tService Bindings");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (ServiceBinding sb in o.Bindings)
+		//			code.AppendLine(BindingsGenerator.GenerateCode35Client(sb));
+		//		code.AppendLine();
+		//	}
 
-			code.AppendLine("}");
+		//	if (o.Hosts.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tService Hosts");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (Host he in o.Hosts)
+		//			code.AppendLine(HostGenerator.GenerateServerCode35Client(he));
+		//		code.AppendLine();
+		//	}
 
-			foreach (Namespace tn in o.Children)
-				code.AppendLine(GenerateServerCode35Client(tn));
+		//	code.AppendLine("}");
 
-			return code.ToString();
-		}
+		//	foreach (Namespace tn in o.Children)
+		//		code.AppendLine(GenerateServerCode35Client(tn));
+
+		//	return code.ToString();
+		//}
+
+		#endregion
 
 		public static string GenerateServerCode40(Namespace o)
 		{
@@ -470,191 +474,195 @@ namespace NETPath.Generators.NET.CS
 			return code.ToString();
 		}
 
-		public static string GenerateClientCode30(Namespace o)
-		{
-			var code = new StringBuilder();
+		#region - Obsolete .NET 3.x Code -
 
-			code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
-			code.AppendLine("{");
+		//public static string GenerateClientCode30(Namespace o)
+		//{
+		//	var code = new StringBuilder();
 
-			if (o.Enums.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tEnumeration Contracts");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (Projects.Enum ee in o.Enums)
-					code.AppendLine(EnumGenerator.GenerateProxyCode30(ee));
-				code.AppendLine();
-			}
+		//	code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
+		//	code.AppendLine("{");
 
-			if (o.Data.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tData Contracts");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (Data de in o.Data)
-				{
-					code.AppendLine(DataGenerator.GenerateProxyCode30(de));
-					code.AppendLine(DataGenerator.GenerateXAMLCode30(de));
-				}
-				code.AppendLine();
-			}
+		//	if (o.Enums.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tEnumeration Contracts");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (Projects.Enum ee in o.Enums)
+		//			code.AppendLine(EnumGenerator.GenerateProxyCode30(ee));
+		//		code.AppendLine();
+		//	}
 
-			if (o.Services.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Contracts");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (Service se in o.Services)
-					code.AppendLine(ServiceGenerator.GenerateClientCode30(se));
-				code.AppendLine();
-			}
+		//	if (o.Data.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tData Contracts");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (Data de in o.Data)
+		//		{
+		//			code.AppendLine(DataGenerator.GenerateProxyCode30(de));
+		//			code.AppendLine(DataGenerator.GenerateXAMLCode30(de));
+		//		}
+		//		code.AppendLine();
+		//	}
 
-			if (o.Bindings.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Bindings");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (ServiceBinding sb in o.Bindings)
-					code.AppendLine(BindingsGenerator.GenerateCode30(sb));
-				code.AppendLine();
-			}
+		//	if (o.Services.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tService Contracts");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (Service se in o.Services)
+		//			code.AppendLine(ServiceGenerator.GenerateClientCode30(se));
+		//		code.AppendLine();
+		//	}
 
-			code.AppendLine("}");
+		//	if (o.Bindings.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tService Bindings");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (ServiceBinding sb in o.Bindings)
+		//			code.AppendLine(BindingsGenerator.GenerateCode30(sb));
+		//		code.AppendLine();
+		//	}
 
-			foreach (Namespace tn in o.Children)
-				code.AppendLine(GenerateClientCode30(tn));
+		//	code.AppendLine("}");
 
-			return code.ToString();
-		}
+		//	foreach (Namespace tn in o.Children)
+		//		code.AppendLine(GenerateClientCode30(tn));
 
-		public static string GenerateClientCode35(Namespace o)
-		{
-			var code = new StringBuilder();
+		//	return code.ToString();
+		//}
 
-			code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
-			code.AppendLine("{");
+		//public static string GenerateClientCode35(Namespace o)
+		//{
+		//	var code = new StringBuilder();
 
-			if (o.Enums.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tEnumeration Contracts");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (Projects.Enum ee in o.Enums)
-					code.AppendLine(EnumGenerator.GenerateProxyCode35(ee));
-				code.AppendLine();
-			}
+		//	code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
+		//	code.AppendLine("{");
 
-			if (o.Data.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tData Contracts");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (Data de in o.Data)
-				{
-					code.AppendLine(DataGenerator.GenerateProxyCode35(de));
-					code.AppendLine(DataGenerator.GenerateXAMLCode35(de));
-				}
-				code.AppendLine();
-			}
+		//	if (o.Enums.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tEnumeration Contracts");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (Projects.Enum ee in o.Enums)
+		//			code.AppendLine(EnumGenerator.GenerateProxyCode35(ee));
+		//		code.AppendLine();
+		//	}
 
-			if (o.Services.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Contracts");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (Service se in o.Services)
-					code.AppendLine(ServiceGenerator.GenerateClientCode35(se));
-				code.AppendLine();
-			}
+		//	if (o.Data.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tData Contracts");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (Data de in o.Data)
+		//		{
+		//			code.AppendLine(DataGenerator.GenerateProxyCode35(de));
+		//			code.AppendLine(DataGenerator.GenerateXAMLCode35(de));
+		//		}
+		//		code.AppendLine();
+		//	}
 
-			if (o.Bindings.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Bindings");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (ServiceBinding sb in o.Bindings)
-					code.AppendLine(BindingsGenerator.GenerateCode35(sb));
-				code.AppendLine();
-			}
+		//	if (o.Services.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tService Contracts");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (Service se in o.Services)
+		//			code.AppendLine(ServiceGenerator.GenerateClientCode35(se));
+		//		code.AppendLine();
+		//	}
 
-			code.AppendLine("}");
+		//	if (o.Bindings.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tService Bindings");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (ServiceBinding sb in o.Bindings)
+		//			code.AppendLine(BindingsGenerator.GenerateCode35(sb));
+		//		code.AppendLine();
+		//	}
 
-			foreach (Namespace tn in o.Children)
-				code.AppendLine(GenerateClientCode35(tn));
+		//	code.AppendLine("}");
 
-			return code.ToString();
-		}
+		//	foreach (Namespace tn in o.Children)
+		//		code.AppendLine(GenerateClientCode35(tn));
 
-		public static string GenerateClientCode35Client(Namespace o)
-		{
-			var code = new StringBuilder();
+		//	return code.ToString();
+		//}
 
-			code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
-			code.AppendLine("{");
+		//public static string GenerateClientCode35Client(Namespace o)
+		//{
+		//	var code = new StringBuilder();
 
-			if (o.Enums.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tEnumeration Contracts");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (Projects.Enum ee in o.Enums)
-					code.AppendLine(EnumGenerator.GenerateProxyCode35(ee));
-				code.AppendLine();
-			}
+		//	code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
+		//	code.AppendLine("{");
 
-			if (o.Data.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tData Contracts");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (Data de in o.Data)
-				{
-					code.AppendLine(DataGenerator.GenerateProxyCode35(de));
-					code.AppendLine(DataGenerator.GenerateXAMLCode35(de));
-				}
-				code.AppendLine();
-			}
+		//	if (o.Enums.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tEnumeration Contracts");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (Projects.Enum ee in o.Enums)
+		//			code.AppendLine(EnumGenerator.GenerateProxyCode35(ee));
+		//		code.AppendLine();
+		//	}
 
-			if (o.Services.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Contracts");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (Service se in o.Services)
-					code.AppendLine(ServiceGenerator.GenerateClientCode35(se));
-				code.AppendLine();
-			}
+		//	if (o.Data.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tData Contracts");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (Data de in o.Data)
+		//		{
+		//			code.AppendLine(DataGenerator.GenerateProxyCode35(de));
+		//			code.AppendLine(DataGenerator.GenerateXAMLCode35(de));
+		//		}
+		//		code.AppendLine();
+		//	}
 
-			if (o.Bindings.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Bindings");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (ServiceBinding sb in o.Bindings)
-					code.AppendLine(BindingsGenerator.GenerateCode35Client(sb));
-				code.AppendLine();
-			}
+		//	if (o.Services.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tService Contracts");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (Service se in o.Services)
+		//			code.AppendLine(ServiceGenerator.GenerateClientCode35(se));
+		//		code.AppendLine();
+		//	}
 
-			code.AppendLine("}");
+		//	if (o.Bindings.Count > 0)
+		//	{
+		//		code.AppendLine("\t/**************************************************************************");
+		//		code.AppendLine("\t*\tService Bindings");
+		//		code.AppendLine("\t**************************************************************************/");
+		//		code.AppendLine();
+		//		foreach (ServiceBinding sb in o.Bindings)
+		//			code.AppendLine(BindingsGenerator.GenerateCode35Client(sb));
+		//		code.AppendLine();
+		//	}
 
-			foreach (Namespace tn in o.Children)
-				code.AppendLine(GenerateClientCode35Client(tn));
+		//	code.AppendLine("}");
 
-			return code.ToString();
-		}
+		//	foreach (Namespace tn in o.Children)
+		//		code.AppendLine(GenerateClientCode35Client(tn));
+
+		//	return code.ToString();
+		//}
+
+		#endregion
 
 		public static string GenerateClientCode40(Namespace o)
 		{

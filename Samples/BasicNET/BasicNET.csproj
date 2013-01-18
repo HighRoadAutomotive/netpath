@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NETPath.Toolkit.NET45">
+      <HintPath>..\..\Build\NETPath.Toolkit.NET45.dll</HintPath>
+    </Reference>
     <Reference Include="protobuf-net">
       <HintPath>..\..\..\..\..\Downloads\Controls\ProtoBufNet\Full\net30\protobuf-net.dll</HintPath>
     </Reference>

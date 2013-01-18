@@ -47,7 +47,7 @@ namespace NETPath.Projects
 				if (t.XAMLType == null)
 				{
 					t.XAMLType = Convert.ToBoolean(e.NewValue) == false ? null : new DataType(t.TypeMode) {ID = t.ID, Parent = t.Parent, Name = t.Name + "XAML", Scope = t.Scope, Partial = t.Partial, Abstract = t.Abstract, Sealed = t.Sealed};
-					if (t.XAMLType != null) t.XAMLType.InheritedTypes.Add(new DataType("System.Windows.DependencyObject", DataTypeMode.Class));
+					if (t.XAMLType != null) t.XAMLType.InheritedTypes.Add(new DataType(t.AutoDataEnabled ? "DependencyObjectEx" : "DependencyObject", DataTypeMode.Class));
 				}
 			}
 		}
@@ -66,7 +66,21 @@ namespace NETPath.Projects
 
 		//AutoData
 		public bool AutoDataEnabled { get { return (bool)GetValue(AutoDataEnabledProperty); } set { SetValue(AutoDataEnabledProperty, value); } }
-		public static readonly DependencyProperty AutoDataEnabledProperty = DependencyProperty.Register("AutoDataEnabled", typeof(bool), typeof(Data), new PropertyMetadata(false));
+		public static readonly DependencyProperty AutoDataEnabledProperty = DependencyProperty.Register("AutoDataEnabled", typeof(bool), typeof(Data), new PropertyMetadata(false, AutoDataEnabledChangedCallback));
+
+		private static void AutoDataEnabledChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as Data;
+			if (t == null) return;
+			if (!t.HasXAMLType) return;
+			if (t.XAMLType == null) return;
+
+			DataType doex = t.XAMLType.InheritedTypes.FirstOrDefault(a => a.Name == "DependencyObjectEx");
+			if (doex != null && Convert.ToBoolean(e.NewValue)) return;
+			if (doex != null && !Convert.ToBoolean(e.NewValue)) doex.Name = "DependencyObject";
+			DataType wdo = t.XAMLType.InheritedTypes.FirstOrDefault(a => a.Name == "DependencyObject");
+			if (wdo != null && Convert.ToBoolean(e.NewValue)) wdo.Name = "DependencyObjectEx";
+		}
 
 		public int AutoDataBatchCount { get { return (int)GetValue(AutoDataBatchCountProperty); } set { SetValue(AutoDataBatchCountProperty, value); } }
 		public static readonly DependencyProperty AutoDataBatchCountProperty = DependencyProperty.Register("AutoDataBatchCount", typeof(int), typeof(Data), new PropertyMetadata(0));

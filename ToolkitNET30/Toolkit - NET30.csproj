@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -40,7 +41,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientBaseEx.cs" />
+    <Compile Include="DependencyQueue.cs" />
+    <Compile Include="DependencyDictionary.cs" />
+    <Compile Include="DependencyList.cs" />
     <Compile Include="DependencyObjectEx.cs" />
+    <Compile Include="DependencyStack.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -284,7 +284,7 @@ namespace NETPath.Projects
 					                  new ProjectUsingNamespace("System.Text", true, true, true, true, true),
 					                  new ProjectUsingNamespace("System.Windows", false, true, true, true, false),
 									  new ProjectUsingNamespace("Windows.UI.Core", false, true, false, false, true),
-					                  new ProjectUsingNamespace("Windows.UI.Xaml", false, true, false, false, true)
+					                  new ProjectUsingNamespace("Windows.UI.Xaml", false, true, false, false, true),
 				                  };
 		}
 

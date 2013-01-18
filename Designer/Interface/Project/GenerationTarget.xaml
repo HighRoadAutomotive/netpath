@@ -45,9 +45,9 @@
 				<ComboBoxItem Content=".NET Framework 4.5" />
 				<ComboBoxItem Content=".NET Framework 4.0" />
 				<ComboBoxItem Content=".NET Framework 4.0 Client Profile" />
-				<ComboBoxItem Content=".NET Framework 3.5" />
+				<!--<ComboBoxItem Content=".NET Framework 3.5" />
 				<ComboBoxItem Content=".NET Framework 3.5 Client Profile" />
-				<ComboBoxItem Content=".NET Framework 3.0" />
+				<ComboBoxItem Content=".NET Framework 3.0" />-->
 			</ComboBox>
 			<CheckBox Content="Generate Referenced Types" Grid.Row="2" Margin="5" IsChecked="{Binding Path=Path.GenerateReferences}" />
 		</Grid>

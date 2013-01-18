@@ -33,6 +33,11 @@ namespace System.Windows
 			Application.Current.Dispatcher.Invoke(new Action(() => SetValue(dp, value)), DispatcherPriority.Normal);
 		}
 
+		public void SetValueThreaded(DependencyPropertyKey dp, object value)
+		{
+			if (Application.Current.Dispatcher.CheckAccess()) SetValue(dp, value);
+			Application.Current.Dispatcher.Invoke(new Action(() => SetValue(dp, value)), DispatcherPriority.Normal);
+		}
 
 		public object GetValueExternal<T>(DependencyExternal<T> de)
 		{
@@ -45,18 +50,18 @@ namespace System.Windows
 		
 		public void SetValueExternal<T>(DependencyExternal<T> de, T value)
 		{
-			if (de.Metadata.UIValidateValueCallback != null && !de.Metadata.UIValidateValueCallback(this, value)) return;
+			if (de.ExternalValidateValueCallback != null && !de.ExternalValidateValueCallback(this, value)) return;
 
 			if (EqualityComparer<T>.Default.Equals(value, de.DefaultValue))
 			{
 				object temp;
 				values.TryRemove(de.GetHashCode(), out temp);
-				if (de.Metadata.UIPropertyChangedCallback != null) de.Metadata.UIPropertyChangedCallback(this, (T)temp, de.DefaultValue);
+				if (de.ExternalPropertyChangedCallback != null) de.ExternalPropertyChangedCallback(this, (T)temp, de.DefaultValue);
 			}
 			else
 			{
 				object temp = values.AddOrUpdate(de.GetHashCode(), value, (p, v) => value);
-				if (de.Metadata.UIPropertyChangedCallback != null) de.Metadata.UIPropertyChangedCallback(this, (T)temp, value);
+				if (de.ExternalPropertyChangedCallback != null) de.ExternalPropertyChangedCallback(this, (T)temp, value);
 			}
 
 			de.IsUnset = false;
@@ -67,7 +72,7 @@ namespace System.Windows
 			de.IsUnset = true;
 
 			object temp;
-			if (values.TryRemove(de.GetHashCode(), out temp) && de.Metadata.UIPropertyChangedCallback != null) de.Metadata.UIPropertyChangedCallback(this, de.DefaultValue, (T)temp);
+			if (values.TryRemove(de.GetHashCode(), out temp) && de.ExternalPropertyChangedCallback != null) de.ExternalPropertyChangedCallback(this, de.DefaultValue, (T)temp);
 		}
 	}
 
@@ -87,37 +92,52 @@ namespace System.Windows
 		public Type OwnerType { get; private set; }
 		public Type PropertyType { get; private set; }
 		public T DefaultValue { get; private set; }
-		public DependencyExternalMetadata<T> Metadata { get; private set; }
 		private int isUnset = 0;
-		public bool IsUnset { get { if (isUnset == 0) { return false; } return true; } internal set { if (value) { Interlocked.CompareExchange(ref isUnset, 1, 0); } else {Interlocked.CompareExchange(ref isUnset, 0, 1);} } }
+		public bool IsUnset { get { if (isUnset == 0) { return false; } return true; } internal set { if (value) { Interlocked.CompareExchange(ref isUnset, 1, 0); } else { Interlocked.CompareExchange(ref isUnset, 0, 1); } } }
+
+		internal Action<DependencyObjectEx, T, T> ExternalPropertyChangedCallback { get; private set; }
+		internal Func<DependencyObjectEx, T, bool> ExternalValidateValueCallback { get; private set; }
 
 		public DependencyExternal() { }
 
-		public DependencyExternal(string Name, Type OwnerType)
+		private DependencyExternal(string Name, Type OwnerType)
 		{
 			this.Name = Name;
 			this.OwnerType = OwnerType;
 			PropertyType = typeof(T);
 			DefaultValue = default(T);
-			Metadata = new DependencyExternalMetadata<T>();
+			ExternalPropertyChangedCallback = null;
+			ExternalValidateValueCallback = null;
 		}
 
-		public DependencyExternal(string Name, Type OwnerType, T DefaultValue)
+		private DependencyExternal(string Name, Type OwnerType, T DefaultValue)
 		{
 			this.Name = Name;
 			this.OwnerType = OwnerType;
 			PropertyType = typeof(T);
 			this.DefaultValue = DefaultValue;
-			Metadata = new DependencyExternalMetadata<T>();
+			ExternalPropertyChangedCallback = null;
+			ExternalValidateValueCallback = null;
 		}
 
-		public DependencyExternal(string Name, Type OwnerType, T DefaultValue, DependencyExternalMetadata<T> Metadata)
+		private DependencyExternal(string Name, Type OwnerType, T DefaultValue, Action<DependencyObjectEx, T, T> ExternalPropertyChangedCallback)
 		{
 			this.Name = Name;
 			this.OwnerType = OwnerType;
 			PropertyType = typeof(T);
 			this.DefaultValue = DefaultValue;
-			this.Metadata = Metadata;
+			this.ExternalPropertyChangedCallback = ExternalPropertyChangedCallback;
+			ExternalValidateValueCallback = null;
+		}
+
+		private DependencyExternal(string Name, Type OwnerType, T DefaultValue, Action<DependencyObjectEx, T, T> ExternalPropertyChangedCallback, Func<DependencyObjectEx, T, bool> ExternalValidateValueCallback)
+		{
+			this.Name = Name;
+			this.OwnerType = OwnerType;
+			PropertyType = typeof(T);
+			this.DefaultValue = DefaultValue;
+			this.ExternalPropertyChangedCallback = ExternalPropertyChangedCallback;
+			this.ExternalValidateValueCallback = ExternalValidateValueCallback;
 		}
 
 		public static DependencyExternal<TType> RegisterExternal<TType>(string name, Type ownerType)
@@ -136,9 +156,17 @@ namespace System.Windows
 			return np;
 		}
 
-		public static DependencyExternal<TType> RegisterExternal<TType>(string name, Type ownerType, TType defaultValue, DependencyExternalMetadata<TType> metadata)
+		public static DependencyExternal<TType> RegisterExternal<TType>(string name, Type ownerType, TType defaultValue, Action<DependencyObjectEx, TType, TType> ExternalPropertyChangedCallback)
 		{
-			var np = new DependencyExternal<TType>(name, ownerType, defaultValue, metadata);
+			var np = new DependencyExternal<TType>(name, ownerType, defaultValue, ExternalPropertyChangedCallback);
+			if (!registered.TryAdd(np.GetHashCode(), np))
+				throw new ArgumentException(string.Format("Unable to register the DependencyExternal '{0}' on type '{1}'. A DependencyExternal with the same Name and OwnerType has already been registered.", name, ownerType));
+			return np;
+		}
+
+		public static DependencyExternal<TType> RegisterExternal<TType>(string name, Type ownerType, TType defaultValue, Action<DependencyObjectEx, TType, TType> ExternalPropertyChangedCallback, Func<DependencyObjectEx, TType, bool> ExternalValidateValueCallback)
+		{
+			var np = new DependencyExternal<TType>(name, ownerType, defaultValue, ExternalPropertyChangedCallback, ExternalValidateValueCallback);
 			if (!registered.TryAdd(np.GetHashCode(), np))
 				throw new ArgumentException(string.Format("Unable to register the DependencyExternal '{0}' on type '{1}'. A DependencyExternal with the same Name and OwnerType has already been registered.", name, ownerType));
 			return np;
@@ -147,30 +175,6 @@ namespace System.Windows
 		public override int GetHashCode()
 		{
 			return Name.GetHashCode() ^ OwnerType.GetHashCode();
-		}
-	}
-
-	public sealed class DependencyExternalMetadata<T> : object
-	{
-		public Action<DependencyObjectEx, T, T> UIPropertyChangedCallback { get; private set; }
-		public Func<DependencyObjectEx, T, bool> UIValidateValueCallback { get; private set; }
-
-		public DependencyExternalMetadata()
-		{
-			UIPropertyChangedCallback = null;
-			UIValidateValueCallback = null;
-		}
-
-		public DependencyExternalMetadata(Action<DependencyObjectEx, T, T> UIPropertyChangedCallback)
-		{
-			this.UIPropertyChangedCallback = UIPropertyChangedCallback;
-			UIValidateValueCallback = null;
-		}
-
-		public DependencyExternalMetadata(Action<DependencyObjectEx, T, T> UIPropertyChangedCallback, Func<DependencyObjectEx, T, bool> UIValidateValueCallback)
-		{
-			this.UIPropertyChangedCallback = UIPropertyChangedCallback;
-			this.UIValidateValueCallback = UIValidateValueCallback;
 		}
 	}
 }
