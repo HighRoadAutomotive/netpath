@@ -530,7 +530,7 @@ namespace NETPath.Projects
 			bool ctp = true;
 			if (HasClientType) ctp = ClientType.Primitive == PrimitiveTypes.GUID;
 			bool xtp = true;
-			if (HasClientType) xtp = XAMLType.Primitive == PrimitiveTypes.GUID;
+			if (HasXAMLType) xtp = XAMLType.Primitive == PrimitiveTypes.GUID;
 			IsValidAutoDataID = dtp && ctp && xtp && AutoDataEnabled;
 		}
 

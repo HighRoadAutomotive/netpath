@@ -29,7 +29,7 @@ namespace NETPath.Generators.WinRT.CS
 			if (o.Parent.Owner.EnableExperimental && !o.HasAutoDataID)
 			{
 				AddMessage(new CompileMessage("GS3003", "The data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace does not have an Automatic Data ID specified. A default ID will be used.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
-				o.Elements.Add(new DataElement(new DataType(PrimitiveTypes.GUID), "_ID", o) {IsAutoDataID = true, IsDataMember = true});
+				if (!o.Elements.Any(a => a.IsAutoDataID)) o.Elements.Add(new DataElement(new DataType(PrimitiveTypes.GUID), "_DCMID", o) { IsAutoDataID = true, IsDataMember = true, IsReadOnly = true, ProtocolBufferEnabled = o.Elements.Any(a => a.ProtocolBufferEnabled) });
 			}
 
 			foreach (DataElement d in o.Elements)
@@ -120,11 +120,10 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine("\t{");
 			if (o.HasXAMLType)
 			{
-				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get; private set; }}", DataTypeGenerator.GenerateType(o.XAMLType)));
+				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get; private set; }}", o.XAMLType.Name));
 				code.AppendLine();
 			}
-			code.AppendLine("\t\t//Automatic Data Update Support");
-			code.AppendLine(GenerateProxyAutoDataCode(o));
+			code.AppendLine(GenerateProxyDCMCode(o));
 			if (o.HasWinFormsBindings)
 			{
 				code.AppendLine("\t\tpublic event PropertyChangedEventHandler PropertyChanged;");
@@ -142,7 +141,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine("\t\t}");
 			if (o.HasXAMLType)
 			{
-				code.AppendLine(string.Format("\t\tpublic {0}({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, DataTypeGenerator.GenerateType(o.XAMLType)));
+				code.AppendLine(string.Format("\t\tpublic {0}({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
 				code.AppendLine("\t\t{");
 				code.AppendLine("\t\t\tXAMLObject = Data;");
 				foreach (DataElement de in o.Elements)
@@ -157,50 +156,29 @@ namespace NETPath.Generators.WinRT.CS
 			return code.ToString();
 		}
 
-		private static string GenerateProxyAutoDataCode(Data o)
+		private static string GenerateProxyDCMCode(Data o)
 		{
 			if (!o.Parent.Owner.EnableExperimental) return "";
 			if (!o.AutoDataEnabled) return "";
 
 			var code = new StringBuilder();
-			if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client)
-			{
-				code.AppendLine(Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30 ? "\t\tprivate readonly System.Threading.ReaderWriterLock __autodatalock = new System.Threading.ReaderWriterLock();" : "\t\tprivate readonly System.Threading.ReaderWriterLockSlim __autodatalock = new System.Threading.ReaderWriterLockSlim();");
-				code.AppendLine(string.Format("\t\tprivate static readonly System.Collections.Generic.Dictionary<Guid, {0}> __autodata;", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
-				code.AppendLine(string.Format("\t\tstatic {0}()", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t__autodata = new System.Collections.Generic.Dictionary<Guid, {0}>();", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
-				code.AppendLine("\t\t}");
-				code.AppendLine("\t\t[OnDeserialized]");
-				code.AppendLine("\t\tprivate void OnDeserialized(StreamingContext context)");
-				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\tlock(((ICollection)__autodata).SyncRoot) {{ __autodata.Add({0}, this); }}", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName));
-				code.AppendLine("\t\t}");
-				code.AppendLine(string.Format("\t\t~{0}()", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t{0} t;", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
-				code.AppendLine(string.Format("\t\t\tlock(((ICollection)__autodata).SyncRoot) {{ __autodata.Remove({0}, out t); }}", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName));
-				code.AppendLine("\t\t}");
-			}
-			else
-			{
-				code.AppendLine("\t\tprivate readonly System.Threading.ReaderWriterLockSlim __autodatalock = new System.Threading.ReaderWriterLockSlim();");
-				code.AppendLine(string.Format("\t\tprivate static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, {0}> __autodata;", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
-				code.AppendLine(string.Format("\t\tstatic {0}()", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t__autodata = new System.Collections.Concurrent.ConcurrentDictionary<Guid, {0}>();", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
-				code.AppendLine("\t\t}");
-				code.AppendLine("\t\t[OnDeserialized]");
-				code.AppendLine("\t\tprivate void OnDeserialized(StreamingContext context)");
-				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t__autodata.TryAdd({0}, this);", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName));
-				code.AppendLine("\t\t}");
-				code.AppendLine(string.Format("\t\t~{0}()", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t{0} t;", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o)));
-				code.AppendLine(string.Format("\t\t\t__autodata.TryRemove({0}, out t);", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName));
-				code.AppendLine("\t\t}");
-			}
+			code.AppendLine("\t\t//Data Change Messaging Support");
+			code.AppendLine("\t\tprivate readonly System.Threading.ReaderWriterLockSlim __dcmlock = new System.Threading.ReaderWriterLockSlim();");
+			code.AppendLine(string.Format("\t\tprivate static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, {0}> __dcm;", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine(string.Format("\t\tstatic {0}()", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine("\t\t{");
+			code.AppendLine(string.Format("\t\t\t__dcm = new System.Collections.Concurrent.ConcurrentDictionary<Guid, {0}>();", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine("\t\t}");
+			code.AppendLine("\t\t[OnDeserialized]");
+			code.AppendLine("\t\tprivate void OnDeserialized(StreamingContext context)");
+			code.AppendLine("\t\t{");
+			code.AppendLine(o.HasAutoDataID ? string.Format("\t\t\t__dcm.TryAdd({0}, this);", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName) : "\t\t\t__dcm.TryAdd(_DCMID, this);");
+			code.AppendLine("\t\t}");
+			code.AppendLine(string.Format("\t\t~{0}()", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine("\t\t{");
+			code.AppendLine(string.Format("\t\t\t{0} t;", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine(o.HasAutoDataID ? string.Format("\t\t\t__dcm.TryRemove({0}, out t);", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName) : "\t\t\t__dcm.TryRemove(_DCMID, this);");
+			code.AppendLine("\t\t}");
 			return code.ToString();
 		}
 
@@ -219,6 +197,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.XAMLType, false, false, true)));
 			code.AppendLine("\t{");
 			code.AppendLine(string.Format("\t\tpublic {0} DataObject {{ get; private set; }}", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine("\t\tpublic bool IsUpdating { get; set; }");
 			code.AppendLine();
 
 			code.AppendLine("\t\t//Properties");
@@ -305,7 +284,7 @@ namespace NETPath.Generators.WinRT.CS
 			if (o.ProtocolBufferEnabled && o.Owner.EnableProtocolBuffers) code.AppendFormat("[ProtoBuf.ProtoMember({0}{1}{2}{3}{4}{5}{6})] ", ProtoCount++, o.ProtoDataFormat != ProtoBufDataFormat.Default ? string.Format(", DataFormat = ProtoBuf.DataFormat.{0}", System.Enum.GetName(typeof(ProtoBufDataFormat), o.ProtoDataFormat)) : "", o.IsRequired ? ", IsRequired = true" : "", o.ProtoIsPacked ? ", IsPacked = true" : "", o.ProtoOverwriteList ? ", OverwriteList = true" : "", o.ProtoAsReference ? ", AsReference = true" : "", o.ProtoDynamicType ? ", DynamicType = true" : "");
 			code.AppendFormat("[DataMember({0}{1}{2}Name = \"{3}\")] ", o.EmitDefaultValue ? "EmitDefaultValue = false, " : "", o.IsRequired ? "IsRequired = true, " : "", o.ProtocolBufferEnabled ? string.Format("Order = {0}, ", o.Owner.Elements.IndexOf(o)) : o.Order >= 0 ? string.Format("Order = {0}, ", o.Order) : "", o.HasClientType ? o.ClientName : o.DataName);
 			if (o.Owner.Parent.Owner.EnableExperimental && o.AutoDataEnabled)
-				code.AppendLine(string.Format("public {0} {1} {{ get {{ __autodatalock.{4}; try {{ return {1}Field; }} finally {{ __autodatalock.ExitReadLock(); }} }} {2}set {{ __autodatalock.{5}; try {{ {1}Field = value; {1}Changed = true; {3}}} finally {{ __autodatalock.ExitWriteLock(); }} }} }}", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : "", o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : "", o.AutoDataTimeout == 0 ? "EnterReadLock()" : string.Format("TryEnterReadLock({0})", o.AutoDataTimeout), o.AutoDataTimeout == 0 ? "EnterWriteLock()" : string.Format("TryEnterWriteLock({0})", o.AutoDataTimeout)));
+				code.AppendLine(string.Format("public {0} {1} {{ get {{ __dcmlock.{4}; try {{ return {1}Field; }} finally {{ __dcmlock.ExitReadLock(); }} }} {2}set {{ __dcmlock.{5}; try {{ {1}Field = value; {1}Changed = true; {3}}} finally {{ __dcmlock.ExitWriteLock(); }} }} }}", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : "", o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : "", o.AutoDataTimeout == 0 ? "EnterReadLock()" : string.Format("TryEnterReadLock({0})", o.AutoDataTimeout), o.AutoDataTimeout == 0 ? "EnterWriteLock()" : string.Format("TryEnterWriteLock({0})", o.AutoDataTimeout)));
 			else
 				code.AppendLine(string.Format("public {0} {1} {{ get {{ return {1}Field; }} {2}set {{ {1}Field = value; {3}}} }}", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : "", o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : ""));
 			return code.ToString();
@@ -380,7 +359,7 @@ namespace NETPath.Generators.WinRT.CS
 			}
 			else
 			{
-				code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return ({0})GetValue({1}Property); }} set {{ SetValue({1}Property, value); }} }}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName));
+				code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return ({0})GetValue({1}Property); }} {2} set {{ SetValue({1}Property, value); }} }}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName, o.IsReadOnly ? "protected" : ""));
 				code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty {1}Property = DependencyProperty.Register(\"{1}\", typeof({0}), typeof({2}), null);", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName, o.Owner.XAMLType.Name));
 			}
 			return code.ToString();
@@ -397,40 +376,40 @@ namespace NETPath.Generators.WinRT.CS
 			{
 				code.AppendLine(string.Format("\t\t\t{0}[] v{3} = new {1}[Data.{2}.GetLength(0)];", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)).Replace("[]", ""), DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)).Replace("[]", ""), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
 				code.AppendLine(string.Format("\t\t\tfor(int i = 0; i < Data.{0}.GetLength(0); i++) {{ v{1}[i] = Data.{0}[i]; }}", o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
-				if (!o.IsAttached && (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8)) code.AppendLine(string.Format("\t\t\t{0} = v{0};", o.XAMLName));
+				if (!o.IsAttached && Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) code.AppendLine(string.Format("\t\t\t{0} = v{0};", o.XAMLName));
 				else code.AppendLine(string.Format("t\t\t{0}.Set{1}(this, v{1});", DataTypeGenerator.GenerateType(c.XAMLType), o.XAMLName));
 			}
 			else if (o.XAMLType.TypeMode == DataTypeMode.Collection)
 			{
 				code.AppendLine(string.Format("\t\t\t{0} v{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName));
 				code.AppendLine(string.Format("\t\t\tforeach({0} a in Data.{1}) {{ v{2}.Add(a); }}", DataTypeGenerator.GenerateTypeGenerics(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
-				if (!o.IsAttached && (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8)) code.AppendLine(string.Format("\t\t\t{0} = v{0};", o.XAMLName));
+				if (!o.IsAttached && Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) code.AppendLine(string.Format("\t\t\t{0} = v{0};", o.XAMLName));
 				else code.AppendLine(string.Format("t\t\t{0}.Set{1}(this, v{1});", DataTypeGenerator.GenerateType(c.XAMLType), o.XAMLName));
 			}
 			else if (o.XAMLType.TypeMode == DataTypeMode.Stack)
 			{
 				code.AppendLine(string.Format("\t\t\t{0} v{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName));
 				code.AppendLine(string.Format("\t\t\tforeach({0} a in Data.{1}) {{ v{2}.Push(a); }}", DataTypeGenerator.GenerateTypeGenerics(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
-				if (!o.IsAttached && (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8)) code.AppendLine(string.Format("\t\t\t{0} = v{0};", o.XAMLName));
+				if (!o.IsAttached && Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) code.AppendLine(string.Format("\t\t\t{0} = v{0};", o.XAMLName));
 				else code.AppendLine(string.Format("t\t\t{0}.Set{1}(this, v{1});", DataTypeGenerator.GenerateType(c.XAMLType), o.XAMLName));
 			}
 			else if (o.XAMLType.TypeMode == DataTypeMode.Queue)
 			{
 				code.AppendLine(string.Format("\t\t\t{0} v{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName));
 				code.AppendLine(string.Format("\t\t\tforeach({0} a in Data.{1}) {{ v{2}.Enqueue(a); }}", DataTypeGenerator.GenerateTypeGenerics(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
-				if (!o.IsAttached && (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8)) code.AppendLine(string.Format("\t\t\t{0} = v{0};", o.XAMLName));
+				if (!o.IsAttached && Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) code.AppendLine(string.Format("\t\t\t{0} = v{0};", o.XAMLName));
 				else code.AppendLine(string.Format("t\t\t{0}.Set{1}(this, v{1});", DataTypeGenerator.GenerateType(c.XAMLType), o.XAMLName));
 			}
 			else if (o.XAMLType.TypeMode == DataTypeMode.Dictionary)
 			{
 				code.AppendLine(string.Format("\t\t\t{0} v{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName));
 				code.AppendLine(o.XAMLType.Name == "System.Collections.Concurrent.ConcurrentDictionary" ? string.Format("\t\t\tforeach(KeyValuePair<{0}> a in Data.{1}) {{ v{2}.TryAdd(a.Key, a.Value); }}", DataTypeGenerator.GenerateTypeGenerics(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName) : string.Format("\t\t\tforeach(KeyValuePair<{0}> a in Data.{1}) {{ v{2}.Add(a.Key, a.Value); }}", DataTypeGenerator.GenerateTypeGenerics(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
-				if (!o.IsAttached && (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8)) code.AppendLine(string.Format("\t\t\t{0} = v{0};", o.XAMLName));
+				if (!o.IsAttached && Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) code.AppendLine(string.Format("\t\t\t{0} = v{0};", o.XAMLName));
 				else code.AppendLine(string.Format("t\t\t{0}.Set{1}(this, v{1});", DataTypeGenerator.GenerateType(c.XAMLType), o.XAMLName));
 			}
 			else
 			{
-				if (!o.IsAttached && (!o.IsReadOnly || Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8)) code.AppendLine(string.Format("\t\t\t{1} = Data.{0};", o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
+				if (!o.IsAttached && Globals.CurrentGenerationTarget == ProjectGenerationFramework.WIN8) code.AppendLine(string.Format("\t\t\t{1} = Data.{0};", o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
 				else code.AppendLine(string.Format("\t\t\t{2}.Set{1}(this, Data.{0});", o.HasClientType ? o.ClientName : o.DataName, o.XAMLName, DataTypeGenerator.GenerateType(c.XAMLType)));
 			}
 

@@ -43,6 +43,7 @@
     <Primitive>None</Primitive>
     <Scope>Public</Scope>
     <Sealed>false</Sealed>
+    <SupportedFrameworks>None</SupportedFrameworks>
     <TypeMode>Namespace</TypeMode>
     <Bindings z:Id="15" z:Size="0" />
     <Children z:Id="16" z:Size="0" />
@@ -72,6 +73,7 @@
         <Primitive>None</Primitive>
         <Scope>Public</Scope>
         <Sealed>false</Sealed>
+        <SupportedFrameworks>None</SupportedFrameworks>
         <TypeMode>Class</TypeMode>
         <AsynchronyMode>Default</AsynchronyMode>
         <CallbackDocumentation z:Id="25">
@@ -113,6 +115,7 @@
               <Primitive>None</Primitive>
               <Scope>Public</Scope>
               <Sealed>false</Sealed>
+              <SupportedFrameworks>None</SupportedFrameworks>
               <TypeMode>Class</TypeMode>
             </ReturnType>
             <ServerName z:Id="33">RetTestCallback</ServerName>
@@ -178,6 +181,7 @@
               <Primitive>None</Primitive>
               <Scope>Public</Scope>
               <Sealed>false</Sealed>
+              <SupportedFrameworks>None</SupportedFrameworks>
               <TypeMode>Class</TypeMode>
             </ReturnType>
             <ServerName z:Id="43">RefTest</ServerName>
