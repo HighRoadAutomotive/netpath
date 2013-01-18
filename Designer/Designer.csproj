@@ -153,10 +153,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Prospective\Controls\Build\Prospective.Controls.dll</HintPath>
     </Reference>
-    <Reference Include="Prospective.Utilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Prospective\Utilities\Build\Prospective.Utilities.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -164,6 +160,9 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Utilities.NET45">
+      <HintPath>..\..\..\System.Utilities\Build\System.Utilities.NET45.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />

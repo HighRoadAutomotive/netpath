@@ -35,16 +35,15 @@
       <HintPath>C:\Program Files (x86)\LogicNP Software\CryptoLicensing For .Net 2012 R2\LogicNP.CryptoLicensing.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework" />
-    <Reference Include="Prospective.Utilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Prospective\Utilities\Build\Prospective.Utilities.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.IdentityModel" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Utilities.NET45">
+      <HintPath>..\..\..\System.Utilities\Build\System.Utilities.NET45.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
