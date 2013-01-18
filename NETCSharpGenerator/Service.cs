@@ -85,121 +85,125 @@ namespace NETPath.Generators.NET.CS
 
 		#region - Server Interfaces -
 
-		public static string GenerateServerCode30(Service o)
-		{
-			var code = new StringBuilder();
-			if (o.ServiceDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.ServiceDocumentation));
-			foreach (DataType dt in o.KnownTypes)
-				code.AppendLine(string.Format("\t[ServiceKnownType(typeof({0}))]", dt));
-			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t[ServiceContract({0}SessionMode = System.ServiceModel.SessionMode.{1}, {2}{3}{4}Namespace = \"{5}\")]", o.HasCallback ? string.Format("CallbackContract = typeof(I{0}Callback), ", o.Name) : "", System.Enum.GetName(typeof(System.ServiceModel.SessionMode), o.SessionMode), o.ProtectionLevel != System.Net.Security.ProtectionLevel.None ? string.Format("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}, ", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.ProtectionLevel)) : "", !string.IsNullOrEmpty(o.ConfigurationName) ? string.Format("ConfigurationName = \"{0}\", ", o.ConfigurationName) : "", o.HasClientType ? string.Format("Name = \"{0}\", ", o.ClientType.Name) : "", o.Parent.FullURI));
-			code.AppendLine(string.Format("\t{0} interface I{1}", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
-			code.AppendLine("\t{");
-			foreach (Property p in o.ServiceOperations.Where(a => a.GetType() == typeof(Property)))
-				code.AppendLine(GeneratePropertyServerCode40(p));
-			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-				code.AppendLine(GenerateServiceInterfaceMethodCode30(m, false));
-			code.AppendLine("\t}");
+		#region - Obsolete .NET 3.x Code -
 
-			if (o.HasCallback)
-			{
-				//Generate the callback interface
-				if (o.CallbackDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.CallbackDocumentation));
-				foreach (DataType dt in o.KnownTypes)
-					code.AppendLine(string.Format("\t[ServiceKnownType(typeof({0}))]", dt));
-				code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-				code.AppendLine(string.Format("\t{0} interface I{1}Callback", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
-				code.AppendLine("\t{");
-				foreach (Property p in o.CallbackOperations.Where(a => a.GetType() == typeof(Property)))
-					code.AppendLine(GeneratePropertyServerCode30(p));
-				foreach (Method m in o.CallbackOperations.Where(a => a.GetType() == typeof(Method)))
-					code.AppendLine(GenerateServiceInterfaceMethodCode30(m, true));
-				code.AppendLine("\t}");
+		//public static string GenerateServerCode30(Service o)
+		//{
+		//	var code = new StringBuilder();
+		//	if (o.ServiceDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.ServiceDocumentation));
+		//	foreach (DataType dt in o.KnownTypes)
+		//		code.AppendLine(string.Format("\t[ServiceKnownType(typeof({0}))]", dt));
+		//	code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
+		//	code.AppendLine(string.Format("\t[ServiceContract({0}SessionMode = System.ServiceModel.SessionMode.{1}, {2}{3}{4}Namespace = \"{5}\")]", o.HasCallback ? string.Format("CallbackContract = typeof(I{0}Callback), ", o.Name) : "", System.Enum.GetName(typeof(System.ServiceModel.SessionMode), o.SessionMode), o.ProtectionLevel != System.Net.Security.ProtectionLevel.None ? string.Format("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}, ", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.ProtectionLevel)) : "", !string.IsNullOrEmpty(o.ConfigurationName) ? string.Format("ConfigurationName = \"{0}\", ", o.ConfigurationName) : "", o.HasClientType ? string.Format("Name = \"{0}\", ", o.ClientType.Name) : "", o.Parent.FullURI));
+		//	code.AppendLine(string.Format("\t{0} interface I{1}", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
+		//	code.AppendLine("\t{");
+		//	foreach (Property p in o.ServiceOperations.Where(a => a.GetType() == typeof(Property)))
+		//		code.AppendLine(GeneratePropertyServerCode40(p));
+		//	foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+		//		code.AppendLine(GenerateServiceInterfaceMethodCode30(m, false));
+		//	code.AppendLine("\t}");
 
-				//Generate the callback facade implementation
-				if (o.HasAsyncServiceOperations && CanGenerateAsync(o, false))
-				{
-					code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-					code.AppendLine("\tpublic class AsyncOperationCompletedArgs<T>");
-					code.AppendLine("\t{");
-					code.AppendLine("\t\tprivate T result;");
-					code.AppendLine("\t\tpublic T Result { get { return result; } private set { result = value; } }");
-					code.AppendLine("\t\tprivate System.Exception error;");
-					code.AppendLine("\t\tpublic System.Exception Error { get { return error; } private set { error = value; } }");
-					code.AppendLine("\t\tprivate bool cancelled;");
-					code.AppendLine("\t\tpublic bool Cancelled { get { return cancelled; } private set { cancelled = value; } }");
-					code.AppendLine("\t\tprivate object userState;");
-					code.AppendLine("\t\tpublic object UserState { get { return userState; } private set { userState = value; } }");
-					code.AppendLine("\t\tpublic AsyncOperationCompletedArgs(T result, System.Exception error, bool cancelled, Object userState)");
-					code.AppendLine("\t\t{");
-					code.AppendLine("\t\t\tResult = result;");
-					code.AppendLine("\t\t\tError = error;");
-					code.AppendLine("\t\t\tCancelled = cancelled;");
-					code.AppendLine("\t\t\tUserState = userState;");
-					code.AppendLine("\t\t}");
-					code.AppendLine("\t}");
-				}
-				if (o.CallbackDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.CallbackDocumentation));
-				code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-				code.AppendLine(string.Format("\t{0} partial class {1}Callback : I{1}Callback", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
-				code.AppendLine("\t{");
-				code.AppendLine();
-				code.AppendLine(string.Format("\t\tprivate readonly I{0}Callback __callback;", o.Name));
-				code.AppendLine();
-				code.AppendLine(string.Format("\t\tpublic {0}Callback()", o.Name));
-				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t__callback = System.ServiceModel.OperationContext.Current.GetCallbackChannel<I{0}Callback>();", o.Name));
-				code.AppendLine("\t\t}");
-				code.AppendLine();
-				code.AppendLine(string.Format("\t\tpublic {0}Callback(I{0}Callback callback)", o.Name));
-				code.AppendLine("\t\t{");
-				code.AppendLine("\t\t\t__callback = callback;");
-				code.AppendLine("\t\t}");
-				code.AppendLine();
-				if (o.HasAsyncCallbackOperations && CanGenerateAsync(o, true))
-				{
-					code.AppendLine("\t\tprotected class InvokeAsyncCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs");
-					code.AppendLine("\t\t{");
-					code.AppendLine("\t\t\tpublic object[] Results { get; set; }");
-					code.AppendLine("\t\t\tpublic InvokeAsyncCompletedEventArgs(object[] results, System.Exception error, bool cancelled, Object userState) : base(error, cancelled, userState)");
-					code.AppendLine("\t\t\t{");
-					code.AppendLine("\t\t\t\tResults = results;");
-					code.AppendLine("\t\t\t}");
-					code.AppendLine("\t\t}");
-					code.AppendLine();
-					code.AppendLine("\t\tprotected delegate IAsyncResult BeginOperationDelegate(object[] inValues, AsyncCallback asyncCallback, Object state);");
-					code.AppendLine("\t\tprotected delegate object[] EndOperationDelegate(IAsyncResult result);");
-					code.AppendLine();
-					code.AppendLine("\t\tprotected void InvokeAsync(BeginOperationDelegate beginOperationDelegate, object[] inValues, EndOperationDelegate endOperationDelegate, System.Threading.SendOrPostCallback operationCompletedCallback, object userState)");
-					code.AppendLine("\t\t{");
-					code.AppendLine("\t\t\tif (beginOperationDelegate == null) throw new ArgumentNullException(\"Argument 'beginOperationDelegate' cannot be null.\");");
-					code.AppendLine("\t\t\tif (endOperationDelegate == null) throw new ArgumentNullException(\"Argument 'endOperationDelegate' cannot be null.\");");
-					code.AppendLine("\t\t\tAsyncCallback cb = delegate(IAsyncResult ar)");
-					code.AppendLine("\t\t\t{");
-					code.AppendLine("\t\t\t\tobject[] results = null;");
-					code.AppendLine("\t\t\t\tException error = null;");
-					code.AppendLine("\t\t\t\ttry { results = endOperationDelegate(ar); }");
-					code.AppendLine("\t\t\t\tcatch (Exception ex) { error = ex; }");
-					code.AppendLine("\t\t\t\tif (operationCompletedCallback != null) operationCompletedCallback(new InvokeAsyncCompletedEventArgs(results, error, false, userState));");
-					code.AppendLine("\t\t\t};");
-					code.AppendLine("\t\t\tbeginOperationDelegate(inValues, cb, userState);");
-					code.AppendLine("\t\t}");
-					code.AppendLine();
-				}
-				foreach (Property p in o.CallbackOperations.Where(a => a.GetType() == typeof(Property)))
-					code.AppendLine(GeneratePropertyClientCode(p));
-				foreach (Method m in o.CallbackOperations.Where(a => a.GetType() == typeof(Method)))
-					code.AppendLine(GenerateMethodProxyCode30(m, true, true));
-				code.AppendLine("\t}");
-			}
+		//	if (o.HasCallback)
+		//	{
+		//		//Generate the callback interface
+		//		if (o.CallbackDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.CallbackDocumentation));
+		//		foreach (DataType dt in o.KnownTypes)
+		//			code.AppendLine(string.Format("\t[ServiceKnownType(typeof({0}))]", dt));
+		//		code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
+		//		code.AppendLine(string.Format("\t{0} interface I{1}Callback", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
+		//		code.AppendLine("\t{");
+		//		foreach (Property p in o.CallbackOperations.Where(a => a.GetType() == typeof(Property)))
+		//			code.AppendLine(GeneratePropertyServerCode30(p));
+		//		foreach (Method m in o.CallbackOperations.Where(a => a.GetType() == typeof(Method)))
+		//			code.AppendLine(GenerateServiceInterfaceMethodCode30(m, true));
+		//		code.AppendLine("\t}");
 
-			return code.ToString();
-		}
+		//		//Generate the callback facade implementation
+		//		if (o.HasAsyncServiceOperations && CanGenerateAsync(o, false))
+		//		{
+		//			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
+		//			code.AppendLine("\tpublic class AsyncOperationCompletedArgs<T>");
+		//			code.AppendLine("\t{");
+		//			code.AppendLine("\t\tprivate T result;");
+		//			code.AppendLine("\t\tpublic T Result { get { return result; } private set { result = value; } }");
+		//			code.AppendLine("\t\tprivate System.Exception error;");
+		//			code.AppendLine("\t\tpublic System.Exception Error { get { return error; } private set { error = value; } }");
+		//			code.AppendLine("\t\tprivate bool cancelled;");
+		//			code.AppendLine("\t\tpublic bool Cancelled { get { return cancelled; } private set { cancelled = value; } }");
+		//			code.AppendLine("\t\tprivate object userState;");
+		//			code.AppendLine("\t\tpublic object UserState { get { return userState; } private set { userState = value; } }");
+		//			code.AppendLine("\t\tpublic AsyncOperationCompletedArgs(T result, System.Exception error, bool cancelled, Object userState)");
+		//			code.AppendLine("\t\t{");
+		//			code.AppendLine("\t\t\tResult = result;");
+		//			code.AppendLine("\t\t\tError = error;");
+		//			code.AppendLine("\t\t\tCancelled = cancelled;");
+		//			code.AppendLine("\t\t\tUserState = userState;");
+		//			code.AppendLine("\t\t}");
+		//			code.AppendLine("\t}");
+		//		}
+		//		if (o.CallbackDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.CallbackDocumentation));
+		//		code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
+		//		code.AppendLine(string.Format("\t{0} partial class {1}Callback : I{1}Callback", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
+		//		code.AppendLine("\t{");
+		//		code.AppendLine();
+		//		code.AppendLine(string.Format("\t\tprivate readonly I{0}Callback __callback;", o.Name));
+		//		code.AppendLine();
+		//		code.AppendLine(string.Format("\t\tpublic {0}Callback()", o.Name));
+		//		code.AppendLine("\t\t{");
+		//		code.AppendLine(string.Format("\t\t\t__callback = System.ServiceModel.OperationContext.Current.GetCallbackChannel<I{0}Callback>();", o.Name));
+		//		code.AppendLine("\t\t}");
+		//		code.AppendLine();
+		//		code.AppendLine(string.Format("\t\tpublic {0}Callback(I{0}Callback callback)", o.Name));
+		//		code.AppendLine("\t\t{");
+		//		code.AppendLine("\t\t\t__callback = callback;");
+		//		code.AppendLine("\t\t}");
+		//		code.AppendLine();
+		//		if (o.HasAsyncCallbackOperations && CanGenerateAsync(o, true))
+		//		{
+		//			code.AppendLine("\t\tprotected class InvokeAsyncCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs");
+		//			code.AppendLine("\t\t{");
+		//			code.AppendLine("\t\t\tpublic object[] Results { get; set; }");
+		//			code.AppendLine("\t\t\tpublic InvokeAsyncCompletedEventArgs(object[] results, System.Exception error, bool cancelled, Object userState) : base(error, cancelled, userState)");
+		//			code.AppendLine("\t\t\t{");
+		//			code.AppendLine("\t\t\t\tResults = results;");
+		//			code.AppendLine("\t\t\t}");
+		//			code.AppendLine("\t\t}");
+		//			code.AppendLine();
+		//			code.AppendLine("\t\tprotected delegate IAsyncResult BeginOperationDelegate(object[] inValues, AsyncCallback asyncCallback, Object state);");
+		//			code.AppendLine("\t\tprotected delegate object[] EndOperationDelegate(IAsyncResult result);");
+		//			code.AppendLine();
+		//			code.AppendLine("\t\tprotected void InvokeAsync(BeginOperationDelegate beginOperationDelegate, object[] inValues, EndOperationDelegate endOperationDelegate, System.Threading.SendOrPostCallback operationCompletedCallback, object userState)");
+		//			code.AppendLine("\t\t{");
+		//			code.AppendLine("\t\t\tif (beginOperationDelegate == null) throw new ArgumentNullException(\"Argument 'beginOperationDelegate' cannot be null.\");");
+		//			code.AppendLine("\t\t\tif (endOperationDelegate == null) throw new ArgumentNullException(\"Argument 'endOperationDelegate' cannot be null.\");");
+		//			code.AppendLine("\t\t\tAsyncCallback cb = delegate(IAsyncResult ar)");
+		//			code.AppendLine("\t\t\t{");
+		//			code.AppendLine("\t\t\t\tobject[] results = null;");
+		//			code.AppendLine("\t\t\t\tException error = null;");
+		//			code.AppendLine("\t\t\t\ttry { results = endOperationDelegate(ar); }");
+		//			code.AppendLine("\t\t\t\tcatch (Exception ex) { error = ex; }");
+		//			code.AppendLine("\t\t\t\tif (operationCompletedCallback != null) operationCompletedCallback(new InvokeAsyncCompletedEventArgs(results, error, false, userState));");
+		//			code.AppendLine("\t\t\t};");
+		//			code.AppendLine("\t\t\tbeginOperationDelegate(inValues, cb, userState);");
+		//			code.AppendLine("\t\t}");
+		//			code.AppendLine();
+		//		}
+		//		foreach (Property p in o.CallbackOperations.Where(a => a.GetType() == typeof(Property)))
+		//			code.AppendLine(GeneratePropertyClientCode(p));
+		//		foreach (Method m in o.CallbackOperations.Where(a => a.GetType() == typeof(Method)))
+		//			code.AppendLine(GenerateMethodProxyCode30(m, true, true));
+		//		code.AppendLine("\t}");
+		//	}
 
-		public static string GenerateServerCode35(Service o)
-		{
-			return GenerateServerCode40(o);
-		}
+		//	return code.ToString();
+		//}
+
+		//public static string GenerateServerCode35(Service o)
+		//{
+		//	return GenerateServerCode40(o);
+		//}
+
+		#endregion
 
 		public static string GenerateServerCode40(Service o)
 		{
@@ -391,141 +395,145 @@ namespace NETPath.Generators.NET.CS
 
 		#region - Client Interfaces -
 
-		public static string GenerateClientCode30(Service o)
-		{
-			var code = new StringBuilder();
+		#region - Obsolete .NET 3.x Code -
 
-			//Generate the Client interface
-			if (o.ServiceDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.ServiceDocumentation));
-			if (o.ClientType != null)
-				foreach (DataType dt in o.ClientType.KnownTypes)
-					code.AppendLine(string.Format("\t[ServiceKnownType(typeof({0}))]", dt));
-			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t{0} interface I{1}", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name));
-			code.AppendLine("\t{");
-			foreach (Property p in o.ServiceOperations.Where(a => a.GetType() == typeof(Property)))
-				code.AppendLine(GeneratePropertyInterfaceCode40(p));
-			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-				code.AppendLine(GenerateClientInterfaceMethodCode30(m));
-			code.AppendLine("\t}");
-			code.AppendLine();
-			//Generate Callback Interface (if any)
-			if (o.HasCallback)
-			{
-				if (o.CallbackDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.CallbackDocumentation));
-				foreach (DataType dt in o.KnownTypes)
-					code.AppendLine(string.Format("\t[ServiceKnownType(typeof({0}))]", dt));
-				code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-				code.AppendFormat("\t{0} interface I{1}Callback{2}", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.Name, Environment.NewLine);
-				code.AppendLine("\t{");
-				foreach (Property p in o.CallbackOperations.Where(a => a.GetType() == typeof(Property)))
-					code.AppendLine(GeneratePropertyInterfaceCode40(p));
-				foreach (Method m in o.CallbackOperations.Where(a => a.GetType() == typeof(Method)))
-					code.AppendLine(GenerateClientInterfaceMethodCode30(m));
-				code.AppendLine("\t}");
-				code.AppendLine();
-			}
-			//Generate Channel Interface
-			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t{0} interface I{1}Channel : I{2}, System.ServiceModel.IClientChannel", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.HasClientType ? o.ClientType.Name : o.Name));
-			code.AppendLine("\t{");
-			code.AppendLine("\t}");
-			code.AppendLine();
-			//Generate the Proxy Class
-			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute()]");
-			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t{0} partial class {1}Proxy : System.ServiceModel.{2}<I{1}>, I{1}", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.HasCallbackOperations ? "DuplexClientBase" : "ClientBase"));
-			code.AppendLine("\t{");
-			if (o.HasCallbackOperations)
-			{
-				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance) : base(callbackInstance)", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t{");
-				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-					code.Append(GenerateMethodProxyConstructorCode(m, false));
-				code.AppendLine("\t\t}");
-				code.AppendLine();
-				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName) : base(callbackInstance, endpointConfigurationName)", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t{");
-				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-					code.Append(GenerateMethodProxyConstructorCode(m, false));
-				code.AppendLine("\t\t}");
-				code.AppendLine();
-				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, string remoteAddress) : base(callbackInstance, endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t{");
-				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-					code.Append(GenerateMethodProxyConstructorCode(m, false));
-				code.AppendLine("\t\t}");
-				code.AppendLine();
-				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : base(callbackInstance, endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t{");
-				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-					code.Append(GenerateMethodProxyConstructorCode(m, false));
-				code.AppendLine("\t\t}");
-				code.AppendLine();
-				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance, System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : base(callbackInstance, binding, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t{");
-				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-					code.Append(GenerateMethodProxyConstructorCode(m, false));
-				code.AppendLine("\t\t}");
-				code.AppendLine();
-				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance, System.ServiceModel.Description.ServiceEndpoint endpoint) : base(callbackInstance, endpoint)", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t{");
-				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-					code.Append(GenerateMethodProxyConstructorCode(m, false));
-				code.AppendLine("\t\t}");
-				code.AppendLine();
-			}
+		//public static string GenerateClientCode30(Service o)
+		//{
+		//	var code = new StringBuilder();
 
-			else
-			{
-				code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName) : base(endpointConfigurationName)", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t{");
-				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-					code.Append(GenerateMethodProxyConstructorCode(m, false));
-				code.AppendLine("\t\t}");
-				code.AppendLine();
-				code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName, string remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t{");
-				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-					code.Append(GenerateMethodProxyConstructorCode(m, false));
-				code.AppendLine("\t\t}");
-				code.AppendLine();
-				code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t{");
-				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-					code.Append(GenerateMethodProxyConstructorCode(m, false));
-				code.AppendLine("\t\t}");
-				code.AppendLine();
-				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : base(binding, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t{");
-				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-					code.Append(GenerateMethodProxyConstructorCode(m, false));
-				code.AppendLine("\t\t}");
-				code.AppendLine();
-				code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.Description.ServiceEndpoint endpoint) : base(endpoint)", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t{");
-				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-					code.Append(GenerateMethodProxyConstructorCode(m, false));
-				code.AppendLine("\t\t}");
-				code.AppendLine();
-			}
+		//	//Generate the Client interface
+		//	if (o.ServiceDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.ServiceDocumentation));
+		//	if (o.ClientType != null)
+		//		foreach (DataType dt in o.ClientType.KnownTypes)
+		//			code.AppendLine(string.Format("\t[ServiceKnownType(typeof({0}))]", dt));
+		//	code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
+		//	code.AppendLine(string.Format("\t{0} interface I{1}", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name));
+		//	code.AppendLine("\t{");
+		//	foreach (Property p in o.ServiceOperations.Where(a => a.GetType() == typeof(Property)))
+		//		code.AppendLine(GeneratePropertyInterfaceCode40(p));
+		//	foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+		//		code.AppendLine(GenerateClientInterfaceMethodCode30(m));
+		//	code.AppendLine("\t}");
+		//	code.AppendLine();
+		//	//Generate Callback Interface (if any)
+		//	if (o.HasCallback)
+		//	{
+		//		if (o.CallbackDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.CallbackDocumentation));
+		//		foreach (DataType dt in o.KnownTypes)
+		//			code.AppendLine(string.Format("\t[ServiceKnownType(typeof({0}))]", dt));
+		//		code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
+		//		code.AppendFormat("\t{0} interface I{1}Callback{2}", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.Name, Environment.NewLine);
+		//		code.AppendLine("\t{");
+		//		foreach (Property p in o.CallbackOperations.Where(a => a.GetType() == typeof(Property)))
+		//			code.AppendLine(GeneratePropertyInterfaceCode40(p));
+		//		foreach (Method m in o.CallbackOperations.Where(a => a.GetType() == typeof(Method)))
+		//			code.AppendLine(GenerateClientInterfaceMethodCode30(m));
+		//		code.AppendLine("\t}");
+		//		code.AppendLine();
+		//	}
+		//	//Generate Channel Interface
+		//	code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
+		//	code.AppendLine(string.Format("\t{0} interface I{1}Channel : I{2}, System.ServiceModel.IClientChannel", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.HasClientType ? o.ClientType.Name : o.Name));
+		//	code.AppendLine("\t{");
+		//	code.AppendLine("\t}");
+		//	code.AppendLine();
+		//	//Generate the Proxy Class
+		//	code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute()]");
+		//	code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
+		//	code.AppendLine(string.Format("\t{0} partial class {1}Proxy : System.ServiceModel.{2}<I{1}>, I{1}", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.HasCallbackOperations ? "DuplexClientBase" : "ClientBase"));
+		//	code.AppendLine("\t{");
+		//	if (o.HasCallbackOperations)
+		//	{
+		//		code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance) : base(callbackInstance)", o.HasClientType ? o.ClientType.Name : o.Name));
+		//		code.AppendLine("\t\t{");
+		//		foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+		//			code.Append(GenerateMethodProxyConstructorCode(m, false));
+		//		code.AppendLine("\t\t}");
+		//		code.AppendLine();
+		//		code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName) : base(callbackInstance, endpointConfigurationName)", o.HasClientType ? o.ClientType.Name : o.Name));
+		//		code.AppendLine("\t\t{");
+		//		foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+		//			code.Append(GenerateMethodProxyConstructorCode(m, false));
+		//		code.AppendLine("\t\t}");
+		//		code.AppendLine();
+		//		code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, string remoteAddress) : base(callbackInstance, endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+		//		code.AppendLine("\t\t{");
+		//		foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+		//			code.Append(GenerateMethodProxyConstructorCode(m, false));
+		//		code.AppendLine("\t\t}");
+		//		code.AppendLine();
+		//		code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : base(callbackInstance, endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+		//		code.AppendLine("\t\t{");
+		//		foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+		//			code.Append(GenerateMethodProxyConstructorCode(m, false));
+		//		code.AppendLine("\t\t}");
+		//		code.AppendLine();
+		//		code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance, System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : base(callbackInstance, binding, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+		//		code.AppendLine("\t\t{");
+		//		foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+		//			code.Append(GenerateMethodProxyConstructorCode(m, false));
+		//		code.AppendLine("\t\t}");
+		//		code.AppendLine();
+		//		code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.InstanceContext callbackInstance, System.ServiceModel.Description.ServiceEndpoint endpoint) : base(callbackInstance, endpoint)", o.HasClientType ? o.ClientType.Name : o.Name));
+		//		code.AppendLine("\t\t{");
+		//		foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+		//			code.Append(GenerateMethodProxyConstructorCode(m, false));
+		//		code.AppendLine("\t\t}");
+		//		code.AppendLine();
+		//	}
 
-			Host h = o.Parent.Owner.Namespace.GetServiceHost(o);
-			if (h != null)
-				code.Append(HostGenerator.GenerateClientCode40(h));
-			foreach (Property p in o.ServiceOperations.Where(a => a.GetType() == typeof(Property)))
-				code.AppendLine(GeneratePropertyClientCode(p));
-			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-				code.AppendLine(GenerateMethodProxyCode30(m, false, false));
-			code.AppendLine("\t}");
+		//	else
+		//	{
+		//		code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName) : base(endpointConfigurationName)", o.HasClientType ? o.ClientType.Name : o.Name));
+		//		code.AppendLine("\t\t{");
+		//		foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+		//			code.Append(GenerateMethodProxyConstructorCode(m, false));
+		//		code.AppendLine("\t\t}");
+		//		code.AppendLine();
+		//		code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName, string remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+		//		code.AppendLine("\t\t{");
+		//		foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+		//			code.Append(GenerateMethodProxyConstructorCode(m, false));
+		//		code.AppendLine("\t\t}");
+		//		code.AppendLine();
+		//		code.AppendLine(string.Format("\t\tpublic {0}Proxy(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+		//		code.AppendLine("\t\t{");
+		//		foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+		//			code.Append(GenerateMethodProxyConstructorCode(m, false));
+		//		code.AppendLine("\t\t}");
+		//		code.AppendLine();
+		//		code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : base(binding, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name));
+		//		code.AppendLine("\t\t{");
+		//		foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+		//			code.Append(GenerateMethodProxyConstructorCode(m, false));
+		//		code.AppendLine("\t\t}");
+		//		code.AppendLine();
+		//		code.AppendLine(string.Format("\t\tpublic {0}Proxy(System.ServiceModel.Description.ServiceEndpoint endpoint) : base(endpoint)", o.HasClientType ? o.ClientType.Name : o.Name));
+		//		code.AppendLine("\t\t{");
+		//		foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+		//			code.Append(GenerateMethodProxyConstructorCode(m, false));
+		//		code.AppendLine("\t\t}");
+		//		code.AppendLine();
+		//	}
 
-			return code.ToString();
-		}
+		//	Host h = o.Parent.Owner.Namespace.GetServiceHost(o);
+		//	if (h != null)
+		//		code.Append(HostGenerator.GenerateClientCode40(h));
+		//	foreach (Property p in o.ServiceOperations.Where(a => a.GetType() == typeof(Property)))
+		//		code.AppendLine(GeneratePropertyClientCode(p));
+		//	foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+		//		code.AppendLine(GenerateMethodProxyCode30(m, false, false));
+		//	code.AppendLine("\t}");
 
-		public static string GenerateClientCode35(Service o)
-		{
-			return GenerateClientCode40(o);
-		}
+		//	return code.ToString();
+		//}
+
+		//public static string GenerateClientCode35(Service o)
+		//{
+		//	return GenerateClientCode40(o);
+		//}
+
+		#endregion
 
 		public static string GenerateClientCode40(Service o)
 		{
@@ -822,16 +830,6 @@ namespace NETPath.Generators.NET.CS
 			return code.ToString();
 		}
 
-		public static string GenerateServiceInterfaceMethodCode30(Method o, bool IsCallback)
-		{
-			return GenerateServiceInterfaceMethodCode35(o, IsCallback);
-		}
-
-		public static string GenerateServiceInterfaceMethodCode35(Method o, bool IsCallback)
-		{
-			return GenerateServiceInterfaceMethodCode40(o, IsCallback);
-		}
-
 		public static string GenerateServiceInterfaceMethodCode40(Method o, bool IsCallback)
 		{
 			var code = new StringBuilder();
@@ -921,16 +919,6 @@ namespace NETPath.Generators.NET.CS
 				code.AppendFormat("{0}{1}", GenerateMethodParameterClientCode(op), o.Parameters.IndexOf(op) != (o.Parameters.Count() - 1) ? ", " : "");
 			code.AppendLine(");");
 			return code.ToString();
-		}
-
-		public static string GenerateClientInterfaceMethodCode30(Method o)
-		{
-			return GenerateClientInterfaceMethodCode35(o);
-		}
-
-		public static string GenerateClientInterfaceMethodCode35(Method o)
-		{
-			return GenerateClientInterfaceMethodCode40(o);
 		}
 
 		public static string GenerateClientInterfaceMethodCode40(Method o)
@@ -1038,122 +1026,126 @@ namespace NETPath.Generators.NET.CS
 			return code.ToString();
 		}
 
-		public static string GenerateMethodProxyCode30(Method o, bool IsServer, bool IsCallback)
-		{
-			var code = new StringBuilder();
+		#region - Obsolete .NET 3.x Code -
 
-			if (o.UseSyncPattern) code.Append(GenerateSyncMethodProxy(o, IsCallback));
+		//public static string GenerateMethodProxyCode30(Method o, bool IsServer, bool IsCallback)
+		//{
+		//	var code = new StringBuilder();
 
-			if (o.UseAsyncPattern && CanGenerateAsync(o.Owner, IsServer))
-			{
-				//Generate the delegate fields for this function
-				code.AppendLine(string.Format("\t\tprivate readonly BeginOperationDelegate onBegin{0}Delegate;", o.HasClientType ? o.ClientName : o.ServerName));
-				code.AppendLine(string.Format("\t\tprivate readonly EndOperationDelegate onEnd{0}Delegate;", o.HasClientType ? o.ClientName : o.ServerName));
-				code.AppendLine(string.Format("\t\tprivate readonly System.Threading.SendOrPostCallback on{0}CompletedDelegate;", o.HasClientType ? o.ClientName : o.ServerName));
-				code.AppendLine(string.Format("\t\tpublic Action<AsyncOperationCompletedArgs<{1}>> {0}Completed;", o.HasClientType ? o.ClientName : o.ServerName, o.ReturnType.Primitive == PrimitiveTypes.Void ? "object" : o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType)));
+		//	if (o.UseSyncPattern) code.Append(GenerateSyncMethodProxy(o, IsCallback));
 
-				//Generate the interface functions.
-				if (o.Documentation != null)
-				{
-					code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation, true));
-					foreach (MethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
-						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
-					code.AppendLine(string.Format("\t\t///<param name='Callback'>The function to call when the operation is complete.</param>"));
-					code.AppendLine(string.Format("\t\t///<param name='AsyncState'>An object representing the state of the operation.</param>"));
-				}
-				code.AppendFormat("\t\tIAsyncResult I{1}{2}.Begin{0}Invoke(", o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, IsCallback ? "Callback" : "");
-				foreach (MethodParameter op in o.Parameters)
-					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
-				code.AppendLine("AsyncCallback Callback, object AsyncState)");
-				code.AppendLine("\t\t{");
-				code.AppendFormat("\t\t\t{0}{2}.Begin{1}Invoke(", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName, IsCallback ? "__callback" : "base.Channel");
-				foreach (MethodParameter op in o.Parameters)
-					code.AppendFormat("{0}, ", op.Name);
-				code.AppendLine("Callback, AsyncState);");
-				code.AppendLine("\t\t}");
-				if (o.Documentation != null)
-				{
-					code.AppendLine("\t\t///<summary>Finalizes the asynchronous operation.</summary>");
-					code.AppendLine("\t\t///<returns>");
-					code.AppendLine(string.Format("\t\t///{0}", o.Documentation.Returns.Replace(Environment.NewLine, Environment.NewLine + "\t///")));
-					code.AppendLine("\t\t///</returns>");
-					code.AppendLine(string.Format("\t\t///<param name='result'>The result of the operation.</param>"));
-				}
-				code.AppendLine(string.Format("\t\t{0} I{2}{3}.End{1}Invoke(IAsyncResult result)", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, IsCallback ? "Callback" : ""));
-				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t{0}{2}.End{1}Invoke(result);", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName, IsCallback ? "__callback" : "base.Channel"));
-				code.AppendLine("\t\t}");
+		//	if (o.UseAsyncPattern && CanGenerateAsync(o.Owner, IsServer))
+		//	{
+		//		//Generate the delegate fields for this function
+		//		code.AppendLine(string.Format("\t\tprivate readonly BeginOperationDelegate onBegin{0}Delegate;", o.HasClientType ? o.ClientName : o.ServerName));
+		//		code.AppendLine(string.Format("\t\tprivate readonly EndOperationDelegate onEnd{0}Delegate;", o.HasClientType ? o.ClientName : o.ServerName));
+		//		code.AppendLine(string.Format("\t\tprivate readonly System.Threading.SendOrPostCallback on{0}CompletedDelegate;", o.HasClientType ? o.ClientName : o.ServerName));
+		//		code.AppendLine(string.Format("\t\tpublic Action<AsyncOperationCompletedArgs<{1}>> {0}Completed;", o.HasClientType ? o.ClientName : o.ServerName, o.ReturnType.Primitive == PrimitiveTypes.Void ? "object" : o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType)));
 
-				//Generate the delegate implementation functions.
-				code.AppendLine(string.Format("\t\tprivate IAsyncResult OnBegin{0}(object[] Values, AsyncCallback Callback, object AsyncState)", o.HasClientType ? o.ClientName : o.ServerName));
-				code.AppendLine("\t\t{");
-				code.AppendFormat("\t\t\treturn ((I{1}{2})this).Begin{0}Invoke(", o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, IsCallback ? "Callback" : "");
-				foreach (MethodParameter op in o.Parameters)
-					code.AppendFormat("({0})Values[{1}], ", DataTypeGenerator.GenerateType(op.Type), o.Parameters.IndexOf(op));
-				code.AppendLine("Callback, AsyncState);");
-				code.AppendLine("\t\t}");
-				code.AppendLine(string.Format("\t\tprivate object[] OnEnd{0}(IAsyncResult result)", o.HasClientType ? o.ClientName : o.ServerName));
-				code.AppendLine("\t\t{");
-				if (o.ReturnType.Primitive == PrimitiveTypes.Void)
-				{
-					code.AppendLine(string.Format("\t\t\t((I{1}{2})this).End{0}Invoke(result);", o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, IsCallback ? "Callback" : ""));
-					code.AppendLine("\t\t\treturn null;");
-				}
-				else
-					code.AppendLine(string.Format("\t\t\treturn new object[] {{ ((I{1}{2})this).End{0}Invoke(result) }};", o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, IsCallback ? "Callback" : ""));
-				code.AppendLine("\t\t}");
-				code.AppendLine(string.Format("\t\tprivate void On{0}Completed(object state)", o.HasClientType ? o.ClientName : o.ServerName));
-				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\tif (this.{0}Completed == null) return;", o.HasClientType ? o.ClientName : o.ServerName));
-				code.AppendLine("\t\t\tInvokeAsyncCompletedEventArgs e = (InvokeAsyncCompletedEventArgs)state;");
-				code.AppendLine(string.Format("\t\t\tthis.{0}Completed(new AsyncOperationCompletedArgs<{2}>({1}e.Error, e.Cancelled, e.UserState));", o.HasClientType ? o.ClientName : o.ServerName, o.ReturnType.Primitive == PrimitiveTypes.Void ? "null" : string.Format("({0})e.Results[0], ", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType)), o.ReturnType.Primitive == PrimitiveTypes.Void ? "object" : o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType)));
-				code.AppendLine("\t\t}");
+		//		//Generate the interface functions.
+		//		if (o.Documentation != null)
+		//		{
+		//			code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation, true));
+		//			foreach (MethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
+		//				code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
+		//			code.AppendLine(string.Format("\t\t///<param name='Callback'>The function to call when the operation is complete.</param>"));
+		//			code.AppendLine(string.Format("\t\t///<param name='AsyncState'>An object representing the state of the operation.</param>"));
+		//		}
+		//		code.AppendFormat("\t\tIAsyncResult I{1}{2}.Begin{0}Invoke(", o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, IsCallback ? "Callback" : "");
+		//		foreach (MethodParameter op in o.Parameters)
+		//			code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+		//		code.AppendLine("AsyncCallback Callback, object AsyncState)");
+		//		code.AppendLine("\t\t{");
+		//		code.AppendFormat("\t\t\t{0}{2}.Begin{1}Invoke(", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName, IsCallback ? "__callback" : "base.Channel");
+		//		foreach (MethodParameter op in o.Parameters)
+		//			code.AppendFormat("{0}, ", op.Name);
+		//		code.AppendLine("Callback, AsyncState);");
+		//		code.AppendLine("\t\t}");
+		//		if (o.Documentation != null)
+		//		{
+		//			code.AppendLine("\t\t///<summary>Finalizes the asynchronous operation.</summary>");
+		//			code.AppendLine("\t\t///<returns>");
+		//			code.AppendLine(string.Format("\t\t///{0}", o.Documentation.Returns.Replace(Environment.NewLine, Environment.NewLine + "\t///")));
+		//			code.AppendLine("\t\t///</returns>");
+		//			code.AppendLine(string.Format("\t\t///<param name='result'>The result of the operation.</param>"));
+		//		}
+		//		code.AppendLine(string.Format("\t\t{0} I{2}{3}.End{1}Invoke(IAsyncResult result)", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, IsCallback ? "Callback" : ""));
+		//		code.AppendLine("\t\t{");
+		//		code.AppendLine(string.Format("\t\t\t{0}{2}.End{1}Invoke(result);", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName, IsCallback ? "__callback" : "base.Channel"));
+		//		code.AppendLine("\t\t}");
 
-				//Generate invocation functions
-				if (o.Documentation != null)
-				{
-					code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-					foreach (MethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
-						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
-				}
-				code.AppendFormat("\t\tpublic void {0}Invoke(", o.HasClientType ? o.ClientName : o.ServerName);
-				foreach (MethodParameter op in o.Parameters)
-					code.AppendFormat("{0}{1}", GenerateMethodParameterClientCode(op), o.Parameters.IndexOf(op) != (o.Parameters.Count() - 1) ? ", " : "");
-				code.AppendLine(")");
-				code.AppendLine("\t\t{");
-				code.AppendFormat("\t\t\tthis.{0}Invoke(", o.HasClientType ? o.ClientName : o.ServerName);
-				foreach (MethodParameter op in o.Parameters)
-					code.AppendFormat("{0}, ", op.Name);
-				code.AppendLine("null);");
-				code.AppendLine("\t\t}");
-				if (o.Documentation != null)
-				{
-					code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-					foreach (MethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
-						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
-					code.AppendLine(string.Format("\t\t///<param name='userState'>Allows the user of this function to distinguish between different calls.</param>"));
-				}
-				code.AppendFormat("\t\tpublic void {0}Invoke(", o.HasClientType ? o.ClientName : o.ServerName);
-				foreach (MethodParameter op in o.Parameters)
-					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
-				code.AppendLine("object userState)");
-				code.AppendLine("\t\t{");
-				code.AppendFormat("\t\t\tInvokeAsync(this.onBegin{0}Delegate, new object[] {{ ", o.HasClientType ? o.ClientName : o.ServerName);
-				foreach (MethodParameter op in o.Parameters)
-					code.AppendFormat("{0}{1}", op.Name, o.Parameters.IndexOf(op) != (o.Parameters.Count() - 1) ? ", " : "");
-				code.AppendLine(string.Format(" }}, this.onEnd{0}Delegate, this.on{0}CompletedDelegate, userState);", o.HasClientType ? o.ClientName : o.ServerName));
-				code.AppendLine("\t\t}");
-			}
-			else if (o.UseAsyncPattern && !CanGenerateAsync(o.Owner, IsServer))
-				code.Append(GenerateSyncMethodProxy(o, IsCallback, true));
+		//		//Generate the delegate implementation functions.
+		//		code.AppendLine(string.Format("\t\tprivate IAsyncResult OnBegin{0}(object[] Values, AsyncCallback Callback, object AsyncState)", o.HasClientType ? o.ClientName : o.ServerName));
+		//		code.AppendLine("\t\t{");
+		//		code.AppendFormat("\t\t\treturn ((I{1}{2})this).Begin{0}Invoke(", o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, IsCallback ? "Callback" : "");
+		//		foreach (MethodParameter op in o.Parameters)
+		//			code.AppendFormat("({0})Values[{1}], ", DataTypeGenerator.GenerateType(op.Type), o.Parameters.IndexOf(op));
+		//		code.AppendLine("Callback, AsyncState);");
+		//		code.AppendLine("\t\t}");
+		//		code.AppendLine(string.Format("\t\tprivate object[] OnEnd{0}(IAsyncResult result)", o.HasClientType ? o.ClientName : o.ServerName));
+		//		code.AppendLine("\t\t{");
+		//		if (o.ReturnType.Primitive == PrimitiveTypes.Void)
+		//		{
+		//			code.AppendLine(string.Format("\t\t\t((I{1}{2})this).End{0}Invoke(result);", o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, IsCallback ? "Callback" : ""));
+		//			code.AppendLine("\t\t\treturn null;");
+		//		}
+		//		else
+		//			code.AppendLine(string.Format("\t\t\treturn new object[] {{ ((I{1}{2})this).End{0}Invoke(result) }};", o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, IsCallback ? "Callback" : ""));
+		//		code.AppendLine("\t\t}");
+		//		code.AppendLine(string.Format("\t\tprivate void On{0}Completed(object state)", o.HasClientType ? o.ClientName : o.ServerName));
+		//		code.AppendLine("\t\t{");
+		//		code.AppendLine(string.Format("\t\t\tif (this.{0}Completed == null) return;", o.HasClientType ? o.ClientName : o.ServerName));
+		//		code.AppendLine("\t\t\tInvokeAsyncCompletedEventArgs e = (InvokeAsyncCompletedEventArgs)state;");
+		//		code.AppendLine(string.Format("\t\t\tthis.{0}Completed(new AsyncOperationCompletedArgs<{2}>({1}e.Error, e.Cancelled, e.UserState));", o.HasClientType ? o.ClientName : o.ServerName, o.ReturnType.Primitive == PrimitiveTypes.Void ? "null" : string.Format("({0})e.Results[0], ", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType)), o.ReturnType.Primitive == PrimitiveTypes.Void ? "object" : o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType)));
+		//		code.AppendLine("\t\t}");
 
-			return code.ToString();
-		}
+		//		//Generate invocation functions
+		//		if (o.Documentation != null)
+		//		{
+		//			code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
+		//			foreach (MethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
+		//				code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
+		//		}
+		//		code.AppendFormat("\t\tpublic void {0}Invoke(", o.HasClientType ? o.ClientName : o.ServerName);
+		//		foreach (MethodParameter op in o.Parameters)
+		//			code.AppendFormat("{0}{1}", GenerateMethodParameterClientCode(op), o.Parameters.IndexOf(op) != (o.Parameters.Count() - 1) ? ", " : "");
+		//		code.AppendLine(")");
+		//		code.AppendLine("\t\t{");
+		//		code.AppendFormat("\t\t\tthis.{0}Invoke(", o.HasClientType ? o.ClientName : o.ServerName);
+		//		foreach (MethodParameter op in o.Parameters)
+		//			code.AppendFormat("{0}, ", op.Name);
+		//		code.AppendLine("null);");
+		//		code.AppendLine("\t\t}");
+		//		if (o.Documentation != null)
+		//		{
+		//			code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
+		//			foreach (MethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
+		//				code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
+		//			code.AppendLine(string.Format("\t\t///<param name='userState'>Allows the user of this function to distinguish between different calls.</param>"));
+		//		}
+		//		code.AppendFormat("\t\tpublic void {0}Invoke(", o.HasClientType ? o.ClientName : o.ServerName);
+		//		foreach (MethodParameter op in o.Parameters)
+		//			code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+		//		code.AppendLine("object userState)");
+		//		code.AppendLine("\t\t{");
+		//		code.AppendFormat("\t\t\tInvokeAsync(this.onBegin{0}Delegate, new object[] {{ ", o.HasClientType ? o.ClientName : o.ServerName);
+		//		foreach (MethodParameter op in o.Parameters)
+		//			code.AppendFormat("{0}{1}", op.Name, o.Parameters.IndexOf(op) != (o.Parameters.Count() - 1) ? ", " : "");
+		//		code.AppendLine(string.Format(" }}, this.onEnd{0}Delegate, this.on{0}CompletedDelegate, userState);", o.HasClientType ? o.ClientName : o.ServerName));
+		//		code.AppendLine("\t\t}");
+		//	}
+		//	else if (o.UseAsyncPattern && !CanGenerateAsync(o.Owner, IsServer))
+		//		code.Append(GenerateSyncMethodProxy(o, IsCallback, true));
 
-		public static string GenerateMethodProxyCode35(Method o, bool IsServer, bool IsCallback)
-		{
-			return GenerateMethodProxyCode40(o, IsServer, IsCallback);
-		}
+		//	return code.ToString();
+		//}
+
+		//public static string GenerateMethodProxyCode35(Method o, bool IsServer, bool IsCallback)
+		//{
+		//	return GenerateMethodProxyCode40(o, IsServer, IsCallback);
+		//}
+
+		#endregion
 
 		public static string GenerateMethodProxyCode40(Method o, bool IsServer, bool IsCallback)
 		{
@@ -1334,16 +1326,6 @@ namespace NETPath.Generators.NET.CS
 		#endregion
 
 		#region - Properties -
-
-		public static string GeneratePropertyServerCode30(Property o)
-		{
-			return GeneratePropertyServerCode35(o);
-		}
-
-		public static string GeneratePropertyServerCode35(Property o)
-		{
-			return GeneratePropertyServerCode40(o);
-		}
 
 		public static string GeneratePropertyServerCode40(Property o)
 		{

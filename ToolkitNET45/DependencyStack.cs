@@ -19,16 +19,16 @@ namespace System.Collections.Generic
 		public DependencyStack(Action<IEnumerable<T>> Pushed, Action<IEnumerable<T>> Popped, Action<int> Cleared)
 		{
 			il = new ConcurrentStack<T>();
-			this.Pushed = Pushed ?? (ItemList => { });
-			this.Popped = Popped ?? ((Index, ItemList) => { });
+			this.Pushed = Pushed ?? (Item => { });
+			this.Popped = Popped ?? ((Item) => { });
 			this.Cleared = Cleared ?? (count => { });
 		}
 
 		public DependencyStack(IEnumerable<T> Items, Action<IEnumerable<T>> Pushed, Action<IEnumerable<T>> Popped, Action<int> Cleared)
 		{
 			il = new ConcurrentStack<T>(Items);
-			this.Pushed = Pushed ?? (ItemList => { });
-			this.Popped = Popped ?? ((Index, ItemList) => { });
+			this.Pushed = Pushed ?? (Item => { });
+			this.Popped = Popped ?? ((Item) => { });
 			this.Cleared = Cleared ?? (count => { });
 		}
 

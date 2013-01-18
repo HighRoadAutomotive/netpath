@@ -20,7 +20,7 @@ namespace NETPath.Toolkit.WinRT8
 		{
 			il = new ConcurrentStack<T>();
 			this.Pushed = Pushed ?? (ItemList => { });
-			this.Popped = Popped ?? ((Index, ItemList) => { });
+			this.Popped = Popped ?? ((ItemList) => { });
 			this.Cleared = Cleared ?? (count => { });
 		}
 
@@ -28,7 +28,7 @@ namespace NETPath.Toolkit.WinRT8
 		{
 			il = new ConcurrentStack<T>(Items);
 			this.Pushed = Pushed ?? (ItemList => { });
-			this.Popped = Popped ?? ((Index, ItemList) => { });
+			this.Popped = Popped ?? ((ItemList) => { });
 			this.Cleared = Cleared ?? (count => { });
 		}
 

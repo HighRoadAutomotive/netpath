@@ -18,15 +18,15 @@ namespace System.Collections.Generic
 		public DependencyQueue(Action<T> Pushed, Action<T> Popped)
 		{
 			il = new ConcurrentQueue<T>();
-			this.Pushed = Pushed ?? (ItemList => { });
-			this.Popped = Popped ?? ((Index, ItemList) => { });
+			this.Pushed = Pushed ?? (Item => { });
+			this.Popped = Popped ?? ((Item) => { });
 		}
 
 		public DependencyQueue(IEnumerable<T> Items, Action<T> Pushed, Action<T> Popped)
 		{
 			il = new ConcurrentQueue<T>(Items);
-			this.Pushed = Pushed ?? (ItemList => { });
-			this.Popped = Popped ?? ((Index, ItemList) => { });
+			this.Pushed = Pushed ?? (Item => { });
+			this.Popped = Popped ?? ((Item) => { });
 		}
 
 		public void Enqueue(T Item)
