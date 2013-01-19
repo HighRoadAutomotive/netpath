@@ -62,6 +62,8 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 		//Data Change Messaging Support
 		private readonly System.Threading.ReaderWriterLockSlim __dcmlock = new System.Threading.ReaderWriterLockSlim();
 		private static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, Customer> __dcm;
+		private bool IsUpdateObjectField;
+		[DataMember(Name = "IsUpdateObject")] public bool IsUpdateObject { get { return IsUpdateObjectField; } set { IsUpdateObjectField = value; } }
 		static Customer()
 		{
 			__dcm = new System.Collections.Concurrent.ConcurrentDictionary<Guid, Customer>();
@@ -74,7 +76,7 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 		~Customer()
 		{
 			Customer t;
-			__dcm.TryAdd(_DCMID, this);
+			__dcm.TryRemove(_DCMID, this);
 		}
 
 		public System.Runtime.Serialization.ExtensionDataObject ExtensionData { get; set; }

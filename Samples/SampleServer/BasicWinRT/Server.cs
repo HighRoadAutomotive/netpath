@@ -54,6 +54,8 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 	[DataContract(Name = "Customer", Namespace = "http://tempuri.org/")]
 	public partial class Customer
 	{
+		private bool IsUpdateObjectField;
+		[DataMember(Name = "IsUpdateObject")] public bool IsUpdateObject { get { return IsUpdateObjectField; } set { IsUpdateObjectField = value; } }
 		[DataMember(Name = "ID")] public Guid ID { get; set; }
 		[DataMember(Name = "Name")] public string Name { get; set; }
 		[DataMember(Name = "AddressLine1")] public string AddressLine1 { get; set; }

@@ -63,6 +63,8 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 		//Data Change Messaging Support
 		private readonly System.Threading.ReaderWriterLockSlim __dcmlock = new System.Threading.ReaderWriterLockSlim();
 		private static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, Customer> __dcm;
+		private bool IsUpdateObjectField;
+		[DataMember(Name = "IsUpdateObject")] public bool IsUpdateObject { get { return IsUpdateObjectField; } set { IsUpdateObjectField = value; } }
 		static Customer()
 		{
 			__dcm = new System.Collections.Concurrent.ConcurrentDictionary<Guid, Customer>();
@@ -70,12 +72,13 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 		[OnDeserialized]
 		private void OnDeserialized(StreamingContext context)
 		{
+			if()
 			__dcm.TryAdd(_DCMID, this);
 		}
 		~Customer()
 		{
 			Customer t;
-			__dcm.TryAdd(_DCMID, this);
+			__dcm.TryRemove(_DCMID, this);
 		}
 
 		//Constuctors
@@ -201,6 +204,7 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 	**************************************************************************/
 
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("NETPath WinRT CSharp Generator - BETA", "2.0.0.1335")]
+	[ServiceContract(CallbackContract = typeof(ICustomersCallback), SessionMode = System.ServiceModel.SessionMode.Required, Namespace = "http://tempuri.org/WCFArchitect/SampleServer/BasicWinRT/")]
 	public interface ICustomers
 	{
 		///<param name='NewCustomer'></param>

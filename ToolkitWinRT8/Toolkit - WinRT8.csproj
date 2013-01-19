@@ -102,6 +102,7 @@
     <Compile Include="DependencyObjectEx.cs" />
     <Compile Include="DependencyQueue.cs" />
     <Compile Include="DependencyStack.cs" />
+    <Compile Include="ListItemChange.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
