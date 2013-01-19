@@ -76,17 +76,6 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 				__dcm.TryAdd(_DCMID, this);
 			else
 			{
-
-
-
-
-
-
-
-
-
-
-
 			}
 		}
 		~Customer()
@@ -238,7 +227,7 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 	**************************************************************************/
 
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("NETPath WinRT CSharp Generator - BETA", "2.0.0.1336")]
-	[ServiceContract(CallbackContract = typeof(ICustomersCallback), SessionMode = System.ServiceModel.SessionMode.Required, Namespace = "http://tempuri.org/WCFArchitect/SampleServer/BasicWinRT/")]
+	[ServiceContract(CallbackContract = typeof(ICustomersCallback), Namespace = "http://tempuri.org/WCFArchitect/SampleServer/BasicWinRT/")]
 	public interface ICustomers
 	{
 		///<param name='NewCustomer'></param>

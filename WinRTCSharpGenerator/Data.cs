@@ -185,7 +185,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine("\t\t\telse");
 			code.AppendLine("\t\t\t{");
 			foreach (DataElement e in o.Elements)
-				code.AppendLine(GenerateProxyElementDCMBatchUpdateCode(e));
+				code.Append(GenerateProxyElementDCMBatchUpdateCode(e));
 			code.AppendLine("\t\t\t}");
 			code.AppendLine("\t\t}");
 			code.AppendLine(string.Format("\t\t~{0}()", o.HasClientType ? o.ClientType.Name : o.Name));

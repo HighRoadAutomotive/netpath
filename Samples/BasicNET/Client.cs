@@ -75,17 +75,6 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 				__dcm.TryAdd(_DCMID, this);
 			else
 			{
-
-
-
-
-
-
-
-
-
-
-
 			}
 		}
 		~Customer()
@@ -243,6 +232,7 @@ namespace WCFArchitect.SampleServer.BasicNET
 	**************************************************************************/
 
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("NETPath .NET CSharp Generator - BETA", "2.0.0.1336")]
+	[ServiceContract(CallbackContract = typeof(ITestNETCallback), SessionMode = System.ServiceModel.SessionMode.Allowed, Namespace = "http://tempuri.org/WCFArchitect/SampleServer/BasicNET/")]
 	public interface ITestNET
 	{
 		[OperationContract(Action = "http://tempuri.org/WCFArchitect/SampleServer/BasicNET/TestNET/RefTestAsync", ReplyAction = "http://tempuri.org/WCFArchitect/SampleServer/BasicNET/TestNET/RefTestAsyncResponse")]
