@@ -9,20 +9,20 @@ using System.Windows.Threading;
 
 namespace System.Collections.Generic
 {
-	public class DependencyQueue<T> : IProducerConsumerCollection<T>
+	public class DeltaQueue<T> : IProducerConsumerCollection<T>
 	{
 		private readonly ConcurrentQueue<T> il;
 		private readonly Action<T> Pushed;
 		private readonly Action<T> Popped;
 
-		public DependencyQueue(Action<T> Pushed, Action<T> Popped)
+		public DeltaQueue(Action<T> Pushed, Action<T> Popped)
 		{
 			il = new ConcurrentQueue<T>();
 			this.Pushed = Pushed ?? (Item => { });
 			this.Popped = Popped ?? ((Item) => { });
 		}
 
-		public DependencyQueue(IEnumerable<T> Items, Action<T> Pushed, Action<T> Popped)
+		public DeltaQueue(IEnumerable<T> Items, Action<T> Pushed, Action<T> Popped)
 		{
 			il = new ConcurrentQueue<T>(Items);
 			this.Pushed = Pushed ?? (Item => { });

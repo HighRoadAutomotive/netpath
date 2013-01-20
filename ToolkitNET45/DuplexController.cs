@@ -9,14 +9,14 @@ namespace System.ServiceModel
 {
 	public abstract class DuplexController<T, TCallback> where T : DuplexController<T, TCallback>
 	{
-		private static DependencyDictionary<Guid, T> Clients { get; set; }
+		private static DeltaDictionary<Guid, T> Clients { get; set; }
 
 		public Guid ClientToken { get; private set; }
 		protected TCallback Callback { get; private set; }
 
 		static DuplexController()
 		{
-			Clients = new DependencyDictionary<Guid, T>();
+			Clients = new DeltaDictionary<Guid, T>();
 		}
 
 		protected virtual bool OpenClient(Func<Guid> ClientToken)

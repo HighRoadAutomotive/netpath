@@ -4,31 +4,31 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Core;
-using Windows.UI.Xaml;
+using System.Windows;
+using System.Windows.Threading;
 
-namespace NETPath.Toolkit.WinRT8
+namespace System.Collections.Generic
 {
-	public class DependencyStack<T> : IProducerConsumerCollection<T>
+	public class DeltaStack<T> : IProducerConsumerCollection<T>
 	{
 		private readonly ConcurrentStack<T> il;
 		private readonly Action<IEnumerable<T>> Pushed;
 		private readonly Action<IEnumerable<T>> Popped;
 		private readonly Action<int> Cleared;
 
-		public DependencyStack(Action<IEnumerable<T>> Pushed, Action<IEnumerable<T>> Popped, Action<int> Cleared)
+		public DeltaStack(Action<IEnumerable<T>> Pushed, Action<IEnumerable<T>> Popped, Action<int> Cleared)
 		{
 			il = new ConcurrentStack<T>();
-			this.Pushed = Pushed ?? (ItemList => { });
-			this.Popped = Popped ?? ((ItemList) => { });
+			this.Pushed = Pushed ?? (Item => { });
+			this.Popped = Popped ?? ((Item) => { });
 			this.Cleared = Cleared ?? (count => { });
 		}
 
-		public DependencyStack(IEnumerable<T> Items, Action<IEnumerable<T>> Pushed, Action<IEnumerable<T>> Popped, Action<int> Cleared)
+		public DeltaStack(IEnumerable<T> Items, Action<IEnumerable<T>> Pushed, Action<IEnumerable<T>> Popped, Action<int> Cleared)
 		{
 			il = new ConcurrentStack<T>(Items);
-			this.Pushed = Pushed ?? (ItemList => { });
-			this.Popped = Popped ?? ((ItemList) => { });
+			this.Pushed = Pushed ?? (Item => { });
+			this.Popped = Popped ?? ((Item) => { });
 			this.Cleared = Cleared ?? (count => { });
 		}
 
@@ -86,39 +86,39 @@ namespace NETPath.Toolkit.WinRT8
 
 		#region - Update Calls -
 
-		private async void CallPushed(T item)
+		private void CallPushed(T item)
 		{
-			if (Window.Current.Dispatcher == null) { Pushed(new List<T> { item }); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) { Pushed(new List<T> { item }); }
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Pushed(new List<T> { item }));
+			if (Application.Current.Dispatcher == null) { Pushed(new List<T> { item }); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { Pushed(new List<T> { item }); }
+			else Application.Current.Dispatcher.Invoke(() => Pushed(new List<T> { item }), DispatcherPriority.Normal);
 		}
 
-		private async void CallPushed(IEnumerable<T> items)
+		private void CallPushed(IEnumerable<T> items)
 		{
-			if (Window.Current.Dispatcher == null) { Pushed(items); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) { Pushed(items); }
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Pushed(items));
+			if (Application.Current.Dispatcher == null) { Pushed(items); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { Pushed(items); }
+			else Application.Current.Dispatcher.Invoke(() => Pushed(items), DispatcherPriority.Normal);
 		}
 
-		private async void CallPopped(T item)
+		private void CallPopped(T item)
 		{
-			if (Window.Current.Dispatcher == null) { Popped(new List<T> { item }); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) { Popped(new List<T> { item }); }
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Popped(new List<T> { item }));
+			if (Application.Current.Dispatcher == null) { Popped(new List<T> { item }); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { Popped(new List<T> { item }); }
+			else Application.Current.Dispatcher.Invoke(() => Popped(new List<T> { item }), DispatcherPriority.Normal);
 		}
 
-		private async void CallPopped(IEnumerable<T> items)
+		private void CallPopped(IEnumerable<T> items)
 		{
-			if (Window.Current.Dispatcher == null) { Popped(items); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) { Popped(items); }
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Popped(items));
+			if (Application.Current.Dispatcher == null) { Popped(items); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { Popped(items); }
+			else Application.Current.Dispatcher.Invoke(() => Popped(items), DispatcherPriority.Normal);
 		}
 
-		private async void CallCleared(int count, IEnumerable<T> items)
+		private void CallCleared(int count, IEnumerable<T> items)
 		{
-			if (Window.Current.Dispatcher == null) { Cleared(count); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) { Cleared(count); }
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Cleared(count));
+			if (Application.Current.Dispatcher == null) { Cleared(count); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { Cleared(count); }
+			else Application.Current.Dispatcher.Invoke(() => Cleared(count), DispatcherPriority.Normal);
 		}
 
 		#endregion

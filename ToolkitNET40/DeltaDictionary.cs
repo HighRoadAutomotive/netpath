@@ -12,7 +12,7 @@ using System.Windows.Threading;
 namespace System.Collections.Generic
 {
 	[HostProtectionAttribute(SecurityAction.LinkDemand, Synchronization = true, ExternalThreading = true)]
-	internal class DependencyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
+	internal class DeltaDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	{
 		private readonly ConcurrentDictionary<TKey, TValue> il;
 		private readonly Action<KeyValuePair<TKey, TValue>> Added;
@@ -20,7 +20,7 @@ namespace System.Collections.Generic
 		private readonly Action<int> Cleared;
 		private readonly Action<TKey, TValue, TValue> Updated;
 
-		public DependencyDictionary(Action<KeyValuePair<TKey, TValue>> Added = null, Action<KeyValuePair<TKey, TValue>> Removed = null, Action<int> Cleared = null, Action<TKey, TValue, TValue> Updated = null)
+		public DeltaDictionary(Action<KeyValuePair<TKey, TValue>> Added = null, Action<KeyValuePair<TKey, TValue>> Removed = null, Action<int> Cleared = null, Action<TKey, TValue, TValue> Updated = null)
 		{
 			il = new ConcurrentDictionary<TKey, TValue>();
 			this.Added = Added ?? (items => { });
@@ -29,7 +29,7 @@ namespace System.Collections.Generic
 			this.Updated = Updated ?? ((key, ov, nv) => { });
 		}
 
-		public DependencyDictionary(int ConcurrencyLevel, int Capacity, Action<KeyValuePair<TKey, TValue>> Added = null, Action<KeyValuePair<TKey, TValue>> Removed = null, Action<int> Cleared = null, Action<TKey, TValue, TValue> Updated = null)
+		public DeltaDictionary(int ConcurrencyLevel, int Capacity, Action<KeyValuePair<TKey, TValue>> Added = null, Action<KeyValuePair<TKey, TValue>> Removed = null, Action<int> Cleared = null, Action<TKey, TValue, TValue> Updated = null)
 		{
 			il = new ConcurrentDictionary<TKey, TValue>(ConcurrencyLevel, Capacity);
 			this.Added = Added ?? (items => { });
@@ -38,7 +38,7 @@ namespace System.Collections.Generic
 			this.Updated = Updated ?? ((key, ov, nv) => { });
 		}
 
-		public DependencyDictionary(IEnumerable<KeyValuePair<TKey, TValue>> Items, Action<KeyValuePair<TKey, TValue>> Added = null, Action<KeyValuePair<TKey, TValue>> Removed = null, Action<int> Cleared = null, Action<TKey, TValue, TValue> Updated = null)
+		public DeltaDictionary(IEnumerable<KeyValuePair<TKey, TValue>> Items, Action<KeyValuePair<TKey, TValue>> Added = null, Action<KeyValuePair<TKey, TValue>> Removed = null, Action<int> Cleared = null, Action<TKey, TValue, TValue> Updated = null)
 		{
 			il = new ConcurrentDictionary<TKey, TValue>(Items);
 			this.Added = Added ?? (items => { });

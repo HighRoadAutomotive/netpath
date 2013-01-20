@@ -3,15 +3,16 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using Windows.UI.Core;
-using Windows.UI.Xaml;
+using System.Windows.Threading;
 
 namespace System.Collections.Generic
 {
-	internal class DependencyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
+	[HostProtectionAttribute(SecurityAction.LinkDemand, Synchronization = true, ExternalThreading = true)]
+	internal class DeltaDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	{
 		private readonly ConcurrentDictionary<TKey, TValue> il;
 		private readonly Action<KeyValuePair<TKey, TValue>> Added;
@@ -19,7 +20,7 @@ namespace System.Collections.Generic
 		private readonly Action<int> Cleared;
 		private readonly Action<TKey, TValue, TValue> Updated;
 
-		public DependencyDictionary(Action<KeyValuePair<TKey, TValue>> Added = null, Action<KeyValuePair<TKey, TValue>> Removed = null, Action<int> Cleared = null, Action<TKey, TValue, TValue> Updated = null)
+		public DeltaDictionary(Action<KeyValuePair<TKey, TValue>> Added = null, Action<KeyValuePair<TKey, TValue>> Removed = null, Action<int> Cleared = null, Action<TKey, TValue, TValue> Updated = null)
 		{
 			il = new ConcurrentDictionary<TKey, TValue>();
 			this.Added = Added ?? (items => { });
@@ -28,7 +29,7 @@ namespace System.Collections.Generic
 			this.Updated = Updated ?? ((key, ov, nv) => { });
 		}
 
-		public DependencyDictionary(int ConcurrencyLevel, int Capacity, Action<KeyValuePair<TKey, TValue>> Added = null, Action<KeyValuePair<TKey, TValue>> Removed = null, Action<int> Cleared = null, Action<TKey, TValue, TValue> Updated = null)
+		public DeltaDictionary(int ConcurrencyLevel, int Capacity, Action<KeyValuePair<TKey, TValue>> Added = null, Action<KeyValuePair<TKey, TValue>> Removed = null, Action<int> Cleared = null, Action<TKey, TValue, TValue> Updated = null)
 		{
 			il = new ConcurrentDictionary<TKey, TValue>(ConcurrencyLevel, Capacity);
 			this.Added = Added ?? (items => { });
@@ -37,7 +38,7 @@ namespace System.Collections.Generic
 			this.Updated = Updated ?? ((key, ov, nv) => { });
 		}
 
-		public DependencyDictionary(IEnumerable<KeyValuePair<TKey, TValue>> Items, Action<KeyValuePair<TKey, TValue>> Added = null, Action<KeyValuePair<TKey, TValue>> Removed = null, Action<int> Cleared = null, Action<TKey, TValue, TValue> Updated = null)
+		public DeltaDictionary(IEnumerable<KeyValuePair<TKey, TValue>> Items, Action<KeyValuePair<TKey, TValue>> Added = null, Action<KeyValuePair<TKey, TValue>> Removed = null, Action<int> Cleared = null, Action<TKey, TValue, TValue> Updated = null)
 		{
 			il = new ConcurrentDictionary<TKey, TValue>(Items);
 			this.Added = Added ?? (items => { });
@@ -154,32 +155,32 @@ namespace System.Collections.Generic
 			get { return il.Values; }
 		}
 
-		private async void CallAdded(TKey key, TValue value)
+		private void CallAdded(TKey key, TValue value)
 		{
-			if (Window.Current.Dispatcher == null) { Added(new KeyValuePair<TKey, TValue>(key, value)); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) Added(new KeyValuePair<TKey, TValue>(key, value));
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Added(new KeyValuePair<TKey, TValue>(key, value)));
+			if (Application.Current.Dispatcher == null) { Added(new KeyValuePair<TKey, TValue>(key, value)); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) Added(new KeyValuePair<TKey, TValue>(key, value));
+			else Application.Current.Dispatcher.Invoke(() => Added(new KeyValuePair<TKey, TValue>(key, value)), DispatcherPriority.Normal);
 		}
 
-		private async void CallRemoved(TKey key, TValue value)
+		private void CallRemoved(TKey key, TValue value)
 		{
-			if (Window.Current.Dispatcher == null) { Removed(new KeyValuePair<TKey, TValue>(key, value)); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) Removed(new KeyValuePair<TKey, TValue>(key, value));
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Removed(new KeyValuePair<TKey, TValue>(key, value)));
+			if (Application.Current.Dispatcher == null) { Removed(new KeyValuePair<TKey, TValue>(key, value)); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) Removed(new KeyValuePair<TKey, TValue>(key, value));
+			else Application.Current.Dispatcher.Invoke(() => Removed(new KeyValuePair<TKey, TValue>(key, value)), DispatcherPriority.Normal);
 		}
 
-		private async void CallCleared(int count)
+		private void CallCleared(int count)
 		{
-			if (Window.Current.Dispatcher == null) { Cleared(count); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) Cleared(count);
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Cleared(count));
+			if (Application.Current.Dispatcher == null) { Cleared(count); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) Cleared(count);
+			else Application.Current.Dispatcher.Invoke(() => Cleared(count), DispatcherPriority.Normal);
 		}
 
-		private async void CallUpdated(TKey index, TValue olditem, TValue newitem)
+		private void CallUpdated(TKey index, TValue olditem, TValue newitem)
 		{
-			if (Window.Current.Dispatcher == null) { Updated(index, olditem, newitem); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) Updated(index, olditem, newitem);
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Updated(index, olditem, newitem));
+			if (Application.Current.Dispatcher == null) { Updated(index, olditem, newitem); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) Updated(index, olditem, newitem);
+			else Application.Current.Dispatcher.Invoke(() => Updated(index, olditem, newitem), DispatcherPriority.Normal);
 		}
 
 		public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
