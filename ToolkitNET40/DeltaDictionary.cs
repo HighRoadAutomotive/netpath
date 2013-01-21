@@ -11,14 +11,15 @@ using System.Windows.Threading;
 
 namespace System.Collections.Generic
 {
+	[Serializable]
 	[HostProtectionAttribute(SecurityAction.LinkDemand, Synchronization = true, ExternalThreading = true)]
-	internal class DeltaDictionary<TKey, TValue> : IDictionary<TKey, TValue>
+	public class DeltaDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	{
-		private readonly ConcurrentDictionary<TKey, TValue> il;
-		private readonly Action<KeyValuePair<TKey, TValue>> Added;
-		private readonly Action<KeyValuePair<TKey, TValue>> Removed;
-		private readonly Action<int> Cleared;
-		private readonly Action<TKey, TValue, TValue> Updated;
+		private ConcurrentDictionary<TKey, TValue> il;
+		[NonSerialized] private readonly Action<KeyValuePair<TKey, TValue>> Added;
+		[NonSerialized] private readonly Action<KeyValuePair<TKey, TValue>> Removed;
+		[NonSerialized] private readonly Action<int> Cleared;
+		[NonSerialized] private readonly Action<TKey, TValue, TValue> Updated;
 
 		public DeltaDictionary(Action<KeyValuePair<TKey, TValue>> Added = null, Action<KeyValuePair<TKey, TValue>> Removed = null, Action<int> Cleared = null, Action<TKey, TValue, TValue> Updated = null)
 		{

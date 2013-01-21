@@ -13,7 +13,7 @@ namespace NETPath.Toolkit.WinRT8
 	[DataContract]
 	public class DeltaStack<T> : IProducerConsumerCollection<T>
 	{
-		[DataMember] private readonly ConcurrentStack<T> il;
+		[DataMember] private ConcurrentStack<T> il;
 		private readonly Action<IEnumerable<T>> Pushed;
 		private readonly Action<IEnumerable<T>> Popped;
 		private readonly Action<int> Cleared;

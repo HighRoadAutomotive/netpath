@@ -11,17 +11,18 @@ using System.Windows.Threading;
 
 namespace System.Collections.Generic
 {
+	[Serializable]
 	public class DeltaList<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
 	{
-		private readonly List<T> il;
-		private readonly ReaderWriterLockSlim ocl;
-		private readonly Action<IEnumerable<T>> Added;
-		private readonly Action<int, IEnumerable<T>> Inserted;
-		private readonly Action<int, int, T> Moved;
-		private readonly Action<IEnumerable<T>> Removed;
-		private readonly Action<int, IEnumerable<T>> RemovedAt;
-		private readonly Action<int> Cleared;
-		private readonly Action<int, T, T> Replaced;
+		private List<T> il;
+		[NonSerialized] private readonly ReaderWriterLockSlim ocl;
+		[NonSerialized] private readonly Action<IEnumerable<T>> Added;
+		[NonSerialized] private readonly Action<int, IEnumerable<T>> Inserted;
+		[NonSerialized] private readonly Action<int, int, T> Moved;
+		[NonSerialized] private readonly Action<IEnumerable<T>> Removed;
+		[NonSerialized] private readonly Action<int, IEnumerable<T>> RemovedAt;
+		[NonSerialized] private readonly Action<int> Cleared;
+		[NonSerialized] private readonly Action<int, T, T> Replaced;
 
 		~DeltaList()
 		{

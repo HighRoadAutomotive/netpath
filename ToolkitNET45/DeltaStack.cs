@@ -12,7 +12,7 @@ namespace System.Collections.Generic
 	[Serializable]
 	public class DeltaStack<T> : IProducerConsumerCollection<T>
 	{
-		private readonly ConcurrentStack<T> il;
+		private ConcurrentStack<T> il;
 		[NonSerialized]private readonly Action<IEnumerable<T>> Pushed;
 		[NonSerialized]private readonly Action<IEnumerable<T>> Popped;
 		[NonSerialized]private readonly Action<int> Cleared;

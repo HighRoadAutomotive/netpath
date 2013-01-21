@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using System.Threading;
 using System.Windows;
 using Windows.UI.Core;
@@ -12,9 +13,10 @@ using Windows.UI.Xaml;
 
 namespace System.Collections.Generic
 {
+	[DataContract]
 	public class DeltaList<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
 	{
-		private readonly List<T> il;
+		[DataMember] private List<T> il;
 		private readonly ReaderWriterLockSlim ocl;
 		private readonly Action<IEnumerable<T>> Added;
 		private readonly Action<int, IEnumerable<T>> Inserted;

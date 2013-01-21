@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -11,9 +12,10 @@ using Windows.UI.Xaml;
 
 namespace System.Collections.Generic
 {
-	internal class DeltaDictionary<TKey, TValue> : IDictionary<TKey, TValue>
+	[DataContract]
+	public class DeltaDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	{
-		private readonly ConcurrentDictionary<TKey, TValue> il;
+		[DataMember] private ConcurrentDictionary<TKey, TValue> il;
 		private readonly Action<KeyValuePair<TKey, TValue>> Added;
 		private readonly Action<KeyValuePair<TKey, TValue>> Removed;
 		private readonly Action<int> Cleared;
