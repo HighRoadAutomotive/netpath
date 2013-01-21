@@ -17,11 +17,26 @@ namespace System.ServiceModel
 	[DataContract(Namespace = "http://www.prospectivesoftware.com/")]
 	public class ChangeListItem<T>
 	{
-		[DataMember]public ListItemChangeMode Mode { get; set; }
-		[DataMember]public T Item { get; set; }
-		[DataMember]public int Index { get; set; }
+		[DataMember(Order = 0)] public ListItemChangeMode Mode { get; set; }
+		[DataMember(Order = 1)] public T Item { get; set; }
+		[DataMember(Order = 2)] public int Index { get; set; }
 
 		public ChangeListItem(ListItemChangeMode Mode, T Item, int Index = 0)
+		{
+			this.Mode = Mode;
+			this.Item = Item;
+			this.Index = Index;
+		}
+	}
+
+	[DataContract(Namespace = "http://www.prospectivesoftware.com/")]
+	public class ChangeDictionaryItem<T, TKey>
+	{
+		[DataMember(Order = 0)] public ListItemChangeMode Mode { get; set; }
+		[DataMember(Order = 1)] public T Item { get; set; }
+		[DataMember(Order = 2)] public TKey Index { get; set; }
+
+		public ChangeDictionaryItem(ListItemChangeMode Mode, T Item, TKey Index)
 		{
 			this.Mode = Mode;
 			this.Item = Item;

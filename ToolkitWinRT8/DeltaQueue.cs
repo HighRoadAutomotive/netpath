@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Core;
@@ -9,20 +10,21 @@ using Windows.UI.Xaml;
 
 namespace System.Collections.Generic
 {
+	[DataContract]
 	public class DeltaQueue<T> : IProducerConsumerCollection<T>
 	{
-		private readonly ConcurrentQueue<T> il;
+		[DataMember] private ConcurrentQueue<T> il;
 		private readonly Action<T> Pushed;
 		private readonly Action<T> Popped;
 
-		public DeltaQueue(Action<T> Pushed, Action<T> Popped)
+		public DeltaQueue(Action<T> Pushed = null, Action<T> Popped = null)
 		{
 			il = new ConcurrentQueue<T>();
 			this.Pushed = Pushed ?? (Item => { });
 			this.Popped = Popped ?? ((Item) => { });
 		}
 
-		public DeltaQueue(IEnumerable<T> Items, Action<T> Pushed, Action<T> Popped)
+		public DeltaQueue(IEnumerable<T> Items, Action<T> Pushed = null, Action<T> Popped = null)
 		{
 			il = new ConcurrentQueue<T>(Items);
 			this.Pushed = Pushed ?? (Item => { });

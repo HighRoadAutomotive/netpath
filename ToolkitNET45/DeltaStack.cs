@@ -9,14 +9,15 @@ using System.Windows.Threading;
 
 namespace System.Collections.Generic
 {
+	[Serializable]
 	public class DeltaStack<T> : IProducerConsumerCollection<T>
 	{
 		private readonly ConcurrentStack<T> il;
-		private readonly Action<IEnumerable<T>> Pushed;
-		private readonly Action<IEnumerable<T>> Popped;
-		private readonly Action<int> Cleared;
+		[NonSerialized]private readonly Action<IEnumerable<T>> Pushed;
+		[NonSerialized]private readonly Action<IEnumerable<T>> Popped;
+		[NonSerialized]private readonly Action<int> Cleared;
 
-		public DeltaStack(Action<IEnumerable<T>> Pushed, Action<IEnumerable<T>> Popped, Action<int> Cleared)
+		public DeltaStack(Action<IEnumerable<T>> Pushed = null, Action<IEnumerable<T>> Popped = null, Action<int> Cleared = null)
 		{
 			il = new ConcurrentStack<T>();
 			this.Pushed = Pushed ?? (Item => { });
@@ -24,7 +25,7 @@ namespace System.Collections.Generic
 			this.Cleared = Cleared ?? (count => { });
 		}
 
-		public DeltaStack(IEnumerable<T> Items, Action<IEnumerable<T>> Pushed, Action<IEnumerable<T>> Popped, Action<int> Cleared)
+		public DeltaStack(IEnumerable<T> Items, Action<IEnumerable<T>> Pushed = null, Action<IEnumerable<T>> Popped = null, Action<int> Cleared = null)
 		{
 			il = new ConcurrentStack<T>(Items);
 			this.Pushed = Pushed ?? (Item => { });
