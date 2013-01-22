@@ -10,7 +10,7 @@ using Windows.UI.Xaml;
 
 namespace System.Collections.Generic
 {
-	[DataContract]
+	[DataContract(Namespace = "http://www.prospectivesoftware.com/")]
 	public class DeltaQueue<T> : IProducerConsumerCollection<T>
 	{
 		[DataMember] private ConcurrentQueue<T> il;
@@ -47,6 +47,21 @@ namespace System.Collections.Generic
 			bool t = il.TryDequeue(out Result);
 			CallPopped(Result);
 			return t;
+		}
+
+		public void FromRange(IEnumerable<T> range)
+		{
+			System.Threading.Interlocked.Exchange(ref il, new ConcurrentQueue<T>(range));
+		}
+
+		public ConcurrentQueue<T> ToConcurrentQueue()
+		{
+			return new ConcurrentQueue<T>(il.ToArray());
+		}
+
+		public Queue<T> ToQueue()
+		{
+			return new Queue<T>(il.ToArray());
 		}
 
 		#region - Update Calls -

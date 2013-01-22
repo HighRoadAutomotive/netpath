@@ -80,6 +80,21 @@ namespace System.Collections.Generic
 			return t;
 		}
 
+		public void FromRange(IEnumerable<T> range)
+		{
+			System.Threading.Interlocked.Exchange(ref il, new ConcurrentStack<T>(range));
+		}
+
+		public ConcurrentStack<T> ToConcurrentStack()
+		{
+			return new ConcurrentStack<T>(il.ToArray());
+		}
+
+		public Stack<T> ToStack()
+		{
+			return new Stack<T>(il.ToArray());
+		}
+
 		#region - Update Calls -
 
 		private void CallPushed(T item)

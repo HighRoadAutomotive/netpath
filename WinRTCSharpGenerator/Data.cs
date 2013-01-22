@@ -144,6 +144,9 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine(string.Format("\t\tpublic {0}()", o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine("\t\t{");
 			code.AppendLine("\t\t\tXAMLObject = this;");
+			foreach (DataElement de in o.Elements)
+				if (de.XAMLType.TypeMode == DataTypeMode.Collection || de.XAMLType.TypeMode == DataTypeMode.Dictionary || de.XAMLType.TypeMode == DataTypeMode.Dictionary || de.XAMLType.TypeMode == DataTypeMode.Stack)
+					code.AppendLine(string.Format("\t\t\t{1} = new {0}();", DataTypeGenerator.GenerateType(de.HasClientType ? de.ClientType : de.DataType), de.HasClientType ? de.ClientName : de.DataName));
 			code.AppendLine("\t\t}");
 			if (o.HasXAMLType)
 			{
@@ -254,6 +257,10 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine("\t\t//Constructors");
 			code.AppendLine(string.Format("\t\tpublic {0}()", o.XAMLType.Name));
 			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tDataObject = this;");
+			foreach (DataElement de in o.Elements)
+				if (de.XAMLType.TypeMode == DataTypeMode.Collection || de.XAMLType.TypeMode == DataTypeMode.Dictionary || de.XAMLType.TypeMode == DataTypeMode.Dictionary || de.XAMLType.TypeMode == DataTypeMode.Stack) 
+					code.AppendLine(string.Format("\t\t\t{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredXAMLType(de.XAMLType)), de.XAMLName));
 			code.AppendLine("\t\t}");
 			code.AppendLine();
 			code.AppendLine(string.Format("\t\tpublic {0}({1} Data)", o.XAMLType.Name, o.HasClientType ? o.ClientType.Name : o.Name));

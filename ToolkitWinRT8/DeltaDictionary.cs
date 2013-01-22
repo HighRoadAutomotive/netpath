@@ -12,7 +12,7 @@ using Windows.UI.Xaml;
 
 namespace System.Collections.Generic
 {
-	[DataContract]
+	[DataContract(Namespace = "http://www.prospectivesoftware.com/")]
 	public class DeltaDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	{
 		[DataMember] private ConcurrentDictionary<TKey, TValue> il;

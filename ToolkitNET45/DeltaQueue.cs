@@ -48,6 +48,21 @@ namespace System.Collections.Generic
 			return t;
 		}
 
+		public void FromRange(IEnumerable<T> range)
+		{
+			System.Threading.Interlocked.Exchange(ref il, new ConcurrentQueue<T>(range));
+		}
+
+		public ConcurrentQueue<T> ToConcurrentQueue()
+		{
+			return new ConcurrentQueue<T>(il.ToArray());
+		}
+
+		public Queue<T> ToQueue()
+		{
+			return new Queue<T>(il.ToArray());
+		}
+
 		#region - Update Calls -
 
 		private void CallPushed(T item)

@@ -21,7 +21,7 @@ namespace System.ServiceModel
 		[DataMember(Order = 1)] public T Item { get; set; }
 		[DataMember(Order = 2)] public int Index { get; set; }
 
-		public ChangeListItem(ListItemChangeMode Mode, T Item, int Index = 0)
+		public ChangeListItem(ListItemChangeMode Mode, T Item, int Index = -1)
 		{
 			this.Mode = Mode;
 			this.Item = Item;
@@ -33,13 +33,11 @@ namespace System.ServiceModel
 	public class ChangeDictionaryItem<T, TKey>
 	{
 		[DataMember(Order = 0)] public ListItemChangeMode Mode { get; set; }
-		[DataMember(Order = 1)] public T Item { get; set; }
-		[DataMember(Order = 2)] public TKey Index { get; set; }
+		[DataMember(Order = 1)] public TKey Index { get; set; }
 
-		public ChangeDictionaryItem(ListItemChangeMode Mode, T Item, TKey Index)
+		public ChangeDictionaryItem(ListItemChangeMode Mode, TKey Index)
 		{
 			this.Mode = Mode;
-			this.Item = Item;
 			this.Index = Index;
 		}
 	}

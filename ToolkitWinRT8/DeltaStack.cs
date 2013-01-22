@@ -86,6 +86,21 @@ namespace NETPath.Toolkit.WinRT8
 			return t;
 		}
 
+		public void FromRange(IEnumerable<T> range)
+		{
+			System.Threading.Interlocked.Exchange(ref il, new ConcurrentStack<T>(range));
+		}
+
+		public ConcurrentStack<T> ToConcurrentStack()
+		{
+			return new ConcurrentStack<T>(il.ToArray());
+		}
+
+		public Stack<T> ToStack()
+		{
+			return new Stack<T>(il.ToArray());
+		}
+
 		#region - Update Calls -
 
 		private async void CallPushed(T item)

@@ -13,7 +13,7 @@ using Windows.UI.Xaml;
 
 namespace System.Collections.Generic
 {
-	[DataContract]
+	[DataContract(Namespace = "http://www.prospectivesoftware.com/")]
 	public class DeltaList<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
 	{
 		[DataMember] private List<T> il;
