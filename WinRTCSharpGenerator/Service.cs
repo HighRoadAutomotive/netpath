@@ -399,7 +399,7 @@ namespace NETPath.Generators.WinRT.CS
 				foreach (MethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 			}
-			code.AppendLine(string.Format(o.IsOneWay ? "\t\t[OperationContract(IsOneWay = true, Action = \"{0}/{1}/{2}{3}{4}\")]" : "\t\t[OperationContract(Action = \"{0}/{1}/{2}{3}{4}\", ReplyAction = \"{0}/{1}/{2}{3}{4}Response\")]", o.Owner.Parent.FullURI.Substring(0, o.Owner.Parent.FullURI.Length - 1), o.Owner.Name, o.ServerName, IsAsync ? "Invoke" : "", IsAwait ? "Async" : ""));
+			code.AppendLine(string.Format(o.IsOneWay ? "\t\t[OperationContract(IsOneWay = true, Action = \"{0}/I{1}/{2}{3}{4}\")]" : "\t\t[OperationContract(Action = \"{0}/I{1}/{2}{3}{4}\", ReplyAction = \"{0}/I{1}/{2}{3}{4}Response\")]", o.Owner.Parent.FullURI.Substring(0, o.Owner.Parent.FullURI.Length - 1), o.Owner.Name, o.ServerName, IsAsync ? "Invoke" : "", IsAwait ? "Async" : ""));
 			code.AppendFormat("\t\t{0} {1}{2}{3}(", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName, IsAsync ? "Invoke" : "", IsAwait ? "Async" : "");
 			foreach (MethodParameter op in o.Parameters)
 				code.AppendFormat("{0}{1}", GenerateMethodParameterClientCode(op), o.Parameters.IndexOf(op) != (o.Parameters.Count() - 1) ? ", " : "");
@@ -423,7 +423,7 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendLine(string.Format("\t\t///<param name='Callback'>The function to call when the operation is complete.</param>"));
 					code.AppendLine(string.Format("\t\t///<param name='AsyncState'>An object representing the state of the operation.</param>"));
 				}
-				code.AppendLine(string.Format(o.IsOneWay ? "\t\t[OperationContract(IsOneWay = true, Action = \"{0}/{1}/{2}Invoke\")]" : "\t\t[OperationContract(Action = \"{0}/{1}/{2}Invoke\", ReplyAction = \"{0}/{1}/{2}InvokeResponse\")]", o.Owner.Parent.FullURI.Substring(0, o.Owner.Parent.FullURI.Length - 1), o.Owner.Name, o.ServerName));
+				code.AppendLine(string.Format(o.IsOneWay ? "\t\t[OperationContract(IsOneWay = true, Action = \"{0}/I{1}/{2}Invoke\")]" : "\t\t[OperationContract(Action = \"{0}/I{1}/{2}Invoke\", ReplyAction = \"{0}/I{1}/{2}InvokeResponse\")]", o.Owner.Parent.FullURI.Substring(0, o.Owner.Parent.FullURI.Length - 1), o.Owner.Name, o.ServerName));
 				code.AppendFormat("\t\tIAsyncResult Begin{0}Invoke(", o.HasClientType ? o.ClientName : o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
@@ -449,7 +449,7 @@ namespace NETPath.Generators.WinRT.CS
 					foreach (MethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				code.AppendLine(string.Format(o.IsOneWay ? "\t\t[OperationContract(IsOneWay = true, Action = \"{0}/{1}/{2}Async\")]" : "\t\t[OperationContract(Action = \"{0}/{1}/{2}Async\", ReplyAction = \"{0}/{1}/{2}AsyncResponse\")]", o.Owner.Parent.FullURI.Substring(0, o.Owner.Parent.FullURI.Length - 1), o.Owner.Name, o.ServerName));
+				code.AppendLine(string.Format(o.IsOneWay ? "\t\t[OperationContract(IsOneWay = true, Action = \"{0}/I{1}/{2}Async\")]" : "\t\t[OperationContract(Action = \"{0}/I{1}/{2}Async\", ReplyAction = \"{0}/I{1}/{2}AsyncResponse\")]", o.Owner.Parent.FullURI.Substring(0, o.Owner.Parent.FullURI.Length - 1), o.Owner.Name, o.ServerName));
 				if (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) code.AppendFormat("\t\tSystem.Threading.Tasks.Task {0}Async(", o.HasClientType ? o.ClientName : o.ServerName);
 				else code.AppendFormat("\t\tSystem.Threading.Tasks.Task<{0}> {1}Async(", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
