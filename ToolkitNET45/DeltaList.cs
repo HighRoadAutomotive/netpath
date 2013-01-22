@@ -546,19 +546,6 @@ namespace System.Collections.Generic
 			}
 		}
 
-		public IEnumerable<T> ToList()
-		{
-			ocl.EnterReadLock();
-			try
-			{
-				return il.ToList();
-			}
-			finally
-			{
-				ocl.ExitReadLock();
-			}
-		}
-
 		public void TrimExcess()
 		{
 			ocl.EnterWriteLock();
@@ -578,6 +565,32 @@ namespace System.Collections.Generic
 			try
 			{
 				return il.TrueForAll(match);
+			}
+			finally
+			{
+				ocl.ExitReadLock();
+			}
+		}
+
+		public void FromList(IEnumerable<T> range)
+		{
+			ocl.EnterWriteLock();
+			try
+			{
+				System.Threading.Interlocked.Exchange(ref il, new List<T>(range));
+			}
+			finally
+			{
+				ocl.ExitWriteLock();
+			}
+		}
+
+		public List<T> ToList()
+		{
+			ocl.EnterReadLock();
+			try
+			{
+				return new List<T>(il);
 			}
 			finally
 			{

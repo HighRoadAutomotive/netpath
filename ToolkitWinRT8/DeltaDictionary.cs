@@ -156,6 +156,22 @@ namespace System.Collections.Generic
 			get { return il.Values; }
 		}
 
+		public void FromDictionary(IDictionary<TKey, TValue> dict)
+		{
+			System.Threading.Interlocked.Exchange(ref il, new ConcurrentDictionary<TKey, TValue>(dict));
+		}
+
+		public ConcurrentDictionary<TKey, TValue> ToConcurrentDictionary()
+		{
+			return new ConcurrentDictionary<TKey, TValue>(il.ToArray());
+		}
+
+		public Dictionary<TKey, TValue> ToDictionary()
+		{
+			KeyValuePair<TKey, TValue>[] td = il.ToArray();
+			return td.ToDictionary(k => k.Key, k => k.Value);
+		}
+
 		private async void CallAdded(TKey key, TValue value)
 		{
 			if (Window.Current.Dispatcher == null) { Added(new KeyValuePair<TKey, TValue>(key, value)); return; }

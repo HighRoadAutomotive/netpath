@@ -518,7 +518,7 @@ namespace NETPath.Generators.NET.CS
 				}
 				code.AppendLine(string.Format("\t\tpublic static {0} Get{1}(DependencyObject{2} obj) {{ return ({0})obj.GetValue{3}({1}Property); }}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName, (o.Owner.Parent.Owner.EnableExperimental && o.AutoDataEnabled) ? "Ex" : "", (o.Owner.Parent.Owner.EnableExperimental && o.Owner.AutoDataEnabled) ? "Threaded" : ""));
 				code.AppendLine(string.Format("\t\tpublic static void Set{1}(DependencyObject{2} obj, {0} value) {{ obj.SetValue{3}({1}Property, value); }}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName, (o.Owner.Parent.Owner.EnableExperimental && o.AutoDataEnabled) ? "Ex" : "", (o.Owner.Parent.Owner.EnableExperimental && o.Owner.AutoDataEnabled) ? "Threaded" : ""));
-				code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty {1}Property = DependencyProperty.RegisterAttached(\"{1}\", typeof({0}), typeof({2}), {3});", DataTypeGenerator.GenerateType(o.XAMLType), o.XAMLName, o.Owner.XAMLType.Name, o.AutoDataEnabled ? string.Format("new PropertyMetadata({0}ChangedCallback)", o.XAMLName) : "null"));
+				code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty {1}Property = DependencyProperty.RegisterAttached(\"{1}\", typeof({0}), typeof({2}), {3});", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName, o.Owner.XAMLType.Name, o.AutoDataEnabled ? string.Format("new PropertyMetadata({0}ChangedCallback)", o.XAMLName) : "null"));
 				if (o.AutoDataEnabled)
 				{
 					code.AppendLine(string.Format("\t\tprivate static void {0}ChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)", o.XAMLName));
@@ -547,7 +547,7 @@ namespace NETPath.Generators.NET.CS
 				}
 				code.AppendLine(string.Format("\t\tpublic static {0} Get{1}(DependencyObject{2} obj) {{ return ({0})obj.GetValue{3}({1}Property); }}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName, (o.Owner.Parent.Owner.EnableExperimental && o.AutoDataEnabled) ? "Ex" : "", (o.Owner.Parent.Owner.EnableExperimental && o.Owner.AutoDataEnabled) ? "Threaded" : ""));
 				code.AppendLine(string.Format("\t\tpublic static void Set{1}(DependencyObject{2} obj, {0} value) {{ obj.SetValue{3}({1}PropertyKey, value); }}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName, (o.Owner.Parent.Owner.EnableExperimental && o.AutoDataEnabled) ? "Ex" : "", (o.Owner.Parent.Owner.EnableExperimental && o.Owner.AutoDataEnabled) ? "Threaded" : ""));
-				code.AppendLine(string.Format("\t\tprivate static readonly DependencyPropertyKey {1}PropertyKey = DependencyProperty.RegisterAttachedReadOnly(\"{1}\", typeof({0}), typeof({2}), null);", DataTypeGenerator.GenerateType(o.XAMLType), o.XAMLName, o.Owner.XAMLType.Name));
+				code.AppendLine(string.Format("\t\tprivate static readonly DependencyPropertyKey {1}PropertyKey = DependencyProperty.RegisterAttachedReadOnly(\"{1}\", typeof({0}), typeof({2}), null);", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType)), o.XAMLName, o.Owner.XAMLType.Name));
 				code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty {0}Property = {0}PropertyKey.DependencyProperty;", o.XAMLName));
 			}
 			return code.ToString();

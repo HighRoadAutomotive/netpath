@@ -135,6 +135,11 @@ namespace NETPath.Projects
 		public bool EnableExperimental { get { return (bool)GetValue(EnableExperimentalProperty); } set { SetValue(EnableExperimentalProperty, value); } }
 		public static readonly DependencyProperty EnableExperimentalProperty = DependencyProperty.Register("EnableExperimental", typeof(bool), typeof(Project), new PropertyMetadata(false));
 
+		public DataType DeltaList { get; private set; }
+		public DataType DeltaDictionary { get; private set; }
+		public DataType DeltaStack { get; private set; }
+		public DataType DeltaQueue { get; private set; }
+
 		public Project()
 		{
 			ID = Guid.NewGuid();
@@ -144,6 +149,11 @@ namespace NETPath.Projects
 
 			ServerGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
 			ClientGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
+
+			DeltaList = new DataType("DeltaList", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8);
+			DeltaDictionary = new DataType("DeltaDictionary", DataTypeMode.Dictionary, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8);
+			DeltaStack = new DataType("DeltaStack", DataTypeMode.Stack, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8);
+			DeltaQueue = new DataType("DeltaQueue", DataTypeMode.Queue, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8);
 
 			//Add the default types
 			DefaultTypes = new List<DataType>
@@ -191,6 +201,11 @@ namespace NETPath.Projects
 					                    new DataType("System.Collections.Concurrent.ConcurrentDictionary", DataTypeMode.Dictionary, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
 					                    new DataType("System.Collections.Concurrent.ConcurrentStack", DataTypeMode.Stack, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
 					                    new DataType("System.Collections.Concurrent.ConcurrentQueue", DataTypeMode.Queue, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
+										//Delta Collections for DCM
+					                    DeltaList,
+					                    DeltaDictionary,
+					                    DeltaStack,
+					                    DeltaQueue,
 				                    };
 
 			//Add the default inheritable types.
@@ -212,6 +227,11 @@ namespace NETPath.Projects
 			Namespace = new Namespace(Helpers.RegExs.ReplaceSpaces.Replace(Name, "."), null, this) {URI = "http://tempuri.org/"};
 			this.Name = Name;
 
+			DeltaList = new DataType("DeltaList", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8);
+			DeltaDictionary = new DataType("DeltaDictionary", DataTypeMode.Dictionary, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8);
+			DeltaStack = new DataType("DeltaStack", DataTypeMode.Stack, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8);
+			DeltaQueue = new DataType("DeltaQueue", DataTypeMode.Queue, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8);
+
 			//Add the default types
 			DefaultTypes = new List<DataType>
 				                    {
@@ -258,6 +278,11 @@ namespace NETPath.Projects
 					                    new DataType("System.Collections.Concurrent.ConcurrentDictionary", DataTypeMode.Dictionary, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
 					                    new DataType("System.Collections.Concurrent.ConcurrentStack", DataTypeMode.Stack, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
 					                    new DataType("System.Collections.Concurrent.ConcurrentQueue", DataTypeMode.Queue, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
+										//Delta Collections for DCM
+					                    DeltaList,
+					                    DeltaDictionary,
+					                    DeltaStack,
+					                    DeltaQueue,
 				                    };
 
 			//Add the default inheritable types.
