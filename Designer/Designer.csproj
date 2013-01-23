@@ -300,6 +300,9 @@
       <DependentUpon>Project.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interface\Service\Converters.cs" />
+    <Compile Include="Interface\Service\DataChangeMethod.xaml.cs">
+      <DependentUpon>DataChangeMethod.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interface\Service\Method.xaml.cs">
       <DependentUpon>Method.xaml</DependentUpon>
     </Compile>
@@ -465,6 +468,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Interface\Project\Project.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Service\DataChangeMethod.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

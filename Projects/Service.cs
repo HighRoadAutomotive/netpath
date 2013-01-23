@@ -234,6 +234,8 @@ namespace NETPath.Projects
 			this.Owner = Owner;
 		}
 
+		internal abstract void UpdateDeclaration();
+
 		public override string ToString()
 		{
 			return ServerName;
@@ -342,6 +344,12 @@ namespace NETPath.Projects
 			Declaration = string.Format("{0} {1}{{ get; {2}}}", ReturnType, ServerName, IsReadOnly ? "" : "set; ");
 			ClientDeclaration = string.Format("{0} {1}{{ get; {2}}}", ReturnType, ClientName, IsReadOnly ? "" : "set; ");
 		}
+
+		internal override void UpdateDeclaration()
+		{
+			Declaration = string.Format("{0} {1}{{ get; {2}}}", ReturnType, ServerName, IsReadOnly ? "" : "set; ");
+			ClientDeclaration = string.Format("{0} {1}{{ get; {2}}}", ReturnType, ClientName, IsReadOnly ? "" : "set; ");
+		}
 	}
 
 	public class Method : Operation
@@ -421,7 +429,7 @@ namespace NETPath.Projects
 			UpdateDeclaration();
 		}
 
-		internal void UpdateDeclaration()
+		internal override void UpdateDeclaration()
 		{
 			var sb = new StringBuilder();
 			foreach (MethodParameter p in Parameters)
@@ -444,6 +452,173 @@ namespace NETPath.Projects
 		{
 			foreach (MethodParameter mp in Parameters)
 				mp.Replace(Args, Field);
+		}
+	}
+
+	public class DataChangeMethod : Operation
+	{
+		public bool UseSyncPattern { get { return (bool)GetValue(UseSyncPatternProperty); } set { SetValue(UseSyncPatternProperty, value); } }
+		public static readonly DependencyProperty UseSyncPatternProperty = DependencyProperty.Register("UseSyncPattern", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(true));
+
+		public bool UseAsyncPattern { get { return (bool)GetValue(UseAsyncPatternProperty); } set { SetValue(UseAsyncPatternProperty, value); } }
+		public static readonly DependencyProperty UseAsyncPatternProperty = DependencyProperty.Register("UseAsyncPattern", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(false));
+
+		public bool UseAwaitPattern { get { return (bool)GetValue(UseAwaitPatternProperty); } set { SetValue(UseAwaitPatternProperty, value); } }
+		public static readonly DependencyProperty UseAwaitPatternProperty = DependencyProperty.Register("UseAwaitPattern", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(false));
+
+		public bool GenerateGetFunction { get { return (bool)GetValue(GenerateGetFunctionProperty); } set { SetValue(GenerateGetFunctionProperty, value); } }
+		public static readonly DependencyProperty GenerateGetFunctionProperty = DependencyProperty.Register("GenerateGetFunction", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(false, GenerateGetFunctionFunctionChangedCallback));
+
+		private static void GenerateGetFunctionFunctionChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as DataChangeMethod;
+			if (t == null) return;
+
+			if ((bool)e.NewValue) return;
+			t.GetParameters.Clear();
+		}
+
+		public bool GenerateOpenCloseFunction { get { return (bool)GetValue(GenerateOpenCloseFunctionProperty); } set { SetValue(GenerateOpenCloseFunctionProperty, value); } }
+		public static readonly DependencyProperty GenerateOpenCloseFunctionProperty = DependencyProperty.Register("GenerateOpenCloseFunction", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(true, GenerateOpenCloseFunctionChangedCallback));
+
+		private static void GenerateOpenCloseFunctionChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as DataChangeMethod;
+			if (t == null) return;
+
+			if ((bool)e.NewValue) return;
+			t.OpenParameters.Clear();
+			t.CloseParameters.Clear();
+		}
+
+		public bool GenerateNewDeleteFunction { get { return (bool)GetValue(GenerateNewDeleteFunctionProperty); } set { SetValue(GenerateNewDeleteFunctionProperty, value); } }
+		public static readonly DependencyProperty GenerateNewDeleteFunctionProperty = DependencyProperty.Register("GenerateNewDeleteFunction", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(true, GenerateNewDeleteFunctionChangedCallback));
+
+		private static void GenerateNewDeleteFunctionChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as DataChangeMethod;
+			if (t == null) return;
+
+			if ((bool) e.NewValue) return;
+			t.NewParameters.Clear();
+			t.DeleteParameters.Clear();
+		}
+
+		public bool IsReadOnly { get { return (bool)GetValue(IsReadOnlyProperty); } set { SetValue(IsReadOnlyProperty, value); } }
+		public static readonly DependencyProperty IsReadOnlyProperty = DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(false));
+
+		public ObservableCollection<MethodParameter> GetParameters { get { return (ObservableCollection<MethodParameter>)GetValue(GetParametersProperty); } set { SetValue(GetParametersProperty, value); } }
+		public static readonly DependencyProperty GetParametersProperty = DependencyProperty.Register("GetParameters", typeof(ObservableCollection<MethodParameter>), typeof(DataChangeMethod));
+
+		public ObservableCollection<MethodParameter> OpenParameters { get { return (ObservableCollection<MethodParameter>)GetValue(OpenParametersProperty); } set { SetValue(OpenParametersProperty, value); } }
+		public static readonly DependencyProperty OpenParametersProperty = DependencyProperty.Register("OpenParameters", typeof(ObservableCollection<MethodParameter>), typeof(DataChangeMethod));
+
+		public ObservableCollection<MethodParameter> CloseParameters { get { return (ObservableCollection<MethodParameter>)GetValue(CloseParametersProperty); } set { SetValue(CloseParametersProperty, value); } }
+		public static readonly DependencyProperty CloseParametersProperty = DependencyProperty.Register("CloseParameters", typeof(ObservableCollection<MethodParameter>), typeof(DataChangeMethod));
+
+		public ObservableCollection<MethodParameter> NewParameters { get { return (ObservableCollection<MethodParameter>)GetValue(NewParametersProperty); } set { SetValue(NewParametersProperty, value); } }
+		public static readonly DependencyProperty NewParametersProperty = DependencyProperty.Register("NewParameters", typeof(ObservableCollection<MethodParameter>), typeof(DataChangeMethod));
+
+		public ObservableCollection<MethodParameter> DeleteParameters { get { return (ObservableCollection<MethodParameter>)GetValue(DeleteParametersProperty); } set { SetValue(DeleteParametersProperty, value); } }
+		public static readonly DependencyProperty DeleteParametersProperty = DependencyProperty.Register("DeleteParameters", typeof(ObservableCollection<MethodParameter>), typeof(DataChangeMethod));
+
+		public Documentation GetDocumentation { get { return (Documentation)GetValue(GetDocumentationProperty); } set { SetValue(GetDocumentationProperty, value); } }
+		public static readonly DependencyProperty GetDocumentationProperty = DependencyProperty.Register("GetDocumentation", typeof(Documentation), typeof(DataChangeMethod));
+
+		public Documentation OpenDocumentation { get { return (Documentation)GetValue(OpenDocumentationProperty); } set { SetValue(OpenDocumentationProperty, value); } }
+		public static readonly DependencyProperty OpenDocumentationProperty = DependencyProperty.Register("OpenDocumentation", typeof(Documentation), typeof(DataChangeMethod));
+
+		public Documentation CloseDocumentation { get { return (Documentation)GetValue(CloseDocumentationProperty); } set { SetValue(CloseDocumentationProperty, value); } }
+		public static readonly DependencyProperty CloseDocumentationProperty = DependencyProperty.Register("CloseDocumentation", typeof(Documentation), typeof(DataChangeMethod));
+
+		public Documentation NewDocumentation { get { return (Documentation)GetValue(NewDocumentationProperty); } set { SetValue(NewDocumentationProperty, value); } }
+		public static readonly DependencyProperty NewDocumentationProperty = DependencyProperty.Register("NewDocumentation", typeof(Documentation), typeof(DataChangeMethod));
+
+		public Documentation DeleteDocumentation { get { return (Documentation)GetValue(DeleteDocumentationProperty); } set { SetValue(DeleteDocumentationProperty, value); } }
+		public static readonly DependencyProperty DeleteDocumentationProperty = DependencyProperty.Register("DeleteDocumentation", typeof(Documentation), typeof(DataChangeMethod));
+
+		public DataChangeMethod()
+		{
+			GetParameters = new ObservableCollection<MethodParameter>();
+			OpenParameters = new ObservableCollection<MethodParameter>();
+			CloseParameters = new ObservableCollection<MethodParameter>();
+			NewParameters = new ObservableCollection<MethodParameter>();
+			DeleteParameters = new ObservableCollection<MethodParameter>();
+			ReturnType = new DataType(PrimitiveTypes.Void);
+			GetDocumentation = new Documentation { IsMethod = true };
+			OpenDocumentation = new Documentation { IsMethod = true };
+			CloseDocumentation = new Documentation { IsMethod = true };
+			NewDocumentation = new Documentation { IsMethod = true };
+			DeleteDocumentation = new Documentation { IsMethod = true };
+		}
+
+		public DataChangeMethod(string Name, Service Owner) : base(Name, Owner)
+		{
+			GetParameters = new ObservableCollection<MethodParameter>();
+			OpenParameters = new ObservableCollection<MethodParameter>();
+			CloseParameters = new ObservableCollection<MethodParameter>();
+			NewParameters = new ObservableCollection<MethodParameter>();
+			DeleteParameters = new ObservableCollection<MethodParameter>();
+			ReturnType = new DataType(PrimitiveTypes.Void);
+			GetDocumentation = new Documentation { IsMethod = true };
+			OpenDocumentation = new Documentation { IsMethod = true };
+			CloseDocumentation = new Documentation { IsMethod = true };
+			NewDocumentation = new Documentation { IsMethod = true };
+			DeleteDocumentation = new Documentation { IsMethod = true };
+		}
+
+		public DataChangeMethod(DataType ReturnType, string Name, Service Owner) : base(Name, Owner)
+		{
+			GetParameters = new ObservableCollection<MethodParameter>();
+			OpenParameters = new ObservableCollection<MethodParameter>();
+			CloseParameters = new ObservableCollection<MethodParameter>();
+			NewParameters = new ObservableCollection<MethodParameter>();
+			DeleteParameters = new ObservableCollection<MethodParameter>();
+			this.ReturnType = ReturnType;
+			if (ReturnType.Primitive == PrimitiveTypes.Void) IsOneWay = true;
+			DeleteParameters = new ObservableCollection<MethodParameter>();
+			GetDocumentation = new Documentation { IsMethod = true };
+			OpenDocumentation = new Documentation { IsMethod = true };
+			CloseDocumentation = new Documentation { IsMethod = true };
+			NewDocumentation = new Documentation { IsMethod = true };
+			DeleteDocumentation = new Documentation { IsMethod = true };
+		}
+
+		public override IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
+		{
+			var results = new List<FindReplaceResult>();
+			results.AddRange(base.FindReplace(Args));
+			foreach (MethodParameter mp in GetParameters)
+				results.AddRange(mp.FindReplace(Args));
+			foreach (MethodParameter mp in OpenParameters)
+				results.AddRange(mp.FindReplace(Args));
+			foreach (MethodParameter mp in CloseParameters)
+				results.AddRange(mp.FindReplace(Args));
+			foreach (MethodParameter mp in NewParameters)
+				results.AddRange(mp.FindReplace(Args));
+			foreach (MethodParameter mp in DeleteParameters)
+				results.AddRange(mp.FindReplace(Args));
+			return results;
+		}
+
+		public override void Replace(FindReplaceInfo Args, string Field)
+		{
+			foreach (MethodParameter mp in GetParameters)
+				mp.Replace(Args, Field);
+			foreach (MethodParameter mp in OpenParameters)
+				mp.Replace(Args, Field);
+			foreach (MethodParameter mp in CloseParameters)
+				mp.Replace(Args, Field);
+			foreach (MethodParameter mp in NewParameters)
+				mp.Replace(Args, Field);
+			foreach (MethodParameter mp in DeleteParameters)
+				mp.Replace(Args, Field);
+		}
+
+		internal override void UpdateDeclaration()
+		{
+			Declaration = string.Format("{0} {1}", ReturnType, ServerName);
+			ClientDeclaration = string.Format("{0} {1}", ReturnType, ClientName);
 		}
 	}
 
@@ -483,7 +658,7 @@ namespace NETPath.Projects
 
 		//Internal Use
 		public Service Owner { get; set; }
-		public Method Parent { get; set; }
+		public Operation Parent { get; set; }
 
 		public MethodParameter ()
 		{
@@ -493,7 +668,7 @@ namespace NETPath.Projects
 			Documentation = new Documentation {IsParameter = true};
 		}
 
-		public MethodParameter(DataType Type, string Name, Service Owner, Method Parent)
+		public MethodParameter(DataType Type, string Name, Service Owner, Operation Parent)
 		{
 			ID = Guid.NewGuid();
 			this.Type = Type;
