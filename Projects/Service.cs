@@ -505,7 +505,16 @@ namespace NETPath.Projects
 		}
 
 		public bool IsReadOnly { get { return (bool)GetValue(IsReadOnlyProperty); } set { SetValue(IsReadOnlyProperty, value); } }
-		public static readonly DependencyProperty IsReadOnlyProperty = DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(false));
+		public static readonly DependencyProperty IsReadOnlyProperty = DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(false, IsReadOnlyChangedCallback));
+
+		private static void IsReadOnlyChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as DataChangeMethod;
+			if (t == null) return;
+
+			if (!(bool)e.NewValue) return;
+			t.GenerateNewDeleteFunction = false;
+		}
 
 		public ObservableCollection<MethodParameter> GetParameters { get { return (ObservableCollection<MethodParameter>)GetValue(GetParametersProperty); } set { SetValue(GetParametersProperty, value); } }
 		public static readonly DependencyProperty GetParametersProperty = DependencyProperty.Register("GetParameters", typeof(ObservableCollection<MethodParameter>), typeof(DataChangeMethod));

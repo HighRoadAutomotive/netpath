@@ -699,7 +699,7 @@
     <Resource Include="Icons\X32\BuildServer.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\X16\Operation.png" />
+    <Resource Include="Icons\X16\Method.png" />
     <Resource Include="Icons\X16\Property.png" />
     <Resource Include="Icons\X16\Enum.png" />
   </ItemGroup>
@@ -750,7 +750,7 @@
     <Resource Include="Icons\X16\Add.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\X32\Operation.png" />
+    <Resource Include="Icons\X32\Method.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\X16\MoveDown.png" />
@@ -771,9 +771,6 @@
     <Resource Include="Icons\X16\Error.png" />
     <Resource Include="Icons\X16\Message.png" />
     <Resource Include="Icons\X16\Warning.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Icons\LogoIconSource.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\X32\Endpoint.png" />
@@ -900,6 +897,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\Thumbnails\Intro.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\X16\DataChangeMethod.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

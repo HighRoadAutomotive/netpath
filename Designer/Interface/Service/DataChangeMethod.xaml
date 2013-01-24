@@ -11,10 +11,7 @@
 	d:DesignHeight="600" d:DesignWidth="750" UseLayoutRounding="True" >
 	<Grid.Resources>
 		<Service:ProtectionLevelConverter x:Key="ProtectionLevelConverter" />
-		<Service:MethodRESTVerbsConverter x:Key="MethodRESTVerbsConverter" />
-		<Service:WebMessageBodyStyleConverter x:Key="WebMessageBodyStyleConverter"/>
-		<Service:WebMessageFormatConverter x:Key="WebMessageFormatConverter" />
-		<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
+		<pc:NotBoolConverter x:Key="NotBoolConverter" />
 	</Grid.Resources>
 	<Grid.RowDefinitions>
 		<RowDefinition Height="Auto" />
@@ -54,32 +51,19 @@
 			<ComboBoxItem Content="Sign" />
 			<ComboBoxItem Content="Encrypt and Sign" />
 		</ComboBox>
-		<ToggleButton Content="Get Function" IsChecked="{Binding Path=MethodData.GenerateGetFunction}" Margin="5" Grid.Column="0" Grid.Row="1" />
-		<ToggleButton Content="Open/Close Functions" IsChecked="{Binding Path=MethodData.GenerateOpenCloseFunction}" Margin="5" Grid.Column="1" Grid.Row="1" />
-		<ToggleButton Content="New/Delete Functions" IsChecked="{Binding Path=MethodData.GenerateNewDeleteFunction}" Margin="5" Grid.Column="2" Grid.Row="1" />
+		<ToggleButton Content="Get Function" IsChecked="{Binding Path=MethodData.GenerateGetFunction}" Margin="5" Grid.Column="0" Grid.Row="1" Name="EnableGetFunction" Unchecked="EnableFunctions_Unchecked" />
+		<ToggleButton Content="Open/Close Functions" IsChecked="{Binding Path=MethodData.GenerateOpenCloseFunction}" Margin="5" Grid.Column="1" Grid.Row="1" Name="EnableOpenCloseFunctions" Unchecked="EnableFunctions_Unchecked" />
+		<ToggleButton Content="New/Delete Functions" IsChecked="{Binding Path=MethodData.GenerateNewDeleteFunction}" IsEnabled="{Binding Path=MethodData.IsReadOnly, Converter={StaticResource NotBoolConverter}}" Margin="5" Grid.Column="2" Grid.Row="1" Name="EnableNewDeleteFunctions" Unchecked="EnableFunctions_Unchecked" />
 		<ToggleButton Content="Data Is Read-Only" IsChecked="{Binding Path=MethodData.IsReadOnly}" Margin="5" Grid.Column="3" Grid.Row="1" />
 	</Grid>
-	<Border Grid.Row="6" Margin="0,10,0,0" BorderBrush="{StaticResource WindowBorderColor}" BorderThickness="0,0,0,1" >
-		<Grid>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto"/>
-				<ColumnDefinition Width="Auto"/>
-				<ColumnDefinition Width="Auto"/>
-				<ColumnDefinition Width="Auto"/>
-				<ColumnDefinition Width="Auto"/>
-				<ColumnDefinition Width="*"/>
-			</Grid.ColumnDefinitions>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-			</Grid.RowDefinitions>
-			<ToggleButton Content="Get Function" IsChecked="{Binding Path=GetFunctionSelected}" IsEnabled="{Binding Path=MethodData.GenerateGetFunction}" Background="Transparent" FontSize="12pt" Padding="10,5" Grid.Column="0" Grid.Row="0" Name="SelectGetFunction" />
-			<ToggleButton Content="Open Function" IsChecked="{Binding Path=OpenFunctionSelected}" IsEnabled="{Binding Path=MethodData.GenerateOpenCloseFunction}" Background="Transparent" FontSize="12pt" Padding="10,5" Grid.Column="1" Grid.Row="0" Name="SelectOpenFunction" />
-			<ToggleButton Content="Close Function" IsChecked="{Binding Path=CloseFunctionSelected}" IsEnabled="{Binding Path=MethodData.GenerateOpenCloseFunction}" Background="Transparent" FontSize="12pt" Padding="10,5"  Grid.Column="2" Grid.Row="0" Name="SelectCloseFunction" />
-			<ToggleButton Content="New Funcion" IsChecked="{Binding Path=NewFunctionSelected}" IsEnabled="{Binding Path=MethodData.GenerateNewDeleteFunction}" Background="Transparent" FontSize="12pt" Padding="10,5" Grid.Column="3" Grid.Row="1" Name="SelectNewFunction" />
-			<ToggleButton Content="Delete Function" IsChecked="{Binding Path=DeleteFunctionSelected}" IsEnabled="{Binding Path=MethodData.GenerateNewDeleteFunction}" Background="Transparent" FontSize="12pt" Padding="10,5"  Grid.Column="4" Grid.Row="1" Name="SelectDeleteFunction" />
-		</Grid>
-	</Border>
-	<TabControl Grid.Row="7" >
+	<TabControl Grid.Row="6">
+		<TabItem Header="Get Function" FontSize="12pt" Padding="10,5" IsSelected="{Binding Path=GetFunctionSelected}" IsEnabled="{Binding Path=MethodData.GenerateGetFunction}" />
+		<TabItem Header="Open Function" FontSize="12pt" Padding="10,5" IsSelected="{Binding Path=OpenFunctionSelected}" IsEnabled="{Binding Path=MethodData.GenerateOpenCloseFunction}" />
+		<TabItem Header="Close Function" FontSize="12pt" Padding="10,5" IsSelected="{Binding Path=CloseFunctionSelected}" IsEnabled="{Binding Path=MethodData.GenerateOpenCloseFunction}" />
+		<TabItem Header="New Function" FontSize="12pt" Padding="10,5" IsSelected="{Binding Path=NewFunctionSelected}" IsEnabled="{Binding Path=MethodData.GenerateNewDeleteFunction}" />
+		<TabItem Header="Delete Function" FontSize="12pt" Padding="10,5" IsSelected="{Binding Path=DeleteFunctionSelected}" IsEnabled="{Binding Path=MethodData.GenerateNewDeleteFunction}" />
+	</TabControl>
+	<TabControl Grid.Row="7" Name="MethodDetails" >
 		<TabItem Header="Parameters" FontSize="12pt" Padding="10,5" IsSelected="True">
 			<Grid >
 				<Grid.RowDefinitions>

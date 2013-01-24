@@ -258,6 +258,7 @@ namespace NETPath.Interface.Service
 		{
 			if (AddServiceMemberType.OpenType == null) return;
 			AddServiceMethod.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && !AddServiceMemberName.IsInvalid && AddServiceMemberType.IsValid);
+			AddServiceDCMethod.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && (AddServiceMemberType.OpenType.TypeMode == DataTypeMode.Class || AddServiceMemberType.OpenType.TypeMode == DataTypeMode.Struct) && !AddServiceMemberName.IsInvalid && AddServiceMemberType.IsValid);
 			AddServiceProperty.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && AddServiceMemberType.OpenType.Primitive != PrimitiveTypes.Void && !AddServiceMemberName.IsInvalid && AddServiceMemberType.IsValid);
 		}
 
@@ -269,6 +270,7 @@ namespace NETPath.Interface.Service
 			e.IsValid = RegExs.MatchCodeName.IsMatch(AddServiceMemberName.Text);
 			if (AddServiceMemberType.OpenType == null) return;
 			AddServiceMethod.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && e.IsValid && AddServiceMemberType.IsValid);
+			AddServiceDCMethod.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && (AddServiceMemberType.OpenType.TypeMode == DataTypeMode.Class || AddServiceMemberType.OpenType.TypeMode == DataTypeMode.Struct) && !AddServiceMemberName.IsInvalid && AddServiceMemberType.IsValid);
 			AddServiceProperty.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && AddServiceMemberType.OpenType.Primitive != PrimitiveTypes.Void && !AddServiceMemberName.IsInvalid && AddServiceMemberType.IsValid);
 		}
 
@@ -287,8 +289,10 @@ namespace NETPath.Interface.Service
 				AddServiceProperty.IsEnabled = false;
 				return;
 			}
-			if (AddServiceMemberType.OpenType != null && AddServiceMemberName.Text != "") AddServiceMethod.IsEnabled = true;
-			else AddServiceMethod.IsEnabled = false;
+			if (AddServiceMemberType.OpenType != null && AddServiceMemberName.Text != "") AddServiceMethod.IsEnabled = AddServiceDCMethod.IsEnabled = true;
+			else AddServiceMethod.IsEnabled = AddServiceDCMethod.IsEnabled = false;
+			if (AddServiceMemberType.OpenType != null && (AddServiceMemberType.OpenType.TypeMode == DataTypeMode.Class || AddServiceMemberType.OpenType.TypeMode == DataTypeMode.Struct) && AddServiceMemberName.Text != "") AddServiceDCMethod.IsEnabled = true;
+			else AddServiceDCMethod.IsEnabled = false;
 			if (AddServiceMemberType.OpenType != null && AddServiceMemberType.OpenType.Primitive != PrimitiveTypes.Void && AddServiceMemberName.Text != "") AddServiceProperty.IsEnabled = true;
 			else AddServiceProperty.IsEnabled = false;
 		}
@@ -298,6 +302,20 @@ namespace NETPath.Interface.Service
 			if (AddServiceMethod.IsEnabled == false) return;
 
 			var t = new Projects.Method(AddServiceMemberType.OpenType, AddServiceMemberName.Text, ServiceType);
+			ServiceType.ServiceOperations.Add(t);
+
+			AddServiceMemberType.Focus();
+			AddServiceMemberType.OpenType = null;
+			AddServiceMemberName.Text = "";
+
+			ServiceOperationsList.SelectedItem = t;
+		}
+
+		private void AddServiceDCMethod_Click(object sender, RoutedEventArgs e)
+		{
+			if (AddServiceMethod.IsEnabled == false) return;
+
+			var t = new Projects.DataChangeMethod(AddServiceMemberType.OpenType, AddServiceMemberName.Text, ServiceType);
 			ServiceType.ServiceOperations.Add(t);
 
 			AddServiceMemberType.Focus();
@@ -336,6 +354,13 @@ namespace NETPath.Interface.Service
 				var m = t as Projects.Method;
 				if (m == null) return;
 				ActiveOperation = new Method(m);
+			}
+
+			if (t.GetType() == typeof(Projects.DataChangeMethod))
+			{
+				var m = t as Projects.DataChangeMethod;
+				if (m == null) return;
+				ActiveOperation = new DataChangeMethod(m);
 			}
 			else
 			{

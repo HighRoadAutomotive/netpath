@@ -14,8 +14,8 @@ using System.Windows.Threading;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using NETPath.Projects;
 using Prospective.Controls.Dialogs;
+using NETPath.Projects;
 using NETPath.Projects.Helpers;
 
 namespace NETPath.Interface.Service
@@ -41,13 +41,10 @@ namespace NETPath.Interface.Service
 		{
 			var t = o as DataChangeMethod;
 			if (t == null) return;
-
-			t.SelectOpenFunction.IsChecked = false;
-			t.SelectCloseFunction.IsChecked = false;
-			t.SelectNewFunction.IsChecked = false;
-			t.SelectDeleteFunction.IsChecked = false;
+			if (!(bool)e.NewValue) return;
 
 			t.Parameters = t.MethodData.GetParameters;
+			t.ValuesList.ItemsSource = t.Parameters;
 			t.Documentation = t.MethodData.GetDocumentation;
 		}
 
@@ -58,13 +55,10 @@ namespace NETPath.Interface.Service
 		{
 			var t = o as DataChangeMethod;
 			if (t == null) return;
-
-			t.SelectGetFunction.IsChecked = false;
-			t.SelectCloseFunction.IsChecked = false;
-			t.SelectNewFunction.IsChecked = false;
-			t.SelectDeleteFunction.IsChecked = false;
+			if (!(bool)e.NewValue) return;
 
 			t.Parameters = t.MethodData.OpenParameters;
+			t.ValuesList.ItemsSource = t.Parameters;
 			t.Documentation = t.MethodData.OpenDocumentation;
 		}
 		
@@ -75,13 +69,10 @@ namespace NETPath.Interface.Service
 		{
 			var t = o as DataChangeMethod;
 			if (t == null) return;
-
-			t.SelectGetFunction.IsChecked = false;
-			t.SelectOpenFunction.IsChecked = false;
-			t.SelectNewFunction.IsChecked = false;
-			t.SelectDeleteFunction.IsChecked = false;
+			if (!(bool)e.NewValue) return;
 
 			t.Parameters = t.MethodData.CloseParameters;
+			t.ValuesList.ItemsSource = t.Parameters;
 			t.Documentation = t.MethodData.CloseDocumentation;
 		}
 
@@ -92,13 +83,10 @@ namespace NETPath.Interface.Service
 		{
 			var t = o as DataChangeMethod;
 			if (t == null) return;
-
-			t.SelectGetFunction.IsChecked = false;
-			t.SelectOpenFunction.IsChecked = false;
-			t.SelectCloseFunction.IsChecked = false;
-			t.SelectDeleteFunction.IsChecked = false;
+			if (!(bool) e.NewValue) return;
 
 			t.Parameters = t.MethodData.NewParameters;
+			t.ValuesList.ItemsSource = t.Parameters;
 			t.Documentation = t.MethodData.NewDocumentation;
 		}
 
@@ -109,13 +97,10 @@ namespace NETPath.Interface.Service
 		{
 			var t = o as DataChangeMethod;
 			if (t == null) return;
-
-			t.SelectGetFunction.IsChecked = false;
-			t.SelectOpenFunction.IsChecked = false;
-			t.SelectCloseFunction.IsChecked = false;
-			t.SelectNewFunction.IsChecked = false;
+			if (!(bool)e.NewValue) return;
 
 			t.Parameters = t.MethodData.DeleteParameters;
+			t.ValuesList.ItemsSource = t.Parameters;
 			t.Documentation = t.MethodData.DeleteDocumentation;
 		}
 
@@ -140,13 +125,11 @@ namespace NETPath.Interface.Service
 
 			InitializeComponent();
 
-			if (Data.GenerateNewDeleteFunction) SelectNewFunction.IsChecked = true;
-			if (Data.GenerateGetFunction) SelectGetFunction.IsChecked = true;
-			if (Data.GenerateOpenCloseFunction) SelectOpenFunction.IsChecked = true;
+			if (MethodData.GenerateOpenCloseFunction) OpenFunctionSelected = true;
+			else if (MethodData.GenerateGetFunction) GetFunctionSelected = true;
+			else if (MethodData.GenerateNewDeleteFunction) NewFunctionSelected = true;
+			else MethodDetails.Visibility = Visibility.Collapsed;
 
-			ValuesList.ItemsSource = Parameters;
-			Parameters = Data.GetParameters;
-			Documentation = Data.GetDocumentation;
 			DataContext = this;
 		}
 
@@ -378,6 +361,15 @@ namespace NETPath.Interface.Service
 			if (OP == null) return;
 
 			DialogService.ShowMessageDialog("NETPath", "Delete Method Parameter?", "Are you sure you want to delete the '" + OP.Type + " " + OP.Name + "' method parameter?", new DialogAction("Yes", () => Parameters.Remove(OP), true), new DialogAction("No", false, true));
+		}
+
+		private void EnableFunctions_Unchecked(object Sender, RoutedEventArgs E)
+		{
+			MethodDetails.Visibility = Visibility.Visible;
+			if (MethodData.GenerateOpenCloseFunction) OpenFunctionSelected = true;
+			else if (MethodData.GenerateGetFunction) GetFunctionSelected = true;
+			else if (MethodData.GenerateNewDeleteFunction) NewFunctionSelected = true;
+			else MethodDetails.Visibility = Visibility.Collapsed;
 		}
 	}
 }

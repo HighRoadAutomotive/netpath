@@ -998,7 +998,7 @@ namespace NETPath.Interface
 			if (valueType == typeof(DependencyProject)) return "pack://application:,,,/NETPath;component/Icons/X16/DependencyProject.png";
 			if (valueType == typeof(Projects.Namespace)) return "pack://application:,,,/NETPath;component/Icons/X16/Namespace.png";
 			if (valueType == typeof(Projects.Service)) return "pack://application:,,,/NETPath;component/Icons/X16/Service.png";
-			if (valueType == typeof(Operation)) return "pack://application:,,,/NETPath;component/Icons/X16/Operation.png";
+			if (valueType == typeof(Operation)) return "pack://application:,,,/NETPath;component/Icons/X16/Method.png";
 			if (valueType == typeof(MethodParameter)) return "pack://application:,,,/NETPath;component/Icons/X16/Property.png";
 			if (valueType == typeof(Property)) return "pack://application:,,,/NETPath;component/Icons/X16/Property.png";
 			if (valueType == typeof(Projects.Data)) return "pack://application:,,,/NETPath;component/Icons/X16/Data.png";
