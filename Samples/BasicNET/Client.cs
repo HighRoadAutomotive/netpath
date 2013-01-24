@@ -141,28 +141,28 @@ namespace WCFArchitect.SampleServer.BasicWinRT
 		public bool IsUpdating { get; set; }
 
 		//Properties
-		public Guid ID { get { return (Guid)GetValueThreaded(IDProperty); } set { SetValueThreaded(IDProperty, value); } }
+		public Guid ID { get { return (Guid)GetValue(IDProperty); } set { SetValue(IDProperty, value); } }
 		public static readonly DependencyProperty IDProperty = DependencyProperty.Register("ID", typeof(Guid), typeof(CustomerXAML));
-		public string Name { get { return (string)GetValueThreaded(NameProperty); } set { SetValueThreaded(NameProperty, value); } }
+		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(CustomerXAML));
-		public string AddressLine1 { get { return (string)GetValueThreaded(AddressLine1Property); } set { SetValueThreaded(AddressLine1Property, value); } }
+		public string AddressLine1 { get { return (string)GetValue(AddressLine1Property); } set { SetValue(AddressLine1Property, value); } }
 		public static readonly DependencyProperty AddressLine1Property = DependencyProperty.Register("AddressLine1", typeof(string), typeof(CustomerXAML));
-		public string AddressLine2 { get { return (string)GetValueThreaded(AddressLine2Property); } set { SetValueThreaded(AddressLine2Property, value); } }
+		public string AddressLine2 { get { return (string)GetValue(AddressLine2Property); } set { SetValue(AddressLine2Property, value); } }
 		public static readonly DependencyProperty AddressLine2Property = DependencyProperty.Register("AddressLine2", typeof(string), typeof(CustomerXAML));
-		public string City { get { return (string)GetValueThreaded(CityProperty); } set { SetValueThreaded(CityProperty, value); } }
+		public string City { get { return (string)GetValue(CityProperty); } set { SetValue(CityProperty, value); } }
 		public static readonly DependencyProperty CityProperty = DependencyProperty.Register("City", typeof(string), typeof(CustomerXAML));
-		public string State { get { return (string)GetValueThreaded(StateProperty); } set { SetValueThreaded(StateProperty, value); } }
+		public string State { get { return (string)GetValue(StateProperty); } set { SetValue(StateProperty, value); } }
 		public static readonly DependencyProperty StateProperty = DependencyProperty.Register("State", typeof(string), typeof(CustomerXAML));
-		public int ZipCode { get { return (int)GetValueThreaded(ZipCodeProperty); } set { SetValueThreaded(ZipCodeProperty, value); } }
+		public int ZipCode { get { return (int)GetValue(ZipCodeProperty); } set { SetValue(ZipCodeProperty, value); } }
 		public static readonly DependencyProperty ZipCodeProperty = DependencyProperty.Register("ZipCode", typeof(int), typeof(CustomerXAML));
-		public WCFArchitect.SampleServer.BasicWinRT.Colors Color { get { return (WCFArchitect.SampleServer.BasicWinRT.Colors)GetValueThreaded(ColorProperty); } set { SetValueThreaded(ColorProperty, value); } }
+		public WCFArchitect.SampleServer.BasicWinRT.Colors Color { get { return (WCFArchitect.SampleServer.BasicWinRT.Colors)GetValue(ColorProperty); } set { SetValue(ColorProperty, value); } }
 		public static readonly DependencyProperty ColorProperty = DependencyProperty.Register("Color", typeof(WCFArchitect.SampleServer.BasicWinRT.Colors), typeof(CustomerXAML));
-		public Guid _DCMID { get { return (Guid)GetValueThreaded(_DCMIDProperty); } protected set { SetValueThreaded(_DCMIDPropertyKey, value); } }
+		public Guid _DCMID { get { return (Guid)GetValue(_DCMIDProperty); } protected set { SetValue(_DCMIDPropertyKey, value); } }
 		private static readonly DependencyPropertyKey _DCMIDPropertyKey = DependencyProperty.RegisterReadOnly("_DCMID", typeof(Guid), typeof(CustomerXAML), null);
 		public static readonly DependencyProperty _DCMIDProperty = _DCMIDPropertyKey.DependencyProperty;
-		public List<WCFArchitect.SampleServer.BasicWinRT.CustomerXAML> ListTest { get { return (List<WCFArchitect.SampleServer.BasicWinRT.CustomerXAML>)GetValueThreaded(ListTestProperty); } set { SetValueThreaded(ListTestProperty, value); } }
+		public List<WCFArchitect.SampleServer.BasicWinRT.CustomerXAML> ListTest { get { return (List<WCFArchitect.SampleServer.BasicWinRT.CustomerXAML>)GetValue(ListTestProperty); } set { SetValue(ListTestProperty, value); } }
 		public static readonly DependencyProperty ListTestProperty = DependencyProperty.Register("ListTest", typeof(List<WCFArchitect.SampleServer.BasicWinRT.CustomerXAML>), typeof(CustomerXAML));
-		public WCFArchitect.SampleServer.BasicWinRT.CustomerXAML[] ArrayTest { get { return (WCFArchitect.SampleServer.BasicWinRT.CustomerXAML[])GetValueThreaded(ArrayTestProperty); } set { SetValueThreaded(ArrayTestProperty, value); } }
+		public WCFArchitect.SampleServer.BasicWinRT.CustomerXAML[] ArrayTest { get { return (WCFArchitect.SampleServer.BasicWinRT.CustomerXAML[])GetValue(ArrayTestProperty); } set { SetValue(ArrayTestProperty, value); } }
 		public static readonly DependencyProperty ArrayTestProperty = DependencyProperty.Register("ArrayTest", typeof(WCFArchitect.SampleServer.BasicWinRT.CustomerXAML[]), typeof(CustomerXAML));
 
 		//Implicit Conversion

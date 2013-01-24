@@ -132,9 +132,6 @@ namespace NETPath.Projects
 		[IgnoreDataMember] public List<DataType> InheritableTypes { get; private set; }
 		[IgnoreDataMember] public DataType VoidType { get; private set; }
 
-		public bool EnableExperimental { get { return (bool)GetValue(EnableExperimentalProperty); } set { SetValue(EnableExperimentalProperty, value); } }
-		public static readonly DependencyProperty EnableExperimentalProperty = DependencyProperty.Register("EnableExperimental", typeof(bool), typeof(Project), new PropertyMetadata(false));
-
 		public DataType DeltaList { get; private set; }
 		public DataType DeltaDictionary { get; private set; }
 		public DataType DeltaStack { get; private set; }

@@ -120,7 +120,6 @@ namespace NETPath.Generators.WinRT.CS
 			if (t.Status != LicenseStatus.Valid) return "";
 
 			Globals.CurrentGenerationTarget = ProjectGenerationFramework.NET45;
-			Globals.ExperimentalEnabled = Data.EnableExperimental;
 
 			return Generate(Data, ProjectGenerationFramework.NET45, true, GenerateReferences);
 		}
@@ -132,7 +131,6 @@ namespace NETPath.Generators.WinRT.CS
 			if (t.Status != LicenseStatus.Valid) return "";
 
 			Globals.CurrentGenerationTarget = ProjectGenerationFramework.WIN8;
-			Globals.ExperimentalEnabled = Data.EnableExperimental;
 
 			return Generate(Data, ProjectGenerationFramework.WIN8, false, GenerateReferences);
 		}
@@ -350,7 +348,6 @@ namespace NETPath.Generators.WinRT.CS
 		public const string ApplicationTitle = "NETPath WinRT CSharp Generator - BETA";
 
 		public static ProjectGenerationFramework CurrentGenerationTarget { get; set; }
-		public static bool ExperimentalEnabled { get; set; }
 
 		public static string LicenseKey { get; set; }
 		public const string LicenseVerification = "AMAAMACnZigmLe9LpWcsYIBVFHYRZeUhr1oYyxDRFmL/qon4ijMx6X/xXyYldZs/A8Df9MsDAAEAAQ==";

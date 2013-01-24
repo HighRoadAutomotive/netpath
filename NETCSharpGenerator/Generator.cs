@@ -124,7 +124,6 @@ namespace NETPath.Generators.NET.CS
 			if (t.Status != LicenseStatus.Valid) return "";
 
 			Globals.CurrentGenerationTarget = Framework;
-			Globals.ExperimentalEnabled = Data.EnableExperimental;
 
 			return Generate(Data, Framework, true, GenerateReferences);
 		}
@@ -136,7 +135,6 @@ namespace NETPath.Generators.NET.CS
 			if (t.Status != LicenseStatus.Valid) return "";
 
 			Globals.CurrentGenerationTarget = Framework;
-			Globals.ExperimentalEnabled = Data.EnableExperimental;
 
 			return Generate(Data, Framework, false, GenerateReferences);
 		}
@@ -401,7 +399,6 @@ namespace NETPath.Generators.NET.CS
 		public const string ApplicationTitle = "NETPath .NET CSharp Generator - BETA";
 
 		public static ProjectGenerationFramework CurrentGenerationTarget { get; set; }
-		public static bool ExperimentalEnabled { get; set; }
 		
 		public static string LicenseKey { get; set; }
 		public const string LicenseVerification = "AMAAMACnZigmLe9LpWcsYIBVFHYRZeUhr1oYyxDRFmL/qon4ijMx6X/xXyYldZs/A8Df9MsDAAEAAQ==";

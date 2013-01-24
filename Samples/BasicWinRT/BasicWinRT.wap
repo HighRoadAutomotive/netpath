@@ -15,7 +15,6 @@
   <ClientOutputFile z:Id="5">Client</ClientOutputFile>
   <DependencyProjects z:Id="6" z:Size="0" />
   <EnableDocumentationWarnings>false</EnableDocumentationWarnings>
-  <EnableExperimental>true</EnableExperimental>
   <ExternalTypes z:Id="7" z:Size="0" />
   <ID>0b832ba8-5f23-4ad4-9667-243ac3c90977</ID>
   <Name z:Id="8">BasicWinRT</Name>

@@ -20,7 +20,6 @@
     </DependencyProject>
   </DependencyProjects>
   <EnableDocumentationWarnings>false</EnableDocumentationWarnings>
-  <EnableExperimental>true</EnableExperimental>
   <ExternalTypes z:Id="9" z:Size="0" />
   <ID>3e7ff01a-323e-41ff-b966-89c13271cfbd</ID>
   <Name z:Id="10">BasicNET</Name>
