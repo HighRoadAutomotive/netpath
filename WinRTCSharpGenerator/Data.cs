@@ -169,46 +169,31 @@ namespace NETPath.Generators.WinRT.CS
 		{
 			if (!o.Parent.Owner.EnableExperimental) return "";
 			if (!o.AutoDataEnabled) return "";
+			DataElement dcmid = o.Elements.FirstOrDefault(a => a.IsAutoDataID);
+			if (dcmid == null)
+				return "";
 
 			var code = new StringBuilder();
 			code.AppendLine("\t\t//Data Change Messaging Support");
-			code.AppendLine("\t\tprivate readonly System.Threading.ReaderWriterLockSlim __dcmlock = new System.Threading.ReaderWriterLockSlim();");
 			code.AppendLine(string.Format("\t\tprivate static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, {0}> __dcm;", o.HasClientType ? o.ClientType.Name : o.Name));
-			code.AppendLine("\t\tprivate bool IsUpdateObjectField;");
-			code.AppendLine("\t\t[DataMember(Name = \"IsUpdateObject\")] public bool IsUpdateObject { get { return IsUpdateObjectField; } set { IsUpdateObjectField = value; } }");
 			code.AppendLine(string.Format("\t\tstatic {0}()", o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine("\t\t{");
 			code.AppendLine(string.Format("\t\t\t__dcm = new System.Collections.Concurrent.ConcurrentDictionary<Guid, {0}>();", o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine("\t\t}");
-			code.AppendLine("\t\t[OnDeserialized]");
-			code.AppendLine("\t\tprivate void OnDeserialized(StreamingContext context)");
+			code.AppendLine(string.Format("\t\tpublic static bool HasData({0} data)", o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine("\t\t{");
-			code.AppendLine("\t\t\tif(!IsUpdateObject)");
-			code.AppendLine(o.HasAutoDataID ? string.Format("\t\t\t\t__dcm.TryAdd({0}, this);", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName) : "\t\t\t\t__dcm.TryAdd(_DCMID, this);");
-			code.AppendLine("\t\t\telse");
-			code.AppendLine("\t\t\t{");
-			foreach (DataElement e in o.Elements)
-				code.Append(GenerateProxyElementDCMBatchUpdateCode(e));
-			code.AppendLine("\t\t\t}");
+			code.AppendLine(string.Format("\t\t\treturn __dcm.ContainsKey(data.{0});", dcmid.HasClientType ? dcmid.ClientName : dcmid.DataName));
 			code.AppendLine("\t\t}");
-			code.AppendLine(string.Format("\t\t~{0}()", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine(string.Format("\t\tpublic static {0} RegisterData({0} data)", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine("\t\t{");
+			code.AppendLine(string.Format("\t\t\treturn __dcm.GetOrAdd(data.{0}, data);", dcmid.HasClientType ? dcmid.ClientName : dcmid.DataName));
+			code.AppendLine("\t\t}");
+			code.AppendLine(string.Format("\t\tpublic static bool UnregisterData({0} data)", o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine("\t\t{");
 			code.AppendLine(string.Format("\t\t\t{0} t;", o.HasClientType ? o.ClientType.Name : o.Name));
-			code.AppendLine(o.HasAutoDataID ? string.Format("\t\t\t__dcm.TryRemove({0}, out t);", o.AutoDataID.HasClientType ? o.AutoDataID.ClientName : o.AutoDataID.DataName) : "\t\t\t__dcm.TryRemove(_DCMID, out t);");
+			code.AppendLine(string.Format("\t\t\treturn __dcm.TryRemove(data.{0}, out t);", dcmid.HasClientType ? dcmid.ClientName : dcmid.DataName));
 			code.AppendLine("\t\t}");
-			return code.ToString();
-		}
-
-		private static string GenerateProxyElementDCMBatchUpdateCode(DataElement o)
-		{
-			if (!o.Owner.Parent.Owner.EnableExperimental) return "";
-			if (!o.Owner.AutoDataEnabled) return "";
-			if (o.AutoDataUpdateMode != DataUpdateMode.Batch) return "";
-
-			var code = new StringBuilder();
-			code.AppendLine(string.Format("\t\t\t\tif({0}Changed)", o.HasClientType ? o.ClientName : o.DataName));
-			code.AppendLine("\t\t\t\t{");
-			code.AppendLine("\t\t\t\t}");
+			code.AppendLine("\t\tprivate readonly System.Threading.ReaderWriterLockSlim __dcmlock = new System.Threading.ReaderWriterLockSlim();");
 			return code.ToString();
 		}
 
