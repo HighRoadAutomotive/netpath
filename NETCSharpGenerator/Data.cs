@@ -26,7 +26,7 @@ namespace NETPath.Generators.NET.CS
 				if (RegExs.MatchCodeName.IsMatch(o.XAMLType.Name) == false)
 					AddMessage(new CompileMessage("GS3003", "The data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 
-			if (!o.HasAutoDataID)
+			if (!o.HasAutoDataID && o.AutoDataEnabled)
 			{
 				AddMessage(new CompileMessage("GS3003", "The data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace does not have an Automatic Data ID specified. A default ID will be used.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 				if (!o.Elements.Any(a => a.IsAutoDataID)) o.Elements.Add(new DataElement(new DataType(PrimitiveTypes.GUID), "_DCMID", o) { IsAutoDataID = true, IsDataMember = true, IsReadOnly = true, ProtocolBufferEnabled = o.Elements.Any(a => a.ProtocolBufferEnabled)});
