@@ -47,7 +47,7 @@
   <ItemGroup>
     <Compile Include="ChangeListItem.cs" />
     <Compile Include="Controller.cs" />
-    <Compile Include="DuplexController.cs" />
+    <Compile Include="ServerBase.cs" />
     <Compile Include="DeltaDictionary.cs" />
     <Compile Include="DeltaList.cs" />
     <Compile Include="DependencyObjectEx.cs" />

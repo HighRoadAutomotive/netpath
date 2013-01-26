@@ -460,9 +460,6 @@ namespace NETPath.Projects
 		public bool UseSyncPattern { get { return (bool)GetValue(UseSyncPatternProperty); } set { SetValue(UseSyncPatternProperty, value); } }
 		public static readonly DependencyProperty UseSyncPatternProperty = DependencyProperty.Register("UseSyncPattern", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(true));
 
-		public bool UseAsyncPattern { get { return (bool)GetValue(UseAsyncPatternProperty); } set { SetValue(UseAsyncPatternProperty, value); } }
-		public static readonly DependencyProperty UseAsyncPatternProperty = DependencyProperty.Register("UseAsyncPattern", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(false));
-
 		public bool UseAwaitPattern { get { return (bool)GetValue(UseAwaitPatternProperty); } set { SetValue(UseAwaitPatternProperty, value); } }
 		public static readonly DependencyProperty UseAwaitPatternProperty = DependencyProperty.Register("UseAwaitPattern", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(false));
 

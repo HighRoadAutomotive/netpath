@@ -121,9 +121,6 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 				code.AppendLine(string.Format("\t{0} partial class {1}Callback : I{1}Callback", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
 				code.AppendLine("\t{");
-				code.AppendLine();
-				code.AppendLine(string.Format("\t\tprivate readonly I{0}Callback __callback;", o.Name));
-				code.AppendLine();
 				code.AppendLine(string.Format("\t\tpublic {0}Callback()", o.Name));
 				code.AppendLine("\t\t{");
 				code.AppendLine(string.Format("\t\t\t__callback = System.ServiceModel.OperationContext.Current.GetCallbackChannel<I{0}Callback>();", o.Name));
@@ -138,36 +135,6 @@ namespace NETPath.Generators.WinRT.CS
 					code.Append(GenerateMethodProxyConstructorCode(m, true));
 				code.AppendLine("\t\t}");
 				code.AppendLine();
-				if (o.HasAsyncCallbackOperations && CanGenerateAsync(o, true))
-				{
-					code.AppendLine("\t\tprotected class InvokeAsyncCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs");
-					code.AppendLine("\t\t{");
-					code.AppendLine("\t\t\tpublic object[] Results { get; set; }");
-					code.AppendLine("\t\t\tpublic InvokeAsyncCompletedEventArgs(object[] results, System.Exception error, bool cancelled, Object userState) : base(error, cancelled, userState)");
-					code.AppendLine("\t\t\t{");
-					code.AppendLine("\t\t\t\tResults = results;");
-					code.AppendLine("\t\t\t}");
-					code.AppendLine("\t\t}");
-					code.AppendLine();
-					code.AppendLine("\t\tprotected delegate IAsyncResult BeginOperationDelegate(object[] inValues, AsyncCallback asyncCallback, Object state);");
-					code.AppendLine("\t\tprotected delegate object[] EndOperationDelegate(IAsyncResult result);");
-					code.AppendLine();
-					code.AppendLine("\t\tprotected void InvokeAsync(BeginOperationDelegate beginOperationDelegate, object[] inValues, EndOperationDelegate endOperationDelegate, System.Threading.SendOrPostCallback operationCompletedCallback, object userState)");
-					code.AppendLine("\t\t{");
-					code.AppendLine("\t\t\tif (beginOperationDelegate == null) throw new ArgumentNullException(\"Argument 'beginOperationDelegate' cannot be null.\");");
-					code.AppendLine("\t\t\tif (endOperationDelegate == null) throw new ArgumentNullException(\"Argument 'endOperationDelegate' cannot be null.\");");
-					code.AppendLine("\t\t\tAsyncCallback cb = delegate(IAsyncResult ar)");
-					code.AppendLine("\t\t\t{");
-					code.AppendLine("\t\t\t\tobject[] results = null;");
-					code.AppendLine("\t\t\t\tException error = null;");
-					code.AppendLine("\t\t\t\ttry { results = endOperationDelegate(ar); }");
-					code.AppendLine("\t\t\t\tcatch (Exception ex) { error = ex; }");
-					code.AppendLine("\t\t\t\tif (operationCompletedCallback != null) operationCompletedCallback(new InvokeAsyncCompletedEventArgs(results, error, false, userState));");
-					code.AppendLine("\t\t\t};");
-					code.AppendLine("\t\t\tbeginOperationDelegate(inValues, cb, userState);");
-					code.AppendLine("\t\t}");
-					code.AppendLine();
-				}
 				foreach (Property p in o.CallbackOperations.Where(a => a.GetType() == typeof(Property)))
 					code.AppendLine(GeneratePropertyClientCode(p));
 				foreach (Method m in o.CallbackOperations.Where(a => a.GetType() == typeof(Method)))
