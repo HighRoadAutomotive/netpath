@@ -46,7 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChangeListItem.cs" />
-    <Compile Include="Controller.cs" />
     <Compile Include="ServerBase.cs" />
     <Compile Include="DeltaDictionary.cs" />
     <Compile Include="DeltaList.cs" />
