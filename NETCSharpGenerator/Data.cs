@@ -129,6 +129,11 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine(string.Format("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI));
 			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, o.ClientHasImpliedExtensionData, o.HasWinFormsBindings)));
 			code.AppendLine("\t{");
+			if (o.HasXAMLType)
+			{
+				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get; private set; }}", o.XAMLType.Name));
+				code.AppendLine();
+			}
 			code.AppendLine(GenerateProxyDCMCode(o));
 			if (o.ClientHasExtensionData || o.ClientHasImpliedExtensionData)
 			{

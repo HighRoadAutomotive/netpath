@@ -10,6 +10,7 @@ namespace System.ServiceModel
 	public abstract class ServerBase<T> where T : ServerBase<T>
 	{
 		public Guid ClientID { get; protected set; }
+		public bool IsTerminated { get; protected set; }
 
 		public ServerBase()
 		{
@@ -30,6 +31,7 @@ namespace System.ServiceModel
 			OperationContext.Current.Channel.Closing -= ChannelClosed;
 
 			OperationContext.Current.Channel.Close();
+			IsTerminated = true;
 		}
 
 		protected virtual void ChannelClosed(object sender, EventArgs e)
@@ -43,7 +45,10 @@ namespace System.ServiceModel
 		}
 	}
 
-	public abstract class ServerDuplexBase<T, TCallback, TInterface> : ServerBase<T> where T : ServerDuplexBase<T, TCallback, TInterface> where TCallback : ServerCallackBase<TInterface>, new() where TInterface : class
+	public abstract class ServerDuplexBase<T, TCallback, TInterface> : ServerBase<T>
+		where T : ServerDuplexBase<T, TCallback, TInterface>
+		where TCallback : ServerCallbackBase<TInterface>, new()
+		where TInterface : class
 	{
 		private static DeltaDictionary<Guid, T> Clients { get; set; }
 
@@ -52,40 +57,45 @@ namespace System.ServiceModel
 			Clients = new DeltaDictionary<Guid, T>();
 		}
 
-		public static T GetClient(Guid ClientID)
+		public static CType GetClient<CType>(Guid ClientID) where CType : ServerDuplexBase<T, TCallback, TInterface>
 		{
 			T v;
 			Clients.TryGetValue(ClientID, out v);
-			return v;
+			return v as CType;
 		}
 
-		public static List<T> GetClientList()
+		public static List<CType> GetClientList<CType>() where CType : ServerDuplexBase<T, TCallback, TInterface>
 		{
-			return new List<T>(Clients.Values);
+			return Clients.Values.Select(t => t as CType).Where(t => t != null).ToList();
 		}
 
 		protected TCallback Callback { get; private set; }
 		public ushort MaxReconnectionAttempts { get; private set; }
+		internal Func<bool> Disconnected { get; set; }
+		internal Action Reconnected { get; set; }
 
 		public ServerDuplexBase()
 		{
 			MaxReconnectionAttempts = 0;
 		}
 
-		public ServerDuplexBase(ushort MaxReconnectionAttempts)
+		public ServerDuplexBase(ushort MaxReconnectionAttempts, Func<bool> Disconnected = null, Action Reconnected = null)
 		{
 			this.MaxReconnectionAttempts = MaxReconnectionAttempts;
+			this.Disconnected = Disconnected ?? (() => false);
+			this.Reconnected = Reconnected ?? (() => { });
 		}
 
 		protected virtual bool Initialize(Func<Guid> ClientID = null)
 		{
 			try
 			{
-				Callback = new TCallback {MaxReconnectionAttempts = MaxReconnectionAttempts};
+				Callback = new TCallback { MaxReconnectionAttempts = MaxReconnectionAttempts, Disconnected = CallbackDisconnected, Reconnected = CallbackReconnected };
 
 				base.Initialize();
 
 				this.ClientID = ClientID != null ? ClientID() : Guid.NewGuid();
+				Callback.ClientID = this.ClientID;
 
 				Clients.AddOrUpdate(this.ClientID, this as T, (k, v) => this as T);
 			}
@@ -113,38 +123,71 @@ namespace System.ServiceModel
 		{
 			ChannelClosed(sender, e);
 		}
+
+		private void CallbackDisconnected()
+		{
+			if (Disconnected())
+				Terminate();
+		}
+
+		private void CallbackReconnected()
+		{
+			if(!IsTerminated)
+				Reconnected();
+		}
 	}
 
-	public abstract class ServerCallackBase<TCallback> where TCallback : class
+	public abstract class ServerCallbackBase<TCallback> where TCallback : class
 	{
 		public ushort MaxReconnectionAttempts { get; internal set; }
+		public Guid ClientID { get; internal set; }
+		internal Action Disconnected { get; set; }
+		internal Action Reconnected { get; set; }
 
 		protected TCallback __callback;
 		public TCallback Callback { get { return __callback; } private set { __callback = value; } }
+		public bool IsCallbackConnected { get { return __callback != null; } }
 
-		public ServerCallackBase() { }
+		public ServerCallbackBase()
+		{
+			MaxReconnectionAttempts = 0;
+		}
 
 		public bool Reconnect()
 		{
-			try
+			Threading.Interlocked.Exchange(ref __callback, null);
+			if (MaxReconnectionAttempts == 0) return false;
+			Exception stored = null;
+			for (int i = 0; i < MaxReconnectionAttempts; i++)
+				try { Threading.Interlocked.CompareExchange(ref __callback, OperationContext.Current.GetCallbackChannel<TCallback>(), null); }
+				catch (Exception ex) { stored = ex; }
+			if (stored != null)
 			{
-				__callback = null;
-				if (MaxReconnectionAttempts < 0) return false;
-				else if (MaxReconnectionAttempts == 0)
-					while (__callback == null)
-						__callback = OperationContext.Current.GetCallbackChannel<TCallback>();
-				else
-					for (int i = 0; i < MaxReconnectionAttempts; i++)
-						__callback = OperationContext.Current.GetCallbackChannel<TCallback>();
+				Disconnected();
+				throw stored;
 			}
-			catch (Exception)
-			{
-				return false;
-			}
-			return true;
+			Reconnected();
+			return IsCallbackConnected;
 		}
 
-		protected new class InvokeAsyncCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+		public bool Reconnect(ushort MaxReconnectionAttempts)
+		{
+			Threading.Interlocked.Exchange(ref __callback, null);
+			if (MaxReconnectionAttempts == 0) return false;
+			Exception stored = null;
+			for (int i = 0; i < MaxReconnectionAttempts; i++)
+				try { Threading.Interlocked.CompareExchange(ref __callback, OperationContext.Current.GetCallbackChannel<TCallback>(), null); }
+				catch (Exception ex) { stored = ex; }
+			if (stored != null)
+			{
+				Disconnected();
+				throw stored;
+			}
+			Reconnected();
+			return IsCallbackConnected;
+		}
+
+		protected class InvokeAsyncCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
 		{
 			public object[] Results { get; set; }
 
@@ -154,8 +197,8 @@ namespace System.ServiceModel
 			}
 		}
 
-		protected new delegate IAsyncResult BeginOperationDelegate(object[] inValues, AsyncCallback asyncCallback, Object state);
-		protected new delegate object[] EndOperationDelegate(IAsyncResult result);
+		protected delegate IAsyncResult BeginOperationDelegate(object[] inValues, AsyncCallback asyncCallback, Object state);
+		protected delegate object[] EndOperationDelegate(IAsyncResult result);
 
 		protected void InvokeAsync(BeginOperationDelegate beginOperationDelegate, object[] inValues, EndOperationDelegate endOperationDelegate, System.Threading.SendOrPostCallback operationCompletedCallback, object userState)
 		{
