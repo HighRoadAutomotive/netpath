@@ -223,6 +223,17 @@ namespace NETPath.Generators.NET.CS
 
 			if (o.HasCallback)
 			{
+				//Generate the service proxy
+				if (o.CallbackDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.CallbackDocumentation));
+				code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
+				code.AppendLine(string.Format("\t{0} abstract class {1}Base : ServerDuplexBase<{1}Base, {1}Callback, I{1}Callback>, I{1}", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
+				code.AppendLine("\t{");
+				foreach (Property p in o.CallbackOperations.Where(a => a.GetType() == typeof(Property)))
+					code.AppendLine(GenerateServerProxyPropertyCode(p));
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.AppendLine(GenerateServerProxyMethodCode40(m));
+				code.AppendLine("\t}");
+
 				//Generate the callback interface
 				if (o.CallbackDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.CallbackDocumentation));
 				foreach (DataType dt in o.KnownTypes)
@@ -288,6 +299,8 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 				code.AppendLine(string.Format("\t{0} abstract class {1}Base : ServerDuplexBase<{1}Base, {1}Callback, I{1}Callback>, I{1}", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
 				code.AppendLine("\t{");
+				foreach (Property p in o.CallbackOperations.Where(a => a.GetType() == typeof(Property)))
+					code.AppendLine(GenerateServerProxyPropertyCode(p));
 				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
 					code.AppendLine(GenerateServerProxyMethodCode45(m));
 				code.AppendLine("\t}");
@@ -932,6 +945,15 @@ namespace NETPath.Generators.NET.CS
 		#endregion
 
 		#region - Server Proxy Methods -
+
+		public static string GenerateServerProxyPropertyCode(Property o)
+		{
+			var code = new StringBuilder();
+			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
+			code.AppendFormat("\t\tpublic abstract {0} {1} {{ get; {2}}}",  DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName, o.IsReadOnly ? "" : "set; ");
+
+			return code.ToString();
+		}
 
 		public static string GenerateServerProxySyncMethod(Method o, bool IsAsync = false, bool IsAwait = false)
 		{

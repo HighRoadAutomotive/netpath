@@ -11,10 +11,12 @@ namespace System.ServiceModel
 	{
 		public Guid ClientID { get; protected set; }
 		public bool IsTerminated { get; protected set; }
+		public T ServerInstance { get; private set; }
 
 		public ServerBase()
 		{
 			ClientID = Guid.NewGuid();
+			ServerInstance = this as T;
 		}
 
 		protected virtual bool Initialize()
@@ -30,7 +32,8 @@ namespace System.ServiceModel
 			OperationContext.Current.Channel.Faulted -= ChannelFaulted;
 			OperationContext.Current.Channel.Closing -= ChannelClosed;
 
-			OperationContext.Current.Channel.Close();
+			if (OperationContext.Current.Channel.State != CommunicationState.Closed && OperationContext.Current.Channel.State != CommunicationState.Closing)
+				OperationContext.Current.Channel.Close();
 			IsTerminated = true;
 		}
 
