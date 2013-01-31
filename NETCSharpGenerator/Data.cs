@@ -110,7 +110,7 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine("\t\t[DataMember(Name = \"IsUpdateObject\")] public bool IsUpdateObject { get { return IsUpdateObjectField; } set { IsUpdateObjectField = value; } }");
 			}
 
-			int protoCount = 0;
+			int protoCount = 1;
 			foreach (DataElement de in o.Elements)
 				code.Append(GenerateElementServerCode45(de, ref protoCount));
 			code.AppendLine("\t}");
@@ -165,7 +165,7 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine("\t\t}");
 			}
 			code.AppendLine();
-			int protoCount = 0;
+			int protoCount = 1;
 			foreach (DataElement de in o.Elements)
 				code.Append(GenerateElementProxyCode45(de, ref protoCount));
 			code.AppendLine("\t}");
@@ -223,7 +223,7 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine("\t\t}");
 			}
 			code.AppendLine();
-			int protoCount = 0;
+			int protoCount = 1;
 			foreach (DataElement de in o.Elements)
 				code.Append(GenerateElementProxyCode45(de, ref protoCount));
 			code.AppendLine("\t}");
