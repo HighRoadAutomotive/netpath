@@ -94,7 +94,7 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 			if (o.EnableProtocolBuffers) code.AppendLine(string.Format("\t[ProtoBuf.ProtoContract({0}{1}{2})]", o.ProtoSkipConstructor ? "SkipConstructor = true" : "SkipConstructor = false", o.ProtoMembersOnly ? ", UseProtoMembersOnly = true" : "", o.ProtoIgnoreListHandling ? ", IgnoreListHandling = true" : ""));
-			code.AppendLine(string.Format("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI));
+			else code.AppendLine(string.Format("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI));
 			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o)));
 			code.AppendLine("\t{");
 	
@@ -110,7 +110,7 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine("\t\t[DataMember(Name = \"IsUpdateObject\")] public bool IsUpdateObject { get { return IsUpdateObjectField; } set { IsUpdateObjectField = value; } }");
 			}
 
-			int protoCount = 1;
+			int protoCount = 0;
 			foreach (DataElement de in o.Elements)
 				code.Append(GenerateElementServerCode45(de, ref protoCount));
 			code.AppendLine("\t}");
@@ -126,7 +126,7 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute]");
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 			if (o.EnableProtocolBuffers) code.AppendLine(string.Format("\t[ProtoBuf.ProtoContract({0}{1}{2})]", o.ProtoSkipConstructor ? "SkipConstructor = true" : "SkipConstructor = false", o.ProtoMembersOnly ? ", UseProtoMembersOnly = true" : "", o.ProtoIgnoreListHandling ? ", IgnoreListHandling = true" : ""));
-			code.AppendLine(string.Format("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI));
+			else code.AppendLine(string.Format("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI));
 			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, o.ClientHasImpliedExtensionData, o.HasWinFormsBindings)));
 			code.AppendLine("\t{");
 			if (o.HasXAMLType)
@@ -165,7 +165,7 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine("\t\t}");
 			}
 			code.AppendLine();
-			int protoCount = 1;
+			int protoCount = 0;
 			foreach (DataElement de in o.Elements)
 				code.Append(GenerateElementProxyCode45(de, ref protoCount));
 			code.AppendLine("\t}");
@@ -181,7 +181,7 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute]");
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 			if (o.EnableProtocolBuffers) code.AppendLine(string.Format("\t[ProtoBuf.ProtoContract({0}{1}{2})]", o.ProtoSkipConstructor ? "SkipConstructor = true" : "SkipConstructor = false", o.ProtoMembersOnly ? ", UseProtoMembersOnly = true" : "", o.ProtoIgnoreListHandling ? ", IgnoreListHandling = true" : ""));
-			code.AppendLine(string.Format("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI));
+			else code.AppendLine(string.Format("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI));
 			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, o.ClientHasImpliedExtensionData, o.HasWinFormsBindings)));
 			code.AppendLine("\t{");
 			if (o.HasXAMLType)
@@ -223,7 +223,7 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine("\t\t}");
 			}
 			code.AppendLine();
-			int protoCount = 1;
+			int protoCount = 0;
 			foreach (DataElement de in o.Elements)
 				code.Append(GenerateElementProxyCode45(de, ref protoCount));
 			code.AppendLine("\t}");
@@ -362,8 +362,8 @@ namespace NETPath.Generators.NET.CS
 			code.Append("\t\t");
 			if (o.IsDataMember)
 			{
-				if (o.IsDataMember && o.ProtocolBufferEnabled && o.Owner.EnableProtocolBuffers) code.AppendFormat("[ProtoBuf.ProtoMember({0}{1}{2}{3}{4}{5}{6})] ", ProtoCount++, o.ProtoDataFormat != ProtoBufDataFormat.Default ? string.Format(", DataFormat = ProtoBuf.DataFormat.{0}", System.Enum.GetName(typeof(ProtoBufDataFormat), o.ProtoDataFormat)) : "", o.IsRequired ? ", IsRequired = true" : "", o.ProtoIsPacked ? ", IsPacked = true" : "", o.ProtoOverwriteList ? ", OverwriteList = true" : "", o.ProtoAsReference ? ", AsReference = true" : "", o.ProtoDynamicType ? ", DynamicType = true" : "");
-				code.AppendFormat("[DataMember({0}{1}{2}Name = \"{3}\")] ", o.EmitDefaultValue ? "EmitDefaultValue = false, " : "", o.IsRequired ? "IsRequired = true, " : "", o.Order >= 0 ? string.Format("Order = {0}, ", o.Order) : "", o.HasClientType ? o.ClientName : o.DataName);
+				if (o.IsDataMember && o.ProtocolBufferEnabled && o.Owner.EnableProtocolBuffers) code.AppendFormat("[ProtoBuf.ProtoMember({0}{1}{2}{3}{4}{5}{6})] ", ++ProtoCount, o.ProtoDataFormat != ProtoBufDataFormat.Default ? string.Format(", DataFormat = ProtoBuf.DataFormat.{0}", System.Enum.GetName(typeof(ProtoBufDataFormat), o.ProtoDataFormat)) : "", o.IsRequired ? ", IsRequired = true" : "", o.ProtoIsPacked ? ", IsPacked = true" : "", o.ProtoOverwriteList ? ", OverwriteList = true" : "", o.ProtoAsReference ? ", AsReference = true" : "", o.ProtoDynamicType ? ", DynamicType = true" : "");
+				else code.AppendFormat("[DataMember({0}{1}{2}Name = \"{3}\")] ", o.EmitDefaultValue ? "EmitDefaultValue = false, " : "", o.IsRequired ? "IsRequired = true, " : "", o.ProtocolBufferEnabled ? string.Format("Order = {0}, ", ProtoCount) : o.Order >= 0 ? string.Format("Order = {0}, ", o.Order) : "", o.HasClientType ? o.ClientName : o.DataName);
 			}
 			else
 				if (o.Owner.Parent.Owner.ServiceSerializer == ProjectServiceSerializerType.XML) code.Append("[XmlIgnore] ");
@@ -380,8 +380,8 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine(string.Format("\t\tprivate {0} {1}Field;", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName));
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 			code.Append("\t\t");
-			if (o.ProtocolBufferEnabled && o.Owner.EnableProtocolBuffers) code.AppendFormat("[ProtoBuf.ProtoMember({0}{1}{2}{3}{4}{5}{6})] ", ProtoCount++, o.ProtoDataFormat != ProtoBufDataFormat.Default ? string.Format(", DataFormat = ProtoBuf.DataFormat.{0}", System.Enum.GetName(typeof(ProtoBufDataFormat), o.ProtoDataFormat)) : "", o.IsRequired ? ", IsRequired = true" : "", o.ProtoIsPacked ? ", IsPacked = true" : "", o.ProtoOverwriteList ? ", OverwriteList = true" : "", o.ProtoAsReference ? ", AsReference = true" : "", o.ProtoDynamicType ? ", DynamicType = true" : "");
-			code.AppendFormat("[DataMember({0}{1}{2}Name = \"{3}\")] ", o.EmitDefaultValue ? "EmitDefaultValue = false, " : "", o.IsRequired ? "IsRequired = true, " : "", o.ProtocolBufferEnabled ? string.Format("Order = {0}, ", o.Owner.Elements.IndexOf(o)) : o.Order >= 0 ? string.Format("Order = {0}, ", o.Order) : "", o.HasClientType ? o.ClientName : o.DataName);
+			if (o.ProtocolBufferEnabled && o.Owner.EnableProtocolBuffers) code.AppendFormat("[ProtoBuf.ProtoMember({0}{1}{2}{3}{4}{5}{6})] ", ++ProtoCount, o.ProtoDataFormat != ProtoBufDataFormat.Default ? string.Format(", DataFormat = ProtoBuf.DataFormat.{0}", System.Enum.GetName(typeof(ProtoBufDataFormat), o.ProtoDataFormat)) : "", o.IsRequired ? ", IsRequired = true" : "", o.ProtoIsPacked ? ", IsPacked = true" : "", o.ProtoOverwriteList ? ", OverwriteList = true" : "", o.ProtoAsReference ? ", AsReference = true" : "", o.ProtoDynamicType ? ", DynamicType = true" : "");
+			else code.AppendFormat("[DataMember({0}{1}{2}Name = \"{3}\")] ", o.EmitDefaultValue ? "EmitDefaultValue = false, " : "", o.IsRequired ? "IsRequired = true, " : "", o.ProtocolBufferEnabled ? string.Format("Order = {0}, ", ProtoCount) : o.Order >= 0 ? string.Format("Order = {0}, ", o.Order) : "", o.HasClientType ? o.ClientName : o.DataName);
 			if (o.AutoDataEnabled)
 				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30) code.AppendLine(string.Format("public {0} {1} {{ get {{ __dcmlock.{4}; try {{ return {1}Field; }} finally {{ __dcmlock.ReleaseReaderLock(); }} }} {2}set {{ __dcmlock.{5}; try {{ {1}Field = value; {1}Changed = true; {3}}} finally {{ __dcmlock.ReleaseWriterLock(); }} }} }}", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : "", o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : "", string.Format("AcquireReaderLock({0})", o.AutoDataTimeout), string.Format("AcquireWriterLock({0})", o.AutoDataTimeout)));
 				else code.AppendLine(string.Format("public {0} {1} {{ get {{ __dcmlock.{4}; try {{ return {1}Field; }} finally {{ __dcmlock.ExitReadLock(); }} }} {2}set {{ __dcmlock.{5}; try {{ {1}Field = value; {1}Changed = true; {3}}} finally {{ __dcmlock.ExitWriteLock(); }} }} }}", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : "", o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : "", o.AutoDataTimeout == 0 ? "EnterReadLock()" : string.Format("TryEnterReadLock({0})", o.AutoDataTimeout), o.AutoDataTimeout == 0 ? "EnterWriteLock()" : string.Format("TryEnterWriteLock({0})", o.AutoDataTimeout)));
@@ -399,8 +399,8 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine(string.Format("\t\tprivate {0} {1}Field;", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName));
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 			code.Append("\t\t");
-			if (o.ProtocolBufferEnabled && o.Owner.EnableProtocolBuffers) code.AppendFormat("[ProtoBuf.ProtoMember({0}{1}{2}{3}{4}{5}{6})] ", ProtoCount++, o.ProtoDataFormat != ProtoBufDataFormat.Default ? string.Format(", DataFormat = ProtoBuf.DataFormat.{0}", System.Enum.GetName(typeof(ProtoBufDataFormat), o.ProtoDataFormat)) : "", o.IsRequired ? ", IsRequired = true" : "", o.ProtoIsPacked ? ", IsPacked = true" : "", o.ProtoOverwriteList ? ", OverwriteList = true" : "", o.ProtoAsReference ? ", AsReference = true" : "", o.ProtoDynamicType ? ", DynamicType = true" : "");
-			code.AppendFormat("[DataMember({0}{1}{2}Name = \"{3}\")] ", o.EmitDefaultValue ? "EmitDefaultValue = false, " : "", o.IsRequired ? "IsRequired = true, " : "", o.ProtocolBufferEnabled ? string.Format("Order = {0}, ", o.Owner.Elements.IndexOf(o)) : o.Order >= 0 ? string.Format("Order = {0}, ", o.Order) : "", o.HasClientType ? o.ClientName : o.DataName);
+			if (o.ProtocolBufferEnabled && o.Owner.EnableProtocolBuffers) code.AppendFormat("[ProtoBuf.ProtoMember({0}{1}{2}{3}{4}{5}{6})] ", ++ProtoCount, o.ProtoDataFormat != ProtoBufDataFormat.Default ? string.Format(", DataFormat = ProtoBuf.DataFormat.{0}", System.Enum.GetName(typeof(ProtoBufDataFormat), o.ProtoDataFormat)) : "", o.IsRequired ? ", IsRequired = true" : "", o.ProtoIsPacked ? ", IsPacked = true" : "", o.ProtoOverwriteList ? ", OverwriteList = true" : "", o.ProtoAsReference ? ", AsReference = true" : "", o.ProtoDynamicType ? ", DynamicType = true" : "");
+			else code.AppendFormat("[DataMember({0}{1}{2}Name = \"{3}\")] ", o.EmitDefaultValue ? "EmitDefaultValue = false, " : "", o.IsRequired ? "IsRequired = true, " : "", o.ProtocolBufferEnabled ? string.Format("Order = {0}, ", ProtoCount) : o.Order >= 0 ? string.Format("Order = {0}, ", o.Order) : "", o.HasClientType ? o.ClientName : o.DataName);
 			if (o.AutoDataEnabled)
 				code.AppendLine(string.Format("public {0} {1} {{ get {{ __dcmlock.{4}; try {{ return {1}Field; }} finally {{ __dcmlock.ExitReadLock(); }} }} {2}set {{ __dcmlock.{5}; try {{ {1}Field = value; {1}Changed = true; {3}}} finally {{ __dcmlock.ExitWriteLock(); }} }} }}", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : "", o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : "", o.AutoDataTimeout == 0 ? "EnterReadLock()" : string.Format("TryEnterReadLock({0})", o.AutoDataTimeout), o.AutoDataTimeout == 0 ? "EnterWriteLock()" : string.Format("TryEnterWriteLock({0})", o.AutoDataTimeout)));
 			else

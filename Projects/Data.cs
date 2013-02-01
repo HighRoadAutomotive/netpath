@@ -477,7 +477,7 @@ namespace NETPath.Projects
 		public static readonly DependencyProperty ProtoIsPackedProperty = DependencyProperty.Register("ProtoIsPacked", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
 
 		public bool ProtoOverwriteList { get { return (bool)GetValue(ProtoOverwriteListProperty); } set { SetValue(ProtoOverwriteListProperty, value); } }
-		public static readonly DependencyProperty ProtoOverwriteListProperty = DependencyProperty.Register("ProtoOverwriteList", typeof(bool), typeof(DataElement), new PropertyMetadata(true));
+		public static readonly DependencyProperty ProtoOverwriteListProperty = DependencyProperty.Register("ProtoOverwriteList", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
 
 		public bool ProtoAsReference { get { return (bool)GetValue(ProtoAsReferenceProperty); } set { SetValue(ProtoAsReferenceProperty, value); } }
 		public static readonly DependencyProperty ProtoAsReferenceProperty = DependencyProperty.Register("ProtoAsReference", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
