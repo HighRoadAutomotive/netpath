@@ -36,6 +36,10 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Utilities.NET45, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\System.Utilities\Build\System.Utilities.NET45.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -47,6 +51,12 @@
   <ItemGroup>
     <Compile Include="ChangeListItem.cs" />
     <Compile Include="ClientBase.cs" />
+    <Compile Include="DeltaObject.cs" />
+    <Compile Include="DeltaProperty.cs" />
+    <Compile Include="DependencyDictionary.cs" />
+    <Compile Include="DependencyList.cs" />
+    <Compile Include="DependencyQueue.cs" />
+    <Compile Include="DependencyStack.cs" />
     <Compile Include="ServerBase.cs" />
     <Compile Include="DeltaDictionary.cs" />
     <Compile Include="DeltaList.cs" />

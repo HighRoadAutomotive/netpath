@@ -99,12 +99,6 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine();
 			}
 
-			if (o.AutoDataEnabled)
-			{
-				code.AppendLine("\t\tprivate bool IsUpdateObjectField;");
-				code.AppendLine("\t\t[DataMember(Name = \"IsUpdateObject\")] public bool IsUpdateObject { get { return IsUpdateObjectField; } set { IsUpdateObjectField = value; } }");
-			}
-
 			int protoCount = 0;
 			foreach (DataElement de in o.Elements)
 				code.Append(GenerateElementServerCode45(de, ref protoCount));

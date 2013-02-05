@@ -5,31 +5,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace System.Collections.Generic
 {
 	[Serializable]
-	public class DeltaQueue<T> : IProducerConsumerCollection<T>
+	public class DependencyQueue<T> : IProducerConsumerCollection<T>
 	{
 		private ConcurrentQueue<T> il;
+		[NonSerialized]private readonly Action<T> Pushed;
+		[NonSerialized]private readonly Action<T> Popped;
 
-		public delegate void ChangedEventHandler(IEnumerable<T> Queued, IEnumerable<T> Dequeued);
-		public event ChangedEventHandler Changed;
-
-		public DeltaQueue()
+		public DependencyQueue(Action<T> Pushed = null, Action<T> Popped = null)
 		{
 			il = new ConcurrentQueue<T>();
+			this.Pushed = Pushed ?? (Item => { });
+			this.Popped = Popped ?? ((Item) => { });
 		}
 
-		public DeltaQueue(IEnumerable<T> Items)
+		public DependencyQueue(IEnumerable<T> Items, Action<T> Pushed = null, Action<T> Popped = null)
 		{
 			il = new ConcurrentQueue<T>(Items);
+			this.Pushed = Pushed ?? (Item => { });
+			this.Popped = Popped ?? ((Item) => { });
 		}
 
 		public void Enqueue(T Item)
 		{
 			il.Enqueue(Item);
-			Changed(new[]{Item}, null);
+			CallPushed(Item);
 		}
 
 		public bool TryPeek(out T Result)
@@ -40,7 +44,7 @@ namespace System.Collections.Generic
 		public bool TryDequeue(out T Result)
 		{
 			bool t = il.TryDequeue(out Result);
-			Changed(null, new[]{Result});
+			CallPopped(Result);
 			return t;
 		}
 
@@ -58,6 +62,24 @@ namespace System.Collections.Generic
 		{
 			return new Queue<T>(il.ToArray());
 		}
+
+		#region - Update Calls -
+
+		private void CallPushed(T item)
+		{
+			if (Application.Current.Dispatcher == null) { Pushed(item); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { Pushed(item); }
+			else Application.Current.Dispatcher.Invoke(() => Pushed(item), DispatcherPriority.Normal);
+		}
+
+		private void CallPopped(T item)
+		{
+			if (Application.Current.Dispatcher == null) { Popped(item); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { Popped(item); }
+			else Application.Current.Dispatcher.Invoke(() => Popped(item), DispatcherPriority.Normal);
+		}
+
+		#endregion
 
 		#region - Interface Implementations -
 
