@@ -163,6 +163,16 @@ namespace System.Collections.Generic
 			return td.ToDictionary(k => k.Key, k => k.Value);
 		}
 
+		public void ClearEventHandlers()
+		{
+			Added = null;
+			Removed = null;
+			Cleared = null;
+			Updated = null;
+		}
+
+		#region - Call Functions -
+
 		private void CallAdded(TKey key, TValue value)
 		{
 			if (Application.Current.Dispatcher == null) { Added(key, value); return; }
@@ -190,6 +200,10 @@ namespace System.Collections.Generic
 			if (Application.Current.Dispatcher.CheckAccess()) Updated(index, olditem, newitem);
 			else Application.Current.Dispatcher.Invoke(() => Updated(index, olditem, newitem), DispatcherPriority.Normal);
 		}
+
+		#endregion
+
+		#region - Interface Implementations -
 
 		public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
 		{
@@ -235,5 +249,7 @@ namespace System.Collections.Generic
 		{
 			return ((IDictionary<TKey, TValue>)il).Remove(item.Key);
 		}
+
+		#endregion
 	}
 }

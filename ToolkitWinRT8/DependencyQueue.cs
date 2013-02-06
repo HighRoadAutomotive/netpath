@@ -60,6 +60,12 @@ namespace System.Collections.Generic
 			return new Queue<T>(il.ToArray());
 		}
 
+		public void ClearEventHandlers()
+		{
+			Enqueued = null;
+			Dequeued = null;
+		}
+
 		#region - Update Calls -
 
 		private async void CallPushed(T item)

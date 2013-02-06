@@ -581,6 +581,17 @@ namespace System.Collections.Generic
 			}
 		}
 
+		public void ClearEventFunctions()
+		{
+			Added = null;
+			Removed = null;
+			Cleared = null;
+			RemovedAt = null;
+			Inserted = null;
+			Moved = null;
+			Replaced = null;
+		}
+
 		#region - Interface Implementations -
 
 		public T this[int index]

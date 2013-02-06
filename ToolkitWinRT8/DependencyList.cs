@@ -581,6 +581,19 @@ namespace System.Collections.Generic
 			}
 		}
 
+		public void ClearEventFunctions()
+		{
+			Added = null;
+			Removed = null;
+			Cleared = null;
+			RemovedAt = null;
+			Inserted = null;
+			Moved = null;
+			Replaced = null;
+		}
+
+		#region - Call Functions -
+
 		private async void CallAdded(T item)
 		{
 			if (Window.Current.Dispatcher == null) { Added(new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item)); return; }
@@ -651,6 +664,10 @@ namespace System.Collections.Generic
 			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { Replaced(index, olditem, newitem); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newitem, olditem, index)); });
 		}
 
+		#endregion
+
+		#region - Interface Implementation -
+
 		public T this[int index]
 		{
 			get
@@ -719,5 +736,7 @@ namespace System.Collections.Generic
 		{
 			if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(PropertyName));
 		}
+
+		#endregion
 	}
 }

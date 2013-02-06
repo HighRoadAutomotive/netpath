@@ -60,6 +60,12 @@ namespace System.Collections.Generic
 			return new Queue<T>(il.ToArray());
 		}
 
+		public void ClearEventHandlers()
+		{
+			Enqueued = null;
+			Dequeued = null;
+		}
+
 		#region - Interface Implementations -
 
 		public void CopyTo(T[] array, int index)

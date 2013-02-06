@@ -142,6 +142,14 @@ namespace System.Collections.Generic
 			return il.ToArray();
 		}
 
+		public void ClearEventHandlers()
+		{
+			Added = null;
+			Removed = null;
+			Cleared = null;
+			Updated = null;
+		}
+
 		#region - Interface Implementation -
 
 		public ICollection<TValue> Values

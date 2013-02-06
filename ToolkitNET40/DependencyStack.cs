@@ -95,6 +95,13 @@ namespace System.Collections.Generic
 			return new Stack<T>(il.ToArray());
 		}
 
+		public void ClearEventHandlers()
+		{
+			Cleared = null;
+			Pushed = null;
+			Popped = null;
+		}
+
 		#region - Update Calls -
 
 		private void CallPushed(T item)

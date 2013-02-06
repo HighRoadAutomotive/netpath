@@ -93,6 +93,13 @@ namespace System.Collections.Generic
 			return new Stack<T>(il.ToArray());
 		}
 
+		public void ClearEventHandlers()
+		{
+			Cleared = null;
+			Pushed = null;
+			Popped = null;
+		}
+
 		#region - Interface Implementations -
 
 		public void CopyTo(T[] array, int index)
