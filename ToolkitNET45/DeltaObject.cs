@@ -83,6 +83,30 @@ namespace DeltaV
 			}
 		}
 
+		public void UpdateValue<T>(DeltaProperty<T> de, T value)
+		{
+			//Check to see if the value is actually different
+			object cmp;
+			values.TryGetValue(de.ID, out cmp);
+			if (EqualityComparer<T>.Default.Equals(value, (T)cmp)) return;
+
+			//Call the validator to see if this value is acceptable
+			if (de.DeltaValidateValueCallback != null && !de.DeltaValidateValueCallback(this, value)) return;
+
+			//If the new value is the default value remove this from the modified values list, otherwise add or update it.
+			if (EqualityComparer<T>.Default.Equals(value, de.DefaultValue))
+			{
+				object temp;
+				values.TryRemove(de.ID, out temp);
+				bool tm = modified.AddOrUpdate(de.ID, true, (p, v) => true);
+			}
+			else
+			{
+				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
+				bool tm = modified.AddOrUpdate(de.ID, true, (p, v) => true);
+			}
+		}
+
 		public void ClearValue<T>(DeltaProperty<T> de)
 		{
 			object temp;

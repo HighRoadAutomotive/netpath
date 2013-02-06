@@ -5,11 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 
-namespace System.ServiceModel
+namespace System.Collections.Generic
 {
 	public enum ListItemChangeMode
 	{
 		Add,
+		Replace,
 		Remove,
 		Insert,
 		Move

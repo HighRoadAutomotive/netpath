@@ -41,9 +41,8 @@ namespace System.Collections.Generic
 
 		public TValue AddOrUpdate(TKey key, Func<TKey, TValue> addValueFactory, Func<TKey, TValue, TValue> updateValueFactory)
 		{
-			bool update = ContainsKey(key);
 			TValue ov = default(TValue);
-			if (update) ov = il[key];
+			bool update = TryGetValue(key, out ov);
 			TValue rt = il.AddOrUpdate(key, addValueFactory, updateValueFactory);
 			if (update) CallUpdated(key, ov, rt);
 			else CallAdded(key, rt);
@@ -52,9 +51,8 @@ namespace System.Collections.Generic
 
 		public TValue AddOrUpdate(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory)
 		{
-			bool update = ContainsKey(key);
 			TValue ov = default(TValue);
-			if (update) ov = il[key];
+			bool update = TryGetValue(key, out ov);
 			TValue rt = il.AddOrUpdate(key, addValue, updateValueFactory);
 			if (update) CallUpdated(key, ov, rt);
 			else CallAdded(key, rt);

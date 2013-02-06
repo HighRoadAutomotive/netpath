@@ -41,9 +41,8 @@ namespace System.Collections.Generic
 
 		public TValue AddOrUpdate(TKey key, Func<TKey, TValue> addValueFactory, Func<TKey, TValue, TValue> updateValueFactory)
 		{
-			bool update = ContainsKey(key);
 			TValue ov = default(TValue);
-			if (update) ov = il[key];
+			bool update = TryGetValue(key, out ov);
 			TValue rt = il.AddOrUpdate(key, addValueFactory, updateValueFactory);
 			if (update) CallUpdated(key, ov, rt);
 			else CallAdded(key, rt);
@@ -52,9 +51,8 @@ namespace System.Collections.Generic
 
 		public TValue AddOrUpdate(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory)
 		{
-			bool update = ContainsKey(key);
 			TValue ov = default(TValue);
-			if (update) ov = il[key];
+			bool update = TryGetValue(key, out ov);
 			TValue rt = il.AddOrUpdate(key, addValue, updateValueFactory);
 			if (update) CallUpdated(key, ov, rt);
 			else CallAdded(key, rt);
@@ -163,6 +161,8 @@ namespace System.Collections.Generic
 			return td.ToDictionary(k => k.Key, k => k.Value);
 		}
 
+		#region - Call Functions -
+
 		private void CallAdded(TKey key, TValue value)
 		{
 			if (Application.Current.Dispatcher == null) { Added(key, value); return; }
@@ -190,6 +190,10 @@ namespace System.Collections.Generic
 			if (Application.Current.Dispatcher.CheckAccess()) Updated(index, olditem, newitem);
 			else Application.Current.Dispatcher.Invoke(new Action(() => Updated(index, olditem, newitem)), DispatcherPriority.Normal);
 		}
+
+		#endregion
+
+		#region - Interface Implementation -
 
 		public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
 		{
@@ -235,5 +239,7 @@ namespace System.Collections.Generic
 		{
 			return ((IDictionary<TKey, TValue>)il).Remove(item.Key);
 		}
+
+		#endregion
 	}
 }

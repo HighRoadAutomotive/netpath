@@ -12,6 +12,7 @@ namespace System.Collections.Generic
 	public class DeltaQueue<T> : IProducerConsumerCollection<T>
 	{
 		private ConcurrentQueue<T> il;
+		[NonSerialized] private ConcurrentQueue<ChangeListItem<T>> dl;
 
 		public delegate void ChangedEventHandler(T Value);
 		public event ChangedEventHandler Enqueued;
@@ -20,17 +21,44 @@ namespace System.Collections.Generic
 		public DeltaQueue()
 		{
 			il = new ConcurrentQueue<T>();
+			dl = new ConcurrentQueue<ChangeListItem<T>>();
 		}
 
 		public DeltaQueue(IEnumerable<T> Items)
 		{
 			il = new ConcurrentQueue<T>(Items);
+			dl = new ConcurrentQueue<ChangeListItem<T>>();
+		}
+
+		public IEnumerable<ChangeListItem<T>> PeekDelta()
+		{
+			return dl.ToArray();
+		}
+
+		public IEnumerable<ChangeListItem<T>> GetDelta()
+		{
+			var tdl = new List<ChangeListItem<T>>();
+			ChangeListItem<T> td;
+			while (dl.TryDequeue(out td))
+				tdl.Add(td);
+			return tdl;
+		}
+
+		public void ClearDelta()
+		{
+			Threading.Interlocked.Exchange(ref dl, new ConcurrentQueue<ChangeListItem<T>>());
 		}
 
 		public void Enqueue(T Item)
 		{
-			il.Enqueue(Item);
+			EnqueueNoUpdate(Item);
 			Enqueued(Item);
+		}
+
+		public void EnqueueNoUpdate(T Item)
+		{
+			il.Enqueue(Item);
+			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Add, Item));
 		}
 
 		public bool TryPeek(out T Result)
@@ -41,7 +69,15 @@ namespace System.Collections.Generic
 		public bool TryDequeue(out T Result)
 		{
 			bool t = il.TryDequeue(out Result);
+			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Remove, Result));
 			Dequeued(Result);
+			return t;
+		}
+
+		public bool TryDequeueNoUpdate(out T Result)
+		{
+			bool t = il.TryDequeue(out Result);
+			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Remove, Result));
 			return t;
 		}
 

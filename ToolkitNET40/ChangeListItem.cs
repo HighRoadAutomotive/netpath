@@ -5,13 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 
-namespace System.ServiceModel
+namespace System.Collections.Generic
 {
 	public enum ListItemChangeMode
 	{
 		Add,
+		Replace,
 		Remove,
-		Insert
+		Insert,
+		Move
 	}
 
 	[DataContract(Namespace = "http://www.prospectivesoftware.com/")]
@@ -30,15 +32,17 @@ namespace System.ServiceModel
 	}
 
 	[DataContract(Namespace = "http://www.prospectivesoftware.com/")]
-	public class ChangeDictionaryItem<T, TKey>
+	public class ChangeDictionaryItem<TKey, T>
 	{
 		[DataMember(Order = 0)] public ListItemChangeMode Mode { get; set; }
-		[DataMember(Order = 1)] public TKey Index { get; set; }
+		[DataMember(Order = 1)] public TKey Key { get; set; }
+		[DataMember(Order = 2)] public T Value { get; set; }
 
-		public ChangeDictionaryItem(ListItemChangeMode Mode, TKey Index)
+		public ChangeDictionaryItem(ListItemChangeMode Mode, TKey Key, T Value)
 		{
 			this.Mode = Mode;
-			this.Index = Index;
+			this.Key = Key;
+			this.Value = Value;
 		}
 	}
 }
