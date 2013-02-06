@@ -2,39 +2,34 @@
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Core;
-using Windows.UI.Xaml;
+using System.Windows;
 
 namespace System.Collections.Generic
 {
-	[DataContract(Namespace = "http://www.prospectivesoftware.com/")]
 	public class DeltaQueue<T> : IProducerConsumerCollection<T>
 	{
-		[DataMember] private ConcurrentQueue<T> il;
-		private readonly Action<T> Pushed;
-		private readonly Action<T> Popped;
+		private ConcurrentQueue<T> il;
 
-		public DeltaQueue(Action<T> Pushed = null, Action<T> Popped = null)
+		public delegate void ChangedEventHandler(T Value);
+		public event ChangedEventHandler Enqueued;
+		public event ChangedEventHandler Dequeued;
+
+		public DeltaQueue()
 		{
 			il = new ConcurrentQueue<T>();
-			this.Pushed = Pushed ?? (Item => { });
-			this.Popped = Popped ?? ((Item) => { });
 		}
 
-		public DeltaQueue(IEnumerable<T> Items, Action<T> Pushed = null, Action<T> Popped = null)
+		public DeltaQueue(IEnumerable<T> Items)
 		{
 			il = new ConcurrentQueue<T>(Items);
-			this.Pushed = Pushed ?? (Item => { });
-			this.Popped = Popped ?? ((Item) => { });
 		}
 
 		public void Enqueue(T Item)
 		{
 			il.Enqueue(Item);
-			CallPushed(Item);
+			Enqueued(Item);
 		}
 
 		public bool TryPeek(out T Result)
@@ -45,7 +40,7 @@ namespace System.Collections.Generic
 		public bool TryDequeue(out T Result)
 		{
 			bool t = il.TryDequeue(out Result);
-			CallPopped(Result);
+			Dequeued(Result);
 			return t;
 		}
 
@@ -63,24 +58,6 @@ namespace System.Collections.Generic
 		{
 			return new Queue<T>(il.ToArray());
 		}
-
-		#region - Update Calls -
-
-		private async void CallPushed(T item)
-		{
-			if (Window.Current.Dispatcher == null) { Pushed(item); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) { Pushed(item); }
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,  () => Pushed(item));
-		}
-
-		private async void CallPopped(T item)
-		{
-			if (Window.Current.Dispatcher == null) { Popped(item); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) { Popped(item); }
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Popped(item));
-		}
-
-		#endregion
 
 		#region - Interface Implementations -
 

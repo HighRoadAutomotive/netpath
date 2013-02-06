@@ -16,36 +16,27 @@ namespace System.Collections.Generic
 	public class DependencyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	{
 		private ConcurrentDictionary<TKey, TValue> il;
-		[NonSerialized] private readonly Action<KeyValuePair<TKey, TValue>> Added;
-		[NonSerialized] private readonly Action<KeyValuePair<TKey, TValue>> Removed;
-		[NonSerialized] private readonly Action<int> Cleared;
-		[NonSerialized] private readonly Action<TKey, TValue, TValue> Updated;
+		public delegate void AddRemoveEventHandler(TKey Key, TValue Value);
+		public event AddRemoveEventHandler Added;
+		public event AddRemoveEventHandler Removed;
+		public delegate void ClearedEventHandler(KeyValuePair<TKey, TValue>[] Values);
+		public event ClearedEventHandler Cleared;
+		public delegate void UpdatedRemoveEventHandler(TKey Key, TValue NewValue, TValue OldValue);
+		public event UpdatedRemoveEventHandler Updated;
 
-		public DependencyDictionary(Action<KeyValuePair<TKey, TValue>> Added = null, Action<KeyValuePair<TKey, TValue>> Removed = null, Action<int> Cleared = null, Action<TKey, TValue, TValue> Updated = null)
+		public DependencyDictionary()
 		{
 			il = new ConcurrentDictionary<TKey, TValue>();
-			this.Added = Added ?? (items => { });
-			this.Removed = Removed ?? (items => { });
-			this.Cleared = Cleared ?? (count => { });
-			this.Updated = Updated ?? ((key, ov, nv) => { });
 		}
 
-		public DependencyDictionary(int ConcurrencyLevel, int Capacity, Action<KeyValuePair<TKey, TValue>> Added = null, Action<KeyValuePair<TKey, TValue>> Removed = null, Action<int> Cleared = null, Action<TKey, TValue, TValue> Updated = null)
+		public DependencyDictionary(int ConcurrencyLevel, int Capacity)
 		{
 			il = new ConcurrentDictionary<TKey, TValue>(ConcurrencyLevel, Capacity);
-			this.Added = Added ?? (items => { });
-			this.Removed = Removed ?? (items => { });
-			this.Cleared = Cleared ?? (count => { });
-			this.Updated = Updated ?? ((key, ov, nv) => { });
 		}
 
-		public DependencyDictionary(IEnumerable<KeyValuePair<TKey, TValue>> Items, Action<KeyValuePair<TKey, TValue>> Added = null, Action<KeyValuePair<TKey, TValue>> Removed = null, Action<int> Cleared = null, Action<TKey, TValue, TValue> Updated = null)
+		public DependencyDictionary(IEnumerable<KeyValuePair<TKey, TValue>> Items)
 		{
 			il = new ConcurrentDictionary<TKey, TValue>(Items);
-			this.Added = Added ?? (items => { });
-			this.Removed = Removed ?? (items => { });
-			this.Cleared = Cleared ?? (count => { });
-			this.Updated = Updated ?? ((key, ov, nv) => { });
 		}
 
 		public TValue AddOrUpdate(TKey key, Func<TKey, TValue> addValueFactory, Func<TKey, TValue, TValue> updateValueFactory)
@@ -72,9 +63,9 @@ namespace System.Collections.Generic
 
 		public void Clear()
 		{
-			int c = Count;
+			KeyValuePair<TKey, TValue>[] c = il.ToArray();
 			il.Clear();
-			CallCleared(c);
+			CallCleared(c); 
 		}
 
 		public bool ContainsKey(TKey key)
@@ -174,23 +165,23 @@ namespace System.Collections.Generic
 
 		private void CallAdded(TKey key, TValue value)
 		{
-			if (Application.Current.Dispatcher == null) { Added(new KeyValuePair<TKey, TValue>(key, value)); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) Added(new KeyValuePair<TKey, TValue>(key, value));
-			else Application.Current.Dispatcher.Invoke(() => Added(new KeyValuePair<TKey, TValue>(key, value)), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { Added(key, value); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) Added(key, value);
+			else Application.Current.Dispatcher.Invoke(() => Added(key, value), DispatcherPriority.Normal);
 		}
 
 		private void CallRemoved(TKey key, TValue value)
 		{
-			if (Application.Current.Dispatcher == null) { Removed(new KeyValuePair<TKey, TValue>(key, value)); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) Removed(new KeyValuePair<TKey, TValue>(key, value));
-			else Application.Current.Dispatcher.Invoke(() => Removed(new KeyValuePair<TKey, TValue>(key, value)), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { Removed(key, value); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) Removed(key, value);
+			else Application.Current.Dispatcher.Invoke(() => Removed(key, value), DispatcherPriority.Normal);
 		}
 
-		private void CallCleared(int count)
+		private void CallCleared(KeyValuePair<TKey, TValue>[] values)
 		{
-			if (Application.Current.Dispatcher == null) { Cleared(count); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) Cleared(count);
-			else Application.Current.Dispatcher.Invoke(() => Cleared(count), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { Cleared(values); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) Cleared(values);
+			else Application.Current.Dispatcher.Invoke(() => Cleared(values), DispatcherPriority.Normal);
 		}
 
 		private void CallUpdated(TKey index, TValue olditem, TValue newitem)

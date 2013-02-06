@@ -101,35 +101,35 @@ namespace System.Collections.Generic
 		{
 			if (Application.Current.Dispatcher == null) { Pushed(new List<T> { item }); return; }
 			if (Application.Current.Dispatcher.CheckAccess()) { Pushed(new List<T> { item }); }
-			else Application.Current.Dispatcher.Invoke(() => Pushed(new List<T> { item }), DispatcherPriority.Normal);
+			else Application.Current.Dispatcher.Invoke(new Action(() => Pushed(new List<T> { item })), DispatcherPriority.Normal);
 		}
 
 		private void CallPushed(IEnumerable<T> items)
 		{
 			if (Application.Current.Dispatcher == null) { Pushed(items); return; }
 			if (Application.Current.Dispatcher.CheckAccess()) { Pushed(items); }
-			else Application.Current.Dispatcher.Invoke(() => Pushed(items), DispatcherPriority.Normal);
+			else Application.Current.Dispatcher.Invoke(new Action(() => Pushed(items)), DispatcherPriority.Normal);
 		}
 
 		private void CallPopped(T item)
 		{
 			if (Application.Current.Dispatcher == null) { Popped(new List<T> { item }); return; }
 			if (Application.Current.Dispatcher.CheckAccess()) { Popped(new List<T> { item }); }
-			else Application.Current.Dispatcher.Invoke(() => Popped(new List<T> { item }), DispatcherPriority.Normal);
+			else Application.Current.Dispatcher.Invoke(new Action(() => Popped(new List<T> { item })), DispatcherPriority.Normal);
 		}
 
 		private void CallPopped(IEnumerable<T> items)
 		{
 			if (Application.Current.Dispatcher == null) { Popped(items); return; }
 			if (Application.Current.Dispatcher.CheckAccess()) { Popped(items); }
-			else Application.Current.Dispatcher.Invoke(() => Popped(items), DispatcherPriority.Normal);
+			else Application.Current.Dispatcher.Invoke(new Action(() => Popped(items)), DispatcherPriority.Normal);
 		}
 
 		private void CallCleared(IEnumerable<T> items)
 		{
 			if (Application.Current.Dispatcher == null) { Cleared(items); return; }
 			if (Application.Current.Dispatcher.CheckAccess()) { Cleared(items); }
-			else Application.Current.Dispatcher.Invoke(() => Cleared(items), DispatcherPriority.Normal);
+			else Application.Current.Dispatcher.Invoke(new Action(() => Cleared(items)), DispatcherPriority.Normal);
 		}
 
 		#endregion

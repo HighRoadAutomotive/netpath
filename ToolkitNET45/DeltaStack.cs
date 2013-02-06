@@ -12,8 +12,10 @@ namespace System.Collections.Generic
 	{
 		private ConcurrentStack<T> il;
 
-		public delegate void ChangedEventHandler(IEnumerable<T> Pushed, IEnumerable<T> Popped);
-		public event ChangedEventHandler Changed;
+		public delegate void ChangedEventHandler(IEnumerable<T> Value);
+		public event ChangedEventHandler Pushed;
+		public event ChangedEventHandler Popped;
+		public event ChangedEventHandler Cleared;
 
 		public DeltaStack()
 		{
@@ -29,25 +31,25 @@ namespace System.Collections.Generic
 		{
 			T[] tl = il.ToArray();
 			il.Clear();
-			Changed(new T[0], tl);
+			Cleared(tl);
 		}
 
 		public void Push(T Item)
 		{
 			il.Push(Item);
-			Changed(new[] {Item}, new T[0]);
+			Pushed(new[] { Item });
 		}
 
 		public void PushRange(T[] Items)
 		{
 			il.PushRange(Items);
-			Changed(Items, new T[0]);
+			Pushed(Items);
 		}
 
 		public void PushRange(T[] Items, int Start, int Count)
 		{
 			il.PushRange(Items, Start, Count);
-			Changed(Items, new T[0]);
+			Pushed(Items);
 		}
 
 		public bool TryPeek(out T Result)
@@ -58,21 +60,21 @@ namespace System.Collections.Generic
 		public bool TryPop(out T Result)
 		{
 			bool t = il.TryPop(out Result);
-			Changed(new T[0], new[] {Result});
+			Popped(new[] { Result });
 			return t;
 		}
 
 		public int TryPopRange(T[] Items)
 		{
 			int t = il.TryPopRange(Items);
-			Changed(new T[0], Items);
+			Popped(Items);
 			return t;
 		}
 
 		public int TryPopRange(T[] Items, int Start, int Count)
 		{
 			int t = il.TryPopRange(Items, Start, Count);
-			Changed(new T[0], Items);
+			Popped(Items);
 			return t;
 		}
 

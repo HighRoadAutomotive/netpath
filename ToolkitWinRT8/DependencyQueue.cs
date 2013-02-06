@@ -5,24 +5,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Windows.UI.Core;
+using Windows.UI.Xaml;
 
 namespace System.Collections.Generic
 {
-	[Serializable]
-	public class DeltaQueue<T> : IProducerConsumerCollection<T>
+	public class DependencyQueue<T> : IProducerConsumerCollection<T>
 	{
 		private ConcurrentQueue<T> il;
-
 		public delegate void ChangedEventHandler(T Value);
 		public event ChangedEventHandler Enqueued;
 		public event ChangedEventHandler Dequeued;
 
-		public DeltaQueue()
+		public DependencyQueue()
 		{
 			il = new ConcurrentQueue<T>();
 		}
 
-		public DeltaQueue(IEnumerable<T> Items)
+		public DependencyQueue(IEnumerable<T> Items)
 		{
 			il = new ConcurrentQueue<T>(Items);
 		}
@@ -30,7 +30,7 @@ namespace System.Collections.Generic
 		public void Enqueue(T Item)
 		{
 			il.Enqueue(Item);
-			Enqueued(Item);
+			CallPushed(Item);
 		}
 
 		public bool TryPeek(out T Result)
@@ -41,7 +41,7 @@ namespace System.Collections.Generic
 		public bool TryDequeue(out T Result)
 		{
 			bool t = il.TryDequeue(out Result);
-			Dequeued(Result);
+			CallPopped(Result);
 			return t;
 		}
 
@@ -59,6 +59,24 @@ namespace System.Collections.Generic
 		{
 			return new Queue<T>(il.ToArray());
 		}
+
+		#region - Update Calls -
+
+		private async void CallPushed(T item)
+		{
+			if (Window.Current.Dispatcher == null) { Enqueued(item); return; }
+			if (Window.Current.Dispatcher.HasThreadAccess) { Enqueued(item); }
+			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Enqueued(item));
+		}
+
+		private async void CallPopped(T item)
+		{
+			if (Window.Current.Dispatcher == null) { Dequeued(item); return; }
+			if (Window.Current.Dispatcher.HasThreadAccess) { Dequeued(item); }
+			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Dequeued(item));
+		}
+
+		#endregion
 
 		#region - Interface Implementations -
 

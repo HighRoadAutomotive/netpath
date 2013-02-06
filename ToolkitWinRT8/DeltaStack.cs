@@ -2,62 +2,54 @@
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Core;
-using Windows.UI.Xaml;
+using System.Windows;
 
-namespace NETPath.Toolkit.WinRT8
+namespace System.Collections.Generic
 {
-	[DataContract]
 	public class DeltaStack<T> : IProducerConsumerCollection<T>
 	{
-		[DataMember] private ConcurrentStack<T> il;
-		private readonly Action<IEnumerable<T>> Pushed;
-		private readonly Action<IEnumerable<T>> Popped;
-		private readonly Action<int> Cleared;
+		private ConcurrentStack<T> il;
 
-		public DeltaStack(Action<IEnumerable<T>> Pushed = null, Action<IEnumerable<T>> Popped = null, Action<int> Cleared = null)
+		public delegate void ChangedEventHandler(IEnumerable<T> Value);
+		public event ChangedEventHandler Pushed;
+		public event ChangedEventHandler Popped;
+		public event ChangedEventHandler Cleared;
+
+		public DeltaStack()
 		{
 			il = new ConcurrentStack<T>();
-			this.Pushed = Pushed ?? (ItemList => { });
-			this.Popped = Popped ?? ((ItemList) => { });
-			this.Cleared = Cleared ?? (count => { });
 		}
 
-		public DeltaStack(IEnumerable<T> Items, Action<IEnumerable<T>> Pushed = null, Action<IEnumerable<T>> Popped = null, Action<int> Cleared = null)
+		public DeltaStack(IEnumerable<T> Items)
 		{
 			il = new ConcurrentStack<T>(Items);
-			this.Pushed = Pushed ?? (ItemList => { });
-			this.Popped = Popped ?? ((ItemList) => { });
-			this.Cleared = Cleared ?? (count => { });
 		}
 
 		public void Clear()
 		{
-			int t = il.Count;
 			T[] tl = il.ToArray();
 			il.Clear();
-			CallCleared(t, tl);
+			Cleared(tl);
 		}
 
 		public void Push(T Item)
 		{
 			il.Push(Item);
-			CallPushed(Item);
+			Pushed(new[] { Item });
 		}
 
 		public void PushRange(T[] Items)
 		{
 			il.PushRange(Items);
-			CallPushed(Items);
+			Pushed(Items);
 		}
 
 		public void PushRange(T[] Items, int Start, int Count)
 		{
 			il.PushRange(Items, Start, Count);
-			CallPushed(Items);
+			Pushed(Items);
 		}
 
 		public bool TryPeek(out T Result)
@@ -68,21 +60,21 @@ namespace NETPath.Toolkit.WinRT8
 		public bool TryPop(out T Result)
 		{
 			bool t = il.TryPop(out Result);
-			CallPopped(Result);
+			Popped(new[] { Result });
 			return t;
 		}
 
 		public int TryPopRange(T[] Items)
 		{
 			int t = il.TryPopRange(Items);
-			CallPopped(Items);
+			Popped(Items);
 			return t;
 		}
 
 		public int TryPopRange(T[] Items, int Start, int Count)
 		{
 			int t = il.TryPopRange(Items, Start, Count);
-			CallPopped(Items);
+			Popped(Items);
 			return t;
 		}
 
@@ -100,45 +92,6 @@ namespace NETPath.Toolkit.WinRT8
 		{
 			return new Stack<T>(il.ToArray());
 		}
-
-		#region - Update Calls -
-
-		private async void CallPushed(T item)
-		{
-			if (Window.Current.Dispatcher == null) { Pushed(new List<T> { item }); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) { Pushed(new List<T> { item }); }
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Pushed(new List<T> { item }));
-		}
-
-		private async void CallPushed(IEnumerable<T> items)
-		{
-			if (Window.Current.Dispatcher == null) { Pushed(items); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) { Pushed(items); }
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Pushed(items));
-		}
-
-		private async void CallPopped(T item)
-		{
-			if (Window.Current.Dispatcher == null) { Popped(new List<T> { item }); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) { Popped(new List<T> { item }); }
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Popped(new List<T> { item }));
-		}
-
-		private async void CallPopped(IEnumerable<T> items)
-		{
-			if (Window.Current.Dispatcher == null) { Popped(items); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) { Popped(items); }
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Popped(items));
-		}
-
-		private async void CallCleared(int count, IEnumerable<T> items)
-		{
-			if (Window.Current.Dispatcher == null) { Cleared(count); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) { Cleared(count); }
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Cleared(count));
-		}
-
-		#endregion
 
 		#region - Interface Implementations -
 

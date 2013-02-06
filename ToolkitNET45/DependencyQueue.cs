@@ -13,21 +13,18 @@ namespace System.Collections.Generic
 	public class DependencyQueue<T> : IProducerConsumerCollection<T>
 	{
 		private ConcurrentQueue<T> il;
-		[NonSerialized]private readonly Action<T> Pushed;
-		[NonSerialized]private readonly Action<T> Popped;
+		public delegate void ChangedEventHandler(T Value);
+		public event ChangedEventHandler Enqueued;
+		public event ChangedEventHandler Dequeued;
 
-		public DependencyQueue(Action<T> Pushed = null, Action<T> Popped = null)
+		public DependencyQueue()
 		{
 			il = new ConcurrentQueue<T>();
-			this.Pushed = Pushed ?? (Item => { });
-			this.Popped = Popped ?? ((Item) => { });
 		}
 
-		public DependencyQueue(IEnumerable<T> Items, Action<T> Pushed = null, Action<T> Popped = null)
+		public DependencyQueue(IEnumerable<T> Items)
 		{
 			il = new ConcurrentQueue<T>(Items);
-			this.Pushed = Pushed ?? (Item => { });
-			this.Popped = Popped ?? ((Item) => { });
 		}
 
 		public void Enqueue(T Item)
@@ -67,16 +64,16 @@ namespace System.Collections.Generic
 
 		private void CallPushed(T item)
 		{
-			if (Application.Current.Dispatcher == null) { Pushed(item); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { Pushed(item); }
-			else Application.Current.Dispatcher.Invoke(() => Pushed(item), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { Enqueued(item); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { Enqueued(item); }
+			else Application.Current.Dispatcher.Invoke(() => Enqueued(item), DispatcherPriority.Normal);
 		}
 
 		private void CallPopped(T item)
 		{
-			if (Application.Current.Dispatcher == null) { Popped(item); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { Popped(item); }
-			else Application.Current.Dispatcher.Invoke(() => Popped(item), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { Dequeued(item); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { Dequeued(item); }
+			else Application.Current.Dispatcher.Invoke(() => Dequeued(item), DispatcherPriority.Normal);
 		}
 
 		#endregion

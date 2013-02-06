@@ -3,14 +3,19 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace System.Collections.Generic
 {
-	public class DeltaDictionary<TKey, TValue> : IDictionary<TKey, TValue>
+	[Serializable]
+	[HostProtectionAttribute(SecurityAction.LinkDemand, Synchronization = true, ExternalThreading = true)]
+	public class DependencyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	{
+		private ConcurrentDictionary<TKey, TValue> il;
 		public delegate void AddRemoveEventHandler(TKey Key, TValue Value);
 		public event AddRemoveEventHandler Added;
 		public event AddRemoveEventHandler Removed;
@@ -19,19 +24,17 @@ namespace System.Collections.Generic
 		public delegate void UpdatedRemoveEventHandler(TKey Key, TValue NewValue, TValue OldValue);
 		public event UpdatedRemoveEventHandler Updated;
 
-		private ConcurrentDictionary<TKey, TValue> il;
-
-		public DeltaDictionary()
+		public DependencyDictionary()
 		{
 			il = new ConcurrentDictionary<TKey, TValue>();
 		}
 
-		public DeltaDictionary(int ConcurrencyLevel, int Capacity)
+		public DependencyDictionary(int ConcurrencyLevel, int Capacity)
 		{
 			il = new ConcurrentDictionary<TKey, TValue>(ConcurrencyLevel, Capacity);
 		}
 
-		public DeltaDictionary(IEnumerable<KeyValuePair<TKey, TValue>> Items)
+		public DependencyDictionary(IEnumerable<KeyValuePair<TKey, TValue>> Items)
 		{
 			il = new ConcurrentDictionary<TKey, TValue>(Items);
 		}
@@ -42,8 +45,8 @@ namespace System.Collections.Generic
 			TValue ov = default(TValue);
 			if (update) ov = il[key];
 			TValue rt = il.AddOrUpdate(key, addValueFactory, updateValueFactory);
-			if (update) Updated(key, ov, rt);
-			else Added(key, rt);
+			if (update) CallUpdated(key, ov, rt);
+			else CallAdded(key, rt);
 			return rt;
 		}
 
@@ -53,16 +56,16 @@ namespace System.Collections.Generic
 			TValue ov = default(TValue);
 			if (update) ov = il[key];
 			TValue rt = il.AddOrUpdate(key, addValue, updateValueFactory);
-			if (update) Updated(key, ov, rt);
-			else Added(key, rt);
+			if (update) CallUpdated(key, ov, rt);
+			else CallAdded(key, rt);
 			return rt;
 		}
 
 		public void Clear()
 		{
-			KeyValuePair<TKey, TValue>[] tl = il.ToArray();
+			KeyValuePair<TKey, TValue>[] c = il.ToArray();
 			il.Clear();
-			Cleared(tl);
+			CallCleared(c); 
 		}
 
 		public bool ContainsKey(TKey key)
@@ -79,7 +82,7 @@ namespace System.Collections.Generic
 		{
 			bool add = !ContainsKey(key);
 			TValue rt = il.GetOrAdd(key, valueFactory);
-			if (add) Added(key, rt);
+			if (add) CallAdded(key, rt);
 			return rt;
 		}
 
@@ -87,7 +90,7 @@ namespace System.Collections.Generic
 		{
 			bool add = !ContainsKey(key);
 			TValue rt = il.GetOrAdd(key, value);
-			if (add) Added(key, rt);
+			if (add) CallAdded(key, rt);
 			return rt;
 		}
 
@@ -104,7 +107,7 @@ namespace System.Collections.Generic
 		public bool TryAdd(TKey Key, TValue Value)
 		{
 			bool rt = il.TryAdd(Key, Value);
-			if (rt) Added(Key, Value);
+			if (rt) CallAdded(Key, Value);
 			return rt;
 		}
 
@@ -116,7 +119,7 @@ namespace System.Collections.Generic
 		public bool TryRemove(TKey Key, out TValue Value)
 		{
 			bool rt = il.TryRemove(Key, out Value);
-			if (rt) Removed(Key, Value);
+			if (rt) CallRemoved(Key, Value);
 			return rt;
 		}
 
@@ -124,22 +127,20 @@ namespace System.Collections.Generic
 		{
 			TValue ov = il[Key];
 			bool rt = il.TryUpdate(Key, Value, Comparison);
-			if (rt) Updated(Key, ov, Value);
+			if (rt) CallUpdated(Key, ov, Value);
 			return rt;
 		}
 
 		public TValue this[TKey key]
 		{
 			get { return il[key]; }
-			set { TValue ov = il[key]; il[key] = value; Updated(key, ov, value); }
+			set { TValue ov = il[key]; il[key] = value; CallUpdated(key, ov, value); }
 		}
 
 		public KeyValuePair<TKey, TValue>[] ToArray()
 		{
 			return il.ToArray();
 		}
-
-		#region - Interface Implementation -
 
 		public ICollection<TValue> Values
 		{
@@ -160,6 +161,34 @@ namespace System.Collections.Generic
 		{
 			KeyValuePair<TKey, TValue>[] td = il.ToArray();
 			return td.ToDictionary(k => k.Key, k => k.Value);
+		}
+
+		private void CallAdded(TKey key, TValue value)
+		{
+			if (Application.Current.Dispatcher == null) { Added(key, value); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) Added(key, value);
+			else Application.Current.Dispatcher.Invoke(new Action(() => Added(key, value)), DispatcherPriority.Normal);
+		}
+
+		private void CallRemoved(TKey key, TValue value)
+		{
+			if (Application.Current.Dispatcher == null) { Removed(key, value); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) Removed(key, value);
+			else Application.Current.Dispatcher.Invoke(new Action(() => Removed(key, value)), DispatcherPriority.Normal);
+		}
+
+		private void CallCleared(KeyValuePair<TKey, TValue>[] values)
+		{
+			if (Application.Current.Dispatcher == null) { Cleared(values); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) Cleared(values);
+			else Application.Current.Dispatcher.Invoke(new Action(() => Cleared(values)), DispatcherPriority.Normal);
+		}
+
+		private void CallUpdated(TKey index, TValue olditem, TValue newitem)
+		{
+			if (Application.Current.Dispatcher == null) { Updated(index, olditem, newitem); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) Updated(index, olditem, newitem);
+			else Application.Current.Dispatcher.Invoke(new Action(() => Updated(index, olditem, newitem)), DispatcherPriority.Normal);
 		}
 
 		public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
@@ -206,7 +235,5 @@ namespace System.Collections.Generic
 		{
 			return ((IDictionary<TKey, TValue>)il).Remove(item.Key);
 		}
-
-		#endregion
 	}
 }

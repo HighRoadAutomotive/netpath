@@ -13,8 +13,9 @@ namespace System.Collections.Generic
 	{
 		private ConcurrentQueue<T> il;
 
-		public delegate void ChangedEventHandler(IEnumerable<T> Queued, IEnumerable<T> Dequeued);
-		public event ChangedEventHandler Changed;
+		public delegate void ChangedEventHandler(T Value);
+		public event ChangedEventHandler Enqueued;
+		public event ChangedEventHandler Dequeued;
 
 		public DeltaQueue()
 		{
@@ -29,7 +30,7 @@ namespace System.Collections.Generic
 		public void Enqueue(T Item)
 		{
 			il.Enqueue(Item);
-			Changed(new[]{Item}, null);
+			Enqueued(Item);
 		}
 
 		public bool TryPeek(out T Result)
@@ -40,7 +41,7 @@ namespace System.Collections.Generic
 		public bool TryDequeue(out T Result)
 		{
 			bool t = il.TryDequeue(out Result);
-			Changed(null, new[]{Result});
+			Dequeued(Result);
 			return t;
 		}
 
