@@ -186,7 +186,6 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine(string.Format("\t\t\t{0} t;", o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine(string.Format("\t\t\treturn __dcm.TryRemove(data.{0}, out t);", dcmid.HasClientType ? dcmid.ClientName : dcmid.DataName));
 			code.AppendLine("\t\t}");
-			code.AppendLine("\t\tprivate readonly System.Threading.ReaderWriterLockSlim __dcmlock = new System.Threading.ReaderWriterLockSlim();");
 			return code.ToString();
 		}
 
@@ -383,15 +382,89 @@ namespace NETPath.Generators.WinRT.CS
 				}
 				code.AppendLine(string.Format("\t\tpublic static {0} Get{1}(DependencyObject obj) {{ return ({0})obj.GetValue({1}Property); }}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType, o.AutoDataEnabled)), o.XAMLName));
 				code.AppendLine(string.Format("\t\tpublic static void Set{1}(DependencyObject obj, {0} value) {{ obj.SetValue({1}Property, value); }}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType, o.AutoDataEnabled)), o.XAMLName));
-				code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty {1}Property = DependencyProperty.RegisterAttached(\"{1}\", typeof({0}), typeof({2}), {3})", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType, o.AutoDataEnabled)), o.XAMLName, o.Owner.XAMLType.Name, o.AutoDataEnabled ? string.Format("new PropertyMetadata(default({1}), (o, e) => {{ var t = o as {3}; if (t == null) return; t.DataObject.{2} = ({1})e.NewValue; t.{0}PropertyChanged(({1})e.NewValue, ({1})e.OldValue); }})", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType, o.AutoDataEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.Owner.XAMLType.Name) : "null"));
-				if (o.AutoDataEnabled) code.AppendLine(string.Format("\t\tpartial void {0}PropertyChanged({1} OldValue, {1} NewValue);", o.XAMLName, DataTypeGenerator.GenerateType(o.XAMLType)));
+				GenerateElementXAMLDPCode45(o);
 			}
 			else
 			{
 				code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return ({0})GetValue({1}Property); }} {2}set {{ SetValue({1}Property, value); }} }}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType, o.AutoDataEnabled)), o.XAMLName, o.IsReadOnly ? "protected " : ""));
-				code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty {1}Property = DependencyProperty.Register(\"{1}\", typeof({0}), typeof({2}), {3});", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType, o.AutoDataEnabled)), o.XAMLName, o.Owner.XAMLType.Name, o.AutoDataEnabled ? string.Format("new PropertyMetadata(default({1}), (o, e) => {{ var t = o as {3}; if (t == null) return; t.DataObject.{2} = ({1})e.NewValue; t.{0}PropertyChanged(({1})e.NewValue, ({1})e.OldValue); }})", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType, o.AutoDataEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.Owner.XAMLType.Name) : "null"));
-				if (o.AutoDataEnabled) code.AppendLine(string.Format("\t\tpartial void {0}PropertyChanged({1} OldValue, {1} NewValue);", o.XAMLName, DataTypeGenerator.GenerateType(o.XAMLType)));
+				GenerateElementXAMLDPCode45(o);
 			}
+			return code.ToString();
+		}
+
+		private static string GenerateElementXAMLDPCode45(DataElement o)
+		{
+			var code = new StringBuilder();
+
+			code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty {1}Property = DependencyProperty.Register{4}(\"{1}\", typeof({0}), typeof({2}){3});", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType, o.AutoDataEnabled)), o.XAMLName, o.Owner.XAMLType.Name, o.AutoDataEnabled ? string.Format(", {0}PropertyMetadata", o.XAMLName) : ", null", o.IsAttached ? "Attached" : ""));
+
+			if (o.AutoDataEnabled)
+			{
+				if (o.XAMLType.TypeMode == DataTypeMode.Collection)
+				{
+					code.AppendLine(string.Format("\t\tprivate static readonly PropertyMetadata {0}PropertyMetadata = new PropertyMetadata((o, e) => {{ var t = o as {1}; var nl = e.NewValue as DependencyList<{2}>; var ol = e.OldValue as DependencyList<{2}>; if (t == null || nl == null || ol == null) return; ", o.XAMLName, o.Owner.XAMLType.Name, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.CollectionGenericType))));
+					code.AppendLine(string.Format("\t\t\tnl.Added += (x) => {{ foreach (var z in x) t.DataObject.{1}.AddNoUpdate(z); t.{0}Added(x); }};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
+					code.AppendLine(string.Format("\t\t\tnl.Removed += (x) => {{ foreach (var z in x) t.DataObject.{1}.RemoveNoUpdate(z); t.{0}Removed(x); }};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
+					code.AppendLine(string.Format("\t\t\tnl.Cleared += (x) => {{ t.DataObject.{1}.ClearNoUpdate(); t.{0}Cleared(x); }};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
+					code.AppendLine(string.Format("\t\t\tnl.Inserted += (idx, x) => {{ int c = idx; foreach (var z in x) t.DataObject.{1}.InsertNoUpdate(c++, z); t.{0}Inserted(idx, x); }};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
+					code.AppendLine(string.Format("\t\t\tnl.RemovedAt += (idx, x) => {{ foreach (var z in x) t.DataObject.{1}.RemoveNoUpdate(z); t.{0}RemovedAt(idx, x); }};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
+					code.AppendLine(string.Format("\t\t\tnl.Moved += (x, nidx) => {{ t.DataObject.{1}.MoveNoUpdate(x, nidx); t.{0}Moved(x, nidx); }};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
+					code.AppendLine(string.Format("\t\t\tnl.Replaced += (ox, nx) => {{ t.DataObject.{1}.Lock(); try {{ t.DataObject.{1}[t.DataObject.{1}.IndexOf(ox)] = nx; }} finally {{ t.DataObject.{1}.Unlock(); }} t.{0}Replaced(ox, nx); }};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
+					code.AppendLine("\t\t\tol.ClearEventHandlers();");
+					code.AppendLine("\t\t});");
+					code.AppendLine(string.Format("\t\tpartial void {0}Added(IEnumerable<{1}> Values);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.CollectionGenericType))));
+					code.AppendLine(string.Format("\t\tpartial void {0}Removed(IEnumerable<{1}> Values);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.CollectionGenericType))));
+					code.AppendLine(string.Format("\t\tpartial void {0}Cleared(IEnumerable<{1}> Values);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.CollectionGenericType))));
+					code.AppendLine(string.Format("\t\tpartial void {0}Inserted(int Index, IEnumerable<{1}> Values);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.CollectionGenericType))));
+					code.AppendLine(string.Format("\t\tpartial void {0}RemovedAt(int Index, IEnumerable<{1}> Values);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.CollectionGenericType))));
+					code.AppendLine(string.Format("\t\tpartial void {0}Moved({1} Value, int Index);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.CollectionGenericType))));
+					code.AppendLine(string.Format("\t\tpartial void {0}Replaced({1} OldValue, {1} NewValue);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.CollectionGenericType))));
+				}
+				else if (o.XAMLType.TypeMode == DataTypeMode.Stack)
+				{
+					//NOTE: We do not currently have a good enough understanding of the problems associated with Stacks to use them in DCM
+					//code.AppendLine(string.Format("\t\tprivate static readonly PropertyMetadata {0}PropertyMetadata = new PropertyMetadata((o, e) => {{ var t = o as {1}; var nl = e.NewValue as DependencyStack<{1}>; var ol = e.OldValue as DependencyStack<{1}>; if (t == null || nl == null || ol == null) return; ", o.XAMLName, o.Owner.XAMLType.Name));
+					//code.AppendLine(string.Format("\t\t\tnl.Pushed += (x) => {{ foreach (var z in x) t.DataObject.{1}.PushNoUpdate(z); t.{0}Pushed(x); }};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
+					//code.AppendLine(string.Format("\t\t\tnl.Popped += (x) => {{ {2} result; foreach(var z in x) {{ t.DataObject.{1}.TryPopNoUpdate(out result); }} t.{0}Popped(x); }};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType)));
+					//code.AppendLine(string.Format("\t\t\tnl.Cleared += (x) => {{ t.DataObject.{1}.Clear(); t.{0}Cleared(x); }};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
+					//code.AppendLine("\t\t\tol.ClearEventHandlers();");
+					//code.AppendLine("\t\t});");
+					//code.AppendLine(string.Format("\t\tpartial void {0}Pushed(IEnumerable<{1}> Values);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.CollectionGenericType))));
+					//code.AppendLine(string.Format("\t\tpartial void {0}Popped(IEnumerable<{1}> Values);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.CollectionGenericType))));
+					//code.AppendLine(string.Format("\t\tpartial void {0}Cleared(IEnumerable<{1}> Values);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.CollectionGenericType))));
+				}
+				else if (o.XAMLType.TypeMode == DataTypeMode.Queue)
+				{
+					//NOTE: We do not currently have a good enough understanding of the problems associated with Queues to use them in DCM
+					//code.AppendLine(string.Format("\t\tprivate static readonly PropertyMetadata {0}PropertyMetadata = new PropertyMetadata((o, e) => {{ var t = o as {1}; var nl = e.NewValue as DependencyStack<{1}>; var ol = e.OldValue as DependencyStack<{1}>; if (t == null || nl == null || ol == null) return; ", o.XAMLName, o.Owner.XAMLType.Name));
+					//code.AppendLine(string.Format("\t\t\tnl.Enqueued += (x) => {{ foreach (var z in x) t.DataObject.{1}.Enqueue(z); t.{0}Pushed(x); }};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
+					//code.AppendLine(string.Format("\t\t\tnl.Dequeued += (x) => {{ {2} result; foreach(var z in x) {{ t.DataObject.{1}.TryDequeue(out result); }} t.{0}Popped(x); }};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType)));
+					//code.AppendLine("\t\t\tol.ClearEventHandlers();");
+					//code.AppendLine("\t\t});");
+					//code.AppendLine(string.Format("\t\tpartial void {0}Pushed(IEnumerable<{1}> Values);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.CollectionGenericType))));
+					//code.AppendLine(string.Format("\t\tpartial void {0}Popped(IEnumerable<{1}> Values);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.CollectionGenericType))));
+				}
+				else if (o.XAMLType.TypeMode == DataTypeMode.Dictionary)
+				{
+					code.AppendLine(string.Format("\t\tprivate static readonly PropertyMetadata {0}PropertyMetadata = new PropertyMetadata((o, e) => {{ var t = o as {1}; var nl = e.NewValue as DependencyDictionary<{2}, {3}>; var ol = e.OldValue as DependencyDictionary<{2}, {3}>; if (t == null || nl == null || ol == null) return; ", o.XAMLName, o.Owner.XAMLType.Name, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.DictionaryValueGenericType))));
+					code.AppendLine(string.Format("\t\t\tnl.Added += (xk, xv) => {{ t.DataObject.{1}.AddOrUpdateNoUpdate(xk, xv, (k,v) => xv);  t.{0}Added(xk, xv); }};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
+					code.AppendLine(string.Format("\t\t\tnl.Removed += (xk, xv) => {{ {2} result; t.DataObject.{1}.TryRemoveNoUpdate(xk, out result); t.{0}Removed(xk, xv); }};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName, o.HasClientType ? DataTypeGenerator.GenerateType(o.ClientType.DictionaryValueGenericType) : DataTypeGenerator.GenerateType(o.DataType.DictionaryValueGenericType)));
+					code.AppendLine(string.Format("\t\t\tnl.Cleared += (x) => {{ t.DataObject.{1}.ClearNoUpdate(); t.{0}Cleared(x); }};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
+					code.AppendLine(string.Format("\t\t\tnl.Updated += (xk, ox, nx) => {{ t.DataObject.{1}.AddOrUpdateNoUpdate(xk, nx, (k,v) => nx); t.{0}Updated(xk, ox, nx); }};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
+					code.AppendLine("\t\t\tol.ClearEventHandlers();");
+					code.AppendLine("\t\t});");
+					code.AppendLine(string.Format("\t\tpartial void {0}Added({1} Key, {2} Value);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.DictionaryValueGenericType))));
+					code.AppendLine(string.Format("\t\tpartial void {0}Removed({1} Key, {2} Value);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.DictionaryValueGenericType))));
+					code.AppendLine(string.Format("\t\tpartial void {0}Cleared(IEnumerable<KeyValuePair<{1}, {2}>> Values);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.DictionaryValueGenericType))));
+					code.AppendLine(string.Format("\t\tpartial void {0}Updated({1} Key, {2} OldValue, {2} NewValue);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.DictionaryValueGenericType))));
+				}
+				else
+				{
+					code.AppendLine(string.Format("\t\tprivate static PropertyMetadata {0}PropertyMetadata = new PropertyMetadata((o, e) => {{ var t = o as {3}; if (t == null) return; t.DataObject.{2} = ({1})e.NewValue; t.{0}PropertyChanged(({1})e.NewValue, ({1})e.OldValue); }});", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType, o.AutoDataEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.Owner.XAMLType.Name));
+					code.AppendLine(string.Format("\t\tpartial void {0}PropertyChanged({1} OldValue, {1} NewValue);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType, o.AutoDataEnabled))));
+				}
+			}
+
 			return code.ToString();
 		}
 
