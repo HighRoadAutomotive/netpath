@@ -23,9 +23,9 @@ namespace System.Collections.Generic
 		public delegate void InsertRemoveAtEventHandler(int Index, IEnumerable<T> Values);
 		public event InsertRemoveAtEventHandler RemovedAt;
 		public event InsertRemoveAtEventHandler Inserted;
-		public delegate void MovedEventHandler(int OldIndex, int NewIndex, T Value);
+		public delegate void MovedEventHandler(T Value, int NewIndex);
 		public event MovedEventHandler Moved;
-		public delegate void ReplacedEventHandler(int Index, T OldValue, T NewValue);
+		public delegate void ReplacedEventHandler(T OldValue, T NewValue);
 		public event ReplacedEventHandler Replaced;
 
 		~DependencyList()
@@ -53,6 +53,27 @@ namespace System.Collections.Generic
 		{
 			il = new List<T>(Items);
 			ocl = new ReaderWriterLockSlim();
+		}
+
+		public void Lock()
+		{
+			ocl.EnterWriteLock();
+		}
+
+		public void Unlock()
+		{
+			ocl.ExitWriteLock();
+		}
+
+		public void ClearEventHandlers()
+		{
+			Added = null;
+			Removed = null;
+			Cleared = null;
+			RemovedAt = null;
+			Inserted = null;
+			Moved = null;
+			Replaced = null;
 		}
 
 		public void Add(T item)
@@ -467,7 +488,7 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
-			CallMoved(oldindex, newindex, ti);
+			CallMoved(ti, newindex);
 		}
 
 		public bool Remove(T item)
@@ -650,18 +671,18 @@ namespace System.Collections.Generic
 			else Application.Current.Dispatcher.Invoke((() => { Cleared(items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset, new List<T>(items))); }), DispatcherPriority.Normal);
 		}
 
-		private void CallMoved(int oldindex, int newindex, T item)
+		private void CallMoved(T item, int newindex)
 		{
-			if (Application.Current.Dispatcher == null) { Moved(newindex, oldindex, item); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newindex, oldindex)); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { Moved(newindex, oldindex, item); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newindex, oldindex)); }
-			else Application.Current.Dispatcher.Invoke(() => { Moved(newindex, oldindex, item); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newindex, oldindex)); }, DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { Moved(item, newindex); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newindex)); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { Moved(item, newindex); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newindex)); }
+			else Application.Current.Dispatcher.Invoke(new Action(() => { Moved(item, newindex); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newindex)); }), DispatcherPriority.Normal);
 		}
 
-		private void CallReplaced(int index, T olditem, T newitem)
+		private void CallReplaced(T olditem, T newitem)
 		{
-			if (Application.Current.Dispatcher == null) { Replaced(index, olditem, newitem); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newitem, olditem, index)); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { Replaced(index, olditem, newitem); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newitem, olditem, index)); }
-			else Application.Current.Dispatcher.Invoke(() => { Replaced(index, olditem, newitem); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newitem, olditem, index)); }, DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { Replaced(olditem, newitem); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newitem, olditem)); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { Replaced(olditem, newitem); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newitem, olditem)); }
+			else Application.Current.Dispatcher.Invoke(new Action(() => { Replaced(olditem, newitem); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newitem, olditem)); }), DispatcherPriority.Normal);
 		}
 
 		#endregion
@@ -694,7 +715,7 @@ namespace System.Collections.Generic
 				{
 					ocl.ExitWriteLock();
 				}
-				CallReplaced(index, ti, value);
+				CallReplaced(ti, value);
 			}
 		}
 

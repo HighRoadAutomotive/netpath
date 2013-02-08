@@ -195,9 +195,9 @@ namespace NETPath.Projects
 					                    new DataType("ObservableCollection", DataTypeMode.Collection),
 					                    new DataType("KeyedCollection", DataTypeMode.Dictionary),
 										//System.Collections.Concurrent Types
-					                    new DataType("System.Collections.Concurrent.ConcurrentDictionary", DataTypeMode.Dictionary, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
-					                    new DataType("System.Collections.Concurrent.ConcurrentStack", DataTypeMode.Stack, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
-					                    new DataType("System.Collections.Concurrent.ConcurrentQueue", DataTypeMode.Queue, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
+					                    new DataType("ConcurrentDictionary", DataTypeMode.Dictionary, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
+					                    new DataType("ConcurrentStack", DataTypeMode.Stack, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
+					                    new DataType("ConcurrentQueue", DataTypeMode.Queue, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
 										//Delta Collections for DCM
 					                    DeltaList,
 					                    DeltaDictionary,
@@ -272,9 +272,9 @@ namespace NETPath.Projects
 					                    new DataType("ObservableCollection", DataTypeMode.Collection),
 					                    new DataType("KeyedCollection", DataTypeMode.Dictionary),
 										//System.Collections.Concurrent Types
-					                    new DataType("System.Collections.Concurrent.ConcurrentDictionary", DataTypeMode.Dictionary, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
-					                    new DataType("System.Collections.Concurrent.ConcurrentStack", DataTypeMode.Stack, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
-					                    new DataType("System.Collections.Concurrent.ConcurrentQueue", DataTypeMode.Queue, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
+					                    new DataType("ConcurrentDictionary", DataTypeMode.Dictionary, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
+					                    new DataType("ConcurrentStack", DataTypeMode.Stack, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
+					                    new DataType("ConcurrentQueue", DataTypeMode.Queue, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8),
 										//Delta Collections for DCM
 					                    DeltaList,
 					                    DeltaDictionary,
@@ -291,6 +291,7 @@ namespace NETPath.Projects
 					                  new ProjectUsingNamespace("System", true, true, true, true, true),
 					                  new ProjectUsingNamespace("System.Collections", true, true, true, true, true),
 					                  new ProjectUsingNamespace("System.Collections.Generic", true, true, true, true, true),
+					                  new ProjectUsingNamespace("System.Collections.Concurrent", true, true, true, false, true),
 					                  new ProjectUsingNamespace("System.Collections.ObjectModel", true, true, true, true, true),
 					                  new ProjectUsingNamespace("System.Collections.Specialized", true, true, true, true, true),
 					                  new ProjectUsingNamespace("System.ComponentModel", true, true, true, true, true),

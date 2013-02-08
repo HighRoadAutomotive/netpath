@@ -37,6 +37,14 @@ namespace System.Collections.Generic
 			il = new ConcurrentDictionary<TKey, TValue>(Items);
 		}
 
+		public void ClearEventHandlers()
+		{
+			Added = null;
+			Removed = null;
+			Cleared = null;
+			Updated = null;
+		}
+
 		public TValue AddOrUpdate(TKey key, Func<TKey, TValue> addValueFactory, Func<TKey, TValue, TValue> updateValueFactory)
 		{
 			TValue ov = default(TValue);
@@ -157,14 +165,6 @@ namespace System.Collections.Generic
 		{
 			KeyValuePair<TKey, TValue>[] td = il.ToArray();
 			return td.ToDictionary(k => k.Key, k => k.Value);
-		}
-
-		public void ClearEventHandlers()
-		{
-			Added = null;
-			Removed = null;
-			Cleared = null;
-			Updated = null;
 		}
 
 		#region - Call Functions -

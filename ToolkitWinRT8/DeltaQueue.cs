@@ -8,11 +8,10 @@ using System.Windows;
 
 namespace System.Collections.Generic
 {
-	[Serializable]
 	public class DeltaQueue<T> : IProducerConsumerCollection<T>
 	{
 		private ConcurrentQueue<T> il;
-		[NonSerialized] private ConcurrentQueue<ChangeListItem<T>> dl;
+		private ConcurrentQueue<ChangeListItem<T>> dl;
 
 		public delegate void ChangedEventHandler(T Value);
 		public event ChangedEventHandler Enqueued;

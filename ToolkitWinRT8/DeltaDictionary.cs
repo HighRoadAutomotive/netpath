@@ -3,15 +3,12 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
 namespace System.Collections.Generic
 {
-	[Serializable]
-	[HostProtectionAttribute(SecurityAction.LinkDemand, Synchronization = true, ExternalThreading = true)]
 	public class DeltaDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	{
 		public delegate void AddRemoveEventHandler(TKey Key, TValue Value);
@@ -23,7 +20,7 @@ namespace System.Collections.Generic
 		public event UpdatedRemoveEventHandler Updated;
 
 		private ConcurrentDictionary<TKey, TValue> il;
-		[NonSerialized] private ConcurrentQueue<ChangeDictionaryItem<TKey, TValue>> dl;
+		private ConcurrentQueue<ChangeDictionaryItem<TKey, TValue>> dl;
 
 		public DeltaDictionary()
 		{

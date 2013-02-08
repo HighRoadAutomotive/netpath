@@ -11,7 +11,6 @@ using System.Windows;
 
 namespace System.Collections.Generic
 {
-	[Serializable]
 	public class DeltaList<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
 	{
 		public delegate void AddRemoveClearedEventHandler(IEnumerable<T> Values);
@@ -21,14 +20,14 @@ namespace System.Collections.Generic
 		public delegate void InsertRemoveAtEventHandler(int Index, IEnumerable<T> Values);
 		public event InsertRemoveAtEventHandler RemovedAt;
 		public event InsertRemoveAtEventHandler Inserted;
-		public delegate void MovedEventHandler(int OldIndex, int NewIndex, T Value);
+		public delegate void MovedEventHandler(T Value, int NewIndex);
 		public event MovedEventHandler Moved;
-		public delegate void ReplacedEventHandler(int Index, T OldValue, T NewValue);
+		public delegate void ReplacedEventHandler(T OldValue, T NewValue);
 		public event ReplacedEventHandler Replaced;
 
 		private List<T> il;
-		[NonSerialized] private readonly ReaderWriterLockSlim ocl;
-		[NonSerialized] private ConcurrentQueue<ChangeListItem<T>> dl;
+		private readonly ReaderWriterLockSlim ocl;
+		private ConcurrentQueue<ChangeListItem<T>> dl;
 
 		~DeltaList()
 		{
@@ -77,6 +76,27 @@ namespace System.Collections.Generic
 		public void ClearDelta()
 		{
 			Threading.Interlocked.Exchange(ref dl, new ConcurrentQueue<ChangeListItem<T>>());
+		}
+
+		public void Lock()
+		{
+			ocl.EnterWriteLock();
+		}
+
+		public void Unlock()
+		{
+			ocl.ExitWriteLock();
+		}
+
+		public void ClearEventHandlers()
+		{
+			Added = null;
+			Removed = null;
+			Cleared = null;
+			RemovedAt = null;
+			Inserted = null;
+			Moved = null;
+			Replaced = null;
 		}
 
 		public void Add(T item)
@@ -558,22 +578,21 @@ namespace System.Collections.Generic
 			}
 		}
 
-		public void Move(int oldindex, int newindex)
+		public void Move(T value, int newindex)
 		{
-			T ti = default(T);
 			ocl.EnterWriteLock();
 			try
 			{
-				ti = this[oldindex];
-				il.Insert(newindex, ti);
-				il.Remove(ti);
+				int oldindex = il.IndexOf(value);
+				il.Insert(newindex, value);
+				il.RemoveAt(oldindex);
 			}
 			finally
 			{
 				ocl.ExitWriteLock();
 			}
-			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Move, ti, newindex));
-			Moved(oldindex, newindex, ti);
+			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Move, value, newindex));
+			Moved(value, newindex);
 		}
 
 		public bool Remove(T item)
@@ -628,21 +647,20 @@ namespace System.Collections.Generic
 			Removed(tl);
 		}
 
-		public void MoveNoUpdate(int oldindex, int newindex)
+		public void MoveNoUpdate(T value, int newindex)
 		{
-			T ti = default(T);
 			ocl.EnterWriteLock();
 			try
 			{
-				ti = this[oldindex];
-				il.Insert(newindex, ti);
-				il.Remove(ti);
+				int oldindex = il.IndexOf(value);
+				il.Insert(newindex, value);
+				il.RemoveAt(oldindex);
 			}
 			finally
 			{
 				ocl.ExitWriteLock();
 			}
-			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Move, ti, newindex));
+			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Move, value, newindex));
 		}
 
 		public bool RemoveNoUpdate(T item)
@@ -786,19 +804,8 @@ namespace System.Collections.Generic
 					ocl.ExitWriteLock();
 				}
 				dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Replace, ti));
-				Replaced(index, ti, value);
+				Replaced(ti, value);
 			}
-		}
-
-		public void ClearEventFunctions()
-		{
-			Added = null;
-			Removed = null;
-			Cleared = null;
-			RemovedAt = null;
-			Inserted = null;
-			Moved = null;
-			Replaced = null;
 		}
 
 		#region - Interface Implementations -
