@@ -67,11 +67,29 @@ namespace System.Collections.Generic
 			return rt;
 		}
 
+		public TValue AddOrUpdateNoUpdate(TKey key, Func<TKey, TValue> addValueFactory, Func<TKey, TValue, TValue> updateValueFactory)
+		{
+			TValue rt = il.AddOrUpdate(key, addValueFactory, updateValueFactory);
+			return rt;
+		}
+
+		public TValue AddOrUpdateNoUpdate(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory)
+		{
+			TValue rt = il.AddOrUpdate(key, addValue, updateValueFactory);
+			return rt;
+		}
+
 		public void Clear()
 		{
 			KeyValuePair<TKey, TValue>[] c = il.ToArray();
 			il.Clear();
 			CallCleared(c); 
+		}
+
+		public void ClearNoUpdate()
+		{
+			KeyValuePair<TKey, TValue>[] c = il.ToArray();
+			il.Clear();
 		}
 
 		public bool ContainsKey(TKey key)
@@ -98,6 +116,16 @@ namespace System.Collections.Generic
 			TValue rt = il.GetOrAdd(key, value);
 			if (add) CallAdded(key, rt);
 			return rt;
+		}
+
+		public TValue GetOrAddNoUpdate(TKey key, Func<TKey, TValue> valueFactory)
+		{
+			return il.GetOrAdd(key, valueFactory);
+		}
+
+		public TValue GetOrAddNoUpdate(TKey key, TValue value)
+		{
+			return il.GetOrAdd(key, value);
 		}
 
 		public bool IsEmpty
@@ -131,10 +159,26 @@ namespace System.Collections.Generic
 
 		public bool TryUpdate(TKey Key, TValue Value, TValue Comparison)
 		{
-			TValue ov = il[Key];
+			TValue ov;
+			if (!il.TryGetValue(Key, out ov)) return false;
 			bool rt = il.TryUpdate(Key, Value, Comparison);
 			if (rt) CallUpdated(Key, ov, Value);
 			return rt;
+		}
+
+		public bool TryAddNoUpdate(TKey Key, TValue Value)
+		{
+			return il.TryAdd(Key, Value);
+		}
+
+		public bool TryRemoveNoUpdate(TKey Key, out TValue Value)
+		{
+			return il.TryRemove(Key, out Value);
+		}
+
+		public bool TryUpdateNoUpdate(TKey Key, TValue Value, TValue Comparison)
+		{
+			return il.TryUpdate(Key, Value, Comparison);
 		}
 
 		public TValue this[TKey key]

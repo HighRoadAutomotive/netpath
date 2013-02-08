@@ -104,6 +104,32 @@ namespace System.Collections.Generic
 			CallAdded(items);
 		}
 
+		public void AddNoUpdate(T item)
+		{
+			ocl.EnterWriteLock();
+			try
+			{
+				il.Add(item);
+			}
+			finally
+			{
+				ocl.ExitWriteLock();
+			}
+		}
+
+		public void AddRangeNoUpdate(IEnumerable<T> items)
+		{
+			ocl.EnterWriteLock();
+			try
+			{
+				il.AddRange(items);
+			}
+			finally
+			{
+				ocl.ExitWriteLock();
+			}
+		}
+
 		public int BinarySearch(T item)
 		{
 			ocl.EnterReadLock();
@@ -156,6 +182,21 @@ namespace System.Collections.Generic
 				ocl.ExitWriteLock();
 			}
 			CallCleared(tl);
+		}
+
+		public void ClearNoUpdate()
+		{
+			T[] tl;
+			ocl.EnterWriteLock();
+			try
+			{
+				tl = ToArray();
+				il.Clear();
+			}
+			finally
+			{
+				ocl.ExitWriteLock();
+			}
 		}
 
 		public bool Contains(T item)
@@ -422,6 +463,32 @@ namespace System.Collections.Generic
 			CallInserted(index, item);
 		}
 
+		public void InsertNoUpdate(int index, T item)
+		{
+			ocl.EnterWriteLock();
+			try
+			{
+				il.Insert(index, item);
+			}
+			finally
+			{
+				ocl.ExitWriteLock();
+			}
+		}
+
+		public void InsertRangeNoUpdate(int index, IEnumerable<T> items)
+		{
+			ocl.EnterWriteLock();
+			try
+			{
+				il.InsertRange(index, items);
+			}
+			finally
+			{
+				ocl.ExitWriteLock();
+			}
+		}
+
 		public void InsertRange(int index, IEnumerable<T> items)
 		{
 			ocl.EnterWriteLock();
@@ -535,6 +602,80 @@ namespace System.Collections.Generic
 				ocl.ExitWriteLock();
 			}
 			CallRemoved(tl);
+		}
+
+		public void MoveNoUpdate(T value, int newindex)
+		{
+			ocl.EnterWriteLock();
+			try
+			{
+				int oldindex = il.IndexOf(value);
+				il.Insert(newindex, value);
+				il.RemoveAt(oldindex);
+			}
+			finally
+			{
+				ocl.ExitWriteLock();
+			}
+		}
+
+		public bool RemoveNoUpdate(T item)
+		{
+			ocl.EnterWriteLock();
+			bool rt;
+			try
+			{
+				rt = il.Remove(item);
+			}
+			finally
+			{
+				ocl.ExitWriteLock();
+			}
+			return rt;
+		}
+
+		public void RemoveAtNoUpdate(int index)
+		{
+			T ti = default(T);
+			ocl.EnterWriteLock();
+			try
+			{
+				ti = il[index];
+				il.RemoveAt(index);
+			}
+			finally
+			{
+				ocl.ExitWriteLock();
+			}
+		}
+
+		public void RemoveRangeNoUpdate(int index, int count)
+		{
+			T[] tl;
+			ocl.EnterWriteLock();
+			try
+			{
+				tl = GetRange(index, count).ToArray();
+				il.RemoveRange(index, count);
+			}
+			finally
+			{
+				ocl.ExitWriteLock();
+			}
+		}
+
+		public void ReplaceNoUpdate(T NewValue, T OldValue)
+		{
+			ocl.EnterWriteLock();
+			try
+			{
+				for (int i = 0; i < il.Count; i++)
+					if (EqualityComparer<T>.Default.Equals(il[i], OldValue)) il[i] = NewValue;
+			}
+			finally
+			{
+				ocl.ExitWriteLock();
+			}
 		}
 
 		public T[] ToArray()

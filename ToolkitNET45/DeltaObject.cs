@@ -72,13 +72,13 @@ namespace DeltaV
 			{
 				object temp;
 				values.TryRemove(de.ID, out temp);
-				bool tm = modified.AddOrUpdate(de.ID, true, (p, v) => true);
+				modified.AddOrUpdate(de.ID, true, (p, v) => true);
 				if (de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, de.DefaultValue);
 			}
 			else
 			{
 				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
-				bool tm = modified.AddOrUpdate(de.ID, true, (p, v) => true);
+				modified.AddOrUpdate(de.ID, true, (p, v) => true);
 				if (de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, value);
 			}
 		}
@@ -98,12 +98,12 @@ namespace DeltaV
 			{
 				object temp;
 				values.TryRemove(de.ID, out temp);
-				bool tm = modified.AddOrUpdate(de.ID, true, (p, v) => true);
+				modified.AddOrUpdate(de.ID, true, (p, v) => true);
 			}
 			else
 			{
 				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
-				bool tm = modified.AddOrUpdate(de.ID, true, (p, v) => true);
+				modified.AddOrUpdate(de.ID, true, (p, v) => true);
 			}
 		}
 

@@ -686,7 +686,7 @@ namespace System.Collections.Generic
 			ocl.EnterWriteLock();
 			try
 			{
-				ti = this[index];
+				ti = il[index];
 				il.RemoveAt(index);
 			}
 			finally
@@ -712,6 +712,22 @@ namespace System.Collections.Generic
 			int c = index;
 			foreach (var t in tl) dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Remove, t, c++));
 		}
+
+		public void ReplaceNoUpdate(T NewValue, T OldValue)
+		{
+			ocl.EnterWriteLock();
+			try
+			{
+				for (int i = 0; i < il.Count; i++)
+					if (EqualityComparer<T>.Default.Equals(il[i], OldValue)) il[i] = NewValue;
+			}
+			finally
+			{
+				ocl.ExitWriteLock();
+			}
+			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Replace, NewValue, OldValue));
+		}
+
 		public T[] ToArray()
 		{
 			ocl.EnterReadLock();

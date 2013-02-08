@@ -21,13 +21,21 @@ namespace System.Collections.Generic
 	{
 		[DataMember(Order = 0)] public ListItemChangeMode Mode { get; set; }
 		[DataMember(Order = 1)] public T Item { get; set; }
-		[DataMember(Order = 2)] public int Index { get; set; }
+		[DataMember(Order = 2)] public T OldItem { get; set; }
+		[DataMember(Order = 3)] public int Index { get; set; }
 
 		public ChangeListItem(ListItemChangeMode Mode, T Item, int Index = -1)
 		{
 			this.Mode = Mode;
 			this.Item = Item;
 			this.Index = Index;
+		}
+
+		public ChangeListItem(ListItemChangeMode Mode, T Item, T OldItem)
+		{
+			this.Mode = Mode;
+			this.Item = Item;
+			this.OldItem = OldItem;
 		}
 	}
 

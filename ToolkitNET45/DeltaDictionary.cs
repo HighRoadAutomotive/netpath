@@ -206,7 +206,8 @@ namespace System.Collections.Generic
 
 		public bool TryUpdate(TKey Key, TValue Value, TValue Comparison)
 		{
-			TValue ov = il[Key];
+			TValue ov;
+			if (!il.TryGetValue(Key, out ov)) return false;
 			bool rt = il.TryUpdate(Key, Value, Comparison);
 			if (rt) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Replace, Key, Value)); Updated(Key, ov, Value); }
 			return rt;
@@ -214,7 +215,8 @@ namespace System.Collections.Generic
 
 		public bool TryUpdateNoUpdate(TKey Key, TValue Value, TValue Comparison)
 		{
-			TValue ov = il[Key];
+			TValue ov;
+			if (!il.TryGetValue(Key, out ov)) return false;
 			bool rt = il.TryUpdate(Key, Value, Comparison);
 			if (rt) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Replace, Key, Value)); }
 			return rt;
