@@ -209,8 +209,10 @@ namespace NETPath.Generators.WinRT.CS
 
 			code.AppendLine("\t\t//Properties");
 			foreach (DataElement de in o.Elements)
+			{
 				code.Append(GenerateElementXAMLCodeRT8(de));
-			code.AppendLine();
+				code.AppendLine();
+			}
 
 			code.AppendLine("\t\t//Implicit Conversion");
 			code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
@@ -382,12 +384,12 @@ namespace NETPath.Generators.WinRT.CS
 				}
 				code.AppendLine(string.Format("\t\tpublic static {0} Get{1}(DependencyObject obj) {{ return ({0})obj.GetValue({1}Property); }}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType, o.AutoDataEnabled)), o.XAMLName));
 				code.AppendLine(string.Format("\t\tpublic static void Set{1}(DependencyObject obj, {0} value) {{ obj.SetValue({1}Property, value); }}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType, o.AutoDataEnabled)), o.XAMLName));
-				GenerateElementXAMLDPCode45(o);
+				code.Append(GenerateElementXAMLDPCode45(o));
 			}
 			else
 			{
 				code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return ({0})GetValue({1}Property); }} {2}set {{ SetValue({1}Property, value); }} }}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType, o.AutoDataEnabled)), o.XAMLName, o.IsReadOnly ? "protected " : ""));
-				GenerateElementXAMLDPCode45(o);
+				code.Append(GenerateElementXAMLDPCode45(o));
 			}
 			return code.ToString();
 		}

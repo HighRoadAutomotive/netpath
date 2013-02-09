@@ -6,159 +6,114 @@ using System.Text;
 
 namespace DeltaV
 {
+	[Serializable]
 	public abstract class DeltaObject
 	{
-		private static readonly ConcurrentDictionary<HashID, Type> types = new ConcurrentDictionary<HashID, Type>();
-		private static readonly ConcurrentDictionary<HashID, DeltaObject> objects = new ConcurrentDictionary<HashID, DeltaObject>();
+		[NonSerialized] private readonly ConcurrentDictionary<HashID, Modifiable> values;
+		[NonSerialized] internal readonly HashID ID;
 
-		public static bool RegisterType(Type type)
+		private class Modifiable
 		{
-			return types.TryAdd(HashID.GenerateHashID(type.FullName), type);
+			private int isModified;
+			public bool IsModified { get { return System.Threading.Interlocked.CompareExchange(ref isModified, 0, 0) != 0; } set { System.Threading.Interlocked.Exchange(ref isModified, value ? 1 : 0); } }
+			private object data;
+			public object Data { get { return data; } }
+
+			public Modifiable(object Data)
+			{
+				isModified = 1;
+				data = Data;
+			}
 		}
 
-		private readonly ConcurrentDictionary<HashID, object> values;
-		private readonly ConcurrentDictionary<HashID, bool> modified;
-		internal readonly HashID TypeID;
-		internal readonly HashID ID;
-
-		protected DeltaObject(Type TypeID)
+		protected DeltaObject()
 		{
-			values = new ConcurrentDictionary<HashID, object>();
-			modified = new ConcurrentDictionary<HashID, bool>();
-			this.TypeID = HashID.GenerateHashID(TypeID.FullName);
+			values = new ConcurrentDictionary<HashID, Modifiable>();
 			ID = new HashID();
-			objects.AddOrUpdate(ID, this, (p, v) => this);
 		}
 
-		internal DeltaObject(HashID TypeID, HashID ID)
+		internal DeltaObject(HashID ID)
 		{
-			values = new ConcurrentDictionary<HashID, object>();
-			modified = new ConcurrentDictionary<HashID, bool>();
-			this.TypeID = TypeID;
+			values = new ConcurrentDictionary<HashID, Modifiable>();
 			this.ID = ID;
-			objects.AddOrUpdate(ID, this, (p, v) => this);
 		}
 
-		~DeltaObject()
+		internal DeltaObject(Guid ID)
 		{
-			DeltaObject temp;
-			objects.TryRemove(ID, out temp);
+			values = new ConcurrentDictionary<HashID, Modifiable>();
+			this.ID = HashID.GenerateHashID(ID.ToByteArray());
 		}
 
 		public T GetValue<T>(DeltaProperty<T> de)
 		{
-			object value;
-			return values.TryGetValue(de.ID, out value) == false ? de.DefaultValue : (T)value;
+			Modifiable value;
+			return values.TryGetValue(de.ID, out value) == false ? de.DefaultValue : (T)value.Data;
 		}
 
 		internal object GetValue(DeltaPropertyBase de)
 		{
-			object value;
-			return values.TryGetValue(de.ID, out value) == false ? de.defaultValue : value;
+			Modifiable value;
+			return values.TryGetValue(de.ID, out value) == false ? de.defaultValue : value.Data;
 		}
 
 		public void SetValue<T>(DeltaProperty<T> de, T value)
 		{
-			//Check to see if the value is actually different
-			object cmp;
-			values.TryGetValue(de.ID, out cmp);
-			if (EqualityComparer<T>.Default.Equals(value, (T)cmp)) return;
-
 			//Call the validator to see if this value is acceptable
 			if (de.DeltaValidateValueCallback != null && !de.DeltaValidateValueCallback(this, value)) return;
 
-			//If the new value is the default value remove this from the modified values list, otherwise add or update it.
+			//If the new value is the default value remove this from the modified values list, otherwise add/update it.
 			if (EqualityComparer<T>.Default.Equals(value, de.DefaultValue))
 			{
-				object temp;
+				Modifiable temp;
 				values.TryRemove(de.ID, out temp);
-				modified.AddOrUpdate(de.ID, true, (p, v) => true);
-				if (de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, de.DefaultValue);
+				if (de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp.Data, de.DefaultValue);
 			}
 			else
 			{
-				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
-				modified.AddOrUpdate(de.ID, true, (p, v) => true);
-				if (de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, value);
+				Modifiable temp = values.AddOrUpdate(de.ID, new Modifiable(value), (p, v) => new Modifiable(value));
+				if (de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp.Data, value);
 			}
 		}
 
 		public void UpdateValue<T>(DeltaProperty<T> de, T value)
 		{
-			//Check to see if the value is actually different
-			object cmp;
-			values.TryGetValue(de.ID, out cmp);
-			if (EqualityComparer<T>.Default.Equals(value, (T)cmp)) return;
-
 			//Call the validator to see if this value is acceptable
 			if (de.DeltaValidateValueCallback != null && !de.DeltaValidateValueCallback(this, value)) return;
 
-			//If the new value is the default value remove this from the modified values list, otherwise add or update it.
+			//If the new value is the default value remove this from the modified values list, otherwise add/update it.
 			if (EqualityComparer<T>.Default.Equals(value, de.DefaultValue))
 			{
-				object temp;
+				Modifiable temp;
 				values.TryRemove(de.ID, out temp);
-				modified.AddOrUpdate(de.ID, true, (p, v) => true);
 			}
 			else
 			{
-				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
-				modified.AddOrUpdate(de.ID, true, (p, v) => true);
+				values.AddOrUpdate(de.ID, new Modifiable(value), (p, v) => new Modifiable(value));
 			}
 		}
 
 		public void ClearValue<T>(DeltaProperty<T> de)
 		{
-			object temp;
-			bool tm = modified.AddOrUpdate(de.ID, true, (p, v) => true);
-			if (values.TryRemove(de.ID, out temp) && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, de.DefaultValue, (T)temp);
+			Modifiable temp;
+			if (values.TryRemove(de.ID, out temp) && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, de.DefaultValue, (T)temp.Data);
 		}
 
 		public bool IsModified<T>(DeltaProperty<T> de)
 		{
-			return modified.ContainsKey(de.ID);
+			return values[de.ID].IsModified;
+		}
+		public Dictionary<HashID, object> GetNonDefaultValues()
+		{
+			return values.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Data);
 		}
 
-		internal bool IsModified(DeltaPropertyBase de)
+		public Dictionary<HashID, object> GetDeltaValues()
 		{
-			return modified.ContainsKey(de.ID);		
-		}
-
-		protected bool IsModified(HashID PropertyID)
-		{
-			return modified.ContainsKey(PropertyID);
-		}
-
-		internal List<DeltaPropertyBase> GetModifiedProperties()
-		{
-			return values.Keys.Where(t => IsModified(DeltaPropertyBase.FromID(t))).Select(DeltaPropertyBase.FromID).ToList();
-		}
-
-		internal List<DeltaPropertyBase> GetNonDefaultProperties()
-		{
-			return values.Select(k => DeltaPropertyBase.FromID(k.Key)).ToList();
-		}
-
-		internal object GetValue(HashID de)
-		{
-			object value = null;
-			bool tm;
-			if (modified.TryRemove(de, out tm))
-				return values.TryGetValue(de, out value) == false ? DeltaPropertyBase.FromID(ID).defaultValue : value;
-			return value;
-		}
-
-		internal void SetValue<T>(HashID de, T value)
-		{
-			if (EqualityComparer<T>.Default.Equals(value, (T)DeltaPropertyBase.FromID(de).defaultValue))
-			{
-				object temp;
-				values.TryRemove(de, out temp);
-			}
-			else
-			{
-				object temp = values.AddOrUpdate(de, value, (p, v) => { v = value; return v; });
-			}
+			KeyValuePair<HashID, Modifiable>[] il = values.ToArray();
+			Dictionary<HashID, object> dl =  il.Where(kvp => kvp.Value.IsModified).ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Data);
+			foreach (KeyValuePair<HashID, Modifiable> kvp in il)
+				kvp.Value.IsModified = false;
+			return dl;
 		}
 	}
 }

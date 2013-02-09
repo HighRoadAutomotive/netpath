@@ -290,8 +290,10 @@ namespace NETPath.Generators.NET.CS
 
 			code.AppendLine("\t\t//Properties");
 			foreach (DataElement de in o.Elements)
+			{
 				code.Append(GenerateElementXAMLCode45(de));
-			code.AppendLine();
+				code.AppendLine();
+			}
 
 			code.AppendLine("\t\t//Implicit Conversion");
 			code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
@@ -524,7 +526,6 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine(string.Format("\t\tpublic static void Set{1}(DependencyObject{2} obj, {0} value) {{ obj.SetValue{3}({1}PropertyKey, value); }}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType, o.AutoDataEnabled)), o.XAMLName, o.AutoDataEnabled ? "Ex" : "", o.AutoDataEnabled ? "Threaded" : ""));
 				code.Append(GenerateElementXAMLDPCode45(o));
 			}
-			code.AppendLine();
 			return code.ToString();
 		}
 
