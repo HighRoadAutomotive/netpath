@@ -50,6 +50,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChangeListItem.cs" />
+    <Compile Include="DeltaCollectionBase.cs" />
+    <Compile Include="DeltaObject.cs" />
+    <Compile Include="DeltaProperty.cs" />
     <Compile Include="DeltaQueue.cs" />
     <Compile Include="DeltaDictionary.cs" />
     <Compile Include="DeltaList.cs" />

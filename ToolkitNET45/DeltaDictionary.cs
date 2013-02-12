@@ -12,7 +12,7 @@ namespace System.Collections.Generic
 {
 	[Serializable]
 	[HostProtectionAttribute(SecurityAction.LinkDemand, Synchronization = true, ExternalThreading = true)]
-	public class DeltaDictionary<TKey, TValue> : IDictionary<TKey, TValue>
+	public class DeltaDictionary<TKey, TValue> : DeltaCollectionBase, IDictionary<TKey, TValue>
 	{
 		public delegate void AddRemoveEventHandler(TKey Key, TValue Value);
 		public event AddRemoveEventHandler Added;

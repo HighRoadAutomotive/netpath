@@ -17,21 +17,21 @@ namespace System.Collections.Generic
 	}
 
 	[DataContract(Namespace = "http://www.prospectivesoftware.com/")]
-	public class ChangeListItem<T>
+	public struct ChangeListItem<T>
 	{
-		[DataMember(Order = 0)] public ListItemChangeMode Mode { get; set; }
-		[DataMember(Order = 1)] public T Item { get; set; }
-		[DataMember(Order = 2)] public T OldItem { get; set; }
-		[DataMember(Order = 3)] public int Index { get; set; }
+		[DataMember(Order = 0)] public ListItemChangeMode Mode { get; private set; }
+		[DataMember(Order = 1)] public T Item { get; private set; }
+		[DataMember(Order = 2)] public T OldItem { get; private set; }
+		[DataMember(Order = 3)] public int Index { get; private set; }
 
-		public ChangeListItem(ListItemChangeMode Mode, T Item, int Index = -1)
+		public ChangeListItem(ListItemChangeMode Mode, T Item, int Index = -1) : this()
 		{
 			this.Mode = Mode;
 			this.Item = Item;
 			this.Index = Index;
 		}
 
-		public ChangeListItem(ListItemChangeMode Mode, T Item, T OldItem)
+		public ChangeListItem(ListItemChangeMode Mode, T Item, T OldItem) : this()
 		{
 			this.Mode = Mode;
 			this.Item = Item;
@@ -40,13 +40,13 @@ namespace System.Collections.Generic
 	}
 
 	[DataContract(Namespace = "http://www.prospectivesoftware.com/")]
-	public class ChangeDictionaryItem<TKey, T>
+	public struct ChangeDictionaryItem<TKey, T>
 	{
-		[DataMember(Order = 0)] public ListItemChangeMode Mode { get; set; }
-		[DataMember(Order = 1)] public TKey Key { get; set; }
-		[DataMember(Order = 2)] public T Value { get; set; }
+		[DataMember(Order = 0)] public ListItemChangeMode Mode { get; private set; }
+		[DataMember(Order = 1)] public TKey Key { get; private set; }
+		[DataMember(Order = 2)] public T Value { get; private set; }
 
-		public ChangeDictionaryItem(ListItemChangeMode Mode, TKey Key, T Value)
+		public ChangeDictionaryItem(ListItemChangeMode Mode, TKey Key, T Value) : this()
 		{
 			this.Mode = Mode;
 			this.Key = Key;

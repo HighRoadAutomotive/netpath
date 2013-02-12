@@ -12,7 +12,7 @@ using System.Windows;
 namespace System.Collections.Generic
 {
 	[Serializable]
-	public class DeltaList<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
+	public class DeltaList<T> : DeltaCollectionBase, IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
 	{
 		public delegate void AddRemoveClearedEventHandler(IEnumerable<T> Values);
 		public event AddRemoveClearedEventHandler Added;

@@ -7,12 +7,11 @@ using System.Xml.Serialization;
 
 namespace System
 {
-	[Serializable]
 	public abstract class DeltaObject
 	{
-		[NonSerialized] private readonly ConcurrentDictionary<HashID, object> values;
-		[NonSerialized] private readonly ConcurrentQueue<KeyValuePair<HashID, object>> modifications;
-		[NonSerialized] private long ChangeCount;
+		[XmlIgnore] private readonly ConcurrentDictionary<HashID, object> values;
+		[XmlIgnore] private readonly ConcurrentQueue<KeyValuePair<HashID, object>> modifications;
+		[XmlIgnore] private long ChangeCount;
 		[XmlIgnore] public long BatchInterval { get; private set; }
 
 		protected DeltaObject()
