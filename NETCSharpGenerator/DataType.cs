@@ -21,22 +21,25 @@ namespace NETPath.Generators.NET.CS
 			return o.ToString();
 		}
 
-		public static string GenerateTypeDeclaration(DataType o, bool ImpliedExtensionData = false, bool HasWinFormsDatabinding = false, bool ForceClass = false)
+		public static string GenerateTypeDeclaration(DataType o, bool ImpliedExtensionData = false, bool HasWinFormsDatabinding = false, bool ForceClass = false, bool IsDeltaObject = false)
 		{
 			var sb = new StringBuilder();
 			if (o.TypeMode == DataTypeMode.Class || ForceClass)
 			{
 				sb.AppendFormat("{0} {1}{2}{3}class {4}", GenerateScope(o.Scope), o.Partial ? "partial " : "", o.Abstract ? "abstract " : "", o.Sealed ? "sealed " : "", o.Name);
+				if (IsDeltaObject) sb.Append(" : DeltaObject");
 				if (o.InheritedTypes.Any() || ImpliedExtensionData || HasWinFormsDatabinding)
 				{
-					sb.Append(" : ");
+					if (!IsDeltaObject) sb.Append(" : ");
 					for (int i = 0; i < o.InheritedTypes.Count; i++)
 					{
+						if(IsDeltaObject && o.InheritedTypes[i].TypeMode != DataTypeMode.Interface) continue;
+						if (IsDeltaObject) sb.Append(", ");
 						sb.Append(GenerateType(o.InheritedTypes[i]));
-						if (i < o.InheritedTypes.Count - 1) sb.Append(", ");
+						if (!IsDeltaObject && i < o.InheritedTypes.Count - 1) sb.Append(", ");
 					}
-					if (ImpliedExtensionData) sb.Append(o.InheritedTypes.Count > 0 ? ", System.Runtime.Serialization.IExtensibleDataObject" : "System.Runtime.Serialization.IExtensibleDataObject");
-					if (HasWinFormsDatabinding) sb.Append(o.InheritedTypes.Count > 0 || ImpliedExtensionData ? ", System.ComponentModel.INotifyPropertyChanged" : "System.ComponentModel.INotifyPropertyChanged");
+					if (ImpliedExtensionData) sb.Append(o.InheritedTypes.Count > 0 || IsDeltaObject ? ", System.Runtime.Serialization.IExtensibleDataObject" : "System.Runtime.Serialization.IExtensibleDataObject");
+					if (HasWinFormsDatabinding) sb.Append(o.InheritedTypes.Count > 0 || IsDeltaObject || ImpliedExtensionData ? ", System.ComponentModel.INotifyPropertyChanged" : "System.ComponentModel.INotifyPropertyChanged");
 				}
 			}
 			else if (o.TypeMode == DataTypeMode.Struct)
