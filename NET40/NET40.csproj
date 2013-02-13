@@ -7,8 +7,8 @@
     <ProjectGuid>{CEE83775-21EE-449F-8CBA-125F18F7856D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NETPath.Toolkit.NET40</RootNamespace>
-    <AssemblyName>NETPath.Toolkit.NET40</AssemblyName>
+    <RootNamespace>NETPath.SDK.NET40</RootNamespace>
+    <AssemblyName>NETPath.SDK.NET40</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>

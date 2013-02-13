@@ -9,8 +9,8 @@
     <ProjectGuid>{4ABBCBD5-723C-4E2C-B9FC-FE4EBB76F2DB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NETPath.Toolkit.WinRT8</RootNamespace>
-    <AssemblyName>NETPath.Toolkit.WinRT8</AssemblyName>
+    <RootNamespace>NETPath.SDK.WinRT8</RootNamespace>
+    <AssemblyName>NETPath.SDK.WinRT8</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
