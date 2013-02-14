@@ -108,7 +108,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 				code.AppendLine(string.Format("\t{0} abstract class {1}Base : ServerDuplexBase<{1}Base, {1}Callback, I{1}Callback>, I{1}", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
 				code.AppendLine("\t{");
-				foreach (Property p in o.CallbackOperations.Where(a => a.GetType() == typeof(Property)))
+				foreach (Property p in o.ServiceOperations.Where(a => a.GetType() == typeof(Property)))
 					code.AppendLine(GenerateServerProxyPropertyCode(p));
 				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
 					code.AppendLine(GenerateServerProxyMethodCode45(m));
@@ -267,10 +267,10 @@ namespace NETPath.Generators.WinRT.CS
 			Host h = o.Parent.Owner.Namespace.GetServiceHost(o);
 			if (h != null)
 				code.Append(HostGenerator.GenerateClientCode45(h));
-			foreach (Property p in o.ServiceOperations.Where(a => a.GetType() == typeof(Property)))
-			code.AppendLine(GeneratePropertyClientCode(p));
-			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-			code.AppendLine(GenerateMethodProxyCode45(m, false, false));
+			foreach (Property p in o.ServiceOperations.Where(a => a.GetType() == typeof (Property)))
+				code.AppendLine(GeneratePropertyClientCode(p));
+			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof (Method)))
+				code.AppendLine(GenerateMethodProxyCode45(m, false, false));
 			code.AppendLine("\t}");
 
 			return code.ToString();
