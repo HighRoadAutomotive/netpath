@@ -106,5 +106,9 @@ Generated_Code #added for RIA/Silverlight projects
 _UpgradeReport_Files/
 Backup*/
 UpgradeLog*.XML
-.dll
-.pri
+
+#NETPath SDK Specific
+*.dll
+*.pri
+*.xml
+ProtoBufNet/Code/
