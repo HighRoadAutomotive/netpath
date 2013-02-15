@@ -166,7 +166,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine("\t\t//Constuctors");
 			code.AppendLine(string.Format("\t\tpublic {0}()", o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine("\t\t{");
-			code.AppendLine("\t\t\tXAMLObject = this;");
+			code.AppendLine(string.Format("\t\t\tXAMLObject = new {0}(this);", o.XAMLType.Name));
 			foreach (DataElement de in o.Elements)
 				if (de.XAMLType.TypeMode == DataTypeMode.Collection || de.XAMLType.TypeMode == DataTypeMode.Dictionary)
 					code.AppendLine(string.Format("\t\t\t{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.HasClientType ? de.ClientType : de.DataType, o.AutoDataEnabled && de.AutoDataEnabled)), de.HasClientType ? de.ClientName : de.DataName));
@@ -285,7 +285,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine("\t\t//Constructors");
 			code.AppendLine(string.Format("\t\tpublic {0}()", o.XAMLType.Name));
 			code.AppendLine("\t\t{");
-			code.AppendLine("\t\t\tDataObject = this;");
+			code.AppendLine(string.Format("\t\t\tDataObject = new {0}(this);", o.HasClientType ? o.ClientType.Name : o.Name));
 			foreach (DataElement de in o.Elements)
 				if (de.XAMLType.TypeMode == DataTypeMode.Collection || de.XAMLType.TypeMode == DataTypeMode.Dictionary || de.XAMLType.TypeMode == DataTypeMode.Dictionary || de.XAMLType.TypeMode == DataTypeMode.Stack)
 					code.AppendLine(string.Format("\t\t\t{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredXAMLType(de.XAMLType, o.AutoDataEnabled && de.AutoDataEnabled)), de.XAMLName));
