@@ -185,10 +185,11 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine("\t{");
 			if (o.HasXAMLType)
 			{
-				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get; private set; }}", o.XAMLType.Name));
+				code.AppendLine(string.Format("\t\tprivate {0} xamlObject;", o.XAMLType.Name));
+				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get {{ return xamlObject ?? (xamlObject = new {0}(this)); }} private set {{ xamlObject = value; }} }}", o.XAMLType.Name));
 				code.AppendLine();
 			}
-			code.AppendLine(GenerateProxyDCMCode(o));
+			code.Append(GenerateProxyDCMCode(o));
 			if (o.ClientHasExtensionData || o.ClientHasImpliedExtensionData)
 			{
 				code.AppendLine("\t\tpublic System.Runtime.Serialization.ExtensionDataObject ExtensionData { get; set; }");
@@ -235,7 +236,7 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine("\t\t//Constuctors");
 			code.AppendLine(string.Format("\t\tpublic {0}()", o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine("\t\t{");
-			code.AppendLine(string.Format("\t\t\tXAMLObject = new {0}(this);", o.XAMLType.Name));
+			if (o.HasXAMLType) code.AppendLine(string.Format("\t\t\tXAMLObject = new {0}(this);", o.XAMLType.Name));
 			foreach (DataElement de in o.Elements)
 				if (de.XAMLType.TypeMode == DataTypeMode.Collection || de.XAMLType.TypeMode == DataTypeMode.Dictionary)
 					code.AppendLine(string.Format("\t\t\t{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.HasClientType ? de.ClientType : de.DataType, o.AutoDataEnabled && de.AutoDataEnabled)), de.HasClientType ? de.ClientName : de.DataName));
@@ -244,7 +245,7 @@ namespace NETPath.Generators.NET.CS
 			{
 				code.AppendLine(string.Format("\t\tpublic {0}({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
 				code.AppendLine("\t\t{");
-				code.AppendLine("\t\t\tXAMLObject = Data;");
+				if (o.HasXAMLType) code.AppendLine("\t\t\tXAMLObject = Data;");
 				foreach (DataElement de in o.Elements)
 					code.Append(GenerateElementProxyConstructorCode45(de, o));
 				code.AppendLine("\t\t}");
@@ -297,6 +298,7 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine(string.Format("\t\t\t{0} t;", o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine(string.Format("\t\t\treturn __dcm.TryRemove(data.{0}, out t);", dcmid.HasClientType ? dcmid.ClientName : dcmid.DataName));
 			code.AppendLine("\t\t}");
+			code.AppendLine();
 			return code.ToString();
 		}
 
@@ -319,7 +321,8 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.XAMLType, false, false, true)));
 			code.AppendLine("\t{");
-			code.AppendLine(string.Format("\t\tpublic {0} DataObject {{ get; private set; }}", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine(string.Format("\t\tprivate {0} dataObject;", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine(string.Format("\t\tpublic {0} DataObject {{ get {{ return dataObject ?? (dataObject = new {0}(this)); }} private set {{ dataObject = value; }} }}", o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine();
 
 			if (o.XAMLHasExtensionData)
