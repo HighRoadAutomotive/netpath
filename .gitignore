@@ -108,5 +108,7 @@ Backup*/
 UpgradeLog*.XML
 
 #NETPath Specific
+Build/
 *.dll
 *.pri
+*.map
