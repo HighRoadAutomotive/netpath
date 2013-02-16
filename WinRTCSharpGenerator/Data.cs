@@ -90,7 +90,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 			if (o.EnableProtocolBuffers) code.AppendLine(string.Format("\t[ProtoBuf.ProtoContract({0}{1}{2})]", o.ProtoSkipConstructor ? "SkipConstructor = true" : "SkipConstructor = false", o.ProtoMembersOnly ? ", UseProtoMembersOnly = true" : "", o.ProtoIgnoreListHandling ? ", IgnoreListHandling = true" : ""));
 			else code.AppendLine(string.Format("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI));
-			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o)));
+			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o, false, false, o.AutoDataEnabled, o.AutoDataEnabled)));
 			code.AppendLine("\t{");
 	
 			if (o.DataHasExtensionData)
@@ -99,9 +99,11 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine();
 			}
 
+			code.Append(GenerateProxyDCMCode(o));
+
 			int protoCount = 0;
-			foreach (DataElement de in o.Elements)
-				code.Append(GenerateElementServerCode45(de, ref protoCount));
+			foreach (DataElement de in o.Elements.Where(a => !a.IsHidden))
+				code.Append(o.AutoDataEnabled ? GenerateElementDCMServerCode45(de, ref protoCount) : GenerateElementServerCode45(de, ref protoCount));
 			code.AppendLine("\t}");
 			return code.ToString();
 		}
@@ -192,7 +194,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine();
 
 			int protoCount = 0;
-			foreach (DataElement de in o.Elements)
+			foreach (DataElement de in o.Elements.Where(a => !a.IsHidden && a.IsDataMember))
 			{
 				code.Append(o.AutoDataEnabled && de.AutoDataEnabled ? GenerateElementDCMProxyCode45(de, ref protoCount) : GenerateElementProxyCode45(de, ref protoCount));
 				code.AppendLine();
@@ -252,7 +254,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine();
 
 			code.AppendLine("\t\t//Properties");
-			foreach (DataElement de in o.Elements)
+			foreach (DataElement de in o.Elements.Where(a => !a.IsHidden && a.IsDataMember))
 			{
 				code.Append(GenerateElementXAMLCodeRT8(de));
 				code.AppendLine();
@@ -315,10 +317,8 @@ namespace NETPath.Generators.WinRT.CS
 
 		private static string GenerateElementServerCode45(DataElement o, ref int ProtoCount)
 		{
-			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-			if (o.IsDataMember && o.AutoDataEnabled && !o.IsReadOnly) code.AppendLine(string.Format("\t\t{1}[DataMember] private bool {0}Changed;", o.HasClientType ? o.ClientName : o.DataName, (o.ProtocolBufferEnabled && o.Owner.EnableProtocolBuffers) ? string.Format("[ProtoBuf.ProtoMember({0})] ", ProtoCount++) : ""));
 			code.Append("\t\t");
 			if (o.IsDataMember)
 			{
@@ -331,10 +331,64 @@ namespace NETPath.Generators.WinRT.CS
 			return code.ToString();
 		}
 
+		private static string GenerateElementDCMServerCode45(DataElement o, ref int ProtoCount)
+		{
+			var code = new StringBuilder();
+			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
+			code.Append("\t\t");
+			if (o.ProtocolBufferEnabled && o.Owner.EnableProtocolBuffers) code.AppendFormat("[ProtoBuf.ProtoMember({0}{1}{2}{3}{4}{5}{6})] ", ++ProtoCount, o.ProtoDataFormat != ProtoBufDataFormat.Default ? string.Format(", DataFormat = ProtoBuf.DataFormat.{0}", System.Enum.GetName(typeof(ProtoBufDataFormat), o.ProtoDataFormat)) : "", o.IsRequired ? ", IsRequired = true" : "", o.ProtoIsPacked ? ", IsPacked = true" : "", o.ProtoOverwriteList ? ", OverwriteList = true" : "", o.ProtoAsReference ? ", AsReference = true" : "", o.ProtoDynamicType ? ", DynamicType = true" : "");
+			else code.AppendFormat("[DataMember({0}{1}{2}Name = \"{3}\")] ", o.EmitDefaultValue ? "EmitDefaultValue = false, " : "", o.IsRequired ? "IsRequired = true, " : "", o.ProtocolBufferEnabled ? string.Format("Order = {0}, ", ProtoCount) : o.Order >= 0 ? string.Format("Order = {0}, ", o.Order) : "", o.HasClientType ? o.ClientName : o.DataName);
+			code.AppendLine(string.Format("public {0} {1} {{ get {{ return GetValue({1}Property); }} {2}set {{ SetValue({1}Property, value); {3}}} }}", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType : o.DataType, o.AutoDataEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : "", o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : ""));
+			if (o.XAMLType.TypeMode == DataTypeMode.Collection)
+			{
+				code.AppendLine(string.Format("\t\tpublic static readonly DeltaProperty<DeltaList<{3}>> {1}Property = DeltaProperty<{3}>.RegisterList<{3}>(\"{1}\", typeof({0}), (s, o, n) => {{ var t = s as {2}; if (t == null) return;", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType : o.DataType, o.AutoDataEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType.CollectionGenericType : o.DataType.CollectionGenericType)));
+				code.AppendLine(string.Format("\t\t\tn.Added += (x) => t.{0}Added(x);", o.HasClientType ? o.ClientName : o.DataName));
+				code.AppendLine(string.Format("\t\t\tn.Removed += (x) => t.{0}Removed(x);", o.HasClientType ? o.ClientName : o.DataName));
+				code.AppendLine(string.Format("\t\t\tn.Cleared += (x) => t.{0}Cleared(x);", o.HasClientType ? o.ClientName : o.DataName));
+				code.AppendLine(string.Format("\t\t\tn.Inserted += (idx, x) => t.{0}Inserted(idx, x);", o.HasClientType ? o.ClientName : o.DataName));
+				code.AppendLine(string.Format("\t\t\tn.RemovedAt += (idx, x) => t.{0}RemovedAt(idx, x);", o.HasClientType ? o.ClientName : o.DataName));
+				code.AppendLine(string.Format("\t\t\tn.Moved += (x, nidx) => t.{0}Moved(x, nidx);", o.HasClientType ? o.ClientName : o.DataName));
+				code.AppendLine(string.Format("\t\t\tn.Replaced += (ox, nx) => t.{0}Replaced(ox, nx);", o.HasClientType ? o.ClientName : o.DataName));
+				code.AppendLine("\t\t\to.ClearEventHandlers();");
+				code.AppendLine("\t\t});");
+				code.AppendLine(string.Format("\t\tpartial void {0}Added(IEnumerable<{1}> Values);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.CollectionGenericType : o.DataType.CollectionGenericType))));
+				code.AppendLine(string.Format("\t\tpartial void {0}Removed(IEnumerable<{1}> Values);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.CollectionGenericType : o.DataType.CollectionGenericType))));
+				code.AppendLine(string.Format("\t\tpartial void {0}Cleared(IEnumerable<{1}> Values);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.CollectionGenericType : o.DataType.CollectionGenericType))));
+				code.AppendLine(string.Format("\t\tpartial void {0}Inserted(int Index, IEnumerable<{1}> Values);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.CollectionGenericType : o.DataType.CollectionGenericType))));
+				code.AppendLine(string.Format("\t\tpartial void {0}RemovedAt(int Index, IEnumerable<{1}> Values);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.CollectionGenericType : o.DataType.CollectionGenericType))));
+				code.AppendLine(string.Format("\t\tpartial void {0}Moved({1} Value, int Index);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.CollectionGenericType : o.DataType.CollectionGenericType))));
+				code.AppendLine(string.Format("\t\tpartial void {0}Replaced({1} OldValue, {1} NewValue);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.CollectionGenericType : o.DataType.CollectionGenericType))));
+			}
+			else if (o.XAMLType.TypeMode == DataTypeMode.Stack)
+			{
+			}
+			else if (o.XAMLType.TypeMode == DataTypeMode.Queue)
+			{
+			}
+			else if (o.XAMLType.TypeMode == DataTypeMode.Dictionary)
+			{
+				code.AppendLine(string.Format("\t\tpublic static readonly DeltaProperty<DeltaDictionary<{3}, {4}>> {1}Property = DeltaProperty<{3}>.RegisterDictionary<{3}, {4}>(\"{1}\", typeof({0}), (s, o, n) => {{ var t = s as {2}; if (t == null) return;", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType : o.DataType, o.AutoDataEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType.DictionaryKeyGenericType : o.DataType.DictionaryKeyGenericType), DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType.DictionaryValueGenericType : o.DataType.DictionaryValueGenericType)));
+				code.AppendLine(string.Format("\t\t\tn.Added += (xk, xv) => t.{0}Added(xk, xv);", o.HasClientType ? o.ClientName : o.DataName));
+				code.AppendLine(string.Format("\t\t\tn.Removed += (xk, xv) => t.{0}Removed(xk, xv);", o.HasClientType ? o.ClientName : o.DataName));
+				code.AppendLine(string.Format("\t\t\tn.Cleared += (x) => t.{0}Cleared(x);", o.HasClientType ? o.ClientName : o.DataName));
+				code.AppendLine(string.Format("\t\t\tn.Updated += (xk, ox, nx) => t.{0}Updated(xk, ox, nx);", o.HasClientType ? o.ClientName : o.DataName));
+				code.AppendLine("\t\t\to.ClearEventHandlers();");
+				code.AppendLine("\t\t});");
+				code.AppendLine(string.Format("\t\tpartial void {0}Added({1} Key, {2} Value);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.DictionaryKeyGenericType : o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.DictionaryValueGenericType : o.DataType.DictionaryValueGenericType))));
+				code.AppendLine(string.Format("\t\tpartial void {0}Removed({1} Key, {2} Value);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.DictionaryKeyGenericType : o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.DictionaryValueGenericType : o.DataType.DictionaryValueGenericType))));
+				code.AppendLine(string.Format("\t\tpartial void {0}Cleared(IEnumerable<KeyValuePair<{1}, {2}>> Values);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.DictionaryKeyGenericType : o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.DictionaryValueGenericType : o.DataType.DictionaryValueGenericType))));
+				code.AppendLine(string.Format("\t\tpartial void {0}Updated({1} Key, {2} OldValue, {2} NewValue);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.DictionaryKeyGenericType : o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.DictionaryValueGenericType : o.DataType.DictionaryValueGenericType))));
+			}
+			else
+			{
+				code.AppendLine(string.Format("\t\tpublic static readonly DeltaProperty<{3}> {1}Property = DeltaProperty<{3}>.Register<{3}>(\"{1}\", typeof({0}), default({3}), (s, o, n) => {{ var t = s as {2}; if (t == null) return; t.{1}PropertyChanged(o, n); }});", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType : o.DataType, o.AutoDataEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.XAMLName));
+				code.AppendLine(string.Format("\t\tpartial void {0}PropertyChanged({1} OldValue, {1} NewValue);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType : o.DataType, o.AutoDataEnabled))));
+			}
+			return code.ToString();
+		}
+
 		private static string GenerateElementProxyCode45(DataElement o, ref int ProtoCount)
 		{
-			if (o.IsHidden) return "";
-			if (!o.IsDataMember) return "";
 			var code = new StringBuilder();
 			code.AppendLine(string.Format("\t\tprivate {0} {1}Field;", DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.HasClientType ? o.ClientName : o.DataName));
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
@@ -347,8 +401,6 @@ namespace NETPath.Generators.WinRT.CS
 
 		private static string GenerateElementDCMProxyCode45(DataElement o, ref int ProtoCount)
 		{
-			if (o.IsHidden) return "";
-			if (!o.IsDataMember) return "";
 			var code = new StringBuilder();
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 			code.Append("\t\t");
