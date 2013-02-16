@@ -111,7 +111,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Utilities.WinRT8">
-      <HintPath>..\..\..\System.Utilities\Build\System.Utilities.WinRT8.dll</HintPath>
+      <HintPath>..\System.Utilities\Build\System.Utilities.WinRT8.dll</HintPath>
     </Reference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">

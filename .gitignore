@@ -111,4 +111,5 @@ UpgradeLog*.XML
 *.dll
 *.pri
 *.xml
-ProtoBufNet/Code/
+ProtoBufNet/
+System.Utilities/
