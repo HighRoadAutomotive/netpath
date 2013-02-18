@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Xml.Serialization;
 
@@ -25,15 +26,16 @@ namespace System
 	[Serializable]
 	public abstract class DeltaObject
 	{
-		[NonSerialized] private readonly ConcurrentDictionary<HashID, object> values;
-		[NonSerialized] private readonly ConcurrentQueue<KeyValuePair<HashID, object>> modifications;
-		[NonSerialized] private long ChangeCount;
-		[XmlIgnore] public long BatchInterval { get; private set; }
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private ConcurrentDictionary<HashID, object> values;
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private ConcurrentQueue<KeyValuePair<HashID, object>> modifications;
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private long ChangeCount;
+		[IgnoreDataMember, XmlIgnore] public long BatchInterval { get; protected set; }
 
 		protected DeltaObject()
 		{
 			modifications = new ConcurrentQueue<KeyValuePair<HashID, object>>();
 			values = new ConcurrentDictionary<HashID, object>();
+			ChangeCount = 0;
 			BatchInterval = -1;
 		}
 
@@ -41,6 +43,7 @@ namespace System
 		{
 			modifications = new ConcurrentQueue<KeyValuePair<HashID, object>>();
 			values = new ConcurrentDictionary<HashID, object>();
+			ChangeCount = 0;
 			this.BatchInterval = BatchInterval;
 		}
 
@@ -161,6 +164,14 @@ namespace System
 			if (ChangeCount < BatchInterval) return;
 			Threading.Interlocked.Exchange(ref ChangeCount, 0);
 			BatchUpdates();
+		}
+
+		protected virtual void OnDeserializingMethod(StreamingContext context)
+		{
+			modifications = new ConcurrentQueue<KeyValuePair<HashID, object>>();
+			values = new ConcurrentDictionary<HashID, object>();
+			ChangeCount = 0;
+			BatchInterval = -1;
 		}
 
 		protected abstract void BatchUpdates();
