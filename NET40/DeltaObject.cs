@@ -75,7 +75,7 @@ namespace System
 				if (tt != null) tt.ClearChangedHandlers();
 				
 				//Call the property changed callback
-				if (de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, de.DefaultValue);
+				if (temp != null && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, de.DefaultValue);
 			}
 			else
 			{
@@ -89,7 +89,7 @@ namespace System
 				IncrementChangeCount();
 
 				//Call the property changed callback
-				if (de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, value);
+				if (temp != null && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, value);
 			}
 		}
 
