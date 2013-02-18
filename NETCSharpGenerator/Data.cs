@@ -343,9 +343,9 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine(string.Format("\t\t\treturn __dcm.TryRemove(data.{0}, out t);", dcmid.HasClientType ? dcmid.ClientName : dcmid.DataName));
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t\t[OnDeserializing]");
-			code.AppendLine("\t\tprotected override void OnDeserializingMethod(StreamingContext context)");
+			code.AppendLine("\t\tprotected void OnDeserializingMethod(StreamingContext context)");
 			code.AppendLine("\t\t{");
-			code.AppendLine("\t\t\tbase.OnDeserializingMethod(context);");
+			code.AppendLine("\t\t\tbase.OnDeserializingBase(context);");
 			code.AppendLine(string.Format("\t\t\tBatchInterval = {0};", o.AutoDataBatchCount > 0 ? o.AutoDataBatchCount : -1));
 			code.AppendLine("\t\t}");
 			code.AppendLine();
