@@ -231,6 +231,12 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine(string.Format("\t\t\t{0} t;", o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine(string.Format("\t\t\treturn __dcm.TryRemove(data.{0}, out t);", dcmid.HasClientType ? dcmid.ClientName : dcmid.DataName));
 			code.AppendLine("\t\t}");
+			code.AppendLine("\t\t[OnDeserializing]");
+			code.AppendLine("\t\tprotected override void OnDeserializingMethod(StreamingContext context)");
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tbase.OnDeserializingMethod(context);");
+			code.AppendLine(string.Format("\t\t\tBatchInterval = {0};", o.AutoDataBatchCount > 0 ? o.AutoDataBatchCount : -1));
+			code.AppendLine("\t\t}");
 			code.AppendLine();
 			return code.ToString();
 		}
