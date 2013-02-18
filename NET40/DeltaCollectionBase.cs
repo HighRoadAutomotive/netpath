@@ -21,9 +21,10 @@ using System.Threading.Tasks;
 
 namespace System.Collections.Generic
 {
+	[Serializable]
 	public abstract class DeltaCollectionBase
 	{
-		internal EventHandler Changed;
+		[NonSerialized] internal EventHandler Changed;
 
 		internal void ClearChangedHandlers()
 		{
