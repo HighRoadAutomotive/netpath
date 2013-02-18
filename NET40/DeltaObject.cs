@@ -166,7 +166,7 @@ namespace System
 			BatchUpdates();
 		}
 
-		protected virtual void OnDeserializingMethod(StreamingContext context)
+		protected void OnDeserializingBase(StreamingContext context)
 		{
 			modifications = new ConcurrentQueue<KeyValuePair<HashID, object>>();
 			values = new ConcurrentDictionary<HashID, object>();
