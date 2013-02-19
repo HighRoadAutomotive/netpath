@@ -74,7 +74,7 @@ namespace NETPath.Interface.Data
 	}
 
 	[ValueConversion(typeof(DataUpdateMode), typeof(int))]
-	public class AutoDataUpdateModeConverter : IValueConverter
+	public class DCMUpdateModeConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{

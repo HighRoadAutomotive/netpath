@@ -47,7 +47,7 @@ namespace NETPath.Projects
 				if (t.XAMLType == null)
 				{
 					t.XAMLType = Convert.ToBoolean(e.NewValue) == false ? null : new DataType(t.TypeMode) {ID = t.ID, Parent = t.Parent, Name = t.Name + "XAML", Scope = t.Scope, Partial = t.Partial, Abstract = t.Abstract, Sealed = t.Sealed};
-					if (t.XAMLType != null) t.XAMLType.InheritedTypes.Add(new DataType(t.AutoDataEnabled ? "DependencyObjectEx" : "DependencyObject", DataTypeMode.Class));
+					if (t.XAMLType != null) t.XAMLType.InheritedTypes.Add(new DataType(t.CMDEnabled ? "DependencyObjectEx" : "DependencyObject", DataTypeMode.Class));
 				}
 			}
 		}
@@ -64,11 +64,11 @@ namespace NETPath.Projects
 		public ObservableCollection<DataElement> Elements { get { return (ObservableCollection<DataElement>)GetValue(ElementsProperty); } set { SetValue(ElementsProperty, value); } }
 		public static readonly DependencyProperty ElementsProperty = DependencyProperty.Register("Elements", typeof(ObservableCollection<DataElement>), typeof(Data));
 
-		//AutoData
-		public bool AutoDataEnabled { get { return (bool)GetValue(AutoDataEnabledProperty); } set { SetValue(AutoDataEnabledProperty, value); } }
-		public static readonly DependencyProperty AutoDataEnabledProperty = DependencyProperty.Register("AutoDataEnabled", typeof(bool), typeof(Data), new PropertyMetadata(false, AutoDataEnabledChangedCallback));
+		//Data Change Messaging
+		public bool CMDEnabled { get { return (bool)GetValue(CMDEnabledProperty); } set { SetValue(CMDEnabledProperty, value); } }
+		public static readonly DependencyProperty CMDEnabledProperty = DependencyProperty.Register("DCMEnabled", typeof(bool), typeof(Data), new PropertyMetadata(false, CMDEnabledChangedCallback));
 
-		private static void AutoDataEnabledChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		private static void CMDEnabledChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
 		{
 			var t = o as Data;
 			if (t == null) return;
@@ -82,11 +82,11 @@ namespace NETPath.Projects
 			if (wdo != null && Convert.ToBoolean(e.NewValue)) wdo.Name = "DependencyObjectEx";
 		}
 
-		public int AutoDataBatchCount { get { return (int)GetValue(AutoDataBatchCountProperty); } set { SetValue(AutoDataBatchCountProperty, value); } }
-		public static readonly DependencyProperty AutoDataBatchCountProperty = DependencyProperty.Register("AutoDataBatchCount", typeof(int), typeof(Data), new PropertyMetadata(0));
+		public int DCMBatchCount { get { return (int)GetValue(DCMBatchCountProperty); } set { SetValue(DCMBatchCountProperty, value); } }
+		public static readonly DependencyProperty DCMBatchCountProperty = DependencyProperty.Register("DCMBatchCount", typeof(int), typeof(Data), new PropertyMetadata(0));
 
-		[IgnoreDataMember] public bool HasAutoDataID { get { return Elements.Any(a => a.IsValidAutoDataID && a.IsAutoDataID); } }
-		[IgnoreDataMember] public DataElement AutoDataID { get { return Elements.FirstOrDefault(a => a.IsAutoDataID && a.IsValidAutoDataID); } }
+		[IgnoreDataMember] public bool HasDCMID { get { return Elements.Any(a => a.IsValidDCMID && a.IsDCMID); } }
+		[IgnoreDataMember] public DataElement DCMID { get { return Elements.FirstOrDefault(a => a.IsDCMID && a.IsValidDCMID); } }
 
 		//Protocol Buffers
 		public bool EnableProtocolBuffers { get { return (bool)GetValue(EnableProtocolBuffersProperty); } set { SetValue(EnableProtocolBuffersProperty, value); } }
@@ -280,7 +280,7 @@ namespace NETPath.Projects
 			var de = o as DataElement;
 			if (de == null) return;
 
-			de.UpdateValidAutoDataID();
+			de.UpdateValidDCMID();
 
 			if (de.Owner == null) return;
 			var nt = p.NewValue as DataType;
@@ -335,7 +335,7 @@ namespace NETPath.Projects
 			var de = o as DataElement;
 			if (de == null) return;
 
-			de.UpdateValidAutoDataID();
+			de.UpdateValidDCMID();
 
 			var nt = p.NewValue as DataType;
 			if (nt == null) return;
@@ -380,7 +380,7 @@ namespace NETPath.Projects
 			var de = o as DataElement;
 			if (de == null) return;
 
-			de.UpdateValidAutoDataID();
+			de.UpdateValidDCMID();
 		}
 
 		public string XAMLName { get { return (string)GetValue(XAMLNameProperty); } set { SetValue(XAMLNameProperty, value); } }
@@ -422,7 +422,7 @@ namespace NETPath.Projects
 		public int Order { get { return (int)GetValue(OrderProperty); } set { SetValue(OrderProperty, value); } }
 		public static readonly DependencyProperty OrderProperty = DependencyProperty.Register("Order", typeof(int), typeof(DataElement), new PropertyMetadata(-1));
 
-		//WPF Class Settings
+		//XAML Class Settings
 		public bool IsAttached { get { return (bool)GetValue(IsAttachedProperty); } set { SetValue(IsAttachedProperty, value); } }
 		public static readonly DependencyProperty IsAttachedProperty = DependencyProperty.Register("IsAttached", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
 
@@ -441,27 +441,27 @@ namespace NETPath.Projects
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(DataElement));
 
-		//AutoData
-		public bool AutoDataEnabled { get { return (bool)GetValue(AutoDataEnabledProperty); } set { SetValue(AutoDataEnabledProperty, value); } }
-		public static readonly DependencyProperty AutoDataEnabledProperty = DependencyProperty.Register("AutoDataEnabled", typeof(bool), typeof(DataElement), new PropertyMetadata(false, AutoDataEnabledChangedCallback));
+		//Dat Change Messaging
+		public bool DCMEnabled { get { return (bool)GetValue(DCMEnabledProperty); } set { SetValue(DCMEnabledProperty, value); } }
+		public static readonly DependencyProperty DCMEnabledProperty = DependencyProperty.Register("DCMEnabled", typeof(bool), typeof(DataElement), new PropertyMetadata(false, DCMEnabledChangedCallback));
 
-		private static void AutoDataEnabledChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs p)
+		private static void DCMEnabledChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs p)
 		{
 			var de = o as DataElement;
 			if (de == null) return;
 
-			de.UpdateValidAutoDataID();
+			de.UpdateValidDCMID();
 		}
 
-		public bool IsValidAutoDataID { get { return (bool)GetValue(IsValidAutoDataIDProperty); } private set { SetValue(IsValidAutoDataIDPropertyKey, value); } }
-		public static readonly DependencyPropertyKey IsValidAutoDataIDPropertyKey = DependencyProperty.RegisterReadOnly("IsValidAutoDataID", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
-		public static readonly DependencyProperty IsValidAutoDataIDProperty = IsValidAutoDataIDPropertyKey.DependencyProperty;
+		public bool IsValidDCMID { get { return (bool)GetValue(IsValidDCMIDProperty); } private set { SetValue(IsValidDCMIDPropertyKey, value); } }
+		public static readonly DependencyPropertyKey IsValidDCMIDPropertyKey = DependencyProperty.RegisterReadOnly("IsValidDCMID", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
+		public static readonly DependencyProperty IsValidDCMIDProperty = IsValidDCMIDPropertyKey.DependencyProperty;
 
-		public bool IsAutoDataID { get { return (bool)GetValue(IsAutoDataIDProperty); } set { SetValue(IsAutoDataIDProperty, value); } }
-		public static readonly DependencyProperty IsAutoDataIDProperty = DependencyProperty.Register("IsAutoDataID", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
+		public bool IsDCMID { get { return (bool)GetValue(IsDCMIDProperty); } set { SetValue(IsDCMIDProperty, value); } }
+		public static readonly DependencyProperty IsDCMIDProperty = DependencyProperty.Register("IsDCMID", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
 
-		public DataUpdateMode AutoDataUpdateMode { get { return (DataUpdateMode)GetValue(AutoDataUpdateModeProperty); } set { SetValue(AutoDataUpdateModeProperty, value); } }
-		public static readonly DependencyProperty AutoDataUpdateModeProperty = DependencyProperty.Register("AutoDataUpdateMode", typeof(DataUpdateMode), typeof(DataElement), new PropertyMetadata(DataUpdateMode.Immediate));
+		public DataUpdateMode DCMUpdateMode { get { return (DataUpdateMode)GetValue(DCMUpdateModeProperty); } set { SetValue(DCMUpdateModeProperty, value); } }
+		public static readonly DependencyProperty DCMUpdateModeProperty = DependencyProperty.Register("DCMUpdateMode", typeof(DataUpdateMode), typeof(DataElement), new PropertyMetadata(DataUpdateMode.Immediate));
 
 		//Protocol Buffers 
 		public bool ProtocolBufferEnabled { get { return (bool)GetValue(ProtocolBufferEnabledProperty); } set { SetValue(ProtocolBufferEnabledProperty, value); } }
@@ -514,6 +514,7 @@ namespace NETPath.Projects
 			Documentation = new Documentation { IsProperty = true };
 			HasClientType = false;
 			HasXAMLType = true;
+			if (DataType.TypeMode == DataTypeMode.Collection || DataType.TypeMode == DataTypeMode.Dictionary || DataType.TypeMode == DataTypeMode.Queue || DataType.TypeMode == DataTypeMode.Stack) ProtoOverwriteList = true;
 		}
 
 		public override string ToString()
@@ -521,14 +522,14 @@ namespace NETPath.Projects
 			return DataName;
 		}
 
-		private void UpdateValidAutoDataID()
+		private void UpdateValidDCMID()
 		{
 			bool dtp = DataType.Primitive == PrimitiveTypes.GUID;
 			bool ctp = true;
 			if (HasClientType) ctp = ClientType.Primitive == PrimitiveTypes.GUID;
 			bool xtp = true;
 			if (HasXAMLType) xtp = XAMLType.Primitive == PrimitiveTypes.GUID;
-			IsValidAutoDataID = dtp && ctp && xtp && AutoDataEnabled;
+			IsValidDCMID = dtp && ctp && xtp && DCMEnabled;
 		}
 
 		public IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)

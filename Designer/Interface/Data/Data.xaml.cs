@@ -41,7 +41,7 @@ namespace NETPath.Interface.Data
 
 		private void UpdateBatchSize_ValueChanged(object Sender, PropertyChangedEventArgs<double> E)
 		{
-			OpenType.AutoDataBatchCount = Convert.ToInt32(E.NewValue);
+			OpenType.DCMBatchCount = Convert.ToInt32(E.NewValue);
 		}
 
 		private void AddMemberType_ValidationChanged(object Sender, RoutedEventArgs E)
