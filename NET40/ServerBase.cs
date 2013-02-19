@@ -63,10 +63,7 @@ namespace System.ServiceModel
 		}
 	}
 
-	public abstract class ServerDuplexBase<T, TCallback, TInterface> : ServerBase<T>
-		where T : ServerDuplexBase<T, TCallback, TInterface>
-		where TCallback : ServerCallbackBase<TInterface>, new()
-		where TInterface : class
+	public abstract class ServerDuplexBase<T, TCallback, TInterface> : ServerBase<T> where T : ServerDuplexBase<T, TCallback, TInterface> where TCallback : ServerCallbackBase<TInterface>, new() where TInterface : class
 	{
 		private static DeltaDictionary<Guid, T> Clients { get; set; }
 
@@ -108,7 +105,7 @@ namespace System.ServiceModel
 		{
 			try
 			{
-				Callback = new TCallback { MaxReconnectionAttempts = MaxReconnectionAttempts, Disconnected = CallbackDisconnected, Reconnected = CallbackReconnected };
+				Callback = new TCallback {MaxReconnectionAttempts = MaxReconnectionAttempts, Disconnected = CallbackDisconnected, Reconnected = CallbackReconnected};
 
 				base.Initialize();
 
@@ -144,13 +141,13 @@ namespace System.ServiceModel
 
 		private void CallbackDisconnected()
 		{
-			if (Disconnected())
+			if(Disconnected())
 				Terminate();
 		}
 
 		private void CallbackReconnected()
 		{
-			if(!IsTerminated)
+			if (!IsTerminated)
 				Reconnected();
 		}
 	}
@@ -171,38 +168,44 @@ namespace System.ServiceModel
 			MaxReconnectionAttempts = 0;
 		}
 
-		public bool Reconnect()
+		public Task<bool> Reconnect()
 		{
-			Threading.Interlocked.Exchange(ref __callback, null);
-			if (MaxReconnectionAttempts == 0) return false;
-			Exception stored = null;
-			for (int i = 0; i < MaxReconnectionAttempts; i++)
-				try { Threading.Interlocked.CompareExchange(ref __callback, OperationContext.Current.GetCallbackChannel<TCallback>(), null); }
-				catch (Exception ex) { stored = ex; }
-			if (stored != null)
+			return Task.Run(() =>
 			{
-				Disconnected();
-				throw stored;
-			}
-			Reconnected();
-			return IsCallbackConnected;
+				Threading.Interlocked.Exchange(ref __callback, null);
+				if (MaxReconnectionAttempts == 0) return false;
+				Exception stored = null;
+				for (int i = 0; i < MaxReconnectionAttempts; i++)
+					try { Threading.Interlocked.CompareExchange(ref __callback, OperationContext.Current.GetCallbackChannel<TCallback>(), null); }
+					catch (Exception ex) { stored = ex; }
+				if (stored != null)
+				{
+					Disconnected();
+					throw stored;
+				}
+				Reconnected();
+				return IsCallbackConnected;
+			});
 		}
 
-		public bool Reconnect(ushort MaxReconnectionAttempts)
+		public Task<bool> Reconnect(ushort MaxReconnectionAttempts)
 		{
-			Threading.Interlocked.Exchange(ref __callback, null);
-			if (MaxReconnectionAttempts == 0) return false;
-			Exception stored = null;
-			for (int i = 0; i < MaxReconnectionAttempts; i++)
-				try { Threading.Interlocked.CompareExchange(ref __callback, OperationContext.Current.GetCallbackChannel<TCallback>(), null); }
-				catch (Exception ex) { stored = ex; }
-			if (stored != null)
+			return Task.Run(() =>
 			{
-				Disconnected();
-				throw stored;
-			}
-			Reconnected();
-			return IsCallbackConnected;
+				Threading.Interlocked.Exchange(ref __callback, null);
+				if (MaxReconnectionAttempts == 0) return false;
+				Exception stored = null;
+				for (int i = 0; i < MaxReconnectionAttempts; i++)
+					try { Threading.Interlocked.CompareExchange(ref __callback, OperationContext.Current.GetCallbackChannel<TCallback>(), null); }
+					catch (Exception ex) { stored = ex; }
+				if (stored != null)
+				{
+					Disconnected();
+					throw stored;
+				}
+				Reconnected();
+				return IsCallbackConnected;
+			});
 		}
 
 		protected class InvokeAsyncCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
@@ -220,8 +223,8 @@ namespace System.ServiceModel
 
 		protected void InvokeAsync(BeginOperationDelegate beginOperationDelegate, object[] inValues, EndOperationDelegate endOperationDelegate, System.Threading.SendOrPostCallback operationCompletedCallback, object userState)
 		{
-			if (beginOperationDelegate == null) throw new ArgumentNullException("Argument 'beginOperationDelegate' cannot be null.");
-			if (endOperationDelegate == null) throw new ArgumentNullException("Argument 'endOperationDelegate' cannot be null.");
+			if (beginOperationDelegate == null) throw new ArgumentNullException("beginOperationDelegate");
+			if (endOperationDelegate == null) throw new ArgumentNullException("endOperationDelegate");
 			AsyncCallback cb = delegate(IAsyncResult ar)
 			{
 				object[] results = null;

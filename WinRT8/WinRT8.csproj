@@ -95,6 +95,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ChangeListItem.cs" />
+    <Compile Include="ClientBase.cs" />
     <Compile Include="DeltaCollectionBase.cs" />
     <Compile Include="DeltaDictionary.cs" />
     <Compile Include="DeltaList.cs" />

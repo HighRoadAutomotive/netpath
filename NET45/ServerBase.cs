@@ -223,8 +223,8 @@ namespace System.ServiceModel
 
 		protected void InvokeAsync(BeginOperationDelegate beginOperationDelegate, object[] inValues, EndOperationDelegate endOperationDelegate, System.Threading.SendOrPostCallback operationCompletedCallback, object userState)
 		{
-			if (beginOperationDelegate == null) throw new ArgumentNullException("Argument 'beginOperationDelegate' cannot be null.");
-			if (endOperationDelegate == null) throw new ArgumentNullException("Argument 'endOperationDelegate' cannot be null.");
+			if (beginOperationDelegate == null) throw new ArgumentNullException("beginOperationDelegate");
+			if (endOperationDelegate == null) throw new ArgumentNullException("endOperationDelegate");
 			AsyncCallback cb = delegate(IAsyncResult ar)
 			{
 				object[] results = null;
