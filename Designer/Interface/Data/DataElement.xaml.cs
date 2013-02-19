@@ -71,11 +71,6 @@ namespace NETPath.Interface.Data
 			Element.XAMLType = null;
 			XAMLName.Text = "";
 		}
-
-		private void UpdateTimeout_ValueChanged(object Sender, PropertyChangedEventArgs<double> E)
-		{
-			Element.AutoDataTimeout = Convert.ToUInt32(E);
-		}
 	}
 
 	[ValueConversion(typeof(DataUpdateMode), typeof(int))]

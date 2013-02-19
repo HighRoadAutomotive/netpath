@@ -463,9 +463,6 @@ namespace NETPath.Projects
 		public DataUpdateMode AutoDataUpdateMode { get { return (DataUpdateMode)GetValue(AutoDataUpdateModeProperty); } set { SetValue(AutoDataUpdateModeProperty, value); } }
 		public static readonly DependencyProperty AutoDataUpdateModeProperty = DependencyProperty.Register("AutoDataUpdateMode", typeof(DataUpdateMode), typeof(DataElement), new PropertyMetadata(DataUpdateMode.Immediate));
 
-		public uint AutoDataTimeout { get { return (uint)GetValue(AutoDataTimeoutProperty); } set { SetValue(AutoDataTimeoutProperty, value); } }
-		public static readonly DependencyProperty AutoDataTimeoutProperty = DependencyProperty.Register("AutoDataTimeout", typeof(uint), typeof(DataElement), new PropertyMetadata((uint)0));
-
 		//Protocol Buffers 
 		public bool ProtocolBufferEnabled { get { return (bool)GetValue(ProtocolBufferEnabledProperty); } set { SetValue(ProtocolBufferEnabledProperty, value); } }
 		public static readonly DependencyProperty ProtocolBufferEnabledProperty = DependencyProperty.Register("ProtocolBufferEnabled", typeof(bool), typeof(DataElement), new PropertyMetadata(false));

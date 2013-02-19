@@ -123,7 +123,7 @@ namespace NETPath.Generators.WinRT.CS
 			if (o.HasXAMLType)
 			{
 				code.AppendLine(string.Format("\t\tprivate {0} xamlObject;", o.XAMLType.Name));
-				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get {{ return xamlObject ?? (xamlObject = new {0}(this)); }} private set {{ xamlObject = value; }} }}", o.XAMLType.Name));
+				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get {{ if(xamlObject == null) Application.Current.Dispatcher.Invoke(() => {{ xamlObject = new {0}(this); }}, System.Windows.Threading.DispatcherPriority.Normal); return xamlObject; }} private set {{ xamlObject = value; }} }}", o.XAMLType.Name));
 				code.AppendLine();
 			}
 			code.Append(GenerateProxyDCMCode(o));
@@ -169,7 +169,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine("\t\t//Constuctors");
 			code.AppendLine(string.Format("\t\tpublic {0}()", o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine("\t\t{");
-			if(o.HasXAMLType) code.AppendLine(string.Format("\t\t\tXAMLObject = new {0}(this);", o.XAMLType.Name));
+			if (o.HasXAMLType) code.AppendLine(string.Format("\t\t\tApplication.Current.Dispatcher.Invoke(() => {{ XAMLObject = new {0}(this); }}, System.Windows.Threading.DispatcherPriority.Normal);", o.XAMLType.Name));
 			foreach (DataElement de in o.Elements)
 				if (de.XAMLType.TypeMode == DataTypeMode.Collection || de.XAMLType.TypeMode == DataTypeMode.Dictionary)
 					code.AppendLine(string.Format("\t\t\t{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.HasClientType ? de.ClientType : de.DataType, o.AutoDataEnabled && de.AutoDataEnabled)), de.HasClientType ? de.ClientName : de.DataName));
@@ -314,7 +314,9 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine(string.Format("\t\tpublic static {0} ConvertToXAMLObject({1} Data)", o.XAMLType.Name, o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine("\t\t{");
 			code.AppendLine("\t\t\tif (Data.XAMLObject != null) return Data.XAMLObject;");
-			code.AppendLine(string.Format("\t\t\treturn new {0}(Data);", o.XAMLType.Name));
+			code.AppendLine(string.Format("\t\t\t{0} temp;", o.XAMLType.Name));
+			code.AppendLine(string.Format("\t\t\tApplication.Current.Dispatcher.Invoke(() => {{ temp = new {0}(this); }}, System.Windows.Threading.DispatcherPriority.Normal);", o.XAMLType.Name));
+			code.AppendLine("\t\t\treturn temp;");
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t}");
 
