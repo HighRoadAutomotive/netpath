@@ -314,9 +314,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine(string.Format("\t\tpublic static {0} ConvertToXAMLObject({1} Data)", o.XAMLType.Name, o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine("\t\t{");
 			code.AppendLine("\t\t\tif (Data.XAMLObject != null) return Data.XAMLObject;");
-			code.AppendLine(string.Format("\t\t\t{0} temp;", o.XAMLType.Name));
-			code.AppendLine(string.Format("\t\t\tApplication.Current.Dispatcher.Invoke(() => {{ temp = new {0}(this); }}, System.Windows.Threading.DispatcherPriority.Normal);", o.XAMLType.Name));
-			code.AppendLine("\t\t\treturn temp;");
+			code.AppendLine(string.Format("\t\t\treturn new {0}(this);", o.XAMLType.Name));
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t}");
 
