@@ -48,13 +48,13 @@ namespace Windows.UI.Xaml
 			await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => SetValue(dp, value));
 		}
 
-		public object GetValueExternal<T>(DependencyExternal<T> de)
+		public T GetValueExternal<T>(DependencyExternal<T> de)
 		{
 			if (de.IsUnset)
 				throw new ArgumentException(string.Format("External value '{0}' in type '{1}' is unset. You must set a value before accessing the property.", de.Name, de.OwnerType));
 
 			object value;
-			return values.TryGetValue(de.GetHashCode(), out value) == false ? de.DefaultValue : value;
+			return values.TryGetValue(de.GetHashCode(), out value) == false ? de.DefaultValue : (T)value;
 		}
 		
 		public void SetValueExternal<T>(DependencyExternal<T> de, T value)
