@@ -170,7 +170,7 @@ namespace System.ServiceModel
 
 		public Task<bool> Reconnect()
 		{
-			return Task.Run(() =>
+			return Task.Factory.StartNew(() =>
 			{
 				Threading.Interlocked.Exchange(ref __callback, null);
 				if (MaxReconnectionAttempts == 0) return false;
@@ -190,7 +190,7 @@ namespace System.ServiceModel
 
 		public Task<bool> Reconnect(ushort MaxReconnectionAttempts)
 		{
-			return Task.Run(() =>
+			return Task.Factory.StartNew(() =>
 			{
 				Threading.Interlocked.Exchange(ref __callback, null);
 				if (MaxReconnectionAttempts == 0) return false;
