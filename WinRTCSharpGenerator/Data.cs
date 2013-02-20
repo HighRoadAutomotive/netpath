@@ -123,7 +123,7 @@ namespace NETPath.Generators.WinRT.CS
 			if (o.HasXAMLType)
 			{
 				code.AppendLine(string.Format("\t\tprivate {0} xamlObject;", o.XAMLType.Name));
-				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get {{ if(xamlObject == null) Application.Current.Dispatcher.Invoke(() => {{ xamlObject = new {0}(this); }}, System.Windows.Threading.DispatcherPriority.Normal); return xamlObject; }} private set {{ xamlObject = value; }} }}", o.XAMLType.Name));
+				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get {{ if(xamlObject == null) Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {{ xamlObject = new {0}(this); }}); return xamlObject; }} private set {{ xamlObject = value; }} }}", o.XAMLType.Name));
 				code.AppendLine();
 			}
 			code.Append(GenerateProxyDCMCode(o));
@@ -169,7 +169,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine("\t\t//Constuctors");
 			code.AppendLine(string.Format("\t\tpublic {0}()", o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine("\t\t{");
-			if (o.HasXAMLType) code.AppendLine(string.Format("\t\t\tApplication.Current.Dispatcher.Invoke(() => {{ XAMLObject = new {0}(this); }}, System.Windows.Threading.DispatcherPriority.Normal);", o.XAMLType.Name));
+			if (o.HasXAMLType) code.AppendLine(string.Format("\t\t\tWindow.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {{ XAMLObject = new {0}(this); }});", o.XAMLType.Name));
 			foreach (DataElement de in o.Elements)
 				if (de.XAMLType.TypeMode == DataTypeMode.Collection || de.XAMLType.TypeMode == DataTypeMode.Dictionary)
 					code.AppendLine(string.Format("\t\t\t{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.HasClientType ? de.ClientType : de.DataType, o.CMDEnabled && de.DCMEnabled)), de.HasClientType ? de.ClientName : de.DataName));
@@ -314,7 +314,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine(string.Format("\t\tpublic static {0} ConvertToXAMLObject({1} Data)", o.XAMLType.Name, o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine("\t\t{");
 			code.AppendLine("\t\t\tif (Data.XAMLObject != null) return Data.XAMLObject;");
-			code.AppendLine(string.Format("\t\t\treturn new {0}(this);", o.XAMLType.Name));
+			code.AppendLine(string.Format("\t\t\treturn new {0}(Data);", o.XAMLType.Name));
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t}");
 
@@ -345,7 +345,7 @@ namespace NETPath.Generators.WinRT.CS
 			if (o.ProtocolBufferEnabled && o.Owner.EnableProtocolBuffers) code.AppendFormat("[ProtoBuf.ProtoMember({0}{1}{2}{3}{4}{5}{6})] ", ++ProtoCount, o.ProtoDataFormat != ProtoBufDataFormat.Default ? string.Format(", DataFormat = ProtoBuf.DataFormat.{0}", System.Enum.GetName(typeof(ProtoBufDataFormat), o.ProtoDataFormat)) : "", o.IsRequired ? ", IsRequired = true" : "", o.ProtoIsPacked ? ", IsPacked = true" : "", o.ProtoOverwriteList ? ", OverwriteList = true" : "", o.ProtoAsReference ? ", AsReference = true" : "", o.ProtoDynamicType ? ", DynamicType = true" : "");
 			else code.AppendFormat("[DataMember({0}{1}{2}Name = \"{3}\")] ", o.EmitDefaultValue ? "EmitDefaultValue = false, " : "", o.IsRequired ? "IsRequired = true, " : "", o.ProtocolBufferEnabled ? string.Format("Order = {0}, ", ProtoCount) : o.Order >= 0 ? string.Format("Order = {0}, ", o.Order) : "", o.HasClientType ? o.ClientName : o.DataName);
 			code.AppendLine(string.Format("public {0} {1} {{ get {{ return GetValue({1}Property); }} {2}set {{ SetValue({1}Property, value); {3}}} }}", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType : o.DataType, o.DCMEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : "", o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : ""));
-			if (o.XAMLType.TypeMode == DataTypeMode.Collection)
+			if (o.DataType.TypeMode == DataTypeMode.Collection)
 			{
 				code.AppendLine(string.Format("\t\tpublic static readonly DeltaProperty<DeltaList<{3}>> {1}Property = DeltaProperty<{3}>.RegisterList<{3}>(\"{1}\", typeof({2}), (s, o, n) => {{ var t = s as {2}; if (t == null) return;", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType : o.DataType, o.DCMEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType.CollectionGenericType : o.DataType.CollectionGenericType)));
 				code.AppendLine(string.Format("\t\t\tn.Added += (x) => t.{0}Added(x);", o.HasClientType ? o.ClientName : o.DataName));
@@ -365,13 +365,13 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\tpartial void {0}Moved({1} Value, int Index);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.CollectionGenericType : o.DataType.CollectionGenericType))));
 				code.AppendLine(string.Format("\t\tpartial void {0}Replaced({1} OldValue, {1} NewValue);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.CollectionGenericType : o.DataType.CollectionGenericType))));
 			}
-			else if (o.XAMLType.TypeMode == DataTypeMode.Stack)
+			else if (o.DataType.TypeMode == DataTypeMode.Stack)
 			{
 			}
-			else if (o.XAMLType.TypeMode == DataTypeMode.Queue)
+			else if (o.DataType.TypeMode == DataTypeMode.Queue)
 			{
 			}
-			else if (o.XAMLType.TypeMode == DataTypeMode.Dictionary)
+			else if (o.DataType.TypeMode == DataTypeMode.Dictionary)
 			{
 				code.AppendLine(string.Format("\t\tpublic static readonly DeltaProperty<DeltaDictionary<{3}, {4}>> {1}Property = DeltaProperty<{3}>.RegisterDictionary<{3}, {4}>(\"{1}\", typeof({2}), (s, o, n) => {{ var t = s as {2}; if (t == null) return;", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType : o.DataType, o.DCMEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType.DictionaryKeyGenericType : o.DataType.DictionaryKeyGenericType), DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType.DictionaryValueGenericType : o.DataType.DictionaryValueGenericType)));
 				code.AppendLine(string.Format("\t\t\tn.Added += (xk, xv) => t.{0}Added(xk, xv);", o.HasClientType ? o.ClientName : o.DataName));
@@ -385,9 +385,14 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\tpartial void {0}Cleared(IEnumerable<KeyValuePair<{1}, {2}>> Values);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.DictionaryKeyGenericType : o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.DictionaryValueGenericType : o.DataType.DictionaryValueGenericType))));
 				code.AppendLine(string.Format("\t\tpartial void {0}Updated({1} Key, {2} OldValue, {2} NewValue);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.DictionaryKeyGenericType : o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.DictionaryValueGenericType : o.DataType.DictionaryValueGenericType))));
 			}
+			else if (o.DataType.TypeMode == DataTypeMode.Array)
+			{
+				code.AppendLine(string.Format("\t\tpublic static readonly DeltaProperty<{2}> {0}Property = DeltaProperty<{2}>.Register<{2}>(\"{0}\", typeof({1}), default({2}), (s, o, n) => {{ var t = s as {1}; if (t == null) return; t.{0}PropertyChanged(o, n); }});", o.DataName, o.Owner.Name, DataTypeGenerator.GenerateType(o.DataType)));
+				code.AppendLine(string.Format("\t\tpartial void {0}PropertyChanged({1} OldValue, {1} NewValue);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType : o.DataType, o.DCMEnabled))));
+			}
 			else
 			{
-				code.AppendLine(string.Format("\t\tpublic static readonly DeltaProperty<{3}> {1}Property = DeltaProperty<{3}>.Register<{3}>(\"{1}\", typeof({2}), default({3}), (s, o, n) => {{ var t = s as {2}; if (t == null) return; t.{1}PropertyChanged(o, n); }});", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType : o.DataType, o.DCMEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.XAMLName));
+				code.AppendLine(string.Format("\t\tpublic static readonly DeltaProperty<{2}> {0}Property = DeltaProperty<{2}>.Register<{2}>(\"{0}\", typeof({1}), default({2}), (s, o, n) => {{ var t = s as {1}; if (t == null) return; t.{0}PropertyChanged(o, n); }});", o.DataName, o.Owner.Name, DataTypeGenerator.GenerateType(o.DataType)));
 				code.AppendLine(string.Format("\t\tpartial void {0}PropertyChanged({1} OldValue, {1} NewValue);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType : o.DataType, o.DCMEnabled))));
 			}
 			return code.ToString();
@@ -452,6 +457,11 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\tpartial void {0}Removed({1} Key, {2} Value);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.DictionaryKeyGenericType : o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.DictionaryValueGenericType : o.DataType.DictionaryValueGenericType))));
 				code.AppendLine(string.Format("\t\tpartial void {0}Cleared(IEnumerable<KeyValuePair<{1}, {2}>> Values);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.DictionaryKeyGenericType : o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.DictionaryValueGenericType : o.DataType.DictionaryValueGenericType))));
 				code.AppendLine(string.Format("\t\tpartial void {0}Updated({1} Key, {2} OldValue, {2} NewValue);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.DictionaryKeyGenericType : o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.DictionaryValueGenericType : o.DataType.DictionaryValueGenericType))));
+			}
+			else if (o.XAMLType.TypeMode == DataTypeMode.Array)
+			{
+				code.AppendLine(string.Format("\t\tpublic static readonly DeltaProperty<{3}> {1}Property = DeltaProperty<{3}>.Register<{3}>(\"{1}\", typeof({2}), default({3}), (s, o, n) => {{ var t = s as {2}; var nv = n as {0}; if (t == null || nv == null) return; var z = new {5}[nv.Length]; for (int i = 0; i < nv.Length; i++) z[i] = nv[i]; t.XAMLObject.{4} = z; t.{1}PropertyChanged(o, n); }});", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType : o.DataType, o.DCMEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType : o.DataType), o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.CollectionGenericType, o.DCMEnabled))));
+				code.AppendLine(string.Format("\t\tpartial void {0}PropertyChanged({1} OldValue, {1} NewValue);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType : o.DataType, o.DCMEnabled))));
 			}
 			else
 			{
@@ -651,6 +661,11 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendLine(string.Format("\t\tpartial void {0}Removed({1} Key, {2} Value);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.DictionaryValueGenericType))));
 					code.AppendLine(string.Format("\t\tpartial void {0}Cleared(IEnumerable<KeyValuePair<{1}, {2}>> Values);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.DictionaryValueGenericType))));
 					code.AppendLine(string.Format("\t\tpartial void {0}Updated({1} Key, {2} OldValue, {2} NewValue);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.DictionaryValueGenericType))));
+				}
+				else if (o.XAMLType.TypeMode == DataTypeMode.Array)
+				{
+					code.AppendLine(string.Format("\t\tprivate static readonly PropertyMetadata {0}PropertyMetadata = new PropertyMetadata(default({1}), (o, e) => {{ var t = o as {3}; var nv = e.NewValue as {1}; if (t == null || nv == null) return; var z = new {4}[nv.Length]; for (int i = 0; i < nv.Length; i++) z[i] = nv[i]; t.DataObject.{2} = z;  t.{0}PropertyChanged(({1})e.NewValue, ({1})e.OldValue); }});", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType, o.DCMEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.Owner.XAMLType.Name, o.HasClientType ? o.ClientType.CollectionGenericType : o.DataType.CollectionGenericType));
+					code.AppendLine(string.Format("\t\tpartial void {0}PropertyChanged({1} OldValue, {1} NewValue);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType, o.DCMEnabled))));
 				}
 				else
 				{

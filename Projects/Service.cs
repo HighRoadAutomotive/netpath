@@ -49,6 +49,7 @@ namespace NETPath.Projects
 		[IgnoreDataMember] public bool HasAsyncServiceOperations { get { return ServiceOperations.Where(a => a.GetType() == typeof (Method)).Any(a => ((Method) a).UseAsyncPattern); } }
 		[IgnoreDataMember] public bool HasAsyncCallbackOperations { get { return CallbackOperations.Where(a => a.GetType() == typeof (Method)).Any(a => ((Method) a).UseAsyncPattern); } }
 		[IgnoreDataMember] public bool HasCallbackOperations { get { return CallbackOperations.Count > 0 || ServiceOperations.Count(a => a.GetType() == typeof(DataChangeMethod)) > 0; } }
+		[IgnoreDataMember] public bool HasDCMOperations { get { return ServiceOperations.Count(a => a.GetType() == typeof(DataChangeMethod)) > 0; } }
 
 		public Service() : base(DataTypeMode.Class)
 		{
