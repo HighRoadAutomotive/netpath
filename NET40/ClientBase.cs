@@ -60,8 +60,6 @@ namespace System.ServiceModel
 		
 		protected virtual bool Initialize()
 		{
-			ClientID = GetClientID();
-
 			OperationContext.Current.Channel.Faulted += ChannelFaulted;
 			OperationContext.Current.Channel.Closing += ChannelClosed;
 
@@ -91,8 +89,6 @@ namespace System.ServiceModel
 		{
 			ChannelClosed(sender, e);
 		}
-
-		public abstract Guid GetClientID();
 	}
 
 	public abstract class ClientDuplexBaseEx<T, TChannel> : DuplexClientBase<TChannel> where T : ClientDuplexBaseEx<T, TChannel> where TChannel : class
@@ -145,8 +141,6 @@ namespace System.ServiceModel
 
 		protected virtual bool Initialize()
 		{
-			ClientID = GetClientID();
-
 			OperationContext.Current.Channel.Faulted += ChannelFaulted;
 			OperationContext.Current.Channel.Closing += ChannelClosed;
 
@@ -176,7 +170,5 @@ namespace System.ServiceModel
 		{
 			ChannelClosed(sender, e);
 		}
-
-		public abstract Guid GetClientID();
 	}
 }
