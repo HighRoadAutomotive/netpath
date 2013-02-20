@@ -57,14 +57,39 @@ namespace System.ServiceModel
 			ClientID = Guid.NewGuid();
 			ClientInstance = this as T;
 		}
-		
+
 		protected virtual bool Initialize()
 		{
+			InnerChannel.Faulted += ChannelFaulted;
+			InnerChannel.Closing += ChannelClosed;
+
+			if (State != CommunicationState.Created)
+				InnerChannel.Open();
+
 			return true;
+		}
+
+		public virtual void Reconnect()
+		{
+			IsTerminated = true;
+			ChannelFactory.CreateChannel();
+			InnerChannel.Faulted += ChannelFaulted;
+			InnerChannel.Closing += ChannelClosed;
+
+			if (State != CommunicationState.Opened && State != CommunicationState.Opening)
+				InnerChannel.Open();
+
+			IsTerminated = false;
 		}
 
 		protected virtual void Terminate()
 		{
+			InnerChannel.Faulted -= ChannelFaulted;
+			InnerChannel.Closing -= ChannelClosed;
+
+			if (State != CommunicationState.Closed && State != CommunicationState.Closing)
+				InnerChannel.Close();
+
 			IsTerminated = true;
 		}
 
@@ -75,6 +100,7 @@ namespace System.ServiceModel
 
 		protected virtual void ChannelFaulted(object sender, EventArgs e)
 		{
+			Abort();
 			ChannelClosed(sender, e);
 		}
 	}
@@ -114,11 +140,36 @@ namespace System.ServiceModel
 
 		protected virtual bool Initialize()
 		{
+			InnerChannel.Faulted += ChannelFaulted;
+			InnerChannel.Closing += ChannelClosed;
+
+			if (State != CommunicationState.Created)
+				InnerChannel.Open();
+
 			return true;
+		}
+
+		public virtual void Reconnect()
+		{
+			IsTerminated = true;
+			ChannelFactory.CreateChannel();
+			InnerChannel.Faulted += ChannelFaulted;
+			InnerChannel.Closing += ChannelClosed;
+
+			if (State != CommunicationState.Opened && State != CommunicationState.Opening)
+				InnerChannel.Open();
+
+			IsTerminated = false;
 		}
 
 		protected virtual void Terminate()
 		{
+			InnerChannel.Faulted -= ChannelFaulted;
+			InnerChannel.Closing -= ChannelClosed;
+
+			if (State != CommunicationState.Closed && State != CommunicationState.Closing)
+				InnerChannel.Close();
+
 			IsTerminated = true;
 		}
 
@@ -129,6 +180,7 @@ namespace System.ServiceModel
 
 		protected virtual void ChannelFaulted(object sender, EventArgs e)
 		{
+			Abort();
 			ChannelClosed(sender, e);
 		}
 	}

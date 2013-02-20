@@ -57,25 +57,38 @@ namespace System.ServiceModel
 			ClientID = Guid.NewGuid();
 			ClientInstance = this as T;
 		}
-		
+
 		protected virtual bool Initialize()
 		{
-			OperationContext.Current.Channel.Faulted += ChannelFaulted;
-			OperationContext.Current.Channel.Closing += ChannelClosed;
+			InnerChannel.Faulted += ChannelFaulted;
+			InnerChannel.Closing += ChannelClosed;
 
-			if (OperationContext.Current.Channel.State != CommunicationState.Created)
-				OperationContext.Current.Channel.Open();
+			if (State != CommunicationState.Created)
+				Open();
 
 			return true;
 		}
 
+		public virtual void Reconnect()
+		{
+			IsTerminated = true;
+			ChannelFactory.CreateChannel();
+			InnerChannel.Faulted += ChannelFaulted;
+			InnerChannel.Closing += ChannelClosed;
+
+			if (State != CommunicationState.Opened && State != CommunicationState.Opening)
+				Open();
+
+			IsTerminated = false;
+		}
+
 		protected virtual void Terminate()
 		{
-			OperationContext.Current.Channel.Faulted -= ChannelFaulted;
-			OperationContext.Current.Channel.Closing -= ChannelClosed;
+			InnerChannel.Faulted -= ChannelFaulted;
+			InnerChannel.Closing -= ChannelClosed;
 
-			if (OperationContext.Current.Channel.State != CommunicationState.Closed && OperationContext.Current.Channel.State != CommunicationState.Closing)
-				OperationContext.Current.Channel.Close();
+			if (State != CommunicationState.Closed && State != CommunicationState.Closing)
+				Close();
 
 			IsTerminated = true;
 		}
@@ -87,6 +100,7 @@ namespace System.ServiceModel
 
 		protected virtual void ChannelFaulted(object sender, EventArgs e)
 		{
+			Abort();
 			ChannelClosed(sender, e);
 		}
 	}
@@ -141,22 +155,35 @@ namespace System.ServiceModel
 
 		protected virtual bool Initialize()
 		{
-			OperationContext.Current.Channel.Faulted += ChannelFaulted;
-			OperationContext.Current.Channel.Closing += ChannelClosed;
+			InnerChannel.Faulted += ChannelFaulted;
+			InnerChannel.Closing += ChannelClosed;
 
-			if (OperationContext.Current.Channel.State != CommunicationState.Created)
-				OperationContext.Current.Channel.Open();
+			if (State != CommunicationState.Created)
+				Open();
 
 			return true;
 		}
 
+		public virtual void Reconnect()
+		{
+			IsTerminated = true;
+			ChannelFactory.CreateChannel();
+			InnerChannel.Faulted += ChannelFaulted;
+			InnerChannel.Closing += ChannelClosed;
+
+			if (State != CommunicationState.Opened && State != CommunicationState.Opening)
+				Open();
+
+			IsTerminated = false;
+		}
+
 		protected virtual void Terminate()
 		{
-			OperationContext.Current.Channel.Faulted -= ChannelFaulted;
-			OperationContext.Current.Channel.Closing -= ChannelClosed;
+			InnerChannel.Faulted -= ChannelFaulted;
+			InnerChannel.Closing -= ChannelClosed;
 
-			if (OperationContext.Current.Channel.State != CommunicationState.Closed && OperationContext.Current.Channel.State != CommunicationState.Closing)
-				OperationContext.Current.Channel.Close();
+			if (State != CommunicationState.Closed && State != CommunicationState.Closing)
+				Close();
 
 			IsTerminated = true;
 		}
@@ -168,6 +195,7 @@ namespace System.ServiceModel
 
 		protected virtual void ChannelFaulted(object sender, EventArgs e)
 		{
+			Abort();
 			ChannelClosed(sender, e);
 		}
 	}
