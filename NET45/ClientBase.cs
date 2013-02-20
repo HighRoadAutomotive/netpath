@@ -26,7 +26,7 @@ namespace System.ServiceModel
 	{
 		public Guid ClientID { get; protected set; }
 		public bool IsTerminated { get; protected set; }
-		public T ClientInstance { get; private set; }
+		public static T ClientInstance { get; private set; }
 
 		public ClientBaseEx()
 		{
@@ -109,7 +109,7 @@ namespace System.ServiceModel
 	{
 		public Guid ClientID { get; protected set; }
 		public bool IsTerminated { get; protected set; }
-		public T ClientInstance { get; private set; }
+		public static T ClientInstance { get; private set; }
 
 		public ClientDuplexBaseEx(string endpointConfigurationName, string remoteAddress) : base(endpointConfigurationName, remoteAddress)
 		{
