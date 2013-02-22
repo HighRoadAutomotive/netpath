@@ -192,7 +192,7 @@ namespace System
 			}
 		}
 
-		internal void UpdateValue<T>(DeltaPropertyBase de, T value)
+		public void UpdateValue<T>(DeltaPropertyBase de, T value)
 		{
 			//If the new value is the default value remove this from the modified values list, otherwise add/update it.
 			if (Equals(value, de.defaultValue))
