@@ -122,6 +122,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine("\t{");
 			if (o.HasXAMLType)
 			{
+				if (!o.CMDEnabled) code.AppendLine(string.Format("\t\tprivate {0} BaseXAMLObject;", o.XAMLType.Name));
 				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get {{ if(BaseXAMLObject == null) Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {{ BaseXAMLObject = new {0}(this); }}); return BaseXAMLObject as {0}; }} }}", o.XAMLType.Name));
 				code.AppendLine();
 			}

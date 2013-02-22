@@ -132,6 +132,7 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine("\t{");
 			if (o.HasXAMLType)
 			{
+				if (!o.CMDEnabled) code.AppendLine(string.Format("\t\tprivate {0} BaseXAMLObject;", o.XAMLType.Name));
 				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get {{ if(BaseXAMLObject == null) Application.Current.Dispatcher.Invoke(() => {{ BaseXAMLObject = new {0}(this); }}, System.Windows.Threading.DispatcherPriority.Normal); return BaseXAMLObject as {0}; }} }}", o.XAMLType.Name));
 				code.AppendLine();
 			}
@@ -229,6 +230,7 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine("\t{");
 			if (o.HasXAMLType)
 			{
+				if (!o.CMDEnabled) code.AppendLine(string.Format("\t\tprivate {0} BaseXAMLObject;", o.XAMLType.Name));
 				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get {{ if(BaseXAMLObject == null) Application.Current.Dispatcher.Invoke(() => {{ BaseXAMLObject = new {0}(this); }}, System.Windows.Threading.DispatcherPriority.Normal); return BaseXAMLObject as {0}; }} }}", o.XAMLType.Name));
 				code.AppendLine();
 			}
