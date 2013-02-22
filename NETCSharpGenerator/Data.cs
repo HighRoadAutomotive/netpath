@@ -133,7 +133,7 @@ namespace NETPath.Generators.NET.CS
 			if (o.HasXAMLType)
 			{
 				if (!o.CMDEnabled) code.AppendLine(string.Format("\t\tprivate {0} BaseXAMLObject;", o.XAMLType.Name));
-				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get {{ if(BaseXAMLObject == null) Application.Current.Dispatcher.Invoke(() => {{ BaseXAMLObject = new {0}(this); }}, System.Windows.Threading.DispatcherPriority.Normal); return BaseXAMLObject as {0}; }} }}", o.XAMLType.Name));
+				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get {{ if(BaseXAMLObject == null) Application.Current.Dispatcher.Invoke(() => {{ BaseXAMLObject = new {0}(this); }}, System.Windows.Threading.DispatcherPriority.Normal); return BaseXAMLObject as {0}; }} {1}}}", o.XAMLType.Name, !o.CMDEnabled ? "set { BaseXAMLObject = value; } " : ""));
 				code.AppendLine();
 			}
 			code.AppendLine(GenerateProxyDCMCode(o));
@@ -189,9 +189,9 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine("\t\t}");
 			if (o.HasXAMLType)
 			{
-				code.AppendLine(string.Format("\t\tpublic {0}({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
+				code.AppendLine(string.Format("\t\tpublic {0}({1} Data){2}", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name, o.CMDEnabled ? " : base(Data)" : ""));
 				code.AppendLine("\t\t{");
-				if (o.HasXAMLType) code.AppendLine("\t\t\tXAMLObject = Data;");
+				if (!o.CMDEnabled) code.AppendLine("\t\t\tBaseXAMLObject = Data;");
 				foreach (DataElement de in o.Elements)
 					code.Append(GenerateElementProxyConstructorCode45(de, o));
 				code.AppendLine("\t\t}");
@@ -231,7 +231,7 @@ namespace NETPath.Generators.NET.CS
 			if (o.HasXAMLType)
 			{
 				if (!o.CMDEnabled) code.AppendLine(string.Format("\t\tprivate {0} BaseXAMLObject;", o.XAMLType.Name));
-				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get {{ if(BaseXAMLObject == null) Application.Current.Dispatcher.Invoke(() => {{ BaseXAMLObject = new {0}(this); }}, System.Windows.Threading.DispatcherPriority.Normal); return BaseXAMLObject as {0}; }} }}", o.XAMLType.Name));
+				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get {{ if(BaseXAMLObject == null) Application.Current.Dispatcher.Invoke(() => {{ BaseXAMLObject = new {0}(this); }}, System.Windows.Threading.DispatcherPriority.Normal); return BaseXAMLObject as {0}; }} {1}}}", o.XAMLType.Name, !o.CMDEnabled ? "set { BaseXAMLObject = value; } " : ""));
 				code.AppendLine();
 			}
 			code.Append(GenerateProxyDCMCode(o));
@@ -290,6 +290,7 @@ namespace NETPath.Generators.NET.CS
 			{
 				code.AppendLine(string.Format("\t\tpublic {0}({1} Data){2}", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name, o.CMDEnabled ? " : base(Data)" : ""));
 				code.AppendLine("\t\t{");
+				if (!o.CMDEnabled) code.AppendLine("\t\tBaseXAMLObject = Data;");
 				foreach (DataElement de in o.Elements)
 					code.Append(GenerateElementProxyConstructorCode45(de, o));
 				code.AppendLine("\t\t}");
@@ -372,7 +373,7 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.XAMLType, false, false, true)));
 			code.AppendLine("\t{");
 			if (!o.CMDEnabled) code.AppendLine(string.Format("\t\tprivate {0} BaseDataObject;", o.HasClientType ? o.ClientType.Name : o.Name));
-			code.AppendLine(string.Format("\t\tpublic {0} DataObject {{ get {{ return BaseDataObject as {0}; }} }}", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine(string.Format("\t\tpublic {0} DataObject {{ get {{ return BaseDataObject as {0}; }} {1}}}", o.HasClientType ? o.ClientType.Name : o.Name, !o.CMDEnabled ? "set { BaseDataObject = value; } " : ""));
 			code.AppendLine();
 
 			if (o.XAMLHasExtensionData)
@@ -401,6 +402,7 @@ namespace NETPath.Generators.NET.CS
 			}
 			else
 			{
+				
 				code.AppendLine("\t\t\tData.XAMLObject.UpdateFromDTO();");
 				code.AppendLine("\t\t\treturn Data.XAMLObject;");
 			}
@@ -427,6 +429,7 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine();
 			code.AppendLine(string.Format("\t\tpublic {0}({1} Data){2}", o.XAMLType.Name, o.HasClientType ? o.ClientType.Name : o.Name, o.CMDEnabled ? " : base(Data)" : ""));
 			code.AppendLine("\t\t{");
+			if (!o.CMDEnabled) code.AppendLine("\t\t\tBaseDataObject = Data;");
 			foreach (DataElement de in o.Elements)
 				code.Append(GenerateElementXAMLConstructorCode45(de, o));
 			code.AppendLine("\t\t}");
