@@ -661,12 +661,12 @@ namespace NETPath.Generators.WinRT.CS
 				}
 				else if (o.XAMLType.TypeMode == DataTypeMode.Array)
 				{
-					code.AppendLine(string.Format("\t\tprivate static readonly PropertyMetadata {0}PropertyMetadata = new PropertyMetadata(default({1}), (o, e) => {{ var t = o as {3}; var nv = e.NewValue as {1}; if (t == null || nv == null) return; var z = new {4}[nv.Length]; for (int i = 0; i < nv.Length; i++) z[i] = nv[i]; t.{0}PropertyChanged(({1})e.NewValue, ({1})e.OldValue); }});", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType, o.DCMEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.Owner.XAMLType.Name, o.HasClientType ? o.ClientType.CollectionGenericType : o.DataType.CollectionGenericType));
+					code.AppendLine(string.Format("\t\tprivate static readonly PropertyMetadata {0}PropertyMetadata = new PropertyMetadata(default({1}), (o, e) => {{ var t = o as {3}; var nv = e.NewValue as {1}; if (t == null || nv == null) return; var z = new {4}[nv.Length]; for (int i = 0; i < nv.Length; i++) z[i] = nv[i]; t.DataObject.UpdateValue({5}.{2}Property, z); t.{0}PropertyChanged(({1})e.NewValue, ({1})e.OldValue); }});", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType, o.DCMEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.Owner.XAMLType.Name, o.HasClientType ? o.ClientType.CollectionGenericType : o.DataType.CollectionGenericType, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name));
 					code.AppendLine(string.Format("\t\tpartial void {0}PropertyChanged({1} OldValue, {1} NewValue);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType, o.DCMEnabled))));
 				}
 				else
 				{
-					code.AppendLine(string.Format("\t\tprivate static readonly PropertyMetadata {0}PropertyMetadata = new PropertyMetadata(default({1}), (o, e) => {{ var t = o as {3}; if (t == null) return; t.{0}PropertyChanged(({1})e.NewValue, ({1})e.OldValue); }});", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType, o.DCMEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.Owner.XAMLType.Name));
+					code.AppendLine(string.Format("\t\tprivate static readonly PropertyMetadata {0}PropertyMetadata = new PropertyMetadata(default({1}), (o, e) => {{ var t = o as {3}; if (t == null) return; t.DataObject.UpdateValue({2}, ({4})e.NewValue); t.{0}PropertyChanged(({1})e.NewValue, ({1})e.OldValue); }});", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType, o.DCMEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.Owner.XAMLType.Name, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType : o.DataType, o.DCMEnabled)), o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name));
 					code.AppendLine(string.Format("\t\tpartial void {0}PropertyChanged({1} OldValue, {1} NewValue);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType, o.DCMEnabled))));
 				}
 			}
