@@ -25,24 +25,39 @@ using Windows.UI.Core;
 
 namespace Windows.UI.Xaml
 {
-	public class DependencyObjectEx : DependencyObject
+	public abstract class DependencyObjectEx : DependencyObject
 	{
-		private ConcurrentDictionary<int, object> values;
+		private readonly ConcurrentDictionary<int, object> values;
+		private DeltaObject baseDataObject;
+		protected DeltaObject BaseDataObject { get { return baseDataObject; } set { if (baseDataObject != null) baseDataObject = value; } }
 
-		public DependencyObjectEx()
+		protected DependencyObjectEx()
 		{
 			values = new ConcurrentDictionary<int, object>();
+			baseDataObject = null;
 		}
 
-		public async Task<object> GetValueThreaded(DependencyProperty dp)
+		protected DependencyObjectEx(DeltaObject baseDataObject)
 		{
-			if (Window.Current.Dispatcher.HasThreadAccess) return GetValue(dp);
-			object ret = null;
-			await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,  () => { ret = GetValue(dp); });
+			values = new ConcurrentDictionary<int, object>();
+			this.baseDataObject = baseDataObject;
+		}
+
+		public async Task<T> GetValueThreaded<T>(DependencyProperty dp)
+		{
+			if (Window.Current.Dispatcher.HasThreadAccess) return (T)GetValue(dp);
+			T ret = default(T);
+			await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,  () => { ret = (T)GetValue(dp); });
 			return ret;
 		}
 		
-		public async void SetValueThreaded(DependencyProperty dp, object value)
+		public async void SetValueThreaded<T>(DependencyProperty dp, T value, DeltaPropertyBase dpb = null)
+		{
+			if (Window.Current.Dispatcher.HasThreadAccess) SetValue(dp, value);
+			await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { SetValue(dp, value); if(dpb != null && baseDataObject != null) baseDataObject.UpdateValue(dpb, value); });
+		}
+
+		internal async void UpdateValueThreaded<T>(DependencyProperty dp, T value)
 		{
 			if (Window.Current.Dispatcher.HasThreadAccess) SetValue(dp, value);
 			await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => SetValue(dp, value));

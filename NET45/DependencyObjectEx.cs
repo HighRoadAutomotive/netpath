@@ -25,31 +25,51 @@ using System.Windows.Threading;
 
 namespace System.Windows
 {
-	public class DependencyObjectEx : DependencyObject
+	public abstract class DependencyObjectEx : DependencyObject
 	{
-		private ConcurrentDictionary<int, object> values;
+		private readonly ConcurrentDictionary<int, object> values;
+		private DeltaObject baseDataObject;
+		protected DeltaObject BaseDataObject { get { return baseDataObject; } set { if (baseDataObject != null) baseDataObject = value; } }
 
-		public DependencyObjectEx()
+		protected DependencyObjectEx()
 		{
 			values = new ConcurrentDictionary<int, object>();
-
+			baseDataObject = null;
 		}
 
-		public object GetValueThreaded(DependencyProperty dp)
+		protected DependencyObjectEx(DeltaObject baseDataObject)
 		{
-			if (Application.Current.Dispatcher.CheckAccess()) return GetValue(dp);
-			object ret = null;
-			Application.Current.Dispatcher.Invoke(() => { ret = GetValue(dp); }, DispatcherPriority.Normal);
+			values = new ConcurrentDictionary<int, object>();
+			this.baseDataObject = baseDataObject;
+		}
+
+		public T GetValueThreaded<T>(DependencyProperty dp)
+		{
+			if (Application.Current.Dispatcher.CheckAccess()) return (T)GetValue(dp);
+			T ret = default(T);
+			Application.Current.Dispatcher.Invoke(() => { ret = (T)GetValue(dp); }, DispatcherPriority.Normal);
 			return ret;
 		}
-		
-		public void SetValueThreaded(DependencyProperty dp, object value)
+
+		public void SetValueThreaded<T>(DependencyProperty dp, T value, DeltaPropertyBase dataProperty = null)
 		{
-			if(Application.Current.Dispatcher.CheckAccess()) SetValue(dp, value);
+			if (Application.Current.Dispatcher.CheckAccess()) SetValue(dp, value);
+			Application.Current.Dispatcher.Invoke(() => { SetValue(dp, value); if (dataProperty != null && baseDataObject != null) baseDataObject.UpdateValue(dataProperty, value); }, DispatcherPriority.Normal);
+		}
+
+		public void SetValueThreaded<T>(DependencyPropertyKey dp, T value, DeltaPropertyBase dataProperty = null)
+		{
+			if (Application.Current.Dispatcher.CheckAccess()) SetValue(dp, value);
+			Application.Current.Dispatcher.Invoke(() => { SetValue(dp, value); if (dataProperty != null && baseDataObject != null) baseDataObject.UpdateValue(dataProperty, value); }, DispatcherPriority.Normal);
+		}
+
+		internal void UpdateValueThreaded<T>(DependencyProperty dp, T value)
+		{
+			if (Application.Current.Dispatcher.CheckAccess()) SetValue(dp, value);
 			Application.Current.Dispatcher.Invoke(() => SetValue(dp, value), DispatcherPriority.Normal);
 		}
 
-		public void SetValueThreaded(DependencyPropertyKey dp, object value)
+		internal void UpdateValueThreaded<T>(DependencyPropertyKey dp, T value)
 		{
 			if (Application.Current.Dispatcher.CheckAccess()) SetValue(dp, value);
 			Application.Current.Dispatcher.Invoke(() => SetValue(dp, value), DispatcherPriority.Normal);
