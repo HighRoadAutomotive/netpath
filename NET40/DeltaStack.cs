@@ -70,7 +70,7 @@ namespace System.Collections.Generic
 			T[] tl = il.ToArray();
 			il.Clear();
 			foreach (var t in tl) dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Remove, t));
-			Cleared(tl);
+			if (Cleared != null) Cleared(tl);
 		}
 
 		public void ClearNoUpdate()
@@ -78,13 +78,12 @@ namespace System.Collections.Generic
 			T[] tl = il.ToArray();
 			il.Clear();
 			foreach (var t in tl) dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Remove, t));
-			Cleared(tl);
 		}
 
 		public void Push(T Item)
 		{
 			PushNoUpdate(Item);
-			Pushed(new[] { Item });
+			if (Pushed != null) Pushed(new[] { Item });
 		}
 		
 		public void PushNoUpdate(T Item)
@@ -96,7 +95,7 @@ namespace System.Collections.Generic
 		public void PushRange(T[] Items)
 		{
 			PushRangeNoUpdate(Items);
-			Pushed(Items);
+			if (Pushed != null) Pushed(Items);
 		}
 
 		public void PushRangeNoUpdate(T[] Items)
@@ -108,7 +107,7 @@ namespace System.Collections.Generic
 		public void PushRange(T[] Items, int Start, int Count)
 		{
 			PushRangeNoUpdate(Items, Start, Count);
-			Pushed(Items);
+			if (Pushed != null) Pushed(Items);
 		}
 
 		public void PushRangeNoUpdate(T[] Items, int Start, int Count)
@@ -126,7 +125,7 @@ namespace System.Collections.Generic
 		{
 			bool t = il.TryPop(out Result);
 			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Remove, Result));
-			Popped(new[] { Result });
+			if (Pushed != null) Popped(new[] { Result });
 			return t;
 		}
 
@@ -141,7 +140,7 @@ namespace System.Collections.Generic
 		{
 			int t = il.TryPopRange(Items);
 			foreach (var x in Items) dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Remove, x));
-			Popped(Items);
+			if (Popped != null) Popped(Items);
 			return t;
 		}
 
@@ -156,7 +155,7 @@ namespace System.Collections.Generic
 		{
 			int t = il.TryPopRange(Items, Start, Count);
 			foreach (var x in Items) dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Remove, x));
-			Popped(Items);
+			if (Popped != null) Popped(Items);
 			return t;
 		}
 

@@ -82,8 +82,8 @@ namespace System.Collections.Generic
 			TValue ov = default(TValue);
 			bool update = TryGetValue(key, out ov);
 			TValue rt = il.AddOrUpdate(key, addValueFactory, updateValueFactory);
-			if (update) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Replace, key, rt)); Updated(key, ov, rt); }
-			else { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); Added(key, rt); }
+			if (update) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Replace, key, rt)); if (Updated != null) Updated(key, ov, rt); }
+			else { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); if (Added != null) Added(key, rt); }
 			return rt;
 		}
 
@@ -92,8 +92,8 @@ namespace System.Collections.Generic
 			TValue ov = default(TValue);
 			bool update = TryGetValue(key, out ov);
 			TValue rt = il.AddOrUpdate(key, addValue, updateValueFactory);
-			if (update) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Replace, key, rt)); Updated(key, ov, rt); }
-			else { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); Added(key, rt); }
+			if (update) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Replace, key, rt)); if (Updated != null) Updated(key, ov, rt); }
+			else { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); if (Added != null) Added(key, rt); }
 			return rt;
 		}
 
@@ -148,7 +148,7 @@ namespace System.Collections.Generic
 		{
 			bool add = !ContainsKey(key);
 			TValue rt = il.GetOrAdd(key, valueFactory);
-			if (add) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); Added(key, rt); }
+			if (add) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); if (Added != null) Added(key, rt); }
 			return rt;
 		}
 
@@ -156,7 +156,7 @@ namespace System.Collections.Generic
 		{
 			bool add = !ContainsKey(key);
 			TValue rt = il.GetOrAdd(key, value);
-			if (add) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); Added(key, rt); }
+			if (add) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); if (Added != null) Added(key, rt); }
 			return rt;
 		}
 
@@ -189,7 +189,7 @@ namespace System.Collections.Generic
 		public bool TryAdd(TKey Key, TValue Value)
 		{
 			bool rt = il.TryAdd(Key, Value);
-			if (rt) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, Key, Value)); Added(Key, Value); }
+			if (rt) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, Key, Value)); if (Added != null) Added(Key, Value); }
 			return rt;
 		}
 
@@ -208,7 +208,7 @@ namespace System.Collections.Generic
 		public bool TryRemove(TKey Key, out TValue Value)
 		{
 			bool rt = il.TryRemove(Key, out Value);
-			if (rt) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Remove, Key, Value)); Removed(Key, Value); }
+			if (rt) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Remove, Key, Value)); if (Removed != null) Removed(Key, Value); }
 			return rt;
 		}
 
@@ -224,7 +224,7 @@ namespace System.Collections.Generic
 			TValue ov;
 			if (!il.TryGetValue(Key, out ov)) return false;
 			bool rt = il.TryUpdate(Key, Value, Comparison);
-			if (rt) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Replace, Key, Value)); Updated(Key, ov, Value); }
+			if (rt) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Replace, Key, Value)); if (Updated != null) Updated(Key, ov, Value); }
 			return rt;
 		}
 
@@ -240,7 +240,7 @@ namespace System.Collections.Generic
 		public TValue this[TKey key]
 		{
 			get { return il[key]; }
-			set { TValue ov = il[key]; il[key] = value; Updated(key, ov, value); }
+			set { TValue ov = il[key]; il[key] = value; if (Updated != null) Updated(key, ov, value); }
 		}
 
 		public KeyValuePair<TKey, TValue>[] ToArray()

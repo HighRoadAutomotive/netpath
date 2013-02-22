@@ -126,7 +126,7 @@ namespace System.Collections.Generic
 				ocl.ExitWriteLock();
 			}
 			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Add, item));
-			Added(new[] { item });
+			if (Added != null) Added(new[] { item });
 		}
 
 		public void AddRange(IEnumerable<T> items)
@@ -141,7 +141,7 @@ namespace System.Collections.Generic
 				ocl.ExitWriteLock();
 			}
 			foreach (var t in items) dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Add, t));
-			Added(items);
+			if (Added != null) Added(items);
 		}
 
 		public void AddNoUpdate(T item)
@@ -225,7 +225,7 @@ namespace System.Collections.Generic
 				ocl.ExitWriteLock();
 			}
 			foreach (var t in tl) dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Remove, t));
-			Cleared(tl);
+			if (Cleared != null) Cleared(tl);
 		}
 
 		public void ClearNoUpdate()
@@ -506,7 +506,7 @@ namespace System.Collections.Generic
 				ocl.ExitWriteLock();
 			}
 			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Insert, item, index));
-			Inserted(index, new[]{item});
+			if (Inserted != null) Inserted(index, new[]{item});
 		}
 
 		public void InsertRange(int index, IEnumerable<T> items)
@@ -522,7 +522,7 @@ namespace System.Collections.Generic
 			}
 			int c = index;
 			foreach (var t in items) dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Insert, t, c++));
-			Inserted(index, items);
+			if (Inserted != null) Inserted(index, items);
 		}
 
 		public void InsertNoUpdate(int index, T item)
@@ -607,7 +607,7 @@ namespace System.Collections.Generic
 				ocl.ExitWriteLock();
 			}
 			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Move, value, newindex));
-			Moved(value, newindex);
+			if (Moved != null) Moved(value, newindex);
 		}
 
 		public bool Remove(T item)
@@ -623,7 +623,7 @@ namespace System.Collections.Generic
 				ocl.ExitWriteLock();
 			}
 			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Remove, item));
-			Removed(new[] { item });
+			if (Removed != null) Removed(new[] { item });
 			return rt;
 		}
 
@@ -641,7 +641,7 @@ namespace System.Collections.Generic
 				ocl.ExitWriteLock();
 			}
 			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Remove, ti, index));
-			RemovedAt(index, new[]{ti});
+			if (RemovedAt != null) RemovedAt(index, new[] { ti });
 		}
 
 		public void RemoveRange(int index, int count)
@@ -659,7 +659,7 @@ namespace System.Collections.Generic
 			}
 			int c = index;
 			foreach(var t in tl) dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Remove, t, c++));
-			Removed(tl);
+			if (Removed != null) Removed(tl);
 		}
 
 		public void MoveNoUpdate(T value, int newindex)
@@ -835,7 +835,7 @@ namespace System.Collections.Generic
 					ocl.ExitWriteLock();
 				}
 				dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Replace, ti));
-				Replaced(ti, value);
+				if (Replaced != null) Replaced(ti, value);
 			}
 		}
 

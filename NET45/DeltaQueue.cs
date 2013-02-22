@@ -67,7 +67,7 @@ namespace System.Collections.Generic
 		public void Enqueue(T Item)
 		{
 			EnqueueNoUpdate(Item);
-			Enqueued(Item);
+			if (Enqueued != null) Enqueued(Item);
 		}
 
 		public void EnqueueNoUpdate(T Item)
@@ -85,7 +85,7 @@ namespace System.Collections.Generic
 		{
 			bool t = il.TryDequeue(out Result);
 			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Remove, Result));
-			Dequeued(Result);
+			if (Dequeued != null) Dequeued(Result);
 			return t;
 		}
 
