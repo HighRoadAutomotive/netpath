@@ -92,7 +92,7 @@ namespace System
 				if (tt != null) tt.ClearChangedHandlers();
 
 				//Call the property changed callback
-				if (temp != null && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, de.DefaultValue);
+				if (temp != null && de.DeltaPropertyChangedCallback != null && baseXAMLObject != null) de.DeltaPropertyChangedCallback(this, (T)temp, de.DefaultValue);
 			}
 			else
 			{
@@ -106,7 +106,7 @@ namespace System
 				IncrementChangeCount();
 
 				//Call the property changed callback
-				if (temp != null && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, value);
+				if (temp != null && de.DeltaPropertyChangedCallback != null && baseXAMLObject != null) de.DeltaPropertyChangedCallback(this, (T)temp, value);
 			}
 		}
 
@@ -131,7 +131,7 @@ namespace System
 				if (xamlProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(xamlProperty, de.defaultValue);
 
 				//Call the property changed callback
-				if (temp != null && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, de.DefaultValue);
+				if (temp != null && de.DeltaPropertyChangedCallback != null && baseXAMLObject != null) de.DeltaPropertyChangedCallback(this, (T)temp, de.DefaultValue);
 			}
 			else
 			{
@@ -147,7 +147,7 @@ namespace System
 				if (xamlProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(xamlProperty, value);
 
 				//Call the property changed callback
-				if (temp != null && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, value);
+				if (temp != null && de.DeltaPropertyChangedCallback != null && baseXAMLObject != null) de.DeltaPropertyChangedCallback(this, (T)temp, value);
 			}
 		}
 
@@ -172,7 +172,7 @@ namespace System
 				if (xamlProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(xamlProperty, de.defaultValue);
 
 				//Call the property changed callback
-				if (temp != null && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, de.DefaultValue);
+				if (temp != null && de.DeltaPropertyChangedCallback != null && baseXAMLObject != null) de.DeltaPropertyChangedCallback(this, (T)temp, de.DefaultValue);
 			}
 			else
 			{
@@ -188,7 +188,7 @@ namespace System
 				if (xamlProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(xamlProperty, value);
 
 				//Call the property changed callback
-				if (temp != null && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, value);
+				if (temp != null && de.DeltaPropertyChangedCallback != null && baseXAMLObject != null) de.DeltaPropertyChangedCallback(this, (T)temp, value);
 			}
 		}
 
