@@ -128,7 +128,7 @@ namespace System
 				var tt = value as DeltaCollectionBase;
 				if (tt != null) tt.ClearChangedHandlers();
 
-				if (xamlProperty != null) baseXAMLObject.UpdateValueThreaded(xamlProperty, de.defaultValue);
+				if (xamlProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(xamlProperty, de.defaultValue);
 
 				//Call the property changed callback
 				if (temp != null && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, de.DefaultValue);
@@ -144,7 +144,7 @@ namespace System
 				modifications.Enqueue(new KeyValuePair<HashID, object>(de.ID, value));
 				IncrementChangeCount();
 
-				if (xamlProperty != null) baseXAMLObject.UpdateValueThreaded(xamlProperty, value);
+				if (xamlProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(xamlProperty, value);
 
 				//Call the property changed callback
 				if (temp != null && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, value);

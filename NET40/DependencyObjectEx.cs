@@ -54,25 +54,25 @@ namespace System.Windows
 		public void SetValueThreaded<T>(DependencyProperty dp, T value, DeltaPropertyBase dataProperty = null)
 		{
 			if (Application.Current.Dispatcher.CheckAccess()) SetValue(dp, value);
-			Application.Current.Dispatcher.Invoke(new Action(() => { SetValue(dp, value); if (dataProperty != null && baseDataObject != null) baseDataObject.UpdateValue(dataProperty, value); }), DispatcherPriority.Normal);
+			else Application.Current.Dispatcher.Invoke(new Action(() => { SetValue(dp, value); if (dataProperty != null && baseDataObject != null) baseDataObject.UpdateValue(dataProperty, value); }), DispatcherPriority.Normal);
 		}
 
 		public void SetValueThreaded<T>(DependencyPropertyKey dp, T value, DeltaPropertyBase dataProperty = null)
 		{
 			if (Application.Current.Dispatcher.CheckAccess()) SetValue(dp, value);
-			Application.Current.Dispatcher.Invoke(new Action(() => { SetValue(dp, value); if (dataProperty != null && baseDataObject != null) baseDataObject.UpdateValue(dataProperty, value); }), DispatcherPriority.Normal);
+			else Application.Current.Dispatcher.Invoke(new Action(() => { SetValue(dp, value); if (dataProperty != null && baseDataObject != null) baseDataObject.UpdateValue(dataProperty, value); }), DispatcherPriority.Normal);
 		}
 
 		internal void UpdateValueThreaded<T>(DependencyProperty dp, T value)
 		{
 			if (Application.Current.Dispatcher.CheckAccess()) SetValue(dp, value);
-			Application.Current.Dispatcher.Invoke(new Action(() => SetValue(dp, value)), DispatcherPriority.Normal);
+			else Application.Current.Dispatcher.Invoke(new Action(() => SetValue(dp, value)), DispatcherPriority.Normal);
 		}
 
 		internal void UpdateValueThreaded<T>(DependencyPropertyKey dp, T value)
 		{
 			if (Application.Current.Dispatcher.CheckAccess()) SetValue(dp, value);
-			Application.Current.Dispatcher.Invoke(new Action(() => SetValue(dp, value)), DispatcherPriority.Normal);
+			else Application.Current.Dispatcher.Invoke(new Action(() => SetValue(dp, value)), DispatcherPriority.Normal);
 		}
 
 		public T GetValueExternal<T>(DependencyExternal<T> de)
