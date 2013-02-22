@@ -371,6 +371,7 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.XAMLType, false, false, true)));
 			code.AppendLine("\t{");
+			if (!o.CMDEnabled) code.AppendLine(string.Format("\t\tprivate {0} BaseDataObject;", o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine(string.Format("\t\tpublic {0} DataObject {{ get {{ return BaseDataObject as {0}; }} }}", o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine();
 
