@@ -121,37 +121,37 @@ namespace System.Collections.Generic
 
 		private async void CallPushed(T item)
 		{
-			if (Window.Current.Dispatcher == null) { Pushed(new List<T> { item }); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) { Pushed(new List<T> { item }); }
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Pushed(new List<T> { item }));
+			if (Window.Current.Dispatcher == null) { if (Pushed != null) Pushed(new List<T> { item }); return; }
+			if (Window.Current.Dispatcher.HasThreadAccess) { if (Pushed != null) Pushed(new List<T> { item }); }
+			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { if (Pushed != null) Pushed(new List<T> { item }); });
 		}
 
 		private async void CallPushed(IEnumerable<T> items)
 		{
-			if (Window.Current.Dispatcher == null) { Pushed(items); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) { Pushed(items); }
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Pushed(items));
+			if (Window.Current.Dispatcher == null) { if (Pushed != null) Pushed(items); return; }
+			if (Window.Current.Dispatcher.HasThreadAccess) { if (Pushed != null) Pushed(items); }
+			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { if (Pushed != null) Pushed(items); });
 		}
 
 		private async void CallPopped(T item)
 		{
-			if (Window.Current.Dispatcher == null) { Popped(new List<T> { item }); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) { Popped(new List<T> { item }); }
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Popped(new List<T> { item }));
+			if (Window.Current.Dispatcher == null) { if (Popped != null) Popped(new List<T> { item }); return; }
+			if (Window.Current.Dispatcher.HasThreadAccess) { if (Popped != null) Popped(new List<T> { item }); }
+			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { if (Popped != null) Popped(new List<T> { item }); });
 		}
 
 		private async void CallPopped(IEnumerable<T> items)
 		{
-			if (Window.Current.Dispatcher == null) { Popped(items); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) { Popped(items); }
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Popped(items));
+			if (Window.Current.Dispatcher == null) { if (Popped != null) Popped(items); return; }
+			if (Window.Current.Dispatcher.HasThreadAccess) { if (Popped != null) Popped(items); }
+			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { if (Popped != null) Popped(items); });
 		}
 
 		private async void CallCleared(IEnumerable<T> items)
 		{
-			if (Window.Current.Dispatcher == null) { Cleared(items); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) { Cleared(items); }
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Cleared(items));
+			if (Window.Current.Dispatcher == null) { if (Cleared != null) Cleared(items); return; }
+			if (Window.Current.Dispatcher.HasThreadAccess) { if (Cleared != null) Cleared(items); }
+			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { if (Cleared != null) Cleared(items); });
 		}
 
 		#endregion

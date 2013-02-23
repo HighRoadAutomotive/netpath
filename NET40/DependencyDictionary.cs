@@ -232,30 +232,30 @@ namespace System.Collections.Generic
 
 		private void CallAdded(TKey key, TValue value)
 		{
-			if (Application.Current.Dispatcher == null) { Added(key, value); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) Added(key, value);
-			else Application.Current.Dispatcher.Invoke(new Action(() => Added(key, value)), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { if (Added != null) Added(key, value); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { if (Added != null) Added(key, value); }
+			else Application.Current.Dispatcher.Invoke(new Action(() => { if (Added != null) Added(key, value); }), DispatcherPriority.Normal);
 		}
 
 		private void CallRemoved(TKey key, TValue value)
 		{
-			if (Application.Current.Dispatcher == null) { Removed(key, value); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) Removed(key, value);
-			else Application.Current.Dispatcher.Invoke(new Action(() => Removed(key, value)), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { if (Removed != null) Removed(key, value); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { if (Removed != null) Removed(key, value); }
+			else Application.Current.Dispatcher.Invoke(new Action(() => { if (Removed != null) Removed(key, value); }), DispatcherPriority.Normal);
 		}
 
 		private void CallCleared(KeyValuePair<TKey, TValue>[] values)
 		{
-			if (Application.Current.Dispatcher == null) { Cleared(values); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) Cleared(values);
-			else Application.Current.Dispatcher.Invoke(new Action(() => Cleared(values)), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { if (Cleared != null) Cleared(values); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { if (Cleared != null) Cleared(values); }
+			else Application.Current.Dispatcher.Invoke(new Action(() => { if (Cleared != null) Cleared(values); }), DispatcherPriority.Normal);
 		}
 
 		private void CallUpdated(TKey index, TValue olditem, TValue newitem)
 		{
-			if (Application.Current.Dispatcher == null) { Updated(index, olditem, newitem); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) Updated(index, olditem, newitem);
-			else Application.Current.Dispatcher.Invoke(new Action(() => Updated(index, olditem, newitem)), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { if (Updated != null) Updated(index, olditem, newitem); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { if (Updated != null) Updated(index, olditem, newitem); }
+			else Application.Current.Dispatcher.Invoke(new Action(() => { if (Updated != null) Updated(index, olditem, newitem); }), DispatcherPriority.Normal);
 		}
 
 		#endregion

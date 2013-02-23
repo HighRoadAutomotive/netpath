@@ -85,16 +85,16 @@ namespace System.Collections.Generic
 
 		private void CallPushed(T item)
 		{
-			if (Application.Current.Dispatcher == null) { Enqueued(item); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { Enqueued(item); }
-			else Application.Current.Dispatcher.Invoke(() => Enqueued(item), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { if (Enqueued != null) Enqueued(item); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { if (Enqueued != null) Enqueued(item); }
+			else Application.Current.Dispatcher.Invoke(() => { if (Enqueued != null) Enqueued(item); }, DispatcherPriority.Normal);
 		}
 
 		private void CallPopped(T item)
 		{
-			if (Application.Current.Dispatcher == null) { Dequeued(item); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { Dequeued(item); }
-			else Application.Current.Dispatcher.Invoke(() => Dequeued(item), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { if (Dequeued != null)  Dequeued(item); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { if (Dequeued != null) Dequeued(item); }
+			else Application.Current.Dispatcher.Invoke(() => { if (Dequeued != null) Dequeued(item); }, DispatcherPriority.Normal);
 		}
 
 		#endregion

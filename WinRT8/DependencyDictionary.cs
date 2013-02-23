@@ -230,30 +230,30 @@ namespace System.Collections.Generic
 
 		private async void CallAdded(TKey key, TValue value)
 		{
-			if (Window.Current.Dispatcher == null) { Added(key, value); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) Added(key, value);
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Added(key, value));
+			if (Window.Current.Dispatcher == null) { if (Added != null) Added(key, value); return; }
+			if (Window.Current.Dispatcher.HasThreadAccess) if (Added != null) { Added(key, value); }
+			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { if (Added != null) Added(key, value); });
 		}
 
 		private async void CallRemoved(TKey key, TValue value)
 		{
-			if (Window.Current.Dispatcher == null) { Removed(key, value); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) Removed(key, value);
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Removed(key, value));
+			if (Window.Current.Dispatcher == null) { if (Removed != null) Removed(key, value); return; }
+			if (Window.Current.Dispatcher.HasThreadAccess) { if (Removed != null) Removed(key, value); }
+			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { if (Removed != null) Removed(key, value); });
 		}
 
 		private async void CallCleared(KeyValuePair<TKey, TValue>[] values)
 		{
-			if (Window.Current.Dispatcher == null) { Cleared(values); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) Cleared(values);
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Cleared(values));
+			if (Window.Current.Dispatcher == null) { if (Cleared != null) Cleared(values); return; }
+			if (Window.Current.Dispatcher.HasThreadAccess) { if (Cleared != null)  Cleared(values); }
+			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { if (Cleared != null) Cleared(values); });
 		}
 
 		private async void CallUpdated(TKey index, TValue olditem, TValue newitem)
 		{
-			if (Window.Current.Dispatcher == null) { Updated(index, olditem, newitem); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) Updated(index, olditem, newitem);
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Updated(index, olditem, newitem));
+			if (Window.Current.Dispatcher == null) { if (Updated != null) Updated(index, olditem, newitem); return; }
+			if (Window.Current.Dispatcher.HasThreadAccess) { if (Updated != null) Updated(index, olditem, newitem); }
+			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { if (Updated != null) Updated(index, olditem, newitem); });
 		}
 
 		#endregion

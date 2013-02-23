@@ -121,37 +121,37 @@ namespace System.Collections.Generic
 
 		private void CallPushed(T item)
 		{
-			if (Application.Current.Dispatcher == null) { Pushed(new List<T> { item }); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { Pushed(new List<T> { item }); }
-			else Application.Current.Dispatcher.Invoke(() => Pushed(new List<T> { item }), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { if (Pushed != null) Pushed(new List<T> { item }); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { if (Pushed != null) Pushed(new List<T> { item }); }
+			else Application.Current.Dispatcher.Invoke(() => { if (Pushed != null) Pushed(new List<T> { item }); }, DispatcherPriority.Normal);
 		}
 
 		private void CallPushed(IEnumerable<T> items)
 		{
-			if (Application.Current.Dispatcher == null) { Pushed(items); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { Pushed(items); }
-			else Application.Current.Dispatcher.Invoke(() => Pushed(items), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { if (Pushed != null) Pushed(items); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { if (Pushed != null) Pushed(items); }
+			else Application.Current.Dispatcher.Invoke(() => { if (Pushed != null) Pushed(items); }, DispatcherPriority.Normal);
 		}
 
 		private void CallPopped(T item)
 		{
-			if (Application.Current.Dispatcher == null) { Popped(new List<T> { item }); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { Popped(new List<T> { item }); }
-			else Application.Current.Dispatcher.Invoke(() => Popped(new List<T> { item }), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { if (Popped != null) Popped(new List<T> { item }); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { if (Popped != null) Popped(new List<T> { item }); }
+			else Application.Current.Dispatcher.Invoke(() => { if (Popped != null) Popped(new List<T> { item }); }, DispatcherPriority.Normal);
 		}
 
 		private void CallPopped(IEnumerable<T> items)
 		{
-			if (Application.Current.Dispatcher == null) { Popped(items); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { Popped(items); }
-			else Application.Current.Dispatcher.Invoke(() => Popped(items), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { if (Popped != null) Popped(items); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { if (Popped != null) Popped(items); }
+			else Application.Current.Dispatcher.Invoke(() => { if (Popped != null) Popped(items); }, DispatcherPriority.Normal);
 		}
 
 		private void CallCleared(IEnumerable<T> items)
 		{
-			if (Application.Current.Dispatcher == null) { Cleared(items); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { Cleared(items); }
-			else Application.Current.Dispatcher.Invoke(() => Cleared(items), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { if (Cleared != null) Cleared(items); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { if (Cleared != null) Cleared(items); }
+			else Application.Current.Dispatcher.Invoke(() => { if (Cleared != null) Cleared(items); }, DispatcherPriority.Normal);
 		}
 
 		#endregion

@@ -85,16 +85,16 @@ namespace System.Collections.Generic
 
 		private async void CallPushed(T item)
 		{
-			if (Window.Current.Dispatcher == null) { Enqueued(item); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) { Enqueued(item); }
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Enqueued(item));
+			if (Window.Current.Dispatcher == null) { if (Enqueued != null) Enqueued(item); return; }
+			if (Window.Current.Dispatcher.HasThreadAccess) { if (Enqueued != null) Enqueued(item); }
+			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { if (Enqueued != null) Enqueued(item); });
 		}
 
 		private async void CallPopped(T item)
 		{
-			if (Window.Current.Dispatcher == null) { Dequeued(item); return; }
-			if (Window.Current.Dispatcher.HasThreadAccess) { Dequeued(item); }
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Dequeued(item));
+			if (Window.Current.Dispatcher == null) { if (Dequeued != null) Dequeued(item); return; }
+			if (Window.Current.Dispatcher.HasThreadAccess) { if (Dequeued != null) Dequeued(item); }
+			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { if (Dequeued != null) Dequeued(item); });
 		}
 
 		#endregion
