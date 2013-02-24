@@ -53,8 +53,8 @@ namespace System.Windows
 
 		public void SetValueThreaded<T>(DependencyProperty dp, T value, DeltaPropertyBase dataProperty = null)
 		{
-			if (Application.Current.Dispatcher.CheckAccess()) SetValue(dp, value);
-			else Application.Current.Dispatcher.Invoke(new Action(() => { SetValue(dp, value); if (dataProperty != null && baseDataObject != null) baseDataObject.UpdateValue(dataProperty, value); }), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher.CheckAccess()) SetCurrentValue(dp, value);
+			else Application.Current.Dispatcher.Invoke(new Action(() => { SetCurrentValue(dp, value); if (dataProperty != null && baseDataObject != null) baseDataObject.UpdateValue(dataProperty, value); }), DispatcherPriority.Normal);
 		}
 
 		public void SetValueThreaded<T>(DependencyPropertyKey dp, T value, DeltaPropertyBase dataProperty = null)
@@ -65,8 +65,8 @@ namespace System.Windows
 
 		internal void UpdateValueThreaded<T>(DependencyProperty dp, T value)
 		{
-			if (Application.Current.Dispatcher.CheckAccess()) SetValue(dp, value);
-			else Application.Current.Dispatcher.Invoke(new Action(() => SetValue(dp, value)), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher.CheckAccess()) SetCurrentValue(dp, value);
+			else Application.Current.Dispatcher.Invoke(new Action(() => SetCurrentValue(dp, value)), DispatcherPriority.Normal);
 		}
 
 		internal void UpdateValueThreaded<T>(DependencyPropertyKey dp, T value)
