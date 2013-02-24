@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml
 	{
 		private readonly ConcurrentDictionary<int, object> values;
 		private DeltaObject baseDataObject;
-		protected DeltaObject BaseDataObject { get { return baseDataObject; } set { if (baseDataObject != null) baseDataObject = value; } }
+		protected DeltaObject BaseDataObject { get { return baseDataObject; } set { if (baseDataObject == null) baseDataObject = value; } }
 
 		protected DependencyObjectEx()
 		{
@@ -54,13 +54,7 @@ namespace Windows.UI.Xaml
 		public async void SetValueThreaded<T>(DependencyProperty dp, T value, DeltaPropertyBase dpb = null)
 		{
 			if (Window.Current.Dispatcher.HasThreadAccess) SetValue(dp, value);
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { SetValue(dp, value); if (dpb != null && baseDataObject != null) baseDataObject.UpdateValue(dpb, value); });
-		}
-
-		internal async void UpdateValueThreaded<T>(DependencyProperty dp, T value)
-		{
-			if (Window.Current.Dispatcher.HasThreadAccess) SetValue(dp, value);
-			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => SetValue(dp, value));
+			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { SetValue(dp, value); });
 		}
 
 		public T GetValueExternal<T>(DependencyExternal<T> de)
