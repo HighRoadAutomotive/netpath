@@ -112,3 +112,4 @@ Build/
 *.dll
 *.pri
 *.map
+*.bak
