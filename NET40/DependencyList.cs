@@ -130,6 +130,7 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
+			CallAdded(item, false);
 		}
 
 		public void AddRangeNoUpdate(IEnumerable<T> items)
@@ -143,6 +144,7 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
+			CallAdded(items, false);
 		}
 
 		public int BinarySearch(T item)
@@ -212,6 +214,7 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
+			CallCleared(tl, false);
 		}
 
 		public bool Contains(T item)
@@ -503,6 +506,7 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
+			CallInserted(index, item, false);
 		}
 
 		public void InsertRangeNoUpdate(int index, IEnumerable<T> items)
@@ -516,6 +520,7 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
+			CallInserted(index, items, false);
 		}
 
 		public int LastIndexOf(T item)
@@ -632,6 +637,7 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
+			CallMoved(value, newindex, false);
 		}
 
 		public bool RemoveNoUpdate(T item)
@@ -646,6 +652,7 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
+			if (rt) CallRemoved(item, false);
 			return rt;
 		}
 
@@ -662,6 +669,7 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
+			CallRemovedAt(index, ti, false);
 		}
 
 		public void RemoveRangeNoUpdate(int index, int count)
@@ -677,6 +685,7 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
+			CallRemoved(tl, false);
 		}
 
 		public void ReplaceNoUpdate(T NewValue, T OldValue)
@@ -691,6 +700,7 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
+			CallReplaced(OldValue, NewValue, false);
 		}
 
 		public T[] ToArray()
@@ -771,74 +781,74 @@ namespace System.Collections.Generic
 
 		#region - Call Functions -
 
-		private void CallAdded(T item)
+		private void CallAdded(T item, bool Update = true)
 		{
-			if (Application.Current.Dispatcher == null) { if (Added != null) Added(new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item)); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { if (Added != null) Added(new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item)); }
-			else Application.Current.Dispatcher.Invoke(new Action(() => { if (Added != null) Added(new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item)); }), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { if (Added != null && Update) Added(new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item)); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { if (Added != null && Update) Added(new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item)); }
+			else Application.Current.Dispatcher.Invoke(new Action(() => { if (Added != null && Update) Added(new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item)); }), DispatcherPriority.Normal);
 		}
 
-		private void CallAdded(IEnumerable<T> items)
+		private void CallAdded(IEnumerable<T> items, bool Update = true)
 		{
-			if (Application.Current.Dispatcher == null) { if (Added != null) Added(items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new List<T>(items))); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { if (Added != null) Added(items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new List<T>(items))); }
-			else Application.Current.Dispatcher.Invoke(new Action(() => { if (Added != null) Added(items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new List<T>(items))); }), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { if (Added != null && Update) Added(items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new List<T>(items))); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { if (Added != null && Update) Added(items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new List<T>(items))); }
+			else Application.Current.Dispatcher.Invoke(new Action(() => { if (Added != null && Update) Added(items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new List<T>(items))); }), DispatcherPriority.Normal);
 		}
 
-		private void CallInserted(int index, T item)
+		private void CallInserted(int index, T item, bool Update = true)
 		{
-			if (Application.Current.Dispatcher == null) { if (Inserted != null) Inserted(index, new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index)); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { if (Inserted != null) Inserted(index, new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index)); }
-			else Application.Current.Dispatcher.Invoke(new Action(() => { if (Inserted != null) Inserted(index, new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index)); }), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { if (Inserted != null && Update) Inserted(index, new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index)); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { if (Inserted != null && Update) Inserted(index, new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index)); }
+			else Application.Current.Dispatcher.Invoke(new Action(() => { if (Inserted != null && Update) Inserted(index, new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index)); }), DispatcherPriority.Normal);
 		}
 
-		private void CallInserted(int index, IEnumerable<T> items)
+		private void CallInserted(int index, IEnumerable<T> items, bool Update = true)
 		{
-			if (Application.Current.Dispatcher == null) { if (Inserted != null) Inserted(index, items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new List<T>(items), index)); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { if (Inserted != null) Inserted(index, items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new List<T>(items), index)); }
-			else Application.Current.Dispatcher.Invoke(new Action(() => { if (Inserted != null) Inserted(index, items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new List<T>(items), index)); }), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { if (Inserted != null && Update) Inserted(index, items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new List<T>(items), index)); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { if (Inserted != null && Update) Inserted(index, items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new List<T>(items), index)); }
+			else Application.Current.Dispatcher.Invoke(new Action(() => { if (Inserted != null && Update) Inserted(index, items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new List<T>(items), index)); }), DispatcherPriority.Normal);
 		}
 
-		private void CallRemoved(T item)
+		private void CallRemoved(T item, bool Update = true)
 		{
-			if (Application.Current.Dispatcher == null) { if (Removed != null) Removed(new List<T>{ item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item)); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { if (Removed != null) Removed(new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item)); }
-			else Application.Current.Dispatcher.Invoke(new Action(() => { if (Removed != null) Removed(new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item)); }), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { if (Removed != null && Update) Removed(new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item)); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { if (Removed != null && Update) Removed(new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item)); }
+			else Application.Current.Dispatcher.Invoke(new Action(() => { if (Removed != null && Update) Removed(new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item)); }), DispatcherPriority.Normal);
 		}
 
-		private void CallRemoved(IEnumerable<T> items)
+		private void CallRemoved(IEnumerable<T> items, bool Update = true)
 		{
-			if (Application.Current.Dispatcher == null) { if (Removed != null) Removed(items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, new List<T>(items))); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { if (Removed != null) Removed(items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, new List<T>(items))); }
-			else Application.Current.Dispatcher.Invoke(new Action(() => { if (Removed != null) Removed(items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, new List<T>(items))); }), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { if (Removed != null && Update) Removed(items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, new List<T>(items))); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { if (Removed != null && Update) Removed(items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, new List<T>(items))); }
+			else Application.Current.Dispatcher.Invoke(new Action(() => { if (Removed != null && Update) Removed(items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, new List<T>(items))); }), DispatcherPriority.Normal);
 		}
 
-		private void CallRemovedAt(int index, T item)
+		private void CallRemovedAt(int index, T item, bool Update = true)
 		{
-			if (Application.Current.Dispatcher == null) { if (RemovedAt != null) RemovedAt(index, new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index)); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { if (RemovedAt != null) RemovedAt(index, new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index)); }
-			else Application.Current.Dispatcher.Invoke(new Action(() => { if (RemovedAt != null) RemovedAt(index, new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index)); }), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { if (RemovedAt != null && Update) RemovedAt(index, new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index)); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { if (RemovedAt != null && Update) RemovedAt(index, new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index)); }
+			else Application.Current.Dispatcher.Invoke(new Action(() => { if (RemovedAt != null && Update) RemovedAt(index, new List<T> { item }); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index)); }), DispatcherPriority.Normal);
 		}
 
-		private void CallCleared(IEnumerable<T> items)
+		private void CallCleared(IEnumerable<T> items, bool Update = true)
 		{
-			if (Application.Current.Dispatcher == null) { if (Cleared != null) Cleared(items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset, new List<T>(items))); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { if (Cleared != null) Cleared(items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset, new List<T>(items))); }
-			else Application.Current.Dispatcher.Invoke((new Action(() => { if (Cleared != null) Cleared(items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset, new List<T>(items))); })), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { if (Cleared != null && Update) Cleared(items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset, new List<T>(items))); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { if (Cleared != null && Update) Cleared(items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset, new List<T>(items))); }
+			else Application.Current.Dispatcher.Invoke((new Action(() => { if (Cleared != null && Update) Cleared(items); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset, new List<T>(items))); })), DispatcherPriority.Normal);
 		}
 
-		private void CallMoved(T item, int newindex)
+		private void CallMoved(T item, int newindex, bool Update = true)
 		{
-			if (Application.Current.Dispatcher == null) { if (Moved != null) Moved(item, newindex); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newindex)); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { if (Moved != null) Moved(item, newindex); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newindex)); }
-			else Application.Current.Dispatcher.Invoke(new Action(() => { if (Moved != null) Moved(item, newindex); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newindex)); }), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { if (Moved != null && Update) Moved(item, newindex); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newindex)); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { if (Moved != null && Update) Moved(item, newindex); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newindex)); }
+			else Application.Current.Dispatcher.Invoke(new Action(() => { if (Moved != null && Update) Moved(item, newindex); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newindex)); }), DispatcherPriority.Normal);
 		}
 
-		private void CallReplaced(T olditem, T newitem)
+		private void CallReplaced(T olditem, T newitem, bool Update = true)
 		{
-			if (Application.Current.Dispatcher == null) { if (Replaced != null) Replaced(olditem, newitem); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newitem, olditem)); return; }
-			if (Application.Current.Dispatcher.CheckAccess()) { if (Replaced != null) Replaced(olditem, newitem); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newitem, olditem)); }
-			else Application.Current.Dispatcher.Invoke(new Action(() => { if (Replaced != null) Replaced(olditem, newitem); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newitem, olditem)); }), DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher == null) { if (Replaced != null && Update) Replaced(olditem, newitem); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newitem, olditem)); return; }
+			if (Application.Current.Dispatcher.CheckAccess()) { if (Replaced != null && Update) Replaced(olditem, newitem); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newitem, olditem)); }
+			else Application.Current.Dispatcher.Invoke(new Action(() => { if (Replaced != null && Update) Replaced(olditem, newitem); if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newitem, olditem)); }), DispatcherPriority.Normal);
 		}
 
 		#endregion
