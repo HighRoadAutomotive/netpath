@@ -159,6 +159,7 @@ namespace NETPath.Projects
 		[IgnoreDataMember] public bool ClientHasExtensionData { get { return HasClientType && (ClientType.InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0)); } }
 		[IgnoreDataMember] public bool ClientHasImpliedExtensionData { get { return !HasClientType; } }
 		[IgnoreDataMember] public bool IsDataObject { get; set; }
+		[IgnoreDataMember] public bool IsCollectionType { get { return TypeMode == DataTypeMode.Array || TypeMode == DataTypeMode.Collection || TypeMode == DataTypeMode.Dictionary || TypeMode == DataTypeMode.Queue || TypeMode == DataTypeMode.Stack; } }
 
 		private static void DataTypePropertyChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
 		{
