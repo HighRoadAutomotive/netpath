@@ -30,6 +30,7 @@ namespace Windows.UI.Xaml
 		private readonly ConcurrentDictionary<int, object> values;
 		private DeltaObject baseDataObject;
 		protected DeltaObject BaseDataObject { get { return baseDataObject; } set { if (baseDataObject == null) baseDataObject = value; } }
+		protected bool IsExternalUpdate { get; private set; }
 
 		protected DependencyObjectEx()
 		{
@@ -51,10 +52,16 @@ namespace Windows.UI.Xaml
 			return ret;
 		}
 		
-		public async void SetValueThreaded<T>(DependencyProperty dp, T value, DeltaPropertyBase dpb = null)
+		public async void SetValueThreaded<T>(DependencyProperty dp, T value)
 		{
-			if (Window.Current.Dispatcher.HasThreadAccess) SetValue(dp, value);
+			if (Window.Current.Dispatcher.HasThreadAccess) { SetValue(dp, value); }
 			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { SetValue(dp, value); });
+		}
+
+		public async void UpdateValueThreaded<T>(DependencyProperty dp, T value)
+		{
+			if (Window.Current.Dispatcher.HasThreadAccess) { IsExternalUpdate = true; SetValue(dp, value); IsExternalUpdate = false; }
+			else await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { IsExternalUpdate = true; SetValue(dp, value); IsExternalUpdate = false; });
 		}
 
 		public T GetValueExternal<T>(DependencyExternal<T> de)

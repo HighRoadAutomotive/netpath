@@ -39,7 +39,7 @@ namespace System
 			modifications = new ConcurrentQueue<KeyValuePair<HashID, object>>();
 			values = new ConcurrentDictionary<HashID, object>();
 			ChangeCount = 0;
-			BatchInterval = -1;
+			BatchInterval = 0;
 			baseXAMLObject = null;
 		}
 
@@ -48,7 +48,7 @@ namespace System
 			modifications = new ConcurrentQueue<KeyValuePair<HashID, object>>();
 			values = new ConcurrentDictionary<HashID, object>();
 			ChangeCount = 0;
-			BatchInterval = -1;
+			BatchInterval = 0;
 			this.baseXAMLObject = baseXAMLObject;
 		}
 
@@ -84,8 +84,11 @@ namespace System
 				//Remove the value from the list, which sets it to the default value.
 				object temp;
 				values.TryRemove(de.ID, out temp);
-				modifications.Enqueue(new KeyValuePair<HashID, object>(de.ID, de.defaultValue));
-				IncrementChangeCount();
+				if (BatchInterval > 0)
+				{
+					modifications.Enqueue(new KeyValuePair<HashID, object>(de.ID, de.defaultValue));
+					IncrementChangeCount();
+				}
 
 				//Clear the changed event handlers
 				var tt = value as DeltaCollectionBase;
@@ -102,14 +105,94 @@ namespace System
 
 				//Update the value
 				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
-				modifications.Enqueue(new KeyValuePair<HashID, object>(de.ID, value));
-				IncrementChangeCount();
+				if (BatchInterval > 0)
+				{
+					modifications.Enqueue(new KeyValuePair<HashID, object>(de.ID, value));
+					IncrementChangeCount();
+				}
 
 				//Call the property changed callback
 				if (temp != null && de.DeltaPropertyChangedCallback != null && baseXAMLObject != null) de.DeltaPropertyChangedCallback(this, (T)temp, value);
 			}
 		}
 
+		public void SetValue<T>(DeltaProperty<T> de, T value, DependencyProperty xamlProperty)
+		{
+			//Call the validator to see if this value is acceptable
+			if (de.DeltaValidateValueCallback != null && !de.DeltaValidateValueCallback(this, value)) return;
+
+			//If the new value is the default value remove this from the modified values list, otherwise add/update it.
+			if (EqualityComparer<T>.Default.Equals(value, de.DefaultValue))
+			{
+				//Remove the value from the list, which sets it to the default value.
+				object temp;
+				values.TryRemove(de.ID, out temp);
+				if (BatchInterval > 0)
+				{
+					modifications.Enqueue(new KeyValuePair<HashID, object>(de.ID, de.defaultValue));
+					IncrementChangeCount();
+				}
+
+				if (xamlProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(xamlProperty, de.defaultValue);
+
+				//Call the property changed callback
+				if (temp != null && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, de.DefaultValue);
+			}
+			else
+			{
+				//Update the value
+				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
+				if (BatchInterval > 0)
+				{
+					modifications.Enqueue(new KeyValuePair<HashID, object>(de.ID, value));
+					IncrementChangeCount();
+				}
+
+				if (xamlProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(xamlProperty, value);
+
+				//Call the property changed callback
+				if (temp != null && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, value);
+			}
+		}
+
+		public void SetValue<T>(DeltaProperty<T> de, T value, DependencyPropertyKey xamlProperty)
+		{
+			//Call the validator to see if this value is acceptable
+			if (de.DeltaValidateValueCallback != null && !de.DeltaValidateValueCallback(this, value)) return;
+
+			//If the new value is the default value remove this from the modified values list, otherwise add/update it.
+			if (EqualityComparer<T>.Default.Equals(value, de.DefaultValue))
+			{
+				//Remove the value from the list, which sets it to the default value.
+				object temp;
+				values.TryRemove(de.ID, out temp);
+				if (BatchInterval > 0)
+				{
+					modifications.Enqueue(new KeyValuePair<HashID, object>(de.ID, de.defaultValue));
+					IncrementChangeCount();
+				}
+
+				if (xamlProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(xamlProperty, de.defaultValue);
+
+				//Call the property changed callback
+				if (temp != null && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, de.DefaultValue);
+			}
+			else
+			{
+				//Update the value
+				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
+				if (BatchInterval > 0)
+				{
+					modifications.Enqueue(new KeyValuePair<HashID, object>(de.ID, value));
+					IncrementChangeCount();
+				}
+
+				if (xamlProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(xamlProperty, value);
+
+				//Call the property changed callback
+				if (temp != null && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, value);
+			}
+		}
 		public void UpdateValue<T>(DeltaPropertyBase de, T value)
 		{
 			//If the new value is the default value remove this from the modified values list, otherwise add/update it.
@@ -167,12 +250,12 @@ namespace System
 		private void IncrementChangeCount()
 		{
 			//If the change notification interval is less than zero, do nothing.
-			if (BatchInterval < 0) return;
+			if (BatchInterval < 1) return;
 			Threading.Interlocked.Increment(ref ChangeCount);
 
 			//If the change count is greater than the interval run the batch updates.
 			//Note that we don't need to use CompareExchange here because we only care if the value is greater-than-or-equal-to the batch interval, not what the exact overage is.
-			if (ChangeCount < BatchInterval) return;
+			if (ChangeCount <= BatchInterval) return;
 			Threading.Interlocked.Exchange(ref ChangeCount, 0);
 			BatchUpdates();
 		}
@@ -182,7 +265,7 @@ namespace System
 			modifications = new ConcurrentQueue<KeyValuePair<HashID, object>>();
 			values = new ConcurrentDictionary<HashID, object>();
 			ChangeCount = 0;
-			BatchInterval = -1;
+			BatchInterval = 0;
 		}
 
 		protected abstract void BatchUpdates();

@@ -30,6 +30,7 @@ namespace System.Windows
 		private readonly ConcurrentDictionary<int, object> values;
 		private DeltaObject baseDataObject;
 		protected DeltaObject BaseDataObject { get { return baseDataObject; } set { if (baseDataObject == null) baseDataObject = value; } }
+		protected bool IsExternalUpdate { get; private set; }
 
 		protected DependencyObjectEx()
 		{
@@ -51,16 +52,28 @@ namespace System.Windows
 			return ret;
 		}
 
-		public void SetValueThreaded<T>(DependencyProperty dp, T value, DeltaPropertyBase dataProperty = null)
-		{
-			if (Application.Current.Dispatcher.CheckAccess()) SetCurrentValue(dp, value);
-			else Application.Current.Dispatcher.Invoke(new Action(() => { SetCurrentValue(dp, value); }), DispatcherPriority.Normal);
-		}
-
-		public void SetValueThreaded<T>(DependencyPropertyKey dp, T value, DeltaPropertyBase dataProperty = null)
+		public void SetValueThreaded<T>(DependencyProperty dp, T value)
 		{
 			if (Application.Current.Dispatcher.CheckAccess()) SetValue(dp, value);
 			else Application.Current.Dispatcher.Invoke(new Action(() => { SetValue(dp, value); }), DispatcherPriority.Normal);
+		}
+
+		public void SetValueThreaded<T>(DependencyPropertyKey dp, T value)
+		{
+			if (Application.Current.Dispatcher.CheckAccess()) SetValue(dp, value);
+			else Application.Current.Dispatcher.Invoke(new Action(() => { SetValue(dp, value); }), DispatcherPriority.Normal);
+		}
+
+		public void UpdateValueThreaded<T>(DependencyProperty dp, T value)
+		{
+			if (Application.Current.Dispatcher.CheckAccess()) { IsExternalUpdate = true; SetValue(dp, value); IsExternalUpdate = false; }
+			else Application.Current.Dispatcher.Invoke(new Action(() => { IsExternalUpdate = true; SetValue(dp, value); IsExternalUpdate = false; }), DispatcherPriority.Normal);
+		}
+
+		public void UpdateValueThreaded<T>(DependencyPropertyKey dp, T value)
+		{
+			if (Application.Current.Dispatcher.CheckAccess()) { IsExternalUpdate = true; SetValue(dp, value); IsExternalUpdate = false; }
+			else Application.Current.Dispatcher.Invoke(new Action(() => { IsExternalUpdate = true; SetValue(dp, value); IsExternalUpdate = false; }), DispatcherPriority.Normal);
 		}
 
 		public T GetValueExternal<T>(DependencyExternal<T> de)
