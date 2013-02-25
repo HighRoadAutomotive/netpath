@@ -52,6 +52,15 @@ namespace System
 			this.baseXAMLObject = baseXAMLObject;
 		}
 
+		protected DeltaObject(long BatchInterval)
+		{
+			modifications = new ConcurrentQueue<KeyValuePair<HashID, object>>();
+			values = new ConcurrentDictionary<HashID, object>();
+			ChangeCount = 0;
+			this.BatchInterval = BatchInterval;
+			baseXAMLObject = null;
+		}
+
 		protected DeltaObject(DependencyObjectEx baseXAMLObject, long BatchInterval)
 		{
 			modifications = new ConcurrentQueue<KeyValuePair<HashID, object>>();
