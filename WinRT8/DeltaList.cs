@@ -93,17 +93,18 @@ namespace System.Collections.Generic
 			Threading.Interlocked.Exchange(ref dl, new ConcurrentQueue<ChangeListItem<T>>());
 		}
 
-		public void Lock()
+		public void SetEvents(AddRemoveClearedEventHandler Added, AddRemoveClearedEventHandler Removed, AddRemoveClearedEventHandler Cleared, InsertRemoveAtEventHandler RemovedAt, InsertRemoveAtEventHandler Inserted, MovedEventHandler Moved, ReplacedEventHandler Replaced)
 		{
-			ocl.EnterWriteLock();
+			this.Added = Added;
+			this.Removed = Removed;
+			this.Cleared = Cleared;
+			this.RemovedAt = RemovedAt;
+			this.Inserted = Inserted;
+			this.Moved = Moved;
+			this.Replaced = Replaced;
 		}
 
-		public void Unlock()
-		{
-			ocl.ExitWriteLock();
-		}
-
-		public void ClearEventHandlers()
+		public void ClearEvents()
 		{
 			Added = null;
 			Removed = null;

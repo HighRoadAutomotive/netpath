@@ -768,7 +768,18 @@ namespace System.Collections.Generic
 			}
 		}
 
-		public void ClearEventFunctions()
+		public void SetEvents(AddRemoveClearedEventHandler Added, AddRemoveClearedEventHandler Removed, AddRemoveClearedEventHandler Cleared, InsertRemoveAtEventHandler RemovedAt, InsertRemoveAtEventHandler Inserted, MovedEventHandler Moved, ReplacedEventHandler Replaced)
+		{
+			this.Added = Added;
+			this.Removed = Removed;
+			this.Cleared = Cleared;
+			this.RemovedAt = RemovedAt;
+			this.Inserted = Inserted;
+			this.Moved = Moved;
+			this.Replaced = Replaced;
+		}
+
+		public void ClearEvents()
 		{
 			Added = null;
 			Removed = null;
