@@ -432,7 +432,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t\tn.RemovedAt += (idx, x) => {{ foreach (var z in x) t.XAMLObject.{1}.RemoveNoUpdate(z); t.{0}RemovedAt(idx, x); }};", o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
 				code.AppendLine(string.Format("\t\t\tn.Moved += (x, nidx) => {{ t.XAMLObject.{1}.MoveNoUpdate(x, nidx); t.{0}Moved(x, nidx); }};", o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
 				code.AppendLine(string.Format("\t\t\tn.Replaced += (ox, nx) => {{ t.XAMLObject.{1}.ReplaceNoUpdate(nx, ox); t.{0}Replaced(ox, nx); }};", o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
-				code.AppendLine("\t\t\to.ClearEventHandlers();");
+				code.AppendLine("\t\t\tif (o != null) o.ClearEventHandlers();");
 				code.AppendLine("\t\t});");
 				code.AppendLine(string.Format("\t\tpartial void {0}Added(IEnumerable<{1}> Values);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.CollectionGenericType : o.DataType.CollectionGenericType))));
 				code.AppendLine(string.Format("\t\tpartial void {0}Removed(IEnumerable<{1}> Values);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.CollectionGenericType : o.DataType.CollectionGenericType))));
@@ -455,7 +455,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t\tn.Removed += (xk, xv) => {{ {2} result; t.XAMLObject.{1}.TryRemoveNoUpdate(xk, out result); t.{0}Removed(xk, xv); }};", o.HasClientType ? o.ClientName : o.DataName, o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.DictionaryValueGenericType))));
 				code.AppendLine(string.Format("\t\t\tn.Cleared += (x) => {{ t.XAMLObject.{1}.ClearNoUpdate(); t.{0}Cleared(x); }};", o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
 				code.AppendLine(string.Format("\t\t\tn.Updated += (xk, ox, nx) => {{ t.XAMLObject.{1}.AddOrUpdateNoUpdate(xk, nx, (k,v) => nx); t.{0}Updated(xk, ox, nx); }};", o.HasClientType ? o.ClientName : o.DataName, o.XAMLName));
-				code.AppendLine("\t\t\to.ClearEventHandlers();");
+				code.AppendLine("\t\t\tif (o != null) o.ClearEventHandlers();");
 				code.AppendLine("\t\t});");
 				code.AppendLine(string.Format("\t\tpartial void {0}Added({1} Key, {2} Value);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.DictionaryKeyGenericType : o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.DictionaryValueGenericType : o.DataType.DictionaryValueGenericType))));
 				code.AppendLine(string.Format("\t\tpartial void {0}Removed({1} Key, {2} Value);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.DictionaryKeyGenericType : o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType.DictionaryValueGenericType : o.DataType.DictionaryValueGenericType))));
@@ -636,7 +636,7 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendLine(string.Format("\t\t\tnl.RemovedAt += (idx, x) => {{ foreach (var z in x) t.DataObject.{1}.RemoveNoUpdate(z); t.{0}RemovedAt(idx, x); }};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
 					code.AppendLine(string.Format("\t\t\tnl.Moved += (x, nidx) => {{ t.DataObject.{1}.MoveNoUpdate(x, nidx); t.{0}Moved(x, nidx); }};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
 					code.AppendLine(string.Format("\t\t\tnl.Replaced += (ox, nx) => {{ t.DataObject.{1}.ReplaceNoUpdate(ox, nx); t.{0}Replaced(ox, nx); }};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
-					code.AppendLine("\t\t\tol.ClearEventHandlers();");
+					code.AppendLine("\t\t\tif (ol != null) ol.ClearEventHandlers();");
 					code.AppendLine("\t\t});");
 					code.AppendLine(string.Format("\t\tpartial void {0}Added(IEnumerable<{1}> Values);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.CollectionGenericType))));
 					code.AppendLine(string.Format("\t\tpartial void {0}Removed(IEnumerable<{1}> Values);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.CollectionGenericType))));
@@ -659,7 +659,7 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendLine(string.Format("\t\t\tnl.Removed += (xk, xv) => {{ {2} result; t.DataObject.{1}.TryRemoveNoUpdate(xk, out result); t.{0}Removed(xk, xv); }};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName, o.HasClientType ? DataTypeGenerator.GenerateType(o.ClientType.DictionaryValueGenericType) : DataTypeGenerator.GenerateType(o.DataType.DictionaryValueGenericType)));
 					code.AppendLine(string.Format("\t\t\tnl.Cleared += (x) => {{ t.DataObject.{1}.ClearNoUpdate(); t.{0}Cleared(x); }};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
 					code.AppendLine(string.Format("\t\t\tnl.Updated += (xk, ox, nx) => {{ t.DataObject.{1}.AddOrUpdateNoUpdate(xk, nx, (k,v) => nx); t.{0}Updated(xk, ox, nx); }};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
-					code.AppendLine("\t\t\tol.ClearEventHandlers();");
+					code.AppendLine("\t\t\tif (ol != null) ol.ClearEventHandlers();");
 					code.AppendLine("\t\t});");
 					code.AppendLine(string.Format("\t\tpartial void {0}Added({1} Key, {2} Value);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.DictionaryValueGenericType))));
 					code.AppendLine(string.Format("\t\tpartial void {0}Removed({1} Key, {2} Value);", o.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.XAMLType.DictionaryValueGenericType))));
