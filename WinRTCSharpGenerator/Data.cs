@@ -167,7 +167,7 @@ namespace NETPath.Generators.WinRT.CS
 			}
 
 			code.AppendLine("\t\t//Constuctors");
-			code.AppendLine(string.Format("\t\tpublic {0}()", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine(string.Format("\t\tpublic {0}(){1}", o.HasClientType ? o.ClientType.Name : o.Name, o.DCMBatchCount > 0 ? string.Format(" : base({0})", o.DCMBatchCount) : ""));
 			code.AppendLine("\t\t{");
 			foreach (DataElement de in o.Elements)
 				if (de.XAMLType.TypeMode == DataTypeMode.Collection || de.XAMLType.TypeMode == DataTypeMode.Dictionary || de.XAMLType.TypeMode == DataTypeMode.Queue || de.XAMLType.TypeMode == DataTypeMode.Stack)
@@ -186,7 +186,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine("\t\t}");
 			if (o.HasXAMLType)
 			{
-				code.AppendLine(string.Format("\t\tpublic {0}({1} Data){2}", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name, o.CMDEnabled ? " : base(Data)" : ""));
+				code.AppendLine(string.Format("\t\tpublic {0}({1} Data){2}", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name, o.CMDEnabled ? string.Format(" : base(Data{0})", o.DCMBatchCount > 0 ? string.Format(", {0}", o.DCMBatchCount) : "") : o.DCMBatchCount > 0 ? string.Format(" : base({0})", o.DCMBatchCount) : ""));
 				code.AppendLine("\t\t{");
 				if (!o.CMDEnabled) code.AppendLine("\t\t\tBaseXAMLObject = Data;");
 				foreach (DataElement de in o.Elements)
