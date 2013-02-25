@@ -54,7 +54,15 @@ namespace System.Collections.Generic
 			il = new ConcurrentDictionary<TKey, TValue>(Items);
 		}
 
-		public void ClearEventHandlers()
+		public void SetEvents(AddRemoveEventHandler Added, AddRemoveEventHandler Removed, ClearedEventHandler Cleared, UpdatedRemoveEventHandler Updated)
+		{
+			this.Added = Added;
+			this.Removed = Removed;
+			this.Cleared = Cleared;
+			this.Updated = Updated;
+		}
+
+		public void ClearEvents()
 		{
 			Added = null;
 			Removed = null;
