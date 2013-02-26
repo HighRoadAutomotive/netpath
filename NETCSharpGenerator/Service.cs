@@ -1578,7 +1578,7 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.GetParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var x = new Method(string.Format("Get{0}DCM", dcmtype.Name), o.Owner) {Parameters = o.GetParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false};
+				var x = new Method(string.Format("Get{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.GetParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false };
 				code.Append(IsServer ? GenerateServiceInterfaceMethodCode40(x, false) : GenerateClientInterfaceMethodCode40(x));
 			}
 			if (o.GenerateNewDeleteFunction)
@@ -1589,7 +1589,7 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.NewParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var x = new Method(string.Format("New{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.NewParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("New{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.NewParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false };
 				code.Append(IsServer ? GenerateServiceInterfaceMethodCode40(x, false) : GenerateClientInterfaceMethodCode40(x));
 				if (o.DeleteDocumentation != null)
 				{
@@ -1597,7 +1597,7 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.DeleteParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var y = new Method(string.Format("Delete{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.DeleteParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var y = new Method(string.Format("Delete{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.DeleteParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false };
 				code.Append(IsServer ? GenerateServiceInterfaceMethodCode40(y, false) : GenerateClientInterfaceMethodCode40(y));
 			}
 			if (o.GenerateOpenCloseFunction)
@@ -1608,7 +1608,7 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.OpenParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var x = new Method(string.Format("Open{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.OpenParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("Open{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.OpenParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false };
 				code.Append(IsServer ? GenerateServiceInterfaceMethodCode40(x, false) : GenerateClientInterfaceMethodCode40(x));
 				if (o.CloseDocumentation != null)
 				{
@@ -1616,7 +1616,7 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.CloseParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var y = new Method(string.Format("Close{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.CloseParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var y = new Method(string.Format("Close{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.CloseParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false };
 				code.Append(IsServer ? GenerateServiceInterfaceMethodCode40(y, false) : GenerateClientInterfaceMethodCode40(y));
 			}
 
@@ -1625,7 +1625,7 @@ namespace NETPath.Generators.NET.CS
 				DataType edt = de.HasClientType ? de.ClientType : de.DataType;
 
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("Update{0}{1}DCM", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("Update{0}{1}DCM", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 
 				if (edt.TypeMode == DataTypeMode.Collection) tp.Add(new MethodParameter(new DataType("ChangeListItem", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) {CollectionGenericType = edt.CollectionGenericType}, "ChangedItem", o.Owner, x));
@@ -1640,7 +1640,7 @@ namespace NETPath.Generators.NET.CS
 			if (dcmtype.Elements.Any(a => a.DCMUpdateMode == DataUpdateMode.Batch))
 			{
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("BatchUpdate{0}DCM", dcmtype.Name), o.Owner) {Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false};
+				var x = new Method(string.Format("BatchUpdate{0}DCM", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 				tp.Add(new MethodParameter(new DataType(DataTypeMode.Dictionary) {Name = "Dictionary", DictionaryKeyGenericType = new DataType("HashID", DataTypeMode.Primitive, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8), DictionaryValueGenericType = new DataType(PrimitiveTypes.Object)}, "Values", o.Owner, x));
 
@@ -1678,7 +1678,7 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.GetParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var x = new Method(string.Format("Get{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.GetParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("Get{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.GetParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern };
 				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false) : GenerateClientInterfaceMethodCode45(x));
 			}
 			if (o.GenerateNewDeleteFunction)
@@ -1689,7 +1689,7 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.NewParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var x = new Method(string.Format("New{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.NewParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("New{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.NewParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern };
 				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false) : GenerateClientInterfaceMethodCode45(x));
 				if (o.DeleteDocumentation != null)
 				{
@@ -1697,7 +1697,7 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.DeleteParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var y = new Method(string.Format("Delete{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.DeleteParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var y = new Method(string.Format("Delete{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.DeleteParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern };
 				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(y, false) : GenerateClientInterfaceMethodCode45(y));
 			}
 			if (o.GenerateOpenCloseFunction)
@@ -1708,7 +1708,7 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.OpenParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var x = new Method(string.Format("Open{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.OpenParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("Open{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.OpenParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern };
 				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false) : GenerateClientInterfaceMethodCode45(x));
 				if (o.CloseDocumentation != null)
 				{
@@ -1716,7 +1716,7 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.CloseParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var y = new Method(string.Format("Close{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.CloseParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var y = new Method(string.Format("Close{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.CloseParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern };
 				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(y, false) : GenerateClientInterfaceMethodCode45(y));
 			}
 
@@ -1725,7 +1725,7 @@ namespace NETPath.Generators.NET.CS
 				DataType edt = de.HasClientType ? de.ClientType : de.DataType;
 
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("Update{0}{1}DCM", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("Update{0}{1}DCM", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 
 				if (edt.TypeMode == DataTypeMode.Collection) tp.Add(new MethodParameter(new DataType("ChangeListItem", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) { CollectionGenericType = edt.CollectionGenericType }, "ChangedItem", o.Owner, x));
@@ -1740,7 +1740,7 @@ namespace NETPath.Generators.NET.CS
 			if (dcmtype.Elements.Any(a => a.DCMUpdateMode == DataUpdateMode.Batch))
 			{
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("BatchUpdate{0}DCM", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("BatchUpdate{0}DCM", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 				tp.Add(new MethodParameter(new DataType(DataTypeMode.Dictionary) { Name = "Dictionary", DictionaryKeyGenericType = new DataType("HashID", DataTypeMode.Primitive, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8), DictionaryValueGenericType = new DataType(PrimitiveTypes.Object) }, "Values", o.Owner, x));
 
@@ -1775,7 +1775,7 @@ namespace NETPath.Generators.NET.CS
 				DataType edt = de.HasClientType ? de.ClientType : de.DataType;
 
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("Update{0}{1}DCM", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("Update{0}{1}DCM", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 
 				if (edt.TypeMode == DataTypeMode.Collection) tp.Add(new MethodParameter(new DataType("ChangeListItem", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) { CollectionGenericType = edt.CollectionGenericType }, "ChangedItem", o.Owner, x));
@@ -1790,7 +1790,7 @@ namespace NETPath.Generators.NET.CS
 			if (dcmtype.Elements.Any(a => a.DCMUpdateMode == DataUpdateMode.Batch))
 			{
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("BatchUpdate{0}DCM", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("BatchUpdate{0}DCM", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 				tp.Add(new MethodParameter(new DataType(DataTypeMode.Dictionary) { Name = "Dictionary", DictionaryKeyGenericType = new DataType("HashID", DataTypeMode.Primitive, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8), DictionaryValueGenericType = new DataType(PrimitiveTypes.Object) }, "Values", o.Owner, x));
 
@@ -1814,7 +1814,7 @@ namespace NETPath.Generators.NET.CS
 				DataType edt = de.HasClientType ? de.ClientType : de.DataType;
 
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("Update{0}{1}DCM", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("Update{0}{1}DCM", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 
 				if (edt.TypeMode == DataTypeMode.Collection) tp.Add(new MethodParameter(new DataType("ChangeListItem", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) { CollectionGenericType = edt.CollectionGenericType }, "ChangedItem", o.Owner, x));
@@ -1829,7 +1829,7 @@ namespace NETPath.Generators.NET.CS
 			if (dcmtype.Elements.Any(a => a.DCMUpdateMode == DataUpdateMode.Batch))
 			{
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("BatchUpdate{0}DCM", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("BatchUpdate{0}DCM", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 				tp.Add(new MethodParameter(new DataType(DataTypeMode.Dictionary) { Name = "Dictionary", DictionaryKeyGenericType = new DataType("HashID", DataTypeMode.Primitive, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8), DictionaryValueGenericType = new DataType(PrimitiveTypes.Object) }, "Values", o.Owner, x));
 
@@ -1860,7 +1860,7 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.NewParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var x = new Method(string.Format("New{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.NewParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("New{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.NewParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false };
 				code.Append(!IsServer ? GenerateClientInterfaceMethodCode40(x) : GenerateServiceInterfaceMethodCode40(x, true));
 				if (o.DeleteDocumentation != null)
 				{
@@ -1868,7 +1868,7 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.DeleteParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var y = new Method(string.Format("Delete{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.DeleteParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var y = new Method(string.Format("Delete{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.DeleteParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false };
 				code.Append(!IsServer ? GenerateClientInterfaceMethodCode40(y) : GenerateServiceInterfaceMethodCode40(y, true));
 			}
 			if (o.GenerateOpenCloseFunction)
@@ -1879,7 +1879,7 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.OpenParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var x = new Method(string.Format("Open{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.OpenParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("Open{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.OpenParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false };
 				code.Append(!IsServer ? GenerateClientInterfaceMethodCode40(x) : GenerateServiceInterfaceMethodCode40(x, true));
 				if (o.CloseDocumentation != null)
 				{
@@ -1887,7 +1887,7 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.CloseParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var y = new Method(string.Format("Close{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.CloseParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var y = new Method(string.Format("Close{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.CloseParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false };
 				code.Append(!IsServer ? GenerateClientInterfaceMethodCode40(y) : GenerateServiceInterfaceMethodCode40(y, true));
 			}
 
@@ -1896,7 +1896,7 @@ namespace NETPath.Generators.NET.CS
 				DataType edt = de.HasClientType ? de.ClientType : de.DataType;
 
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("Update{0}{1}DCMCallback", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("Update{0}{1}DCMCallback", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 
 				if (edt.TypeMode == DataTypeMode.Collection) tp.Add(new MethodParameter(new DataType("ChangeListItem", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) { CollectionGenericType = edt.CollectionGenericType }, "ChangedItem", o.Owner, x));
@@ -1911,7 +1911,7 @@ namespace NETPath.Generators.NET.CS
 			if (dcmtype.Elements.Any(a => a.DCMUpdateMode == DataUpdateMode.Batch))
 			{
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("BatchUpdate{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("BatchUpdate{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 				tp.Add(new MethodParameter(new DataType(DataTypeMode.Dictionary) { Name = "Dictionary", DictionaryKeyGenericType = new DataType("HashID", DataTypeMode.Primitive, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8), DictionaryValueGenericType = new DataType(PrimitiveTypes.Object) }, "Values", o.Owner, x));
 
@@ -1949,7 +1949,7 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.NewParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var x = new Method(string.Format("New{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.NewParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("New{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.NewParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern };
 				code.Append(!IsServer ? GenerateClientInterfaceMethodCode45(x) : GenerateServiceInterfaceMethodCode45(x, true));
 				if (o.DeleteDocumentation != null)
 				{
@@ -1957,7 +1957,7 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.DeleteParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var y = new Method(string.Format("Delete{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.DeleteParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var y = new Method(string.Format("Delete{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.DeleteParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern };
 				code.Append(!IsServer ? GenerateClientInterfaceMethodCode45(y) : GenerateServiceInterfaceMethodCode45(y, true));
 			}
 			if (o.GenerateOpenCloseFunction)
@@ -1968,7 +1968,7 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.OpenParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var x = new Method(string.Format("Open{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.OpenParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("Open{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.OpenParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern };
 				code.Append(!IsServer ? GenerateClientInterfaceMethodCode45(x) : GenerateServiceInterfaceMethodCode45(x, true));
 				if (o.CloseDocumentation != null)
 				{
@@ -1976,7 +1976,7 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.CloseParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var y = new Method(string.Format("Close{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.CloseParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var y = new Method(string.Format("Close{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.CloseParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern };
 				code.Append(!IsServer ? GenerateClientInterfaceMethodCode45(y) : GenerateServiceInterfaceMethodCode45(y, true));
 			}
 
@@ -1985,7 +1985,7 @@ namespace NETPath.Generators.NET.CS
 				DataType edt = de.HasClientType ? de.ClientType : de.DataType;
 
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("Update{0}{1}DCMCallback", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("Update{0}{1}DCMCallback", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 
 				if (edt.TypeMode == DataTypeMode.Collection) tp.Add(new MethodParameter(new DataType("ChangeListItem", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) { CollectionGenericType = edt.CollectionGenericType }, "ChangedItem", o.Owner, x));
@@ -2000,7 +2000,7 @@ namespace NETPath.Generators.NET.CS
 			if (dcmtype.Elements.Any(a => a.DCMUpdateMode == DataUpdateMode.Batch))
 			{
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("BatchUpdate{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("BatchUpdate{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 				tp.Add(new MethodParameter(new DataType(DataTypeMode.Dictionary) { Name = "Dictionary", DictionaryKeyGenericType = new DataType("HashID", DataTypeMode.Primitive, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8), DictionaryValueGenericType = new DataType(PrimitiveTypes.Object) }, "Values", o.Owner, x));
 
@@ -2035,7 +2035,7 @@ namespace NETPath.Generators.NET.CS
 				DataType edt = de.HasClientType ? de.ClientType : de.DataType;
 
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("Update{0}{1}DCMCallback", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("Update{0}{1}DCMCallback", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 
 				if (edt.TypeMode == DataTypeMode.Collection) tp.Add(new MethodParameter(new DataType("ChangeListItem", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) { CollectionGenericType = edt.CollectionGenericType }, "ChangedItem", o.Owner, x));
@@ -2050,7 +2050,7 @@ namespace NETPath.Generators.NET.CS
 			if (dcmtype.Elements.Any(a => a.DCMUpdateMode == DataUpdateMode.Batch))
 			{
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("BatchUpdate{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("BatchUpdate{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 				tp.Add(new MethodParameter(new DataType(DataTypeMode.Dictionary) { Name = "Dictionary", DictionaryKeyGenericType = new DataType("HashID", DataTypeMode.Primitive, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8), DictionaryValueGenericType = new DataType(PrimitiveTypes.Object) }, "Values", o.Owner, x));
 
@@ -2074,7 +2074,7 @@ namespace NETPath.Generators.NET.CS
 				DataType edt = de.HasClientType ? de.ClientType : de.DataType;
 
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("Update{0}{1}DCMCallback", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("Update{0}{1}DCMCallback", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 
 				if (edt.TypeMode == DataTypeMode.Collection) tp.Add(new MethodParameter(new DataType("ChangeListItem", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) { CollectionGenericType = edt.CollectionGenericType }, "ChangedItem", o.Owner, x));
@@ -2089,7 +2089,7 @@ namespace NETPath.Generators.NET.CS
 			if (dcmtype.Elements.Any(a => a.DCMUpdateMode == DataUpdateMode.Batch))
 			{
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("BatchUpdate{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false };
+				var x = new Method(string.Format("BatchUpdate{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 				tp.Add(new MethodParameter(new DataType(DataTypeMode.Dictionary) { Name = "Dictionary", DictionaryKeyGenericType = new DataType("HashID", DataTypeMode.Primitive, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8), DictionaryValueGenericType = new DataType(PrimitiveTypes.Object) }, "Values", o.Owner, x));
 
