@@ -63,7 +63,7 @@ namespace System.ServiceModel
 		}
 	}
 
-	public abstract class ServerDuplexBase<T, TCallback, TInterface> : ServerBase<T> where T : ServerDuplexBase<T, TCallback, TInterface> where TCallback : ServerCallbackBase<TInterface>, new() where TInterface : class
+	public abstract class ServerDuplexBase<T, TCallback, TCallbackInterface> : ServerBase<T> where T : ServerDuplexBase<T, TCallback, TCallbackInterface> where TCallback : ServerCallbackBase<TCallbackInterface>, new() where TCallbackInterface : class
 	{
 		private static DeltaDictionary<Guid, T> Clients { get; set; }
 
@@ -72,14 +72,14 @@ namespace System.ServiceModel
 			Clients = new DeltaDictionary<Guid, T>();
 		}
 
-		public static CType GetClient<CType>(Guid ClientID) where CType : ServerDuplexBase<T, TCallback, TInterface>
+		public static CType GetClient<CType>(Guid ClientID) where CType : ServerDuplexBase<T, TCallback, TCallbackInterface>
 		{
 			T v;
 			Clients.TryGetValue(ClientID, out v);
 			return v as CType;
 		}
 
-		public static List<CType> GetClientList<CType>() where CType : ServerDuplexBase<T, TCallback, TInterface>
+		public static List<CType> GetClientList<CType>() where CType : ServerDuplexBase<T, TCallback, TCallbackInterface>
 		{
 			return Clients.Values.Select(t => t as CType).Where(t => t != null).ToList();
 		}

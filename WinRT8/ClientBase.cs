@@ -17,45 +17,47 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Description;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace System.ServiceModel
 {
-	public abstract class ClientBaseEx<T, TChannel> : ClientBase<TChannel> where T : ClientBaseEx<T, TChannel> where TChannel : class 
+	public abstract class ClientBaseEx<T, TChannel> : ClientBase<TChannel> where T : ClientBaseEx<T, TChannel>, new() where TChannel : class 
 	{
 		public Guid ClientID { get; protected set; }
 		public bool IsTerminated { get; protected set; }
-		public static T ClientInstance { get; private set; }
+		private static T current;
+		protected static T Current { get { return current; } }
 
 		public ClientBaseEx()
 		{
 			ClientID = Guid.NewGuid();
-			ClientInstance = this as T;
+			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 		public ClientBaseEx(string endpointConfigurationName)
 			: base(endpointConfigurationName)
 		{
 			ClientID = Guid.NewGuid();
-			ClientInstance = this as T;
+			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 		public ClientBaseEx(string endpointConfigurationName, string remoteAddress)
 			: base(endpointConfigurationName, remoteAddress)
 		{
 			ClientID = Guid.NewGuid();
-			ClientInstance = this as T;
+			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 		public ClientBaseEx(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress)
 			: base(endpointConfigurationName, remoteAddress)
 		{
 			ClientID = Guid.NewGuid();
-			ClientInstance = this as T;
+			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 		public ClientBaseEx(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress)
 			: base(binding, remoteAddress)
 		{
 			ClientID = Guid.NewGuid();
-			ClientInstance = this as T;
+			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 
 		protected virtual bool Initialize()
@@ -66,20 +68,40 @@ namespace System.ServiceModel
 			if (State != CommunicationState.Created)
 				InnerChannel.Open();
 
+			System.Threading.Interlocked.Exchange(ref current, this as T);
+
 			return true;
 		}
 
-		public virtual void Reconnect()
+		public static void Reconnect()
 		{
-			IsTerminated = true;
-			ChannelFactory.CreateChannel();
-			InnerChannel.Faulted += ChannelFaulted;
-			InnerChannel.Closing += ChannelClosed;
+			var t = Current;
+			System.Threading.Interlocked.Exchange(ref current, null);
+			t.IsTerminated = true;
+			t.InnerChannel.Faulted -= t.ChannelFaulted;
+			t.InnerChannel.Closing -= t.ChannelClosed;
 
-			if (State != CommunicationState.Opened && State != CommunicationState.Opening)
-				InnerChannel.Open();
+			//Create the new Client object and copy the relevant info into it.
+			var x = new T();
+			x.Endpoint.Address = t.Endpoint.Address;
+			x.Endpoint.Binding = t.Endpoint.Binding;
+			x.Endpoint.Contract = t.Endpoint.Contract;
+			x.Endpoint.Name = t.Endpoint.Name;
+			x.ClientID = x.ClientID;
+			if (t.ClientCredentials != null && x.ClientCredentials != null)
+			{
+				x.ClientCredentials.UserName.Password = t.ClientCredentials.UserName.Password;
+				x.ClientCredentials.UserName.UserName = t.ClientCredentials.UserName.UserName;
+				x.ClientCredentials.Windows.AllowedImpersonationLevel = t.ClientCredentials.Windows.AllowedImpersonationLevel;
+				x.ClientCredentials.Windows.ClientCredential = t.ClientCredentials.Windows.ClientCredential;
+			}
 
-			IsTerminated = false;
+			x.InnerChannel.Faulted += x.ChannelFaulted;
+			x.InnerChannel.Closing += x.ChannelClosed;
+
+			x.InnerChannel.Open();
+
+			System.Threading.Interlocked.Exchange(ref current, x);
 		}
 
 		protected virtual void Terminate()
@@ -89,6 +111,8 @@ namespace System.ServiceModel
 
 			if (State != CommunicationState.Closed && State != CommunicationState.Closing)
 				InnerChannel.Close();
+
+			System.Threading.Interlocked.Exchange(ref current, null);
 
 			IsTerminated = true;
 		}
@@ -105,37 +129,37 @@ namespace System.ServiceModel
 		}
 	}
 
-	public abstract class ClientDuplexBaseEx<T, TChannel> : DuplexClientBase<TChannel> where T : ClientDuplexBaseEx<T, TChannel> where TChannel : class
+	public abstract class ClientDuplexBaseEx<T, TChannel> : DuplexClientBase<TChannel> where T : ClientDuplexBaseEx<T, TChannel>, new() where TChannel : class
 	{
 		public Guid ClientID { get; protected set; }
 		public bool IsTerminated { get; protected set; }
-		public static T ClientInstance { get; private set; }
-
+		private static T current;
+		protected static T Current { get { return current; } }
 		public ClientDuplexBaseEx(InstanceContext callbackInstance) : base(callbackInstance)
 		{
 			ClientID = Guid.NewGuid();
-			ClientInstance = this as T;
+			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 		public ClientDuplexBaseEx(InstanceContext callbackInstance, string endpointConfigurationName) : base(callbackInstance, endpointConfigurationName)
 		{
 			ClientID = Guid.NewGuid();
-			ClientInstance = this as T;
+			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 
 		public ClientDuplexBaseEx(InstanceContext callbackInstance, string endpointConfigurationName, string remoteAddress) : base(callbackInstance, endpointConfigurationName, remoteAddress)
 		{
 			ClientID = Guid.NewGuid();
-			ClientInstance = this as T;
+			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 		public ClientDuplexBaseEx(InstanceContext callbackInstance, string endpointConfigurationName, EndpointAddress remoteAddress) : base(callbackInstance, endpointConfigurationName, remoteAddress)
 		{
 			ClientID = Guid.NewGuid();
-			ClientInstance = this as T;
+			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 		public ClientDuplexBaseEx(InstanceContext callbackInstance, System.ServiceModel.Channels.Binding binding, EndpointAddress remoteAddress) : base(callbackInstance, binding, remoteAddress)
 		{
 			ClientID = Guid.NewGuid();
-			ClientInstance = this as T;
+			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 
 		protected virtual bool Initialize()
@@ -146,20 +170,40 @@ namespace System.ServiceModel
 			if (State != CommunicationState.Created)
 				InnerChannel.Open();
 
+			System.Threading.Interlocked.Exchange(ref current, this as T);
+
 			return true;
 		}
 
-		public virtual void Reconnect()
+		public static void Reconnect()
 		{
-			IsTerminated = true;
-			ChannelFactory.CreateChannel();
-			InnerChannel.Faulted += ChannelFaulted;
-			InnerChannel.Closing += ChannelClosed;
+			var t = Current;
+			System.Threading.Interlocked.Exchange(ref current, null);
+			t.IsTerminated = true;
+			t.InnerChannel.Faulted -= t.ChannelFaulted;
+			t.InnerChannel.Closing -= t.ChannelClosed;
 
-			if (State != CommunicationState.Opened && State != CommunicationState.Opening)
-				InnerChannel.Open();
+			//Create the new Client object and copy the relevant info into it.
+			var x = new T();
+			x.Endpoint.Address = t.Endpoint.Address;
+			x.Endpoint.Binding = t.Endpoint.Binding;
+			x.Endpoint.Contract = t.Endpoint.Contract;
+			x.Endpoint.Name = t.Endpoint.Name;
+			x.ClientID = x.ClientID;
+			if (t.ClientCredentials != null && x.ClientCredentials != null)
+			{
+				x.ClientCredentials.UserName.Password = t.ClientCredentials.UserName.Password;
+				x.ClientCredentials.UserName.UserName = t.ClientCredentials.UserName.UserName;
+				x.ClientCredentials.Windows.AllowedImpersonationLevel = t.ClientCredentials.Windows.AllowedImpersonationLevel;
+				x.ClientCredentials.Windows.ClientCredential = t.ClientCredentials.Windows.ClientCredential;
+			}
 
-			IsTerminated = false;
+			x.InnerChannel.Faulted += x.ChannelFaulted;
+			x.InnerChannel.Closing += x.ChannelClosed;
+
+			x.InnerChannel.Open();
+
+			System.Threading.Interlocked.Exchange(ref current, x);
 		}
 
 		protected virtual void Terminate()
@@ -169,6 +213,8 @@ namespace System.ServiceModel
 
 			if (State != CommunicationState.Closed && State != CommunicationState.Closing)
 				InnerChannel.Close();
+
+			System.Threading.Interlocked.Exchange(ref current, null);
 
 			IsTerminated = true;
 		}
