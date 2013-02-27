@@ -54,6 +54,7 @@
 		<ToggleButton Content="Get Function" IsChecked="{Binding Path=MethodData.GenerateGetFunction}" Margin="5" Grid.Column="0" Grid.Row="1" Name="EnableGetFunction" Unchecked="EnableFunctions_Unchecked" />
 		<ToggleButton Content="Open/Close Functions" IsChecked="{Binding Path=MethodData.GenerateOpenCloseFunction}" Margin="5" Grid.Column="1" Grid.Row="1" Name="EnableOpenCloseFunctions" Unchecked="EnableFunctions_Unchecked" />
 		<ToggleButton Content="New/Delete Functions" IsChecked="{Binding Path=MethodData.GenerateNewDeleteFunction}" IsEnabled="{Binding Path=MethodData.IsReadOnly, Converter={StaticResource NotBoolConverter}}" Margin="5" Grid.Column="2" Grid.Row="1" Name="EnableNewDeleteFunctions" Unchecked="EnableFunctions_Unchecked" />
+		<ToggleButton Content="Call Functions Asynchronously" IsChecked="{Binding Path=MethodData.UseTPLForCallbacks}" IsEnabled="{Binding Path=MethodData.UseAwaitPattern, Converter={StaticResource NotBoolConverter}}" Margin="5" Grid.Column="3" Grid.Row="1" Name="UseTPL" />
 	</Grid>
 	<TabControl Grid.Row="6">
 		<TabItem Header="Get Function" FontSize="12pt" Padding="10,5" IsSelected="{Binding Path=GetFunctionSelected}" IsEnabled="{Binding Path=MethodData.GenerateGetFunction}" />
