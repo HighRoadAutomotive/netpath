@@ -317,7 +317,7 @@ namespace NETPath.Generators.NET.CS
 			return refs.GroupBy(a => a.ID).Select(b => b.First());
 		}
 
-		private static DataType ReferenceRetrieve(Project Project, Namespace Namespace, Guid TypeID)
+		internal static DataType ReferenceRetrieve(Project Project, Namespace Namespace, Guid TypeID)
 		{
 			var d = Namespace.Data.FirstOrDefault(a => a.ID == TypeID);
 			if (d != null) return d;

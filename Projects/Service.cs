@@ -462,15 +462,7 @@ namespace NETPath.Projects
 		public static readonly DependencyProperty UseSyncPatternProperty = DependencyProperty.Register("UseSyncPattern", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(true));
 
 		public bool UseAwaitPattern { get { return (bool)GetValue(UseAwaitPatternProperty); } set { SetValue(UseAwaitPatternProperty, value); } }
-		public static readonly DependencyProperty UseAwaitPatternProperty = DependencyProperty.Register("UseAwaitPattern", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(false, UseAwaitPatternPropertyChangedCallback));
-
-		private static void UseAwaitPatternPropertyChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
-		{
-			var t = o as DataChangeMethod;
-			if (t == null) return;
-
-			if ((bool) e.NewValue) t.UseTPLForCallbacks = false;
-		}
+		public static readonly DependencyProperty UseAwaitPatternProperty = DependencyProperty.Register("UseAwaitPattern", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(false));
 
 		public bool UseTPLForCallbacks { get { return (bool)GetValue(UseTPLForCallbacksProperty); } set { SetValue(UseTPLForCallbacksProperty, value); } }
 		public static readonly DependencyProperty UseTPLForCallbacksProperty = DependencyProperty.Register("UseTPLForCallbacks", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(true));
