@@ -878,13 +878,13 @@ namespace NETPath.Generators.NET.CS
 			return code.ToString();
 		}
 
-		public static string GenerateServiceInterfaceMethodCode45(Method o, bool IsCallback)
+		public static string GenerateServiceInterfaceMethodCode45(Method o, bool IsCallback, bool IsDCM = false)
 		{
 			var code = new StringBuilder();
 
 			code.Append(GenerateServiceInterfaceMethodCode40(o, IsCallback));
 
-			if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, true))
+			if (o.UseAwaitPattern && (IsDCM || CanGenerateAsync(o.Owner, true)))
 			{
 				if (o.Documentation != null)
 				{
@@ -967,13 +967,13 @@ namespace NETPath.Generators.NET.CS
 			return code.ToString();
 		}
 
-		public static string GenerateClientInterfaceMethodCode45(Method o)
+		public static string GenerateClientInterfaceMethodCode45(Method o, bool IsDCM = false)
 		{
 			var code = new StringBuilder();
 
 			code.Append(GenerateClientInterfaceMethodCode40(o));
 
-			if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, false))
+			if (o.UseAwaitPattern && (IsDCM || CanGenerateAsync(o.Owner, false)))
 			{
 				if (o.Documentation != null)
 				{
@@ -1590,7 +1590,9 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.NewParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var x = new Method(string.Format("New{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.NewParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+				var xp = new ObservableCollection<MethodParameter>(o.NewParameters);
+				var x = new Method(string.Format("New{0}DCM", dcmtype.Name), o.Owner) { Parameters = xp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+				xp.Insert(0, new MethodParameter(dcmtype, "DCMData", o.Owner, x));
 				code.Append(IsServer ? GenerateServiceInterfaceMethodCode40(x, false) : GenerateClientInterfaceMethodCode40(x));
 				if (o.DeleteDocumentation != null)
 				{
@@ -1598,7 +1600,9 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.DeleteParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var y = new Method(string.Format("Delete{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.DeleteParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+				var yp = new ObservableCollection<MethodParameter>(o.DeleteParameters);
+				var y = new Method(string.Format("Delete{0}DCM", dcmtype.Name), o.Owner) { Parameters = yp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+				yp.Insert(0, new MethodParameter(dcmtype, "DCMData", o.Owner, y));
 				code.Append(IsServer ? GenerateServiceInterfaceMethodCode40(y, false) : GenerateClientInterfaceMethodCode40(y));
 			}
 			if (o.GenerateOpenCloseFunction)
@@ -1681,7 +1685,7 @@ namespace NETPath.Generators.NET.CS
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
 				var x = new Method(string.Format("Get{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.GetParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = o.ReturnType };
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false) : GenerateClientInterfaceMethodCode45(x));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false, true) : GenerateClientInterfaceMethodCode45(x, true));
 			}
 			if (o.GenerateNewDeleteFunction)
 			{
@@ -1691,16 +1695,20 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.NewParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var x = new Method(string.Format("New{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.NewParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false) : GenerateClientInterfaceMethodCode45(x));
+				var xp = new ObservableCollection<MethodParameter>(o.NewParameters);
+				var x = new Method(string.Format("New{0}DCM", dcmtype.Name), o.Owner) { Parameters = xp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
+				xp.Insert(0, new MethodParameter(dcmtype, "DCMData", o.Owner, x));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false, true) : GenerateClientInterfaceMethodCode45(x, true));
 				if (o.DeleteDocumentation != null)
 				{
 					code.Append(DocumentationGenerator.GenerateDocumentation(o.DeleteDocumentation));
 					foreach (MethodParameter mp in o.DeleteParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var y = new Method(string.Format("Delete{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.DeleteParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(y, false) : GenerateClientInterfaceMethodCode45(y));
+				var yp = new ObservableCollection<MethodParameter>(o.DeleteParameters);
+				var y = new Method(string.Format("Delete{0}DCM", dcmtype.Name), o.Owner) { Parameters = yp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
+				yp.Insert(0, new MethodParameter(dcmtype, "DCMData", o.Owner, y));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(y, false, true) : GenerateClientInterfaceMethodCode45(y, true));
 			}
 			if (o.GenerateOpenCloseFunction)
 			{
@@ -1711,7 +1719,7 @@ namespace NETPath.Generators.NET.CS
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
 				var x = new Method(string.Format("Open{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.OpenParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false) : GenerateClientInterfaceMethodCode45(x));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false, true) : GenerateClientInterfaceMethodCode45(x, true));
 				if (o.CloseDocumentation != null)
 				{
 					code.Append(DocumentationGenerator.GenerateDocumentation(o.CloseDocumentation));
@@ -1719,7 +1727,7 @@ namespace NETPath.Generators.NET.CS
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
 				var y = new Method(string.Format("Close{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.CloseParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(y, false) : GenerateClientInterfaceMethodCode45(y));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(y, false, true) : GenerateClientInterfaceMethodCode45(y, true));
 			}
 
 			foreach (DataElement de in dcmtype.Elements.Where(a => a.DCMEnabled && a.DCMUpdateMode == DataUpdateMode.Immediate))
@@ -1736,7 +1744,7 @@ namespace NETPath.Generators.NET.CS
 				else if (edt.TypeMode == DataTypeMode.Stack) { continue; }
 				else tp.Add(new MethodParameter(edt, "ChangedValue", o.Owner, x));
 
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false) : GenerateClientInterfaceMethodCode45(x));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false, true) : GenerateClientInterfaceMethodCode45(x, true));
 			}
 
 			if (dcmtype.Elements.Any(a => a.DCMUpdateMode == DataUpdateMode.Batch))
@@ -1757,7 +1765,7 @@ namespace NETPath.Generators.NET.CS
 					else code.AppendLine(string.Format("[ServiceKnownType(typeof({0}))]", edt));
 				}
 
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false) : GenerateClientInterfaceMethodCode45(x));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false, true) : GenerateClientInterfaceMethodCode45(x, true));
 			}
 
 			code.AppendLine();
@@ -1783,12 +1791,18 @@ namespace NETPath.Generators.NET.CS
 				}
 				if (o.GenerateNewDeleteFunction)
 				{
-					code.Append(string.Format("\t\tpublic abstract void New{0}DCM(", dcmtype.Name));
+					code.Append(string.Format("\t\tpublic virtual void New{0}DCM({1} DCMData{2}", dcmtype.Name, DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype), o.NewParameters.Count != 0 ? ", " : ""));
 					foreach (MethodParameter mp in o.NewParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.NewParameters.IndexOf(mp) < o.NewParameters.Count ? ", " : ""));
-					code.AppendLine(");");
-					code.Append(string.Format("\t\tpublic abstract void Delete{0}DCM(", dcmtype.Name));
+					code.AppendLine(")");
+					code.AppendLine("\t\t{");
+					code.AppendLine(string.Format("\t\t\t{0}.RegisterData(DCMData);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
+					code.AppendLine("\t\t}");
+					code.Append(string.Format("\t\tpublic virtual void Delete{0}DCM({1} DCMData{2}", dcmtype.Name, DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype), o.DeleteParameters.Count != 0 ? ", " : ""));
 					foreach (MethodParameter mp in o.DeleteParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.DeleteParameters.IndexOf(mp) < o.DeleteParameters.Count ? ", " : ""));
-					code.AppendLine(");");
+					code.AppendLine(")");
+					code.AppendLine("\t\t{");
+					code.AppendLine(string.Format("\t\t\t{0}.UnregisterData(DCMData);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
+					code.AppendLine("\t\t}");
 				}
 				if (o.GenerateOpenCloseFunction)
 				{
@@ -1809,9 +1823,13 @@ namespace NETPath.Generators.NET.CS
 				}
 				if (o.GenerateNewDeleteFunction)
 				{
-					var x = new Method(string.Format("New{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.NewParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+					var xp = new ObservableCollection<MethodParameter>(o.NewParameters);
+					var x = new Method(string.Format("New{0}DCM", dcmtype.Name), o.Owner) { Parameters = xp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+					xp.Insert(0, new MethodParameter(dcmtype, "DCMData", o.Owner, x));
 					code.Append(GenerateServiceClientMethodDCM40(x, o.UseTPLForCallbacks));
-					var y = new Method(string.Format("Delete{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.DeleteParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+					var yp = new ObservableCollection<MethodParameter>(o.DeleteParameters);
+					var y = new Method(string.Format("Delete{0}DCM", dcmtype.Name), o.Owner) { Parameters = yp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+					yp.Insert(0, new MethodParameter(dcmtype, "DCMData", o.Owner, x));
 					code.Append(GenerateServiceClientMethodDCM40(y, o.UseTPLForCallbacks));
 				}
 				if (o.GenerateOpenCloseFunction)
@@ -1869,7 +1887,7 @@ namespace NETPath.Generators.NET.CS
 				if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.TaskFactory.StartNew(() => {");
 				code.AppendLine(string.Format("\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
 				code.AppendLine(string.Format("\t\t\tforeach(var tc in tcl)"));
-				code.Append(string.Format("\t\t\t\t\ttc.{0}Callback(", o.ServerName));
+				code.Append(string.Format("\t\t\t\t\ttc.Callback.{0}Callback(", o.ServerName));
 				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
 				code.AppendLine(");");
 				if (UseTPL) code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
@@ -1879,7 +1897,7 @@ namespace NETPath.Generators.NET.CS
 				if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.TaskFactory.StartNew(() => {");
 				code.AppendLine(string.Format("\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
 				code.AppendLine(string.Format("\t\t\tforeach(var tc in tcl)"));
-				code.Append(string.Format("\t\t\t\t\ttc.{0}Callback(", o.ServerName));
+				code.Append(string.Format("\t\t\t\t\ttc.Callback.{0}Callback(", o.ServerName));
 				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
 				code.AppendLine(");");
 				if (UseTPL) code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
@@ -1931,7 +1949,7 @@ namespace NETPath.Generators.NET.CS
 					code.Append(string.Format("\t\tpublic abstract {1} Get{0}DCM(", dcmtype.Name, o.ReturnType.HasClientType ? o.ReturnType.ClientType : o.ReturnType));
 					foreach (MethodParameter mp in o.GetParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.GetParameters.IndexOf(mp) < o.GetParameters.Count ? ", " : ""));
 					code.AppendLine(");");
-					if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, true))
+					if (o.UseAwaitPattern)
 					{
 						code.Append(string.Format("\t\tpublic abstract System.Threading.Tasks.Task<{1}> Get{0}DCMAsync(", dcmtype.Name, o.ReturnType.HasClientType ? o.ReturnType.ClientType : o.ReturnType));
 						foreach (MethodParameter mp in o.GetParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.GetParameters.IndexOf(mp) < o.GetParameters.Count ? ", " : ""));
@@ -1940,20 +1958,32 @@ namespace NETPath.Generators.NET.CS
 				}
 				if (o.GenerateNewDeleteFunction)
 				{
-					code.Append(string.Format("\t\tpublic abstract void New{0}DCM(", dcmtype.Name));
+					code.Append(string.Format("\t\tpublic virtual void New{0}DCM({1} DCMData{2}", dcmtype.Name, DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype), o.NewParameters.Count != 0 ? ", " : ""));
 					foreach (MethodParameter mp in o.NewParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.NewParameters.IndexOf(mp) < o.NewParameters.Count ? ", " : ""));
-					code.AppendLine(");");
-					code.Append(string.Format("\t\tpublic abstract void Delete{0}DCM(", dcmtype.Name));
+					code.AppendLine(")");
+					code.AppendLine("\t\t{");
+					code.AppendLine(string.Format("\t\t\t{0}.RegisterData(DCMData);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
+					code.AppendLine("\t\t}");
+					code.Append(string.Format("\t\tpublic virtual void Delete{0}DCM({1} DCMData{2}", dcmtype.Name, DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype), o.DeleteParameters.Count != 0 ? ", " : ""));
 					foreach (MethodParameter mp in o.DeleteParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.DeleteParameters.IndexOf(mp) < o.DeleteParameters.Count ? ", " : ""));
-					code.AppendLine(");");
-					if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, true))
+					code.AppendLine(")");
+					code.AppendLine("\t\t{");
+					code.AppendLine(string.Format("\t\t\t{0}.UnregisterData(DCMData);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
+					code.AppendLine("\t\t}");
+					if (o.UseAwaitPattern)
 					{
-						code.Append(string.Format("\t\tpublic abstract System.Threading.Tasks.Task New{0}DCMAsync(", dcmtype.Name));
+						code.Append(string.Format("\t\tpublic virtual System.Threading.Tasks.Task New{0}DCMAsync({1} DCMData{2}", dcmtype.Name, DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype), o.NewParameters.Count != 0 ? ", " : ""));
 						foreach (MethodParameter mp in o.NewParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.NewParameters.IndexOf(mp) < o.NewParameters.Count ? ", " : ""));
-						code.AppendLine(");");
-						code.Append(string.Format("\t\tpublic abstract System.Threading.Tasks.Task Delete{0}DCMAsync(", dcmtype.Name));
+						code.AppendLine(")");
+						code.AppendLine("\t\t{");
+						code.AppendLine(string.Format("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(() => {{ {0}.RegisterData(DCMData); }}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
+						code.AppendLine("\t\t}");
+						code.Append(string.Format("\t\tpublic virtual System.Threading.Tasks.Task Delete{0}DCMAsync({1} DCMData{2}", dcmtype.Name, DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype), o.NewParameters.Count != 0 ? ", " : ""));
 						foreach (MethodParameter mp in o.DeleteParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.DeleteParameters.IndexOf(mp) < o.DeleteParameters.Count ? ", " : ""));
-						code.AppendLine(");");
+						code.AppendLine(")");
+						code.AppendLine("\t\t{");
+						code.AppendLine(string.Format("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(() => {{ {0}.UnregisterData(DCMData); }}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
+						code.AppendLine("\t\t}");
 					}
 				}
 				if (o.GenerateOpenCloseFunction)
@@ -1964,7 +1994,7 @@ namespace NETPath.Generators.NET.CS
 					code.Append(string.Format("\t\tpublic abstract void Close{0}DCM(", dcmtype.Name));
 					foreach (MethodParameter mp in o.CloseParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.CloseParameters.IndexOf(mp) < o.CloseParameters.Count ? ", " : ""));
 					code.AppendLine(");");
-					if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, true))
+					if (o.UseAwaitPattern)
 					{
 						code.Append(string.Format("\t\tpublic abstract System.Threading.Tasks.Task Open{0}DCMAsync(", dcmtype.Name));
 						foreach (MethodParameter mp in o.OpenParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.OpenParameters.IndexOf(mp) < o.OpenParameters.Count ? ", " : ""));
@@ -1984,9 +2014,13 @@ namespace NETPath.Generators.NET.CS
 				}
 				if (o.GenerateNewDeleteFunction)
 				{
-					var x = new Method(string.Format("New{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.NewParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
+					var xp = new ObservableCollection<MethodParameter>(o.NewParameters);
+					var x = new Method(string.Format("New{0}DCM", dcmtype.Name), o.Owner) { Parameters = xp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+					xp.Insert(0, new MethodParameter(dcmtype, "DCMData", o.Owner, x));
 					code.Append(GenerateServiceClientMethodDCM45(x, o.UseTPLForCallbacks));
-					var y = new Method(string.Format("Delete{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.DeleteParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
+					var yp = new ObservableCollection<MethodParameter>(o.DeleteParameters);
+					var y = new Method(string.Format("Delete{0}DCM", dcmtype.Name), o.Owner) { Parameters = yp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+					yp.Insert(0, new MethodParameter(dcmtype, "DCMData", o.Owner, x));
 					code.Append(GenerateServiceClientMethodDCM45(y, o.UseTPLForCallbacks));
 				}
 				if (o.GenerateOpenCloseFunction)
@@ -2043,27 +2077,27 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine("\t\t{");
 				if (IsImmediate)
 				{
-					if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.TaskFactory.StartNew(() => {");
+					if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.Task.Factory.StartNew(() => {");
 					code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
 					code.AppendLine(string.Format("\t\t\t\tforeach(var tc in tcl)"));
-					code.Append(string.Format("\t\t\t\t\ttc.{0}Callback(", o.ServerName));
+					code.Append(string.Format("\t\t\t\t\ttc.Callback.{0}Callback(", o.ServerName));
 					foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
 					code.AppendLine(");");
 					if (UseTPL) code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
 				}
 				else
 				{
-					if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.TaskFactory.StartNew(() => {");
+					if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.Task.Factory.StartNew(() => {");
 					code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
 					code.AppendLine(string.Format("\t\t\t\tforeach(var tc in tcl)"));
-					code.Append(string.Format("\t\t\t\t\ttc.{0}Callback(", o.ServerName));
+					code.Append(string.Format("\t\t\t\t\ttc.Callback.{0}Callback(", o.ServerName));
 					foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
 					code.AppendLine(");");
 					if (UseTPL) code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
 				}
 				code.AppendLine("\t\t}");
 			}
-			if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, true))
+			if (o.UseAwaitPattern)
 			{
 				code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task {0}Async(", o.HasClientType ? o.ClientName : o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
@@ -2073,20 +2107,20 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine("\t\t{");
 				if (IsImmediate)
 				{
-					code.AppendLine("\t\t\treturn System.Threading.Tasks.TaskFactory.StartNew(() => {");
+					code.AppendLine("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(() => {");
 					code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
 					code.AppendLine(string.Format("\t\t\t\tforeach(var tc in tcl)"));
-					code.Append(string.Format("\t\t\t\t\ttc.{0}Callback(", o.ServerName));
+					code.Append(string.Format("\t\t\t\t\ttc.Callback.{0}Callback(", o.ServerName));
 					foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
 					code.AppendLine(");");
 					code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
 				}
 				else
 				{
-					code.AppendLine("\t\t\treturn System.Threading.Tasks.TaskFactory.StartNew(() => {");
+					code.AppendLine("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(() => {");
 					code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
 					code.AppendLine(string.Format("\t\t\t\tforeach(var tc in tcl)"));
-					code.Append(string.Format("\t\t\t\t\ttc.{0}Callback(", o.ServerName));
+					code.Append(string.Format("\t\t\t\t\ttc.Callback.{0}Callback(", o.ServerName));
 					foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
 					code.AppendLine(");");
 					code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
@@ -2163,8 +2197,20 @@ namespace NETPath.Generators.NET.CS
 			var code = new StringBuilder();
 
 			var dcmtype = o.ReturnType as Data;
+			if (dcmtype == null) dcmtype = Generator.ReferenceRetrieve(o.Owner.Parent.Owner, o.Owner.Parent.Owner.Namespace, o.ReturnType.ID) as Data;
 			if (dcmtype == null) return "";
 
+			if (o.GenerateGetFunction)
+			{
+				if (o.GetDocumentation != null)
+				{
+					code.Append(DocumentationGenerator.GenerateDocumentation(o.GetDocumentation));
+					foreach (MethodParameter mp in o.GetParameters.Where(mp => mp.Documentation != null))
+						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
+				}
+				var x = new Method(string.Format("Get{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.GetParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = o.ReturnType };
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode40(x, false) : GenerateClientInterfaceMethodCode40(x));
+			}
 			if (o.GenerateNewDeleteFunction)
 			{
 				if (o.NewDocumentation != null)
@@ -2173,16 +2219,16 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.NewParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var x = new Method(string.Format("New{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.NewParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
-				code.Append(!IsServer ? GenerateClientInterfaceMethodCode40(x) : GenerateServiceInterfaceMethodCode40(x, true));
+				var x = new Method(string.Format("New{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.NewParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode40(x, false) : GenerateClientInterfaceMethodCode40(x));
 				if (o.DeleteDocumentation != null)
 				{
 					code.Append(DocumentationGenerator.GenerateDocumentation(o.DeleteDocumentation));
 					foreach (MethodParameter mp in o.DeleteParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var y = new Method(string.Format("Delete{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.DeleteParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
-				code.Append(!IsServer ? GenerateClientInterfaceMethodCode40(y) : GenerateServiceInterfaceMethodCode40(y, true));
+				var y = new Method(string.Format("Delete{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.DeleteParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode40(y, false) : GenerateClientInterfaceMethodCode40(y));
 			}
 			if (o.GenerateOpenCloseFunction)
 			{
@@ -2192,16 +2238,16 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.OpenParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var x = new Method(string.Format("Open{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.OpenParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
-				code.Append(!IsServer ? GenerateClientInterfaceMethodCode40(x) : GenerateServiceInterfaceMethodCode40(x, true));
+				var x = new Method(string.Format("Open{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.OpenParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode40(x, false) : GenerateClientInterfaceMethodCode40(x));
 				if (o.CloseDocumentation != null)
 				{
 					code.Append(DocumentationGenerator.GenerateDocumentation(o.CloseDocumentation));
 					foreach (MethodParameter mp in o.CloseParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var y = new Method(string.Format("Close{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.CloseParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
-				code.Append(!IsServer ? GenerateClientInterfaceMethodCode40(y) : GenerateServiceInterfaceMethodCode40(y, true));
+				var y = new Method(string.Format("Close{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.CloseParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode40(y, false) : GenerateClientInterfaceMethodCode40(y));
 			}
 
 			foreach (DataElement de in dcmtype.Elements.Where(a => a.DCMEnabled && a.DCMUpdateMode == DataUpdateMode.Immediate))
@@ -2209,7 +2255,7 @@ namespace NETPath.Generators.NET.CS
 				DataType edt = de.HasClientType ? de.ClientType : de.DataType;
 
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("Update{0}{1}DCMCallback", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+				var x = new Method(string.Format("Update{0}{1}DCM", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 
 				if (edt.TypeMode == DataTypeMode.Collection) tp.Add(new MethodParameter(new DataType("ChangeListItem", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) { CollectionGenericType = edt.CollectionGenericType }, "ChangedItem", o.Owner, x));
@@ -2218,13 +2264,13 @@ namespace NETPath.Generators.NET.CS
 				else if (edt.TypeMode == DataTypeMode.Stack) { continue; }
 				else tp.Add(new MethodParameter(edt, "ChangedValue", o.Owner, x));
 
-				code.Append(!IsServer ? GenerateClientInterfaceMethodCode40(x) : GenerateServiceInterfaceMethodCode40(x, true));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode40(x, false) : GenerateClientInterfaceMethodCode40(x));
 			}
 
 			if (dcmtype.Elements.Any(a => a.DCMUpdateMode == DataUpdateMode.Batch))
 			{
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("BatchUpdate{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+				var x = new Method(string.Format("BatchUpdate{0}DCM", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 				tp.Add(new MethodParameter(new DataType(DataTypeMode.Dictionary) { Name = "Dictionary", DictionaryKeyGenericType = new DataType("HashID", DataTypeMode.Primitive, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8), DictionaryValueGenericType = new DataType(PrimitiveTypes.Object) }, "Values", o.Owner, x));
 
@@ -2232,14 +2278,14 @@ namespace NETPath.Generators.NET.CS
 				{
 					DataType edt = de.HasClientType ? de.ClientType : de.DataType;
 
-					if (edt.TypeMode == DataTypeMode.Collection) code.AppendLine(string.Format("[ServiceKnownType(typeof(ChangeListItem<{0}>))]", edt.CollectionGenericType));
-					else if (edt.TypeMode == DataTypeMode.Dictionary) code.AppendLine(string.Format("[ServiceKnownType(typeof(ChangeDictionaryItem<{0}, {1}>))]", edt.DictionaryKeyGenericType, edt.DictionaryValueGenericType));
+					if (edt.TypeMode == DataTypeMode.Collection) code.AppendLine(string.Format("[CallbackKnownType(typeof(ChangeListItem<{0}>))]", edt.CollectionGenericType));
+					else if (edt.TypeMode == DataTypeMode.Dictionary) code.AppendLine(string.Format("[CallbackKnownType(typeof(ChangeDictionaryItem<{0}, {1}>))]", edt.DictionaryKeyGenericType, edt.DictionaryValueGenericType));
 					else if (edt.TypeMode == DataTypeMode.Queue) { continue; }
 					else if (edt.TypeMode == DataTypeMode.Stack) { continue; }
-					else code.AppendLine(string.Format("[ServiceKnownType(typeof({0}))]", edt));
+					else code.AppendLine(string.Format("[CallbackKnownType(typeof({0}))]", edt));
 				}
 
-				code.Append(!IsServer ? GenerateClientInterfaceMethodCode40(x) : GenerateServiceInterfaceMethodCode40(x, true));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode40(x, false) : GenerateClientInterfaceMethodCode40(x));
 			}
 
 			code.AppendLine();
@@ -2252,8 +2298,20 @@ namespace NETPath.Generators.NET.CS
 			var code = new StringBuilder();
 
 			var dcmtype = o.ReturnType as Data;
+			if (dcmtype == null) dcmtype = Generator.ReferenceRetrieve(o.Owner.Parent.Owner, o.Owner.Parent.Owner.Namespace, o.ReturnType.ID) as Data;
 			if (dcmtype == null) return "";
 
+			if (o.GenerateGetFunction)
+			{
+				if (o.GetDocumentation != null)
+				{
+					code.Append(DocumentationGenerator.GenerateDocumentation(o.GetDocumentation));
+					foreach (MethodParameter mp in o.GetParameters.Where(mp => mp.Documentation != null))
+						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
+				}
+				var x = new Method(string.Format("Get{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.GetParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = o.ReturnType };
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false, true) : GenerateClientInterfaceMethodCode45(x, true));
+			}
 			if (o.GenerateNewDeleteFunction)
 			{
 				if (o.NewDocumentation != null)
@@ -2262,16 +2320,16 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.NewParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var x = new Method(string.Format("New{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.NewParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
-				code.Append(!IsServer ? GenerateClientInterfaceMethodCode45(x) : GenerateServiceInterfaceMethodCode45(x, true));
+				var x = new Method(string.Format("New{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.NewParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false, true) : GenerateClientInterfaceMethodCode45(x, true));
 				if (o.DeleteDocumentation != null)
 				{
 					code.Append(DocumentationGenerator.GenerateDocumentation(o.DeleteDocumentation));
 					foreach (MethodParameter mp in o.DeleteParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var y = new Method(string.Format("Delete{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.DeleteParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
-				code.Append(!IsServer ? GenerateClientInterfaceMethodCode45(y) : GenerateServiceInterfaceMethodCode45(y, true));
+				var y = new Method(string.Format("Delete{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.DeleteParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(y, false, true) : GenerateClientInterfaceMethodCode45(y, true));
 			}
 			if (o.GenerateOpenCloseFunction)
 			{
@@ -2281,16 +2339,16 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.OpenParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var x = new Method(string.Format("Open{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.OpenParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
-				code.Append(!IsServer ? GenerateClientInterfaceMethodCode45(x) : GenerateServiceInterfaceMethodCode45(x, true));
+				var x = new Method(string.Format("Open{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.OpenParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false, true) : GenerateClientInterfaceMethodCode45(x, true));
 				if (o.CloseDocumentation != null)
 				{
 					code.Append(DocumentationGenerator.GenerateDocumentation(o.CloseDocumentation));
 					foreach (MethodParameter mp in o.CloseParameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				var y = new Method(string.Format("Close{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = o.CloseParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
-				code.Append(!IsServer ? GenerateClientInterfaceMethodCode45(y) : GenerateServiceInterfaceMethodCode45(y, true));
+				var y = new Method(string.Format("Close{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.CloseParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(y, false, true) : GenerateClientInterfaceMethodCode45(y, true));
 			}
 
 			foreach (DataElement de in dcmtype.Elements.Where(a => a.DCMEnabled && a.DCMUpdateMode == DataUpdateMode.Immediate))
@@ -2298,7 +2356,7 @@ namespace NETPath.Generators.NET.CS
 				DataType edt = de.HasClientType ? de.ClientType : de.DataType;
 
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("Update{0}{1}DCMCallback", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
+				var x = new Method(string.Format("Update{0}{1}DCM", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 
 				if (edt.TypeMode == DataTypeMode.Collection) tp.Add(new MethodParameter(new DataType("ChangeListItem", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) { CollectionGenericType = edt.CollectionGenericType }, "ChangedItem", o.Owner, x));
@@ -2307,13 +2365,13 @@ namespace NETPath.Generators.NET.CS
 				else if (edt.TypeMode == DataTypeMode.Stack) { continue; }
 				else tp.Add(new MethodParameter(edt, "ChangedValue", o.Owner, x));
 
-				code.Append(!IsServer ? GenerateClientInterfaceMethodCode45(x) : GenerateServiceInterfaceMethodCode45(x, true));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false, true) : GenerateClientInterfaceMethodCode45(x, true));
 			}
 
 			if (dcmtype.Elements.Any(a => a.DCMUpdateMode == DataUpdateMode.Batch))
 			{
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("BatchUpdate{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
+				var x = new Method(string.Format("BatchUpdate{0}DCM", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 				tp.Add(new MethodParameter(new DataType(DataTypeMode.Dictionary) { Name = "Dictionary", DictionaryKeyGenericType = new DataType("HashID", DataTypeMode.Primitive, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8), DictionaryValueGenericType = new DataType(PrimitiveTypes.Object) }, "Values", o.Owner, x));
 
@@ -2321,14 +2379,14 @@ namespace NETPath.Generators.NET.CS
 				{
 					DataType edt = de.HasClientType ? de.ClientType : de.DataType;
 
-					if (edt.TypeMode == DataTypeMode.Collection) code.AppendLine(string.Format("[ServiceKnownType(typeof(ChangeListItem<{0}>))]", edt.CollectionGenericType));
-					else if (edt.TypeMode == DataTypeMode.Dictionary) code.AppendLine(string.Format("[ServiceKnownType(typeof(ChangeDictionaryItem<{0}, {1}>))]", edt.DictionaryKeyGenericType, edt.DictionaryValueGenericType));
+					if (edt.TypeMode == DataTypeMode.Collection) code.AppendLine(string.Format("[CallbackKnownType(typeof(ChangeListItem<{0}>))]", edt.CollectionGenericType));
+					else if (edt.TypeMode == DataTypeMode.Dictionary) code.AppendLine(string.Format("[CallbackKnownType(typeof(ChangeDictionaryItem<{0}, {1}>))]", edt.DictionaryKeyGenericType, edt.DictionaryValueGenericType));
 					else if (edt.TypeMode == DataTypeMode.Queue) { continue; }
 					else if (edt.TypeMode == DataTypeMode.Stack) { continue; }
-					else code.AppendLine(string.Format("[ServiceKnownType(typeof({0}))]", edt));
+					else code.AppendLine(string.Format("[CallbackKnownType(typeof({0}))]", edt));
 				}
 
-				code.Append(!IsServer ? GenerateClientInterfaceMethodCode45(x) : GenerateServiceInterfaceMethodCode45(x, true));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false, true) : GenerateClientInterfaceMethodCode45(x, true));
 			}
 
 			code.AppendLine();
@@ -2341,14 +2399,65 @@ namespace NETPath.Generators.NET.CS
 			var code = new StringBuilder();
 
 			var dcmtype = o.ReturnType as Data;
+			if (dcmtype == null) dcmtype = Generator.ReferenceRetrieve(o.Owner.Parent.Owner, o.Owner.Parent.Owner.Namespace, o.ReturnType.ID) as Data;
 			if (dcmtype == null) return "";
+
+			if (IsServer)
+			{
+				if (o.GenerateGetFunction)
+				{
+					code.Append(string.Format("\t\tpublic abstract {1} Get{0}DCM(", dcmtype.Name, o.ReturnType.HasClientType ? o.ReturnType.ClientType : o.ReturnType));
+					foreach (MethodParameter mp in o.GetParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.GetParameters.IndexOf(mp) < o.GetParameters.Count ? ", " : ""));
+					code.AppendLine(");");
+				}
+				if (o.GenerateNewDeleteFunction)
+				{
+					code.Append(string.Format("\t\tpublic abstract void New{0}DCM(", dcmtype.Name));
+					foreach (MethodParameter mp in o.NewParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.NewParameters.IndexOf(mp) < o.NewParameters.Count ? ", " : ""));
+					code.AppendLine(");");
+					code.Append(string.Format("\t\tpublic abstract void Delete{0}DCM(", dcmtype.Name));
+					foreach (MethodParameter mp in o.DeleteParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.DeleteParameters.IndexOf(mp) < o.DeleteParameters.Count ? ", " : ""));
+					code.AppendLine(");");
+				}
+				if (o.GenerateOpenCloseFunction)
+				{
+					code.Append(string.Format("\t\tpublic abstract void Open{0}DCM(", dcmtype.Name));
+					foreach (MethodParameter mp in o.OpenParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.OpenParameters.IndexOf(mp) < o.OpenParameters.Count ? ", " : ""));
+					code.AppendLine(");");
+					code.Append(string.Format("\t\tpublic abstract void Close{0}DCM(", dcmtype.Name));
+					foreach (MethodParameter mp in o.CloseParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.CloseParameters.IndexOf(mp) < o.CloseParameters.Count ? ", " : ""));
+					code.AppendLine(");");
+				}
+			}
+			else
+			{
+				if (o.GenerateGetFunction)
+				{
+					var x = new Method(string.Format("Get{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.GetParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = o.ReturnType };
+					code.Append(GenerateCallbackClientMethodDCM40(x, o.UseTPLForCallbacks));
+				}
+				if (o.GenerateNewDeleteFunction)
+				{
+					var x = new Method(string.Format("New{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.NewParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+					code.Append(GenerateCallbackClientMethodDCM40(x, o.UseTPLForCallbacks));
+					var y = new Method(string.Format("Delete{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.DeleteParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+					code.Append(GenerateCallbackClientMethodDCM40(y, o.UseTPLForCallbacks));
+				}
+				if (o.GenerateOpenCloseFunction)
+				{
+					var x = new Method(string.Format("Open{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.OpenParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+					code.Append(GenerateCallbackClientMethodDCM40(x, o.UseTPLForCallbacks));
+					var y = new Method(string.Format("Close{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.CloseParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+					code.Append(GenerateCallbackClientMethodDCM40(y, o.UseTPLForCallbacks));
+				}
+			}
 
 			foreach (DataElement de in dcmtype.Elements.Where(a => a.DCMEnabled && a.DCMUpdateMode == DataUpdateMode.Immediate))
 			{
 				DataType edt = de.HasClientType ? de.ClientType : de.DataType;
 
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("Update{0}{1}DCMCallback", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+				var x = new Method(string.Format("Update{0}{1}DCM", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 
 				if (edt.TypeMode == DataTypeMode.Collection) tp.Add(new MethodParameter(new DataType("ChangeListItem", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) { CollectionGenericType = edt.CollectionGenericType }, "ChangedItem", o.Owner, x));
@@ -2357,37 +2466,171 @@ namespace NETPath.Generators.NET.CS
 				else if (edt.TypeMode == DataTypeMode.Stack) { continue; }
 				else tp.Add(new MethodParameter(edt, "ChangedValue", o.Owner, x));
 
-				code.Append(!IsServer ? GenerateClientInterfaceMethodCode40(x) : GenerateServiceInterfaceMethodCode40(x, true));
+				code.Append(IsServer ? GenerateCallbackServerMethodDCM40(x, o.UseTPLForCallbacks) : GenerateCallbackClientMethodDCM40(x, o.UseTPLForCallbacks));
 			}
 
 			if (dcmtype.Elements.Any(a => a.DCMUpdateMode == DataUpdateMode.Batch))
 			{
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("BatchUpdate{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+				var x = new Method(string.Format("BatchUpdate{0}DCM", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 				tp.Add(new MethodParameter(new DataType(DataTypeMode.Dictionary) { Name = "Dictionary", DictionaryKeyGenericType = new DataType("HashID", DataTypeMode.Primitive, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8), DictionaryValueGenericType = new DataType(PrimitiveTypes.Object) }, "Values", o.Owner, x));
 
-				code.Append(!IsServer ? GenerateClientInterfaceMethodCode40(x) : GenerateServiceInterfaceMethodCode40(x, true));
+				code.Append(IsServer ? GenerateCallbackServerMethodDCM40(x, o.UseTPLForCallbacks, false) : GenerateCallbackClientMethodDCM40(x, o.UseTPLForCallbacks, false));
 			}
 
 			code.AppendLine();
 
+			return code.ToString();
+		}
+
+		public static string GenerateCallbackServerMethodDCM40(Method o, bool UseTPL, bool IsImmediate = true)
+		{
+			var code = new StringBuilder();
+			code.AppendFormat("\t\tpublic virtual void {0}(", o.HasClientType ? o.ClientName : o.ServerName);
+			foreach (MethodParameter op in o.Parameters)
+				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+			code.AppendLine(")");
+			code.AppendLine("\t\t{");
+			if (IsImmediate)
+			{
+				if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.TaskFactory.StartNew(() => {");
+				code.AppendLine(string.Format("\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
+				code.AppendLine(string.Format("\t\t\tforeach(var tc in tcl)"));
+				code.Append(string.Format("\t\t\t\t\ttc.{0}Callback(", o.ServerName));
+				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+				code.AppendLine(");");
+				if (UseTPL) code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
+			}
+			else
+			{
+				if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.TaskFactory.StartNew(() => {");
+				code.AppendLine(string.Format("\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
+				code.AppendLine(string.Format("\t\t\tforeach(var tc in tcl)"));
+				code.Append(string.Format("\t\t\t\t\ttc.{0}Callback(", o.ServerName));
+				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+				code.AppendLine(");");
+				if (UseTPL) code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
+			}
+			code.AppendLine("\t\t}");
+			return code.ToString();
+		}
+
+		public static string GenerateCallbackClientMethodDCM40(Method o, bool UseTPL, bool IsImmediate = true)
+		{
+			var code = new StringBuilder();
+			code.AppendFormat("\t\tpublic virtual void {0}(", o.HasClientType ? o.ClientName : o.ServerName);
+			foreach (MethodParameter op in o.Parameters)
+				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+			code.AppendLine(")");
+			code.AppendLine("\t\t{");
+			if (IsImmediate)
+			{
+				if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.TaskFactory.StartNew(() => {");
+
+				if (UseTPL) code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
+			}
+			else
+			{
+				if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.TaskFactory.StartNew(() => {");
+				code.Append(string.Format("{1}\t\t\tChannel.{0}(", o.ServerName, UseTPL ? "\t" : ""));
+				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+				code.AppendLine(");");
+				if (UseTPL) code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
+			}
+			code.AppendLine("\t\t}");
 			return code.ToString();
 		}
 
 		public static string GenerateCallbackImplementationDCM45(DataChangeMethod o, bool IsServer)
 		{
 			var code = new StringBuilder();
-
 			var dcmtype = o.ReturnType as Data;
+			if (dcmtype == null) dcmtype = Generator.ReferenceRetrieve(o.Owner.Parent.Owner, o.Owner.Parent.Owner.Namespace, o.ReturnType.ID) as Data;
 			if (dcmtype == null) return "";
+
+			if (IsServer)
+			{
+				if (o.GenerateGetFunction)
+				{
+					code.Append(string.Format("\t\tpublic abstract {1} Get{0}DCM(", dcmtype.Name, o.ReturnType.HasClientType ? o.ReturnType.ClientType : o.ReturnType));
+					foreach (MethodParameter mp in o.GetParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.GetParameters.IndexOf(mp) < o.GetParameters.Count ? ", " : ""));
+					code.AppendLine(");");
+					if (o.UseAwaitPattern)
+					{
+						code.Append(string.Format("\t\tpublic abstract System.Threading.Tasks.Task<{1}> Get{0}DCMAsync(", dcmtype.Name, o.ReturnType.HasClientType ? o.ReturnType.ClientType : o.ReturnType));
+						foreach (MethodParameter mp in o.GetParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.GetParameters.IndexOf(mp) < o.GetParameters.Count ? ", " : ""));
+						code.AppendLine(");");
+					}
+				}
+				if (o.GenerateNewDeleteFunction)
+				{
+					code.Append(string.Format("\t\tpublic abstract void New{0}DCM(", dcmtype.Name));
+					foreach (MethodParameter mp in o.NewParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.NewParameters.IndexOf(mp) < o.NewParameters.Count ? ", " : ""));
+					code.AppendLine(");");
+					code.Append(string.Format("\t\tpublic abstract void Delete{0}DCM(", dcmtype.Name));
+					foreach (MethodParameter mp in o.DeleteParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.DeleteParameters.IndexOf(mp) < o.DeleteParameters.Count ? ", " : ""));
+					code.AppendLine(");");
+					if (o.UseAwaitPattern)
+					{
+						code.Append(string.Format("\t\tpublic abstract System.Threading.Tasks.Task New{0}DCMAsync(", dcmtype.Name));
+						foreach (MethodParameter mp in o.NewParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.NewParameters.IndexOf(mp) < o.NewParameters.Count ? ", " : ""));
+						code.AppendLine(");");
+						code.Append(string.Format("\t\tpublic abstract System.Threading.Tasks.Task Delete{0}DCMAsync(", dcmtype.Name));
+						foreach (MethodParameter mp in o.DeleteParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.DeleteParameters.IndexOf(mp) < o.DeleteParameters.Count ? ", " : ""));
+						code.AppendLine(");");
+					}
+				}
+				if (o.GenerateOpenCloseFunction)
+				{
+					code.Append(string.Format("\t\tpublic abstract void Open{0}DCM(", dcmtype.Name));
+					foreach (MethodParameter mp in o.OpenParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.OpenParameters.IndexOf(mp) < o.OpenParameters.Count ? ", " : ""));
+					code.AppendLine(");");
+					code.Append(string.Format("\t\tpublic abstract void Close{0}DCM(", dcmtype.Name));
+					foreach (MethodParameter mp in o.CloseParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.CloseParameters.IndexOf(mp) < o.CloseParameters.Count ? ", " : ""));
+					code.AppendLine(");");
+					if (o.UseAwaitPattern)
+					{
+						code.Append(string.Format("\t\tpublic abstract System.Threading.Tasks.Task Open{0}DCMAsync(", dcmtype.Name));
+						foreach (MethodParameter mp in o.OpenParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.OpenParameters.IndexOf(mp) < o.OpenParameters.Count ? ", " : ""));
+						code.AppendLine(");");
+						code.Append(string.Format("\t\tpublic abstract System.Threading.Tasks.Task Close{0}DCMAsync(", dcmtype.Name));
+						foreach (MethodParameter mp in o.CloseParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.CloseParameters.IndexOf(mp) < o.CloseParameters.Count ? ", " : ""));
+						code.AppendLine(");");
+					}
+				}
+			}
+			else
+			{
+				if (o.GenerateGetFunction)
+				{
+					var x = new Method(string.Format("Get{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.GetParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = o.ReturnType };
+					code.Append(GenerateCallbackClientMethodDCM45(x, o.UseTPLForCallbacks));
+				}
+				if (o.GenerateNewDeleteFunction)
+				{
+					var x = new Method(string.Format("New{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.NewParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
+					code.Append(GenerateCallbackClientMethodDCM45(x, o.UseTPLForCallbacks));
+					var y = new Method(string.Format("Delete{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.DeleteParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
+					code.Append(GenerateCallbackClientMethodDCM45(y, o.UseTPLForCallbacks));
+				}
+				if (o.GenerateOpenCloseFunction)
+				{
+					var x = new Method(string.Format("Open{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.OpenParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
+					code.Append(GenerateCallbackClientMethodDCM45(x, o.UseTPLForCallbacks));
+					var y = new Method(string.Format("Close{0}DCM", dcmtype.Name), o.Owner) { Parameters = o.CloseParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
+					code.Append(GenerateCallbackClientMethodDCM45(y, o.UseTPLForCallbacks));
+				}
+			}
 
 			foreach (DataElement de in dcmtype.Elements.Where(a => a.DCMEnabled && a.DCMUpdateMode == DataUpdateMode.Immediate))
 			{
 				DataType edt = de.HasClientType ? de.ClientType : de.DataType;
 
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("Update{0}{1}DCMCallback", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
+				var x = new Method(string.Format("Update{0}{1}DCM", dcmtype.Name, de.DataName), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 
 				if (edt.TypeMode == DataTypeMode.Collection) tp.Add(new MethodParameter(new DataType("ChangeListItem", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) { CollectionGenericType = edt.CollectionGenericType }, "ChangedItem", o.Owner, x));
@@ -2396,23 +2639,148 @@ namespace NETPath.Generators.NET.CS
 				else if (edt.TypeMode == DataTypeMode.Stack) { continue; }
 				else tp.Add(new MethodParameter(edt, "ChangedValue", o.Owner, x));
 
-				code.Append(!IsServer ? GenerateClientInterfaceMethodCode45(x) : GenerateServiceInterfaceMethodCode45(x, true));
+				code.Append(IsServer ? GenerateCallbackServerMethodDCM45(x, o.UseTPLForCallbacks) : GenerateCallbackClientMethodDCM45(x, o.UseTPLForCallbacks));
 			}
 
 			if (dcmtype.Elements.Any(a => a.DCMUpdateMode == DataUpdateMode.Batch))
 			{
 				var tp = new ObservableCollection<MethodParameter>();
-				var x = new Method(string.Format("BatchUpdate{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
+				var x = new Method(string.Format("BatchUpdate{0}DCM", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
 				tp.Add(new MethodParameter(new DataType(DataTypeMode.Dictionary) { Name = "Dictionary", DictionaryKeyGenericType = new DataType("HashID", DataTypeMode.Primitive, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8), DictionaryValueGenericType = new DataType(PrimitiveTypes.Object) }, "Values", o.Owner, x));
 
-				code.Append(!IsServer ? GenerateClientInterfaceMethodCode45(x) : GenerateServiceInterfaceMethodCode45(x, true));
+				code.Append(IsServer ? GenerateCallbackServerMethodDCM45(x, o.UseTPLForCallbacks, false) : GenerateCallbackClientMethodDCM45(x, o.UseTPLForCallbacks, false));
 			}
 
 			code.AppendLine();
 
 			return code.ToString();
 		}
+
+		public static string GenerateCallbackServerMethodDCM45(Method o, bool UseTPL, bool IsImmediate = true)
+		{
+			var code = new StringBuilder();
+			if (o.UseSyncPattern)
+			{
+				code.AppendFormat("\t\tpublic virtual void {0}(", o.HasClientType ? o.ClientName : o.ServerName);
+				foreach (MethodParameter op in o.Parameters)
+					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+				code.AppendLine(")");
+				code.AppendLine("\t\t{");
+				if (IsImmediate)
+				{
+					if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.TaskFactory.StartNew(() => {");
+					code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
+					code.AppendLine(string.Format("\t\t\t\tforeach(var tc in tcl)"));
+					code.Append(string.Format("\t\t\t\t\ttc.{0}Callback(", o.ServerName));
+					foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+					code.AppendLine(");");
+					if (UseTPL) code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
+				}
+				else
+				{
+					if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.TaskFactory.StartNew(() => {");
+					code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
+					code.AppendLine(string.Format("\t\t\t\tforeach(var tc in tcl)"));
+					code.Append(string.Format("\t\t\t\t\ttc.{0}Callback(", o.ServerName));
+					foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+					code.AppendLine(");");
+					if (UseTPL) code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
+				}
+				code.AppendLine("\t\t}");
+			}
+			if (o.UseAwaitPattern)
+			{
+				code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task {0}Async(", o.HasClientType ? o.ClientName : o.ServerName);
+				foreach (MethodParameter op in o.Parameters)
+					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+				code.AppendLine(")");
+				code.AppendLine("\t\t{");
+				if (IsImmediate)
+				{
+					code.AppendLine("\t\t\treturn System.Threading.Tasks.TaskFactory.StartNew(() => {");
+					code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
+					code.AppendLine(string.Format("\t\t\t\tforeach(var tc in tcl)"));
+					code.Append(string.Format("\t\t\t\t\ttc.{0}Callback(", o.ServerName));
+					foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+					code.AppendLine(");");
+					code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
+				}
+				else
+				{
+					code.AppendLine("\t\t\treturn System.Threading.Tasks.TaskFactory.StartNew(() => {");
+					code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
+					code.AppendLine(string.Format("\t\t\t\tforeach(var tc in tcl)"));
+					code.Append(string.Format("\t\t\t\t\ttc.{0}Callback(", o.ServerName));
+					foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+					code.AppendLine(");");
+					code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
+				}
+				code.AppendLine("\t\t}");
+			}
+			return code.ToString();
+		}
+
+		public static string GenerateCallbackClientMethodDCM45(Method o, bool UseTPL, bool IsImmediate = true)
+		{
+			var code = new StringBuilder();
+			if (o.UseSyncPattern)
+			{
+				code.AppendFormat("\t\tpublic virtual void {0}(", o.HasClientType ? o.ClientName : o.ServerName);
+				foreach (MethodParameter op in o.Parameters)
+					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+				code.AppendLine(")");
+				code.AppendLine("\t\t{");
+				if (IsImmediate)
+				{
+					if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.Task.Factory.StartNew(() => {");
+					code.Append(string.Format("{1}\t\t\tChannel.{0}(", o.ServerName, UseTPL ? "\t" : ""));
+					foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+					code.AppendLine(");");
+					if (UseTPL) code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
+				}
+				else
+				{
+					if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.Task.Factory.StartNew(() => {");
+					code.Append(string.Format("{1}\t\t\tChannel.{0}(", o.ServerName, UseTPL ? "\t" : ""));
+					foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+					code.AppendLine(");");
+					if (UseTPL) code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
+				}
+				code.AppendLine("\t\t}");
+			}
+			if (o.UseAwaitPattern)
+			{
+				code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task {0}Async(", o.HasClientType ? o.ClientName : o.ServerName);
+				foreach (MethodParameter op in o.Parameters)
+					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+				code.AppendLine(")");
+				code.AppendLine("\t\t{");
+				if (IsImmediate)
+				{
+					code.AppendLine("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(() => {");
+					code.Append(string.Format("{1}\t\t\tChannel.{0}{2}(", o.ServerName, UseTPL ? "\t" : "", CanGenerateAsync(o.Owner, false) ? "Async" : ""));
+					foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+					code.AppendLine(");");
+					code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
+				}
+				else
+				{
+					code.AppendLine("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(() => {");
+					code.Append(string.Format("{1}\t\t\tChannel.{0}{2}(", o.ServerName, UseTPL ? "\t" : "", CanGenerateAsync(o.Owner, false) ? "Async" : ""));
+					foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+					code.AppendLine(");");
+					code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
+				}
+				code.AppendLine("\t\t}");
+			}
+			return code.ToString();
+		}
+
 		#endregion
 
 		#region - Method Parameters -
