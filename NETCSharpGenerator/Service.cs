@@ -2064,7 +2064,7 @@ namespace NETPath.Generators.NET.CS
 			return code.ToString();
 		}
 
-		public static string GenerateServiceServerMethodDCM45(Method o, bool UseTPL, bool IsImmediate = true)
+		public static string GenerateServiceServerMethodDCM45(Method o, DataType DCMType, bool UseTPL, bool IsImmediate = true)
 		{
 			var code = new StringBuilder();
 			if (o.UseSyncPattern)
@@ -2078,6 +2078,7 @@ namespace NETPath.Generators.NET.CS
 				if (IsImmediate)
 				{
 					if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.Task.Factory.StartNew(() => {");
+					code.AppendLine(string.Format("\t\t\t{0}.GetDataFromID(UpdateID)."));
 					code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
 					code.AppendLine(string.Format("\t\t\t\tforeach(var tc in tcl)"));
 					code.Append(string.Format("\t\t\t\t\ttc.Callback.{0}Callback(", o.ServerName));

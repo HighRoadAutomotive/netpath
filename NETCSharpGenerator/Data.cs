@@ -346,6 +346,18 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine("\t\t{");
 			code.AppendLine(string.Format("\t\t\treturn __dcm.ContainsKey(data.{0});", dcmid.HasClientType ? dcmid.ClientName : dcmid.DataName));
 			code.AppendLine("\t\t}");
+			code.AppendLine(string.Format("\t\tpublic static {0} GetDataFromID(Guid ID)", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine("\t\t{");
+			code.AppendLine(string.Format("\t\t\t{0} t;", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine(string.Format("\t\t\t__dcm.TryGetValue(ID, out t);"));
+			code.AppendLine("\t\t\treturn t;");
+			code.AppendLine("\t\t}");
+			code.AppendLine("\t\tpublic static void UpdateValue<T>(Guid ID, DeltaProperty<T> prop, T value)");
+			code.AppendLine("\t\t{");
+			code.AppendLine(string.Format("\t\t\t{0} t;", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine("\t\t\t__dcm.TryGetValue(ID, out t);");
+			code.AppendLine("\t\t\tif (t != null) t.SetValue(prop, value);");
+			code.AppendLine("\t\t}");
 			code.AppendLine(string.Format("\t\tpublic static {0} RegisterData({0} data)", o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine("\t\t{");
 			code.AppendLine(string.Format("\t\t\treturn __dcm.GetOrAdd(data.{0}, data);", dcmid.HasClientType ? dcmid.ClientName : dcmid.DataName));
