@@ -74,6 +74,89 @@ namespace System.Collections.Generic
 			dl = new ConcurrentQueue<ChangeListItem<T>>();
 		}
 
+		public void ApplyDelta(ChangeListItem<T> delta)
+		{
+			ocl.EnterWriteLock();
+			try
+			{
+				switch (delta.Mode)
+				{
+					case ListItemChangeMode.Add: il.Add(delta.Item); break;
+					case ListItemChangeMode.Insert:
+						{
+							if (delta.Index >= il.Count) il.Add(delta.Item);
+							else il.Insert(delta.Index, delta.Item);
+							break;
+						}
+					case ListItemChangeMode.Move:
+						{
+							int oldindex = il.IndexOf(delta.Item);
+							if (delta.Index == -1) il.Add(delta.Item);
+							else il.Insert(delta.Index, delta.Item);
+							il.RemoveAt(oldindex);
+							break;
+						}
+					case ListItemChangeMode.Remove: il.Remove(delta.Item); break;
+					case ListItemChangeMode.Replace:
+						{
+							int idx = il.IndexOf(delta.OldItem);
+							if (idx == -1) il.Add(delta.Item);
+							else il[idx] = delta.Item;
+							break;
+						}
+				}
+			}
+			finally
+			{
+				ocl.ExitWriteLock();
+			}
+		}
+
+		public void ApplyDelta(IEnumerable<ChangeListItem<T>> delta)
+		{
+			ocl.EnterWriteLock();
+			try
+			{
+				foreach (var item in delta)
+				{
+					switch (item.Mode)
+					{
+						case ListItemChangeMode.Add:
+							il.Add(item.Item);
+							break;
+						case ListItemChangeMode.Insert:
+							{
+								if (item.Index >= il.Count) il.Add(item.Item);
+								else il.Insert(item.Index, item.Item);
+								break;
+							}
+						case ListItemChangeMode.Move:
+							{
+								int oldindex = il.IndexOf(item.Item);
+								if (item.Index == -1) il.Add(item.Item);
+								else il.Insert(item.Index, item.Item);
+								il.RemoveAt(oldindex);
+								break;
+							}
+						case ListItemChangeMode.Remove:
+							il.Remove(item.Item);
+							break;
+						case ListItemChangeMode.Replace:
+							{
+								int idx = il.IndexOf(item.OldItem);
+								if (idx == -1) il.Add(item.Item);
+								else il[idx] = item.Item;
+								break;
+							}
+					}
+				}
+			}
+			finally
+			{
+				ocl.ExitWriteLock();
+			}
+		}
+
 		public IEnumerable<ChangeListItem<T>> PeekDelta()
 		{
 			return dl.ToArray();

@@ -58,6 +58,29 @@ namespace System.Collections.Generic
 			dl = new ConcurrentQueue<ChangeDictionaryItem<TKey, TValue>>();
 		}
 
+		public void ApplyDelta(ChangeDictionaryItem<TKey, TValue> delta)
+		{
+			switch (delta.Mode)
+			{
+				case ListItemChangeMode.Add: il.AddOrUpdate(delta.Key, delta.Value, (p,v) => delta.Value); break;
+				case ListItemChangeMode.Remove: TValue t; il.TryRemove(delta.Key, out t); break;
+				case ListItemChangeMode.Replace: il.AddOrUpdate(delta.Key, delta.Value, (p, v) => delta.Value); break;
+			}
+		}
+
+		public void ApplyDelta(IEnumerable<ChangeDictionaryItem<TKey, TValue>> delta)
+		{
+			foreach (var item in delta)
+			{
+				switch (item.Mode)
+				{
+					case ListItemChangeMode.Add: il.AddOrUpdate(item.Key, item.Value, (p, v) => item.Value); break;
+					case ListItemChangeMode.Remove: TValue t; il.TryRemove(item.Key, out t); break;
+					case ListItemChangeMode.Replace: il.AddOrUpdate(item.Key, item.Value, (p, v) => item.Value); break;
+				}
+			}
+		}
+
 		public IEnumerable<ChangeDictionaryItem<TKey, TValue>> PeekDelta()
 		{
 			return dl.ToArray();
