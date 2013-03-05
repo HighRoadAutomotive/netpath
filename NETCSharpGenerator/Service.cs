@@ -1855,7 +1855,7 @@ namespace NETPath.Generators.NET.CS
 				else if (edt.TypeMode == DataTypeMode.Stack) { continue; }
 				else tp.Add(new MethodParameter(edt, "ChangedValue", o.Owner, x));
 
-				code.Append(IsServer ? GenerateServiceServerMethodDCM40(x, o.UseTPLForCallbacks) : GenerateServiceClientMethodDCM40(x, o.UseTPLForCallbacks));
+				code.Append(IsServer ? GenerateServiceServerImmediateMethodDCM40(x, dcmtype, de.DataName, edt.TypeMode, o.UseTPLForCallbacks) : GenerateServiceClientMethodDCM40(x, o.UseTPLForCallbacks));
 			}
 
 			if (dcmtype.Elements.Any(a => a.DCMEnabled && a.DCMUpdateMode == DataUpdateMode.Batch))
@@ -1875,7 +1875,7 @@ namespace NETPath.Generators.NET.CS
 					tp.Add(new MethodParameter(new DataType("IEnumerable", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) { CollectionGenericType = new DataType("ChangeDictionaryItem", DataTypeMode.Dictionary, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) { DictionaryKeyGenericType = edt.DictionaryKeyGenericType, DictionaryValueGenericType = edt.DictionaryValueGenericType } }, string.Format("{0}Delta", de.HasClientType ? de.ClientName : de.DataName), o.Owner, x));
 				}
 
-				code.Append(IsServer ? GenerateServiceServerMethodDCM40(x, o.UseTPLForCallbacks, false) : GenerateServiceClientMethodDCM40(x, o.UseTPLForCallbacks, false));
+				code.Append(IsServer ? GenerateServiceServerBatchMethodDCM40(x, dcmtype, o.UseTPLForCallbacks) : GenerateServiceClientMethodDCM40(x, o.UseTPLForCallbacks, false));
 			}
 
 			code.AppendLine();
@@ -1883,7 +1883,7 @@ namespace NETPath.Generators.NET.CS
 			return code.ToString();
 		}
 
-		public static string GenerateServiceServerMethodDCM40(Method o, bool UseTPL, bool IsImmediate = true)
+		public static string GenerateServiceServerImmediateMethodDCM40(Method o, DataType DCMType, string ElementName, DataTypeMode TypeMode, bool UseTPL)
 		{
 			var code = new StringBuilder();
 			code.AppendFormat("\t\tpublic virtual void {0}(", o.HasClientType ? o.ClientName : o.ServerName);
@@ -1892,26 +1892,44 @@ namespace NETPath.Generators.NET.CS
 			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
 			code.AppendLine(")");
 			code.AppendLine("\t\t{");
-			if (IsImmediate)
+			if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.Task.Factory.StartNew(() => {");
+			if (TypeMode == DataTypeMode.Collection)
 			{
-				if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.TaskFactory.StartNew(() => {");
-				code.AppendLine(string.Format("\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
-				code.AppendLine(string.Format("\t\t\tforeach(var tc in tcl)"));
-				code.Append(string.Format("\t\t\t\t\ttc.Callback.{0}Callback(", o.ServerName));
-				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
-				code.AppendLine(");");
-				if (UseTPL) code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
+				code.AppendLine(string.Format("\t\t\tvar temp = {0}.GetDataFromID(UpdateID);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType)));
+				code.AppendLine(string.Format("\t\t\tif (temp != null) temp.{0}.ApplyDelta(ChangeListItem);", ElementName));
 			}
-			else
+			else if (TypeMode == DataTypeMode.Dictionary)
 			{
-				if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.TaskFactory.StartNew(() => {");
-				code.AppendLine(string.Format("\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
-				code.AppendLine(string.Format("\t\t\tforeach(var tc in tcl)"));
-				code.Append(string.Format("\t\t\t\t\ttc.Callback.{0}Callback(", o.ServerName));
-				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
-				code.AppendLine(");");
-				if (UseTPL) code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
+				code.AppendLine(string.Format("\t\t\tvar temp = {0}.GetDataFromID(UpdateID);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType)));
+				code.AppendLine(string.Format("\t\t\tif (temp != null) temp.{0}.ApplyDelta(ChangeDictionaryItem);", ElementName));
 			}
+			else code.AppendLine(string.Format("\t\t\t{0}.UpdateValue(UpdateID, {0}.{1}Property, ChangedValue);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType), ElementName));
+			code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
+			code.AppendLine(string.Format("\t\t\t\tforeach(var tc in tcl)"));
+			code.Append(string.Format("\t\t\t\t\ttc.Callback.{0}Callback(", o.ServerName));
+			foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+			code.AppendLine(");");
+			if (UseTPL) code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
+			code.AppendLine("\t\t}");
+			return code.ToString();
+		}
+
+		public static string GenerateServiceServerBatchMethodDCM40(Method o, DataType DCMType, bool UseTPL)
+		{
+			var code = new StringBuilder();
+			code.AppendFormat("\t\tpublic virtual void {0}(", o.HasClientType ? o.ClientName : o.ServerName);
+			foreach (MethodParameter op in o.Parameters)
+				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+			code.AppendLine(")");
+			code.AppendLine("\t\t{");
+			if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.Task.Factory.StartNew(() => {");
+			code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
+			code.AppendLine(string.Format("\t\t\t\tforeach(var tc in tcl)"));
+			code.Append(string.Format("\t\t\t\t\ttc.Callback.{0}Callback(", o.ServerName));
+			foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+			code.AppendLine(");");
+			if (UseTPL) code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
 			code.AppendLine("\t\t}");
 			return code.ToString();
 		}
