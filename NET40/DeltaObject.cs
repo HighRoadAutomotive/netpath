@@ -28,7 +28,7 @@ namespace System
 	public abstract class DeltaObject
 	{
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private ConcurrentDictionary<HashID, object> values;
-		[NonSerialized, IgnoreDataMember, XmlIgnore] private ConcurrentQueue<KeyValuePair<HashID, object>> modifications;
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private ConcurrentQueue<ChangeObjectItem> modifications;
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private long ChangeCount;
 		[IgnoreDataMember, XmlIgnore] public long BatchInterval { get; protected set; }
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private DependencyObjectEx baseXAMLObject; 
@@ -36,7 +36,7 @@ namespace System
 
 		protected DeltaObject()
 		{
-			modifications = new ConcurrentQueue<KeyValuePair<HashID, object>>();
+			modifications = new ConcurrentQueue<ChangeObjectItem>();
 			values = new ConcurrentDictionary<HashID, object>();
 			ChangeCount = 0;
 			BatchInterval = 0;
@@ -45,7 +45,7 @@ namespace System
 
 		protected DeltaObject(DependencyObjectEx baseXAMLObject)
 		{
-			modifications = new ConcurrentQueue<KeyValuePair<HashID, object>>();
+			modifications = new ConcurrentQueue<ChangeObjectItem>();
 			values = new ConcurrentDictionary<HashID, object>();
 			ChangeCount = 0;
 			BatchInterval = 0;
@@ -54,7 +54,7 @@ namespace System
 
 		protected DeltaObject(long BatchInterval)
 		{
-			modifications = new ConcurrentQueue<KeyValuePair<HashID, object>>();
+			modifications = new ConcurrentQueue<ChangeObjectItem>();
 			values = new ConcurrentDictionary<HashID, object>();
 			ChangeCount = 0;
 			this.BatchInterval = BatchInterval;
@@ -63,7 +63,7 @@ namespace System
 
 		protected DeltaObject(DependencyObjectEx baseXAMLObject, long BatchInterval)
 		{
-			modifications = new ConcurrentQueue<KeyValuePair<HashID, object>>();
+			modifications = new ConcurrentQueue<ChangeObjectItem>();
 			values = new ConcurrentDictionary<HashID, object>();
 			ChangeCount = 0;
 			this.BatchInterval = BatchInterval;
@@ -95,7 +95,7 @@ namespace System
 				values.TryRemove(de.ID, out temp);
 				if (BatchInterval > 0)
 				{
-					modifications.Enqueue(new KeyValuePair<HashID, object>(de.ID, de.defaultValue));
+					modifications.Enqueue(new ChangeObjectItem(true, de.ID));
 					IncrementChangeCount();
 				}
 
@@ -116,7 +116,7 @@ namespace System
 				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
 				if (BatchInterval > 0)
 				{
-					modifications.Enqueue(new KeyValuePair<HashID, object>(de.ID, value));
+					modifications.Enqueue(new ChangeObjectItem(false, de.ID, value));
 					IncrementChangeCount();
 				}
 
@@ -138,7 +138,7 @@ namespace System
 				values.TryRemove(de.ID, out temp);
 				if (BatchInterval > 0)
 				{
-					modifications.Enqueue(new KeyValuePair<HashID, object>(de.ID, de.defaultValue));
+					modifications.Enqueue(new ChangeObjectItem(true, de.ID));
 					IncrementChangeCount();
 				}
 
@@ -153,7 +153,7 @@ namespace System
 				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
 				if (BatchInterval > 0)
 				{
-					modifications.Enqueue(new KeyValuePair<HashID, object>(de.ID, value));
+					modifications.Enqueue(new ChangeObjectItem(false, de.ID, value));
 					IncrementChangeCount();
 				}
 
@@ -177,7 +177,7 @@ namespace System
 				values.TryRemove(de.ID, out temp);
 				if (BatchInterval > 0)
 				{
-					modifications.Enqueue(new KeyValuePair<HashID, object>(de.ID, de.defaultValue));
+					modifications.Enqueue(new ChangeObjectItem(true, de.ID));
 					IncrementChangeCount();
 				}
 
@@ -192,7 +192,7 @@ namespace System
 				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
 				if (BatchInterval > 0)
 				{
-					modifications.Enqueue(new KeyValuePair<HashID, object>(de.ID, value));
+					modifications.Enqueue(new ChangeObjectItem(false, de.ID, value));
 					IncrementChangeCount();
 				}
 
@@ -231,7 +231,7 @@ namespace System
 			object temp;
 			if (!values.TryRemove(de.ID, out temp))
 			{
-				modifications.Enqueue(new KeyValuePair<HashID, object>(de.ID, de.defaultValue));
+				modifications.Enqueue(new ChangeObjectItem(true, de.ID));
 				IncrementChangeCount();
 				var tt = temp as DeltaCollectionBase;
 				if (tt != null) tt.ClearChangedHandlers();
@@ -246,14 +246,23 @@ namespace System
 			return values.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 		}
 
-		public Dictionary<HashID, object> GetDeltaValues()
+		public IEnumerable<ChangeObjectItem> GetDeltaValues()
 		{
-			var dl = new Dictionary<HashID, object>();
-			KeyValuePair<HashID, object> tmp;
-			while (modifications.TryDequeue(out tmp))
-				if (dl.ContainsKey(tmp.Key)) dl[tmp.Key] = tmp.Value;
-				else dl.Add(tmp.Key, tmp.Value);
-			return dl;
+			return modifications.ToArray();
+		}
+
+		public void ApplyDeltaValues(IEnumerable<ChangeObjectItem> values)
+		{
+			foreach (var v in values)
+			{
+				if (v.UseDefault)
+				{
+					object temp;
+					this.values.TryRemove(v.Key, out temp);
+				}
+				else
+					this.values.AddOrUpdate(v.Key, v.Value, (p, a) => v.Value);
+			}
 		}
 
 		private void IncrementChangeCount()
@@ -271,7 +280,7 @@ namespace System
 
 		protected void OnDeserializingBase(StreamingContext context)
 		{
-			modifications = new ConcurrentQueue<KeyValuePair<HashID, object>>();
+			modifications = new ConcurrentQueue<ChangeObjectItem>();
 			values = new ConcurrentDictionary<HashID, object>();
 			ChangeCount = 0;
 			BatchInterval = 0;

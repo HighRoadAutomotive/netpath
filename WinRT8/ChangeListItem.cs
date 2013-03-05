@@ -68,4 +68,19 @@ namespace System.Collections.Generic
 			this.Value = Value;
 		}
 	}
+
+	[DataContract(Namespace = "http://www.prospectivesoftware.com/")]
+	public struct ChangeObjectItem
+	{
+		[DataMember(Order = 0)] public bool UseDefault { get; private set; }
+		[DataMember(Order = 1)] public HashID Key { get; private set; }
+		[DataMember(Order = 2)] public object Value { get; private set; }
+
+		public ChangeObjectItem(bool UseDefault, HashID Key, object Value = null) : this()
+		{
+			this.UseDefault = UseDefault;
+			this.Key = Key;
+			this.Value = Value;
+		}
+	}
 }
