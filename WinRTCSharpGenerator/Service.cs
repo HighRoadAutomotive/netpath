@@ -739,11 +739,13 @@ namespace NETPath.Generators.WinRT.CS
 			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
 			code.AppendLine(")");
 			code.AppendLine("\t\t{");
+			if (o.IsInitiating) code.AppendLine("\t\t\tbase.Initialize();");
 			code.AppendFormat("\t\t\t{0}{2}.{1}{3}{4}(", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName, IsCallback ? "__callback" : "base.Channel", IsAsync ? "Invoke" : "", IsAwait ? "Async" : "");
 			foreach (MethodParameter op in o.Parameters)
 				code.AppendFormat("{0}, ", op.Name);
 			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
 			code.AppendLine(");");
+			if (o.IsTerminating) code.AppendLine("\t\t\tbase.Terminate();");
 			code.AppendLine("\t\t}");
 			return code.ToString();
 		}
@@ -776,6 +778,7 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 				code.AppendLine("AsyncCallback Callback, object AsyncState)");
 				code.AppendLine("\t\t{");
+				if (o.IsInitiating) code.AppendLine("\t\t\tbase.Initialize();");
 				code.AppendFormat("\t\t\t{0}{2}.Begin{1}Invoke(", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName, IsCallback ? "__callback" : "base.Channel");
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("{0}, ", op.Name);
@@ -792,6 +795,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t{0} I{2}{3}.End{1}Invoke(IAsyncResult result)", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, IsCallback ? "Callback" : ""));
 				code.AppendLine("\t\t{");
 				code.AppendLine(string.Format("\t\t\t{0}{2}.End{1}Invoke(result);", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName, IsCallback ? "__callback" : "base.Channel"));
+				if (o.IsTerminating) code.AppendLine("\t\t\tbase.Terminate();");
 				code.AppendLine("\t\t}");
 
 				//Generate the delegate implementation functions.
@@ -871,10 +875,12 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendFormat("{0}{1}", GenerateMethodParameterClientCode(op), o.Parameters.IndexOf(op) != (o.Parameters.Count() - 1) ? ", " : "");
 				code.AppendLine(")");
 				code.AppendLine("\t\t{");
+				if (o.IsInitiating) code.AppendLine("\t\t\tbase.Initialize();");
 				code.AppendFormat("\t\t\treturn {1}.{0}Async(", o.HasClientType ? o.ClientName : o.ServerName, IsCallback ? "__callback" : "base.Channel");
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("{0}{1}", op.Name, o.Parameters.IndexOf(op) != (o.Parameters.Count() - 1) ? ", " : "");
 				code.AppendLine(");");
+				if (o.IsTerminating) code.AppendLine("\t\t\tbase.Terminate();");
 				code.AppendLine("\t\t}");
 			}
 			else if (o.UseAwaitPattern && !CanGenerateAsync(o.Owner, IsServer))
