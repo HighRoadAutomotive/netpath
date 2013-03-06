@@ -33,38 +33,45 @@ namespace System.ServiceModel
 		public ClientBaseEx()
 		{
 			ClientID = Guid.NewGuid();
+			InnerChannel.Faulted += ChannelFaulted;
+			InnerChannel.Closing += ChannelClosed;
 			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 		public ClientBaseEx(string endpointConfigurationName)
 			: base(endpointConfigurationName)
 		{
 			ClientID = Guid.NewGuid();
+			InnerChannel.Faulted += ChannelFaulted;
+			InnerChannel.Closing += ChannelClosed;
 			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 		public ClientBaseEx(string endpointConfigurationName, string remoteAddress)
 			: base(endpointConfigurationName, remoteAddress)
 		{
 			ClientID = Guid.NewGuid();
+			InnerChannel.Faulted += ChannelFaulted;
+			InnerChannel.Closing += ChannelClosed;
 			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 		public ClientBaseEx(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress)
 			: base(endpointConfigurationName, remoteAddress)
 		{
 			ClientID = Guid.NewGuid();
+			InnerChannel.Faulted += ChannelFaulted;
+			InnerChannel.Closing += ChannelClosed;
 			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 		public ClientBaseEx(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress)
 			: base(binding, remoteAddress)
 		{
 			ClientID = Guid.NewGuid();
+			InnerChannel.Faulted += ChannelFaulted;
+			InnerChannel.Closing += ChannelClosed;
 			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 
 		protected virtual bool Initialize()
 		{
-			InnerChannel.Faulted += ChannelFaulted;
-			InnerChannel.Closing += ChannelClosed;
-
 			if (State != CommunicationState.Created)
 				InnerChannel.Open();
 
@@ -135,38 +142,74 @@ namespace System.ServiceModel
 		public bool IsTerminated { get; protected set; }
 		private static T current;
 		protected static T Current { get { return current; } }
+
+		protected ClientDuplexBaseEx() : this(new InstanceContext(null))
+		{
+			ClientID = Guid.NewGuid();
+
+			var t = Current;
+			if (t != null)
+			{
+				
+				Endpoint.Address = t.Endpoint.Address;
+				Endpoint.Binding = t.Endpoint.Binding;
+				Endpoint.Contract = t.Endpoint.Contract;
+				Endpoint.Name = t.Endpoint.Name;
+				ClientID = ClientID;
+				if (t.ClientCredentials != null && ClientCredentials != null)
+				{
+					ClientCredentials.UserName.Password = t.ClientCredentials.UserName.Password;
+					ClientCredentials.UserName.UserName = t.ClientCredentials.UserName.UserName;
+					ClientCredentials.Windows.AllowedImpersonationLevel = t.ClientCredentials.Windows.AllowedImpersonationLevel;
+					ClientCredentials.Windows.ClientCredential = t.ClientCredentials.Windows.ClientCredential;
+				}
+			}
+
+			InnerChannel.Faulted += ChannelFaulted;
+			InnerChannel.Closing += ChannelClosed;
+
+			System.Threading.Interlocked.Exchange(ref current, this as T);
+		}
+
 		public ClientDuplexBaseEx(InstanceContext callbackInstance) : base(callbackInstance)
 		{
 			ClientID = Guid.NewGuid();
+			InnerChannel.Faulted += ChannelFaulted;
+			InnerChannel.Closing += ChannelClosed;
 			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 		public ClientDuplexBaseEx(InstanceContext callbackInstance, string endpointConfigurationName) : base(callbackInstance, endpointConfigurationName)
 		{
 			ClientID = Guid.NewGuid();
+			InnerChannel.Faulted += ChannelFaulted;
+			InnerChannel.Closing += ChannelClosed;
 			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 
 		public ClientDuplexBaseEx(InstanceContext callbackInstance, string endpointConfigurationName, string remoteAddress) : base(callbackInstance, endpointConfigurationName, remoteAddress)
 		{
 			ClientID = Guid.NewGuid();
+			InnerChannel.Faulted += ChannelFaulted;
+			InnerChannel.Closing += ChannelClosed;
 			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 		public ClientDuplexBaseEx(InstanceContext callbackInstance, string endpointConfigurationName, EndpointAddress remoteAddress) : base(callbackInstance, endpointConfigurationName, remoteAddress)
 		{
 			ClientID = Guid.NewGuid();
+			InnerChannel.Faulted += ChannelFaulted;
+			InnerChannel.Closing += ChannelClosed;
 			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 		public ClientDuplexBaseEx(InstanceContext callbackInstance, System.ServiceModel.Channels.Binding binding, EndpointAddress remoteAddress) : base(callbackInstance, binding, remoteAddress)
 		{
 			ClientID = Guid.NewGuid();
+			InnerChannel.Faulted += ChannelFaulted;
+			InnerChannel.Closing += ChannelClosed;
 			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 
 		protected virtual bool Initialize()
 		{
-			InnerChannel.Faulted += ChannelFaulted;
-			InnerChannel.Closing += ChannelClosed;
-
 			if (State != CommunicationState.Created)
 				InnerChannel.Open();
 
