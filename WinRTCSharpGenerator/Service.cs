@@ -99,6 +99,8 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(GeneratePropertyServerCode45(p));
 			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
 				code.AppendLine(GenerateServiceInterfaceMethodCode45(m, false));
+			foreach (DataChangeMethod m in o.ServiceOperations.Where(a => a.GetType() == typeof(DataChangeMethod)))
+				code.AppendLine(GenerateServiceInterfaceDCM45(m, true));
 			code.AppendLine("\t}");
 
 			if (o.HasCallback)
@@ -112,6 +114,8 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendLine(GenerateServerProxyPropertyCode(p));
 				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
 					code.AppendLine(GenerateServerProxyMethodCode45(m));
+				foreach (DataChangeMethod m in o.ServiceOperations.Where(a => a.GetType() == typeof(DataChangeMethod)))
+					code.AppendLine(GenerateServiceImplementationDCM45(m, true));
 				code.AppendLine("\t}");
 
 				//Generate the callback interface
@@ -125,6 +129,8 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendLine(GeneratePropertyInterfaceCode45(p));
 				foreach (Method m in o.CallbackOperations.Where(a => a.GetType() == typeof(Method)))
 					code.AppendLine(GenerateServiceInterfaceMethodCode45(m, true));
+				foreach (DataChangeMethod m in o.ServiceOperations.Where(a => a.GetType() == typeof(DataChangeMethod)))
+					code.AppendLine(GenerateCallbackInterfaceDCM45(m, true));
 				code.AppendLine("\t}");
 
 				//Generate the callback facade implementation
@@ -149,6 +155,8 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendLine(GeneratePropertyClientCode(p));
 				foreach (Method m in o.CallbackOperations.Where(a => a.GetType() == typeof(Method)))
 					code.AppendLine(GenerateServerCallbackMethodProxyCode45(m));
+				foreach (DataChangeMethod m in o.ServiceOperations.Where(a => a.GetType() == typeof(DataChangeMethod)))
+					code.AppendLine(GenerateCallbackImplementationDCM45(m, true));
 				code.AppendLine("\t}");
 			}
 
@@ -175,6 +183,8 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(GeneratePropertyInterfaceCode45(p));
 			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
 				code.AppendLine(GenerateClientInterfaceMethodCode45(m));
+			foreach (DataChangeMethod m in o.ServiceOperations.Where(a => a.GetType() == typeof(DataChangeMethod)))
+				code.AppendLine(GenerateServiceInterfaceDCM45(m, false));
 			code.AppendLine("\t}");
 			code.AppendLine();
 			//Generate Callback Interface (if any)
@@ -190,6 +200,8 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendLine(GeneratePropertyInterfaceCode45(p));
 				foreach (Method m in o.CallbackOperations.Where(a => a.GetType() == typeof(Method)))
 					code.AppendLine(GenerateClientInterfaceMethodCode45(m));
+				foreach (DataChangeMethod m in o.ServiceOperations.Where(a => a.GetType() == typeof(DataChangeMethod)))
+					code.AppendLine(GenerateCallbackInterfaceDCM45(m, false));
 				code.AppendLine("\t}");
 				code.AppendLine();
 			}
@@ -294,6 +306,8 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(GeneratePropertyClientCode(p));
 			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof (Method)))
 				code.AppendLine(GenerateMethodProxyCode45(m, false, false));
+			foreach (DataChangeMethod m in o.ServiceOperations.Where(a => a.GetType() == typeof(DataChangeMethod)))
+				code.AppendLine(GenerateServiceImplementationDCM45(m, false));
 			code.AppendLine("\t}");
 
 			return code.ToString();
