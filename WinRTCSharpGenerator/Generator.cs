@@ -286,7 +286,7 @@ namespace NETPath.Generators.WinRT.CS
 			return refs.GroupBy(a => a.ID).Select(b => b.First());
 		}
 
-		private static DataType ReferenceRetrieve(Project Project, Namespace Namespace, Guid TypeID)
+		public static DataType ReferenceRetrieve(Project Project, Namespace Namespace, Guid TypeID)
 		{
 			var d = Namespace.Data.FirstOrDefault(a => a.ID == TypeID);
 			if (d != null) return d;
