@@ -558,6 +558,13 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine("\t{");
 			if (o.HasCallbackOperations)
 			{
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy()", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				if (o.HasDCMOperations) code.AppendLine("\t\t\tbase.ClientID = Guid.NewGuid();");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
 				code.AppendLine(string.Format("\t\tpublic {0}Proxy({1}string endpointConfigurationName, string remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name, o.HasDCMOperations ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
 				if (o.HasDCMOperations) code.AppendLine("\t\t\tbase.ClientID = ClientID;");
@@ -617,6 +624,13 @@ namespace NETPath.Generators.NET.CS
 			}
 			else
 			{
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy()", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				if (o.HasDCMOperations) code.AppendLine("\t\t\tbase.ClientID = Guid.NewGuid();");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
 				code.AppendLine(string.Format("\t\tpublic {0}Proxy({1}string endpointConfigurationName) : base(endpointConfigurationName)", o.HasClientType ? o.ClientType.Name : o.Name, o.HasDCMOperations ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
 				if (o.HasDCMOperations) code.AppendLine("\t\t\tbase.ClientID = ClientID;");
@@ -711,6 +725,13 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine("\t{");
 			if (o.HasCallbackOperations)
 			{
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy()", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				if (o.HasDCMOperations) code.AppendLine("\t\t\tbase.ClientID = Guid.NewGuid();");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
 				code.AppendLine(string.Format("\t\tpublic {0}Proxy({1}string endpointConfigurationName, string remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name, o.HasDCMOperations ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
 				if (o.HasDCMOperations) code.AppendLine("\t\t\tbase.ClientID = ClientID;");
@@ -770,6 +791,13 @@ namespace NETPath.Generators.NET.CS
 			}
 			else
 			{
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy()", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				if (o.HasDCMOperations) code.AppendLine("\t\t\tbase.ClientID = Guid.NewGuid();");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
 				code.AppendLine(string.Format("\t\tpublic {0}Proxy({1}string endpointConfigurationName) : base(endpointConfigurationName)", o.HasClientType ? o.ClientType.Name : o.Name, o.HasDCMOperations ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
 				if (o.HasDCMOperations) code.AppendLine("\t\t\tbase.ClientID = ClientID;");
@@ -2062,11 +2090,11 @@ namespace NETPath.Generators.NET.CS
 				if (o.GenerateNewDeleteFunction)
 				{
 					var xp = new ObservableCollection<MethodParameter>(o.NewParameters);
-					var x = new Method(string.Format("New{0}DCM", dcmtype.Name), o.Owner) { Parameters = xp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+					var x = new Method(string.Format("New{0}DCM", dcmtype.Name), o.Owner) { Parameters = xp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
 					xp.Insert(0, new MethodParameter(dcmtype, "DCMData", o.Owner, x));
 					code.Append(GenerateServiceClientMethodDCM45(x, o.UseTPLForCallbacks));
 					var yp = new ObservableCollection<MethodParameter>(o.DeleteParameters);
-					var y = new Method(string.Format("Delete{0}DCM", dcmtype.Name), o.Owner) { Parameters = yp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+					var y = new Method(string.Format("Delete{0}DCM", dcmtype.Name), o.Owner) { Parameters = yp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
 					yp.Insert(0, new MethodParameter(dcmtype, "DCMData", o.Owner, x));
 					code.Append(GenerateServiceClientMethodDCM45(y, o.UseTPLForCallbacks));
 				}
@@ -2772,11 +2800,11 @@ namespace NETPath.Generators.NET.CS
 				if (o.GenerateNewDeleteFunction)
 				{
 					var xp = new ObservableCollection<MethodParameter>(o.NewParameters);
-					var x = new Method(string.Format("New{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = xp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+					var x = new Method(string.Format("New{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = xp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
 					xp.Insert(0, new MethodParameter(dcmtype, "DCMData", o.Owner, x));
 					code.Append(GenerateCallbackServerMethodDCM45(x, o.UseTPLForCallbacks));
 					var yp = new ObservableCollection<MethodParameter>(o.DeleteParameters);
-					var y = new Method(string.Format("Delete{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = yp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = new DataType(PrimitiveTypes.Void) };
+					var y = new Method(string.Format("Delete{0}DCMCallback", dcmtype.Name), o.Owner) { Parameters = yp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
 					yp.Insert(0, new MethodParameter(dcmtype, "DCMData", o.Owner, x));
 					code.Append(GenerateCallbackServerMethodDCM45(y, o.UseTPLForCallbacks));
 				}

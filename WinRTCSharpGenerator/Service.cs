@@ -206,6 +206,13 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine("\t{");
 			if (o.HasCallbackOperations)
 			{
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy()", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				if (o.HasDCMOperations) code.AppendLine("\t\t\tbase.ClientID = Guid.NewGuid();");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
 				code.AppendLine(string.Format("\t\tpublic {0}Proxy({1}System.ServiceModel.InstanceContext callbackInstance) : base(callbackInstance)", o.HasClientType ? o.ClientType.Name : o.Name, o.HasDCMOperations ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
 				if (o.HasDCMOperations) code.AppendLine("\t\t\tbase.ClientID = ClientID;");
@@ -244,6 +251,13 @@ namespace NETPath.Generators.WinRT.CS
 			}
 			else
 			{
+				code.AppendLine(string.Format("\t\tpublic {0}Proxy()", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t{");
+				if (o.HasDCMOperations) code.AppendLine("\t\t\tbase.ClientID = Guid.NewGuid();");
+				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
+					code.Append(GenerateMethodProxyConstructorCode(m, false));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
 				code.AppendLine(string.Format("\t\tpublic {0}Proxy({1}string endpointConfigurationName) : base(endpointConfigurationName)", o.HasClientType ? o.ClientType.Name : o.Name, o.HasDCMOperations ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
 				if (o.HasDCMOperations) code.AppendLine("\t\t\tbase.ClientID = ClientID;");
