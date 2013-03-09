@@ -614,7 +614,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
-				code.AppendLine(string.Format("\t\tpublic static {2}Proxy<TCallback> Create{0}Service<TCallback>({3}, string Address{1}) where TCallback : class, new()", o.Parent.Name, certificateidentity, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID" : ""));
+				code.AppendLine(string.Format("\t\tpublic static {2}Proxy<TCallback> Create{0}Service<TCallback>({3}string Address{1}) where TCallback : class, new()", o.Parent.Name, certificateidentity, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
 				ahlist = "";
 				for (int i = 0; i < o.ClientAddressHeaders.Count; i++)
@@ -627,7 +627,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
-				code.AppendLine(string.Format("\t\tpublic static {2}Proxy<TCallback> Create{0}Service<TCallback>({3}, int Port{1}) where TCallback : class, new()", o.Parent.Name, certificateidentity, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID" : ""));
+				code.AppendLine(string.Format("\t\tpublic static {2}Proxy<TCallback> Create{0}Service<TCallback>({3}int Port{1}) where TCallback : class, new()", o.Parent.Name, certificateidentity, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
 				ahlist = "";
 				for (int i = 0; i < o.ClientAddressHeaders.Count; i++)
@@ -640,7 +640,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
-				code.AppendLine(string.Format("\t\tpublic static {2}Proxy<TCallback> Create{0}Service<TCallback>({3}, string Address, int Port{1}) where TCallback : class, new()", o.Parent.Name, certificateidentity, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID" : ""));
+				code.AppendLine(string.Format("\t\tpublic static {2}Proxy<TCallback> Create{0}Service<TCallback>({3}string Address, int Port{1}) where TCallback : class, new()", o.Parent.Name, certificateidentity, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
 				ahlist = "";
 				for (int i = 0; i < o.ClientAddressHeaders.Count; i++)
@@ -655,7 +655,7 @@ namespace NETPath.Generators.WinRT.CS
 				#endregion
 
 				#region - Generate Endpoint Functions WITH EndpointIdentity Parameter -
-				code.AppendLine(string.Format("\t\tpublic static {2}Proxy<TCallback> Create{0}Service<TCallback>({3}, System.ServiceModel.EndpointIdentity Identity{1}) where TCallback : class, new()", o.Parent.Name, certificateidentity, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID" : ""));
+				code.AppendLine(string.Format("\t\tpublic static {2}Proxy<TCallback> Create{0}Service<TCallback>({3}System.ServiceModel.EndpointIdentity Identity{1}) where TCallback : class, new()", o.Parent.Name, certificateidentity, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
 				ahlist = "";
 				for (int i = 0; i < o.ClientAddressHeaders.Count; i++)
@@ -668,7 +668,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
-				code.AppendLine(string.Format("\t\tpublic static {2}Proxy<TCallback> Create{0}Service<TCallback>({3}, string Address, System.ServiceModel.EndpointIdentity Identity{1}) where TCallback : class, new()", o.Parent.Name, certificateidentity, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID" : ""));
+				code.AppendLine(string.Format("\t\tpublic static {2}Proxy<TCallback> Create{0}Service<TCallback>({3}string Address, System.ServiceModel.EndpointIdentity Identity{1}) where TCallback : class, new()", o.Parent.Name, certificateidentity, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
 				ahlist = "";
 				for (int i = 0; i < o.ClientAddressHeaders.Count; i++)
@@ -681,7 +681,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
-				code.AppendLine(string.Format("\t\tpublic static {1}Proxy<TCallback> Create{0}Service<TCallback>({2}, int Port, System.ServiceModel.EndpointIdentity Identity) where TCallback : class, new()", o.Parent.Name, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID" : ""));
+				code.AppendLine(string.Format("\t\tpublic static {1}Proxy<TCallback> Create{0}Service<TCallback>({2}int Port, System.ServiceModel.EndpointIdentity Identity) where TCallback : class, new()", o.Parent.Name, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
 				ahlist = "";
 				for (int i = 0; i < o.ClientAddressHeaders.Count; i++)
@@ -694,7 +694,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
-				code.AppendLine(string.Format("\t\tpublic static {1}Proxy<TCallback> Create{0}Service<TCallback>({2}, string Address, int Port, System.ServiceModel.EndpointIdentity Identity) where TCallback : class, new()", o.Parent.Name, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID" : ""));
+				code.AppendLine(string.Format("\t\tpublic static {1}Proxy<TCallback> Create{0}Service<TCallback>({2}string Address, int Port, System.ServiceModel.EndpointIdentity Identity) where TCallback : class, new()", o.Parent.Name, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
 				ahlist = "";
 				for (int i = 0; i < o.ClientAddressHeaders.Count; i++)
@@ -711,7 +711,7 @@ namespace NETPath.Generators.WinRT.CS
 
 				#region - Generate Duplex Binding Endpoint Configuration Functions -
 				#region - Generate Endpoint Functions WITHOUT EndpointIdentity Parameter -
-				code.AppendLine(string.Format("\t\tpublic static {2}Proxy<TCallback> Create{0}ServiceConfig<TCallback>({3}, string EndpointConfig{1}) where TCallback : class, new()", o.Parent.Name, certificateidentity, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID" : ""));
+				code.AppendLine(string.Format("\t\tpublic static {2}Proxy<TCallback> Create{0}ServiceConfig<TCallback>({3}string EndpointConfig{1}) where TCallback : class, new()", o.Parent.Name, certificateidentity, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
 				ahlist = "";
 				for (int i = 0; i < o.ClientAddressHeaders.Count; i++)
@@ -724,7 +724,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
-				code.AppendLine(string.Format("\t\tpublic static {2}Proxy<TCallback> Create{0}ServiceConfig<TCallback>({3}, string EndpointConfig, string Address{1}) where TCallback : class, new()", o.Parent.Name, certificateidentity, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID" : ""));
+				code.AppendLine(string.Format("\t\tpublic static {2}Proxy<TCallback> Create{0}ServiceConfig<TCallback>({3}string EndpointConfig, string Address{1}) where TCallback : class, new()", o.Parent.Name, certificateidentity, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
 				ahlist = "";
 				for (int i = 0; i < o.ClientAddressHeaders.Count; i++)
@@ -737,7 +737,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
-				code.AppendLine(string.Format("\t\tpublic static {2}Proxy<TCallback> Create{0}ServiceConfig<TCallback>({3}, string EndpointConfig, int Port{1}) where TCallback : class, new()", o.Parent.Name, certificateidentity, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID" : ""));
+				code.AppendLine(string.Format("\t\tpublic static {2}Proxy<TCallback> Create{0}ServiceConfig<TCallback>({3}string EndpointConfig, int Port{1}) where TCallback : class, new()", o.Parent.Name, certificateidentity, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
 				ahlist = "";
 				for (int i = 0; i < o.ClientAddressHeaders.Count; i++)
@@ -750,7 +750,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
-				code.AppendLine(string.Format("\t\tpublic static {2}Proxy<TCallback> Create{0}ServiceConfig<TCallback>({3}, string EndpointConfig, string Address, int Port{1}) where TCallback : class, new()", o.Parent.Name, certificateidentity, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID" : ""));
+				code.AppendLine(string.Format("\t\tpublic static {2}Proxy<TCallback> Create{0}ServiceConfig<TCallback>({3}string EndpointConfig, string Address, int Port{1}) where TCallback : class, new()", o.Parent.Name, certificateidentity, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
 				ahlist = "";
 				for (int i = 0; i < o.ClientAddressHeaders.Count; i++)
@@ -765,7 +765,7 @@ namespace NETPath.Generators.WinRT.CS
 				#endregion
 
 				#region - Generate Endpoint Functions WITH EndpointIdentity Parameter -
-				code.AppendLine(string.Format("\t\tpublic static {2}Proxy<TCallback> Create{0}ServiceConfig<TCallback>({3}, string EndpointConfig, System.ServiceModel.EndpointIdentity Identity{1}) where TCallback : class, new()", o.Parent.Name, certificateidentity, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID" : ""));
+				code.AppendLine(string.Format("\t\tpublic static {2}Proxy<TCallback> Create{0}ServiceConfig<TCallback>({3}string EndpointConfig, System.ServiceModel.EndpointIdentity Identity{1}) where TCallback : class, new()", o.Parent.Name, certificateidentity, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
 				ahlist = "";
 				for (int i = 0; i < o.ClientAddressHeaders.Count; i++)
@@ -778,7 +778,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
-				code.AppendLine(string.Format("\t\tpublic static {2}Proxy<TCallback> Create{0}ServiceConfig<TCallback>({3}, string EndpointConfig, string Address, System.ServiceModel.EndpointIdentity Identity{1}) where TCallback : class, new()", o.Parent.Name, certificateidentity, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID" : ""));
+				code.AppendLine(string.Format("\t\tpublic static {2}Proxy<TCallback> Create{0}ServiceConfig<TCallback>({3}string EndpointConfig, string Address, System.ServiceModel.EndpointIdentity Identity{1}) where TCallback : class, new()", o.Parent.Name, certificateidentity, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
 				ahlist = "";
 				for (int i = 0; i < o.ClientAddressHeaders.Count; i++)
@@ -791,7 +791,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
-				code.AppendLine(string.Format("\t\tpublic static {1}Proxy<TCallback> Create{0}ServiceConfig<TCallback>({2}, string EndpointConfig, int Port, System.ServiceModel.EndpointIdentity Identity) where TCallback : class, new()", o.Parent.Name, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID" : ""));
+				code.AppendLine(string.Format("\t\tpublic static {1}Proxy<TCallback> Create{0}ServiceConfig<TCallback>({2}string EndpointConfig, int Port, System.ServiceModel.EndpointIdentity Identity) where TCallback : class, new()", o.Parent.Name, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
 				ahlist = "";
 				for (int i = 0; i < o.ClientAddressHeaders.Count; i++)
@@ -804,7 +804,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
-				code.AppendLine(string.Format("\t\tpublic static {1}Proxy<TCallback> Create{0}ServiceConfig<TCallback>({2}, string EndpointConfig, string Address, int Port, System.ServiceModel.EndpointIdentity Identity) where TCallback : class, new()", o.Parent.Name, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID" : ""));
+				code.AppendLine(string.Format("\t\tpublic static {1}Proxy<TCallback> Create{0}ServiceConfig<TCallback>({2}string EndpointConfig, string Address, int Port, System.ServiceModel.EndpointIdentity Identity) where TCallback : class, new()", o.Parent.Name, DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
 				ahlist = "";
 				for (int i = 0; i < o.ClientAddressHeaders.Count; i++)
