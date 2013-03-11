@@ -2302,7 +2302,7 @@ namespace NETPath.Generators.NET.CS
 				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
 				code.AppendLine(")");
 				code.AppendLine("\t\t{");
-				code.AppendLine("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(() => {");
+				code.AppendLine("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(async() => {");
 				if (TypeMode == DataTypeMode.Collection)
 				{
 					code.AppendLine(string.Format("\t\t\tvar temp = {0}.GetDataFromID(UpdateID);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType)));
@@ -2316,7 +2316,7 @@ namespace NETPath.Generators.NET.CS
 				else code.AppendLine(string.Format("\t\t\t{0}.UpdateValue(UpdateID, {0}.{1}Property, ChangedValue);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType), ElementName));
 				code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
 				code.AppendLine(string.Format("\t\t\t\tforeach(var tc in tcl)"));
-				code.Append(string.Format("\t\t\t\t\ttc.Callback.{0}Callback(", o.ServerName));
+				code.Append(string.Format("\t\t\t\t\tawait tc.Callback.{0}CallbackAsync(", o.ServerName));
 				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
 				code.AppendLine(");");
 				code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
@@ -2356,13 +2356,13 @@ namespace NETPath.Generators.NET.CS
 				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
 				code.AppendLine(")");
 				code.AppendLine("\t\t{");
-				code.AppendLine("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(() => {");
+				code.AppendLine("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(async() => {");
 				code.AppendLine(string.Format("\t\t\t{0}.ApplyDelta(Values);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType)));
 				foreach (DataElement de in DCMType.Elements.Where(a => a.DCMEnabled && a.DCMUpdateMode == DataUpdateMode.Batch && (a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
 					code.AppendLine(string.Format("\t\t\t{0}.{1}.ApplyDelta({1}Delta);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType), de.HasClientType ? de.ClientName : de.DataName));
 				code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
 				code.AppendLine(string.Format("\t\t\t\tforeach(var tc in tcl)"));
-				code.Append(string.Format("\t\t\t\t\ttc.Callback.{0}Callback(", o.ServerName));
+				code.Append(string.Format("\t\t\t\t\tawait tc.Callback.{0}CallbackAsync(", o.ServerName));
 				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
 				code.AppendLine(");");
 				code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");

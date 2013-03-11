@@ -13,7 +13,8 @@ namespace NETPath.Generators.Interfaces
 	{
 		CSharp,
 		VisualBasic,
-		CPlusPlus,
+		CPPCX,
+		FSharp,
 	}
 
 	public enum GenerationModule
@@ -37,7 +38,8 @@ namespace NETPath.Generators.Interfaces
 			if (Module == GenerationModule.WindowsRuntime) mod = "WinRT";
 			string lang = "CS";
 			if (Language == GenerationLanguage.VisualBasic) lang = "VB";
-			if (Language == GenerationLanguage.CPlusPlus) lang = "CPP";
+			if (Language == GenerationLanguage.CPPCX) lang = "CPPCX";
+			if (Language == GenerationLanguage.FSharp) lang = "FS";
 			string modpath = System.IO.Path.Combine(asmfp, string.Format("NETPath.Generators.{0}.{1}.dll", mod, lang));
 			if (!System.IO.File.Exists(modpath)) return null;
 			//Load and initialize the module
@@ -50,7 +52,7 @@ namespace NETPath.Generators.Interfaces
 
 		public static Task<IGenerator> LoadModuleAsync(GenerationModule Module, GenerationLanguage Language)
 		{
-			return Task.Run<IGenerator>(() => LoadModule(Module, Language));
+			return Task.Run(() => LoadModule(Module, Language));
 		}
 	}
 

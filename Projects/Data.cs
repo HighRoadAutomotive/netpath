@@ -30,6 +30,12 @@ namespace NETPath.Projects
 		ZigZag,
 	}
 
+	public struct DataRevisionService
+	{
+		public string Namespace;
+		public string Class;
+	}
+
 	public class Data : DataType
 	{
 		public bool HasXAMLType { get { return (bool)GetValue(HasXAMLTypeProperty); } set { SetValue(HasXAMLTypeProperty, value); } }
