@@ -258,11 +258,6 @@
 									</FlowDocument>
 								</FlowDocumentScrollViewer>
 							</TabItem>
-							<TabItem Header="HOW-TO VIDEOS" FontSize="12pt">
-								<c1media:C1MediaPlayer AutoPlay="False">
-									<c1media:C1MediaItem MediaSource="./Videos/wcfa2intro.mp4" NaturalDuration="00:02:04" Title="Introdution" ThumbnailSource="pack://application:,,,/NETPath;component/Icons/Thumbnails/Intro.png"></c1media:C1MediaItem>
-								</c1media:C1MediaPlayer>
-							</TabItem>
 							<TabItem Header="LATEST NEWS" FontSize="12pt">
 								<TabItem.Resources>
 									<XmlDataProvider x:Key="Blog" Source="http://ps.prospectivesoftware.com/?feed=rss2"/>
