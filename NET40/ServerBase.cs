@@ -26,13 +26,10 @@ namespace System.ServiceModel
 	{
 		public Guid ClientID { get; protected set; }
 		public bool IsTerminated { get; protected set; }
-		private static T current;
-		public static T Current { get { return current; } protected set { System.Threading.Interlocked.Exchange(ref current, value); } }
 
 		public ServerBase()
 		{
 			ClientID = Guid.NewGuid();
-			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 
 		protected virtual bool Initialize()
@@ -67,8 +64,6 @@ namespace System.ServiceModel
 	public abstract class ServerDuplexBase<T, TCallback, TCallbackInterface> : ServerBase<T> where T : ServerDuplexBase<T, TCallback, TCallbackInterface> where TCallback : ServerCallbackBase<TCallbackInterface>, new() where TCallbackInterface : class
 	{
 		private static DeltaDictionary<Guid, T> Clients { get; set; }
-		public static T current;
-		public static T Current { get { return current; } set { System.Threading.Interlocked.Exchange(ref current, value); } }
 
 		static ServerDuplexBase()
 		{
@@ -80,6 +75,18 @@ namespace System.ServiceModel
 			T v;
 			Clients.TryGetValue(ClientID, out v);
 			return v as CType;
+		}
+
+		public static List<CType> GetClients<CType>(IEnumerable<Guid> ClientIDList) where CType : ServerDuplexBase<T, TCallback, TCallbackInterface>
+		{
+			var vl = new List<CType>();
+			foreach (Guid id in ClientIDList)
+			{
+				T v;
+				Clients.TryGetValue(id, out v);
+				if (v != null) vl.Add(v as CType);
+			}
+			return vl;
 		}
 
 		public static List<CType> GetClientList<CType>() where CType : ServerDuplexBase<T, TCallback, TCallbackInterface>
@@ -95,7 +102,6 @@ namespace System.ServiceModel
 		public ServerDuplexBase()
 		{
 			MaxReconnectionAttempts = 0;
-			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 
 		public ServerDuplexBase(ushort MaxReconnectionAttempts, Func<bool> Disconnected = null, Action Reconnected = null)
@@ -103,7 +109,6 @@ namespace System.ServiceModel
 			this.MaxReconnectionAttempts = MaxReconnectionAttempts;
 			this.Disconnected = Disconnected ?? (() => false);
 			this.Reconnected = Reconnected ?? (() => { });
-			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 
 		protected virtual bool Initialize(Func<Guid> ClientID = null)
