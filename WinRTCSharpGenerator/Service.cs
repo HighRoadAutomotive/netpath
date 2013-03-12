@@ -1257,6 +1257,8 @@ namespace NETPath.Generators.WinRT.CS
 				code.Append(IsServer ? GenerateServiceServerBatchMethodDCM45(x, dcmtype, o.UseTPLForCallbacks) : GenerateServiceClientMethodDCM45(x, o.UseTPLForCallbacks, false));
 			}
 
+			if (IsServer) code.AppendLine(string.Format("\t\tpublic abstract IEnumerable<Guid> Get{0}Clients(Guid UpdateID);", dcmtype.Name));
+
 			code.AppendLine();
 
 			return code.ToString();
@@ -1267,7 +1269,7 @@ namespace NETPath.Generators.WinRT.CS
 			var code = new StringBuilder();
 			if (o.UseSyncPattern)
 			{
-				code.AppendFormat("\t\tpublic virtual void {0}(", o.HasClientType ? o.ClientName : o.ServerName);
+				code.AppendFormat("\t\tpublic virtual void {0}(", o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
@@ -1285,7 +1287,20 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendLine(string.Format("\t\t\tif (temp != null) temp.{0}.ApplyDelta(ChangedItem);", ElementName));
 				}
 				else code.AppendLine(string.Format("\t\t\t{0}.UpdateValue(UpdateID, {0}.{1}Property, ChangedValue);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType), ElementName));
-				code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
+				code.Append(string.Format("\t\t\t\t\tCallback{0}(", o.ServerName));
+				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+				code.AppendLine(");");
+				if (UseTPL) code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
+				code.AppendLine("\t\t}");
+
+				code.AppendFormat("\t\tpublic static void Callback{0}(", o.ServerName);
+				foreach (MethodParameter op in o.Parameters)
+					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+				code.AppendLine(")");
+				code.AppendLine("\t\t{");
+				if (UseTPL) code.AppendLine("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(async() => {");
+				code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClients<{0}Base>(Get{1}Clients(UpdateID));", o.Owner.Name, DCMType.Name));
 				code.AppendLine(string.Format("\t\t\t\tforeach(var tc in tcl)"));
 				code.Append(string.Format("\t\t\t\t\ttc.Callback.{0}Callback(", o.ServerName));
 				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
@@ -1295,7 +1310,7 @@ namespace NETPath.Generators.WinRT.CS
 			}
 			if (o.UseAwaitPattern)
 			{
-				code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task {0}Async(", o.HasClientType ? o.ClientName : o.ServerName);
+				code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task {0}Async(", o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
@@ -1313,7 +1328,20 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendLine(string.Format("\t\t\tif (temp != null) temp.{0}.ApplyDelta(ChangedItem);", ElementName));
 				}
 				else code.AppendLine(string.Format("\t\t\t{0}.UpdateValue(UpdateID, {0}.{1}Property, ChangedValue);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType), ElementName));
-				code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
+				code.Append(string.Format("\t\t\t\t\tawait Callback{0}Async(", o.ServerName));
+				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+				code.AppendLine(");");
+				code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
+				code.AppendLine("\t\t}");
+
+				code.AppendFormat("\t\tpublic static System.Threading.Tasks.Task Callback{0}Async(", o.ServerName);
+				foreach (MethodParameter op in o.Parameters)
+					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+				code.AppendLine(")");
+				code.AppendLine("\t\t{");
+				code.AppendLine("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(async() => {");
+				code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClients<{0}Base>(Get{1}Clients(UpdateID));", o.Owner.Name, DCMType.Name));
 				code.AppendLine(string.Format("\t\t\t\tforeach(var tc in tcl)"));
 				code.Append(string.Format("\t\t\t\t\tawait tc.Callback.{0}CallbackAsync(", o.ServerName));
 				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
@@ -1329,7 +1357,7 @@ namespace NETPath.Generators.WinRT.CS
 			var code = new StringBuilder();
 			if (o.UseSyncPattern)
 			{
-				code.AppendFormat("\t\tpublic virtual void {0}(", o.HasClientType ? o.ClientName : o.ServerName);
+				code.AppendFormat("\t\tpublic virtual void {0}(", o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
@@ -1339,7 +1367,20 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t\t{0}.ApplyDelta(Values);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType)));
 				foreach (DataElement de in DCMType.Elements.Where(a => a.DCMEnabled && a.DCMUpdateMode == DataUpdateMode.Batch && (a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
 					code.AppendLine(string.Format("\t\t\t{0}.{1}.ApplyDelta({1}Delta);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType), de.HasClientType ? de.ClientName : de.DataName));
-				code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
+				code.Append(string.Format("\t\t\t\t\tCallback{0}(", o.ServerName));
+				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+				code.AppendLine(");");
+				if (UseTPL) code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
+				code.AppendLine("\t\t}");
+
+				code.AppendFormat("\t\tpublic static void Callback{0}(", o.ServerName);
+				foreach (MethodParameter op in o.Parameters)
+					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+				code.AppendLine(")");
+				code.AppendLine("\t\t{");
+				if (UseTPL) code.AppendLine("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(async() => {");
+				code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClients<{0}Base>(Get{1}Clients(UpdateID));", o.Owner.Name, DCMType.Name));
 				code.AppendLine(string.Format("\t\t\t\tforeach(var tc in tcl)"));
 				code.Append(string.Format("\t\t\t\t\ttc.Callback.{0}Callback(", o.ServerName));
 				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
@@ -1349,7 +1390,7 @@ namespace NETPath.Generators.WinRT.CS
 			}
 			if (o.UseAwaitPattern)
 			{
-				code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task {0}Async(", o.HasClientType ? o.ClientName : o.ServerName);
+				code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task {0}Async(", o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
@@ -1359,7 +1400,20 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t\t{0}.ApplyDelta(Values);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType)));
 				foreach (DataElement de in DCMType.Elements.Where(a => a.DCMEnabled && a.DCMUpdateMode == DataUpdateMode.Batch && (a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
 					code.AppendLine(string.Format("\t\t\t{0}.{1}.ApplyDelta({1}Delta);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType), de.HasClientType ? de.ClientName : de.DataName));
-				code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClientList<{0}Base>();", o.Owner.Name));
+				code.Append(string.Format("\t\t\t\t\tawait Callback{0}Async(", o.ServerName));
+				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+				code.AppendLine(");");
+				code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
+				code.AppendLine("\t\t}");
+
+				code.AppendFormat("\t\tpublic static System.Threading.Tasks.Task Callback{0}Async(", o.ServerName);
+				foreach (MethodParameter op in o.Parameters)
+					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+				code.AppendLine(")");
+				code.AppendLine("\t\t{");
+				code.AppendLine("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(async() => {");
+				code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClients<{0}Base>(Get{1}Clients(UpdateID));", o.Owner.Name, DCMType.Name));
 				code.AppendLine(string.Format("\t\t\t\tforeach(var tc in tcl)"));
 				code.Append(string.Format("\t\t\t\t\tawait tc.Callback.{0}CallbackAsync(", o.ServerName));
 				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
