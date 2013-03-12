@@ -45,6 +45,9 @@ namespace NETPath
 			NavWindow.ErrorCount = 0;
 			NavWindow.ErrorList.Items.Clear();
 
+			//Rebuild DRE Service name lists
+			RebuildDREServiceList();
+
 			//Run project code generation
 			if (NET.IsInitialized && WinRT.IsInitialized)
 			{
@@ -82,6 +85,57 @@ namespace NETPath
 				NavWindow.ErrorList.Items.Add(message);
 				NavWindow.ErrorCount++;
 			}, DispatcherPriority.Send);
+		}
+
+		internal static void RebuildDREServiceList()
+		{
+			//Get all services with DRE in the solution.
+			var sl = new List<Service>();
+			foreach (var p in Globals.Projects)
+				sl.AddRange(DataRevisionServiceSan(p.Namespace));
+
+			//Clean all DataRevisionServiceNames lists
+			foreach(var sv in sl)
+				foreach (var dre in sv.ServiceOperations.Where(a => a.GetType() == typeof (DataChangeMethod)))
+				{
+					Data t = DataReivsionReferenceRetrieve(sv.Parent.Owner, sv.Parent.Owner.Namespace, dre.ReturnType.ID);
+					if (t == null) continue;
+					t.DataRevisionServiceNames = new List<DataRevisionName>();
+				}
+
+			//Rebuild DRE service name lists
+			foreach(var sv in sl)
+				foreach (var dre in sv.ServiceOperations.Where(a => a.GetType() == typeof (DataChangeMethod)))
+				{
+					Data t = DataReivsionReferenceRetrieve(sv.Parent.Owner, sv.Parent.Owner.Namespace, dre.ReturnType.ID);
+					if (t == null) continue;
+					t.DataRevisionServiceNames.Add(new DataRevisionName(string.Format("{0}.{1}", sv.Parent, sv.Name), true, sv.Parent.Owner.ID));
+					t.DataRevisionServiceNames.Add(new DataRevisionName(string.Format("{0}.{1}", sv.Parent, sv.HasClientType ? sv.ClientType.Name : sv.Name), false, sv.Parent.Owner.ID));
+				}
+		}
+
+		internal static List<Service> DataRevisionServiceSan(Namespace Namespace)
+		{
+			List<Service> sl = Namespace.Services.Where(sv => sv.HasDCMOperations).ToList();
+
+			foreach(var n in Namespace.Children)
+				sl.AddRange(DataRevisionServiceSan(n));
+
+			return sl;
+		}
+
+		internal static Data DataReivsionReferenceRetrieve(Project Project, Namespace Namespace, Guid TypeID)
+		{
+			var d = Namespace.Data.FirstOrDefault(a => a.ID == TypeID);
+			if (d != null) return d;
+
+			foreach (Namespace n in Namespace.Children)
+			{
+				var t = DataReivsionReferenceRetrieve(Project, n, TypeID);
+				if (t != null) return t;
+			}
+
+			return !Equals(Namespace, Project.Namespace) ? null : Project.DependencyProjects.Select(dp => DataReivsionReferenceRetrieve(dp.Project, dp.Project.Namespace, TypeID)).FirstOrDefault(t => t != null);
 		}
 	}
 }

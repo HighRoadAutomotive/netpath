@@ -152,6 +152,7 @@ namespace NETPath.Generators.NET.CS
 		private string Generate(Project Data, ProjectGenerationFramework Framework, bool Server, bool GenerateReferences)
 		{
 			Globals.CurrentGenerationTarget = Framework;
+			Globals.CurrentProjectID = Data.ID;
 
 			var code = new StringBuilder();
 			code.AppendLine("//---------------------------------------------------------------------------");
@@ -399,6 +400,7 @@ namespace NETPath.Generators.NET.CS
 		public const string ApplicationTitle = "NETPath .NET CSharp Generator - BETA";
 
 		public static ProjectGenerationFramework CurrentGenerationTarget { get; set; }
+		public static Guid CurrentProjectID { get; set; }
 		
 		public static string LicenseKey { get; set; }
 		public const string LicenseVerification = "AMAAMACnZigmLe9LpWcsYIBVFHYRZeUhr1oYyxDRFmL/qon4ijMx6X/xXyYldZs/A8Df9MsDAAEAAQ==";

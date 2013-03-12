@@ -30,6 +30,20 @@ namespace NETPath.Projects
 		ZigZag,
 	}
 
+	public struct  DataRevisionName
+	{
+		public readonly string Path;
+		public readonly bool IsServer;
+		public readonly Guid ProjectID;
+
+		public DataRevisionName(string Path, bool IsServer, Guid ProjectID)
+		{
+			this.Path = Path;
+			this.IsServer = IsServer;
+			this.ProjectID = ProjectID;
+		}
+	}
+
 	public class Data : DataType
 	{
 		public bool HasXAMLType { get { return (bool)GetValue(HasXAMLTypeProperty); } set { SetValue(HasXAMLTypeProperty, value); } }
@@ -87,7 +101,7 @@ namespace NETPath.Projects
 
 		[IgnoreDataMember] public bool HasDCMID { get { return Elements.Any(a => a.IsValidDCMID && a.IsDCMID); } }
 		[IgnoreDataMember] public DataElement DCMID { get { return Elements.FirstOrDefault(a => a.IsDCMID && a.IsValidDCMID); } }
-		[IgnoreDataMember] public List<string> DataRevisionServiceNames { get; set; }
+		[IgnoreDataMember] public List<DataRevisionName> DataRevisionServiceNames { get; set; }
 
 		//Protocol Buffers
 		public bool EnableProtocolBuffers { get { return (bool)GetValue(EnableProtocolBuffersProperty); } set { SetValue(EnableProtocolBuffersProperty, value); } }

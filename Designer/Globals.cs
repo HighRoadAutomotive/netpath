@@ -227,6 +227,8 @@ namespace NETPath
 
 			foreach (Project p in Projects)
 				NETPath.Projects.Project.Save(p);
+
+			Projects.Clear();
 		}
 	}
 }
