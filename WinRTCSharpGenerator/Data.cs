@@ -81,6 +81,15 @@ namespace NETPath.Generators.WinRT.CS
 				AddMessage(new CompileMessage("GS3008", "The client data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace is unable to inherit from DependencyObject.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 		}
 
+		public static string GenerateImmediateDREValueCallbacks(IEnumerable<string> DRS, string Class, string Property, DataElement DCMID, bool IsServer)
+		{
+			if (!DRS.Any()) return "";
+			var code = new StringBuilder();
+			foreach (var drs in DRS)
+				code.Append(string.Format("{0}.CallbackUpdate{1}{2}DCM({3}, n); ", drs, Class, Property, IsServer ? DCMID.DataName : DCMID.HasClientType ? DCMID.ClientName : DCMID.DataName));
+			return code.ToString();
+		}
+
 		public static string GenerateServerCode45(Data o)
 		{
 			var code = new StringBuilder();

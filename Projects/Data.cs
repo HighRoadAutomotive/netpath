@@ -30,12 +30,6 @@ namespace NETPath.Projects
 		ZigZag,
 	}
 
-	public struct DataRevisionService
-	{
-		public string Namespace;
-		public string Class;
-	}
-
 	public class Data : DataType
 	{
 		public bool HasXAMLType { get { return (bool)GetValue(HasXAMLTypeProperty); } set { SetValue(HasXAMLTypeProperty, value); } }
@@ -93,6 +87,7 @@ namespace NETPath.Projects
 
 		[IgnoreDataMember] public bool HasDCMID { get { return Elements.Any(a => a.IsValidDCMID && a.IsDCMID); } }
 		[IgnoreDataMember] public DataElement DCMID { get { return Elements.FirstOrDefault(a => a.IsDCMID && a.IsValidDCMID); } }
+		[IgnoreDataMember] public List<string> DataRevisionServiceNames { get; set; }
 
 		//Protocol Buffers
 		public bool EnableProtocolBuffers { get { return (bool)GetValue(EnableProtocolBuffersProperty); } set { SetValue(EnableProtocolBuffersProperty, value); } }
