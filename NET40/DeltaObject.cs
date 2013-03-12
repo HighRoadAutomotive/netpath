@@ -103,6 +103,9 @@ namespace System
 				var tt = value as DeltaCollectionBase;
 				if (tt != null) tt.ClearChangedHandlers();
 
+				//Call the property updated callback
+				if (temp != null && de.DeltaPropertyUpdatedCallback != null && baseXAMLObject != null) de.DeltaPropertyUpdatedCallback(this, (T)temp, de.DefaultValue);
+
 				//Call the property changed callback
 				if (temp != null && de.DeltaPropertyChangedCallback != null && baseXAMLObject != null) de.DeltaPropertyChangedCallback(this, (T)temp, de.DefaultValue);
 			}
@@ -119,6 +122,9 @@ namespace System
 					modifications.Enqueue(new ChangeObjectItem(false, de.ID, value));
 					IncrementChangeCount();
 				}
+
+				//Call the property updated callback
+				if (temp != null && de.DeltaPropertyUpdatedCallback != null && baseXAMLObject != null) de.DeltaPropertyUpdatedCallback(this, (T)temp, value);
 
 				//Call the property changed callback
 				if (temp != null && de.DeltaPropertyChangedCallback != null && baseXAMLObject != null) de.DeltaPropertyChangedCallback(this, (T)temp, value);
@@ -144,6 +150,9 @@ namespace System
 
 				if (xamlProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(xamlProperty, de.defaultValue);
 
+				//Call the property updated callback
+				if (temp != null && de.DeltaPropertyUpdatedCallback != null) de.DeltaPropertyUpdatedCallback(this, (T)temp, de.DefaultValue);
+
 				//Call the property changed callback
 				if (temp != null && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, de.DefaultValue);
 			}
@@ -158,6 +167,9 @@ namespace System
 				}
 
 				if (xamlProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(xamlProperty, value);
+
+				//Call the property updated callback
+				if (temp != null && de.DeltaPropertyUpdatedCallback != null) de.DeltaPropertyUpdatedCallback(this, (T)temp, value);
 
 				//Call the property changed callback
 				if (temp != null && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, value);
@@ -182,6 +194,9 @@ namespace System
 				}
 
 				if (xamlProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(xamlProperty, de.defaultValue);
+				
+				//Call the property updated callback
+				if (temp != null && de.DeltaPropertyUpdatedCallback != null) de.DeltaPropertyUpdatedCallback(this, (T)temp, de.DefaultValue);
 
 				//Call the property changed callback
 				if (temp != null && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, de.DefaultValue);
@@ -198,14 +213,17 @@ namespace System
 
 				if (xamlProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(xamlProperty, value);
 
+				//Call the property updated callback
+				if (temp != null && de.DeltaPropertyUpdatedCallback != null) de.DeltaPropertyUpdatedCallback(this, (T)temp, value);
+
 				//Call the property changed callback
 				if (temp != null && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, value);
 			}
 		}
-		public void UpdateValue<T>(DeltaPropertyBase de, T value)
+		public void UpdateValue<T>(DeltaProperty<T> de, T value)
 		{
 			//If the new value is the default value remove this from the modified values list, otherwise add/update it.
-			if (Equals(value, de.defaultValue))
+			if (Equals(value, de.DefaultValue))
 			{
 				//Remove the value from the list, which sets it to the default value.
 				object temp;
@@ -214,6 +232,9 @@ namespace System
 				//Clear the changed event handlers
 				var tt = value as DeltaCollectionBase;
 				if (tt != null) tt.ClearChangedHandlers();
+
+				//Call the property updated callback
+				if (temp != null && de.DeltaPropertyUpdatedCallback != null) de.DeltaPropertyUpdatedCallback(this, (T)temp, de.DefaultValue);
 			}
 			else
 			{
@@ -222,7 +243,10 @@ namespace System
 				if (tt != null) tt.Changed += (Sender, Args) => IncrementChangeCount();
 
 				//Update the values
-				values.AddOrUpdate(de.ID, value, (p, v) => value);
+				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
+
+				//Call the property updated callback
+				if (temp != null && de.DeltaPropertyUpdatedCallback != null) de.DeltaPropertyUpdatedCallback(this, (T)temp, value);
 			}
 		}
 

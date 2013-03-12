@@ -94,8 +94,8 @@ namespace System
 			PropertyType = typeof (T);
 			this.DefaultValue = DefaultValue;
 			this.DeltaPropertyChangedCallback = DeltaPropertyChangedCallback;
-			this.DeltaPropertyUpdatedCallback = DeltaPropertyUpdatedCallback ?? ((s, o, n) => {});
-			this.DeltaValidateValueCallback = DeltaValidateValueCallback ?? ((s, o) => true);
+			this.DeltaPropertyUpdatedCallback = DeltaPropertyUpdatedCallback;
+			this.DeltaValidateValueCallback = DeltaValidateValueCallback;
 			Mode = PropertyMode.Value;
 		}
 
