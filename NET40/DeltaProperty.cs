@@ -59,6 +59,7 @@ namespace System
 		public PropertyMode Mode { get; private set; }
 
 		internal Action<DeltaObject, T, T> DeltaPropertyChangedCallback { get; private set; }
+		internal Action<DeltaObject, T, T> DeltaPropertyUpdatedCallback { get; private set; }
 		internal Func<DeltaObject, T, bool> DeltaValidateValueCallback { get; private set; }
 
 		private DeltaProperty(HashID ID, HashID OwnerID, Type OwnerType)
@@ -85,7 +86,7 @@ namespace System
 			Mode = PropertyMode.Value;
 		}
 
-		private DeltaProperty(HashID ID, HashID OwnerID, Type OwnerType, T DefaultValue, Action<DeltaObject, T, T> DeltaPropertyChangedCallback)
+		private DeltaProperty(HashID ID, HashID OwnerID, Type OwnerType, T DefaultValue, Action<DeltaObject, T, T> DeltaPropertyChangedCallback, Action<DeltaObject, T, T> DeltaPropertyUpdatedCallback = null, Func<DeltaObject, T, bool> DeltaValidateValueCallback = null)
 		{
 			this.ID = ID;
 			this.OwnerID = OwnerID;
@@ -93,19 +94,8 @@ namespace System
 			PropertyType = typeof(T);
 			this.DefaultValue = DefaultValue;
 			this.DeltaPropertyChangedCallback = DeltaPropertyChangedCallback;
-			DeltaValidateValueCallback = null;
-			Mode = PropertyMode.Value;
-		}
-
-		private DeltaProperty(HashID ID, HashID OwnerID, Type OwnerType, T DefaultValue, Action<DeltaObject, T, T> DeltaPropertyChangedCallback, Func<DeltaObject, T, bool> DeltaValidateValueCallback)
-		{
-			this.ID = ID;
-			this.OwnerID = OwnerID;
-			this.OwnerType = OwnerType;
-			PropertyType = typeof(T);
-			this.DefaultValue = DefaultValue;
-			this.DeltaPropertyChangedCallback = DeltaPropertyChangedCallback;
-			this.DeltaValidateValueCallback = DeltaValidateValueCallback;
+			this.DeltaPropertyUpdatedCallback = DeltaPropertyUpdatedCallback ?? ((s, o, n) => { });
+			this.DeltaValidateValueCallback = DeltaValidateValueCallback ?? ((s, o) => true);
 			Mode = PropertyMode.Value;
 		}
 
@@ -137,18 +127,9 @@ namespace System
 			return np;
 		}
 
-		public static DeltaProperty<TType> Register<TType>(string Name, Type OwnerType, TType defaultValue, Action<DeltaObject, TType, TType> DeltaPropertyChangedCallback)
+		public static DeltaProperty<TType> Register<TType>(string Name, Type OwnerType, TType defaultValue, Action<DeltaObject, TType, TType> DeltaPropertyChangedCallback, Action<DeltaObject, TType, TType> DeltaPropertyUpdatedCallback = null, Func<DeltaObject, TType, bool> DeltaValidateValueCallback = null)
 		{
-			var np = new DeltaProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType, defaultValue, DeltaPropertyChangedCallback);
-
-			if (!registered.TryAdd(np.ID, np))
-				throw new ArgumentException(string.Format("Unable to register the DeltaProperty '{0}' on type '{1}'. A DeltaProperty with the same Name and OwnerType has already been registered.", Name, np.OwnerType));
-			return np;
-		}
-
-		public static DeltaProperty<TType> Register<TType>(string Name, Type OwnerType, TType defaultValue, Action<DeltaObject, TType, TType> DeltaPropertyChangedCallback, Func<DeltaObject, TType, bool> DeltaValidateValueCallback)
-		{
-			var np = new DeltaProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType, defaultValue, DeltaPropertyChangedCallback, DeltaValidateValueCallback);
+			var np = new DeltaProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType, defaultValue, DeltaPropertyChangedCallback, DeltaPropertyUpdatedCallback, DeltaValidateValueCallback);
 			if (!registered.TryAdd(np.ID, np))
 				throw new ArgumentException(string.Format("Unable to register the DeltaProperty '{0}' on type '{1}'. A DeltaProperty with the same Name and OwnerType has already been registered.", Name, np.OwnerType));
 			return np;

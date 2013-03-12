@@ -79,6 +79,7 @@ namespace System.ServiceModel
 
 		public static List<CType> GetClients<CType>(IEnumerable<Guid> ClientIDList) where CType : ServerDuplexBase<T, TCallback, TCallbackInterface>
 		{
+			if (ClientIDList == null || !ClientIDList.Any()) return GetClientList<CType>();
 			var vl = new List<CType>();
 			foreach (Guid id in ClientIDList)
 			{
