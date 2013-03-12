@@ -5,7 +5,6 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 		xmlns:c1="http://schemas.componentone.com/winfx/2006/xaml"
 		xmlns:c1datetime="clr-namespace:C1.WPF.DateTimeEditors;assembly=C1.WPF.DateTimeEditors.4"
-		xmlns:c1media="clr-namespace:C1.WPF.MediaPlayer;assembly=C1.WPF.MediaPlayer.4"
 		xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 		xmlns:local="clr-namespace:NETPath.Interface"
 		Icon="pack://application:,,,/NETPath;component/Icons/DesignStudio.ico" 
