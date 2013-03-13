@@ -1299,8 +1299,8 @@ namespace NETPath.Generators.WinRT.CS
 				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
 				code.AppendLine(")");
 				code.AppendLine("\t\t{");
-				if (UseTPL) code.AppendLine("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(async() => {");
-				code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClients<{0}Base>(Get{1}Clients(UpdateID));", o.Owner.Name, DCMType.Name));
+				if (UseTPL) code.AppendLine("\t\t\t System.Threading.Tasks.Task.Factory.StartNew(() => {");
+				code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClients<{0}Base>(GetClientMessageList(UpdateID));", o.Owner.Name, DCMType.Name));
 				code.AppendLine(string.Format("\t\t\t\tforeach(var tc in tcl)"));
 				code.Append(string.Format("\t\t\t\t\ttc.Callback.{0}Callback(", o.ServerName));
 				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
@@ -1341,7 +1341,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(")");
 				code.AppendLine("\t\t{");
 				code.AppendLine("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(async() => {");
-				code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClients<{0}Base>(Get{1}Clients(UpdateID));", o.Owner.Name, DCMType.Name));
+				code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClients<{0}Base>(GetClientMessageList(UpdateID));", o.Owner.Name, DCMType.Name));
 				code.AppendLine(string.Format("\t\t\t\tforeach(var tc in tcl)"));
 				code.Append(string.Format("\t\t\t\t\tawait tc.Callback.{0}CallbackAsync(", o.ServerName));
 				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
@@ -1383,8 +1383,8 @@ namespace NETPath.Generators.WinRT.CS
 				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
 				code.AppendLine(")");
 				code.AppendLine("\t\t{");
-				if (UseTPL) code.AppendLine("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(async() => {");
-				code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClients<{0}Base>(Get{1}Clients(UpdateID));", o.Owner.Name, DCMType.Name));
+				if (UseTPL) code.AppendLine("\t\t\t System.Threading.Tasks.Task.Factory.StartNew(() => {");
+				code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClients<{0}Base>(GetClientMessageList(UpdateID));", o.Owner.Name, DCMType.Name));
 				code.AppendLine(string.Format("\t\t\t\tforeach(var tc in tcl)"));
 				code.Append(string.Format("\t\t\t\t\ttc.Callback.{0}Callback(", o.ServerName));
 				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
@@ -1421,7 +1421,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(")");
 				code.AppendLine("\t\t{");
 				code.AppendLine("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(async() => {");
-				code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClients<{0}Base>(Get{1}Clients(UpdateID));", o.Owner.Name, DCMType.Name));
+				code.AppendLine(string.Format("\t\t\t\tvar tcl = GetClients<{0}Base>(GetClientMessageList(UpdateID));", o.Owner.Name, DCMType.Name));
 				code.AppendLine(string.Format("\t\t\t\tforeach(var tc in tcl)"));
 				code.Append(string.Format("\t\t\t\t\tawait tc.Callback.{0}CallbackAsync(", o.ServerName));
 				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
