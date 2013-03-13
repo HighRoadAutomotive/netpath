@@ -232,7 +232,30 @@ namespace NETPath.Generators.WinRT.CS
 
 			var code = new StringBuilder();
 			code.AppendLine("\t\t//Data Change Messaging Support");
-			code.AppendLine("\t\tprotected override void BatchUpdates() { }");
+			code.AppendLine("\t\tprotected override void BatchUpdates()");
+			code.AppendLine("\t\t{");
+			if (o.Elements.Any(a => a.DCMUpdateMode == DataUpdateMode.Batch))
+			{
+				foreach (var drs in o.DataRevisionServiceNames.Where(d => d.IsServer == IsServer))
+				{
+					if (!IsServer && Globals.CurrentProjectID == drs.ProjectID)
+					{
+						code.Append(string.Format("\t\t\t{0}Proxy.Current.BatchUpdate{1}DCM({2}, GetDeltaValues()", drs.Path, o.HasClientType ? o.ClientType.Name : o.Name, o.DCMID.HasClientType ? o.DCMID.ClientName : o.DCMID.DataName));
+						foreach (var t in o.Elements.Where(a => a.DCMUpdateMode == DataUpdateMode.Batch && (a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
+							code.Append(string.Format(", {0}.GetDelta()", t.HasClientType ? t.ClientName : t.DataName));
+						code.AppendLine(");");
+					}
+					else if (IsServer)
+					{
+						code.Append(string.Format("\t\t\t{0}Base.CallbackBatchUpdate{1}DCM({2}, GetDeltaValues()", drs.Path, o.Name, o.DCMID.DataName));
+						foreach (var t in o.Elements.Where(a => a.DCMUpdateMode == DataUpdateMode.Batch && (a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
+							code.Append(string.Format(", {0}.GetDelta()", t.HasClientType ? t.ClientName : t.DataName));
+
+						code.AppendLine(");");
+					}
+				}
+			}
+			code.AppendLine("\t\t}");
 			code.AppendLine(string.Format("\t\tprivate static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, {0}> __dcm;", o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine(string.Format("\t\tstatic {0}()", o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine("\t\t{");
