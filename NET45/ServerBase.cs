@@ -64,7 +64,9 @@ namespace System.ServiceModel
 	public abstract class ServerDuplexBase<T, TCallback, TCallbackInterface> : ServerBase<T> where T : ServerDuplexBase<T, TCallback, TCallbackInterface> where TCallback : ServerCallbackBase<TCallbackInterface>, new() where TCallbackInterface : class
 	{
 		private static DeltaDictionary<Guid, T> Clients { get; set; }
-
+		private static T current;
+		protected Func<Guid, IEnumerable<Guid>> GetClientMessageSendList = null;
+		
 		static ServerDuplexBase()
 		{
 			Clients = new DeltaDictionary<Guid, T>();
@@ -95,6 +97,12 @@ namespace System.ServiceModel
 			return Clients.Values.Select(t => t as CType).Where(t => t != null).ToList();
 		}
 
+		public static IEnumerable<Guid> GetClientMessageList(Guid UpdateID)
+		{
+			if (current == null) return null;
+			return current.GetClientMessageSendList == null ? null : current.GetClientMessageSendList(UpdateID);
+		}
+
 		public TCallback Callback { get; private set; }
 		public ushort MaxReconnectionAttempts { get; private set; }
 		internal Func<bool> Disconnected { get; set; }
@@ -103,6 +111,7 @@ namespace System.ServiceModel
 		public ServerDuplexBase()
 		{
 			MaxReconnectionAttempts = 0;
+			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 
 		public ServerDuplexBase(ushort MaxReconnectionAttempts, Func<bool> Disconnected = null, Action Reconnected = null)
@@ -110,6 +119,7 @@ namespace System.ServiceModel
 			this.MaxReconnectionAttempts = MaxReconnectionAttempts;
 			this.Disconnected = Disconnected ?? (() => false);
 			this.Reconnected = Reconnected ?? (() => { });
+			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 
 		protected virtual bool Initialize(Func<Guid> ClientID = null)

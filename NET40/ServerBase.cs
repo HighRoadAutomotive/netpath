@@ -64,6 +64,8 @@ namespace System.ServiceModel
 	public abstract class ServerDuplexBase<T, TCallback, TCallbackInterface> : ServerBase<T> where T : ServerDuplexBase<T, TCallback, TCallbackInterface> where TCallback : ServerCallbackBase<TCallbackInterface>, new() where TCallbackInterface : class
 	{
 		private static DeltaDictionary<Guid, T> Clients { get; set; }
+		private static T current;
+		protected Func<Guid, IEnumerable<Guid>> GetClientMessageSendList = null;
 
 		static ServerDuplexBase()
 		{
@@ -93,6 +95,12 @@ namespace System.ServiceModel
 		public static List<CType> GetClientList<CType>() where CType : ServerDuplexBase<T, TCallback, TCallbackInterface>
 		{
 			return Clients.Values.Select(t => t as CType).Where(t => t != null).ToList();
+		}
+
+		public static IEnumerable<Guid> GetClientMessageList(Guid UpdateID)
+		{
+			if (current == null) return null;
+			return current.GetClientMessageSendList == null ? null : current.GetClientMessageSendList(UpdateID);
 		}
 
 		public TCallback Callback { get; private set; }
