@@ -8,7 +8,7 @@
 	xmlns:Projects="clr-namespace:NETPath.Projects;assembly=NETPath.Projects"
 	xmlns:Docs="clr-namespace:NETPath.Interface.Documentation"
 	xmlns:pc="http://schemas.propsectivesoftware.com/pc"
-	d:DesignHeight="950" d:DesignWidth="1000" DataContext="{Binding RelativeSource={RelativeSource Self}}" >
+	d:DesignHeight="950" d:DesignWidth="1000" DataContext="{Binding RelativeSource={RelativeSource Self}}" FontSize="10pt" >
 	<ContentControl.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
@@ -59,7 +59,10 @@
 			<ToggleButton Grid.Column="3" Grid.Row="1" Content="Ignore List Handling" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=OpenType.ProtoIgnoreListHandling}" IsEnabled="{Binding Path=OpenType.EnableProtocolBuffers}" ToolTip="Use instance rules, list interfaces are ignored." />
 		</Grid>
 		<TabControl Grid.Row="5" Margin="0,10,0,0">
-			<TabItem Header="Members" FontSize="12pt" IsSelected="True">
+			<TabItem IsSelected="True">
+				<TabItem.Header>
+					<TextBlock Text="Members" FontSize="12pt"/>
+				</TabItem.Header>
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
@@ -145,7 +148,10 @@
 					</Grid>
 				</Grid>
 			</TabItem>
-			<TabItem Header="Documentation" FontSize="12pt">
+			<TabItem>
+				<TabItem.Header>
+					<TextBlock Text="Documentation" FontSize="12pt"/>
+				</TabItem.Header>
 				<Docs:Class x:Name="Docs" Margin="5" Documentation="{Binding Path=OpenType.Documentation}" />
 			</TabItem>
 		</TabControl>

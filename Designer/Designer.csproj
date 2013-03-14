@@ -135,7 +135,7 @@
     </Reference>
     <Reference Include="LogicNP.CryptoLicensing, Version=9.0.0.0, Culture=neutral, PublicKeyToken=4a3c0a4c668b48b4">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\LogicNP Software\CryptoLicensing For .Net 2012 R2\LogicNP.CryptoLicensing.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\LogicNP Software\CryptoLicensing For .Net 2013\LogicNP.CryptoLicensing.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.WindowsAPICodePack">
@@ -488,7 +488,31 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Themes\Defaults.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Extended.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Lists.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Menus.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\ProjectListItemTemplates.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Standard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Window.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -897,6 +921,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\X16\DataChangeMethod.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\WindowClose.png" />
+    <Resource Include="Icons\WindowMaximize.png" />
+    <Resource Include="Icons\WindowMinimize.png" />
+    <Resource Include="Icons\WindowRestore.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

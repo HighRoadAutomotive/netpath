@@ -4,7 +4,7 @@
 					xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 					xmlns:local="clr-namespace:NETPath.Interface">
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="pack://application:,,,/Prospective.Controls;component/Themes/Defaults.xaml" />
+		<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/Defaults.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 	<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />

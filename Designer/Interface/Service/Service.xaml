@@ -220,9 +220,15 @@
 		<pc:TextBox Height="23" Margin="138,5,5,5" Text="{Binding Path=ServiceType.ConfigurationName}" ToolTip="{Binding Path=ServiceType.ConfigurationName}"  Grid.Column="3"/>
 	</Grid>
 	<TabControl Grid.Row="4" Margin="0,10,0,0">
-		<TabItem Header="SERVICE" FontSize="12pt" Padding="10,5">
+		<TabItem Padding="10,5">
+			<TabItem.Header>
+				<TextBlock Text="SERVICE" FontSize="12pt"/>
+			</TabItem.Header>
 			<TabControl>
-				<TabItem Header="Operations" FontSize="12pt" Padding="10,5" IsSelected="True">
+				<TabItem Padding="10,5" IsSelected="True">
+					<TabItem.Header>
+						<TextBlock Text="Operations" FontSize="12pt"/>
+					</TabItem.Header>
 					<Grid Margin="0,5,5,0">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto" />
@@ -252,7 +258,10 @@
 						</Grid>
 					</Grid>
 				</TabItem>
-				<TabItem Header="Behavior" FontSize="12pt" Padding="10,5">
+				<TabItem Padding="10,5">
+					<TabItem.Header>
+						<TextBlock Text="Behavior" FontSize="12pt"/>
+					</TabItem.Header>
 					<Grid Grid.Row="3">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="*" />
@@ -309,14 +318,23 @@
 						<ToggleButton Content="Validate Must Understand" IsChecked="{Binding Path=ServiceType.SBValidateMustUnderstand}" Margin="5" Grid.Column="1" Grid.Row="6" />
 					</Grid>
 				</TabItem>
-				<TabItem Header="Documentation" FontSize="12pt" Padding="10,5">
+				<TabItem Padding="10,5">
+					<TabItem.Header>
+						<TextBlock Text="DOcumentation" FontSize="12pt"/>
+					</TabItem.Header>
 					<Docs:Class Margin="5" Documentation="{Binding Path=ServiceType.ServiceDocumentation}" />
 				</TabItem>
 			</TabControl>
 		</TabItem>
-		<TabItem Header="CALLBACK" FontSize="12pt" Padding="10,5">
+		<TabItem Padding="10,5">
+			<TabItem.Header>
+				<TextBlock Text="CALLBACK" FontSize="12pt"/>
+			</TabItem.Header>
 			<TabControl>
-				<TabItem Header="Operations" FontSize="12pt" Padding="10,5" IsSelected="True">
+				<TabItem Padding="10,5" IsSelected="True">
+					<TabItem.Header>
+						<TextBlock Text="Operations" FontSize="12pt"/>
+					</TabItem.Header>
 					<Grid>
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
@@ -337,7 +355,10 @@
 						</Grid>
 					</Grid>
 				</TabItem>
-				<TabItem Header="Behavior" FontSize="12pt" Padding="10,5">
+				<TabItem Padding="10,5">
+					<TabItem.Header>
+						<TextBlock Text="Behavior" FontSize="12pt"/>
+					</TabItem.Header>
 					<Grid Grid.Row="3">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="*" />
@@ -377,7 +398,10 @@
 						<ToggleButton Content="Use Synchronization Context" IsChecked="{Binding Path=ServiceType.CBUseSynchronizationContext}" Margin="5" Grid.Column="0" Grid.Row="4" />
 					</Grid>
 				</TabItem>
-				<TabItem Header="Documentation" FontSize="12pt" Padding="10,5">
+				<TabItem Padding="10,5">
+					<TabItem.Header>
+						<TextBlock Text="Documentation" FontSize="12pt"/>
+					</TabItem.Header>
 					<Docs:Class Margin="5" Documentation="{Binding Path=ServiceType.CallbackDocumentation}" />
 				</TabItem>
 			</TabControl>

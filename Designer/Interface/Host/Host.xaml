@@ -10,7 +10,7 @@
 	xmlns:Data="clr-namespace:NETPath.Interface.Data"
 	xmlns:Projects="clr-namespace:NETPath.Projects;assembly=NETPath.Projects"
 	xmlns:Docs="clr-namespace:NETPath.Interface.Documentation"
-	d:DesignHeight="950" d:DesignWidth="1000" DataContext="{Binding RelativeSource={RelativeSource Self}}" UseLayoutRounding="True" >
+	d:DesignHeight="950" d:DesignWidth="1000" DataContext="{Binding RelativeSource={RelativeSource Self}}"  UseLayoutRounding="True" >
 	<Grid.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
@@ -242,12 +242,12 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<Label Content="Open Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" />
-		<c1datetime:C1TimeEditor Value="{Binding Path=Data.OpenTimeout, Mode=TwoWay}" Name="OpenTimeout" HorizontalAlignment="Left" Margin="100,5,5,5" Grid.Row="0" Grid.Column="0" Format="TimeSpan" VerticalContentAlignment="Center" Width="60" FontSize="{StaticResource DefaultFontSize}" ValueChanged="OpenTimeout_ValueChanged" />
+		<c1datetime:C1TimeEditor Value="{Binding Path=Data.OpenTimeout, Mode=TwoWay}" Name="OpenTimeout" HorizontalAlignment="Left" Margin="100,5,5,5" Grid.Row="0" Grid.Column="0" Format="TimeSpan" VerticalContentAlignment="Center" Width="60" ValueChanged="OpenTimeout_ValueChanged" />
 		<Label Content="Close Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="1"  />
-		<c1datetime:C1TimeEditor Value="{Binding Path=Data.CloseTimeout, Mode=TwoWay}" Name="CloseTimeout" HorizontalAlignment="Left" Margin="100,5,5,5" Grid.Row="0" Grid.Column="1" Format="TimeSpan" VerticalContentAlignment="Center" Width="60" FontSize="{StaticResource DefaultFontSize}" ValueChanged="CloseTimeout_ValueChanged" />
+		<c1datetime:C1TimeEditor Value="{Binding Path=Data.CloseTimeout, Mode=TwoWay}" Name="CloseTimeout" HorizontalAlignment="Left" Margin="100,5,5,5" Grid.Row="0" Grid.Column="1" Format="TimeSpan" VerticalContentAlignment="Center" Width="60" ValueChanged="CloseTimeout_ValueChanged" />
 		<ToggleButton IsChecked="{Binding Path=Data.AuthorizationImpersonateCallerForAllOperations}" Name="AuthorizationImpersonateCallerForAllOperations" Content="Impersonate Caller for all Operations" Margin="5" Grid.Row="1" Grid.Column="2" />
 		<Label Content="Manual Flow Control Limit:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="1" Grid.ColumnSpan="2" />
-		<c1:C1NumericBox Value="{Binding Path=Data.ManualFlowControlLimit}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Margin="5" Grid.Row="1" Grid.Column="1" ShowButtons="False" Name="ManualFlowControlLimit" FontSize="{StaticResource DefaultFontSize}" ValueChanged="ManualFlowControlLimit_ValueChanged"  />
+		<c1:C1NumericBox Value="{Binding Path=Data.ManualFlowControlLimit}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Margin="5" Grid.Row="1" Grid.Column="1" ShowButtons="False" Name="ManualFlowControlLimit" ValueChanged="ManualFlowControlLimit_ValueChanged"  />
 		<Label Content="Permission Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="3" />
 		<ComboBox Margin="120,5,5,5" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="3" SelectedIndex="{Binding Path=Data.AuthorizationPrincipalPermissionMode, Converter={StaticResource PrincipalPermissionModeConverter}}" >
 			<ComboBox.Items>
@@ -261,7 +261,10 @@
 		<pc:TextBox Text="{Binding Path=Data.ConfigurationName}" Margin="138,5,5,5" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="2" ToolTip="{Binding Path=Data.ConfigurationName}" />
 	</Grid>
 	<TabControl Grid.Row="6" Margin="0,10,0,0" >
-		<TabItem Header="Endpoints" FontSize="12pt" IsSelected="True">
+		<TabItem IsSelected="True">
+			<TabItem.Header>
+				<TextBlock Text="Endpoints" FontSize="12pt"/>
+			</TabItem.Header>
 			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
@@ -285,7 +288,10 @@
 				</Grid>
 			</Grid>
 		</TabItem>
-		<TabItem Header="Behaviors" FontSize="12pt">
+		<TabItem>
+			<TabItem.Header>
+				<TextBlock Text="Behaviors" FontSize="12pt"/>
+			</TabItem.Header>
 			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
@@ -315,7 +321,10 @@
 				</Grid>
 			</Grid>
 		</TabItem>
-		<TabItem Header="Security" FontSize="12pt">
+		<TabItem>
+			<TabItem.Header>
+				<TextBlock Text="Security" FontSize="12pt"/>
+			</TabItem.Header>
 			<Grid DataContext="{Binding Path=Data.Credentials}" >
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
@@ -479,7 +488,10 @@
 				</GroupBox>
 			</Grid>
 		</TabItem>
-		<TabItem Header="Documentation" FontSize="12pt">
+		<TabItem>
+			<TabItem.Header>
+				<TextBlock Text="Documentation" FontSize="12pt"/>
+			</TabItem.Header>
 			<Docs:Class x:Name="Docs" Margin="5" Documentation="{Binding Path=Data.Documentation}" />
 		</TabItem>
 	</TabControl>

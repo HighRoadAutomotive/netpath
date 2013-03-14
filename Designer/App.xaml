@@ -5,8 +5,13 @@
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="pack://application:,,,/Prospective.Controls;component/Themes/Generic.xaml" />
 				<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/Colors.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/Defaults.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/Extended.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/Lists.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/Menus.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/Standard.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/Window.xaml" />
 				<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/C1NumericBox.xaml" />
 				<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/C1TimeEditor.xaml" />
 			</ResourceDictionary.MergedDictionaries>

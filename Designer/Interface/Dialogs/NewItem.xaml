@@ -181,7 +181,7 @@
 											<ColumnDefinition Width="*" />
 										</Grid.ColumnDefinitions>
 										<Image Name="ItemImage" Source="pack://application:,,,/NETPath;component/Icons/X16/Namespace.png" HorizontalAlignment="Right" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Margin="0,1" Stretch="Uniform" Visibility="Visible" Grid.Column="0"/>
-										<TextBlock Name="ItemTitle" Grid.Column="1" Text="{Binding Path=Name}" ToolTip="{Binding Path=URI}" Padding="3,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="{StaticResource DefaultFontSize}" />
+										<TextBlock Name="ItemTitle" Grid.Column="1" Text="{Binding Path=Name}" ToolTip="{Binding Path=URI}" Padding="3,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" />
 									</Grid>
 									<HierarchicalDataTemplate.Triggers>
 										<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TreeViewItem}},Path=IsExpanded}" Value="True">
@@ -195,8 +195,8 @@
 				</Border>
 			</Grid>
 			<Grid Margin="5" Grid.Row="1">
-				<TextBox Name="NewItemName" Margin="60,0,0,0" HorizontalAlignment="Stretch" KeyUp="NewItemName_KeyUp" TextChanged="NewItemName_TextChanged" />
-				<Label Content="Name:" Padding="5,0" HorizontalAlignment="Left" VerticalAlignment="Center" />
+				<TextBox Name="NewItemName" Margin="70,0,0,0" HorizontalAlignment="Stretch" FontSize="12pt" KeyUp="NewItemName_KeyUp" TextChanged="NewItemName_TextChanged" />
+				<Label Content="Name:" Padding="5,0" HorizontalAlignment="Left" FontSize="12pt" VerticalAlignment="Center" />
 			</Grid>
 			<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5,0">
 				<Button Name="NewItemAdd" Content="ADD" Width="100" FontSize="14pt" Margin="0,0,5,0" HorizontalAlignment="Right" IsEnabled="False" Click="NewItemAdd_Click" />

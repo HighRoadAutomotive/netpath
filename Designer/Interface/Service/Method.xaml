@@ -101,7 +101,10 @@
 		</ComboBox>
 	</Grid>
 	<TabControl Grid.Row="7" Margin="0,10,0,0">
-		<TabItem Header="Parameters" FontSize="12pt" Padding="10,5" IsSelected="True">
+		<TabItem Padding="10,5" IsSelected="True">
+			<TabItem.Header>
+				<TextBlock Text="Parameters" FontSize="12pt"/>
+			</TabItem.Header>
 			<Grid >
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
@@ -160,7 +163,10 @@
 				</ListBox>
 			</Grid>
 		</TabItem>
-		<TabItem Header="Documentation" FontSize="12pt" Padding="10,5">
+		<TabItem Padding="10,5">
+			<TabItem.Header>
+				<TextBlock Text="Members" FontSize="12pt"/>
+			</TabItem.Header>
 			<Docs:Standard Margin="5" IsMethod="True" Documentation="{Binding Path=MethodData.Documentation}" />
 		</TabItem>
 	</TabControl>
