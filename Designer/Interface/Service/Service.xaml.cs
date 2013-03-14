@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using C1.WPF;
 using Prospective.Controls.Dialogs;
 using NETPath.Projects;
 using NETPath.Projects.Helpers;
@@ -486,5 +487,14 @@ namespace NETPath.Interface.Service
 			DialogService.ShowMessageDialog("NETPath", "Delete Property?", "Are you sure you want to delete the '" + OP.ReturnType + " " + OP.ServerName + "' property?", new DialogAction("Yes", () => { ServiceType.ServiceOperations.Remove(OP); ServiceType.CallbackOperations.Remove(OP); }, true), new DialogAction("No", false, true));
 		}
 
+		private void SBMaxItemsInObjectGraph_ValueChanged(object Sender, PropertyChangedEventArgs<double> E)
+		{
+			ServiceType.SBMaxItemsInObjectGraph = Convert.ToInt32(E.NewValue);
+		}
+
+		private void CBMaxItemsInObjectGraph_ValueChanged(object Sender, PropertyChangedEventArgs<double> E)
+		{
+			ServiceType.CBMaxItemsInObjectGraph = Convert.ToInt32(E.NewValue);
+		}
 	}
 }

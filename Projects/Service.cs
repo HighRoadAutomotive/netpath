@@ -6,6 +6,8 @@ using System.Net.Security;
 using System.Text;
 using System.Windows;
 using System.Runtime.Serialization;
+using System.Transactions;
+using System.ServiceModel;
 using System.ServiceModel.Web;
 
 namespace NETPath.Projects
@@ -43,6 +45,77 @@ namespace NETPath.Projects
 
 		public Documentation CallbackDocumentation { get { return (Documentation)GetValue(CallbackDocumentationProperty); } set { SetValue(CallbackDocumentationProperty, value); } }
 		public static readonly DependencyProperty CallbackDocumentationProperty = DependencyProperty.Register("CallbackDocumentation", typeof(Documentation), typeof(Service));
+
+		//Service Behavior
+		public AddressFilterMode SBAddressFilterMode { get { return (AddressFilterMode)GetValue(SBAddressFilterModeProperty); } set { SetValue(SBAddressFilterModeProperty, value); } }
+		public static readonly DependencyProperty SBAddressFilterModeProperty = DependencyProperty.Register("SBAddressFilterMode", typeof(AddressFilterMode), typeof(Service), new PropertyMetadata(AddressFilterMode.Any));
+
+		public bool SBAutomaticSessionShutdown { get { return (bool)GetValue(SBAutomaticSessionShutdownProperty); } set { SetValue(SBAutomaticSessionShutdownProperty, value); } }
+		public static readonly DependencyProperty SBAutomaticSessionShutdownProperty = DependencyProperty.Register("SBAutomaticSessionShutdown", typeof(bool), typeof(Service), new PropertyMetadata(true));
+
+		public ConcurrencyMode SBConcurrencyMode { get { return (ConcurrencyMode)GetValue(SBConcurrencyModeProperty); } set { SetValue(SBConcurrencyModeProperty, value); } }
+		public static readonly DependencyProperty SBConcurrencyModeProperty = DependencyProperty.Register("SBConcurrencyMode", typeof(ConcurrencyMode), typeof(Service), new PropertyMetadata(ConcurrencyMode.Multiple));
+
+		public bool SBEnsureOrderedDispatch { get { return (bool)GetValue(SBEnsureOrderedDispatchProperty); } set { SetValue(SBEnsureOrderedDispatchProperty, value); } }
+		public static readonly DependencyProperty SBEnsureOrderedDispatchProperty = DependencyProperty.Register("SBEnsureOrderedDispatch", typeof(bool), typeof(Service), new PropertyMetadata(false));
+
+		public bool SBIgnoreExtensionDataObject { get { return (bool)GetValue(SBIgnoreExtensionDataObjectProperty); } set { SetValue(SBIgnoreExtensionDataObjectProperty, value); } }
+		public static readonly DependencyProperty SBIgnoreExtensionDataObjectProperty = DependencyProperty.Register("SBIgnoreExtensionDataObject", typeof(bool), typeof(Service), new PropertyMetadata(false));
+
+		public bool SBIncludeExceptionDetailInFaults { get { return (bool)GetValue(SBIncludeExceptionDetailInFaultsProperty); } set { SetValue(SBIncludeExceptionDetailInFaultsProperty, value); } }
+		public static readonly DependencyProperty SBIncludeExceptionDetailInFaultsProperty = DependencyProperty.Register("SBIncludeExceptionDetailInFaults", typeof(bool), typeof(Service), new PropertyMetadata(false));
+
+		public InstanceContextMode SBInstanceContextMode { get { return (InstanceContextMode)GetValue(SBInstanceContextModeProperty); } set { SetValue(SBInstanceContextModeProperty, value); } }
+		public static readonly DependencyProperty SBInstanceContextModeProperty = DependencyProperty.Register("SBInstanceContextMode", typeof(InstanceContextMode), typeof(Service), new PropertyMetadata(InstanceContextMode.PerSession));
+
+		public int SBMaxItemsInObjectGraph { get { return (int)GetValue(SBMaxItemsInObjectGraphProperty); } set { SetValue(SBMaxItemsInObjectGraphProperty, value); } }
+		public static readonly DependencyProperty SBMaxItemsInObjectGraphProperty = DependencyProperty.Register("SBMaxItemsInObjectGraph", typeof(int), typeof(Service), new PropertyMetadata(65536));
+
+		public bool SBReleaseServiceInstanceOnTransactionComplete { get { return (bool)GetValue(SBReleaseServiceInstanceOnTransactionCompleteProperty); } set { SetValue(SBReleaseServiceInstanceOnTransactionCompleteProperty, value); } }
+		public static readonly DependencyProperty SBReleaseServiceInstanceOnTransactionCompleteProperty = DependencyProperty.Register("SReleaseServiceInstanceOnTransactionComplete", typeof(bool), typeof(Service), new PropertyMetadata(true));
+
+		public bool SBTransactionAutoCompleteOnSessionClose { get { return (bool)GetValue(SBTransactionAutoCompleteOnSessionCloseProperty); } set { SetValue(SBTransactionAutoCompleteOnSessionCloseProperty, value); } }
+		public static readonly DependencyProperty SBTransactionAutoCompleteOnSessionCloseProperty = DependencyProperty.Register("SBTransactionAutoCompleteOnSessionClose", typeof(bool), typeof(Service), new PropertyMetadata(false));
+
+		public IsolationLevel SBTransactionIsolationLevel { get { return (IsolationLevel)GetValue(SBTransactionIsolationLevelProperty); } set { SetValue(SBTransactionIsolationLevelProperty, value); } }
+		public static readonly DependencyProperty SBTransactionIsolationLevelProperty = DependencyProperty.Register("SBTransactionIsolationLevel", typeof(IsolationLevel), typeof(Service), new PropertyMetadata(IsolationLevel.Unspecified));
+
+		public TimeSpan SBTransactionTimeout { get { return (TimeSpan)GetValue(SBTransactionTimeoutProperty); } set { SetValue(SBTransactionTimeoutProperty, value); } }
+		public static readonly DependencyProperty SBTransactionTimeoutProperty = DependencyProperty.Register("SBTransactionTimeout", typeof(TimeSpan), typeof(Service), new PropertyMetadata(new TimeSpan(0, 0, 30)));
+
+		public bool SBUseSynchronizationContext { get { return (bool)GetValue(SBUseSynchronizationContextProperty); } set { SetValue(SBUseSynchronizationContextProperty, value); } }
+		public static readonly DependencyProperty SBUseSynchronizationContextProperty = DependencyProperty.Register("SBUseSynchronizationContext", typeof(bool), typeof(Service), new PropertyMetadata(true));
+
+		public bool SBValidateMustUnderstand { get { return (bool)GetValue(SBValidateMustUnderstandProperty); } set { SetValue(SBValidateMustUnderstandProperty, value); } }
+		public static readonly DependencyProperty SBValidateMustUnderstandProperty = DependencyProperty.Register("SBValidateMustUnderstand", typeof(bool), typeof(Service), new PropertyMetadata(true));
+
+		//Callback Behavior
+		public bool CBAutomaticSessionShutdown { get { return (bool)GetValue(CBAutomaticSessionShutdownProperty); } set { SetValue(CBAutomaticSessionShutdownProperty, value); } }
+		public static readonly DependencyProperty CBAutomaticSessionShutdownProperty = DependencyProperty.Register("CBAutomaticSessionShutdown", typeof(bool), typeof(Service), new PropertyMetadata(true));
+
+		public ConcurrencyMode CBConcurrencyMode { get { return (ConcurrencyMode)GetValue(CBConcurrencyModeProperty); } set { SetValue(CBConcurrencyModeProperty, value); } }
+		public static readonly DependencyProperty CBConcurrencyModeProperty = DependencyProperty.Register("CBConcurrencyMode", typeof(ConcurrencyMode), typeof(Service), new PropertyMetadata(ConcurrencyMode.Multiple));
+
+		public bool CBIgnoreExtensionDataObject { get { return (bool)GetValue(CBIgnoreExtensionDataObjectProperty); } set { SetValue(CBIgnoreExtensionDataObjectProperty, value); } }
+		public static readonly DependencyProperty CBIgnoreExtensionDataObjectProperty = DependencyProperty.Register("CBIgnoreExtensionDataObject", typeof(bool), typeof(Service), new PropertyMetadata(false));
+
+		public bool CBIncludeExceptionDetailInFaults { get { return (bool)GetValue(CBIncludeExceptionDetailInFaultsProperty); } set { SetValue(CBIncludeExceptionDetailInFaultsProperty, value); } }
+		public static readonly DependencyProperty CBIncludeExceptionDetailInFaultsProperty = DependencyProperty.Register("CBIncludeExceptionDetailInFaults", typeof(bool), typeof(Service), new PropertyMetadata(false));
+
+		public int CBMaxItemsInObjectGraph { get { return (int)GetValue(CBMaxItemsInObjectGraphProperty); } set { SetValue(CBMaxItemsInObjectGraphProperty, value); } }
+		public static readonly DependencyProperty CBMaxItemsInObjectGraphProperty = DependencyProperty.Register("CBMaxItemsInObjectGraph", typeof(int), typeof(Service), new PropertyMetadata(65536));
+
+		public IsolationLevel CBTransactionIsolationLevel { get { return (IsolationLevel)GetValue(CBTransactionIsolationLevelProperty); } set { SetValue(CBTransactionIsolationLevelProperty, value); } }
+		public static readonly DependencyProperty CBTransactionIsolationLevelProperty = DependencyProperty.Register("CBTransactionIsolationLevel", typeof(IsolationLevel), typeof(Service), new PropertyMetadata(IsolationLevel.Unspecified));
+
+		public TimeSpan CBTransactionTimeout { get { return (TimeSpan)GetValue(CBTransactionTimeoutProperty); } set { SetValue(CBTransactionTimeoutProperty, value); } }
+		public static readonly DependencyProperty CBTransactionTimeoutProperty = DependencyProperty.Register("CBTransactionTimeout", typeof(TimeSpan), typeof(Service), new PropertyMetadata(new TimeSpan(0, 0, 30)));
+
+		public bool CBUseSynchronizationContext { get { return (bool)GetValue(CBUseSynchronizationContextProperty); } set { SetValue(CBUseSynchronizationContextProperty, value); } }
+		public static readonly DependencyProperty CBUseSynchronizationContextProperty = DependencyProperty.Register("CBUseSynchronizationContext", typeof(bool), typeof(Service), new PropertyMetadata(true));
+
+		public bool CBValidateMustUnderstand { get { return (bool)GetValue(CBValidateMustUnderstandProperty); } set { SetValue(CBValidateMustUnderstandProperty, value); } }
+		public static readonly DependencyProperty CBValidateMustUnderstandProperty = DependencyProperty.Register("CBValidateMustUnderstand", typeof(bool), typeof(Service), new PropertyMetadata(true));
 
 		//System
 		[IgnoreDataMember] public bool HasCallback { get { return CallbackOperations.Count > 0; } }
