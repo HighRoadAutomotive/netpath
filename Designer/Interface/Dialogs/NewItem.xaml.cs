@@ -55,6 +55,8 @@ namespace NETPath.Interface.Dialogs
 					NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/NetHTTP.png", "Net HTTPS Binding", "A binding that can be used with any web service that conforms to the WebSockets Profile.", 4));
 				}
 				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/TCP.png", "TCP Binding", "A binding that provides security and reliability for cross-machine communications.", 5));
+				if (ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET45))
+					NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/UDP.png", "UDP Binding", "A binding the user datagram protocol.", 16));
 				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/NamedPipe.png", "Named Pipe Binding", "A binding that provides security and reliability for intra-machine communications.", 6));
 				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/MSMQ.png", "MSMQ Binding", "A queued binding for cross-machine communications.", 7));
 				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/PeerTCP.png", "Peer TCP Binding", "A secure binding for peer-to-peer applications", 8));
@@ -242,6 +244,7 @@ namespace NETPath.Interface.Dialogs
 					if (NBT.DataType == 13) NI = new Projects.ServiceBindingWSDualHTTP(NewItemName.Text, NIN);
 					if (NBT.DataType == 14) NI = new Projects.ServiceBindingWSFederationHTTP(NewItemName.Text, NIN);
 					if (NBT.DataType == 15) NI = new Projects.ServiceBindingWS2007FederationHTTP(NewItemName.Text, NIN);
+					if (NBT.DataType == 16) NI = new Projects.ServiceBindingUDP(NewItemName.Text, NIN);
 
 					NIN.Bindings.Add(NI);
 					Globals.IsLoading = false;

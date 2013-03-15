@@ -31,6 +31,7 @@
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
 		<RowDefinition Height="*" />
 	</Grid.RowDefinitions>
 	<Label Grid.Row="0" Margin="5" Padding="10,2,0,2" Content="Server Type:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="90" />
@@ -213,6 +214,19 @@
 		<pc:TextBox Text="{Binding Path=TransportRealm}" Height="23" Margin="210,5,5,5" Name="TransportRealm" VerticalContentAlignment="Center" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4" />
 	</Grid>
 	<Grid Grid.Row="8">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+		<Label Grid.Column="0" Content="Context Binding" FontSize="12pt" Margin="0,5,0,0" />
+		<ToggleButton IsChecked="{Binding Path=Binding.UseContextBinding}" Content="Use Context Binding" Margin="5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
+		<ToggleButton IsChecked="{Binding Path=Binding.ContextManagementEnabled}" Content="Context Management Enabled" Margin="5" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
+	</Grid>
+	<Grid Grid.Row="9">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />

@@ -484,10 +484,13 @@ namespace NETPath.Generators.NET.CS
 			if (t == typeof(ServiceBindingPeerTCP)) code.AppendLine(string.Format("\t\tpublic {0}(System.ServiceModel.PeerSecuritySettings CustomSecurity)", o.Name));
 			if (t == typeof(ServiceBindingWebHTTP)) code.AppendLine(string.Format("\t\tpublic {0}(System.ServiceModel.WebHttpSecurity CustomSecurity)", o.Name));
 			if (t == typeof(ServiceBindingMSMQIntegration)) code.AppendLine(string.Format("\t\tpublic {0}(System.ServiceModel.MsmqIntegration.MsmqIntegrationSecurity CustomSecurity)", o.Name));
-			code.AppendLine("\t\t{");
-			code.AppendLine("\t\t\tSetDefaults();");
-			code.AppendLine("\t\t\tthis.Security = CustomSecurity;");
-			code.AppendLine("\t\t}");
+			if (t != typeof (ServiceBindingUDP))
+			{
+				code.AppendLine("\t\t{");
+				code.AppendLine("\t\t\tSetDefaults();");
+				code.AppendLine("\t\t\tthis.Security = CustomSecurity;");
+				code.AppendLine("\t\t}");
+			}
 			code.AppendLine(string.Format("\t\tpublic {0}(System.Xml.XmlDictionaryReaderQuotas ReaderQuotas)", o.Name));
 			code.AppendLine("\t\t{");
 			code.AppendLine("\t\t\tSetDefaults();");
@@ -508,11 +511,14 @@ namespace NETPath.Generators.NET.CS
 			if (t == typeof(ServiceBindingPeerTCP)) code.AppendLine(string.Format("\t\tpublic {0}(System.ServiceModel.PeerSecuritySettings CustomSecurity, System.Xml.XmlDictionaryReaderQuotas ReaderQuotas)", o.Name));
 			if (t == typeof(ServiceBindingWebHTTP)) code.AppendLine(string.Format("\t\tpublic {0}(System.ServiceModel.WebHttpSecurity CustomSecurity, System.Xml.XmlDictionaryReaderQuotas ReaderQuotas)", o.Name));
 			if (t == typeof(ServiceBindingMSMQIntegration)) code.AppendLine(string.Format("\t\tpublic {0}(System.ServiceModel.MsmqIntegration.MsmqIntegrationSecurity CustomSecurity, System.Xml.XmlDictionaryReaderQuotas ReaderQuotas)", o.Name));
-			code.AppendLine("\t\t{");
-			code.AppendLine("\t\t\tSetDefaults();");
-			code.AppendLine("\t\t\tthis.Security = CustomSecurity;");
-			code.AppendLine("\t\t\tthis.ReaderQuotas = ReaderQuotas;");
-			code.AppendLine("\t\t}");
+			if (t != typeof (ServiceBindingUDP))
+			{
+				code.AppendLine("\t\t{");
+				code.AppendLine("\t\t\tSetDefaults();");
+				code.AppendLine("\t\t\tthis.Security = CustomSecurity;");
+				code.AppendLine("\t\t\tthis.ReaderQuotas = ReaderQuotas;");
+				code.AppendLine("\t\t}");
+			}
 			code.AppendLine("\t\tprivate void SetDefaults()");
 			code.AppendLine("\t\t{");
 			// Generic Binding code.
@@ -528,6 +534,7 @@ namespace NETPath.Generators.NET.CS
 				var b = o as ServiceBindingBasicHTTP;
 				if (b == null) return "";
 				//TODO: Verify WinRT can connect with these set.
+				if (Globals.CurrentGenerationTarget != ProjectGenerationFramework.WIN8)
 				{
 					code.AppendLine(string.Format("\t\t\tthis.AllowCookies = {0};", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 					code.AppendLine(string.Format("\t\t\tthis.BypassProxyOnLocal = {0};", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
@@ -542,6 +549,10 @@ namespace NETPath.Generators.NET.CS
 					{
 						code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
 						code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+					}
+					if (b.UseContextBinding)
+					{
+						code.AppendLine(string.Format("\t\t\tthis.ContextManagementEnabled = {0};", b.ContextManagementEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 					}
 				}
 				if (b.Security != null) code.AppendLine(SecurityGenerator.GenerateCode45(b.Security));
@@ -582,6 +593,7 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine(string.Format("\t\t\tthis.WebSocketSettings.SubProtocol = \"{0}\";", b.SubProtocol));
 				code.AppendLine(string.Format("\t\t\tthis.WebSocketSettings.TransportUsage = System.ServiceModel.Channels.WebSocketTransportUsage.{0};", System.Enum.GetName(typeof(System.ServiceModel.Channels.WebSocketTransportUsage), b.TransportUsage)));
 				//TODO: Verify WinRT can connect with these set.
+				if (Globals.CurrentGenerationTarget != ProjectGenerationFramework.WIN8)
 				{
 					code.AppendLine(string.Format("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode)));
 					code.AppendLine(string.Format("\t\t\tthis.WebSocketSettings.CreateNotificationOnConnection = {0};", b.CreateNotificationOnConnection ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
@@ -645,6 +657,11 @@ namespace NETPath.Generators.NET.CS
 				{
 					code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
 					code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
+				}
+				if (b.UseContextBinding)
+				{
+					code.AppendLine(string.Format("\t\t\tthis.ContextManagementEnabled = {0};", b.ContextManagementEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+					code.AppendLine(string.Format("\t\t\tthis.ContextProtectionLevel = System.Net.Security.ProtectionLevel.{0};", b.ContextProtectionLevel));
 				}
 				if (b.Security != null) code.AppendLine(SecurityGenerator.GenerateCode45(b.Security));
 			}
@@ -748,6 +765,7 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine(string.Format("\t\t\tthis.MaxReceivedMessageSize = {0};", b.MaxReceivedMessageSize));
 				code.AppendLine(string.Format("\t\t\tthis.TransferMode = TransferMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode)));
 				//TODO: Verify WinRT can connect with these set.
+				if (Globals.CurrentGenerationTarget != ProjectGenerationFramework.WIN8)
 				{
 					code.AppendLine(string.Format("\t\t\tthis.HostNameComparisonMode = HostNameComparisonMode.{0};", System.Enum.GetName(typeof (System.ServiceModel.HostNameComparisonMode), b.HostNameComparisonMode)));
 					code.AppendLine(string.Format("\t\t\tthis.ListenBacklog = {0};", b.ListenBacklog));
@@ -758,8 +776,25 @@ namespace NETPath.Generators.NET.CS
 					code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Ordered = {0};", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 					code.AppendLine(string.Format("\t\t\tthis.TransactionFlow = {0};", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 					code.AppendLine(string.Format("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};", System.Enum.GetName(typeof (ServiceBindingTransactionProtocol), b.TransactionProtocol)));
+					if (b.UseContextBinding)
+					{
+						code.AppendLine(string.Format("\t\t\tthis.ContextManagementEnabled = {0};", b.ContextManagementEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+						code.AppendLine(string.Format("\t\t\tthis.ContextProtectionLevel = System.Net.Security.ProtectionLevel.{0};", b.ContextProtectionLevel));
+					}
 				}
 				if (b.Security != null) code.AppendLine(SecurityGenerator.GenerateCode45(b.Security));
+			}
+			else if (t == typeof(ServiceBindingUDP))
+			{
+				var b = o as ServiceBindingUDP;
+				if (b == null) return "";
+				code.AppendLine(string.Format("\t\t\tthis.DuplicateMessageHistoryLength = {0};", b.DuplicateMessageHistoryLength));
+				code.AppendLine(string.Format("\t\t\tthis.MaxBufferPoolSize = {0};", b.MaxBufferPoolSize));
+				code.AppendLine(string.Format("\t\t\tthis.MaxPendingMessagesTotalSize = {0};", b.MaxPendingMessagesTotalSize));
+				code.AppendLine(string.Format("\t\t\tthis.MaxReceivedMessageSize = {0};", b.MaxReceivedMessageSize));
+				code.AppendLine(string.Format("\t\t\tthis.MaxRetransmitCount = {0};", b.MaxRetransmitCount));
+				code.AppendLine(string.Format("\t\t\tthis.TextEncoding = System.Text.Encoding.{0};", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.TextEncoding)));
+				code.AppendLine(string.Format("\t\t\tthis.TimeToLive = {0};", b.TimeToLive));
 			}
 			else if (t == typeof(ServiceBindingNamedPipe))
 			{

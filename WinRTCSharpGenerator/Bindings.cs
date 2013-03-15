@@ -194,6 +194,10 @@ namespace NETPath.Generators.WinRT.CS
 						code.AppendLine(string.Format("\t\t\tthis.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
 						code.AppendLine(string.Format("\t\t\tthis.UseDefaultWebProxy = false;"));
 					}
+					if (b.UseContextBinding)
+					{
+						code.AppendLine(string.Format("\t\t\tthis.ContextManagementEnabled = {0};", b.ContextManagementEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+					}
 				}
 				if (b.Security != null) code.AppendLine(SecurityGenerator.GenerateCode45(b.Security));
 			}
@@ -248,6 +252,11 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendLine(string.Format("\t\t\tthis.ReliableSession.Ordered = {0};", b.ReliableSessionsOrdered ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 					code.AppendLine(string.Format("\t\t\tthis.TransactionFlow = {0};", b.TransactionFlow ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 					code.AppendLine(string.Format("\t\t\tthis.TransactionProtocol = TransactionProtocol.{0};", System.Enum.GetName(typeof (ServiceBindingTransactionProtocol), b.TransactionProtocol)));
+					if (b.UseContextBinding)
+					{
+						code.AppendLine(string.Format("\t\t\tthis.ContextManagementEnabled = {0};", b.ContextManagementEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+						code.AppendLine(string.Format("\t\t\tthis.ContextProtectionLevel = System.Net.Security.ProtectionLevel.{0};", b.ContextProtectionLevel));
+					}
 				}
 				if (b.Security != null) code.AppendLine(SecurityGenerator.GenerateCode45(b.Security));
 			}

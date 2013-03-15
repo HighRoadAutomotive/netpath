@@ -28,7 +28,6 @@
 	<Style x:Key="ProjectContainerTemplate" TargetType="{x:Type Button}">
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>
 		<Setter Property="Background" Value="Transparent"/>
@@ -83,7 +82,6 @@
 	<Style x:Key="ServiceContainerTemplate" TargetType="{x:Type ToggleButton}">
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>
 		<Setter Property="Background" Value="{StaticResource ServiceContainerColor}"/>
@@ -154,7 +152,6 @@
 	<Style x:Key="DataContainerTemplate" TargetType="{x:Type ToggleButton}">
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>
 		<Setter Property="Background" Value="{StaticResource DataContainerColor}"/>
@@ -226,7 +223,6 @@
 	<Style x:Key="EnumContainerTemplate" TargetType="{x:Type ToggleButton}">
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>
 		<Setter Property="Background" Value="{StaticResource EnumContainerColor}"/>
@@ -297,7 +293,6 @@
 	<Style x:Key="BindingContainerTemplate" TargetType="{x:Type ToggleButton}">
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>
 		<Setter Property="Background" Value="{StaticResource BindingContainerColor}"/>
@@ -433,6 +428,15 @@
 			<TextBlock Text="WCF Binding Type: NetTcpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
+	<DataTemplate x:Key="ServiceBindingUDPItemTemplate" DataType="{x:Type wap:ServiceBindingUDP}">
+		<StackPanel Orientation="Vertical">
+			<StackPanel Orientation="Horizontal" >
+				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/UDP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
+				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="11pt" />
+			</StackPanel>
+			<TextBlock Text="WCF Binding Type: UdpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
+		</StackPanel>
+	</DataTemplate>
 	<DataTemplate x:Key="ServiceBindingWebHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingWebHTTP}">
 		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal" >
@@ -489,7 +493,7 @@
 	</DataTemplate>
 	<local:ProjectListBindingTemplateSelector x:Key="ProjectListBindingTemplateSelector" BasicHTTPTemplate="{StaticResource ServiceBindingBasicHTTPItemTemplate}" BasicHTTPSTemplate="{StaticResource ServiceBindingBasicHTTPSItemTemplate}" NetHTTPTemplate="{StaticResource ServiceBindingNetHTTPItemTemplate}" 
 	NetHTTPSTemplate="{StaticResource ServiceBindingNetHTTPSItemTemplate}" MSMQTemplate="{StaticResource ServiceBindingMSMQItemTemplate}" MSMQIntegrationTemplate="{StaticResource ServiceBindingMSMQIntegrationItemTemplate}" NamedPipeTemplate="{StaticResource ServiceBindingNamedPipeItemTemplate}" 
-	PeerTCPTemplate="{StaticResource ServiceBindingPeerTCPItemTemplate}" TCPTemplate="{StaticResource ServiceBindingTCPItemTemplate}" WebHTTPTemplate="{StaticResource ServiceBindingWebHTTPItemTemplate}" WSDualHTTPTemplate="{StaticResource ServiceBindingWSDualHTTPItemTemplate}" 
+	PeerTCPTemplate="{StaticResource ServiceBindingPeerTCPItemTemplate}" TCPTemplate="{StaticResource ServiceBindingTCPItemTemplate}" UDPTemplate="{StaticResource ServiceBindingUDPItemTemplate}" WebHTTPTemplate="{StaticResource ServiceBindingWebHTTPItemTemplate}" WSDualHTTPTemplate="{StaticResource ServiceBindingWSDualHTTPItemTemplate}" 
 	WSFederationHTTPTemplate="{StaticResource ServiceBindingWSFederationHTTPItemTemplate}" WSHTTPTemplate="{StaticResource ServiceBindingWSHTTPItemTemplate}" WS2007FederationHTTPTemplate="{StaticResource ServiceBindingWS2007FederationHTTPItemTemplate}" WS2007HTTPTemplate="{StaticResource ServiceBindingWS2007HTTPItemTemplate}" />
 
 	
@@ -497,7 +501,6 @@
 	<Style x:Key="HostContainerTemplate" TargetType="{x:Type ToggleButton}">
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>
 		<Setter Property="Background" Value="{StaticResource HostContainerColor}"/>
@@ -567,7 +570,6 @@
 	<Style x:Key="NamespaceContainerTemplate" TargetType="{x:Type ToggleButton}">
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>
 		<Setter Property="Background" Value="{StaticResource NamespaceContainerColor}"/>

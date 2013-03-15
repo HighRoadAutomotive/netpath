@@ -199,6 +199,9 @@ namespace NETPath.Interface
 			if (Item.GetType() == typeof(ServiceBindingTCP))
 				ActivePage = new Bindings.TCP(Item as ServiceBindingTCP);
 
+			if (Item.GetType() == typeof(ServiceBindingUDP))
+				ActivePage = new Bindings.UDP(Item as ServiceBindingUDP);
+
 			if (Item.GetType() == typeof(ServiceBindingNamedPipe))
 				ActivePage = new Bindings.NamedPipe(Item as ServiceBindingNamedPipe);
 
@@ -763,6 +766,7 @@ namespace NETPath.Interface
 		public DataTemplate NamedPipeTemplate { get; set; }
 		public DataTemplate PeerTCPTemplate { get; set; }
 		public DataTemplate TCPTemplate { get; set; }
+		public DataTemplate UDPTemplate { get; set; }
 		public DataTemplate WebHTTPTemplate { get; set; }
 		public DataTemplate WSDualHTTPTemplate { get; set; }
 		public DataTemplate WSFederationHTTPTemplate { get; set; }
@@ -782,6 +786,7 @@ namespace NETPath.Interface
 			if (item.GetType() == typeof(ServiceBindingNamedPipe)) return NamedPipeTemplate;
 			if (item.GetType() == typeof(ServiceBindingPeerTCP)) return PeerTCPTemplate;
 			if (item.GetType() == typeof(ServiceBindingTCP)) return TCPTemplate;
+			if (item.GetType() == typeof(ServiceBindingUDP)) return UDPTemplate;
 			if (item.GetType() == typeof(ServiceBindingWebHTTP)) return WebHTTPTemplate;
 			if (item.GetType() == typeof(ServiceBindingWSDualHTTP)) return WSDualHTTPTemplate;
 			if (item.GetType() == typeof(ServiceBindingWSFederationHTTP)) return WSFederationHTTPTemplate;

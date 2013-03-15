@@ -162,7 +162,6 @@
 		<Setter Property="CaretBrush" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="SelectionBrush" Value="{StaticResource DefaultSelectionColor}" />
 		<Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}"/>

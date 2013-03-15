@@ -38,7 +38,6 @@
 	<Style x:Key="{x:Type Label}" TargetType="{x:Type Label}" >
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="BorderBrush" Value="Transparent" />
@@ -61,7 +60,6 @@
 	<Style x:Key="{x:Type ToggleButton}" TargetType="{x:Type ToggleButton}" >
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>
 		<Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}"/>
@@ -109,7 +107,6 @@
 		<Setter Property="CaretBrush" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="SelectionBrush" Value="{StaticResource DefaultSelectionColor}" />
 		<Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}"/>
@@ -168,7 +165,6 @@
 		<Setter Property="CaretBrush" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="SelectionBrush" Value="{StaticResource DefaultSelectionColor}" />
 		<Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}"/>
@@ -269,7 +265,6 @@
 		<Setter Property="BorderBrush" Value="Transparent" />
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="UseLayoutRounding" Value="true"/>
 		<Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -308,7 +303,6 @@
 	<Style x:Key="{x:Type GroupBox}" TargetType="{x:Type GroupBox}">
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="Background" Value="Transparent"/>
 		<Setter Property="BorderBrush" Value="{StaticResource DefaultBorderColor}"/>
@@ -459,7 +453,6 @@
 	<Style x:Key="{x:Type CheckBox}" TargetType="{x:Type CheckBox}">
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}"/>
 		<Setter Property="BorderBrush" Value="{StaticResource ReadOnlyFontColor}"/>
@@ -565,7 +558,6 @@
 	<Style x:Key="{x:Type RadioButton}" TargetType="{x:Type RadioButton}">
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}"/>
 		<Setter Property="BorderBrush" Value="{StaticResource ReadOnlyFontColor}"/>
@@ -598,7 +590,6 @@
 		<Setter Property="OverridesDefaultStyle" Value="true"/>
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="Background" Value="Transparent"/>
 		<Setter Property="BorderBrush" Value="{StaticResource DefaultBorderColor}"/>
@@ -681,7 +672,6 @@
 		<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}"/>
 		<Setter Property="BorderBrush" Value="{StaticResource DefaultBorderColor}"/>
@@ -857,7 +847,6 @@
 		<Setter Property="BorderBrush" Value="{StaticResource WindowBorderColor}"/>
 		<Setter Property="Background" Value="Transparent"/>
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
 		<Setter Property="HorizontalContentAlignment" Value="Center"/>
 		<Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -1034,7 +1023,6 @@
 	<Style x:Key="ListViewHeaderContainerStyle" TargetType="{x:Type GridViewColumnHeader}">
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="TextElement.FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="TextElement.FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="TextElement.FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>
 		<Setter Property="Margin" Value="0" />
@@ -1050,7 +1038,6 @@
 	<Style x:Key="ListViewStyle" TargetType="{x:Type ListView}">
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>
 		<Setter Property="ItemContainerStyle" Value="{StaticResource ListViewItemContainerStyle}" />
@@ -1062,7 +1049,6 @@
 		<Setter Property="BorderBrush" Value="Transparent" />
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="BorderThickness" Value="0"/>
 		<Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>

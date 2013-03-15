@@ -9,7 +9,6 @@
 		<Setter Property="BorderBrush" Value="Transparent" />
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="UseLayoutRounding" Value="true"/>
 		<Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -50,7 +49,6 @@
 		<Setter Property="BorderBrush" Value="Transparent" />
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="UseLayoutRounding" Value="true"/>
 		<Setter Property="HorizontalContentAlignment" Value="Center" />

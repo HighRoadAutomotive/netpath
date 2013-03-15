@@ -19,10 +19,12 @@
 		<Bindings:MessageCredentialTypeConverter x:Key="MessageCredentialTypeConverter" />
 		<Bindings:HttpClientCredentialTypeConverter x:Key="HttpClientCredentialTypeConverter" />
 		<Bindings:HttpProxyCredentialTypeConverter x:Key="HttpProxyCredentialTypeConverter" />
+		<Bindings:ProtectionLevelConverter x:Key="ProtectionLevelConverter" />
 		<pc:LongConverter x:Key="LongConverter" />
 		<pc:IntConverter x:Key="IntConverter" />
 	</Grid.Resources>
 	<Grid.RowDefinitions>
+		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
@@ -226,6 +228,26 @@
 		<pc:TextBox Text="{Binding Path=TransportRealm}" Height="23" Margin="210,5,5,5" Name="TransportRealm" VerticalContentAlignment="Center" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="5" />
 	</Grid>
 	<Grid Grid.Row="9">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+		<Label Grid.Column="0" Content="Context Binding" FontSize="12pt" Margin="0,5,0,0" />
+		<ToggleButton IsChecked="{Binding Path=Binding.UseContextBinding}" Content="Use Context Binding" Margin="5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
+		<ToggleButton IsChecked="{Binding Path=Binding.ContextManagementEnabled}" Content="Context Management Enabled" Margin="5" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
+		<Label Content="Context Protection Level:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="2" />
+		<ComboBox Height="23" Margin="160,5,5,5" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="2" SelectedIndex="{Binding Path=Binding.ContextProtectionLevel, Converter={StaticResource ProtectionLevelConverter}}" >
+			<ComboBoxItem Content="None" />
+			<ComboBoxItem Content="Sign" />
+			<ComboBoxItem Content="Encrypt and Sign" />
+		</ComboBox>
+	</Grid>
+	<Grid Grid.Row="10">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />

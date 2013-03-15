@@ -186,6 +186,9 @@
       <DependentUpon>BasicHTTPS.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interface\Bindings\Converters.cs" />
+    <Compile Include="Interface\Bindings\UDP.xaml.cs">
+      <DependentUpon>UDP.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interface\Bindings\MSMQ.xaml.cs">
       <DependentUpon>MSMQ.xaml</DependentUpon>
     </Compile>
@@ -321,6 +324,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Interface\Bindings\BasicHTTPS.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\Bindings\UDP.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -927,6 +934,12 @@
     <Resource Include="Icons\WindowMaximize.png" />
     <Resource Include="Icons\WindowMinimize.png" />
     <Resource Include="Icons\WindowRestore.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\X32\UDP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\X16\UDP.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

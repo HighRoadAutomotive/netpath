@@ -166,6 +166,44 @@ namespace NETPath.Projects
 		public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
 		public static readonly DependencyProperty UseDefaultWebProxyProperty = DependencyProperty.Register("UseDefaultWebProxy", typeof(bool), typeof(ServiceBindingBasicHTTP));
 
+		//ContextBinding
+		public bool UseContextBinding { get { return (bool)GetValue(UseContextBindingProperty); } set { SetValue(UseContextBindingProperty, value); } }
+		public static readonly DependencyProperty UseContextBindingProperty = DependencyProperty.Register("UseContextBinding", typeof(bool), typeof(ServiceBindingBasicHTTP), new PropertyMetadata(false, UseContextBindingPropertyChangedCallback));
+
+		private static void UseContextBindingPropertyChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as ServiceBindingBasicHTTP;
+			if (t == null) return;
+			if (t.InheritedTypes == null) return;
+
+			if ((bool) e.NewValue)
+			{
+				var til = new List<DataType>();
+				foreach (var it in t.InheritedTypes)
+					if (it.Name == "System.ServiceModel.BasicHttpBinding")
+						til.Add(it);
+				foreach (var it in til)
+					t.InheritedTypes.Remove(it);
+
+				t.InheritedTypes.Add(new DataType("System.ServiceModel.BasicHttpContextBinding", DataTypeMode.Class));
+			}
+			else
+			{
+				var til = new List<DataType>();
+				foreach (var it in t.InheritedTypes)
+					if (it.Name == "System.ServiceModel.BasicHttpContextBinding")
+						til.Add(it);
+				foreach (var it in til)
+					t.InheritedTypes.Remove(it);
+
+				t.InheritedTypes.Add(new DataType("System.ServiceModel.BasicHttpBinding", DataTypeMode.Class));
+				
+			}
+		}
+
+		public bool ContextManagementEnabled { get { return (bool)GetValue(ContextManagementEnabledProperty); } set { SetValue(ContextManagementEnabledProperty, value); } }
+		public static readonly DependencyProperty ContextManagementEnabledProperty = DependencyProperty.Register("ContextManagementEnabled", typeof(bool), typeof(ServiceBindingBasicHTTP), new PropertyMetadata(false));
+
 		public ServiceBindingBasicHTTP(): base() { }
 
 		public ServiceBindingBasicHTTP(string Name, Namespace Parent) : base()
@@ -539,6 +577,47 @@ namespace NETPath.Projects
 
 		public bool TransactionFlow { get { return (bool)GetValue(TransactionFlowProperty); } set { SetValue(TransactionFlowProperty, value); } }
 		public static readonly DependencyProperty TransactionFlowProperty = DependencyProperty.Register("TransactionFlow", typeof(bool), typeof(ServiceBindingWSHTTP));
+
+		//ContextBinding
+		public bool UseContextBinding { get { return (bool)GetValue(UseContextBindingProperty); } set { SetValue(UseContextBindingProperty, value); } }
+		public static readonly DependencyProperty UseContextBindingProperty = DependencyProperty.Register("UseContextBinding", typeof(bool), typeof(ServiceBindingWSHTTP), new PropertyMetadata(false, UseContextBindingPropertyChangedCallback));
+
+		private static void UseContextBindingPropertyChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as ServiceBindingWSHTTP;
+			if (t == null) return;
+			if (t.InheritedTypes == null) return;
+
+			if ((bool)e.NewValue)
+			{
+				var til = new List<DataType>();
+				foreach (var it in t.InheritedTypes)
+					if (it.Name == "System.ServiceModel.WSHttpBinding")
+						til.Add(it);
+				foreach (var it in til)
+					t.InheritedTypes.Remove(it);
+
+				t.InheritedTypes.Add(new DataType("System.ServiceModel.WSHttpContextBinding", DataTypeMode.Class));
+			}
+			else
+			{
+				var til = new List<DataType>();
+				foreach (var it in t.InheritedTypes)
+					if (it.Name == "System.ServiceModel.WSHttpContextBinding")
+						til.Add(it);
+				foreach (var it in til)
+					t.InheritedTypes.Remove(it);
+
+				t.InheritedTypes.Add(new DataType("System.ServiceModel.WSHttpBinding", DataTypeMode.Class));
+
+			}
+		}
+
+		public bool ContextManagementEnabled { get { return (bool)GetValue(ContextManagementEnabledProperty); } set { SetValue(ContextManagementEnabledProperty, value); } }
+		public static readonly DependencyProperty ContextManagementEnabledProperty = DependencyProperty.Register("ContextManagementEnabled", typeof(bool), typeof(ServiceBindingWSHTTP), new PropertyMetadata(false));
+
+		public System.Net.Security.ProtectionLevel ContextProtectionLevel { get { return (System.Net.Security.ProtectionLevel)GetValue(ContextProtectionLevelProperty); } set { SetValue(ContextProtectionLevelProperty, value); } }
+		public static readonly DependencyProperty ContextProtectionLevelProperty = DependencyProperty.Register("ContextProtectionLevel", typeof(System.Net.Security.ProtectionLevel), typeof(ServiceBindingWSHTTP), new PropertyMetadata(System.Net.Security.ProtectionLevel.None));
 
 		public ServiceBindingWSHTTP() : base() { }
 
@@ -934,6 +1013,46 @@ namespace NETPath.Projects
 		public ServiceBindingTransactionProtocol TransactionProtocol { get { return (ServiceBindingTransactionProtocol)GetValue(TransactionProtocolProperty); } set { SetValue(TransactionProtocolProperty, value); } }
 		public static readonly DependencyProperty TransactionProtocolProperty = DependencyProperty.Register("TransactionProtocol", typeof(ServiceBindingTransactionProtocol), typeof(ServiceBindingTCP));
 
+		//ContextBinding
+		public bool UseContextBinding { get { return (bool)GetValue(UseContextBindingProperty); } set { SetValue(UseContextBindingProperty, value); } }
+		public static readonly DependencyProperty UseContextBindingProperty = DependencyProperty.Register("UseContextBinding", typeof(bool), typeof(ServiceBindingTCP), new PropertyMetadata(false, UseContextBindingPropertyChangedCallback));
+
+		private static void UseContextBindingPropertyChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as ServiceBindingTCP;
+			if (t == null) return;
+			if (t.InheritedTypes == null) return;
+
+			if ((bool)e.NewValue)
+			{
+				var til = new List<DataType>();
+				foreach (var it in t.InheritedTypes)
+					if (it.Name == "System.ServiceModel.NetTcpBinding")
+						til.Add(it);
+				foreach (var it in til)
+					t.InheritedTypes.Remove(it);
+
+				t.InheritedTypes.Add(new DataType("System.ServiceModel.NetTcpContextBinding", DataTypeMode.Class));
+			}
+			else
+			{
+				var til = new List<DataType>();
+				foreach (var it in t.InheritedTypes)
+					if (it.Name == "System.ServiceModel.NetTcpContextBinding")
+						til.Add(it);
+				foreach (var it in til)
+					t.InheritedTypes.Remove(it);
+
+				t.InheritedTypes.Add(new DataType("System.ServiceModel.NetTcpBinding", DataTypeMode.Class));
+			}
+		}
+
+		public bool ContextManagementEnabled { get { return (bool)GetValue(ContextManagementEnabledProperty); } set { SetValue(ContextManagementEnabledProperty, value); } }
+		public static readonly DependencyProperty ContextManagementEnabledProperty = DependencyProperty.Register("ContextManagementEnabled", typeof(bool), typeof(ServiceBindingTCP), new PropertyMetadata(false));
+
+		public System.Net.Security.ProtectionLevel ContextProtectionLevel { get { return (System.Net.Security.ProtectionLevel)GetValue(ContextProtectionLevelProperty); } set { SetValue(ContextProtectionLevelProperty, value); } }
+		public static readonly DependencyProperty ContextProtectionLevelProperty = DependencyProperty.Register("ContextProtectionLevel", typeof(System.Net.Security.ProtectionLevel), typeof(ServiceBindingTCP), new PropertyMetadata(System.Net.Security.ProtectionLevel.None));
+
 		public ServiceBindingTCP() : base() { }
 
 		public ServiceBindingTCP(string Name, Namespace Parent) : base()
@@ -1321,6 +1440,58 @@ namespace NETPath.Projects
 			ValidityDuration = TimeSpan.Zero;
 		}
 	}
+	#endregion
+
+	#region - ServiceBindingUDP Class -
+
+	public class ServiceBindingUDP : ServiceBinding
+	{
+		public int DuplicateMessageHistoryLength { get { return (int)GetValue(DuplicateMessageHistoryLengthProperty); } set { SetValue(DuplicateMessageHistoryLengthProperty, value); } }
+		public static readonly DependencyProperty DuplicateMessageHistoryLengthProperty = DependencyProperty.Register("DuplicateMessageHistoryLength ", typeof(int), typeof(ServiceBindingUDP));
+
+		public long MaxBufferPoolSize { get { return (long)GetValue(MaxBufferPoolSizeProperty); } set { SetValue(MaxBufferPoolSizeProperty, value); } }
+		public static readonly DependencyProperty MaxBufferPoolSizeProperty = DependencyProperty.Register("MaxBufferPoolSize", typeof(long), typeof(ServiceBindingUDP));
+
+		public long MaxPendingMessagesTotalSize { get { return (long)GetValue(MaxPendingMessagesTotalSizeProperty); } set { SetValue(MaxPendingMessagesTotalSizeProperty, value); } }
+		public static readonly DependencyProperty MaxPendingMessagesTotalSizeProperty = DependencyProperty.Register("MaxPendingMessagesTotalSize", typeof(long), typeof(ServiceBindingUDP));
+
+		public long MaxReceivedMessageSize { get { return (long)GetValue(MaxReceivedMessageSizeProperty); } set { SetValue(MaxReceivedMessageSizeProperty, value); } }
+		public static readonly DependencyProperty MaxReceivedMessageSizeProperty = DependencyProperty.Register("MaxReceivedMessageSize", typeof(long), typeof(ServiceBinding));
+
+		public int MaxRetransmitCount { get { return (int)GetValue(MaxRetransmitCountProperty); } set { SetValue(MaxRetransmitCountProperty, value); } }
+		public static readonly DependencyProperty MaxRetransmitCountProperty = DependencyProperty.Register("MaxRetransmitCount", typeof(int), typeof(ServiceBindingUDP));
+
+		public ServiceBindingTextEncoding TextEncoding { get { return (ServiceBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
+		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(ServiceBindingTextEncoding), typeof(ServiceBindingUDP));
+
+		public int TimeToLive { get { return (int)GetValue(TimeToLiveProperty); } set { SetValue(TimeToLiveProperty, value); } }
+		public static readonly DependencyProperty TimeToLiveProperty = DependencyProperty.Register("TimeToLive", typeof(int), typeof(ServiceBindingUDP), new PropertyMetadata(64));
+
+		public ServiceBindingUDP() { }
+
+		public ServiceBindingUDP(string Name, Namespace Parent)
+		{
+			ID = Guid.NewGuid();
+			this.Parent = Parent;
+			var r = new System.Text.RegularExpressions.Regex(@"\W+");
+			this.Name = r.Replace(Name, @"");
+			InheritedTypes.Add(new DataType("System.ServiceModel.UdpBinding", DataTypeMode.Class));
+
+			CloseTimeout = new TimeSpan(0, 1, 0);
+			OpenTimeout = new TimeSpan(0, 1, 0);
+			ReceiveTimeout = new TimeSpan(0, 10, 0);
+			SendTimeout = new TimeSpan(0, 1, 0);
+
+			DuplicateMessageHistoryLength = 16;
+			MaxBufferPoolSize = 524288;
+			MaxPendingMessagesTotalSize = 65536;
+			MaxReceivedMessageSize = 65536;
+			MaxRetransmitCount = 10;
+			TextEncoding = ServiceBindingTextEncoding.UTF8;
+			TimeToLive = 64;
+		}
+	}
+
 	#endregion
 
 }
