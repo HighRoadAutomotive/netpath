@@ -141,6 +141,7 @@ namespace NETPath.Projects
 		{
 			Documentation = new Documentation { IsClass = true };
 			IsDataObject = true;
+			DataRevisionServiceNames = new List<DataRevisionName>();
 		}
 
 		public Data(string Name, Namespace Parent) : base(DataTypeMode.Class)
@@ -156,6 +157,7 @@ namespace NETPath.Projects
 			XAMLType.InheritedTypes.Add(new DataType("DependencyObject", DataTypeMode.Class));
 			this.Parent = Parent;
 			Documentation = new Documentation { IsClass = true };
+			DataRevisionServiceNames = new List<DataRevisionName>();
 		}
 
 		public void AddKnownType(DataType Type, bool IsClientType = false, bool IsXAMLType = false)
