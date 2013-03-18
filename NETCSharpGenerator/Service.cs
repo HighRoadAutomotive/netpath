@@ -557,7 +557,7 @@ namespace NETPath.Generators.NET.CS
 			//Generate the Proxy Class
 			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute()]");
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t{0} partial class {1}Proxy : {2}, I{1}", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.HasDCMOperations ? string.Format("System.ServiceModel.{0}<{1}Proxy, I{1}>", o.HasCallbackOperations ? "ClientDuplexBaseEx" : "ClientBaseEx", o.HasClientType ? o.ClientType.Name : o.Name) : string.Format("System.ServiceModel.{0}<I{1}>", o.HasCallbackOperations ? "DuplexClientBase" : "ClientBase", o.HasClientType ? o.ClientType.Name : o.Name)));
+			code.AppendLine(string.Format("\t{0} partial class {1}Proxy : {2}, I{1}", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.HasDCMOperations || o.HasCallbackOperations ? string.Format("System.ServiceModel.ClientDuplexBaseEx<{0}Proxy, I{0}>", o.HasClientType ? o.ClientType.Name : o.Name) : string.Format("System.ServiceModel.ClientBaseEx<{0}Proxy, I{0}>", o.HasClientType ? o.ClientType.Name : o.Name)));
 			code.AppendLine("\t{");
 			if (o.HasCallbackOperations)
 			{
@@ -727,7 +727,7 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine();
 			//Generate the Proxy Class
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t{0} partial class {1}Proxy : {2}, I{1}", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.HasDCMOperations || o.HasCallbackOperations ? string.Format("System.ServiceModel.ClientDuplexBaseEx<{0}Proxy, I{0}>", o.HasClientType ? o.ClientType.Name : o.Name) : string.Format("System.ServiceModel.ClientBaseEx<I{0}>", o.HasClientType ? o.ClientType.Name : o.Name)));
+			code.AppendLine(string.Format("\t{0} partial class {1}Proxy : {2}, I{1}", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.HasDCMOperations || o.HasCallbackOperations ? string.Format("System.ServiceModel.ClientDuplexBaseEx<{0}Proxy, I{0}>", o.HasClientType ? o.ClientType.Name : o.Name) : string.Format("System.ServiceModel.ClientBaseEx<{0}Proxy, I{0}>", o.HasClientType ? o.ClientType.Name : o.Name)));
 			code.AppendLine("\t{");
 			if (o.HasCallbackOperations)
 			{
