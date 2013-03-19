@@ -111,6 +111,7 @@ namespace System.ServiceModel
 		public ServerDuplexBase()
 		{
 			MaxReconnectionAttempts = 0;
+			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 
 		public ServerDuplexBase(ushort MaxReconnectionAttempts, Func<bool> Disconnected = null, Action Reconnected = null)
@@ -118,6 +119,7 @@ namespace System.ServiceModel
 			this.MaxReconnectionAttempts = MaxReconnectionAttempts;
 			this.Disconnected = Disconnected ?? (() => false);
 			this.Reconnected = Reconnected ?? (() => { });
+			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 
 		protected virtual bool Initialize(Func<Guid> ClientID = null)

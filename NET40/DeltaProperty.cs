@@ -113,7 +113,7 @@ namespace System
 
 		public static DeltaProperty<TType> Register<TType>(string Name, Type OwnerType)
 		{
-			var np = new DeltaProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType);
+			var np = new DeltaProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType);
 			if (!registered.TryAdd(np.ID, np))
 				throw new ArgumentException(string.Format("Unable to register the DeltaProperty '{0}' on type '{1}'. A DeltaProperty with the same Name and OwnerType has already been registered.", Name, np.OwnerType));
 			return np;
@@ -121,7 +121,7 @@ namespace System
 
 		public static DeltaProperty<TType> Register<TType>(string Name, Type OwnerType, TType defaultValue)
 		{
-			var np = new DeltaProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType, defaultValue);
+			var np = new DeltaProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType, defaultValue);
 			if (!registered.TryAdd(np.ID, np))
 				throw new ArgumentException(string.Format("Unable to register the DeltaProperty '{0}' on type '{1}'. A DeltaProperty with the same Name and OwnerType has already been registered.", Name, np.OwnerType));
 			return np;
@@ -129,7 +129,7 @@ namespace System
 
 		public static DeltaProperty<TType> Register<TType>(string Name, Type OwnerType, TType defaultValue, Action<DeltaObject, TType, TType> DeltaPropertyChangedCallback, Action<DeltaObject, TType, TType> DeltaPropertyUpdatedCallback = null, Func<DeltaObject, TType, bool> DeltaValidateValueCallback = null)
 		{
-			var np = new DeltaProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType, defaultValue, DeltaPropertyChangedCallback, DeltaPropertyUpdatedCallback, DeltaValidateValueCallback);
+			var np = new DeltaProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType, defaultValue, DeltaPropertyChangedCallback, DeltaPropertyUpdatedCallback, DeltaValidateValueCallback);
 			if (!registered.TryAdd(np.ID, np))
 				throw new ArgumentException(string.Format("Unable to register the DeltaProperty '{0}' on type '{1}'. A DeltaProperty with the same Name and OwnerType has already been registered.", Name, np.OwnerType));
 			return np;
@@ -137,7 +137,7 @@ namespace System
 
 		public static DeltaProperty<DeltaDictionary<TKey, TType>> RegisterDictionary<TKey, TType>(string Name, Type OwnerType, Action<DeltaObject, DeltaDictionary<TKey, TType>, DeltaDictionary<TKey, TType>> DeltaPropertyChangedCallback)
 		{
-			var np = new DeltaProperty<DeltaDictionary<TKey, TType>>(HashID.GenerateHashID(OwnerType.FullName + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType, DeltaPropertyChangedCallback) { Mode = PropertyMode.Dictionary };
+			var np = new DeltaProperty<DeltaDictionary<TKey, TType>>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType, DeltaPropertyChangedCallback) { Mode = PropertyMode.Dictionary };
 			if (!registered.TryAdd(np.ID, np))
 				throw new ArgumentException(string.Format("Unable to register the DeltaProperty '{0}' on type '{1}'. A DeltaProperty with the same Name and OwnerType has already been registered.", Name, np.OwnerType));
 			return np;
@@ -145,7 +145,7 @@ namespace System
 
 		public static DeltaProperty<DeltaList<TType>> RegisterList<TType>(string Name, Type OwnerType, Action<DeltaObject, DeltaList<TType>, DeltaList<TType>> DeltaPropertyChangedCallback)
 		{
-			var np = new DeltaProperty<DeltaList<TType>>(HashID.GenerateHashID(OwnerType.FullName + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType, DeltaPropertyChangedCallback) { Mode = PropertyMode.List };
+			var np = new DeltaProperty<DeltaList<TType>>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType, DeltaPropertyChangedCallback) { Mode = PropertyMode.List };
 			if (!registered.TryAdd(np.ID, np))
 				throw new ArgumentException(string.Format("Unable to register the DeltaProperty '{0}' on type '{1}'. A DeltaProperty with the same Name and OwnerType has already been registered.", Name, np.OwnerType));
 			return np;
