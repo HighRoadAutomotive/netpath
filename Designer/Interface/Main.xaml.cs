@@ -225,6 +225,8 @@ namespace NETPath.Interface
 					break;
 				}
 			}
+			if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
+				ScreenButtons.Items.Clear();
 		}
 
 		private static void OnSelectProjectCommandExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -489,6 +491,10 @@ namespace NETPath.Interface
 			SystemMenuSave.IsEnabled = false;
 			SystemMenuClose.IsEnabled = false;
 			Title = "NETPath 2 - BETA";
+
+			ActiveProjectScreen.Visibility = Visibility.Collapsed;
+			HomeScreen.Visibility = Visibility.Visible;
+			OptionsScreen.Visibility = Visibility.Collapsed;
 
 			if (!string.IsNullOrEmpty(Globals.SolutionPath))
 				System.IO.File.Delete(System.IO.Path.ChangeExtension(Globals.SolutionPath, ".bak"));
