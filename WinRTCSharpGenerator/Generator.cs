@@ -189,6 +189,7 @@ namespace NETPath.Generators.WinRT.CS
 			foreach (DataType d in t.Where(a => a.TypeMode == DataTypeMode.Class || a.TypeMode == DataTypeMode.Struct))
 				refs.AddRange(ReferenceChildScan(ReferenceRetrieve(Data, Data.Namespace, d.ID) as Data, Server));
 			refs.AddRange(t);
+			refs = refs.GroupBy(a => a.ID).Select(a => a.OrderByDescending(b => b.ID).First()).ToList();
 			if (refs.Count > 0 && GenerateReferences)
 			{
 				code.AppendLine("\t/**************************************************************************");
@@ -255,7 +256,7 @@ namespace NETPath.Generators.WinRT.CS
 			foreach (Namespace n in Scan.Children)
 				refs.AddRange(ReferenceScan(n, IsServer));
 
-			return refs.GroupBy(a => a.ID).Select(b => b.First());
+			return refs;
 		}
 
 		private static IEnumerable<DataType> ReferenceChildScan(Data t, bool IsServer)
@@ -265,26 +266,20 @@ namespace NETPath.Generators.WinRT.CS
 			if (IsServer)
 			{
 				refs.AddRange(t.Elements.Where(a => (a.DataType.TypeMode == DataTypeMode.Class || a.DataType.TypeMode == DataTypeMode.Struct || a.DataType.TypeMode == DataTypeMode.Enum) && !a.DataType.IsExternalType).Select(de => de.DataType));
-				foreach (Data d in t.Elements.Where(a => (a.DataType.TypeMode == DataTypeMode.Class || a.DataType.TypeMode == DataTypeMode.Struct) && !a.DataType.IsExternalType).Select(b => b.DataType))
+				foreach (Data d in t.Elements.Where(a => (a.DataType.TypeMode == DataTypeMode.Class || a.DataType.TypeMode == DataTypeMode.Struct) && !a.DataType.IsExternalType).Where(a => !refs.Contains(a.DataType)).Select(b => b.DataType))
 					refs.AddRange(ReferenceChildScan(d, IsServer));
 			}
-
-			if (!IsServer)
+			else
 			{
 				refs.AddRange(t.Elements.Where(a => a.HasClientType && (a.ClientType.TypeMode == DataTypeMode.Class || a.ClientType.TypeMode == DataTypeMode.Struct || a.ClientType.TypeMode == DataTypeMode.Enum) && !a.ClientType.IsExternalType).Select(de => de.ClientType));
-				foreach (Data d in t.Elements.Where(a => a.HasClientType && (a.ClientType.TypeMode == DataTypeMode.Class || a.ClientType.TypeMode == DataTypeMode.Struct) && !a.ClientType.IsExternalType).Select(b => b.ClientType))
+				foreach (Data d in t.Elements.Where(a => a.HasClientType && (a.ClientType.TypeMode == DataTypeMode.Class || a.ClientType.TypeMode == DataTypeMode.Struct) && !a.ClientType.IsExternalType).Where(a => !refs.Contains(a.ClientType)).Select(b => b.ClientType))
 					refs.AddRange(ReferenceChildScan(d, IsServer));
+				refs.AddRange(t.Elements.Where(a => a.HasXAMLType && (a.XAMLType.TypeMode == DataTypeMode.Class || a.XAMLType.TypeMode == DataTypeMode.Struct || a.XAMLType.TypeMode == DataTypeMode.Enum) && !a.XAMLType.IsExternalType).Select(de => de.XAMLType));
+				foreach (Data x in t.Elements.Where(a => a.HasXAMLType && (a.XAMLType.TypeMode == DataTypeMode.Class || a.XAMLType.TypeMode == DataTypeMode.Struct || a.XAMLType.TypeMode == DataTypeMode.Enum) && !a.XAMLType.IsExternalType).Where(a => !refs.Contains(a.XAMLType)).Select(b => b.XAMLType))
+					refs.AddRange(ReferenceChildScan(x, IsServer));
 			}
 
-			if (!IsServer)
-				foreach (DataElement de in t.Elements.Where(a => a.HasXAMLType && (a.XAMLType.TypeMode == DataTypeMode.Class || a.XAMLType.TypeMode == DataTypeMode.Struct || a.XAMLType.TypeMode == DataTypeMode.Enum) && !a.XAMLType.IsExternalType))
-				{
-					refs.Add(de.XAMLType);
-					if (!de.HasClientType) refs.Add(de.XAMLType);
-					if (de.XAMLType.TypeMode == DataTypeMode.Class || de.XAMLType.TypeMode == DataTypeMode.Struct) refs.AddRange(ReferenceChildScan(de.XAMLType as Data, IsServer));
-				}
-
-			return refs.GroupBy(a => a.ID).Select(b => b.First());
+			return refs;
 		}
 
 		public static DataType ReferenceRetrieve(Project Project, Namespace Namespace, Guid TypeID)
