@@ -95,13 +95,8 @@ namespace NETPath
 				sl.AddRange(DataRevisionServiceSan(p.Namespace));
 
 			//Clean all DataRevisionServiceNames lists
-			foreach(var sv in sl)
-				foreach (var dre in sv.ServiceOperations.Where(a => a.GetType() == typeof (DataChangeMethod)))
-				{
-					Data t = DataReivsionReferenceRetrieve(sv.Parent.Owner, sv.Parent.Owner.Namespace, dre.ReturnType.ID);
-					if (t == null) continue;
-					t.DataRevisionServiceNames = new List<DataRevisionName>();
-				}
+			foreach (var p in Globals.Projects)
+				ResetDRSNames(p.Namespace);
 
 			//Rebuild DRE service name lists
 			foreach(var sv in sl)
@@ -122,6 +117,15 @@ namespace NETPath
 				sl.AddRange(DataRevisionServiceSan(n));
 
 			return sl;
+		}
+
+		internal static void ResetDRSNames(Namespace Namespace)
+		{
+			foreach (var drs in Namespace.Data)
+				drs.DataRevisionServiceNames = new List<DataRevisionName>();
+
+			foreach (var n in Namespace.Children)
+				ResetDRSNames(n);
 		}
 
 		internal static Data DataReivsionReferenceRetrieve(Project Project, Namespace Namespace, Guid TypeID)
