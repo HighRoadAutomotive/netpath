@@ -124,7 +124,8 @@ namespace NETPath.Projects
 		[IgnoreDataMember] public bool HasCallbackOperations { get { return CallbackOperations.Count > 0 || ServiceOperations.Count(a => a.GetType() == typeof(DataChangeMethod)) > 0; } }
 		[IgnoreDataMember] public bool HasDCMOperations { get { return ServiceOperations.Count(a => a.GetType() == typeof(DataChangeMethod)) > 0; } }
 
-		public Service() : base(DataTypeMode.Class)
+		public Service()
+			: base(DataTypeMode.Class)
 		{
 			ServiceOperations = new ObservableCollection<Operation>();
 			CallbackOperations = new ObservableCollection<Operation>();

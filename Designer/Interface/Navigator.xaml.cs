@@ -98,6 +98,7 @@ namespace NETPath.Interface
 			if (s == null) return;
 			var d = e.Parameter as OpenableDocument;
 			s.OpenProjectItem(d);
+			s.Project.SetSelected(d as DataType);
 		}
 
 		public Navigator()

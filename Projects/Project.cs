@@ -360,6 +360,37 @@ namespace NETPath.Projects
 			return Storage.Dump(Data);
 		}
 
+		public void SetSelected(DataType Type, Namespace ns = null)
+		{
+			if (ns == null) ns = Namespace;
+			Type tt = Type.GetType();
+
+			if (tt == typeof(Enum))
+				foreach (var t in ns.Enums)
+					Type.IsSelected = false;
+
+			if (tt == typeof(Data))
+				foreach (var t in ns.Enums)
+					Type.IsSelected = false;
+
+			if (tt == typeof(Service))
+				foreach (var t in ns.Enums)
+					Type.IsSelected = false;
+
+			if (tt == typeof(Host))
+				foreach (var t in ns.Enums)
+					Type.IsSelected = false;
+
+			if (tt == typeof(ServiceBinding))
+				foreach (var t in ns.Enums)
+					Type.IsSelected = false;
+
+			foreach(var tn in ns.Children)
+				SetSelected(Type, tn);
+
+			Type.IsSelected = true;
+		}
+
 		public List<DataType> SearchTypes(string Search, bool IncludeCollections = true, bool IncludeVoid = false, bool DataOnly = false, bool IncludeInheritable = false)
 		{
 			if (string.IsNullOrEmpty(Search)) return new List<DataType>();
