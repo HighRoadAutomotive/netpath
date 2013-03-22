@@ -1445,71 +1445,63 @@ namespace NETPath.Generators.WinRT.CS
 				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
 				code.AppendLine(")");
 				code.AppendLine("\t\t{");
-				if (IsImmediate)
+				if (o.ReturnType.Primitive != PrimitiveTypes.Void)
 				{
-					if (o.ReturnType.Primitive != PrimitiveTypes.Void) code.AppendLine(string.Format("\t\t\t{0} t = null;", DataTypeGenerator.GenerateType(o.ReturnType)));
-					if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.Task.Factory.StartNew(() => {");
-					code.Append(string.Format("{1}\t\t\t{2}Channel.{0}(", o.ServerName, UseTPL ? "\t" : "", o.ReturnType.Primitive != PrimitiveTypes.Void ? "t = " : ""));
-					foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
-					code.AppendLine(");");
-					if (UseTPL) code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
-					if (o.ReturnType.Primitive != PrimitiveTypes.Void) code.AppendLine("\t\t\treturn t;");
+					if (IsImmediate)
+					{
+						code.Append(string.Format("\t\t\t{1}Channel.{0}(", o.ServerName, o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : ""));
+						foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+						code.AppendLine(");");
+					}
+					else
+					{
+						code.Append(string.Format("\t\t\t{1}Channel.{0}(", o.ServerName, o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : ""));
+						code.Append(string.Format("{1}\t\t\t{2}Channel.{0}(", o.ServerName, UseTPL ? "\t" : "", o.ReturnType.Primitive != PrimitiveTypes.Void ? "t = " : ""));
+						foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+						code.AppendLine(");");
+					}
 				}
 				else
 				{
-					if (o.ReturnType.Primitive != PrimitiveTypes.Void) code.AppendLine(string.Format("\t\t\t{0} t = null;", DataTypeGenerator.GenerateType(o.ReturnType)));
-					if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.Task.Factory.StartNew(() => {");
-					code.Append(string.Format("{1}\t\t\t{2}Channel.{0}(", o.ServerName, UseTPL ? "\t" : "", o.ReturnType.Primitive != PrimitiveTypes.Void ? "t = " : ""));
-					foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
-					code.AppendLine(");");
-					if (UseTPL) code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
-					if (o.ReturnType.Primitive != PrimitiveTypes.Void) code.AppendLine("\t\t\treturn t;");
+					if (IsImmediate)
+					{
+						if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.Task.Factory.StartNew(() => {");
+						code.Append(string.Format("{1}\t\t\t{2}Channel.{0}(", o.ServerName, UseTPL ? "\t" : "", o.ReturnType.Primitive != PrimitiveTypes.Void ? "t = " : ""));
+						foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+						code.AppendLine(");");
+						if (UseTPL) code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
+					}
+					else
+					{
+						if (UseTPL) code.AppendLine("\t\t\tSystem.Threading.Tasks.Task.Factory.StartNew(() => {");
+						code.Append(string.Format("{1}\t\t\t{2}Channel.{0}(", o.ServerName, UseTPL ? "\t" : "", o.ReturnType.Primitive != PrimitiveTypes.Void ? "t = " : ""));
+						foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+						code.AppendLine(");");
+						if (UseTPL) code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
+					}
 				}
 				code.AppendLine("\t\t}");
 			}
 			if (o.UseAwaitPattern)
 			{
-				if (o.ReturnType.Primitive == PrimitiveTypes.Void)
+				if (o.ReturnType.Primitive == PrimitiveTypes.Void) code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task {0}Async(", o.HasClientType ? o.ClientName : o.ServerName);
+				else code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task<{1}> {0}Async(", o.HasClientType ? o.ClientName : o.ServerName, DataTypeGenerator.GenerateType(o.ReturnType));
+				foreach (MethodParameter op in o.Parameters)
+					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+				code.AppendLine(")");
+				code.AppendLine("\t\t{");
+				if (IsImmediate)
 				{
-					code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task {0}Async(", o.HasClientType ? o.ClientName : o.ServerName);
-					foreach (MethodParameter op in o.Parameters)
-						code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
-					if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
-					code.AppendLine(")");
-					code.AppendLine("\t\t{");
-					if (IsImmediate)
-					{
-						code.Append(string.Format("{1}\t\t\treturn Channel.{0}{2}(", o.ServerName, UseTPL ? "\t" : "", CanGenerateAsync(o.Owner, false) ? "Async" : ""));
-						foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
-						code.AppendLine(");");
-					}
-					else
-					{
-						code.Append(string.Format("{1}\t\t\treturn Channel.{0}{2}(", o.ServerName, UseTPL ? "\t" : "", CanGenerateAsync(o.Owner, false) ? "Async" : ""));
-						foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
-						code.AppendLine(");");
-					}
+					code.Append(string.Format("\t\t\treturn Channel.{0}Async(", o.ServerName));
+					foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+					code.AppendLine(");");
 				}
 				else
 				{
-					code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task<{1}> {0}Async(", o.HasClientType ? o.ClientName : o.ServerName, DataTypeGenerator.GenerateType(o.ReturnType));
-					foreach (MethodParameter op in o.Parameters)
-						code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
-					if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
-					code.AppendLine(")");
-					code.AppendLine("\t\t{");
-					if (IsImmediate)
-					{
-						code.Append(string.Format("{1}\t\t\treturn Channel.{0}{2}(", o.ServerName, UseTPL ? "\t" : "", CanGenerateAsync(o.Owner, false) ? "Async" : ""));
-						foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
-						code.AppendLine(");");
-					}
-					else
-					{
-						code.Append(string.Format("{1}\t\t\treturn Channel.{0}{2}(", o.ServerName, UseTPL ? "\t" : "", CanGenerateAsync(o.Owner, false) ? "Async" : ""));
-						foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
-						code.AppendLine(");");
-					}
+					code.Append(string.Format("\t\t\treturn Channel.{0}Async(", o.ServerName));
+					foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
+					code.AppendLine(");");
 				}
 				code.AppendLine("\t\t}");
 			}
