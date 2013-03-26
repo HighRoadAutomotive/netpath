@@ -17,6 +17,7 @@ namespace NETPath.Projects
 
 	public enum DataUpdateMode
 	{
+		None,
 		Immediate,
 		Batch
 	}
@@ -78,9 +79,9 @@ namespace NETPath.Projects
 		public ObservableCollection<DataElement> Elements { get { return (ObservableCollection<DataElement>)GetValue(ElementsProperty); } set { SetValue(ElementsProperty, value); } }
 		public static readonly DependencyProperty ElementsProperty = DependencyProperty.Register("Elements", typeof(ObservableCollection<DataElement>), typeof(Data));
 
-		//Data Change Messaging
+		//Concurrently Mutable Data
 		public bool CMDEnabled { get { return (bool)GetValue(CMDEnabledProperty); } set { SetValue(CMDEnabledProperty, value); } }
-		public static readonly DependencyProperty CMDEnabledProperty = DependencyProperty.Register("DCMEnabled", typeof(bool), typeof(Data), new PropertyMetadata(false, CMDEnabledChangedCallback));
+		public static readonly DependencyProperty CMDEnabledProperty = DependencyProperty.Register("CMDEnabled", typeof(bool), typeof(Data), new PropertyMetadata(false, CMDEnabledChangedCallback));
 
 		private static void CMDEnabledChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
 		{
@@ -89,6 +90,8 @@ namespace NETPath.Projects
 			if (!t.HasXAMLType) return;
 			if (t.XAMLType == null) return;
 
+			if (!Convert.ToBoolean(e.NewValue)) t.DREEnabled = false;
+
 			DataType doex = t.XAMLType.InheritedTypes.FirstOrDefault(a => a.Name == "DependencyObjectEx");
 			if (doex != null && Convert.ToBoolean(e.NewValue)) return;
 			if (doex != null && !Convert.ToBoolean(e.NewValue)) doex.Name = "DependencyObject";
@@ -96,11 +99,14 @@ namespace NETPath.Projects
 			if (wdo != null && Convert.ToBoolean(e.NewValue)) wdo.Name = "DependencyObjectEx";
 		}
 
-		public int DCMBatchCount { get { return (int)GetValue(DCMBatchCountProperty); } set { SetValue(DCMBatchCountProperty, value); } }
-		public static readonly DependencyProperty DCMBatchCountProperty = DependencyProperty.Register("DCMBatchCount", typeof(int), typeof(Data), new PropertyMetadata(0));
+		//Data Revision Exchange
+		public bool DREEnabled { get { return (bool)GetValue(DREEnabledProperty); } set { SetValue(DREEnabledProperty, value); } }
+		public static readonly DependencyProperty DREEnabledProperty = DependencyProperty.Register("DREEnabled", typeof(bool), typeof(Data), new PropertyMetadata(false));
 
-		[IgnoreDataMember] public bool HasDCMID { get { return Elements.Any(a => a.IsValidDCMID && a.IsDCMID); } }
-		[IgnoreDataMember] public DataElement DCMID { get { return Elements.FirstOrDefault(a => a.IsDCMID && a.IsValidDCMID); } }
+		public int DREBatchCount { get { return (int)GetValue(DREBatchCountProperty); } set { SetValue(DREBatchCountProperty, value); } }
+		public static readonly DependencyProperty DREBatchCountProperty = DependencyProperty.Register("DREBatchCount", typeof(int), typeof(Data), new PropertyMetadata(0));
+
+		[IgnoreDataMember] public DataElement DREID { get { return new DataElement(new DataType(PrimitiveTypes.GUID), "_DREID", this) { IsDataMember = true, IsReadOnly = true, DREEnabled = true, DREUpdateMode = DataUpdateMode.None, ProtocolBufferEnabled = Elements.Any(a => a.ProtocolBufferEnabled) }; } }
 		[IgnoreDataMember] public List<DataRevisionName> DataRevisionServiceNames { get; set; }
 
 		//Protocol Buffers
@@ -297,8 +303,6 @@ namespace NETPath.Projects
 			var de = o as DataElement;
 			if (de == null) return;
 
-			de.UpdateValidDCMID();
-
 			if (de.Owner == null) return;
 			var nt = p.NewValue as DataType;
 			if (nt == null) return;
@@ -352,8 +356,6 @@ namespace NETPath.Projects
 			var de = o as DataElement;
 			if (de == null) return;
 
-			de.UpdateValidDCMID();
-
 			var nt = p.NewValue as DataType;
 			if (nt == null) return;
 			var ot = p.OldValue as DataType;
@@ -390,15 +392,7 @@ namespace NETPath.Projects
 		}
 
 		public DataType XAMLType { get { return (DataType)GetValue(XAMLTypeProperty); } set { SetValue(XAMLTypeProperty, value); } }
-		public static readonly DependencyProperty XAMLTypeProperty = DependencyProperty.Register("XAMLType", typeof(DataType), typeof(DataElement), new PropertyMetadata(XAMLTypeChangedCallback));
-
-		private static void XAMLTypeChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs p)
-		{
-			var de = o as DataElement;
-			if (de == null) return;
-
-			de.UpdateValidDCMID();
-		}
+		public static readonly DependencyProperty XAMLTypeProperty = DependencyProperty.Register("XAMLType", typeof(DataType), typeof(DataElement));
 
 		public string XAMLName { get { return (string)GetValue(XAMLNameProperty); } set { SetValue(XAMLNameProperty, value); } }
 		public static readonly DependencyProperty XAMLNameProperty = DependencyProperty.Register("XAMLName", typeof(string), typeof(DataElement), new PropertyMetadata(""));
@@ -458,27 +452,12 @@ namespace NETPath.Projects
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(DataElement));
 
-		//Dat Change Messaging
-		public bool DCMEnabled { get { return (bool)GetValue(DCMEnabledProperty); } set { SetValue(DCMEnabledProperty, value); } }
-		public static readonly DependencyProperty DCMEnabledProperty = DependencyProperty.Register("DCMEnabled", typeof(bool), typeof(DataElement), new PropertyMetadata(false, DCMEnabledChangedCallback));
+		//Date Revision Exchange
+		public bool DREEnabled { get { return (bool)GetValue(DREEnabledProperty); } set { SetValue(DREEnabledProperty, value); } }
+		public static readonly DependencyProperty DREEnabledProperty = DependencyProperty.Register("DREEnabled", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
 
-		private static void DCMEnabledChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs p)
-		{
-			var de = o as DataElement;
-			if (de == null) return;
-
-			de.UpdateValidDCMID();
-		}
-
-		public bool IsValidDCMID { get { return (bool)GetValue(IsValidDCMIDProperty); } private set { SetValue(IsValidDCMIDPropertyKey, value); } }
-		public static readonly DependencyPropertyKey IsValidDCMIDPropertyKey = DependencyProperty.RegisterReadOnly("IsValidDCMID", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
-		public static readonly DependencyProperty IsValidDCMIDProperty = IsValidDCMIDPropertyKey.DependencyProperty;
-
-		public bool IsDCMID { get { return (bool)GetValue(IsDCMIDProperty); } set { SetValue(IsDCMIDProperty, value); } }
-		public static readonly DependencyProperty IsDCMIDProperty = DependencyProperty.Register("IsDCMID", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
-
-		public DataUpdateMode DCMUpdateMode { get { return (DataUpdateMode)GetValue(DCMUpdateModeProperty); } set { SetValue(DCMUpdateModeProperty, value); } }
-		public static readonly DependencyProperty DCMUpdateModeProperty = DependencyProperty.Register("DCMUpdateMode", typeof(DataUpdateMode), typeof(DataElement), new PropertyMetadata(DataUpdateMode.Immediate));
+		public DataUpdateMode DREUpdateMode { get { return (DataUpdateMode)GetValue(DREUpdateModeProperty); } set { SetValue(DREUpdateModeProperty, value); } }
+		public static readonly DependencyProperty DREUpdateModeProperty = DependencyProperty.Register("DREUpdateMode", typeof(DataUpdateMode), typeof(DataElement), new PropertyMetadata(DataUpdateMode.Immediate));
 
 		//Protocol Buffers 
 		public bool ProtocolBufferEnabled { get { return (bool)GetValue(ProtocolBufferEnabledProperty); } set { SetValue(ProtocolBufferEnabledProperty, value); } }
@@ -537,16 +516,6 @@ namespace NETPath.Projects
 		public override string ToString()
 		{
 			return DataName;
-		}
-
-		private void UpdateValidDCMID()
-		{
-			bool dtp = DataType.Primitive == PrimitiveTypes.GUID;
-			bool ctp = true;
-			if (HasClientType) ctp = ClientType.Primitive == PrimitiveTypes.GUID;
-			bool xtp = true;
-			if (HasXAMLType) xtp = XAMLType.Primitive == PrimitiveTypes.GUID;
-			IsValidDCMID = dtp && ctp && xtp && DCMEnabled;
 		}
 
 		public IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
