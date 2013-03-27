@@ -21,13 +21,14 @@ namespace NETPath.Generators.NET.CS
 			return o.ToString();
 		}
 
-		public static string GenerateTypeDeclaration(DataType o, bool ImpliedExtensionData = false, bool HasWinFormsDatabinding = false, bool ForceClass = false, bool IsDeltaObject = false)
+		public static string GenerateTypeDeclaration(DataType o, bool ImpliedExtensionData = false, bool HasWinFormsDatabinding = false, bool ForceClass = false, bool IsDeltaObject = false, bool IsDREObject = false)
 		{
 			var sb = new StringBuilder();
 			if (o.TypeMode == DataTypeMode.Class || ForceClass)
 			{
 				sb.AppendFormat("{0} {1}{2}{3}class {4}", GenerateScope(o.Scope), o.Partial ? "partial " : "", o.Abstract ? "abstract " : "", o.Sealed ? "sealed " : "", o.Name);
-				if (IsDeltaObject) sb.Append(" : DeltaObject");
+				if (IsDeltaObject && !IsDREObject) sb.Append(" : DeltaObject");
+				if (IsDeltaObject && IsDREObject) sb.Append(string.Format(" : DREObject<{0}>", o.Name));
 				if (o.InheritedTypes.Any() || ImpliedExtensionData || HasWinFormsDatabinding)
 				{
 					if (!IsDeltaObject) sb.Append(" : ");

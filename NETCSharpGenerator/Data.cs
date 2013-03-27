@@ -104,7 +104,7 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 			if (o.EnableProtocolBuffers) code.AppendLine(string.Format("\t[ProtoBuf.ProtoContract({0}{1}{2})]", o.ProtoSkipConstructor ? "SkipConstructor = true" : "SkipConstructor = false", o.ProtoMembersOnly ? ", UseProtoMembersOnly = true" : "", o.ProtoIgnoreListHandling ? ", IgnoreListHandling = true" : ""));
 			else code.AppendLine(string.Format("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI));
-			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o, false, false, o.CMDEnabled, o.CMDEnabled)));
+			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o, false, false, o.CMDEnabled, o.CMDEnabled, o.DREEnabled)));
 			code.AppendLine("\t{");
 	
 			if (o.DataHasExtensionData)
@@ -116,7 +116,7 @@ namespace NETPath.Generators.NET.CS
 			code.Append(GenerateProxyDCMCode(o, true));
 
 			int protoCount = 0;
-			if (o.DREEnabled) code.AppendLine(GenerateElementDCMServerCode45(o.DREID, ref protoCount));
+			if (o.DREEnabled) protoCount++;
 			foreach (DataElement de in o.Elements.Where(a => !a.IsHidden))
 				code.AppendLine(o.CMDEnabled ? GenerateElementDCMServerCode45(de, ref protoCount) : GenerateElementServerCode45(de, ref protoCount));
 			code.AppendLine("\t}");
@@ -133,7 +133,7 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 			if (o.EnableProtocolBuffers) code.AppendLine(string.Format("\t[ProtoBuf.ProtoContract({0}{1}{2})]", o.ProtoSkipConstructor ? "SkipConstructor = true" : "SkipConstructor = false", o.ProtoMembersOnly ? ", UseProtoMembersOnly = true" : "", o.ProtoIgnoreListHandling ? ", IgnoreListHandling = true" : ""));
 			else code.AppendLine(string.Format("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI));
-			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, o.ClientHasImpliedExtensionData, o.HasWinFormsBindings)));
+			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, o.ClientHasImpliedExtensionData, o.HasWinFormsBindings, o.CMDEnabled, o.CMDEnabled, o.DREEnabled)));
 			code.AppendLine("\t{");
 			if (o.HasXAMLType)
 			{
@@ -214,7 +214,7 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine();
 
 			int protoCount = 0;
-			if (o.DREEnabled) code.AppendLine(GenerateElementDCMProxyCode45(o.DREID, ref protoCount));
+			if (o.DREEnabled) protoCount++;
 			foreach (DataElement de in o.Elements.Where(a => !a.IsHidden && a.IsDataMember))
 				code.AppendLine(o.CMDEnabled ? GenerateElementDCMProxyCode45(de, ref protoCount) : GenerateElementProxyCode45(de, ref protoCount));
 			code.AppendLine("\t}");
@@ -231,7 +231,7 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 			if (o.EnableProtocolBuffers) code.AppendLine(string.Format("\t[ProtoBuf.ProtoContract({0}{1}{2})]", o.ProtoSkipConstructor ? "SkipConstructor = true" : "SkipConstructor = false", o.ProtoMembersOnly ? ", UseProtoMembersOnly = true" : "", o.ProtoIgnoreListHandling ? ", IgnoreListHandling = true" : ""));
 			else code.AppendLine(string.Format("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI));
-			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, o.ClientHasImpliedExtensionData, o.HasWinFormsBindings, o.CMDEnabled, o.CMDEnabled)));
+			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, o.ClientHasImpliedExtensionData, o.HasWinFormsBindings, o.CMDEnabled, o.CMDEnabled, o.DREEnabled)));
 			code.AppendLine("\t{");
 			if (o.HasXAMLType)
 			{
@@ -321,7 +321,7 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine();
 
 			int protoCount = 0;
-			if (o.DREEnabled) code.AppendLine(GenerateElementDCMProxyCode45(o.DREID, ref protoCount));
+			if (o.DREEnabled) protoCount++;
 			foreach (DataElement de in o.Elements.Where(a => !a.IsHidden && a.IsDataMember))
 				code.AppendLine(o.CMDEnabled ? GenerateElementDCMProxyCode45(de, ref protoCount) : GenerateElementProxyCode45(de, ref protoCount));
 			code.AppendLine("\t}");
@@ -334,30 +334,6 @@ namespace NETPath.Generators.NET.CS
 
 			var code = new StringBuilder();
 			code.AppendLine("\t\t//Concurrently Mutable Data Support");
-			code.AppendLine("\t\tprotected override void BatchUpdates()");
-			code.AppendLine("\t\t{");
-			if (o.Elements.Any(a => a.DREUpdateMode == DataUpdateMode.Batch))
-			{
-				foreach (var drs in o.DataRevisionServiceNames.Where(d => d.IsServer == IsServer))
-				{
-					if (o.Elements.Any(a => a.DREUpdateMode == DataUpdateMode.Batch) && !IsServer && Globals.CurrentProjectID == drs.ProjectID)
-					{
-						code.Append(string.Format("\t\t\t{0}Proxy.Current.BatchUpdate{1}DCM({2}, GetDeltaValues()", drs.Path, o.HasClientType ? o.ClientType.Name : o.Name, o.DREID.HasClientType ? o.DREID.ClientName : o.DREID.DataName));
-						foreach (var t in o.Elements.Where(a => a.DREUpdateMode == DataUpdateMode.Batch && (a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
-							code.Append(string.Format(", {0}.GetDelta()", t.HasClientType ? t.ClientName : t.DataName));
-						code.AppendLine(");");
-					}
-					else if (IsServer)
-					{
-						code.Append(string.Format("\t\t\t{0}Base.CallbackBatchUpdate{1}DCM({2}, GetDeltaValues()", drs.Path, o.Name, o.DREID.DataName));
-						foreach (var t in o.Elements.Where(a => a.DREUpdateMode == DataUpdateMode.Batch && (a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
-							code.Append(string.Format(", {0}.GetDelta()", t.HasClientType ? t.ClientName : t.DataName));
-
-						code.AppendLine(");");
-					}
-				}
-			}
-			code.AppendLine("\t\t}");
 			code.AppendLine("\t\t[OnDeserialized]");
 			code.AppendLine("\t\tprivate void OnDeserialized(StreamingContext context)");
 			code.AppendLine("\t\t{");
@@ -382,35 +358,29 @@ namespace NETPath.Generators.NET.CS
 			if (o.DREEnabled)
 			{
 				code.AppendLine("\t\t//Data Revision Exchange Support");
-				code.AppendLine(string.Format("\t\tprivate static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, {0}> __dcm;", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine(string.Format("\t\tstatic {0}()", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\tprotected override void BatchUpdates()");
 				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t__dcm = new System.Collections.Concurrent.ConcurrentDictionary<Guid, {0}>();", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t}");
-				code.AppendLine(string.Format("\t\tpublic static {0} GetDataFromID(Guid ID)", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t{0} t;", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine(string.Format("\t\t\t__dcm.TryGetValue(ID, out t);"));
-				code.AppendLine("\t\t\treturn t;");
-				code.AppendLine("\t\t}");
-				code.AppendLine("\t\tpublic static void UpdateValue<T>(Guid ID, DeltaProperty<T> prop, T value)");
-				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t{0} t;", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t\t__dcm.TryGetValue(ID, out t);");
-				code.AppendLine("\t\t\tif (t != null) t.SetValue(prop, value);");
-				code.AppendLine("\t\t}");
-				code.AppendLine(string.Format("\t\tpublic static bool HasData({0} data)", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\treturn __dcm.ContainsKey(data.{0});", o.DREID.HasClientType ? o.DREID.ClientName : o.DREID.DataName));
-				code.AppendLine("\t\t}");
-				code.AppendLine(string.Format("\t\tpublic static {0} RegisterData({0} data)", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\treturn __dcm.GetOrAdd(data.{0}, data);", o.DREID.HasClientType ? o.DREID.ClientName : o.DREID.DataName));
-				code.AppendLine("\t\t}");
-				code.AppendLine(string.Format("\t\tpublic static bool UnregisterData({0} data)", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t{0} t;", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine(string.Format("\t\t\treturn __dcm.TryRemove(data.{0}, out t);", o.DREID.HasClientType ? o.DREID.ClientName : o.DREID.DataName));
+				if (o.Elements.Any(a => a.DREUpdateMode == DataUpdateMode.Batch))
+				{
+					foreach (var drs in o.DataRevisionServiceNames.Where(d => d.IsServer == IsServer))
+					{
+						if (o.Elements.Any(a => a.DREUpdateMode == DataUpdateMode.Batch) && !IsServer && Globals.CurrentProjectID == drs.ProjectID)
+						{
+							code.Append(string.Format("\t\t\t{0}Proxy.Current.BatchUpdate{1}DCM({2}, GetDeltaValues()", drs.Path, o.HasClientType ? o.ClientType.Name : o.Name, o.DREID.HasClientType ? o.DREID.ClientName : o.DREID.DataName));
+							foreach (var t in o.Elements.Where(a => a.DREUpdateMode == DataUpdateMode.Batch && (a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
+								code.Append(string.Format(", {0}.GetDelta()", t.HasClientType ? t.ClientName : t.DataName));
+							code.AppendLine(");");
+						}
+						else if (IsServer)
+						{
+							code.Append(string.Format("\t\t\t{0}Base.CallbackBatchUpdate{1}DCM({2}, GetDeltaValues()", drs.Path, o.Name, o.DREID.DataName));
+							foreach (var t in o.Elements.Where(a => a.DREUpdateMode == DataUpdateMode.Batch && (a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
+								code.Append(string.Format(", {0}.GetDelta()", t.HasClientType ? t.ClientName : t.DataName));
+
+							code.AppendLine(");");
+						}
+					}
+				}
 				code.AppendLine("\t\t}");
 				code.AppendLine("\t\t[OnDeserializing]");
 				code.AppendLine("\t\tprivate void OnDeserializing(StreamingContext context)");
