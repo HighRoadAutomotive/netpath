@@ -33,6 +33,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationFramework" />
+    <Reference Include="protobufnet-portable, Version=2.0.0.627, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\protobufnet-portable.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.IdentityModel" />
@@ -64,6 +68,7 @@
     <Compile Include="DeltaStack.cs" />
     <Compile Include="DependencyQueue.cs" />
     <Compile Include="DependencyStack.cs" />
+    <Compile Include="DREObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerBase.cs" />
   </ItemGroup>

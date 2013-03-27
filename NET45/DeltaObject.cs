@@ -289,7 +289,7 @@ namespace System
 			return modifications.ToArray();
 		}
 
-		private void IncrementChangeCount()
+		protected virtual void IncrementChangeCount()
 		{
 			//If the change notification interval is less than zero, do nothing.
 			if (BatchInterval < 1) return;
@@ -299,7 +299,6 @@ namespace System
 			//Note that we don't need to use CompareExchange here because we only care if the value is greater-than-or-equal-to the batch interval, not what the exact overage is.
 			if (ChangeCount <= BatchInterval) return;
 			Threading.Interlocked.Exchange(ref ChangeCount, 0);
-			BatchUpdates();
 		}
 
 		protected void OnDeserializingBase(StreamingContext context)
@@ -309,7 +308,5 @@ namespace System
 			ChangeCount = 0;
 			BatchInterval = 0;
 		}
-
-		protected abstract void BatchUpdates();
 	}
 }
