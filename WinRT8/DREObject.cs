@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using ProtoBuf;
+using Windows.UI.Xaml;
 
 namespace System
 {
@@ -43,27 +44,66 @@ namespace System
 
 		public static T RegisterData(Guid ClientID, T Data)
 		{
-			lock(Data.__crllock)
+			lock (Data.__crllock)
 			{
 				Data.__crl.GetOrAdd(ClientID, Data._DREID);
 				return __dcm.GetOrAdd(Data._DREID, Data);
 			}
 		}
 
-		public static bool UnregisterData(Guid DataID, Guid ClientID)
+		public static T RegisterData(Guid ClientID, Guid DataID)
+		{
+			T Data;
+			__dcm.TryGetValue(DataID, out Data);
+			if (Data == null) return null;
+			lock (Data.__crllock)
+			{
+				Data.__crl.GetOrAdd(ClientID, Data._DREID);
+				return __dcm.GetOrAdd(Data._DREID, Data);
+			}
+		}
+
+		public static bool UnregisterData(Guid ClientID, Guid DataID)
 		{
 			T data;
 			__dcm.TryGetValue(DataID, out data);
-			if(data == null) return true;
+			if (data == null) return true;
 			Guid dreid;
 			data.__crl.TryRemove(ClientID, out dreid);
-			lock(data.__crllock) { T t; if(data.__crl.IsEmpty) return __dcm.TryRemove(DataID, out t); }
+			lock (data.__crllock)
+			{
+				T t;
+				if (data.__crl.IsEmpty) return __dcm.TryRemove(DataID, out t);
+			}
 			return true;
 		}
 
 		public IEnumerable<Guid> ClientList { get { return __crl.Keys; } }
 		private ConcurrentDictionary<Guid, Guid> __crl = new ConcurrentDictionary<Guid, Guid>();
 		private object __crllock = new object();
+
+		public DREObject()
+		{
+			_DREID = Guid.NewGuid();
+		}
+
+		protected DREObject(DependencyObjectEx baseXAMLObject)
+			: base(baseXAMLObject)
+		{
+			_DREID = Guid.NewGuid();
+		}
+
+		protected DREObject(long BatchInterval)
+			: base(BatchInterval)
+		{
+			_DREID = Guid.NewGuid();
+		}
+
+		protected DREObject(DependencyObjectEx baseXAMLObject, long BatchInterval)
+			: base(baseXAMLObject, BatchInterval)
+		{
+			_DREID = Guid.NewGuid();
+		}
 
 		protected abstract void BatchUpdates();
 
