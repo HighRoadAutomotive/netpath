@@ -39,9 +39,9 @@ namespace System
 			if (t != null) t.SetValue(prop, value);
 		}
 
-		public static bool HasData(T data)
+		public static bool HasData(Guid DataID)
 		{
-			return __dcm.ContainsKey(data._DREID); 
+			return __dcm.ContainsKey(DataID); 
 		}
 
 		public static T RegisterData(Guid ClientID, T Data)
