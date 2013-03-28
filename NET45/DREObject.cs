@@ -84,7 +84,7 @@ namespace System
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private ConcurrentDictionary<Guid, Guid> __crl = new ConcurrentDictionary<Guid, Guid>();
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private object __crllock = new object();
 
-		public DREObject()
+		protected DREObject()
 		{
 			_DREID = Guid.NewGuid();
 		}

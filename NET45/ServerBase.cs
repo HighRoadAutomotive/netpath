@@ -65,7 +65,6 @@ namespace System.ServiceModel
 	{
 		private static DeltaDictionary<Guid, T> Clients { get; set; }
 		private static T current;
-		protected Func<Guid, IEnumerable<Guid>> GetClientMessageSendList = null;
 		
 		static ServerDuplexBase()
 		{
@@ -97,10 +96,11 @@ namespace System.ServiceModel
 			return Clients.Values.Select(t => t as CType).Where(t => t != null).ToList();
 		}
 
-		public static IEnumerable<Guid> GetClientMessageList(Guid UpdateID)
+		public static IEnumerable<Guid> GetClientMessageList<DType>(Guid UpdateID) where DType : DREObject<DType>
 		{
-			if (current == null) return null;
-			return current.GetClientMessageSendList == null ? null : current.GetClientMessageSendList(UpdateID);
+			DType data = DREObject<DType>.GetDataFromID(UpdateID);
+			if (data == null) return new List<Guid>();
+			return data.ClientList;
 		}
 
 		public TCallback Callback { get; private set; }
