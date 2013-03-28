@@ -227,6 +227,12 @@ namespace NETPath.Generators.WinRT.CS
 
 			var code = new StringBuilder();
 			code.AppendLine("\t\t//Concurrently Mutable Data Support");
+			code.AppendLine("\t\t[OnDeserializing]");
+			code.AppendLine("\t\tprivate void OnDeserializing(StreamingContext context)");
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tOnDeserializingBase(context);");
+			if (o.DREEnabled) code.AppendLine(string.Format("\t\t\tBatchInterval = {0};", o.DREBatchCount));
+			code.AppendLine("\t\t}");
 			code.AppendLine("\t\t[OnDeserialized]");
 			code.AppendLine("\t\tprivate void OnDeserialized(StreamingContext context)");
 			code.AppendLine("\t\t{");
@@ -274,12 +280,6 @@ namespace NETPath.Generators.WinRT.CS
 						}
 					}
 				}
-				code.AppendLine("\t\t}");
-				code.AppendLine("\t\t[OnDeserializing]");
-				code.AppendLine("\t\tprivate void OnDeserializing(StreamingContext context)");
-				code.AppendLine("\t\t{");
-				code.AppendLine("\t\t\tOnDeserializingBase(context);");
-				code.AppendLine(string.Format("\t\t\tBatchInterval = {0};", o.DREBatchCount));
 				code.AppendLine("\t\t}");
 			}
 			code.AppendLine();
