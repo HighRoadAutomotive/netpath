@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Xml.Serialization;
 using ProtoBuf;
 
 namespace System
@@ -14,10 +15,10 @@ namespace System
 	{
 		[DataMember(Name = "_DREID")]
 		[ProtoMember(1, AsReference = false, DataFormat = DataFormat.Default, IsRequired = true)]
-		public Guid _DREID { get { return GetValue(_DREIDProperty); } protected set { SetValue(_DREIDProperty, value); } }
-		public static readonly DeltaProperty<Guid> _DREIDProperty = DeltaProperty<Guid>.Register("_DREID", typeof(T), default(Guid), null);
+		[IgnoreDataMember, XmlIgnore] public Guid _DREID { get { return GetValue(_DREIDProperty); } protected set { SetValue(_DREIDProperty, value); } }
+		[NonSerialized, IgnoreDataMember, XmlIgnore] public static readonly DeltaProperty<Guid> _DREIDProperty = DeltaProperty<Guid>.Register("_DREID", typeof(T), default(Guid), null);
 
-		private static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, T> __dcm;
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, T> __dcm;
 		static DREObject()
 		{
 			__dcm = new System.Collections.Concurrent.ConcurrentDictionary<Guid, T>();
@@ -78,9 +79,9 @@ namespace System
 			return true;
 		}
 
-		public IEnumerable<Guid> ClientList { get { return __crl.Keys; } }
-		private ConcurrentDictionary<Guid, Guid> __crl = new ConcurrentDictionary<Guid, Guid>();
-		private object __crllock = new object();
+		[IgnoreDataMember, XmlIgnore] public IEnumerable<Guid> ClientList { get { return __crl.Keys; } }
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private ConcurrentDictionary<Guid, Guid> __crl = new ConcurrentDictionary<Guid, Guid>();
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private object __crllock = new object();
 
 		public DREObject()
 		{
