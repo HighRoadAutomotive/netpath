@@ -85,8 +85,8 @@ namespace NETPath.Generators.NET.CS
 			if (DRS == null || !DRS.Any()) return "";
 			var code = new StringBuilder();
 			foreach (var drs in DRS.Where(d => d.IsServer == IsServer))
-				if (!IsServer && Globals.CurrentProjectID == drs.ProjectID) code.Append(string.Format("{0}Proxy.Current.Update{1}{2}DCM(t.{3}, n); ", drs.Path, Class, Property, DCMID.HasClientType ? DCMID.ClientName : DCMID.DataName));
-				else if (IsServer) code.Append(string.Format("{0}Base.CallbackUpdate{1}{2}DCM(t.{3}, n); ", drs.Path, Class, Property, DCMID.DataName));
+				if (!IsServer && Globals.CurrentProjectID == drs.ProjectID) code.Append(string.Format("{0}Proxy.Current.Update{1}{2}DRE(t.{3}, n); ", drs.Path, Class, Property, DCMID.HasClientType ? DCMID.ClientName : DCMID.DataName));
+				else if (IsServer) code.Append(string.Format("{0}Base.CallbackUpdate{1}{2}DRE(t.{3}, n); ", drs.Path, Class, Property, DCMID.DataName));
 			return code.ToString();
 		}
 
@@ -366,14 +366,14 @@ namespace NETPath.Generators.NET.CS
 					{
 						if (o.Elements.Any(a => a.DREUpdateMode == DataUpdateMode.Batch) && !IsServer && Globals.CurrentProjectID == drs.ProjectID)
 						{
-							code.Append(string.Format("\t\t\t{0}Proxy.Current.BatchUpdate{1}DCM({2}, GetDeltaValues()", drs.Path, o.HasClientType ? o.ClientType.Name : o.Name, o.DREID.HasClientType ? o.DREID.ClientName : o.DREID.DataName));
+							code.Append(string.Format("\t\t\t{0}Proxy.Current.BatchUpdate{1}DRE({2}, GetDeltaValues()", drs.Path, o.HasClientType ? o.ClientType.Name : o.Name, o.DREID.HasClientType ? o.DREID.ClientName : o.DREID.DataName));
 							foreach (var t in o.Elements.Where(a => a.DREUpdateMode == DataUpdateMode.Batch && (a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
 								code.Append(string.Format(", {0}.GetDelta()", t.HasClientType ? t.ClientName : t.DataName));
 							code.AppendLine(");");
 						}
 						else if (IsServer)
 						{
-							code.Append(string.Format("\t\t\t{0}Base.CallbackBatchUpdate{1}DCM({2}, GetDeltaValues()", drs.Path, o.Name, o.DREID.DataName));
+							code.Append(string.Format("\t\t\t{0}Base.CallbackBatchUpdate{1}DRE({2}, GetDeltaValues()", drs.Path, o.Name, o.DREID.DataName));
 							foreach (var t in o.Elements.Where(a => a.DREUpdateMode == DataUpdateMode.Batch && (a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
 								code.Append(string.Format(", {0}.GetDelta()", t.HasClientType ? t.ClientName : t.DataName));
 
