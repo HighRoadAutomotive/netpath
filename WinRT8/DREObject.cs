@@ -14,9 +14,9 @@ namespace System
 	[DataContract]
 	public abstract class DREObject<T> : DeltaObject where T : DREObject<T>
 	{
-		[DataMember(Name = "_DREID")]
+		[DataMember(Name = "_DREID", Order = 1)]
 		[ProtoMember(1, AsReference = false, DataFormat = DataFormat.Default, IsRequired = true)]
-		[IgnoreDataMember, XmlIgnore] public Guid _DREID { get { return GetValue(_DREIDProperty); } protected set { SetValue(_DREIDProperty, value); } }
+		public Guid _DREID { get { return GetValue(_DREIDProperty); } protected set { SetValue(_DREIDProperty, value); } }
 		[IgnoreDataMember, XmlIgnore] public static readonly DeltaProperty<Guid> _DREIDProperty = DeltaProperty<Guid>.Register("_DREID", typeof(T), default(Guid), null);
 
 		private static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, T> __dcm;
