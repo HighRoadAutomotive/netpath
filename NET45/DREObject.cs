@@ -11,6 +11,7 @@ using ProtoBuf;
 
 namespace System
 {
+	[Serializable]
 	public abstract class DREObject<T> : DeltaObject where T : DREObject<T>
 	{
 		[DataMember(Name = "_DREID")]
