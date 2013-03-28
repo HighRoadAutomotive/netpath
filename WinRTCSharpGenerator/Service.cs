@@ -1200,9 +1200,9 @@ namespace NETPath.Generators.WinRT.CS
 						foreach (MethodParameter mp in o.OpenParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.OpenParameters.IndexOf(mp) < o.OpenParameters.Count - 1 ? ", " : ""));
 						code.AppendLine(")");
 						code.AppendLine("\t\t{");
-						code.AppendLine(string.Format("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(() => {{ DREDataID == Guid.Empty ? null : {0}.RegisterData(ClientID, DREDataID); }}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
+						code.AppendLine(string.Format("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(() => {{ return DREDataID == Guid.Empty ? null : {0}.RegisterData(ClientID, DREDataID); }}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
 						code.AppendLine("\t\t}");
-						code.Append(string.Format("\t\tpublic abstract System.Threading.Tasks.Task Close{0}DREAsync(Guid DREDataID{1}", dcmtype.Name, o.CloseParameters.Count != 0 ? ", " : ""));
+						code.Append(string.Format("\t\tpublic virtual System.Threading.Tasks.Task Close{0}DREAsync(Guid DREDataID{1}", dcmtype.Name, o.CloseParameters.Count != 0 ? ", " : ""));
 						foreach (MethodParameter mp in o.CloseParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.CloseParameters.IndexOf(mp) < o.CloseParameters.Count - 1 ? ", " : ""));
 						code.AppendLine(")");
 						code.AppendLine("\t\t{");
@@ -1232,11 +1232,11 @@ namespace NETPath.Generators.WinRT.CS
 				if (o.GenerateOpenCloseFunction)
 				{
 					var xp = new ObservableCollection<MethodParameter>(o.OpenParameters);
-					var x = new Method(string.Format("Open{0}DRE", dcmtype.Name), o.Owner) { Parameters = xp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = dcmtype };
+					var x = new Method(string.Format("Open{0}DRE", dcmtype.Name), o.Owner) { Parameters = xp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = dcmtype };
 					xp.Insert(0, new MethodParameter(new DataType(PrimitiveTypes.GUID), "DREDataID", o.Owner, x));
 					code.Append(GenerateServiceClientMethodDCM45(x, o.UseTPLForCallbacks));
 					var yp = new ObservableCollection<MethodParameter>(o.CloseParameters);
-					var y = new Method(string.Format("Close{0}DRE", dcmtype.Name), o.Owner) { Parameters = yp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = dcmtype };
+					var y = new Method(string.Format("Close{0}DRE", dcmtype.Name), o.Owner) { Parameters = yp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
 					yp.Insert(0, new MethodParameter(new DataType(PrimitiveTypes.GUID), "DREDataID", o.Owner, y));
 					code.Append(GenerateServiceClientMethodDCM45(y, o.UseTPLForCallbacks));
 				}
