@@ -1964,12 +1964,9 @@ namespace NETPath.Generators.NET.CS
 				}
 				if (o.GenerateOpenCloseFunction)
 				{
-					code.Append(string.Format("\t\tpublic virtual {1} Open{0}DRE(Guid DREDataID{2}", dcmtype.Name, DataTypeGenerator.GenerateType(dcmtype), o.OpenParameters.Count != 0 ? ", " : ""));
+					code.Append(string.Format("\t\tpublic abstract {1} Open{0}DRE(Guid DREDataID{2}", dcmtype.Name, DataTypeGenerator.GenerateType(dcmtype), o.OpenParameters.Count != 0 ? ", " : ""));
 					foreach (MethodParameter mp in o.OpenParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.OpenParameters.IndexOf(mp) < o.OpenParameters.Count - 1 ? ", " : ""));
-					code.AppendLine(")");
-					code.AppendLine("\t\t{");
-					code.AppendLine(string.Format("\t\t\treturn DREDataID == Guid.Empty ? null : {0}.RegisterData(ClientID, DREDataID);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
-					code.AppendLine("\t\t}");
+					code.AppendLine(");");
 					code.Append(string.Format("\t\tpublic virtual void Close{0}DRE(Guid DREDataID{1}", dcmtype.Name, o.CloseParameters.Count != 0 ? ", " : ""));
 					foreach (MethodParameter mp in o.CloseParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.CloseParameters.IndexOf(mp) < o.CloseParameters.Count - 1 ? ", " : ""));
 					code.AppendLine(")");
@@ -2238,12 +2235,9 @@ namespace NETPath.Generators.NET.CS
 				}
 				if (o.GenerateOpenCloseFunction)
 				{
-					code.Append(string.Format("\t\tpublic virtual {1} Open{0}DRE(Guid DREDataID{2}", dcmtype.Name, DataTypeGenerator.GenerateType(dcmtype), o.OpenParameters.Count != 0 ? ", " : ""));
+					code.Append(string.Format("\t\tpublic abstract {1} Open{0}DRE(Guid DREDataID{2}", dcmtype.Name, DataTypeGenerator.GenerateType(dcmtype), o.OpenParameters.Count != 0 ? ", " : ""));
 					foreach (MethodParameter mp in o.OpenParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.OpenParameters.IndexOf(mp) < o.OpenParameters.Count - 1 ? ", " : ""));
-					code.AppendLine(")");
-					code.AppendLine("\t\t{");
-					code.AppendLine(string.Format("\t\t\treturn DREDataID == Guid.Empty ? null : {0}.RegisterData(ClientID, DREDataID);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
-					code.AppendLine("\t\t}");
+					code.AppendLine(");");
 					code.Append(string.Format("\t\tpublic virtual void Close{0}DRE(Guid DREDataID{1}", dcmtype.Name, o.CloseParameters.Count != 0 ? ", " : ""));
 					foreach (MethodParameter mp in o.CloseParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.CloseParameters.IndexOf(mp) < o.CloseParameters.Count - 1 ? ", " : ""));
 					code.AppendLine(")");
@@ -2252,12 +2246,9 @@ namespace NETPath.Generators.NET.CS
 					code.AppendLine("\t\t}");
 					if (o.UseAwaitPattern)
 					{
-						code.Append(string.Format("\t\tpublic virtual System.Threading.Tasks.Task<{1}> Open{0}DREAsync(Guid DREDataID{2}", dcmtype.Name, DataTypeGenerator.GenerateType(dcmtype), o.OpenParameters.Count != 0 ? ", " : ""));
+						code.Append(string.Format("\t\tpublic abstract System.Threading.Tasks.Task<{1}> Open{0}DREAsync(Guid DREDataID{2}", dcmtype.Name, DataTypeGenerator.GenerateType(dcmtype), o.OpenParameters.Count != 0 ? ", " : ""));
 						foreach (MethodParameter mp in o.OpenParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.OpenParameters.IndexOf(mp) < o.OpenParameters.Count - 1 ? ", " : ""));
-						code.AppendLine(")");
-						code.AppendLine("\t\t{");
-						code.AppendLine(string.Format("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(() => {{ return DREDataID == Guid.Empty ? null : {0}.RegisterData(ClientID, DREDataID); }}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
-						code.AppendLine("\t\t}");
+						code.AppendLine(");");
 						code.Append(string.Format("\t\tpublic virtual System.Threading.Tasks.Task Close{0}DREAsync(Guid DREDataID{1}", dcmtype.Name, o.CloseParameters.Count != 0 ? ", " : ""));
 						foreach (MethodParameter mp in o.CloseParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.CloseParameters.IndexOf(mp) < o.CloseParameters.Count - 1 ? ", " : ""));
 						code.AppendLine(")");
