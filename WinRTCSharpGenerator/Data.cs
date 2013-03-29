@@ -111,7 +111,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.Append(GenerateProxyDCMCode(o, true));
 
 			int protoCount = 0;
-			if (o.DREEnabled) protoCount++;
+			if (o.DREEnabled) code.AppendLine(GenerateElementDCMServerCode45(o.DREID, ref protoCount, true));
 			foreach (DataElement de in o.Elements.Where(a => !a.IsHidden))
 				code.AppendLine(o.CMDEnabled ? GenerateElementDCMServerCode45(de, ref protoCount) : GenerateElementServerCode45(de, ref protoCount));
 			code.AppendLine("\t}");
@@ -214,7 +214,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine();
 
 			int protoCount = 0;
-			if (o.DREEnabled) protoCount++;
+			if (o.DREEnabled) code.AppendLine(GenerateElementDCMProxyCode45(o.DREID, ref protoCount, true));
 			foreach (DataElement de in o.Elements.Where(a => !a.IsHidden && a.IsDataMember))
 				code.AppendLine(o.CMDEnabled ? GenerateElementDCMProxyCode45(de, ref protoCount) : GenerateElementProxyCode45(de, ref protoCount));
 			code.AppendLine("\t}");
@@ -389,14 +389,14 @@ namespace NETPath.Generators.WinRT.CS
 			return code.ToString();
 		}
 
-		private static string GenerateElementDCMServerCode45(DataElement o, ref int ProtoCount)
+		private static string GenerateElementDCMServerCode45(DataElement o, ref int ProtoCount, bool IsOverride = false)
 		{
 			var code = new StringBuilder();
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 			code.Append("\t\t");
 			if (o.ProtocolBufferEnabled && o.Owner.EnableProtocolBuffers) code.AppendFormat("[ProtoBuf.ProtoMember({0}{1}{2}{3}{4}{5}{6})] ", ++ProtoCount, o.ProtoDataFormat != ProtoBufDataFormat.Default ? string.Format(", DataFormat = ProtoBuf.DataFormat.{0}", System.Enum.GetName(typeof(ProtoBufDataFormat), o.ProtoDataFormat)) : "", o.IsRequired ? ", IsRequired = true" : "", o.ProtoIsPacked ? ", IsPacked = true" : "", o.ProtoOverwriteList ? ", OverwriteList = true" : "", o.ProtoAsReference ? ", AsReference = true" : "", o.ProtoDynamicType ? ", DynamicType = true" : "");
 			else code.AppendFormat("[DataMember({0}{1}{2}Name = \"{3}\")] ", o.EmitDefaultValue ? "EmitDefaultValue = false, " : "", o.IsRequired ? "IsRequired = true, " : "", o.ProtocolBufferEnabled ? string.Format("Order = {0}, ", ProtoCount) : o.Order >= 0 ? string.Format("Order = {0}, ", o.Order) : "", o.HasClientType ? o.ClientName : o.DataName);
-			code.AppendLine(string.Format("public {0} {1} {{ get {{ return GetValue({1}Property); }} {2}set {{ SetValue({1}Property, value); {3}}} }}", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType : o.DataType, o.Owner.CMDEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : "", o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : ""));
+			code.AppendLine(string.Format("public {4}{0} {1} {{ get {{ return GetValue({1}Property); }} {2}set {{ SetValue({1}Property, value); {3}}} }}", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType : o.DataType, o.Owner.CMDEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : "", o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : "", IsOverride ? "override " : ""));
 			if (o.DataType.TypeMode == DataTypeMode.Collection)
 			{
 				code.AppendLine(string.Format("\t\tpublic static readonly DeltaProperty<DeltaList<{3}>> {1}Property = DeltaProperty<DeltaList<{3}>>.RegisterList<{3}>(\"{1}\", typeof({2}), (s, o, n) => {{ var t = s as {2}; if (t == null) return;", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType : o.DataType, o.DREEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType.CollectionGenericType : o.DataType.CollectionGenericType)));
@@ -453,14 +453,14 @@ namespace NETPath.Generators.WinRT.CS
 			return code.ToString();
 		}
 
-		private static string GenerateElementDCMProxyCode45(DataElement o, ref int ProtoCount)
+		private static string GenerateElementDCMProxyCode45(DataElement o, ref int ProtoCount, bool IsOverride = false)
 		{
 			var code = new StringBuilder();
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 			code.Append("\t\t");
 			if (o.ProtocolBufferEnabled && o.Owner.EnableProtocolBuffers) code.AppendFormat("[ProtoBuf.ProtoMember({0}{1}{2}{3}{4}{5}{6})] ", ++ProtoCount, o.ProtoDataFormat != ProtoBufDataFormat.Default ? string.Format(", DataFormat = ProtoBuf.DataFormat.{0}", System.Enum.GetName(typeof(ProtoBufDataFormat), o.ProtoDataFormat)) : "", o.IsRequired ? ", IsRequired = true" : "", o.ProtoIsPacked ? ", IsPacked = true" : "", o.ProtoOverwriteList ? ", OverwriteList = true" : "", o.ProtoAsReference ? ", AsReference = true" : "", o.ProtoDynamicType ? ", DynamicType = true" : "");
 			else code.AppendFormat("[DataMember({0}{1}{2}Name = \"{3}\")] ", o.EmitDefaultValue ? "EmitDefaultValue = false, " : "", o.IsRequired ? "IsRequired = true, " : "", o.ProtocolBufferEnabled ? string.Format("Order = {0}, ", ProtoCount) : o.Order >= 0 ? string.Format("Order = {0}, ", o.Order) : "", o.HasClientType ? o.ClientName : o.DataName);
-			code.AppendLine(string.Format("public {0} {1} {{ get {{ return GetValue({1}Property); }} {2}set {{ SetValue({1}Property, value{4}); {3}}} }}", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType : o.DataType, o.Owner.CMDEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : "", o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : "", o.DREUpdateMode != DataUpdateMode.None && o.DREEnabled && !o.XAMLType.IsCollectionType ? string.Format(", {0}.{1}Property{2}", o.Owner.XAMLType.Name, o.XAMLName, o.IsReadOnly ? "Key" : "") : ""));
+			code.AppendLine(string.Format("public {5}{0} {1} {{ get {{ return GetValue({1}Property); }} {2}set {{ SetValue({1}Property, value{4}); {3}}} }}", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType : o.DataType, o.Owner.CMDEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : "", o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : "", o.DREUpdateMode != DataUpdateMode.None && o.DREEnabled && !o.XAMLType.IsCollectionType ? string.Format(", {0}.{1}Property{2}", o.Owner.XAMLType.Name, o.XAMLName, o.IsReadOnly ? "Key" : "") : "", IsOverride ? "override " : ""));
 			if (o.XAMLType.TypeMode == DataTypeMode.Collection)
 			{
 				code.AppendLine(string.Format("\t\tpublic static readonly DeltaProperty<DeltaList<{3}>> {1}Property = DeltaProperty<DeltaList<{3}>>.RegisterList<{3}>(\"{1}\", typeof({2}), (s, o, n) => {{ var t = s as {2}; if (t == null) return;", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.HasClientType ? o.ClientType : o.DataType, o.DREEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, DataTypeGenerator.GenerateType(o.HasClientType ? o.ClientType.CollectionGenericType : o.DataType.CollectionGenericType)));
