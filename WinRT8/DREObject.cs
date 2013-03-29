@@ -14,12 +14,7 @@ namespace System
 	[DataContract]
 	public abstract class DREObject<T> : DeltaObject where T : DREObject<T>
 	{
-		[DataMember(Name = "_DREID", Order = 1)]
-		[ProtoMember(1, AsReference = false, DataFormat = DataFormat.Default, IsRequired = true)]
-		public Guid _DREID { get { return GetValue(_DREIDProperty); } protected set { SetValue(_DREIDProperty, value); } }
-		[IgnoreDataMember, XmlIgnore] public static readonly DeltaProperty<Guid> _DREIDProperty = DeltaProperty<Guid>.Register("_DREID", typeof(T), default(Guid), null);
-
-		private static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, T> __dcm;
+		[IgnoreDataMember, XmlIgnore] private static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, T> __dcm;
 		static DREObject()
 		{
 			__dcm = new System.Collections.Concurrent.ConcurrentDictionary<Guid, T>();
@@ -106,6 +101,8 @@ namespace System
 		{
 			_DREID = Guid.NewGuid();
 		}
+
+		public abstract Guid _DREID { get; protected set; }
 
 		protected abstract void BatchUpdates();
 
