@@ -102,7 +102,7 @@ namespace System
 			_DREID = Guid.NewGuid();
 		}
 
-		public abstract Guid _DREID { get; protected set; }
+		[DataMember] public abstract Guid _DREID { get; protected set; }
 
 		protected abstract void BatchUpdates();
 
