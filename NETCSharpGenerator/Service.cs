@@ -854,7 +854,7 @@ namespace NETPath.Generators.NET.CS
 
 		#region - Service/Callback Interface Methods -
 
-		public static string GenerateServiceInterfaceSyncMethod(Method o, bool IsCallback, bool IsAsync = false, bool IsAwait = false)
+		public static string GenerateServiceInterfaceSyncMethod(Method o, bool IsCallback)
 		{
 			var code = new StringBuilder();
 
@@ -864,10 +864,10 @@ namespace NETPath.Generators.NET.CS
 				foreach (MethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 			}
-			code.AppendLine(string.Format("\t\t[OperationContract({0}{1}{2}{3}{4})]", string.Format("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}", o.ProtectionLevel), o.Owner.SessionMode == SessionMode.Required ? o.IsInitiating ? ", IsInitiating = true" : ", IsInitiating = false" : "", o.Owner.SessionMode == SessionMode.Required ? o.IsTerminating ? ", IsTerminating = true" : ", IsTerminating = false" : "", o.IsOneWay ? ", IsOneWay = true" : "", string.Format(", Name = \"{0}\"", !string.IsNullOrEmpty(o.ClientName) ? o.ClientName : o.ServerName)));
+			code.AppendLine(string.Format("\t\t[OperationContract({0}{1}{2}{3})]", string.Format("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}", o.ProtectionLevel), o.Owner.SessionMode == SessionMode.Required ? o.IsInitiating ? ", IsInitiating = true" : ", IsInitiating = false" : "", o.Owner.SessionMode == SessionMode.Required ? o.IsTerminating ? ", IsTerminating = true" : ", IsTerminating = false" : "", o.IsOneWay ? ", IsOneWay = true" : ""));
 			if (!IsCallback && o.IsRESTMethod && (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35))
 				code.AppendLine(string.Format("\t\t[System.ServiceModel.Web.{0}(UriTemplate=\"{1}\", {2}BodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.{3}, RequestFormat = System.ServiceModel.Web.WebMessageFormat.{4}, ResponseFormat = System.ServiceModel.Web.WebMessageFormat.{5})]", o.REST.Method == MethodRESTVerbs.GET ? "WebGet" : "WebInvoke", o.REST.BuildUriTemplate(), o.REST.Method != MethodRESTVerbs.GET ? string.Format("Method = \"{0}\", ", o.REST.Method) : "", o.REST.BodyStyle, o.REST.RequestFormat, o.REST.ResponseFormat));
-			code.AppendFormat("\t\t{0} {1}{2}{3}(", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName, IsAsync ? "Invoke" : "", IsAwait ? "Async" : "");
+			code.AppendFormat("\t\t{0} {1}(", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName);
 			foreach (MethodParameter op in o.Parameters)
 				code.AppendFormat("{0},", GenerateMethodParameterServerCode(op));
 			if (o.Parameters.Count > 0) code.Remove(code.Length - 1, 1);
@@ -879,9 +879,7 @@ namespace NETPath.Generators.NET.CS
 		public static string GenerateServiceInterfaceMethodCode40(Method o, bool IsCallback)
 		{
 			var code = new StringBuilder();
-
-			if (o.UseSyncPattern) code.Append(GenerateServiceInterfaceSyncMethod(o, IsCallback));
-
+			
 			if (o.UseAsyncPattern && CanGenerateAsync(o.Owner, true))
 			{
 				if (o.Documentation != null)
@@ -892,10 +890,10 @@ namespace NETPath.Generators.NET.CS
 					code.AppendLine(string.Format("\t\t///<param name='Callback'>The function to call when the operation is complete.</param>"));
 					code.AppendLine(string.Format("\t\t///<param name='AsyncState'>An object representing the state of the operation.</param>"));
 				}
-				code.AppendLine(string.Format("\t\t[OperationContract({0}, AsyncPattern = true{1}{2}{3}{4})]", string.Format("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}", o.ProtectionLevel), o.Owner.SessionMode == SessionMode.Required ? o.IsInitiating ? ", IsInitiating = true" : ", IsInitiating = false" : "", o.Owner.SessionMode == SessionMode.Required ? o.IsTerminating ? ", IsTerminating = true" : ", IsTerminating = false" : "", o.IsOneWay ? ", IsOneWay = true" : "", string.Format(", Name = \"{0}\"", !string.IsNullOrEmpty(o.ClientName) ? o.ClientName : o.ServerName)));
+				code.AppendLine(string.Format("\t\t[OperationContract({0}, AsyncPattern = true{1}{2}{3})]", string.Format("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}", o.ProtectionLevel), o.Owner.SessionMode == SessionMode.Required ? o.IsInitiating ? ", IsInitiating = true" : ", IsInitiating = false" : "", o.Owner.SessionMode == SessionMode.Required ? o.IsTerminating ? ", IsTerminating = true" : ", IsTerminating = false" : "", o.IsOneWay ? ", IsOneWay = true" : ""));
 				if (!IsCallback && o.IsRESTMethod && (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35))
 					code.AppendLine(string.Format("\t\t[System.ServiceModel.Web.{0}(UriTemplate=\"{1}\", {2}BodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.{3}, RequestFormat = System.ServiceModel.Web.WebMessageFormat.{4}, ResponseFormat = System.ServiceModel.Web.WebMessageFormat.{5})]", o.REST.Method == MethodRESTVerbs.GET ? "WebGet" : "WebInvoke", o.REST.BuildUriTemplate(), o.REST.Method != MethodRESTVerbs.GET ? string.Format("Method = \"{0}\", ", o.REST.Method) : "", o.REST.BodyStyle, o.REST.RequestFormat, o.REST.ResponseFormat));
-				code.AppendFormat("\t\tIAsyncResult Begin{0}Invoke(", o.ServerName);
+				code.AppendFormat("\t\tIAsyncResult Begin{0}(", o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("{0},", GenerateMethodParameterServerCode(op));
 				code.AppendLine(" AsyncCallback Callback, object AsyncState);");
@@ -907,21 +905,19 @@ namespace NETPath.Generators.NET.CS
 					code.AppendLine("\t\t///</returns>");
 					code.AppendLine(string.Format("\t\t///<param name='result'>The result of the operation.</param>"));
 				}
-				code.AppendFormat("\t\t{0} End{1}Invoke(IAsyncResult result);{2}", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName, Environment.NewLine);
+				code.AppendFormat("\t\t{0} End{1}(IAsyncResult result);{2}", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName, Environment.NewLine);
 			}
-			else if (o.UseAsyncPattern && !CanGenerateAsync(o.Owner, true))		 //If server asynchrony is disabled and the sync pattern is disabled, use the sync pattern.
-				code.Append(GenerateServiceInterfaceSyncMethod(o, IsCallback, true));
+			else
+				code.Append(GenerateServiceInterfaceSyncMethod(o, IsCallback));
 
 			return code.ToString();
 		}
 
-		public static string GenerateServiceInterfaceMethodCode45(Method o, bool IsCallback, bool IsDCM = false)
+		public static string GenerateServiceInterfaceMethodCode45(Method o, bool IsCallback)
 		{
 			var code = new StringBuilder();
 
-			code.Append(GenerateServiceInterfaceMethodCode40(o, IsCallback));
-
-			if (o.UseAwaitPattern && (IsDCM || CanGenerateAsync(o.Owner, true)))
+			if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, true))
 			{
 				if (o.Documentation != null)
 				{
@@ -929,7 +925,7 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				code.AppendLine(string.Format("\t\t[OperationContract({0}{1}{2}{3}{4})]", string.Format("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}", o.ProtectionLevel), o.Owner.SessionMode == SessionMode.Required ? o.IsInitiating ? ", IsInitiating = true" : ", IsInitiating = false" : "", o.Owner.SessionMode == SessionMode.Required ? o.IsTerminating ? ", IsTerminating = true" : ", IsTerminating = false" : "", o.IsOneWay ? ", IsOneWay = true" : "", string.Format(", Name = \"{0}Async\"", !string.IsNullOrEmpty(o.ClientName) ? o.ClientName : o.ServerName)));
+				code.AppendLine(string.Format("\t\t[OperationContract({0}{1}{2}{3})]", string.Format("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}", o.ProtectionLevel), o.Owner.SessionMode == SessionMode.Required ? o.IsInitiating ? ", IsInitiating = true" : ", IsInitiating = false" : "", o.Owner.SessionMode == SessionMode.Required ? o.IsTerminating ? ", IsTerminating = true" : ", IsTerminating = false" : "", o.IsOneWay ? ", IsOneWay = true" : ""));
 				if (!IsCallback && o.IsRESTMethod && (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35))
 					code.AppendLine(string.Format("\t\t[System.ServiceModel.Web.{0}(UriTemplate=\"{1}\", {2}BodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.{3}, RequestFormat = System.ServiceModel.Web.WebMessageFormat.{4}, ResponseFormat = System.ServiceModel.Web.WebMessageFormat.{5})]", o.REST.Method == MethodRESTVerbs.GET ? "WebGet" : "WebInvoke", o.REST.BuildUriTemplate(), o.REST.Method != MethodRESTVerbs.GET ? string.Format("Method = \"{0}\", ", o.REST.Method) : "", o.REST.BodyStyle, o.REST.RequestFormat, o.REST.ResponseFormat));
 				if (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) code.AppendFormat("\t\tSystem.Threading.Tasks.Task {0}Async(", o.ServerName);
@@ -939,8 +935,8 @@ namespace NETPath.Generators.NET.CS
 				if (o.Parameters.Count > 0) code.Remove(code.Length - 1, 1);
 				code.AppendLine(");");
 			}
-			else if (o.UseAwaitPattern && !CanGenerateAsync(o.Owner, true))		 //If server asynchrony is disabled and the sync pattern is disabled, use the sync pattern.
-				code.Append(GenerateServiceInterfaceSyncMethod(o, IsCallback, false, true));
+			else
+				code.Append(GenerateServiceInterfaceMethodCode40(o, IsCallback));
 
 			return code.ToString();
 		}
@@ -949,7 +945,7 @@ namespace NETPath.Generators.NET.CS
 
 		#region - Client Interface Methods -
 
-		public static string GenerateClientInterfaceSyncMethod(Method o, bool IsAsync = false, bool IsAwait = false)
+		public static string GenerateClientInterfaceSyncMethod(Method o)
 		{
 			var code = new StringBuilder();
 
@@ -959,8 +955,8 @@ namespace NETPath.Generators.NET.CS
 				foreach (MethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 			}
-			code.AppendLine(string.Format(o.IsOneWay ? "\t\t[OperationContract(IsOneWay = true, Action = \"{0}/I{1}/{2}{3}{4}\")]" : "\t\t[OperationContract(Action = \"{0}/I{1}/{2}{3}{4}\", ReplyAction = \"{0}/I{1}/{2}{3}{4}Response\")]", o.Owner.Parent.FullURI.Substring(0, o.Owner.Parent.FullURI.Length - 1), o.Owner.Name, o.ServerName, IsAsync ? "Invoke" : "", IsAwait ? "Async" : ""));
-			code.AppendFormat("\t\t{0} {1}{2}{3}(", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName, IsAsync ? "Invoke" : "", IsAwait ? "Async" : "");
+			code.AppendLine(string.Format(o.IsOneWay ? "\t\t[OperationContract(IsOneWay = true, Action = \"{0}/I{1}/{2}\")]" : "\t\t[OperationContract(Action = \"{0}/I{1}/{2}\", ReplyAction = \"{0}/I{1}/{2}Response\")]", o.Owner.Parent.FullURI.Substring(0, o.Owner.Parent.FullURI.Length - 1), o.Owner.Name, o.ServerName));
+			code.AppendFormat("\t\t{0} {1}(", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName);
 			foreach (MethodParameter op in o.Parameters)
 				code.AppendFormat("{0}{1}", GenerateMethodParameterClientCode(op), o.Parameters.IndexOf(op) != (o.Parameters.Count() - 1) ? ", " : "");
 			code.AppendLine(");");
@@ -983,8 +979,8 @@ namespace NETPath.Generators.NET.CS
 					code.AppendLine(string.Format("\t\t///<param name='Callback'>The function to call when the operation is complete.</param>"));
 					code.AppendLine(string.Format("\t\t///<param name='AsyncState'>An object representing the state of the operation.</param>"));
 				}
-				code.AppendLine(string.Format(o.IsOneWay ? "\t\t[OperationContract(IsOneWay = true, Action = \"{0}/I{1}/{2}Invoke\")]" : "\t\t[OperationContract(Action = \"{0}/I{1}/{2}Invoke\", ReplyAction = \"{0}/I{1}/{2}InvokeResponse\")]", o.Owner.Parent.FullURI.Substring(0, o.Owner.Parent.FullURI.Length - 1), o.Owner.Name, o.ServerName));
-				code.AppendFormat("\t\tIAsyncResult Begin{0}Invoke(", o.HasClientType ? o.ClientName : o.ServerName);
+				code.AppendLine(string.Format(o.IsOneWay ? "\t\t[OperationContract(IsOneWay = true, Action = \"{0}/I{1}/{2}\")]" : "\t\t[OperationContract(Action = \"{0}/I{1}/{2}\", ReplyAction = \"{0}/I{1}/{2}Response\")]", o.Owner.Parent.FullURI.Substring(0, o.Owner.Parent.FullURI.Length - 1), o.Owner.Name, o.ServerName));
+				code.AppendFormat("\t\tIAsyncResult Begin{0}(", o.HasClientType ? o.ClientName : o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 				code.AppendLine("AsyncCallback Callback, object AsyncState);");
@@ -996,21 +992,21 @@ namespace NETPath.Generators.NET.CS
 					code.AppendLine("\t\t///</returns>");
 					code.AppendLine(string.Format("\t\t///<param name='result'>The result of the operation.</param>"));
 				}
-				code.AppendFormat("\t\t{0} End{1}Invoke(IAsyncResult result);{2}", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName, Environment.NewLine);
+				code.AppendFormat("\t\t{0} End{1}(IAsyncResult result);{2}", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName, Environment.NewLine);
 			}
 			else if (o.UseAsyncPattern && !CanGenerateAsync(o.Owner, false))
-				code.Append(GenerateClientInterfaceSyncMethod(o, true));
+				code.Append(GenerateClientInterfaceSyncMethod(o));
 
 			return code.ToString();
 		}
 
-		public static string GenerateClientInterfaceMethodCode45(Method o, bool IsDCM = false)
+		public static string GenerateClientInterfaceMethodCode45(Method o)
 		{
 			var code = new StringBuilder();
 
 			code.Append(GenerateClientInterfaceMethodCode40(o));
 
-			if (o.UseAwaitPattern && (IsDCM || CanGenerateAsync(o.Owner, false)))
+			if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, false))
 			{
 				if (o.Documentation != null)
 				{
@@ -1018,7 +1014,7 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				code.AppendLine(string.Format(o.IsOneWay ? "\t\t[OperationContract(IsOneWay = true, Action = \"{0}/I{1}/{2}Async\")]" : "\t\t[OperationContract(Action = \"{0}/I{1}/{2}Async\", ReplyAction = \"{0}/I{1}/{2}AsyncResponse\")]", o.Owner.Parent.FullURI.Substring(0, o.Owner.Parent.FullURI.Length - 1), o.Owner.Name, o.ServerName));
+				code.AppendLine(string.Format(o.IsOneWay ? "\t\t[OperationContract(IsOneWay = true, Action = \"{0}/I{1}/{2}\")]" : "\t\t[OperationContract(Action = \"{0}/I{1}/{2}\", ReplyAction = \"{0}/I{1}/{2}Response\")]", o.Owner.Parent.FullURI.Substring(0, o.Owner.Parent.FullURI.Length - 1), o.Owner.Name, o.ServerName));
 				if (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) code.AppendFormat("\t\tSystem.Threading.Tasks.Task {0}Async(", o.HasClientType ? o.ClientName : o.ServerName);
 				else code.AppendFormat("\t\tSystem.Threading.Tasks.Task<{0}> {1}Async(", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
@@ -1026,7 +1022,7 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine(");");
 			}
 			else if (o.UseAwaitPattern && !CanGenerateAsync(o.Owner, false))
-				code.Append(GenerateClientInterfaceSyncMethod(o, false, true));
+				code.Append(GenerateClientInterfaceSyncMethod(o));
 
 			return code.ToString();
 		}
@@ -1044,10 +1040,10 @@ namespace NETPath.Generators.NET.CS
 			return code.ToString();
 		}
 
-		public static string GenerateServerProxySyncMethod(Method o, bool IsAsync = false, bool IsAwait = false)
+		public static string GenerateServerProxySyncMethod(Method o)
 		{
 			var code = new StringBuilder();
-			code.AppendFormat("\t\tpublic abstract {0} {1}{2}{3}(", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName, IsAsync ? "Invoke" : "", IsAwait ? "Async" : "");
+			code.AppendFormat("\t\tpublic abstract {0} {1}(", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName);
 			foreach (MethodParameter op in o.Parameters)
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
@@ -1072,7 +1068,7 @@ namespace NETPath.Generators.NET.CS
 					code.AppendLine(string.Format("\t\t///<param name='Callback'>The function to call when the operation is complete.</param>"));
 					code.AppendLine(string.Format("\t\t///<param name='AsyncState'>An object representing the state of the operation.</param>"));
 				}
-				code.AppendFormat("\t\tpublic abstract IAsyncResult Begin{0}Invoke(", o.HasClientType ? o.ClientName : o.ServerName);
+				code.AppendFormat("\t\tpublic abstract IAsyncResult Begin{0}(", o.HasClientType ? o.ClientName : o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 				code.AppendLine("AsyncCallback Callback, object AsyncState);");
@@ -1084,10 +1080,10 @@ namespace NETPath.Generators.NET.CS
 					code.AppendLine("\t\t///</returns>");
 					code.AppendLine(string.Format("\t\t///<param name='result'>The result of the operation.</param>"));
 				}
-				code.AppendLine(string.Format("\t\tpublic abstract {0} End{1}Invoke(IAsyncResult result);", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName));
+				code.AppendLine(string.Format("\t\tpublic abstract {0} End{1}(IAsyncResult result);", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName));
 			}
 			else if (o.UseAsyncPattern && !CanGenerateAsync(o.Owner, true))
-				code.Append(GenerateServerProxySyncMethod(o, true));
+				code.Append(GenerateServerProxySyncMethod(o));
 
 			return code.ToString();
 		}
@@ -1113,7 +1109,7 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine(");");
 			}
 			else if (o.UseAwaitPattern && !CanGenerateAsync(o.Owner, true))
-				code.Append(GenerateServerProxySyncMethod(o, false, true));
+				code.Append(GenerateServerProxySyncMethod(o));
 
 			return code.ToString();
 		}
@@ -1122,7 +1118,7 @@ namespace NETPath.Generators.NET.CS
 
 		#region - Server Callback Methods -
 
-		public static string GenerateServerCallbackSyncMethodProxy(Method o, bool IsAsync = false, bool IsAwait = false)
+		public static string GenerateServerCallbackSyncMethodProxy(Method o)
 		{
 			var code = new StringBuilder();
 			if (o.Documentation != null)
@@ -1131,13 +1127,13 @@ namespace NETPath.Generators.NET.CS
 				foreach (MethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 			}
-			code.AppendFormat("\t\tpublic {0} {1}{2}{3}(", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName, IsAsync ? "Invoke" : "", IsAwait ? "Async" : "");
+			code.AppendFormat("\t\tpublic {0} {1}(", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName);
 			foreach (MethodParameter op in o.Parameters)
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
 			code.AppendLine(")");
 			code.AppendLine("\t\t{");
-			code.AppendFormat("\t\t\t{0}__callback.{1}{2}{3}(", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName, IsAsync ? "Invoke" : "", IsAwait ? "Async" : "");
+			code.AppendFormat("\t\t\t{0}__callback.{1}(", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName);
 			foreach (MethodParameter op in o.Parameters)
 				code.AppendFormat("{0}, ", op.Name);
 			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
@@ -1169,12 +1165,12 @@ namespace NETPath.Generators.NET.CS
 					code.AppendLine(string.Format("\t\t///<param name='Callback'>The function to call when the operation is complete.</param>"));
 					code.AppendLine(string.Format("\t\t///<param name='AsyncState'>An object representing the state of the operation.</param>"));
 				}
-				code.AppendFormat("\t\tIAsyncResult I{1}Callback.Begin{0}Invoke(", o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name);
+				code.AppendFormat("\t\tIAsyncResult I{1}Callback.Begin{0}(", o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name);
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 				code.AppendLine("AsyncCallback Callback, object AsyncState)");
 				code.AppendLine("\t\t{");
-				code.AppendFormat("\t\t\t{0}__callback.Begin{1}Invoke(", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName);
+				code.AppendFormat("\t\t\t{0}__callback.Begin{1}(", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("{0}, ", op.Name);
 				code.AppendLine("Callback, AsyncState);");
@@ -1187,15 +1183,15 @@ namespace NETPath.Generators.NET.CS
 					code.AppendLine("\t\t///</returns>");
 					code.AppendLine(string.Format("\t\t///<param name='result'>The result of the operation.</param>"));
 				}
-				code.AppendLine(string.Format("\t\t{0} I{2}Callback.End{1}Invoke(IAsyncResult result)", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name));
+				code.AppendLine(string.Format("\t\t{0} I{2}Callback.End{1}(IAsyncResult result)", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name));
 				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t{0}__callback.End{1}Invoke(result);", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName));
+				code.AppendLine(string.Format("\t\t\t{0}__callback.End{1}(result);", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName));
 				code.AppendLine("\t\t}");
 
 				//Generate the delegate implementation functions.
 				code.AppendLine(string.Format("\t\tprivate IAsyncResult OnBegin{0}(object[] Values, AsyncCallback Callback, object AsyncState)", o.HasClientType ? o.ClientName : o.ServerName));
 				code.AppendLine("\t\t{");
-				code.AppendFormat("\t\t\treturn ((I{1}Callback)this).Begin{0}Invoke(", o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name);
+				code.AppendFormat("\t\t\treturn ((I{1}Callback)this).Begin{0}(", o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name);
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("({0})Values[{1}], ", DataTypeGenerator.GenerateType(op.Type), o.Parameters.IndexOf(op));
 				code.AppendLine("Callback, AsyncState);");
@@ -1204,7 +1200,7 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine("\t\t{");
 				if (o.ReturnType.Primitive == PrimitiveTypes.Void)
 				{
-					code.AppendLine(string.Format("\t\t\t((I{1}Callback)this).End{0}Invoke(result);", o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name));
+					code.AppendLine(string.Format("\t\t\t((I{1}Callback)this).End{0}(result);", o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name));
 					code.AppendLine("\t\t\treturn null;");
 				}
 				else
@@ -1253,7 +1249,7 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine("\t\t}");
 			}
 			else if (o.UseAsyncPattern && !CanGenerateAsync(o.Owner, true))
-				code.Append(GenerateServerCallbackSyncMethodProxy(o, true));
+				code.Append(GenerateServerCallbackSyncMethodProxy(o));
 
 			return code.ToString();
 		}
@@ -1285,7 +1281,7 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine("\t\t}");
 			}
 			else if (o.UseAwaitPattern && !CanGenerateAsync(o.Owner, true))
-				code.Append(GenerateServerCallbackSyncMethodProxy(o, false, true));
+				code.Append(GenerateServerCallbackSyncMethodProxy(o));
 
 			return code.ToString();
 		}
@@ -1307,7 +1303,7 @@ namespace NETPath.Generators.NET.CS
 			return "";
 		}
 
-		public static string GenerateSyncMethodProxy(Method o, bool IsCallback, bool IsAsync = false, bool IsAwait = false)
+		public static string GenerateSyncMethodProxy(Method o, bool IsCallback)
 		{
 			var code = new StringBuilder();
 			if (o.Documentation != null)
@@ -1316,14 +1312,14 @@ namespace NETPath.Generators.NET.CS
 				foreach (MethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 			}
-			code.AppendFormat("\t\tpublic {0} {1}{2}{3}(", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName, IsAsync ? "Invoke" : "", IsAwait ? "Async" : "");
+			code.AppendFormat("\t\tpublic {0} {1}(", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName);
 			foreach (MethodParameter op in o.Parameters)
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
 			code.AppendLine(")");
 			code.AppendLine("\t\t{");
 			if (o.IsInitiating) code.AppendLine("\t\t\tbase.Initialize();");
-			code.AppendFormat("\t\t\t{0}{2}.{1}{3}{4}(", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName, IsCallback ? "__callback" : "base.Channel", IsAsync ? "Invoke" : "", IsAwait ? "Async" : "");
+			code.AppendFormat("\t\t\t{0}{2}.{1}(", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName, IsCallback ? "__callback" : "base.Channel");
 			foreach (MethodParameter op in o.Parameters)
 				code.AppendFormat("{0}, ", op.Name);
 			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
@@ -1477,13 +1473,13 @@ namespace NETPath.Generators.NET.CS
 					code.AppendLine(string.Format("\t\t///<param name='Callback'>The function to call when the operation is complete.</param>"));
 					code.AppendLine(string.Format("\t\t///<param name='AsyncState'>An object representing the state of the operation.</param>"));
 				}
-				code.AppendFormat("\t\tIAsyncResult I{1}{2}.Begin{0}Invoke(", o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, IsCallback ? "Callback" : "");
+				code.AppendFormat("\t\tIAsyncResult I{1}{2}.Begin{0}(", o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, IsCallback ? "Callback" : "");
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 				code.AppendLine("AsyncCallback Callback, object AsyncState)");
 				code.AppendLine("\t\t{");
 				if (o.IsInitiating) code.AppendLine("\t\t\tbase.Initialize();");
-				code.AppendFormat("\t\t\t{0}{2}.Begin{1}Invoke(", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName, IsCallback ? "__callback" : "base.Channel");
+				code.AppendFormat("\t\t\t{0}{2}.Begin{1}(", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName, IsCallback ? "__callback" : "base.Channel");
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("{0}, ", op.Name);
 				code.AppendLine("Callback, AsyncState);");
@@ -1496,16 +1492,16 @@ namespace NETPath.Generators.NET.CS
 					code.AppendLine("\t\t///</returns>");
 					code.AppendLine(string.Format("\t\t///<param name='result'>The result of the operation.</param>"));
 				}
-				code.AppendLine(string.Format("\t\t{0} I{2}{3}.End{1}Invoke(IAsyncResult result)", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, IsCallback ? "Callback" : ""));
+				code.AppendLine(string.Format("\t\t{0} I{2}{3}.End{1}(IAsyncResult result)", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, IsCallback ? "Callback" : ""));
 				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\t{0}{2}.End{1}Invoke(result);", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName, IsCallback ? "__callback" : "base.Channel"));
+				code.AppendLine(string.Format("\t\t\t{0}{2}.End{1}(result);", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName, IsCallback ? "__callback" : "base.Channel"));
 				if (o.IsTerminating) code.AppendLine("\t\t\tbase.Terminate();");
 				code.AppendLine("\t\t}");
 
 				//Generate the delegate implementation functions.
 				code.AppendLine(string.Format("\t\tprivate IAsyncResult OnBegin{0}(object[] Values, AsyncCallback Callback, object AsyncState)", o.HasClientType ? o.ClientName : o.ServerName));
 				code.AppendLine("\t\t{");
-				code.AppendFormat("\t\t\treturn ((I{1}{2})this).Begin{0}Invoke(", o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, IsCallback ? "Callback" : "");
+				code.AppendFormat("\t\t\treturn ((I{1}{2})this).Begin{0}(", o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, IsCallback ? "Callback" : "");
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("({0})Values[{1}], ", DataTypeGenerator.GenerateType(op.Type), o.Parameters.IndexOf(op));
 				code.AppendLine("Callback, AsyncState);");
@@ -1514,7 +1510,7 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine("\t\t{");
 				if (o.ReturnType.Primitive == PrimitiveTypes.Void)
 				{
-					code.AppendLine(string.Format("\t\t\t((I{1}{2})this).End{0}Invoke(result);", o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, IsCallback ? "Callback" : ""));
+					code.AppendLine(string.Format("\t\t\t((I{1}{2})this).End{0}(result);", o.HasClientType ? o.ClientName : o.ServerName, o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, IsCallback ? "Callback" : ""));
 					code.AppendLine("\t\t\treturn null;");
 				}
 				else
@@ -1563,7 +1559,7 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine("\t\t}");
 			}
 			else if (o.UseAsyncPattern && !CanGenerateAsync(o.Owner, IsServer))
-				code.Append(GenerateSyncMethodProxy(o, IsCallback, true));
+				code.Append(GenerateSyncMethodProxy(o, IsCallback));
 
 			return code.ToString();
 		}
@@ -1597,7 +1593,7 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine("\t\t}");
 			}
 			else if (o.UseAwaitPattern && !CanGenerateAsync(o.Owner, IsServer))
-				code.Append(GenerateSyncMethodProxy(o, IsCallback, false, true));
+				code.Append(GenerateSyncMethodProxy(o, IsCallback));
 
 			return code.ToString();
 		}
@@ -1667,7 +1663,7 @@ namespace NETPath.Generators.NET.CS
 				                  Environment.NewLine);
 			}
 			else if (o.UseAsyncPattern && !CanGenerateAsync(o.Owner, false))
-				code.Append(GenerateClientInterfaceSyncMethod(o, true));
+				code.Append(GenerateClientInterfaceSyncMethod(o));
 
 			return code.ToString();
 		}
@@ -1694,7 +1690,7 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine(");");
 			}
 			else if (o.UseAwaitPattern && !CanGenerateAsync(o.Owner, false))
-				code.Append(GenerateClientInterfaceSyncMethod(o, false, true));
+				code.Append(GenerateClientInterfaceSyncMethod(o));
 
 			return code.ToString();
 		}
@@ -1834,7 +1830,7 @@ namespace NETPath.Generators.NET.CS
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
 				var x = new Method(string.Format("Get{0}DRE", dcmtype.Name), o.Owner) { Parameters = o.GetParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = o.ReturnType };
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false, true) : GenerateClientInterfaceMethodCode45(x, true));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false) : GenerateClientInterfaceMethodCode45(x));
 			}
 			if (o.GenerateNewDeleteFunction)
 			{
@@ -1847,7 +1843,7 @@ namespace NETPath.Generators.NET.CS
 				var xp = new ObservableCollection<MethodParameter>(o.NewParameters);
 				var x = new Method(string.Format("New{0}DRE", dcmtype.Name), o.Owner) { Parameters = xp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
 				xp.Insert(0, new MethodParameter(dcmtype, "DREData", o.Owner, x));
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false, true) : GenerateClientInterfaceMethodCode45(x, true));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false) : GenerateClientInterfaceMethodCode45(x));
 				if (o.DeleteDocumentation != null)
 				{
 					code.Append(DocumentationGenerator.GenerateDocumentation(o.DeleteDocumentation));
@@ -1857,7 +1853,7 @@ namespace NETPath.Generators.NET.CS
 				var yp = new ObservableCollection<MethodParameter>(o.DeleteParameters);
 				var y = new Method(string.Format("Delete{0}DRE", dcmtype.Name), o.Owner) { Parameters = yp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
 				yp.Insert(0, new MethodParameter(new DataType(PrimitiveTypes.GUID), "DREDataID", o.Owner, y));
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(y, false, true) : GenerateClientInterfaceMethodCode45(y, true));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(y, false) : GenerateClientInterfaceMethodCode45(y));
 			}
 			if (o.GenerateOpenCloseFunction)
 			{
@@ -1870,7 +1866,7 @@ namespace NETPath.Generators.NET.CS
 				var xp = new ObservableCollection<MethodParameter>(o.OpenParameters);
 				var x = new Method(string.Format("Open{0}DRE", dcmtype.Name), o.Owner) { Parameters = xp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = dcmtype };
 				xp.Insert(0, new MethodParameter(new DataType(PrimitiveTypes.GUID), "DREDataID", o.Owner, x));
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false, true) : GenerateClientInterfaceMethodCode45(x, true));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false) : GenerateClientInterfaceMethodCode45(x));
 				if (o.CloseDocumentation != null)
 				{
 					code.Append(DocumentationGenerator.GenerateDocumentation(o.CloseDocumentation));
@@ -1880,7 +1876,7 @@ namespace NETPath.Generators.NET.CS
 				var yp = new ObservableCollection<MethodParameter>(o.CloseParameters);
 				var y = new Method(string.Format("Close{0}DRE", dcmtype.Name), o.Owner) { Parameters = yp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
 				yp.Insert(0, new MethodParameter(new DataType(PrimitiveTypes.GUID), "DREDataID", o.Owner, y));
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(y, false, true) : GenerateClientInterfaceMethodCode45(y, true));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(y, false) : GenerateClientInterfaceMethodCode45(y));
 			}
 
 			foreach (DataElement de in dcmtype.Elements.Where(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Immediate))
@@ -1897,7 +1893,7 @@ namespace NETPath.Generators.NET.CS
 				else if (edt.TypeMode == DataTypeMode.Stack) { continue; }
 				else tp.Add(new MethodParameter(edt, "ChangedValue", o.Owner, x));
 
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false, true) : GenerateClientInterfaceMethodCode45(x, true));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false) : GenerateClientInterfaceMethodCode45(x));
 			}
 
 			if (dcmtype.Elements.Any(a => a.DREUpdateMode == DataUpdateMode.Batch))
@@ -1923,7 +1919,7 @@ namespace NETPath.Generators.NET.CS
 					code.AppendLine(string.Format("\t\t[ServiceKnownType(typeof({0}))]", edt));
 				}
 
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false, true) : GenerateClientInterfaceMethodCode45(x, true));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false) : GenerateClientInterfaceMethodCode45(x));
 			}
 
 			code.AppendLine();
@@ -2709,7 +2705,7 @@ namespace NETPath.Generators.NET.CS
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
 				var x = new Method(string.Format("Get{0}DRECallback", dcmtype.Name), o.Owner) { Parameters = o.GetParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = o.ReturnType };
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, true, true) : GenerateClientInterfaceMethodCode45(x, true));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, true) : GenerateClientInterfaceMethodCode45(x));
 			}
 			if (o.GenerateNewDeleteFunction)
 			{
@@ -2722,7 +2718,7 @@ namespace NETPath.Generators.NET.CS
 				var xp = new ObservableCollection<MethodParameter>(o.NewParameters);
 				var x = new Method(string.Format("New{0}DRECallback", dcmtype.Name), o.Owner) { Parameters = xp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
 				xp.Insert(0, new MethodParameter(dcmtype, "DREData", o.Owner, x));
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, true, true) : GenerateClientInterfaceMethodCode45(x, true));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, true) : GenerateClientInterfaceMethodCode45(x));
 				if (o.DeleteDocumentation != null)
 				{
 					code.Append(DocumentationGenerator.GenerateDocumentation(o.DeleteDocumentation));
@@ -2732,7 +2728,7 @@ namespace NETPath.Generators.NET.CS
 				var yp = new ObservableCollection<MethodParameter>(o.DeleteParameters);
 				var y = new Method(string.Format("Delete{0}DRECallback", dcmtype.Name), o.Owner) { Parameters = yp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
 				yp.Insert(0, new MethodParameter(new DataType(PrimitiveTypes.GUID), "DREDataID", o.Owner, y));
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(y, true, true) : GenerateClientInterfaceMethodCode45(y, true));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(y, true) : GenerateClientInterfaceMethodCode45(y));
 			}
 			if (o.GenerateOpenCloseFunction)
 			{
@@ -2745,7 +2741,7 @@ namespace NETPath.Generators.NET.CS
 				var xp = new ObservableCollection<MethodParameter>(o.OpenParameters);
 				var x = new Method(string.Format("Open{0}DRECallback", dcmtype.Name), o.Owner) { Parameters = xp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
 				xp.Insert(0, new MethodParameter(new DataType(PrimitiveTypes.GUID), "DREDataID", o.Owner, x));
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, true, true) : GenerateClientInterfaceMethodCode45(x, true));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, true) : GenerateClientInterfaceMethodCode45(x));
 				if (o.CloseDocumentation != null)
 				{
 					code.Append(DocumentationGenerator.GenerateDocumentation(o.CloseDocumentation));
@@ -2755,7 +2751,7 @@ namespace NETPath.Generators.NET.CS
 				var yp = new ObservableCollection<MethodParameter>(o.CloseParameters);
 				var y = new Method(string.Format("Close{0}DRECallback", dcmtype.Name), o.Owner) { Parameters = yp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
 				yp.Insert(0, new MethodParameter(new DataType(PrimitiveTypes.GUID), "DREDataID", o.Owner, y));
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(y, true, true) : GenerateClientInterfaceMethodCode45(y, true));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(y, true) : GenerateClientInterfaceMethodCode45(y));
 			}
 
 			foreach (DataElement de in dcmtype.Elements.Where(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Immediate))
@@ -2772,7 +2768,7 @@ namespace NETPath.Generators.NET.CS
 				else if (edt.TypeMode == DataTypeMode.Stack) { continue; }
 				else tp.Add(new MethodParameter(edt, "ChangedValue", o.Owner, x));
 
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, true, true) : GenerateClientInterfaceMethodCode45(x, true));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, true) : GenerateClientInterfaceMethodCode45(x));
 			}
 
 			if (dcmtype.Elements.Any(a => a.DREUpdateMode == DataUpdateMode.Batch))
@@ -2798,7 +2794,7 @@ namespace NETPath.Generators.NET.CS
 					code.AppendLine(string.Format("\t\t[ServiceKnownType(typeof({0}))]", edt));
 				}
 
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, true, true) : GenerateClientInterfaceMethodCode45(x, true));
+				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, true) : GenerateClientInterfaceMethodCode45(x));
 			}
 
 			code.AppendLine();
