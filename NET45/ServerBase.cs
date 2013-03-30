@@ -127,6 +127,7 @@ namespace System.ServiceModel
 			try
 			{
 				Callback = new TCallback {MaxReconnectionAttempts = MaxReconnectionAttempts, Disconnected = CallbackDisconnected, Reconnected = CallbackReconnected};
+				Callback.Connect();
 
 				base.Initialize();
 
@@ -187,6 +188,11 @@ namespace System.ServiceModel
 		public ServerCallbackBase()
 		{
 			MaxReconnectionAttempts = 0;
+		}
+
+		internal void Connect()
+		{
+			Threading.Interlocked.CompareExchange(ref __callback, OperationContext.Current.GetCallbackChannel<TCallback>(), null);
 		}
 
 		public Task<bool> Reconnect()
