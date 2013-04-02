@@ -35,12 +35,14 @@ namespace NETPath.Projects
 	{
 		public readonly string Path;
 		public readonly bool IsServer;
+		public readonly bool IsAwaitable;
 		public readonly Guid ProjectID;
 
-		public DataRevisionName(string Path, bool IsServer, Guid ProjectID)
+		public DataRevisionName(string Path, bool IsServer, bool IsAwaitable, Guid ProjectID)
 		{
 			this.Path = Path;
 			this.IsServer = IsServer;
+			this.IsAwaitable = IsAwaitable;
 			this.ProjectID = ProjectID;
 		}
 	}

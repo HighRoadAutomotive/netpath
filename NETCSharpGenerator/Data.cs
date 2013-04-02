@@ -85,8 +85,8 @@ namespace NETPath.Generators.NET.CS
 			if (DRS == null || !DRS.Any()) return "";
 			var code = new StringBuilder();
 			foreach (var drs in DRS.Where(d => d.IsServer == IsServer))
-				if (!IsServer && Globals.CurrentProjectID == drs.ProjectID) code.Append(string.Format("{0}Proxy.Current.Update{1}{2}DRE(t.{3}, n); ", drs.Path, Class, Property, DCMID.HasClientType ? DCMID.ClientName : DCMID.DataName));
-				else if (IsServer) code.Append(string.Format("{0}Base.CallbackUpdate{1}{2}DRE(t.{3}, n); ", drs.Path, Class, Property, DCMID.DataName));
+				if (!IsServer && Globals.CurrentProjectID == drs.ProjectID) code.Append(string.Format("{0}Proxy.Current.Update{1}{2}DRE{4}(t.{3}, n); ", drs.Path, Class, Property, DCMID.HasClientType ? DCMID.ClientName : DCMID.DataName, drs.IsAwaitable ? "Async" : ""));
+				else if (IsServer) code.Append(string.Format("{0}Base.CallbackUpdate{1}{2}DRE{4}(t.{3}, n); ", drs.Path, Class, Property, DCMID.DataName, drs.IsAwaitable ? "Async" : ""));
 			return code.ToString();
 		}
 
