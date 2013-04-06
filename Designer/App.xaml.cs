@@ -51,7 +51,7 @@ namespace NETPath
 				}
 			}
 
-			Globals.InitializeCodeGenerators("NgAAAR34yUVouM0B89nN/6JGzgGHo04qSoBnf8S47pP6T/Awg2aOLNXVHFlxYaTAmetprPIDC9YxTuDJsAf3Er3NdiI=");
+			Globals.InitializeCodeGenerators("NgAAAVKb1dSPMM4BgC7KbyR4zgFNG/5h+9s3tmGvwerMnzfvh7MoEFx9eEY02pTdvOE2lu7yrZxnu/oGXVgjPNa01zM=");
 		}
 
 		private void Application_Exit(object sender, ExitEventArgs e)
@@ -79,9 +79,9 @@ namespace NETPath
 			var pfd = new Dictionary<string, byte[]>();
 			if (Globals.Solution != null)
 			{
-				pfd.Add(Path.GetFileName(Globals.Solution.AbsolutePath) ?? Globals.Solution.Name + ".was", Projects.Solution.Dump(Globals.Solution));
+				pfd.Add(Path.GetFileName(Globals.Solution.AbsolutePath) ?? Globals.Solution.Name + ".nps", Projects.Solution.Dump(Globals.Solution));
 				foreach (Projects.Project p in Globals.Projects)
-					pfd.Add(Path.GetFileName(p.AbsolutePath) ?? p.Name + ".wap", Projects.Project.Dump(p));
+					pfd.Add(Path.GetFileName(p.AbsolutePath) ?? p.Name + ".npp", Projects.Project.Dump(p));
 			}
 
 			var nr = new Interface.Dialogs.ReportError(e.Exception, ms.ToArray(), pfd);

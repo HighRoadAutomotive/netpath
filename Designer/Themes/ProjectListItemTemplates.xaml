@@ -8,6 +8,7 @@
 	</ResourceDictionary.MergedDictionaries>
 
 	<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
+	<pc:NotBoolVisibilityConverter x:Key="NotBoolVisibilityConverter" />
 	
 	<SolidColorBrush x:Key="MouseOverContainerColor" Color="#33FFFFFF" />
 	<SolidColorBrush x:Key="PressedContainerColor" Color="#33000000" />
@@ -83,7 +84,6 @@
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
-		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>
 		<Setter Property="Background" Value="{StaticResource ServiceContainerColor}"/>
 		<Setter Property="BorderBrush" Value="{StaticResource DefaultBorderColor}"/>
 		<Setter Property="IsChecked" Value="{Binding Path=IsTreeExpanded}" />
@@ -146,13 +146,12 @@
 			</StackPanel>
 			<TextBlock Text="{Binding Path=Declaration, StringFormat='Server: {0}'}" Grid.Row="1" Margin="20,0,0,0" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 			<TextBlock Text="{Binding Path=ClientType.Declaration, StringFormat='Client: {0}'}" Grid.Row="2" Margin="20,0,0,0" Visibility="{Binding Path=HasClientType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-		</StackPanel>
+	</StackPanel>
 	</DataTemplate>
 
 	
 	<!-- Data Templates -->
 	<Style x:Key="DataContainerTemplate" TargetType="{x:Type ToggleButton}">
-		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>

@@ -13,6 +13,7 @@ using System.Windows.Threading;
 using System.Xml;
 using NETPath.Projects;
 using NETPath.Generators.Interfaces;
+using Prospective.Controls.Dialogs;
 
 namespace NETPath
 {
@@ -62,8 +63,27 @@ namespace NETPath
 			if (NavWindow.ErrorCount == 0) NavWindow.ErrorCount = null;
 			OutputBlock.Inlines.Add(new Run(string.Format("====== Finished Project: {0} ======", NavWindow.Project.Name)));
 		}
-
+		
+		public async static void BuildProject(Projects.Project project)
+		{
+			IGenerator NET = Globals.NETGenerator;
+			IGenerator WinRT = Globals.WinRTGenerator;
 	
+			//Rebuild DRE Service name lists
+			RebuildDREServiceList();
+
+			//Run project code generation
+			if (NET.IsInitialized && WinRT.IsInitialized)
+			{
+				await NET.BuildAsync(project);
+				if (project.ClientGenerationTargets.Any(a => a.Framework == ProjectGenerationFramework.WIN8)) await WinRT.BuildAsync(project, true);
+			}
+			else if (WinRT.IsInitialized)
+				await WinRT.BuildAsync(project);
+			else
+				DialogService.ShowMessageDialog("COMPILER", "FATAL ERROR: Unable to initialize any code generators.", "NETPath was unable to initialize any code generators. This is usually caused by a corrupted installation or an invalid license. Please reinstall the software to continue.");
+		}
+		
 		public void GeneratorOutput(string output)
 		{
 			if (string.IsNullOrEmpty(output)) return;

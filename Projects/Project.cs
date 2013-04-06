@@ -362,6 +362,7 @@ namespace NETPath.Projects
 
 		public void SetSelected(DataType Type, Namespace ns = null)
 		{
+			if (Type == null) return;
 			if (ns == null) ns = Namespace;
 			Type tt = Type.GetType();
 

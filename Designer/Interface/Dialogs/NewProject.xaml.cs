@@ -48,8 +48,8 @@ namespace NETPath.Interface.Dialogs
 			sfd.InitialDirectory = openpath;
 			sfd.ShowPlacesList = true;
 			sfd.DefaultFileName = NewProjectName.Text;
-			sfd.DefaultExtension = ".wap";
-			sfd.Filters.Add(new Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogFilter("NETPath Project Files", ".wap"));
+			sfd.DefaultExtension = ".npp";
+			sfd.Filters.Add(new Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogFilter("NETPath Project Files", ".npp"));
 			if (sfd.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel) return;
 			FileName = sfd.FileName;
 

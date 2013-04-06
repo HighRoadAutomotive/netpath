@@ -18,6 +18,7 @@
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
 	</Grid.RowDefinitions>
 	<TextBlock Text="{Binding Path=PropertyData.Declaration}" FontSize="14pt" Margin="0,5" Grid.Row="0" />
 	<Label Grid.Row="1" Content="Data Type:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="80" />
@@ -40,5 +41,6 @@
 			<ComboBoxItem Content="Encrypt and Sign" />
 		</ComboBox>
 	</Grid>
-	<Docs:Standard Grid.Row="5" Margin="0,5,0,0" IsProperty="True" MinHeight="200" Documentation="{Binding Path=PropertyData.Documentation}" />
+	<Label Grid.Row="5" Content="Documentation" FontSize="12pt" Margin="0,5,0,0" />
+	<Docs:Standard Grid.Row="6" Margin="0,5,0,0" IsProperty="True" MinHeight="200" Documentation="{Binding Path=PropertyData.Documentation}" />
 </Grid>

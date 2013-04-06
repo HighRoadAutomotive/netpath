@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
+using NETPath.Interface;
 using Prospective.Controls.Dialogs;
 using NETPath.Projects;
 using NETPath.Generators.Interfaces;
@@ -183,6 +184,12 @@ namespace NETPath
 
 				InitializeDependencies(dp.Project);
 			}
+		}
+
+		public static void BuildSolution()
+		{
+			foreach (Project p in Projects)
+				Compiler.BuildProject(p);
 		}
 
 		public static void SaveSolution(bool SaveProjects)

@@ -21,6 +21,7 @@
 
 	<!-- Font -->
 	<SolidColorBrush x:Key="DefaultFontColor" Color="#FFEBEBEB" />
+	<SolidColorBrush x:Key="SelectedFontColor" Color="#FF141414" />
 	<FontFamily x:Key="DefaultFontFamily">./#Segoe UI</FontFamily>
 	<FontWeight x:Key="DefaultFontWeight">Normal</FontWeight>
 	<SolidColorBrush x:Key="DisabledFontColor" Color="#FFAAAAAA" />
@@ -34,7 +35,7 @@
 	<SolidColorBrush x:Key="FocusedBorderColor" Color="#FF777777" />
 	<SolidColorBrush x:Key="DefaultBackgroundColor" Color="#33FFFFFF" />
 	<SolidColorBrush x:Key="MouseOverBackgroundColor" Color="#44FFFFFF" />
-	<SolidColorBrush x:Key="FocusedBackgroundColor" Color="#55FFFFFF" />
+	<SolidColorBrush x:Key="FocusedBackgroundColor" Color="#66FFFFFF" />
 	<SolidColorBrush x:Key="PressedBackgroundColor" Color="#22FFFFFF" />
 	<SolidColorBrush x:Key="DisabledBackgroundColor" Color="#11FFFFFF" />
 	<SolidColorBrush x:Key="DisabledBorderColor" Color="#33FFFFFF" />

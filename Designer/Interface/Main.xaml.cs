@@ -121,6 +121,7 @@ namespace NETPath.Interface
 
 		private void CloseWindow_Click(object sender, RoutedEventArgs e)
 		{
+			HelpBrowser.Visibility = Visibility.Hidden;
 			Close();
 		}
 
@@ -157,9 +158,9 @@ namespace NETPath.Interface
 
 		private void SystemMenu_Click(object sender, RoutedEventArgs e)
 		{
-			SystemMenu.ContextMenu.PlacementTarget = SystemMenu;
-			SystemMenu.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
-			SystemMenu.ContextMenu.IsOpen = true;
+			SystemMenuHome.ContextMenu.PlacementTarget = SystemMenuHome;
+			SystemMenuHome.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+			SystemMenuHome.ContextMenu.IsOpen = true;
 		}
 
 		private void SystemMenuOpen_Click(object sender, RoutedEventArgs e)
@@ -169,7 +170,7 @@ namespace NETPath.Interface
 			//Select the project
 			var ofd = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog("Open Solution")
 			{
-				DefaultExtension = ".was",
+				DefaultExtension = ".nps",
 				AllowNonFileSystemItems = false,
 				EnsurePathExists = true,
 				IsFolderPicker = false,
@@ -180,6 +181,11 @@ namespace NETPath.Interface
 			if (ofd.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel) return;
 
 			OpenSolution(ofd.FileName);
+		}
+
+		private void SystemMenuBuild_Click(object sender, RoutedEventArgs e)
+		{
+			Globals.BuildSolution();
 		}
 
 		private void SystemMenuSave_Click(object sender, RoutedEventArgs e)
@@ -274,7 +280,7 @@ namespace NETPath.Interface
 			//Select the project
 			var ofd = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog("Select Project")
 			{
-				DefaultExtension = ".wap",
+				DefaultExtension = ".npp",
 				AllowNonFileSystemItems = false,
 				EnsurePathExists = true,
 				IsFolderPicker = false,
@@ -319,6 +325,17 @@ namespace NETPath.Interface
 				var nrpi = new RecentProjectItem(rp, false);
 				RecentProjectsList.Children.Add(nrpi);
 			}
+		}
+
+		private void HelpLink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+		{
+			var hlink = sender as Hyperlink;
+			if (hlink != null)
+			{
+				HelpBrowser.Navigate(hlink.NavigateUri);
+				HelpBrowser.Visibility = Visibility.Visible;
+			}
+			e.Handled = true;
 		}
 		
 		private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
@@ -455,8 +472,7 @@ namespace NETPath.Interface
 
 			AddProject.IsEnabled = true;
 			AddExistingProject.IsEnabled = true;
-			SystemMenuSave.IsEnabled = true;
-			SystemMenuClose.IsEnabled = true;
+			SystemProjectMenu.Visibility = Visibility.Visible;
 			Title = Globals.Solution.Name + " - NETPath 2 - BETA";
 		}
 
@@ -488,8 +504,7 @@ namespace NETPath.Interface
 			Globals.SolutionInfo = null;
 			AddProject.IsEnabled = false;
 			AddExistingProject.IsEnabled = false;
-			SystemMenuSave.IsEnabled = false;
-			SystemMenuClose.IsEnabled = false;
+			SystemProjectMenu.Visibility = Visibility.Collapsed;
 			Title = "NETPath 2 - BETA";
 
 			ActiveProjectScreen.Visibility = Visibility.Collapsed;

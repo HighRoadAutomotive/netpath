@@ -43,7 +43,7 @@ namespace NETPath.Compiler
 			PrintHeader();
 
 			const string vk = "AMAAMACnZigmLe9LpWcsYIBVFHYRZeUhr1oYyxDRFmL/qon4ijMx6X/xXyYldZs/A8Df9MsDAAEAAQ==";
-			var t = new CryptoLicense("NgAAAR34yUVouM0B89nN/6JGzgGHo04qSoBnf8S47pP6T/Awg2aOLNXVHFlxYaTAmetprPIDC9YxTuDJsAf3Er3NdiI=", vk);
+			var t = new CryptoLicense("NgAAAVKb1dSPMM4BgC7KbyR4zgFNG/5h+9s3tmGvwerMnzfvh7MoEFx9eEY02pTdvOE2lu7yrZxnu/oGXVgjPNa01zM=", vk);
 			if (t.Status != LicenseStatus.Valid)
 			{
 				Console.WriteLine("This copy of NETPath is BETA software and expired on {0}.", t.DateExpires.ToShortDateString());
@@ -60,9 +60,9 @@ namespace NETPath.Compiler
 			OpenProject = Project.Open(SolutionPath, ProjectPath);
 
 			IGenerator NET = Loader.LoadModule(GenerationModule.NET, GenerationLanguage.CSharp);
-			NET.Initialize("NgAAAR34yUVouM0B89nN/6JGzgGHo04qSoBnf8S47pP6T/Awg2aOLNXVHFlxYaTAmetprPIDC9YxTuDJsAf3Er3NdiI=", OutputHandler, AddMessage);
+			NET.Initialize("NgAAAVKb1dSPMM4BgC7KbyR4zgFNG/5h+9s3tmGvwerMnzfvh7MoEFx9eEY02pTdvOE2lu7yrZxnu/oGXVgjPNa01zM=", OutputHandler, AddMessage);
 			IGenerator WinRT = Loader.LoadModule(GenerationModule.WindowsRuntime, GenerationLanguage.CSharp);
-			WinRT.Initialize("NgAAAR34yUVouM0B89nN/6JGzgGHo04qSoBnf8S47pP6T/Awg2aOLNXVHFlxYaTAmetprPIDC9YxTuDJsAf3Er3NdiI=", OutputHandler, AddMessage);
+			WinRT.Initialize("NgAAAVKb1dSPMM4BgC7KbyR4zgFNG/5h+9s3tmGvwerMnzfvh7MoEFx9eEY02pTdvOE2lu7yrZxnu/oGXVgjPNa01zM=", OutputHandler, AddMessage);
 
 			//Run project code generation
 			if (NET.IsInitialized && WinRT.IsInitialized)

@@ -51,7 +51,7 @@ namespace NETPath.Interface.Project
 			//Select the project
 			var ofd = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog("Select Project")
 				          {
-							  DefaultExtension = ".wap",
+							  DefaultExtension = ".npp",
 					          AllowNonFileSystemItems = false,
 					          EnsurePathExists = true,
 					          IsFolderPicker = false,

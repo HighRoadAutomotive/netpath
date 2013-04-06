@@ -112,45 +112,48 @@
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="36" />
 					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="36" />
 					<ColumnDefinition Width="36" />
 					<ColumnDefinition Width="36" />
 				</Grid.ColumnDefinitions>
-				<Button x:Name="SystemMenu" Grid.Column="0" Style="{StaticResource WindowSystemButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenu_Click" >
-					<Button.ContextMenu>
-						<ContextMenu>
-							<MenuItem Header="Home" x:Name="SystemMenuHome" Click="SystemMenuHome_Click" />
-							<Separator/>
-							<MenuItem Header="Open" x:Name="SystemMenuOpen" Click="SystemMenuOpen_Click" />
-							<MenuItem Header="Save" x:Name="SystemMenuSave" Click="SystemMenuSave_Click" IsEnabled="False" />
-							<MenuItem Header="Close" x:Name="SystemMenuClose" Click="SystemMenuClose_Click" IsEnabled="False" />
-							<Separator/>
-							<MenuItem Header="Options" x:Name="SystemMenuOptions" Click="SystemMenuOptions_Click" />
-							<Separator/>
-							<MenuItem Header="Exit" x:Name="SystemMenuExit" Click="SystemMenuExit_Click" />
-						</ContextMenu>
-					</Button.ContextMenu>
+				<Button x:Name="SystemMenuHome" Grid.Column="0" Style="{StaticResource WindowSystemButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuHome_Click" ToolTip="NETPath Home" >
 					<Image Source="pack://application:,,,/NETPath;component/Icons/X32/LogoIcon.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="1" />
 				</Button>
-				<ItemsControl x:Name="ScreenButtons" Grid.Column="1" Margin="20,0" pc:WindowChrome.IsHitTestVisibleInChrome="True" >
+				<Button Grid.Column="1" Style="{StaticResource WindowSystemButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuOptions_Click" ToolTip="NETPath Options" >
+					<Image Source="pack://application:,,,/NETPath;component/Icons/X32/Options.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,1" />
+				</Button>
+				<StackPanel x:Name="SystemProjectMenu" Grid.Column="2" Margin="20,0,0,0" Orientation="Horizontal" Visibility="Collapsed" >
+					<Button Style="{StaticResource WindowSystemButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuBuild_Click" ToolTip="Build Solution" >
+						<Image Source="pack://application:,,,/NETPath;component/Icons/X32/BuildProject.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,1" />
+					</Button>
+					<Button Style="{StaticResource WindowSystemButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuSave_Click" ToolTip="Save Solution" >
+						<Image Source="pack://application:,,,/NETPath;component/Icons/X32/Save.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,1" />
+					</Button>
+					<Button Style="{StaticResource WindowSystemButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuClose_Click" ToolTip="Close Solution" >
+						<Image Source="pack://application:,,,/NETPath;component/Icons/X32/Close.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,1" />
+					</Button>
+				</StackPanel>
+				<ItemsControl x:Name="ScreenButtons" Grid.Column="3" Margin="20,0" pc:WindowChrome.IsHitTestVisibleInChrome="True" >
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>
 							<StackPanel Orientation="Horizontal" />
 						</ItemsPanelTemplate>
 					</ItemsControl.ItemsPanel>
 				</ItemsControl>
-				<Label Grid.Column="2" Content="{Binding Path=Title}" FontSize="14pt" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
-				<Button x:Name="MinimizeWindow" Grid.Column="3" Style="{StaticResource WindowControlButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="MinimizeWindow_Click">
+				<Label Grid.Column="4" Content="{Binding Path=Title}" FontSize="14pt" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+				<Button x:Name="MinimizeWindow" Grid.Column="5" Style="{StaticResource WindowControlButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="MinimizeWindow_Click">
 					<Image Source="pack://application:,,,/NETPath;component/Icons/WindowMinimize.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
 				</Button>
-				<Button x:Name="MaximizeWindow" Grid.Column="4" Visibility="Collapsed" Style="{StaticResource WindowControlButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="MaximizeWindow_Click">
+				<Button x:Name="MaximizeWindow" Grid.Column="6" Visibility="Collapsed" Style="{StaticResource WindowControlButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="MaximizeWindow_Click">
 					<Image Source="pack://application:,,,/NETPath;component/Icons/WindowMaximize.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
 				</Button>
-				<Button x:Name="RestoreWindow" Grid.Column="4" Style="{StaticResource WindowControlButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="RestoreWindow_Click">
+				<Button x:Name="RestoreWindow" Grid.Column="6" Style="{StaticResource WindowControlButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="RestoreWindow_Click">
 					<Image Source="pack://application:,,,/NETPath;component/Icons/WindowRestore.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
 				</Button>
-				<Button x:Name="CloseWindow" Grid.Column="5" Style="{StaticResource WindowControlButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="CloseWindow_Click">
+				<Button x:Name="CloseWindow" Grid.Column="7" Style="{StaticResource WindowControlButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="CloseWindow_Click">
 					<Image Source="pack://application:,,,/NETPath;component/Icons/WindowClose.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
 				</Button>
 			</Grid>
@@ -217,9 +220,23 @@
 							</Button>
 						</StackPanel>
 						<StackPanel Grid.Column="0" Grid.Row="2" Margin="5">
+							<TextBlock Text="Existing" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="0,0,0,10" />
+							<Button x:Name="OpenExistingProject" Margin="0,0,0,10" HorizontalContentAlignment="Left" Click="SystemMenuOpen_Click" >
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="Auto" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+									<Image Source="pack://application:,,,/NETPath;component/Icons/X64/Open.png" Margin="10,5" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="64" Width="64" Stretch="None" Grid.Column="0" />
+									<StackPanel Grid.Column="1" Margin="10">
+										<TextBlock Text="Open Solution" Foreground="Gray" FontSize="14pt" FontWeight="Bold" Padding="0"/>
+										<TextBlock Text="Opens an existing solution from the disk." Padding="0" TextWrapping="Wrap" FontSize="10pt" />
+									</StackPanel>
+								</Grid>
+							</Button>
 							<Border Name="ImportantProjectsBlock" Visibility="Collapsed">
 								<StackPanel>
-									<TextBlock Text="Important" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="0,0,0,10" />
+									<TextBlock Text="Important" Foreground="{StaticResource DefaultFontColor}" FontSize="14pt" Margin="0,0,0,10" />
 									<ScrollViewer VerticalScrollBarVisibility="Auto">
 										<StackPanel Name="ImportantProjectsList" />
 									</ScrollViewer>
@@ -227,7 +244,7 @@
 							</Border>
 							<Border Name="RecentProjectsBlock">
 								<StackPanel>
-									<TextBlock Text="Recent" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="0,0,0,10" />
+									<TextBlock Text="Recent" Foreground="{StaticResource DefaultFontColor}" FontSize="14pt" Margin="0,0,0,10" />
 									<ScrollViewer VerticalScrollBarVisibility="Auto">
 										<StackPanel Name="RecentProjectsList" />
 									</ScrollViewer>
@@ -239,28 +256,60 @@
 								<TabItem.Header>
 									<TextBlock Text="GETTING STARTED" FontSize="12pt"/>
 								</TabItem.Header>
-								<FlowDocumentScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" >
-									<FlowDocument FontFamily="Segoe UI" FontSize="12pt">
-										<Paragraph>
-											<Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/Introduction" RequestNavigate="Hyperlink_RequestNavigate">Introduction</Hyperlink>
-										</Paragraph>
-										<Paragraph>
-											<Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/Solutions+and+Projects" RequestNavigate="Hyperlink_RequestNavigate">Solutions and Projects</Hyperlink>
-										</Paragraph>
-										<List>
-											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/Creating+A+Solution" RequestNavigate="Hyperlink_RequestNavigate">Creating a Solution</Hyperlink></Paragraph></ListItem>
-											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/Adding+a+Project+to+a+Solution" RequestNavigate="Hyperlink_RequestNavigate">Adding Project to a Solution</Hyperlink></Paragraph></ListItem>
-											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/The+Project+Navigator" RequestNavigate="Hyperlink_RequestNavigate">The Project Navigator</Hyperlink></Paragraph></ListItem>
-											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/Configuring+a+Project" RequestNavigate="Hyperlink_RequestNavigate">Configuring a Project</Hyperlink></Paragraph></ListItem>
-										</List>
-										<Paragraph>
-											<Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/Creating+a+Service" RequestNavigate="Hyperlink_RequestNavigate">Creating A Service</Hyperlink>
-										</Paragraph>
-										<List>
-											<ListItem><Paragraph><Hyperlink NavigateUri="http://support.prospectivesoftware.net/display/NPDOC/Enumeration+Contracts" RequestNavigate="Hyperlink_RequestNavigate">Enumeration Contracts</Hyperlink></Paragraph></ListItem>
-										</List>
-									</FlowDocument>
-								</FlowDocumentScrollViewer>
+								<DockPanel LastChildFill="True">
+									<TabControl DockPanel.Dock="Top" HorizontalAlignment="Stretch" TabStripPlacement="Left">
+										<TabItem Header="NETPath Basics">
+											<ListBox BorderThickness="0" Background="Transparent" Margin="0" SelectionMode="Single" Padding="-1,0" FontSize="12pt" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" VirtualizingStackPanel.IsVirtualizing="False" >
+												<ListBox.ItemsPanel>
+													<ItemsPanelTemplate>
+														<StackPanel Orientation="Horizontal" />
+													</ItemsPanelTemplate>
+												</ListBox.ItemsPanel>
+												<ListBoxItem Padding="10" VerticalContentAlignment="Top">
+													<StackPanel Orientation="Vertical">
+														<TextBlock Margin="0,0,0,10" FontSize="14pt"><Hyperlink NavigateUri="http://support.prospectivesoftware.net/x/BwA1" RequestNavigate="HelpLink_RequestNavigate">Solutions and Projects</Hyperlink></TextBlock>
+														<TextBlock Margin="20,0,0,0" LineHeight="24">
+														<Run>•</Run> <Hyperlink NavigateUri="http://support.prospectivesoftware.net/x/CAA1" RequestNavigate="HelpLink_RequestNavigate">Creating a Solution</Hyperlink><LineBreak/>
+														<Run>•</Run> <Hyperlink NavigateUri="http://support.prospectivesoftware.net/x/CQA1" RequestNavigate="HelpLink_RequestNavigate">Adding Project to a Solution</Hyperlink><LineBreak/>
+														<Run>•</Run> <Hyperlink NavigateUri="http://support.prospectivesoftware.net/x/CgA1" RequestNavigate="HelpLink_RequestNavigate">The Project Navigator</Hyperlink><LineBreak/>
+														<Run>•</Run> <Hyperlink NavigateUri="http://support.prospectivesoftware.net/x/CwA1" RequestNavigate="HelpLink_RequestNavigate">Configuring a Project</Hyperlink>
+														</TextBlock>
+													</StackPanel>
+												</ListBoxItem>
+												<ListBoxItem Padding="10" VerticalContentAlignment="Top">
+													<StackPanel Orientation="Vertical">
+														<TextBlock Margin="0,0,0,10" FontSize="14pt"><Hyperlink NavigateUri="http://support.prospectivesoftware.net/x/DAA1" RequestNavigate="HelpLink_RequestNavigate">Creating A Service</Hyperlink></TextBlock>
+														<TextBlock Margin="20,0,0,0" LineHeight="24">
+														<Run>•</Run> <Hyperlink NavigateUri="http://support.prospectivesoftware.net/x/LAA1" RequestNavigate="HelpLink_RequestNavigate">Enumeration Contracts</Hyperlink><LineBreak/>
+														<Run>•</Run> <Hyperlink NavigateUri="http://support.prospectivesoftware.net/x/IYBY" RequestNavigate="HelpLink_RequestNavigate">Data Contracts</Hyperlink><LineBreak/>
+														<Run>•</Run> <Hyperlink NavigateUri="http://support.prospectivesoftware.net/x/JIBY" RequestNavigate="HelpLink_RequestNavigate">Service Contracts</Hyperlink><LineBreak/>
+														<Run>•</Run> <Hyperlink NavigateUri="http://support.prospectivesoftware.net/x/J4BY" RequestNavigate="HelpLink_RequestNavigate">Namespaces</Hyperlink>
+														</TextBlock>
+													</StackPanel>
+												</ListBoxItem>
+											</ListBox>
+										</TabItem>
+										<TabItem Header="Advanced Features">
+											<ListBox BorderThickness="0" Background="Transparent" Margin="0" SelectionMode="Single" Padding="-1,0" FontSize="12pt" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" VirtualizingStackPanel.IsVirtualizing="False" >
+												<ListBox.ItemsPanel>
+													<ItemsPanelTemplate>
+														<StackPanel Orientation="Horizontal" />
+													</ItemsPanelTemplate>
+												</ListBox.ItemsPanel>
+											</ListBox>
+										</TabItem>
+										<TabItem Header="Software Development Kit">
+											<ListBox BorderThickness="0" Background="Transparent" Margin="0" SelectionMode="Single" Padding="-1,0" FontSize="12pt" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" VirtualizingStackPanel.IsVirtualizing="False" >
+												<ListBox.ItemsPanel>
+													<ItemsPanelTemplate>
+														<StackPanel Orientation="Horizontal" />
+													</ItemsPanelTemplate>
+												</ListBox.ItemsPanel>
+											</ListBox>
+										</TabItem>
+									</TabControl>
+									<WebBrowser x:Name="HelpBrowser" UseLayoutRounding="True" Visibility="Hidden" />
+								</DockPanel>
 							</TabItem>
 							<TabItem>
 								<TabItem.Header>
@@ -283,11 +332,11 @@
 														<ColumnDefinition Width="Auto" />
 													</Grid.ColumnDefinitions>
 													<TextBlock Grid.Column="0">
-														<Hyperlink NavigateUri="{Binding XPath=link}" RequestNavigate="Hyperlink_RequestNavigate" ><TextBlock Text="{Binding XPath=title}" FontSize="16pt" Style="{StaticResource HyperlinkTextBlock}"/></Hyperlink>
+														<Hyperlink NavigateUri="{Binding XPath=link}" RequestNavigate="HelpLink_RequestNavigate" ><TextBlock Text="{Binding XPath=title}" FontSize="16pt" Style="{StaticResource HyperlinkTextBlock}"/></Hyperlink>
 													</TextBlock>
 													<TextBlock Text="{Binding XPath=pubDate, StringFormat={}{0: MMMM dd, yyyy HH:mm}, Converter={StaticResource XmlDateConverter}}" Foreground="{StaticResource DefaultFontColor}" FontSize="10pt" TextWrapping="NoWrap" Grid.Column="1"/>
 												</Grid>
-												<TextBlock Text="{Binding XPath=description}" Foreground="{StaticResource DefaultFontColor}" FontSize="12pt" TextWrapping="Wrap"/>
+												<TextBlock Margin="40,0,20,10" Text="{Binding XPath=description}" Foreground="{StaticResource DefaultFontColor}" FontSize="12pt" TextWrapping="Wrap"/>
 											</StackPanel>
 										</DataTemplate>
 									</ListBox.ItemTemplate>
@@ -378,12 +427,12 @@
 									<TextBlock Text="NETPath makes use of the open-source Oxygen Icons. Due to the licensing of these icons we are required to post the modified versions of these icons for download on our website. You can use the link below to download the icons or you can head over the Open Icon Library project to download the unaltered icons." Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" Margin="0,10,0,5" Grid.Row="1" />
 									<TextBlock Text="Windows is a registered trademark of Microsoft Corporation in the United States and other countries." Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" Margin="0,10,0,5" Grid.Row="2" />
 									<TextBlock Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" Margin="0,5,0,5" Grid.Row="3" Padding="4,0">
-										<Hyperlink Name="MILink" NavigateUri="http://www.prospectivesoftware.com/architect/downloads/ModifiedIcons.zip" RequestNavigate="Hyperlink_RequestNavigate" >
+										<Hyperlink Name="MILink" NavigateUri="http://www.prospectivesoftware.com/architect/downloads/ModifiedIcons.zip" RequestNavigate="HelpLink_RequestNavigate" >
 											Download the Modified Oxygen Icons
 										</Hyperlink>
 									</TextBlock>
 									<TextBlock Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" Margin="0,5,0,5" Grid.Row="4" Padding="4,0">
-										<Hyperlink Name="OILLink" NavigateUri="http://openiconlibrary.sourceforge.net/" RequestNavigate="Hyperlink_RequestNavigate">
+										<Hyperlink Name="OILLink" NavigateUri="http://openiconlibrary.sourceforge.net/" RequestNavigate="HelpLink_RequestNavigate">
 											Visit the Open Icon Library and download the Oxygen Icon Theme
 										</Hyperlink>
 									</TextBlock>

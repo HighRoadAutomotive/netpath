@@ -320,7 +320,7 @@
 				</TabItem>
 				<TabItem Padding="10,5">
 					<TabItem.Header>
-						<TextBlock Text="DOcumentation" FontSize="12pt"/>
+						<TextBlock Text="Documentation" FontSize="12pt"/>
 					</TabItem.Header>
 					<Docs:Class Margin="5" Documentation="{Binding Path=ServiceType.ServiceDocumentation}" />
 				</TabItem>

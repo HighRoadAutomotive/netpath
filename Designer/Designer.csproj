@@ -923,6 +923,15 @@
   <ItemGroup>
     <Resource Include="Icons\X16\UDP.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\X32\Close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\X32\Options.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\X64\Open.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

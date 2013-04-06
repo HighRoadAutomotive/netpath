@@ -45,8 +45,8 @@ namespace NETPath.Interface.Dialogs
 			sfd.InitialDirectory = openpath;
 			sfd.ShowPlacesList = true;
 			sfd.DefaultFileName = NewSolutionOptionsName.Text;
-			sfd.DefaultExtension = ".was";
-			sfd.Filters.Add(new Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogFilter("NETPath Solution Files", ".was"));
+			sfd.DefaultExtension = ".nps";
+			sfd.Filters.Add(new Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogFilter("NETPath Solution Files", ".nps"));
 			if (sfd.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel) return;
 			FileName = sfd.FileName;
 
