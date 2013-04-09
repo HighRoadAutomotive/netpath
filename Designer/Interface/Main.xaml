@@ -452,26 +452,29 @@
 										<RowDefinition Height="Auto" />
 										<RowDefinition Height="Auto" />
 										<RowDefinition Height="Auto" />
-										<RowDefinition Height="Auto" />
 									</Grid.RowDefinitions>
-									<TextBlock Text="Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it, may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law." Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" />
-									<TextBlock Text="NETPath makes use of the open-source Oxygen Icons. Due to the licensing of these icons we are required to post the modified versions of these icons for download on our website. You can use the link below to download the icons or you can head over the Open Icon Library project to download the unaltered icons." Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" Margin="0,10,0,5" Grid.Row="1" />
-									<TextBlock Text="Windows is a registered trademark of Microsoft Corporation in the United States and other countries." Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" Margin="0,10,0,5" Grid.Row="2" />
-									<TextBlock Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" Margin="0,5,0,5" Grid.Row="3" Padding="4,0">
-										<Hyperlink Name="MILink" NavigateUri="http://www.prospectivesoftware.com/architect/downloads/ModifiedIcons.zip" RequestNavigate="HelpLink_RequestNavigate" >
-											Download the Modified Oxygen Icons
+									<TextBlock Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" Margin="0,5,0,5" Grid.Row="0" Padding="4,0">
+										Do you have a new idea or feature request that you would just love to see in NETPath? We'd love to hear from you:<LineBreak />
+										<Hyperlink Name="SLink" NavigateUri="http://support.prospectivesoftware.net/" RequestNavigate="SLink_RequestNavigate">
+											Prospective Software Feature Request and Issue Reporting Tool
 										</Hyperlink>
 									</TextBlock>
-									<TextBlock Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" Margin="0,5,0,5" Grid.Row="4" Padding="4,0">
-										<Hyperlink Name="OILLink" NavigateUri="http://openiconlibrary.sourceforge.net/" RequestNavigate="HelpLink_RequestNavigate">
+									<TextBlock Text="Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it, may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law." Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" Grid.Row="1" />
+									<TextBlock Text="Windows is a registered trademark of Microsoft Corporation in the United States and other countries." Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" Margin="0,10,0,5" Grid.Row="2" />
+									<TextBlock Text="" Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" Margin="0,10,0,5" Grid.Row="3">
+										NETPath makes use of the open-source Oxygen Icons. Due to the licensing of these icons we are required to post the modified versions of these icons for download on our website. You can use the link below to download the icons or you can head over the Open Icon Library project to download the unaltered icons. <LineBreak/>
+										<Hyperlink NavigateUri="http://downloads.prospectivesoftware.com/netpath/2.0/ModifiedIcons.zip" RequestNavigate="Hyperlink_RequestNavigate" >
+											Download the Modified Oxygen Icons
+										</Hyperlink><LineBreak />
+										<Hyperlink NavigateUri="http://openiconlibrary.sourceforge.net/" RequestNavigate="Hyperlink_RequestNavigate">
 											Visit the Open Icon Library and download the Oxygen Icon Theme
 										</Hyperlink>
 									</TextBlock>
-									<TextBlock Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" Margin="0,5,0,5" Grid.Row="5" Padding="4,0">
-										Do you have a new idea or feature request that you would just love to see in NETPath? We'd love to hear from you:<LineBreak />
-										<Hyperlink Name="SLink" NavigateUri="http://support.prospectivesoftware.net" RequestNavigate="SLink_RequestNavigate">
-											Prospective Software Feature Request and Issue Reporting Tool
-										</Hyperlink>
+									<TextBlock Text="NETPath makes use of the follow open-source projects" Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" Margin="0,10,0,5" Grid.Row="4" >
+										NETPath makes use of the follow open-source projects:<LineBreak/>
+										<Hyperlink NavigateUri="https://github.com/prospectivesoftware/netpathsdk/" RequestNavigate="Hyperlink_RequestNavigate">NETPath SDK</Hyperlink> Copyright 2013 Prospective Software<LineBreak />
+										<Hyperlink NavigateUri="https://github.com/prospectivesoftware/systemutilities/" RequestNavigate="Hyperlink_RequestNavigate">System.Utilities</Hyperlink> Copyright 2013 Prospective Software<LineBreak />
+										<Hyperlink NavigateUri="https://code.google.com/p/protobuf-net/" RequestNavigate="Hyperlink_RequestNavigate">ProtoBuf-Net</Hyperlink> Copyright 2008 Marc Gravell
 									</TextBlock>
 								</Grid>
 							</StackPanel>
