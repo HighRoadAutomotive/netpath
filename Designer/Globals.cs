@@ -188,8 +188,10 @@ namespace NETPath
 
 		public static void BuildSolution()
 		{
-			foreach (Project p in Projects)
-				Compiler.BuildProject(p);
+			MainScreen.IsBuilding = true;
+			foreach (var p in Compilers)
+				p.Value.Build();
+			MainScreen.IsBuilding = false;
 		}
 
 		public static void SaveSolution(bool SaveProjects)

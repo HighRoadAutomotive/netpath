@@ -29,6 +29,9 @@ namespace NETPath.Interface
 		public UserProfile UserProfile { get { return (UserProfile)GetValue(UserProfileProperty); } set { SetValue(UserProfileProperty, value); } }
 		public static readonly DependencyProperty UserProfileProperty = DependencyProperty.Register("UserProfile", typeof(UserProfile), typeof(Main));
 
+		public bool IsBuilding { get { return (bool)GetValue(IsBuildingProperty); } set { SetValue(IsBuildingProperty, value); } }
+		public static readonly DependencyProperty IsBuildingProperty = DependencyProperty.Register("IsBuilding", typeof(bool), typeof(Main), new PropertyMetadata(false));
+
 		private SaveCloseMode CloseMode { get; set; }
 
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static readonly RoutedCommand SelectProjectCommand = new RoutedCommand();

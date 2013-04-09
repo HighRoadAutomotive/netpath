@@ -7,6 +7,7 @@
 		xmlns:c1datetime="clr-namespace:C1.WPF.DateTimeEditors;assembly=C1.WPF.DateTimeEditors.4"
 		xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 		xmlns:local="clr-namespace:NETPath.Interface"
+		xmlns:apm="clr-namespace:ActiproSoftware.Windows.Media.Animation;assembly=ActiproSoftware.Shared.Wpf"
 		Icon="pack://application:,,,/NETPath;component/Icons/DesignStudio.ico" 
 		mc:Ignorable="d" d:DesignHeight="980" d:DesignWidth="1280"
 		Title="NETPath 2 - BETA" MinHeight="980" MinWidth="1280" DataContext="{Binding RelativeSource={RelativeSource Self}}" Style="{StaticResource MainWindowStyle}"
@@ -17,7 +18,9 @@
 	</pc:WindowChrome.WindowChrome>
 	<Window.Resources>
 	<ResourceDictionary>
+		<apm:SlideTransition Mode="Out" IsFromContentPushed="True" x:Key="HeaderTransition" />
 		<pc:UriToBitmapImageConverter x:Key="UriToBitmapImageConverter" />
+		<pc:StripHTMLConverter x:Key="StripHTMLConverter"/>
 		<Style x:Key="{x:Type local:RecentProjectItem}" TargetType="{x:Type local:RecentProjectItem}">
 			<Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}" />
 			<Setter Property="BorderBrush" Value="Transparent" />
@@ -143,7 +146,12 @@
 						</ItemsPanelTemplate>
 					</ItemsControl.ItemsPanel>
 				</ItemsControl>
-				<Label Grid.Column="4" Content="{Binding Path=Title}" FontSize="14pt" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+				<apm:ToggleTransitionPresenter Grid.Column="4" DefaultDirection="Down" Transition="{StaticResource HeaderTransition}" IsAlternateContentVisible="{Binding Path=IsBuilding}" >
+					<Label Content="{Binding Path=Title}" FontSize="14pt" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+					<apm:ToggleTransitionPresenter.AlternateContent>
+						<Label Content="Building..." FontSize="14pt" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+					</apm:ToggleTransitionPresenter.AlternateContent>
+				</apm:ToggleTransitionPresenter>
 				<Button x:Name="MinimizeWindow" Grid.Column="5" Style="{StaticResource WindowControlButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="MinimizeWindow_Click">
 					<Image Source="pack://application:,,,/NETPath;component/Icons/WindowMinimize.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
 				</Button>
@@ -267,24 +275,30 @@
 												</ListBox.ItemsPanel>
 												<ListBoxItem Padding="10" VerticalContentAlignment="Top">
 													<StackPanel Orientation="Vertical">
-														<TextBlock Margin="0,0,0,10" FontSize="14pt"><Hyperlink NavigateUri="http://support.prospectivesoftware.net/x/BwA1" RequestNavigate="HelpLink_RequestNavigate">Solutions and Projects</Hyperlink></TextBlock>
+														<TextBlock Margin="0,0,0,10" FontSize="14pt"><Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/BwA1" RequestNavigate="HelpLink_RequestNavigate">Solutions and Projects</Hyperlink></TextBlock>
 														<TextBlock Margin="20,0,0,0" LineHeight="24">
-														<Run>•</Run> <Hyperlink NavigateUri="http://support.prospectivesoftware.net/x/CAA1" RequestNavigate="HelpLink_RequestNavigate">Creating a Solution</Hyperlink><LineBreak/>
-														<Run>•</Run> <Hyperlink NavigateUri="http://support.prospectivesoftware.net/x/CQA1" RequestNavigate="HelpLink_RequestNavigate">Adding Project to a Solution</Hyperlink><LineBreak/>
-														<Run>•</Run> <Hyperlink NavigateUri="http://support.prospectivesoftware.net/x/CgA1" RequestNavigate="HelpLink_RequestNavigate">The Project Navigator</Hyperlink><LineBreak/>
-														<Run>•</Run> <Hyperlink NavigateUri="http://support.prospectivesoftware.net/x/CwA1" RequestNavigate="HelpLink_RequestNavigate">Configuring a Project</Hyperlink>
+														<Run>•</Run> <Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/CAA1" RequestNavigate="HelpLink_RequestNavigate">Creating a Solution</Hyperlink><LineBreak/>
+														<Run>•</Run> <Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/CQA1" RequestNavigate="HelpLink_RequestNavigate">Adding Project to a Solution</Hyperlink><LineBreak/>
+														<Run>•</Run> <Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/CgA1" RequestNavigate="HelpLink_RequestNavigate">The Project Navigator</Hyperlink><LineBreak/>
+														<Run>•</Run> <Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/CwA1" RequestNavigate="HelpLink_RequestNavigate">Configuring a Project</Hyperlink>
 														</TextBlock>
 													</StackPanel>
 												</ListBoxItem>
 												<ListBoxItem Padding="10" VerticalContentAlignment="Top">
 													<StackPanel Orientation="Vertical">
-														<TextBlock Margin="0,0,0,10" FontSize="14pt"><Hyperlink NavigateUri="http://support.prospectivesoftware.net/x/DAA1" RequestNavigate="HelpLink_RequestNavigate">Creating A Service</Hyperlink></TextBlock>
+														<TextBlock Margin="0,0,0,10" FontSize="14pt"><Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/DAA1" RequestNavigate="HelpLink_RequestNavigate">Creating A Service</Hyperlink></TextBlock>
 														<TextBlock Margin="20,0,0,0" LineHeight="24">
-														<Run>•</Run> <Hyperlink NavigateUri="http://support.prospectivesoftware.net/x/LAA1" RequestNavigate="HelpLink_RequestNavigate">Enumeration Contracts</Hyperlink><LineBreak/>
-														<Run>•</Run> <Hyperlink NavigateUri="http://support.prospectivesoftware.net/x/IYBY" RequestNavigate="HelpLink_RequestNavigate">Data Contracts</Hyperlink><LineBreak/>
-														<Run>•</Run> <Hyperlink NavigateUri="http://support.prospectivesoftware.net/x/JIBY" RequestNavigate="HelpLink_RequestNavigate">Service Contracts</Hyperlink><LineBreak/>
-														<Run>•</Run> <Hyperlink NavigateUri="http://support.prospectivesoftware.net/x/J4BY" RequestNavigate="HelpLink_RequestNavigate">Namespaces</Hyperlink>
+														<Run>•</Run> <Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/LAA1" RequestNavigate="HelpLink_RequestNavigate">Enumeration Contracts</Hyperlink><LineBreak/>
+														<Run>•</Run> <Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/IYBY" RequestNavigate="HelpLink_RequestNavigate">Data Contracts</Hyperlink><LineBreak/>
+														<Run>•</Run> <Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/JIBY" RequestNavigate="HelpLink_RequestNavigate">Service Contracts</Hyperlink><LineBreak/>
+														<Run>•</Run> <Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/J4BY" RequestNavigate="HelpLink_RequestNavigate">Namespaces</Hyperlink>
 														</TextBlock>
+													</StackPanel>
+												</ListBoxItem>
+												<ListBoxItem Padding="10" VerticalContentAlignment="Top">
+													<StackPanel Orientation="Vertical">
+														<TextBlock Margin="0,0,0,10" FontSize="14pt"><Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/aYBY" RequestNavigate="HelpLink_RequestNavigate">Service Hosts</Hyperlink></TextBlock>
+														<TextBlock Margin="0,0,0,10" FontSize="14pt"><Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/YYBY" RequestNavigate="HelpLink_RequestNavigate">Bindings and Security</Hyperlink></TextBlock>
 													</StackPanel>
 												</ListBoxItem>
 											</ListBox>
@@ -296,6 +310,15 @@
 														<StackPanel Orientation="Horizontal" />
 													</ItemsPanelTemplate>
 												</ListBox.ItemsPanel>
+												<ListBoxItem Padding="10" VerticalContentAlignment="Top">
+													<StackPanel Orientation="Vertical">
+														<TextBlock Margin="0,0,0,10" FontSize="12pt"><Run>•</Run> <Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/OoBY" RequestNavigate="HelpLink_RequestNavigate">Concurrently Mutable Data</Hyperlink></TextBlock>
+														<TextBlock Margin="0,0,0,10" FontSize="12pt"><Run>•</Run> <Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/PoBY" RequestNavigate="HelpLink_RequestNavigate">Data Revision Exchange</Hyperlink></TextBlock>
+														<TextBlock Margin="0,0,0,10" FontSize="12pt"><Run>•</Run> <Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/QIBY" RequestNavigate="HelpLink_RequestNavigate">XAML Integration</Hyperlink></TextBlock>
+														<TextBlock Margin="0,0,0,10" FontSize="12pt"><Run>•</Run> <Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/Q4BY" RequestNavigate="HelpLink_RequestNavigate">WCF REST</Hyperlink></TextBlock>
+														<TextBlock Margin="0,0,0,10" FontSize="12pt"><Run>•</Run> <Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/RYBY" RequestNavigate="HelpLink_RequestNavigate">Protocol Buffers</Hyperlink></TextBlock>
+													</StackPanel>
+												</ListBoxItem>
 											</ListBox>
 										</TabItem>
 										<TabItem Header="Software Development Kit">
@@ -305,6 +328,14 @@
 														<StackPanel Orientation="Horizontal" />
 													</ItemsPanelTemplate>
 												</ListBox.ItemsPanel>
+												<ListBoxItem Padding="10" VerticalContentAlignment="Top">
+													<StackPanel Orientation="Vertical">
+														<TextBlock Margin="0,0,0,10" FontSize="14pt"><Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/HwBD" RequestNavigate="HelpLink_RequestNavigate">Working with the SDK</Hyperlink></TextBlock>
+														<TextBlock Margin="20,0,0,0" LineHeight="24">
+														<Run>•</Run> <Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/JwBD" RequestNavigate="HelpLink_RequestNavigate">Open-Source SDK Setup</Hyperlink>
+														</TextBlock>
+													</StackPanel>
+												</ListBoxItem>
 											</ListBox>
 										</TabItem>
 									</TabControl>
@@ -316,7 +347,7 @@
 									<TextBlock Text="LATEST NEWS" FontSize="12pt"/>
 								</TabItem.Header>
 								<TabItem.Resources>
-									<XmlDataProvider x:Key="Blog" Source="http://ps.prospectivesoftware.com/?feed=rss2"/>
+									<XmlDataProvider x:Key="Blog" Source="http://www.netpath.us.com/rss?containerid=15"/>
 									<pc:XmlDateConverter x:Key="XmlDateConverter" />
 								</TabItem.Resources>
 								<ListBox ItemsSource="{Binding Source={StaticResource Blog}, XPath=/rss/channel/item }" BorderThickness="0" Margin="0,5" Padding="-1" SelectionMode="Single" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.IsVirtualizing="False" ItemContainerStyle="{StaticResource StretchedContainerStyle}" >
@@ -332,11 +363,11 @@
 														<ColumnDefinition Width="Auto" />
 													</Grid.ColumnDefinitions>
 													<TextBlock Grid.Column="0">
-														<Hyperlink NavigateUri="{Binding XPath=link}" RequestNavigate="HelpLink_RequestNavigate" ><TextBlock Text="{Binding XPath=title}" FontSize="16pt" Style="{StaticResource HyperlinkTextBlock}"/></Hyperlink>
+														<Hyperlink NavigateUri="{Binding XPath=link}" RequestNavigate="Hyperlink_RequestNavigate" ><TextBlock Text="{Binding XPath=title}" FontSize="16pt" Style="{StaticResource HyperlinkTextBlock}"/></Hyperlink>
 													</TextBlock>
 													<TextBlock Text="{Binding XPath=pubDate, StringFormat={}{0: MMMM dd, yyyy HH:mm}, Converter={StaticResource XmlDateConverter}}" Foreground="{StaticResource DefaultFontColor}" FontSize="10pt" TextWrapping="NoWrap" Grid.Column="1"/>
 												</Grid>
-												<TextBlock Margin="40,0,20,10" Text="{Binding XPath=description}" Foreground="{StaticResource DefaultFontColor}" FontSize="12pt" TextWrapping="Wrap"/>
+												<TextBlock Margin="40,0,20,10" Text="{Binding XPath=description, Converter={StaticResource StripHTMLConverter}}" Foreground="{StaticResource DefaultFontColor}" FontSize="12pt" TextWrapping="Wrap"/>
 											</StackPanel>
 										</DataTemplate>
 									</ListBox.ItemTemplate>
@@ -438,7 +469,7 @@
 									</TextBlock>
 									<TextBlock Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" Margin="0,5,0,5" Grid.Row="5" Padding="4,0">
 										Do you have a new idea or feature request that you would just love to see in NETPath? We'd love to hear from you:<LineBreak />
-										<Hyperlink Name="SLink" NavigateUri="http://tracker.prospectivesoftware.net" RequestNavigate="SLink_RequestNavigate">
+										<Hyperlink Name="SLink" NavigateUri="http://support.prospectivesoftware.net" RequestNavigate="SLink_RequestNavigate">
 											Prospective Software Feature Request and Issue Reporting Tool
 										</Hyperlink>
 									</TextBlock>

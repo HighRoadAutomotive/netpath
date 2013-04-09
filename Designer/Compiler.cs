@@ -40,6 +40,7 @@ namespace NETPath
 
 		public async void Build()
 		{
+			Globals.MainScreen.IsBuilding = true;
 			OutputBlock.Inlines.Clear();
 			OutputBlock.Inlines.Add(new Run(string.Format("------ Building Project: {0} ------", NavWindow.Project.Name)));
 			OutputBlock.Inlines.Add(new LineBreak());
@@ -62,6 +63,7 @@ namespace NETPath
 
 			if (NavWindow.ErrorCount == 0) NavWindow.ErrorCount = null;
 			OutputBlock.Inlines.Add(new Run(string.Format("====== Finished Project: {0} ======", NavWindow.Project.Name)));
+			Globals.MainScreen.IsBuilding = false;
 		}
 		
 		public async static void BuildProject(Projects.Project project)
