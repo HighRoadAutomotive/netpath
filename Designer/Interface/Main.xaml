@@ -8,107 +8,193 @@
 		xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 		xmlns:local="clr-namespace:NETPath.Interface"
 		xmlns:apm="clr-namespace:ActiproSoftware.Windows.Media.Animation;assembly=ActiproSoftware.Shared.Wpf"
+		xmlns:sf="http://schemas.syncfusion.com/wpf"
 		Icon="pack://application:,,,/NETPath;component/Icons/DesignStudio.ico" 
 		mc:Ignorable="d" d:DesignHeight="980" d:DesignWidth="1280"
 		Title="NETPath 2 - BETA" MinHeight="980" MinWidth="1280" DataContext="{Binding RelativeSource={RelativeSource Self}}" Style="{StaticResource MainWindowStyle}"
 		TextOptions.TextFormattingMode="Display" TextOptions.TextHintingMode="Fixed" TextOptions.TextRenderingMode="ClearType" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.ClearTypeHint="Enabled"
-		SourceInitialized="Main_SourceInitialized" StateChanged="Main_StateChanged" Closing="Main_Closing" KeyUp="Main_KeyUp">
+		SourceInitialized="Main_SourceInitialized" StateChanged="Main_StateChanged" Closing="Main_Closing" KeyUp="Main_KeyUp" >
 	<pc:WindowChrome.WindowChrome>
 		<pc:WindowChrome CaptionHeight="34" ResizeBorderThickness="4" CornerRadius="0" GlassFrameThickness="0" />
 	</pc:WindowChrome.WindowChrome>
 	<Window.Resources>
-	<ResourceDictionary>
-		<apm:SlideTransition Mode="Out" IsFromContentPushed="True" x:Key="HeaderTransition" />
-		<pc:UriToBitmapImageConverter x:Key="UriToBitmapImageConverter" />
-		<pc:StripHTMLConverter x:Key="StripHTMLConverter"/>
-		<Style x:Key="{x:Type local:RecentProjectItem}" TargetType="{x:Type local:RecentProjectItem}">
-			<Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}" />
-			<Setter Property="BorderBrush" Value="Transparent" />
-			<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
-			<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-			<Setter Property="FontSize" Value="10pt" />
-			<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
-			<Setter Property="UseLayoutRounding" Value="true"/>
-			<Setter Property="MinHeight" Value="65"/>
-			<Setter Property="MaxHeight" Value="65"/>
-			<Setter Property="Padding" Value="0" />
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="{x:Type local:RecentProjectItem}">
-						<Grid Margin="0,0,0,10">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="45" />
-							</Grid.ColumnDefinitions>
-							<Button Name="OpenProject" Grid.Column="0" Command="{x:Static local:RecentProjectItem.OpenCommand}" CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center" >
-								<Button.ContextMenu>
-									<ContextMenu>
-										<MenuItem Header="Open Solution" Command="{x:Static local:RecentProjectItem.OpenCommand}" CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}" CommandTarget="{Binding Path=PlacementTarget,RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}" />
-										<MenuItem Header="Open Containing Folder" Command="{x:Static local:RecentProjectItem.FolderCommand}" CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}" CommandTarget="{Binding Path=PlacementTarget,RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}" />
-										<MenuItem Header="Remove From List" Command="{x:Static local:RecentProjectItem.RemoveCommand}" CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}" CommandTarget="{Binding Path=PlacementTarget,RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}" />
-									</ContextMenu>
-								</Button.ContextMenu>
-								<StackPanel Margin="4" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-									<TextBlock Text="{TemplateBinding ItemTitle}" FontSize="14pt" Height="Auto" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left"/>
-									<TextBlock Text="{TemplateBinding ItemPath}" FontSize="12pt" Height="Auto" Foreground="{StaticResource DisabledFontColor}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left"/>
+		<ResourceDictionary>
+			<apm:SlideTransition Mode="Out" IsFromContentPushed="True" x:Key="HeaderTransition" />
+			<pc:UriToBitmapImageConverter x:Key="UriToBitmapImageConverter" />
+			<pc:StripHTMLConverter x:Key="StripHTMLConverter"/>
+			<Style x:Key="{x:Type local:RecentProjectItem}" TargetType="{x:Type local:RecentProjectItem}">
+				<Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}" />
+				<Setter Property="BorderBrush" Value="Transparent" />
+				<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
+				<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
+				<Setter Property="FontSize" Value="10pt" />
+				<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
+				<Setter Property="UseLayoutRounding" Value="true"/>
+				<Setter Property="MinHeight" Value="65"/>
+				<Setter Property="MaxHeight" Value="65"/>
+				<Setter Property="Padding" Value="0" />
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{x:Type local:RecentProjectItem}">
+							<Grid Margin="0,0,0,10">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="45" />
+								</Grid.ColumnDefinitions>
+								<Button Name="OpenProject" Grid.Column="0" Command="{x:Static local:RecentProjectItem.OpenCommand}" CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center" >
+									<Button.ContextMenu>
+										<ContextMenu>
+											<MenuItem Header="Open Solution" Command="{x:Static local:RecentProjectItem.OpenCommand}" CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}" CommandTarget="{Binding Path=PlacementTarget,RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}" />
+											<MenuItem Header="Open Containing Folder" Command="{x:Static local:RecentProjectItem.FolderCommand}" CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}" CommandTarget="{Binding Path=PlacementTarget,RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}" />
+											<MenuItem Header="Remove From List" Command="{x:Static local:RecentProjectItem.RemoveCommand}" CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}" CommandTarget="{Binding Path=PlacementTarget,RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}}}" />
+										</ContextMenu>
+									</Button.ContextMenu>
+									<StackPanel Margin="4" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+										<TextBlock Text="{TemplateBinding ItemTitle}" FontSize="14pt" Height="Auto" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left"/>
+										<TextBlock Text="{TemplateBinding ItemPath}" FontSize="12pt" Height="Auto" Foreground="{StaticResource DisabledFontColor}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left"/>
+									</StackPanel>
+								</Button>
+								<Button Grid.Column="1" Command="{x:Static local:RecentProjectItem.FlagCommand}" CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" >
+									<Image Source="{Binding Path=ItemFlag, Converter={StaticResource UriToBitmapImageConverter}, RelativeSource={RelativeSource TemplatedParent}}" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="32" Width="32" Stretch="Uniform"/>
+								</Button>
+							</Grid>					
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>					
+			</Style>
+			<Style x:Key="{x:Type local:SolutionItem}" TargetType="{x:Type local:SolutionItem}">
+				<Setter Property="Background" Value="{StaticResource ButtonBackgroundColor}" />
+				<Setter Property="BorderBrush" Value="{StaticResource ButtonBorderColor}" />
+				<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
+				<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
+				<Setter Property="FontSize" Value="13pt" />
+				<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
+				<Setter Property="Padding" Value="15,0" />
+				<Setter Property="VerticalContentAlignment" Value="Center" />
+				<Setter Property="SnapsToDevicePixels" Value="true"/>
+				<Setter Property="UseLayoutRounding" Value="true"/>
+				<Setter Property="OverridesDefaultStyle" Value="true"/>
+				<Setter Property="DataContext" Value="{Binding RelativeSource={RelativeSource Self}}" />
+				<Setter Property="Command" Value="{x:Static local:Main.SelectProjectCommand}" />
+				<Setter Property="CommandParameter" Value="{Binding Path=Content}" />
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{x:Type local:SolutionItem}">
+							<Border x:Name="Border" CornerRadius="0" BorderThickness="0" Background="Transparent" BorderBrush="{TemplateBinding BorderBrush}" Padding="{TemplateBinding Padding}" pc:WindowChrome.IsHitTestVisibleInChrome="True" >
+								<StackPanel Orientation="Horizontal" Margin="{TemplateBinding Padding}">
+									<ContentPresenter Content="{TemplateBinding Header}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" pc:WindowChrome.IsHitTestVisibleInChrome="True"  />
+									<TextBlock x:Name="NotifyCount" Text="{Binding Path=NotificationCount}" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" FontSize="10pt" FontWeight="Bold" VerticalAlignment="Top" Margin="3,4,0,0" />
 								</StackPanel>
-							</Button>
-							<Button Grid.Column="1" Command="{x:Static local:RecentProjectItem.FlagCommand}" CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" >
-								<Image Source="{Binding Path=ItemFlag, Converter={StaticResource UriToBitmapImageConverter}, RelativeSource={RelativeSource TemplatedParent}}" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="32" Width="32" Stretch="Uniform"/>
-							</Button>
-						</Grid>					
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>					
-		</Style>
-		<Style x:Key="{x:Type local:SolutionItem}" TargetType="{x:Type local:SolutionItem}">
-			<Setter Property="Background" Value="{StaticResource ButtonBackgroundColor}" />
-			<Setter Property="BorderBrush" Value="{StaticResource ButtonBorderColor}" />
-			<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
-			<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-			<Setter Property="FontSize" Value="13pt" />
-			<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
-			<Setter Property="Padding" Value="15,0" />
-			<Setter Property="VerticalContentAlignment" Value="Center" />
-			<Setter Property="SnapsToDevicePixels" Value="true"/>
-			<Setter Property="UseLayoutRounding" Value="true"/>
-			<Setter Property="OverridesDefaultStyle" Value="true"/>
-			<Setter Property="DataContext" Value="{Binding RelativeSource={RelativeSource Self}}" />
-			<Setter Property="Command" Value="{x:Static local:Main.SelectProjectCommand}" />
-			<Setter Property="CommandParameter" Value="{Binding Path=Content}" />
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="{x:Type local:SolutionItem}">
-						<Border x:Name="Border" CornerRadius="0" BorderThickness="0" Background="Transparent" BorderBrush="{TemplateBinding BorderBrush}" Padding="{TemplateBinding Padding}">
-							<StackPanel Orientation="Horizontal" Margin="{TemplateBinding Padding}">
-								<ContentPresenter Content="{TemplateBinding Header}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-								<TextBlock x:Name="NotifyCount" Text="{Binding Path=NotificationCount}" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" FontSize="10pt" FontWeight="Bold" VerticalAlignment="Top" Margin="3,4,0,0" />
-							</StackPanel>
-						</Border>
-						<ControlTemplate.Triggers>
-							<Trigger Property="IsKeyboardFocused" Value="true">
-								<Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource ButtonMouseOverColor}" />
-							</Trigger>
-							<Trigger Property="IsMouseOver" Value="true">
-								<Setter TargetName="Border" Property="Background" Value="{StaticResource ButtonMouseOverColor}" />
-							</Trigger>
-							<Trigger Property="IsPressed" Value="true">
-								<Setter TargetName="Border" Property="Background" Value="{StaticResource WindowBorderColor}" />
-							</Trigger>
-							<Trigger Property="IsSelected" Value="true">
-								<Setter TargetName="Border" Property="Background" Value="{StaticResource WindowBorderColor}" />
-							</Trigger>
-						</ControlTemplate.Triggers>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
-	</ResourceDictionary>
+							</Border>
+							<ControlTemplate.Triggers>
+								<Trigger Property="IsKeyboardFocused" Value="true">
+									<Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource ButtonMouseOverColor}" />
+								</Trigger>
+								<Trigger Property="IsMouseOver" Value="true">
+									<Setter TargetName="Border" Property="Background" Value="{StaticResource ButtonMouseOverColor}" />
+								</Trigger>
+								<Trigger Property="IsPressed" Value="true">
+									<Setter TargetName="Border" Property="Background" Value="{StaticResource WindowBorderColor}" />
+								</Trigger>
+								<Trigger Property="IsSelected" Value="true">
+									<Setter TargetName="Border" Property="Background" Value="{StaticResource WindowBorderColor}" />
+								</Trigger>
+							</ControlTemplate.Triggers>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+
+			<Style x:Key="ScrollBarLineButtonRight" TargetType="{x:Type RepeatButton}">
+				<Setter Property="OverridesDefaultStyle" Value="true"/>
+				<Setter Property="Background" Value="Transparent"/>
+				<Setter Property="IsTabStop" Value="false"/>
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{x:Type RepeatButton}">
+							<Border x:Name="PART_Border" CornerRadius="0" Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+								<Path Data="M 0 0 L 4 4 L 0 8 Z" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="{StaticResource ScrollBarColor}" />
+							</Border>
+							<ControlTemplate.Triggers>
+								<Trigger Property="IsMouseOver" Value="True">
+									<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
+								</Trigger>
+								<Trigger Property="IsPressed" Value="True">
+									<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource PressedBackgroundColor}" />
+								</Trigger>
+							</ControlTemplate.Triggers>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+			<Style x:Key="ScrollBarLineButtonLeft" TargetType="{x:Type RepeatButton}">
+				<Setter Property="OverridesDefaultStyle" Value="true"/>
+				<Setter Property="Background" Value="Transparent"/>
+				<Setter Property="IsTabStop" Value="false"/>
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{x:Type RepeatButton}">
+							<Border x:Name="PART_Border" CornerRadius="0" Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+								<Path Data="M 4 0 L 4 8 L 0 4 Z" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="{StaticResource ScrollBarColor}" />
+							</Border>
+							<ControlTemplate.Triggers>
+								<Trigger Property="IsMouseOver" Value="True">
+									<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
+								</Trigger>
+								<Trigger Property="IsPressed" Value="True">
+									<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource PressedBackgroundColor}" />
+								</Trigger>
+							</ControlTemplate.Triggers>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+			<Style x:Key="ScreenButtonsListButton" TargetType="{x:Type Button}">
+				<Setter Property="OverridesDefaultStyle" Value="true"/>
+				<Setter Property="Background" Value="Transparent"/>
+				<Setter Property="IsTabStop" Value="false"/>
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{x:Type Button}">
+							<Border x:Name="PART_Border" CornerRadius="0" Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+								<Path Data="M 0 0 L 8 0 L 4 4 Z" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="{StaticResource ScrollBarColor}" />
+							</Border>
+							<ControlTemplate.Triggers>
+								<Trigger Property="IsMouseOver" Value="True">
+									<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
+								</Trigger>
+								<Trigger Property="IsPressed" Value="True">
+									<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource PressedBackgroundColor}" />
+								</Trigger>
+								<Trigger Property="ContextMenu.IsOpen" Value="True">
+									<Setter TargetName="PART_Border" Property="Background" Value="{StaticResource PressedBackgroundColor}" />
+								</Trigger>
+							</ControlTemplate.Triggers>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+			<Style x:Key="ScreenButtonsScrollViewer" TargetType="{x:Type ScrollViewer}">
+				<Setter Property="OverridesDefaultStyle" Value="True"/>
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{x:Type ScrollViewer}">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<ScrollContentPresenter Grid.Column="0" pc:WindowChrome.IsHitTestVisibleInChrome="True" />
+							</Grid>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+		</ResourceDictionary>
 	</Window.Resources>
 	<Border x:Name="WindowBorder" BorderThickness="0" BorderBrush="{StaticResource WindowBorderColor}" Background="{StaticResource WindowBackground}" Margin="8">
 		<Grid>
 			<Grid.RowDefinitions>
-				<RowDefinition Height="34" />
+				<RowDefinition Height="Auto" />
 				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
 			<Grid Grid.Row="0">
@@ -116,12 +202,15 @@
 					<ColumnDefinition Width="36" />
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*"/>
 					<ColumnDefinition Width="36" />
 					<ColumnDefinition Width="36" />
 					<ColumnDefinition Width="36" />
 				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
 				<Button x:Name="SystemMenuHome" Grid.Column="0" Style="{StaticResource WindowSystemButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuHome_Click" ToolTip="NETPath Home" >
 					<Image Source="pack://application:,,,/NETPath;component/Icons/X32/LogoIcon.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="1" />
 				</Button>
@@ -139,31 +228,46 @@
 						<Image Source="pack://application:,,,/NETPath;component/Icons/X32/Close.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,1" />
 					</Button>
 				</StackPanel>
-				<ItemsControl x:Name="ScreenButtons" Grid.Column="3" Margin="20,0" pc:WindowChrome.IsHitTestVisibleInChrome="True" >
-					<ItemsControl.ItemsPanel>
-						<ItemsPanelTemplate>
-							<StackPanel Orientation="Horizontal" />
-						</ItemsPanelTemplate>
-					</ItemsControl.ItemsPanel>
-				</ItemsControl>
-				<apm:ToggleTransitionPresenter Grid.Column="4" DefaultDirection="Down" Transition="{StaticResource HeaderTransition}" IsAlternateContentVisible="{Binding Path=IsBuilding}" >
-					<Label Content="{Binding Path=Title}" FontSize="14pt" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+				<apm:ToggleTransitionPresenter Grid.Column="3" DefaultDirection="Down" Margin="50,0" Transition="{StaticResource HeaderTransition}" IsAlternateContentVisible="{Binding Path=IsBuilding}" >
+					<TextBlock Text="{Binding Path=Title}" FontSize="14pt" HorizontalAlignment="Center" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
 					<apm:ToggleTransitionPresenter.AlternateContent>
-						<Label Content="Building..." FontSize="14pt" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+						<TextBlock Text="Building..." FontSize="14pt" HorizontalAlignment="Center" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
 					</apm:ToggleTransitionPresenter.AlternateContent>
 				</apm:ToggleTransitionPresenter>
-				<Button x:Name="MinimizeWindow" Grid.Column="5" Style="{StaticResource WindowControlButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="MinimizeWindow_Click">
+				<Button x:Name="MinimizeWindow" Grid.Column="4" Style="{StaticResource WindowControlButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="MinimizeWindow_Click">
 					<Image Source="pack://application:,,,/NETPath;component/Icons/WindowMinimize.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
 				</Button>
-				<Button x:Name="MaximizeWindow" Grid.Column="6" Visibility="Collapsed" Style="{StaticResource WindowControlButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="MaximizeWindow_Click">
+				<Button x:Name="MaximizeWindow" Grid.Column="5" Visibility="Collapsed" Style="{StaticResource WindowControlButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="MaximizeWindow_Click">
 					<Image Source="pack://application:,,,/NETPath;component/Icons/WindowMaximize.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
 				</Button>
-				<Button x:Name="RestoreWindow" Grid.Column="6" Style="{StaticResource WindowControlButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="RestoreWindow_Click">
+				<Button x:Name="RestoreWindow" Grid.Column="5" Style="{StaticResource WindowControlButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="RestoreWindow_Click">
 					<Image Source="pack://application:,,,/NETPath;component/Icons/WindowRestore.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
 				</Button>
-				<Button x:Name="CloseWindow" Grid.Column="7" Style="{StaticResource WindowControlButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="CloseWindow_Click">
+				<Button x:Name="CloseWindow" Grid.Column="6" Style="{StaticResource WindowControlButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="CloseWindow_Click">
 					<Image Source="pack://application:,,,/NETPath;component/Icons/WindowClose.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
 				</Button>
+				<Border x:Name="ScreenButtonsPanel" Height="34" Visibility="Collapsed" Grid.Row="1" Grid.ColumnSpan="7" BorderBrush="{StaticResource WindowBorderColor}" BorderThickness="0,1,0,0">
+					<Grid pc:WindowChrome.IsHitTestVisibleInChrome="True" >
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="24" />
+						</Grid.ColumnDefinitions>
+						<RepeatButton x:Name="ScrollScreenButtonsLeft" Style="{StaticResource ScrollBarLineButtonLeft}" IsEnabled="False" Width="24" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="ScrollScreenButtonsLeft_Click" />
+						<ScrollViewer x:Name="ScrollButtonsViewer" Grid.Column="1" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden" CanContentScroll="True" ScrollChanged="ScrollButtonsViewer_ScrollChanged">
+							<ItemsControl x:Name="ScrollButtonItems" ItemsSource="{Binding ProjectScreens}" >
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<StackPanel IsItemsHost="True" Orientation="Horizontal" />
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+							</ItemsControl>
+						</ScrollViewer>
+						<RepeatButton x:Name="ScrollScreenButtonsRight" Style="{StaticResource ScrollBarLineButtonRight}" IsEnabled="False" Width="24" Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="ScrollScreenButtonsRight_Click" />
+						<Button x:Name="ScreenButtonsList" Style="{StaticResource ScreenButtonsListButton}" Grid.Column="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="ScreenButtonsList_OnClick" />
+					</Grid>
+				</Border>
 			</Grid>
 			<Border Grid.Row="1" BorderBrush="{StaticResource WindowBorderColor}" BorderThickness="0,1,0,0">
 				<Grid>
@@ -297,8 +401,11 @@
 												</ListBoxItem>
 												<ListBoxItem Padding="10" VerticalContentAlignment="Top">
 													<StackPanel Orientation="Vertical">
-														<TextBlock Margin="0,0,0,10" FontSize="14pt"><Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/aYBY" RequestNavigate="HelpLink_RequestNavigate">Service Hosts</Hyperlink></TextBlock>
-														<TextBlock Margin="0,0,0,10" FontSize="14pt"><Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/YYBY" RequestNavigate="HelpLink_RequestNavigate">Bindings and Security</Hyperlink></TextBlock>
+														<TextBlock Margin="0,0,0,10" FontSize="14pt">Service Configuration</TextBlock>
+														<TextBlock Margin="20,0,0,0" LineHeight="24">
+														<Run>•</Run> <Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/aYBY" RequestNavigate="HelpLink_RequestNavigate">Service Hosts</Hyperlink><LineBreak/>
+														<Run>•</Run> <Hyperlink NavigateUri="http://docs.prospectivesoftware.net/x/YYBY" RequestNavigate="HelpLink_RequestNavigate">Bindings and Security</Hyperlink>
+														</TextBlock>
 													</StackPanel>
 												</ListBoxItem>
 											</ListBox>

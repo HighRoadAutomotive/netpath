@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,6 +33,9 @@ namespace NETPath.Interface
 		public bool IsBuilding { get { return (bool)GetValue(IsBuildingProperty); } set { SetValue(IsBuildingProperty, value); } }
 		public static readonly DependencyProperty IsBuildingProperty = DependencyProperty.Register("IsBuilding", typeof(bool), typeof(Main), new PropertyMetadata(false));
 
+		public ObservableCollection<SolutionItem> ProjectScreens { get { return (ObservableCollection<SolutionItem>)GetValue(ProjectScreensProperty); } set { SetValue(ProjectScreensProperty, value); } }
+		public static readonly DependencyProperty ProjectScreensProperty = DependencyProperty.Register("ProjectScreens", typeof(ObservableCollection<SolutionItem>), typeof(Main), new PropertyMetadata(null));
+
 		private SaveCloseMode CloseMode { get; set; }
 
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static readonly RoutedCommand SelectProjectCommand = new RoutedCommand();
@@ -47,6 +51,8 @@ namespace NETPath.Interface
 			if (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor == 0) Globals.WindowsLevel = Globals.WindowsVersion.WinVista;
 			if (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor == 1) Globals.WindowsLevel = Globals.WindowsVersion.WinSeven;
 			if (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor == 2) Globals.WindowsLevel = Globals.WindowsVersion.WinEight;
+
+			ProjectScreens = new ObservableCollection<SolutionItem>();
 
 			InitializeComponent();
 
@@ -222,20 +228,20 @@ namespace NETPath.Interface
 			if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
 			{
 				var t = new SolutionItem(e.NewItems[0] as Projects.Project);
-				ScreenButtons.Items.Add(t);
+				ProjectScreens.Add(t);
 				if (t.Project.IsSelected)
 					t.Command.Execute(t.Content);
 			}
 			if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
 			{
-				foreach (SolutionItem pi in ScreenButtons.Items.Cast<SolutionItem>().Where(pi => Equals(pi.Project, e.OldItems[0])))
+				foreach (SolutionItem pi in ProjectScreens.Cast<SolutionItem>().Where(pi => Equals(pi.Project, e.OldItems[0])))
 				{
-					ScreenButtons.Items.Remove(pi);
+					ProjectScreens.Remove(pi);
 					break;
 				}
 			}
 			if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
-				ScreenButtons.Items.Clear();
+				ProjectScreens.Clear();
 		}
 
 		private static void OnSelectProjectCommandExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -256,8 +262,18 @@ namespace NETPath.Interface
 			HomeScreen.Visibility = Visibility.Collapsed;
 			OptionsScreen.Visibility = Visibility.Collapsed;
 
-			foreach (SolutionItem pi in ScreenButtons.Items)
+			foreach (SolutionItem pi in ProjectScreens)
 				pi.IsSelected = NewScreen.Project.IsSelected = Equals(pi.Project, NewScreen.Project);
+		}
+
+		private void ScrollScreenButtonsLeft_Click(object Sender, RoutedEventArgs E)
+		{
+			ScrollButtonsViewer.LineLeft();
+		}
+
+		private void ScrollScreenButtonsRight_Click(object Sender, RoutedEventArgs E)
+		{
+			ScrollButtonsViewer.LineRight();
 		}
 
 		#endregion
@@ -468,7 +484,7 @@ namespace NETPath.Interface
 			//Select the first screen if any project were loaded.
 			if (Globals.Projects.Count > 0)
 			{
-				var t = ScreenButtons.Items[0] as SolutionItem;
+				var t = ProjectScreens[0] as SolutionItem;
 				if (t != null)
 					SelectProjectScreen(t.Content as Navigator);
 			}
@@ -476,6 +492,7 @@ namespace NETPath.Interface
 			AddProject.IsEnabled = true;
 			AddExistingProject.IsEnabled = true;
 			SystemProjectMenu.Visibility = Visibility.Visible;
+			ScreenButtonsPanel.Visibility = Visibility.Visible;
 			Title = Globals.Solution.Name + " - NETPath 2 - BETA";
 		}
 
@@ -508,6 +525,7 @@ namespace NETPath.Interface
 			AddProject.IsEnabled = false;
 			AddExistingProject.IsEnabled = false;
 			SystemProjectMenu.Visibility = Visibility.Collapsed;
+			ScreenButtonsPanel.Visibility = Visibility.Collapsed;
 			Title = "NETPath 2 - BETA";
 
 			ActiveProjectScreen.Visibility = Visibility.Collapsed;
@@ -523,6 +541,63 @@ namespace NETPath.Interface
 		}
 
 		#endregion
+
+		private void ScreenButtonsList_OnClick(object Sender, RoutedEventArgs E)
+		{
+			ScreenButtonsList.ContextMenu = new ContextMenu();
+			foreach (var p in Globals.Projects)
+			{
+				var t = new MenuItem();
+				t.Header = p.Name;
+				t.Tag = p;
+				t.Click += ScreenButtonsList_OnSelect;
+				ScreenButtonsList.ContextMenu.Items.Add(t);
+			}
+			ScreenButtonsList.ContextMenu.PlacementTarget = ScreenButtonsList;
+			ScreenButtonsList.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom; 
+			ScreenButtonsList.ContextMenu.IsOpen = true;
+		}
+
+		private void ScreenButtonsList_OnSelect(object Sender, RoutedEventArgs E)
+		{
+			var t = Sender as MenuItem;
+			if (t == null) return;
+			SelectProjectScreen(new Navigator(t.Tag as Projects.Project));
+
+			foreach (SolutionItem pi in ProjectScreens)
+			{
+				var project = t.Tag as Projects.Project;
+				if (project != null && pi.Project.ID == project.ID)
+				{
+					var x = ScrollButtonItems.ItemContainerGenerator.ContainerFromItem(pi) as SolutionItem;
+					x.BringIntoView();
+				}
+			}
+		}
+
+		private void ScrollButtonsViewer_ScrollChanged(object Sender, ScrollChangedEventArgs E)
+		{
+			if (ScrollButtonsViewer.ExtentWidth > ScrollButtonsViewer.ViewportWidth)
+			{
+				ScrollScreenButtonsLeft.Visibility = Visibility.Visible;
+				ScrollScreenButtonsRight.Visibility = Visibility.Visible;
+			}
+			else
+			{
+				ScrollScreenButtonsLeft.Visibility = Visibility.Collapsed;
+				ScrollScreenButtonsRight.Visibility = Visibility.Collapsed;
+			}
+
+			if (ScrollButtonsViewer.HorizontalOffset <= 1)
+				ScrollScreenButtonsLeft.IsEnabled = false;
+			else
+				ScrollScreenButtonsLeft.IsEnabled = true;
+
+			if (ScrollButtonsViewer.HorizontalOffset + ScrollButtonsViewer.ViewportWidth >= ScrollButtonsViewer.ExtentWidth)
+				ScrollScreenButtonsRight.IsEnabled = false;
+			else
+				ScrollScreenButtonsRight.IsEnabled = true;
+		}
 	}
 
 	internal partial class SolutionItem : Button
@@ -540,6 +615,7 @@ namespace NETPath.Interface
 			this.Project = Project;
 			Header = Project.Name.ToUpper();
 			Content = new Navigator(Project);
+			Command = Main.SelectProjectCommand;
 		}
 	}
 

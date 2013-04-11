@@ -30,11 +30,6 @@
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
-		<RowDefinition Height="Auto" />
-		<RowDefinition Height="Auto" />
-		<RowDefinition Height="Auto" />
-		<RowDefinition Height="Auto" />
-		<RowDefinition Height="Auto" />
 		<RowDefinition Height="*" />
 	</Grid.RowDefinitions>
 	<TextBlock Grid.Row="0" FontSize="14pt" >
@@ -75,87 +70,105 @@
 		<Data:TypeSelector Grid.Column="1" Margin="5" x:Name="XAMLType" OpenType="{Binding Path=Element.XAMLType, Mode=TwoWay}" LabelText="Type" IsEnabled="{Binding Path=Element.HasXAMLType}" VerticalContentAlignment="Center" ToolTip="{Binding Path=Element.XAMLType}"  />
 		<pc:TextBox Grid.Column="2" Margin="5,5,0,5" Name="XAMLName" Text="{Binding Path=Element.XAMLName, UpdateSourceTrigger=PropertyChanged}" LabelText="Name" IsEnabled="{Binding Path=Element.HasXAMLType}" VerticalContentAlignment="Center" Validate="ElementName_Validate" ToolTip="{Binding Path=Element.XAMLName}" />
 	</Grid>
-	<Grid Name="OptionsGrid" Grid.Row="4" Margin="0,5,0,0" >
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-		<Label Grid.ColumnSpan="2" Grid.Row="0" Content="Options" FontSize="12pt" />
-		<ToggleButton Grid.Column="0" Grid.Row="1" Content="Data Member" Margin="0,5,5,5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.IsDataMember}" Name="IsDataMember" ToolTip="Determines if the member is marked as a member of the data contract." />
-		<ToggleButton Grid.Column="1" Grid.Row="1" Content="Read-Only" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.IsReadOnly}" Name="IsReadOnly" ToolTip="The member is read-only." />
-		<ToggleButton Grid.Column="2" Grid.Row="1" Content="Required" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.IsRequired}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="IsRequired" ToolTip="The member is required by the data contract." />
-		<ToggleButton Grid.Column="3" Grid.Row="1" Content="Hidden" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.IsHidden}" Name="Hidden" ToolTip="Tell the Service Compiler to completely ignore this element." />
-		<ToggleButton Grid.Column="4" Grid.Row="1" Content="Emit Default Value" Margin="5,5,0,5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.EmitDefaultValue}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="EmitDefaultValue" ToolTip="Force WCF emit the default value for the type if no value is provided." />
-		<ToggleButton Grid.Column="0" Grid.Row="2" Content="WinForms Binding" Margin="0,5,5,5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.GenerateWinFormsSupport}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="GenerateWinFormsSupport" ToolTip="Generates support for WinForms databinding." />
-		<ToggleButton Grid.Column="1" Grid.Row="2" Content="Attached XAML" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.IsAttached}" IsEnabled="{Binding Path=Element.HasXAMLType}" Name="IsAttached" ToolTip="Tells NETPath to generate an Attached WPF Binding for this member." />
-		<ToggleButton Grid.Column="2" Grid.Row="2" Content="Data Revisions" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.DREEnabled}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="AutomaticUpdates" ToolTip="The member is included in Automatic Data Updates." />
-		<ToggleButton Grid.Column="3" Grid.Row="2" Content="Protocol Buffers" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.ProtocolBufferEnabled}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="ProtocolBuffers" ToolTip="The member is included in Protocol Buffer serialization." />
-		<pc:TextBox Grid.Column="4" Grid.Row="2" Margin="5,5,0,5" Name="Order" LabelText="Order" Text="{Binding Path=Element.Order, Converter={StaticResource ElementOrderConverter}}" Validate="Order_Validate" />
-	</Grid>
-	<Grid Name="AttributeGrid" Grid.Row="5" Margin="0,5,0,0" Visibility="{Binding Path=Element.IsAttached, Converter={StaticResource BoolVisibilityConverter}}" >
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="150" />
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-		<Label Grid.ColumnSpan="2" Grid.Row="0" Content="Attached XAML Attributes" FontSize="12pt" />
-		<ToggleButton Grid.Row="1" Grid.Column="0" Content="Enable Browsing" Margin="0,5,5,5" VerticalAlignment="Top" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.AttachedBrowsable}" Name="AttachedBrowsable" ToolTip="Determines if the attribute can be browsed." />
-		<ToggleButton Grid.Row="1" Grid.Column="0" Content="Include Descendants" Margin="0,35,5,5" VerticalAlignment="Top" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.AttachedBrowsableIncludeDescendants}" IsEnabled="{Binding ElementName=AttachedBrowsable, Path=IsChecked}" Name="AttachedBrowsableIncludeDescendants" ToolTip="Determines if the descendants of the attribute can be browsed." />
-		<pc:TextBox Name="AttachedTargetTypes" Grid.Row="1" Grid.Column="1" Margin="5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Text="{Binding Path=Element.AttachedTargetTypes}" ToolTip="Please enter the Target Types as a common seperated list." />
-		<pc:TextBox Name="AttachedAttributeTypes" Grid.Row="1" Grid.Column="2" Margin="5,5,0,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Text="{Binding Path=Element.AttachedAttributeTypes}" ToolTip="Please enter the Attribute Types as a common seperated list." />
-	</Grid>
-	<Grid Name="DCMGrid" Grid.Row="6" Margin="0,5,0,0" Visibility="{Binding Path=Element.DREEnabled, Converter={StaticResource BoolVisibilityConverter}}" >
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-		<Label Grid.ColumnSpan="1" Grid.Row="0" Content="Data Revision Exchange" FontSize="12pt" />
-		<Label Content="Update Mode:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="1" Grid.Column="0" />
-		<ComboBox Margin="95,5,5,5" VerticalContentAlignment="Center" SelectedIndex="{Binding Path=Element.DREUpdateMode, Converter={StaticResource DCMUpdateModeConverter}}" Grid.Column="0" Grid.Row="1" >
-			<ComboBoxItem Content="Immediate" />
-			<ComboBoxItem Content="Batch" />
-		</ComboBox>
-	</Grid>
-	<Grid Name="ProtoBufGrid" Grid.Row="7" Margin="0,5,0,0" Visibility="{Binding Path=Element.ProtocolBufferEnabled, Converter={StaticResource BoolVisibilityConverter}}" >
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-		<Label Grid.ColumnSpan="2" Grid.Row="0" Content="Protocol Buffers" FontSize="12pt" />
-		<Label Content="Data Format:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="1" Grid.Column="0" />
-		<ComboBox Margin="95,5,5,5" VerticalContentAlignment="Center" Height="23" SelectedIndex="{Binding Path=Element.DCMUpdateMode, Converter={StaticResource DCMUpdateModeConverter}}" Grid.Column="0" Grid.Row="1" >
-			<ComboBoxItem Content="Default" IsSelected="True" />
-			<ComboBoxItem Content="FixedSize" />
-			<ComboBoxItem Content="Group" />
-			<ComboBoxItem Content="TwosComplment" />
-			<ComboBoxItem Content="ZigZag" />
-		</ComboBox>
-		<ToggleButton Grid.Row="1" Grid.Column="1" Content="Is Packed" VerticalContentAlignment="Center" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.ProtoIsPacked}" ToolTip="Specifies packed encoding layout. Especially useful for Arrays or Lists of primitives." />
-		<ToggleButton Grid.Row="1" Grid.Column="2" Content="Overwrite List" VerticalContentAlignment="Center" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.ProtoOverwriteList}" ToolTip="Specifies that the list to to be reinitialized during deserialization." />
-		<ToggleButton Grid.Row="2" Grid.Column="0" Content="As Reference" VerticalContentAlignment="Center" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.ProtoAsReference}" ToolTip="Specifies reference tracking of sub-objects. Can siginificantly reduce message size in object graphs that have many common references." />
-		<ToggleButton Grid.Row="2" Grid.Column="1" Content="Dynamic Type" VerticalContentAlignment="Center" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.ProtoDynamicType}" ToolTip="Enables dymanic typing. Allows the use of object as long as only non-inherited contract types are used." />
-	</Grid>
-	<Label Grid.Row="8" Content="Documentation" FontSize="12pt" Margin="0,5,0,0" />
-	<Docs:Standard x:Name="Docs" Grid.Row="9" Margin="0,5" IsProperty="True" MinHeight="200" Documentation="{Binding Path=Element.Documentation}" />
+	<TabControl Grid.Row="4" Margin="0,5,0,0" >
+		<TabItem Padding="10,5" IsSelected="True">
+			<TabItem.Header>
+				<TextBlock Text="Options" FontSize="12pt"/>
+			</TabItem.Header>
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+				<Grid Name="OptionsGrid" Grid.Row="0" Margin="0,5,0,0" >
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<ToggleButton Grid.Column="0" Grid.Row="1" Content="Data Member" Margin="0,5,5,5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.IsDataMember}" Name="IsDataMember" ToolTip="Determines if the member is marked as a member of the data contract." />
+					<ToggleButton Grid.Column="1" Grid.Row="1" Content="Read-Only" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.IsReadOnly}" Name="IsReadOnly" ToolTip="The member is read-only." />
+					<ToggleButton Grid.Column="2" Grid.Row="1" Content="Required" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.IsRequired}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="IsRequired" ToolTip="The member is required by the data contract." />
+					<ToggleButton Grid.Column="3" Grid.Row="1" Content="Hidden" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.IsHidden}" Name="Hidden" ToolTip="Tell the Service Compiler to completely ignore this element." />
+					<ToggleButton Grid.Column="4" Grid.Row="1" Content="Emit Default Value" Margin="5,5,0,5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.EmitDefaultValue}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="EmitDefaultValue" ToolTip="Force WCF emit the default value for the type if no value is provided." />
+					<ToggleButton Grid.Column="0" Grid.Row="2" Content="WinForms Binding" Margin="0,5,5,5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.GenerateWinFormsSupport}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="GenerateWinFormsSupport" ToolTip="Generates support for WinForms databinding." />
+					<ToggleButton Grid.Column="1" Grid.Row="2" Content="Attached XAML" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.IsAttached}" IsEnabled="{Binding Path=Element.HasXAMLType}" Name="IsAttached" ToolTip="Tells NETPath to generate an Attached WPF Binding for this member." />
+					<ToggleButton Grid.Column="2" Grid.Row="2" Content="Data Revisions" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.DREEnabled}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="AutomaticUpdates" ToolTip="The member is included in Automatic Data Updates." />
+					<ToggleButton Grid.Column="3" Grid.Row="2" Content="Protocol Buffers" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.ProtocolBufferEnabled}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="ProtocolBuffers" ToolTip="The member is included in Protocol Buffer serialization." />
+					<pc:TextBox Grid.Column="4" Grid.Row="2" Margin="5,5,0,5" Name="Order" LabelText="Order" Text="{Binding Path=Element.Order, Converter={StaticResource ElementOrderConverter}}" Validate="Order_Validate" />
+				</Grid>
+				<Grid Name="AttributeGrid" Grid.Row="1" Margin="0,5,0,0" Visibility="{Binding Path=Element.IsAttached, Converter={StaticResource BoolVisibilityConverter}}" >
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="150" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<Label Grid.ColumnSpan="2" Grid.Row="0" Content="Attached XAML Attributes" FontSize="12pt" />
+					<ToggleButton Grid.Row="1" Grid.Column="0" Content="Enable Browsing" Margin="0,5,5,5" VerticalAlignment="Top" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.AttachedBrowsable}" Name="AttachedBrowsable" ToolTip="Determines if the attribute can be browsed." />
+					<ToggleButton Grid.Row="1" Grid.Column="0" Content="Include Descendants" Margin="0,35,5,5" VerticalAlignment="Top" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.AttachedBrowsableIncludeDescendants}" IsEnabled="{Binding ElementName=AttachedBrowsable, Path=IsChecked}" Name="AttachedBrowsableIncludeDescendants" ToolTip="Determines if the descendants of the attribute can be browsed." />
+					<pc:TextBox Name="AttachedTargetTypes" Grid.Row="1" Grid.Column="1" Margin="5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Text="{Binding Path=Element.AttachedTargetTypes}" ToolTip="Please enter the Target Types as a common seperated list." />
+					<pc:TextBox Name="AttachedAttributeTypes" Grid.Row="1" Grid.Column="2" Margin="5,5,0,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Text="{Binding Path=Element.AttachedAttributeTypes}" ToolTip="Please enter the Attribute Types as a common seperated list." />
+				</Grid>
+				<Grid Name="DCMGrid" Grid.Row="2" Margin="0,5,0,0" Visibility="{Binding Path=Element.DREEnabled, Converter={StaticResource BoolVisibilityConverter}}" >
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<Label Grid.ColumnSpan="1" Grid.Row="0" Content="Data Revision Exchange" FontSize="12pt" />
+					<Label Content="Update Mode:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="1" Grid.Column="0" />
+					<ComboBox Margin="95,5,5,5" VerticalContentAlignment="Center" SelectedIndex="{Binding Path=Element.DREUpdateMode, Converter={StaticResource DCMUpdateModeConverter}}" Grid.Column="0" Grid.Row="1" >
+						<ComboBoxItem Content="Immediate" />
+						<ComboBoxItem Content="Batch" />
+					</ComboBox>
+				</Grid>
+				<Grid Name="ProtoBufGrid" Grid.Row="3" Margin="0,5,0,0" Visibility="{Binding Path=Element.ProtocolBufferEnabled, Converter={StaticResource BoolVisibilityConverter}}" >
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<Label Grid.ColumnSpan="2" Grid.Row="0" Content="Protocol Buffers" FontSize="12pt" />
+					<Label Content="Data Format:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="1" Grid.Column="0" />
+					<ComboBox Margin="95,5,5,5" VerticalContentAlignment="Center" Height="23" SelectedIndex="{Binding Path=Element.DCMUpdateMode, Converter={StaticResource DCMUpdateModeConverter}}" Grid.Column="0" Grid.Row="1" >
+						<ComboBoxItem Content="Default" IsSelected="True" />
+						<ComboBoxItem Content="FixedSize" />
+						<ComboBoxItem Content="Group" />
+						<ComboBoxItem Content="TwosComplment" />
+						<ComboBoxItem Content="ZigZag" />
+					</ComboBox>
+					<ToggleButton Grid.Row="1" Grid.Column="1" Content="Is Packed" VerticalContentAlignment="Center" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.ProtoIsPacked}" ToolTip="Specifies packed encoding layout. Especially useful for Arrays or Lists of primitives." />
+					<ToggleButton Grid.Row="1" Grid.Column="2" Content="Overwrite List" VerticalContentAlignment="Center" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.ProtoOverwriteList}" ToolTip="Specifies that the list to to be reinitialized during deserialization." />
+					<ToggleButton Grid.Row="2" Grid.Column="0" Content="As Reference" VerticalContentAlignment="Center" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.ProtoAsReference}" ToolTip="Specifies reference tracking of sub-objects. Can siginificantly reduce message size in object graphs that have many common references." />
+					<ToggleButton Grid.Row="2" Grid.Column="1" Content="Dynamic Type" VerticalContentAlignment="Center" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.ProtoDynamicType}" ToolTip="Enables dymanic typing. Allows the use of object as long as only non-inherited contract types are used." />
+				</Grid>
+			</Grid>
+		</TabItem>
+		<TabItem Padding="10,5" >
+			<TabItem.Header>
+				<TextBlock Text="Documentation" FontSize="12pt"/>
+			</TabItem.Header>
+			<Docs:Standard x:Name="Docs" Margin="0,5" IsProperty="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Documentation="{Binding Path=Element.Documentation}" />
+		</TabItem>
+	</TabControl>
 </Grid>

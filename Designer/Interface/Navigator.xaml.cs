@@ -468,7 +468,7 @@ namespace NETPath.Interface
 			if (Globals.Projects.Count == 0) Globals.MainScreen.ShowHomeScreen();
 			else
 			{
-				var t = Globals.MainScreen.ScreenButtons.Items[0] as SolutionItem;
+				var t = Globals.MainScreen.ProjectScreens[0] as SolutionItem;
 				if (t != null)
 					Globals.MainScreen.SelectProjectScreen(t.Content as Navigator);
 			}
