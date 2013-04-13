@@ -3,8 +3,6 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" 
-	xmlns:c1="http://schemas.componentone.com/wpf/Basic"
-	xmlns:c1ext="http://schemas.componentone.com/wpf/C1Extended"
 	xmlns:pc="clr-namespace:Prospective.Controls;assembly=Prospective.Controls"
 	xmlns:InRoot="clr-namespace:NETPath.Interface"
 	d:DesignHeight="800" d:DesignWidth="1000" DataContext="{Binding RelativeSource={RelativeSource Self}}" UseLayoutRounding="True" GotFocus="Grid_GotFocus" >

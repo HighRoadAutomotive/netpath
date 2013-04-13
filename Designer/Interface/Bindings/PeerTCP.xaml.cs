@@ -10,7 +10,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using C1.WPF;
 using Prospective.Controls;
 using Prospective.Controls.Dialogs;
 using NETPath.Projects;
@@ -55,11 +54,6 @@ namespace NETPath.Interface.Bindings
 		private void ListenIPAddress_Validate(object sender, ValidateEventArgs e)
 		{
 			e.IsValid = (RegExs.MatchIPv4.IsMatch(ListenIPAddress.Text) || RegExs.MatchIPv6.IsMatch(ListenIPAddress.Text));
-		}
-
-		private void Port_ValueChanged(object sender, PropertyChangedEventArgs<double> e)
-		{
-			Binding.Port = Convert.ToInt32(e.NewValue);
 		}
 
 		private void MaxBufferPoolSize_Validate(object sender, ValidateEventArgs e)

@@ -3,8 +3,8 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" 
-	xmlns:c1="http://schemas.componentone.com/wpf/Basic"
 	xmlns:pc="http://schemas.propsectivesoftware.com/pc"
+	xmlns:sf="http://schemas.syncfusion.com/wpf"
 	d:DesignHeight="350" d:DesignWidth="450" >
 	<Grid.RowDefinitions>
 		<RowDefinition Height="Auto" />
@@ -32,10 +32,10 @@
 		<pc:TextBox Text="{Binding Path=Data.Name}" Name="DisplayName" Height="23" Margin="60,5,5,5" VerticalAlignment="Top" ToolTip="{Binding Path=Data.Name, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2" TextChanged="Name_TextChanged" Validate="Name_Validate" />
 		<ToggleButton Content="Is Default Behavior" Height="23" IsChecked="{Binding Path=Data.IsDefaultBehavior}" Margin="5" Name="IsDefaultBehavior" VerticalAlignment="Top" Grid.Column="2" />
 		<Label Content="Max Concurrent Calls:" Height="Auto" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="2" />
-		<c1:C1NumericBox Margin="5" Value="{Binding Path=Data.MaxConcurrentCalls}" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" ShowButtons="False" HorizontalContentAlignment="Left" Name="MaxConcurrentCalls" ValueChanged="MaxConcurrentCalls_ValueChanged" />
+		<sf:IntegerTextBox Margin="5" Value="{Binding Path=Data.MaxConcurrentCalls}" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" HorizontalContentAlignment="Left" Name="MaxConcurrentCalls" />
 		<Label Content="Max Concurrent Instances:" Height="Auto" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="3" />
-		<c1:C1NumericBox Margin="5" Value="{Binding Path=Data.MaxConcurrentInstances}" VerticalAlignment="Top" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"  ShowButtons="False" HorizontalContentAlignment="Left" Name="MaxConcurrentInstances" ValueChanged="MaxConcurrentInstances_ValueChanged" />
+		<sf:IntegerTextBox Margin="5" Value="{Binding Path=Data.MaxConcurrentInstances}" VerticalAlignment="Top" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"  HorizontalContentAlignment="Left" Name="MaxConcurrentInstances" />
 		<Label Content="Max Concurrent Sessions:" Height="28" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalContentAlignment="Center" Grid.Row="4" />
-		<c1:C1NumericBox Margin="5" Value="{Binding Path=Data.MaxConcurrentSessions}" VerticalAlignment="Top" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" ShowButtons="False" HorizontalContentAlignment="Left" Name="MaxConcurrentSessions" ValueChanged="MaxConcurrentSessions_ValueChanged" />
+		<sf:IntegerTextBox Margin="5" Value="{Binding Path=Data.MaxConcurrentSessions}" VerticalAlignment="Top" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" HorizontalContentAlignment="Left" Name="MaxConcurrentSessions" />
 	</Grid>
 </Grid>

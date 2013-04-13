@@ -3,8 +3,8 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" 
-	xmlns:c1="http://schemas.componentone.com/wpf/Basic"
 	xmlns:pc="clr-namespace:Prospective.Controls;assembly=Prospective.Controls"
+	xmlns:sf="http://schemas.syncfusion.com/wpf"
 	xmlns:Host="clr-namespace:NETPath.Interface.Host"
 	xmlns:Projects="clr-namespace:NETPath.Projects;assembly=NETPath.Projects"
 	d:DesignHeight="400" d:DesignWidth="600" >
@@ -59,7 +59,7 @@
 		<Label Content="Address:" Height="Auto" HorizontalAlignment="Left" Margin="0,1,0,0" VerticalContentAlignment="Center" Grid.Row="1" />
 		<pc:TextBox Text="{Binding Path=Data.ServerAddress}" Name="ServerAddress" Height="23" Margin="65,5,5,5" VerticalAlignment="Top" LabelText="Use Machine Name" Grid.Row="1" Grid.ColumnSpan="2" ToolTip="{Binding Path=Data.ServerAddress}" />
 		<Label Content="Port:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Column="0" Grid.Row="2" />
-		<c1:C1NumericBox Margin="65,5,5,5" Value="{Binding Path=Data.ServerPort}" Grid.Row="2" ShowButtons="False" Name="ServerPort" HorizontalContentAlignment="Left" ValueChanged="ServerPort_ValueChanged"  />
+		<sf:IntegerTextBox Margin="65,5,5,5" Value="{Binding Path=Data.ServerPort}" Grid.Row="2" Name="ServerPort" HorizontalContentAlignment="Left" />
 		<ToggleButton IsChecked="{Binding Path=Data.ServerUseHTTPS}" Content="Use HTTPS" Margin="5" Grid.Column="1" Grid.Row="2" />
 	</Grid>
 	<Grid Grid.Row="3" >

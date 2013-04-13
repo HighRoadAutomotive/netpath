@@ -45,16 +45,6 @@ namespace NETPath.Interface.Bindings
 			e.IsValid = RegExs.MatchHTTPURI.IsMatch(Namespace.Text);
 		}
 
-		private void ListenBacklog_ValueChanged(object sender, C1.WPF.PropertyChangedEventArgs<double> e)
-		{
-			Binding.ListenBacklog = Convert.ToInt32(e.NewValue);
-		}
-
-		private void MaxConnections_ValueChanged(object sender, C1.WPF.PropertyChangedEventArgs<double> e)
-		{
-			Binding.MaxConnections = Convert.ToInt32(e.NewValue);
-		}
-
 		private void MaxBufferPoolSize_Validate(object sender, ValidateEventArgs e)
 		{
 			e.IsValid = true;

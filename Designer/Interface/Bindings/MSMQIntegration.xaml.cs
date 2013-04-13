@@ -62,17 +62,5 @@ namespace NETPath.Interface.Bindings
 			try { Convert.ToInt64(MaxReceivedMessageSize.Text); }
 			catch (Exception) { e.IsValid = false; }
 		}
-
-		private void MaxRetryCycles_ValueChanged(object sender, C1.WPF.PropertyChangedEventArgs<double> e)
-		{
-			if (IsLoaded == false) return;
-			Binding.MaxRetryCycles = Convert.ToInt32(e.NewValue);
-		}
-
-		private void ReceiveRetryCount_ValueChanged(object sender, C1.WPF.PropertyChangedEventArgs<double> e)
-		{
-			if (IsLoaded == false) return;
-			Binding.ReceiveRetryCount = Convert.ToInt32(e.NewValue);
-		}
 	}
 }

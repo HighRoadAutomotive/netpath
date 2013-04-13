@@ -45,23 +45,5 @@ namespace NETPath.Interface.Host
 		{
 			e.IsValid = RegExs.MatchCodeName.IsMatch(DisplayName.Text);
 		}
-
-		private void MaxConcurrentCalls_ValueChanged(object sender, C1.WPF.PropertyChangedEventArgs<double> e)
-		{
-			if (IsLoaded == false) return;
-			Data.MaxConcurrentCalls = Convert.ToInt32(e.NewValue);
-		}
-
-		private void MaxConcurrentInstances_ValueChanged(object sender, C1.WPF.PropertyChangedEventArgs<double> e)
-		{
-			if (IsLoaded == false) return;
-			Data.MaxConcurrentInstances = Convert.ToInt32(e.NewValue);
-		}
-
-		private void MaxConcurrentSessions_ValueChanged(object sender, C1.WPF.PropertyChangedEventArgs<double> e)
-		{
-			if (IsLoaded == false) return;
-			Data.MaxConcurrentSessions = Convert.ToInt32(e.NewValue);
-		}
 	}
 }

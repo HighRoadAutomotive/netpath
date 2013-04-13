@@ -3,7 +3,6 @@
 	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	  xmlns:Data="clr-namespace:NETPath.Interface.Data"
 	  xmlns:Docs="clr-namespace:NETPath.Interface.Documentation"
-	  xmlns:c1="http://schemas.componentone.com/wpf/Basic"
 	  xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 

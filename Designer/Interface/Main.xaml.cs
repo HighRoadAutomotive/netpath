@@ -411,12 +411,12 @@ namespace NETPath.Interface
 			AutomaticBackupsInterval.IsEnabled = false;
 		}
 
-		private void AutomaticBackupsInterval_ValueChanged(object sender, C1.WPF.DateTimeEditors.NullablePropertyChangedEventArgs<TimeSpan> e)
+		private void AutomaticBackupsInterval_ValueChanged(DependencyObject D, DependencyPropertyChangedEventArgs e)
 		{
 			if (IsLoaded == false) return;
-			if (e.NewValue.HasValue == false) { UserProfile.AutomaticBackupsInterval = new TimeSpan(0, 5, 0); return; }
-			if (e.NewValue.Value.TotalMinutes < 1) { UserProfile.AutomaticBackupsInterval = new TimeSpan(0, 1, 0); return; }
-			UserProfile.AutomaticBackupsInterval = e.NewValue.Value;
+			if (e.NewValue == null) { UserProfile.AutomaticBackupsInterval = new TimeSpan(0, 5, 0); return; }
+			if (((TimeSpan)e.NewValue).TotalMinutes < 1) { UserProfile.AutomaticBackupsInterval = new TimeSpan(0, 1, 0); return; }
+			UserProfile.AutomaticBackupsInterval = (TimeSpan)e.NewValue;
 			Globals.BackupTimer.Dispose();
 			Globals.BackupTimer = new System.Threading.Timer(Globals.BackupSolution, null, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds);
 		}

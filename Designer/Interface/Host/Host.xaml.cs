@@ -63,26 +63,6 @@ namespace NETPath.Interface.Host
 			e.IsValid = RegExs.MatchHTTPURI.IsMatch(Namespace.Text);
 		}
 
-		private void OpenTimeout_ValueChanged(object sender, C1.WPF.DateTimeEditors.NullablePropertyChangedEventArgs<TimeSpan> e)
-		{
-			if (IsLoaded == false) return;
-			if (e.NewValue.HasValue == false) { Data.OpenTimeout = TimeSpan.Zero; return; }
-			Data.OpenTimeout = e.NewValue.Value;
-		}
-
-		private void CloseTimeout_ValueChanged(object sender, C1.WPF.DateTimeEditors.NullablePropertyChangedEventArgs<TimeSpan> e)
-		{
-			if (IsLoaded == false) return;
-			if (e.NewValue.HasValue == false) { Data.CloseTimeout = TimeSpan.Zero; return; }
-			Data.CloseTimeout = e.NewValue.Value;
-		}
-
-		private void ManualFlowControlLimit_ValueChanged(object sender, C1.WPF.PropertyChangedEventArgs<double> e)
-		{
-			if (IsLoaded == false) return;
-			Data.ManualFlowControlLimit = Convert.ToInt32(e.NewValue);
-		}
-
 		#region - Endpoints -
 
 		private void AddEndpointName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
@@ -268,11 +248,5 @@ namespace NETPath.Interface.Host
 		}
 
 		#endregion
-
-		private void UserNamePasswordMaxCachedLogonTokens_ValueChanged(object sender, C1.WPF.PropertyChangedEventArgs<double> e)
-		{
-			if (IsLoaded == false) return;
-			Data.Credentials.UserNamePasswordMaxCachedLogonTokens = Convert.ToInt32(e.NewValue);
-		}
 	}
 }

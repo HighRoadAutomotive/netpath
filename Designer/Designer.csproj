@@ -103,18 +103,6 @@
       <HintPath>C:\Program Files (x86)\Actipro Software\WPF-Controls\v12.2.0571\Assemblies\ActiproSoftware.Shared.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="C1.WPF.4, Version=4.0.20113.219, Culture=neutral, PublicKeyToken=2aa4ec5576d6c3ce, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="C1.WPF.DateTimeEditors.4, Version=4.0.20113.219, Culture=neutral, PublicKeyToken=2aa4ec5576d6c3ce, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="C1.WPF.Extended.4, Version=4.0.20113.219, Culture=neutral, PublicKeyToken=2aa4ec5576d6c3ce, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="LogicNP.CryptoLicensing, Version=9.0.0.0, Culture=neutral, PublicKeyToken=4a3c0a4c668b48b4">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\LogicNP Software\CryptoLicensing For .Net 2013\LogicNP.CryptoLicensing.dll</HintPath>
@@ -131,6 +119,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Prospective\Controls\Build\Prospective.Controls.dll</HintPath>
     </Reference>
+    <Reference Include="Syncfusion.Core, Version=11.104.0.21, Culture=neutral, PublicKeyToken=632609b4d040f6b4, processorArchitecture=MSIL" />
+    <Reference Include="Syncfusion.Shared.Wpf, Version=11.104.0.21, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -473,7 +463,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Themes\C1NumericBox.xaml">
+    <Page Include="Themes\IntegerTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -505,7 +495,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Resource Include="Themes\C1TimeEditor.xaml">
+    <Resource Include="Themes\TimeSpanEdit.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>

@@ -3,8 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" 
-	xmlns:c1="http://schemas.componentone.com/wpf/Basic"
-	xmlns:c1datetime="http://schemas.componentone.com/wpf/DateTimeEditors"
+	xmlns:sf="http://schemas.syncfusion.com/wpf"
 	xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 	xmlns:Data="clr-namespace:NETPath.Interface.Data"
 	xmlns:Docs="clr-namespace:NETPath.Interface.Documentation"
@@ -54,13 +53,13 @@
 		</Grid.ColumnDefinitions>
 		<Label Grid.Column="0" Content="Timeouts" FontSize="12pt" Margin="0,5,0,0" />
 		<Label Content="Open Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
-		<c1datetime:C1TimeEditor Value="{Binding Path=Binding.OpenTimeout, Mode=TwoWay}" Name="OpenTimeout" Margin="105,5,5,5" Format="TimeSpan" Height="24" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" FontSize="10pt" />
+		<sf:TimeSpanEdit Value="{Binding Path=Binding.OpenTimeout, Mode=TwoWay}" Name="OpenTimeout" Margin="105,5,5,5" Format="hh:mm:ss" ShowArrowButtons="False" Height="24" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" FontSize="10pt" />
 		<Label Content="Close Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
-		<c1datetime:C1TimeEditor Value="{Binding Path=Binding.CloseTimeout, Mode=TwoWay}" Name="CloseTimeout" Margin="105,5,5,5" Format="TimeSpan" Height="24" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" FontSize="10pt" />
+		<sf:TimeSpanEdit Value="{Binding Path=Binding.CloseTimeout, Mode=TwoWay}" Name="CloseTimeout" Margin="105,5,5,5" Format="hh:mm:ss" ShowArrowButtons="False" Height="24" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" FontSize="10pt" />
 		<Label Content="Send Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" />
-		<c1datetime:C1TimeEditor Value="{Binding Path=Binding.SendTimeout, Mode=TwoWay}" Name="SendTimeout" Margin="105,5,5,5" Format="TimeSpan" Height="24" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" FontSize="10pt" />
+		<sf:TimeSpanEdit Value="{Binding Path=Binding.SendTimeout, Mode=TwoWay}" Name="SendTimeout" Margin="105,5,5,5" Format="hh:mm:ss" ShowArrowButtons="False" Height="24" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" FontSize="10pt" />
 		<Label Content="Receive Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="1" />
-		<c1datetime:C1TimeEditor Value="{Binding Path=Binding.ReceiveTimeout, Mode=TwoWay}" Name="ReceiveTimeout" Margin="115,5,5,5" Format="TimeSpan" Height="24" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="1" FontSize="10pt" />
+		<sf:TimeSpanEdit Value="{Binding Path=Binding.ReceiveTimeout, Mode=TwoWay}" Name="ReceiveTimeout" Margin="115,5,5,5" Format="hh:mm:ss" ShowArrowButtons="False" Height="24" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="1" FontSize="10pt" />
 	</Grid>
 	<Grid Grid.Row="4">
 		<Grid.RowDefinitions>
@@ -75,7 +74,7 @@
 		<Label Grid.Column="0" Content="Reliable Sessions" FontSize="12pt" Margin="0,5,0,0" />
 		<ToggleButton Content="Enabled" IsChecked="{Binding Path=Binding.ReliableSessionEnabled}" Margin="5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" Name="ReliableSessionEnabled" />
 		<Label Content="Inactivity Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
-		<c1datetime:C1TimeEditor Format="TimeSpan" Margin="125,5,5,5" Value="{Binding Path=Binding.ReliableSessionInactivityTimeout, Mode=TwoWay}" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" IsEnabled="{Binding Path=Binding.ReliableSessionEnabled}" Name="ReliableSessionInactivityTimeout" />
+		<sf:TimeSpanEdit Format="hh:mm:ss" ShowArrowButtons="False" Margin="125,5,5,5" Value="{Binding Path=Binding.ReliableSessionInactivityTimeout, Mode=TwoWay}" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" IsEnabled="{Binding Path=Binding.ReliableSessionEnabled}" Name="ReliableSessionInactivityTimeout" />
 		<ToggleButton Content="Ordered" IsChecked="{Binding Path=Binding.ReliableSessionsOrdered}" Margin="5" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" IsEnabled="{Binding Path=Binding.ReliableSessionEnabled}" Name="ReliableSessionsOrdered" />
 	</Grid>
 	<Grid Grid.Row="5">
@@ -91,9 +90,9 @@
 		<Label Grid.Column="0" Content="Connection" FontSize="12pt" Margin="0,5,0,0" />
 		<ToggleButton IsChecked="{Binding Path=Binding.PortSharingEnabled}" Name="PortSharingEnabled" Content="Port Sharing" Margin="5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
 		<Label Content="Max Connections:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
-		<c1:C1NumericBox Value="{Binding Path=Binding.MaxConnections}" Margin="125,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ShowButtons="False" Name="MaxConnections" ValueChanged="MaxConnections_ValueChanged" Grid.Column="1" Grid.Row="1" FontSize="10pt" />
+		<sf:IntegerTextBox Value="{Binding Path=Binding.MaxConnections}" Margin="125,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Name="MaxConnections" Grid.Column="1" Grid.Row="1" FontSize="10pt" />
 		<Label Content="Listen Backlog:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" />
-		<c1:C1NumericBox Value="{Binding Path=Binding.ListenBacklog}" Margin="105,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" ShowButtons="False" Name="ListenBacklog" ValueChanged="ListenBacklog_ValueChanged" Grid.Column="2" Grid.Row="1" FontSize="10pt" />
+		<sf:IntegerTextBox Value="{Binding Path=Binding.ListenBacklog}" Margin="105,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Name="ListenBacklog" Grid.Column="2" Grid.Row="1" FontSize="10pt" />
 	</Grid>
 	<Grid Grid.Row="6">
 		<Grid.RowDefinitions>

@@ -55,12 +55,6 @@ namespace NETPath.Interface.Host
 			Data.Binding = EndpointBinding.SelectedValue as Projects.ServiceBinding;
 		}
 
-		private void ServerPort_ValueChanged(object sender, C1.WPF.PropertyChangedEventArgs<double> e)
-		{
-			if (IsLoaded == false) return;
-			Data.ServerPort = Convert.ToInt32(e.NewValue);
-		}
-
 		private void ClientIdentityType_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (IsLoaded == false) return;

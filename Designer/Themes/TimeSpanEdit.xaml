@@ -1,0 +1,288 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:sf="http://schemas.syncfusion.com/wpf">
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/Defaults.xaml" />
+		<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/Colors.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
+	<!--<Style TargetType="sf:TimeSpanEdit">
+		<Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}" />
+		<Setter Property="BorderBrush" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
+		<Setter Property="SelectionBackground" Value="{StaticResource DefaultBackgroundColor}" />
+		<Setter Property="SelectionForeground" Value="{StaticResource DefaultFontColor}" />
+		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="Padding" Value="1,2" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="sf:TimeSpanEdit">
+					<Grid x:Name="Root">
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="ValidationStates">
+								<VisualState x:Name="Valid" />
+								<VisualState x:Name="InvalidUnfocused">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ValidationDecorator" Storyboard.TargetProperty="ValidationState">
+											<DiscreteObjectKeyFrame KeyTime="0">
+												<DiscreteObjectKeyFrame.Value>
+													<c1:ValidationState>InvalidUnfocused</c1:ValidationState>
+												</DiscreteObjectKeyFrame.Value>
+											</DiscreteObjectKeyFrame>
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="InvalidFocused">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ValidationDecorator" Storyboard.TargetProperty="ValidationState">
+											<DiscreteObjectKeyFrame KeyTime="0">
+												<DiscreteObjectKeyFrame.Value>
+													<c1:ValidationState>InvalidFocused</c1:ValidationState>
+												</DiscreteObjectKeyFrame.Value>
+											</DiscreteObjectKeyFrame>
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+						<Border x:Name="BackgroundElement" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="0" BorderBrush="{TemplateBinding BorderBrush}" >
+							<sf:TimeSpanEdit x:Name="TextBox" Grid.Column="0" BorderThickness="0" Foreground="{TemplateBinding Foreground}" Background="Transparent" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Text="" Margin="{TemplateBinding Padding}" />
+						</Border>
+					</Grid>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsKeyboardFocusWithin" Value="True">
+							<Setter Property="Background" Value="{StaticResource FocusedBackgroundColor}" />
+						</Trigger>
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter Property="Foreground" Value="{StaticResource DisabledFontColor}" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>-->
+
+	<Style TargetType="{x:Type sf:TimeSpanEdit}">
+		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>
+		<Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}"/>
+		<Setter Property="BorderBrush" Value="{StaticResource DefaultBorderColor}"/>
+		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="ShowArrowButtons" Value="False"/>
+		<Setter Property="AllowDrop" Value="False"/>
+		<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+		<Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type sf:TimeSpanEdit}">
+					<Border x:Name="Bd"  BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="Auto"/>
+							</Grid.ColumnDefinitions>
+							<ScrollViewer Foreground="{TemplateBinding Foreground}" x:Name="PART_ContentHost" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
+							<Grid Grid.Column="1">
+								<Grid.RowDefinitions>
+									<RowDefinition/>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								<RepeatButton x:Name="upbutton" Command="{Binding UpCommand, RelativeSource={RelativeSource TemplatedParent}}" IsTabStop="False" Margin="0,-1,-1,0" Grid.Row="0" Width="17">
+									<RepeatButton.Style>
+										<Style TargetType="{x:Type RepeatButton}">
+											<Setter Property="OverridesDefaultStyle" Value="True"/>
+											<Setter Property="Background">
+												<Setter.Value>
+													<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+														<GradientStop Color="#FFF2F2F2" Offset="0.102"/>
+														<GradientStop Color="#FFE8E8E8" Offset="0.932"/>
+														<GradientStop Color="#FFD1D1D1" Offset="0.966"/>
+													</LinearGradientBrush>
+												</Setter.Value>
+											</Setter>
+											<Setter Property="BorderBrush" Value="#FFABADB3"/>
+											<Setter Property="Foreground" Value="Black"/>
+											<Setter Property="BorderThickness" Value="1"/>
+											<Setter Property="HorizontalContentAlignment" Value="Center"/>
+											<Setter Property="VerticalContentAlignment" Value="Center"/>
+											<Setter Property="Padding" Value="0"/>
+											<Setter Property="Template">
+												<Setter.Value>
+													<ControlTemplate TargetType="{x:Type RepeatButton}">
+														<Border x:Name="Chrome" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" Background="{TemplateBinding Background}" CornerRadius="0" SnapsToDevicePixels="True">
+															<Border x:Name="innerBorder" BorderBrush="{TemplateBinding Background}" BorderThickness="1" CornerRadius="0" SnapsToDevicePixels="True">
+																<ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+															</Border>
+														</Border>
+														<ControlTemplate.Triggers>
+															<MultiTrigger>
+																<MultiTrigger.Conditions>
+																	<Condition Property="sf:SkinStorage.EnableTouch" Value="False"/>
+																	<Condition Property="IsMouseOver" Value="True"/>
+																</MultiTrigger.Conditions>
+																<Setter Property="BorderBrush" TargetName="Chrome" Value="#FF3C7FB1"/>
+																<Setter Property="BorderBrush" TargetName="innerBorder" Value="#FFFBFBFB"/>
+																<Setter Property="Background" TargetName="Chrome">
+																	<Setter.Value>
+																		<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+																			<GradientStop Color="#FFE9F6FD" Offset="0.134"/>
+																			<GradientStop Color="#FFD2EDFC" Offset="0.966"/>
+																			<GradientStop Color="#FFE9F5FC" Offset="1"/>
+																		</LinearGradientBrush>
+																	</Setter.Value>
+																</Setter>
+															</MultiTrigger>
+															<Trigger Property="IsPressed" Value="True">
+																<Setter Property="BorderBrush" TargetName="Chrome" Value="#FF3C7FB1"/>
+																<Setter Property="BorderBrush" TargetName="innerBorder" Value="Transparent"/>
+																<Setter Property="Background" TargetName="Chrome">
+																	<Setter.Value>
+																		<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+																			<GradientStop Color="#FFA6C7D9" Offset="0.113"/>
+																			<GradientStop Color="#FFC2E4F6" Offset="0.135"/>
+																			<GradientStop Color="#FFC2E4F6" Offset="0.842"/>
+																			<GradientStop Color="#FF91CCEB" Offset="0.865"/>
+																		</LinearGradientBrush>
+																	</Setter.Value>
+																</Setter>
+															</Trigger>
+															<Trigger Property="IsEnabled" Value="False">
+																<Setter Property="Opacity" TargetName="Chrome" Value="0.5"/>
+															</Trigger>
+														</ControlTemplate.Triggers>
+													</ControlTemplate>
+												</Setter.Value>
+											</Setter>
+										</Style>
+									</RepeatButton.Style>
+									<RepeatButton.Visibility>
+										<Binding Path="ShowArrowButtons" RelativeSource="{RelativeSource TemplatedParent}">
+											<Binding.Converter>
+												<sf:BoolToVisibilityConverter/>
+											</Binding.Converter>
+										</Binding>
+									</RepeatButton.Visibility>
+									<Path x:Name="upbuttonpath" Data="F1M541.537,173.589L531.107,173.589 536.322,167.49 541.537,173.589z" Fill="#FF5F6EA5" HorizontalAlignment="Center" Height="4" Stretch="Uniform" VerticalAlignment="Center" Width="8"/>
+								</RepeatButton>
+								<RepeatButton x:Name="downbutton" Command="{Binding DownCommand, RelativeSource={RelativeSource TemplatedParent}}" IsTabStop="False" Margin="0,0,-1,-1" Grid.Row="1" Width="17">
+									<RepeatButton.Style>
+										<Style TargetType="{x:Type RepeatButton}">
+											<Setter Property="OverridesDefaultStyle" Value="True"/>
+											<Setter Property="Background">
+												<Setter.Value>
+													<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+														<GradientStop Color="#FFF2F2F2" Offset="0.102"/>
+														<GradientStop Color="#FFE8E8E8" Offset="0.932"/>
+														<GradientStop Color="#FFD1D1D1" Offset="0.966"/>
+													</LinearGradientBrush>
+												</Setter.Value>
+											</Setter>
+											<Setter Property="BorderBrush" Value="#FFABADB3"/>
+											<Setter Property="Foreground" Value="Black"/>
+											<Setter Property="BorderThickness" Value="1"/>
+											<Setter Property="HorizontalContentAlignment" Value="Center"/>
+											<Setter Property="VerticalContentAlignment" Value="Center"/>
+											<Setter Property="Padding" Value="0"/>
+											<Setter Property="Template">
+												<Setter.Value>
+													<ControlTemplate TargetType="{x:Type RepeatButton}">
+														<Border x:Name="Chrome" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" Background="{TemplateBinding Background}" CornerRadius="0" SnapsToDevicePixels="True">
+															<Border x:Name="innerBorder" BorderBrush="{TemplateBinding Background}" BorderThickness="1" CornerRadius="0" SnapsToDevicePixels="True">
+																<ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+															</Border>
+														</Border>
+														<ControlTemplate.Triggers>
+															<MultiTrigger>
+																<MultiTrigger.Conditions>
+																	<Condition Property="sf:SkinStorage.EnableTouch" Value="False"/>
+																	<Condition Property="IsMouseOver" Value="True"/>
+																</MultiTrigger.Conditions>
+																<Setter Property="BorderBrush" TargetName="Chrome" Value="#FF3C7FB1"/>
+																<Setter Property="BorderBrush" TargetName="innerBorder" Value="#FFFBFBFB"/>
+																<Setter Property="Background" TargetName="Chrome">
+																	<Setter.Value>
+																		<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+																			<GradientStop Color="#FFE9F6FD" Offset="0.134"/>
+																			<GradientStop Color="#FFD2EDFC" Offset="0.966"/>
+																			<GradientStop Color="#FFE9F5FC" Offset="1"/>
+																		</LinearGradientBrush>
+																	</Setter.Value>
+																</Setter>
+															</MultiTrigger>
+															<Trigger Property="IsPressed" Value="True">
+																<Setter Property="BorderBrush" TargetName="Chrome" Value="#FF3C7FB1"/>
+																<Setter Property="BorderBrush" TargetName="innerBorder" Value="Transparent"/>
+																<Setter Property="Background" TargetName="Chrome">
+																	<Setter.Value>
+																		<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+																			<GradientStop Color="#FFA6C7D9" Offset="0.113"/>
+																			<GradientStop Color="#FFC2E4F6" Offset="0.135"/>
+																			<GradientStop Color="#FFC2E4F6" Offset="0.842"/>
+																			<GradientStop Color="#FF91CCEB" Offset="0.865"/>
+																		</LinearGradientBrush>
+																	</Setter.Value>
+																</Setter>
+															</Trigger>
+															<Trigger Property="IsEnabled" Value="False">
+																<Setter Property="Opacity" TargetName="Chrome" Value="0.5"/>
+															</Trigger>
+														</ControlTemplate.Triggers>
+													</ControlTemplate>
+												</Setter.Value>
+											</Setter>
+										</Style>
+									</RepeatButton.Style>
+									<RepeatButton.Visibility>
+										<Binding Path="ShowArrowButtons" RelativeSource="{RelativeSource TemplatedParent}">
+											<Binding.Converter>
+												<sf:BoolToVisibilityConverter/>
+											</Binding.Converter>
+										</Binding>
+									</RepeatButton.Visibility>
+									<Path x:Name="downbuttonpath" Data="F1M531.107,321.943L541.537,321.943 536.322,328.042 531.107,321.943z" Fill="#FF5F6EA5" HorizontalAlignment="Center" Height="4" Stretch="Uniform" VerticalAlignment="Center" Width="8"/>
+								</RepeatButton>
+							</Grid>
+						</Grid>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter Property="BorderBrush" TargetName="Bd">
+								<Setter.Value>
+									<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+										<GradientStop Color="#FF5794BF" Offset="0"/>
+										<GradientStop Color="#FFC7E2F1" Offset="1"/>
+									</LinearGradientBrush>
+								</Setter.Value>
+							</Setter>
+						</Trigger>
+						<Trigger Property="IsKeyboardFocusWithin" Value="True">
+							<Setter Property="Background" Value="{StaticResource FocusedBackgroundColor}" />
+						</Trigger>
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter Property="Foreground" Value="{StaticResource DisabledFontColor}" />
+						</Trigger>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter Property="Background" Value="{StaticResource MouseOverBackgroundColor}"/>
+						</Trigger>
+						<Trigger Property="sf:SkinStorage.EnableTouch" Value="True">
+							<Setter Property="Padding" Value="1,8"/>
+							<Setter Property="FontSize" Value="18"/>
+							<Setter Property="Width" TargetName="upbutton" Value="40"/>
+							<Setter Property="Width" TargetName="downbutton" Value="40"/>
+							<Setter Property="Height" TargetName="upbutton" Value="40"/>
+							<Setter Property="Height" TargetName="downbutton" Value="40"/>
+							<Setter Property="Width" TargetName="upbuttonpath" Value="12"/>
+							<Setter Property="Width" TargetName="downbuttonpath" Value="12"/>
+							<Setter Property="Height" TargetName="downbuttonpath" Value="8"/>
+							<Setter Property="Height" TargetName="upbuttonpath" Value="8"/>
+							<Setter Property="EnableTouch" Value="True"/>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+</ResourceDictionary>

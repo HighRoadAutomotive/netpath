@@ -3,8 +3,6 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-		xmlns:c1="http://schemas.componentone.com/winfx/2006/xaml"
-		xmlns:c1datetime="clr-namespace:C1.WPF.DateTimeEditors;assembly=C1.WPF.DateTimeEditors.4"
 		xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 		xmlns:local="clr-namespace:NETPath.Interface"
 		xmlns:apm="clr-namespace:ActiproSoftware.Windows.Media.Animation;assembly=ActiproSoftware.Shared.Wpf"
@@ -513,7 +511,7 @@
 									<Label Content="Enabled:" Margin="5,5,0,0" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Width="Auto" />
 									<ToggleButton IsChecked="{Binding Path=AutomaticBackupsEnabled}" Name="AutomaticBackupsEnabled" Content="No" Margin="0,6,5,5" Checked="AutomaticBackupsEnabled_Checked" Unchecked="AutomaticBackupsEnabled_Unchecked" Height="23" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100" />
 									<Label Content="Interval:" Height="28" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top" Grid.Column="1" />
-									<c1datetime:C1TimeEditor Value="{Binding Path=AutomaticBackupsInterval}" Name="AutomaticBackupsInterval" IsEnabled="{Binding ElementName=AutomaticBackupsEnabled, Path=IsChecked}" HorizontalAlignment="Right" Margin="0,6,5,5" Grid.Column="1" Format="TimeSpan" Height="24" VerticalAlignment="Top" Width="70" ValueChanged="AutomaticBackupsInterval_ValueChanged" />
+									<sf:TimeSpanEdit Value="{Binding Path=AutomaticBackupsInterval}" Name="AutomaticBackupsInterval" IsEnabled="{Binding ElementName=AutomaticBackupsEnabled, Path=IsChecked}" HorizontalAlignment="Right" Margin="0,6,5,5" Grid.Column="1" Format="hh:mm:ss" ShowArrowButtons="False" Height="24" VerticalAlignment="Top" Width="70" ValueChanged="AutomaticBackupsInterval_ValueChanged" />
 								</Grid>
 							</GroupBox>
 						</Grid>

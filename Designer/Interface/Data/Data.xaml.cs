@@ -13,7 +13,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Globalization;
-using C1.WPF;
 using Prospective.Controls.Dialogs;
 using NETPath.Projects.Helpers;
 
@@ -37,11 +36,6 @@ namespace NETPath.Interface.Data
 
 			Projects.DataElement t = OpenType.Elements.FirstOrDefault(a => a.IsSelected);
 			if (t != null) ValuesList.SelectedItem = t;
-		}
-
-		private void UpdateBatchSize_ValueChanged(object Sender, PropertyChangedEventArgs<double> E)
-		{
-			OpenType.DREBatchCount = Convert.ToInt32(E.NewValue);
 		}
 
 		private void AddMemberType_ValidationChanged(object Sender, RoutedEventArgs E)
