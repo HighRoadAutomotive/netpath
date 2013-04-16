@@ -90,7 +90,7 @@
 		<Label Grid.Column="0" Content="Connection" FontSize="12pt" Margin="0,5,0,0" />
 		<ToggleButton IsChecked="{Binding Path=Binding.PortSharingEnabled}" Name="PortSharingEnabled" Content="Port Sharing" Margin="5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
 		<Label Content="Max Connections:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
-		<sf:IntegerTextBox Value="{Binding Path=Binding.MaxConnections}" Margin="125,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Name="MaxConnections" Grid.Column="1" Grid.Row="1" FontSize="10pt" />
+		<sf:IntegerTextBox Value="{Binding Path=Binding.MaxConnections}" Margin="125,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Name="MaxConnections" Grid.Column="1" Grid.Row="1" FontSize="10pt" Template="{DynamicResource IntegerTextBoxControlTemplate1}" />
 		<Label Content="Listen Backlog:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" />
 		<sf:IntegerTextBox Value="{Binding Path=Binding.ListenBacklog}" Margin="105,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Name="ListenBacklog" Grid.Column="2" Grid.Row="1" FontSize="10pt" />
 	</Grid>
