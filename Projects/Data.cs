@@ -185,24 +185,11 @@ namespace NETPath.Projects
 			XAMLType.KnownTypes.Add(Type);
 		}
 
-		public void RemoveKnownType(DataType Type, bool IsClientType = false, bool IsXAMLType = false)
+		public void RemoveKnownType(DataType Type)
 		{
-			if (IsClientType == false && IsXAMLType == false)
-			{
-				if (Elements.Any(dt => dt.DataType.TypeName == Type.TypeName)) return;
-				var d = KnownTypes.FirstOrDefault(a => a.TypeName == Type.TypeName);
-				if (d != null) KnownTypes.Remove(d);
-			}
-			if (IsClientType && IsXAMLType == false)
-			{
-				if (Elements.Any(dt => dt.ClientType.TypeName == Type.TypeName)) return;
-				var d = KnownTypes.FirstOrDefault(a => a.TypeName == Type.TypeName);
-				if (d != null) KnownTypes.Remove(d);
-			}
-			if (IsClientType == false || IsXAMLType == false) return;
-			if (Elements.Any(dt => dt.XAMLType.TypeName == Type.TypeName)) return;
-			var t = KnownTypes.FirstOrDefault(a => a.TypeName == Type.TypeName);
-			if (t != null) KnownTypes.Remove(t);
+			if (Elements.Any(dt => dt.DataType.TypeName == Type.TypeName)) return;
+			var d = KnownTypes.FirstOrDefault(a => a.TypeName == Type.TypeName);
+			if (d != null) KnownTypes.Remove(d);
 		}
 
 		public IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
@@ -330,43 +317,19 @@ namespace NETPath.Projects
 
 			if (Convert.ToBoolean(e.NewValue))
 			{
-				t.ClientType = t.DataType;
 				t.ClientName = t.DataName;
-				if (t.ClientType == null || t.Owner == null) return;
-				if (t.ClientType.TypeMode == DataTypeMode.Array && t.ClientType.CollectionGenericType.TypeMode == DataTypeMode.Primitive) t.Owner.AddKnownType(t.ClientType, true);
-				if (t.ClientType.TypeMode == DataTypeMode.Primitive && t.ClientType.Primitive == PrimitiveTypes.DateTimeOffset) t.Owner.AddKnownType(new DataType(PrimitiveTypes.DateTimeOffset), true);
 			}
 			else
 			{
 				var tct = e.OldValue as DataType;
 				if (tct != null)
 				{
-					if (tct.TypeMode == DataTypeMode.Array && tct.CollectionGenericType.TypeMode == DataTypeMode.Primitive) t.Owner.RemoveKnownType(tct, true);
-					if (tct.TypeMode == DataTypeMode.Primitive && tct.Primitive == PrimitiveTypes.DateTimeOffset) t.Owner.RemoveKnownType(new DataType(PrimitiveTypes.DateTimeOffset), true);
+					if (tct.TypeMode == DataTypeMode.Array && tct.CollectionGenericType.TypeMode == DataTypeMode.Primitive) t.Owner.RemoveKnownType(tct);
+					if (tct.TypeMode == DataTypeMode.Primitive && tct.Primitive == PrimitiveTypes.DateTimeOffset) t.Owner.RemoveKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
 				}
 				t.ClientName = "";
-				t.ClientType = null;
 				t.IsAttached = false;
 			}
-		}
-
-		public DataType ClientType { get { return (DataType)GetValue(ClientTypeProperty); } set { SetValue(ClientTypeProperty, value); } }
-		public static readonly DependencyProperty ClientTypeProperty = DependencyProperty.Register("ClientType", typeof(DataType), typeof(DataElement), new PropertyMetadata(ClientTypeChangedCallback));
-
-		private static void ClientTypeChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs p)
-		{
-			var de = o as DataElement;
-			if (de == null) return;
-
-			var nt = p.NewValue as DataType;
-			if (nt == null) return;
-			var ot = p.OldValue as DataType;
-			if (ot == null) return;
-
-			if (ot.TypeMode == DataTypeMode.Array && ot.CollectionGenericType.TypeMode == DataTypeMode.Primitive) de.Owner.RemoveKnownType(nt, true);
-			if (nt.TypeMode == DataTypeMode.Array && nt.CollectionGenericType.TypeMode == DataTypeMode.Primitive) de.Owner.AddKnownType(nt, true);
-			if (ot.TypeMode == DataTypeMode.Primitive && ot.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.RemoveKnownType(new DataType(PrimitiveTypes.DateTimeOffset), true);
-			if (nt.TypeMode == DataTypeMode.Primitive && nt.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.AddKnownType(new DataType(PrimitiveTypes.DateTimeOffset), true);
 		}
 
 		public string ClientName { get { return (string)GetValue(ClientNameProperty); } set { SetValue(ClientNameProperty, value); } }
@@ -382,19 +345,14 @@ namespace NETPath.Projects
 
 			if (Convert.ToBoolean(e.NewValue))
 			{
-				t.XAMLType = t.DataType;
 				t.XAMLName = t.DataName;
 			}
 			else
 			{
-				t.XAMLType = null;
 				t.XAMLName = "";
 				t.IsAttached = false;
 			}
 		}
-
-		public DataType XAMLType { get { return (DataType)GetValue(XAMLTypeProperty); } set { SetValue(XAMLTypeProperty, value); } }
-		public static readonly DependencyProperty XAMLTypeProperty = DependencyProperty.Register("XAMLType", typeof(DataType), typeof(DataElement));
 
 		public string XAMLName { get { return (string)GetValue(XAMLNameProperty); } set { SetValue(XAMLNameProperty, value); } }
 		public static readonly DependencyProperty XAMLNameProperty = DependencyProperty.Register("XAMLName", typeof(string), typeof(DataElement), new PropertyMetadata(""));

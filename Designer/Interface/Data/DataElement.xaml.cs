@@ -34,8 +34,6 @@ namespace NETPath.Interface.Data
 			Project = Element.Owner.Parent.Owner;
 
 			DataType.Project = Project;
-			ClientType.Project = Project;
-			XAMLType.Project = Project;
 		}
 
 		private void ElementName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
@@ -61,13 +59,11 @@ namespace NETPath.Interface.Data
 
 		private void GenerateClientType_Unchecked(object sender, RoutedEventArgs e)
 		{
-			Element.ClientType = null;
 			ClientName.Text = "";
 		}
 
 		private void GenerateXAMLBinding_Unchecked(object sender, RoutedEventArgs e)
 		{
-			Element.XAMLType = null;
 			XAMLName.Text = "";
 		}
 	}
