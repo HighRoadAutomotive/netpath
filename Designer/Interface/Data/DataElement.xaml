@@ -30,6 +30,7 @@
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
 		<RowDefinition Height="*" />
 	</Grid.RowDefinitions>
 	<TextBlock Grid.Row="0" FontSize="14pt" >
@@ -54,25 +55,33 @@
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<Label Content="Server:" Margin="0,5,5,5" HorizontalContentAlignment="Center" />
-		<pc:TextBox Grid.Column="1" Margin="5" Name="ElementName" Text="{Binding Path=Element.DataName, UpdateSourceTrigger=PropertyChanged}" LabelText="Name" VerticalContentAlignment="Center" Validate="ElementName_Validate" ToolTip="{Binding Path=Element.DataName}" />
+		<pc:TextBox Grid.Column="1" Margin="5" Name="ElementName" Text="{Binding Path=Element.DataName, UpdateSourceTrigger=PropertyChanged}" LabelText="Server Name" VerticalContentAlignment="Center" Validate="ElementName_Validate" />
 	</Grid>
-	<Grid Name="ClientGrid" Grid.Row="3" >
+	<Grid Name="ContractGrid" Grid.Row="3" >
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="75" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+		<ToggleButton Grid.Column="0" Margin="0,5,5,5" Content="Contract:" Padding="2,0" IsChecked="{Binding Path=Element.HasContractName}" IsEnabled="{Binding Path=Element.IsDataMember}" ToolTip="Tells NETPath to use a different name for the data during serialization." Unchecked="GenerateContractName_Unchecked" />
+		<pc:TextBox Grid.Column="1" Margin="5" MinHeight="24" Name="ContractName" Text="{Binding Path=Element.ContractName, UpdateSourceTrigger=PropertyChanged}" LabelText="Contract Name" IsEnabled="{Binding Path=Element.HasContractName}" VerticalContentAlignment="Center" />
+	</Grid>
+	<Grid Name="ClientGrid" Grid.Row="4" >
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="75" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<ToggleButton Grid.Column="0" Margin="0,5,5,5" Content="Client:" Padding="2,0" IsChecked="{Binding Path=Element.HasClientType}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="GenerateClientType" ToolTip="Tells NETPath to generate a different member type for the client." Unchecked="GenerateClientType_Unchecked" />
-		<pc:TextBox Grid.Column="1" Margin="5" MinHeight="24" Name="ClientName" Text="{Binding Path=Element.ClientName, UpdateSourceTrigger=PropertyChanged}" LabelText="Name" IsEnabled="{Binding Path=Element.HasClientType}" VerticalContentAlignment="Center" Validate="ElementName_Validate" ToolTip="{Binding Path=Element.ClientName}" />
+		<pc:TextBox Grid.Column="1" Margin="5" MinHeight="24" Name="ClientName" Text="{Binding Path=Element.ClientName, UpdateSourceTrigger=PropertyChanged}" LabelText="Client Name" IsEnabled="{Binding Path=Element.HasClientType}" VerticalContentAlignment="Center" Validate="ElementName_Validate" />
 	</Grid>
-	<Grid Name="XAMLGrid" Grid.Row="4" >
+	<Grid Name="XAMLGrid" Grid.Row="5" >
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="75" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<ToggleButton Grid.Column="0" Margin="0,5,5,5" Content="XAML:" Padding="2,0" IsChecked="{Binding Path=Element.HasXAMLType}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="GenerateXAMLBinding" ToolTip="Tells NETPath to generate a WPF binding for this member." Unchecked="GenerateXAMLBinding_Unchecked" />
-		<pc:TextBox Grid.Column="1" Margin="5" MinHeight="24" Name="XAMLName" Text="{Binding Path=Element.XAMLName, UpdateSourceTrigger=PropertyChanged}" LabelText="Name" IsEnabled="{Binding Path=Element.HasXAMLType}" VerticalContentAlignment="Center" Validate="ElementName_Validate" ToolTip="{Binding Path=Element.XAMLName}" />
+		<pc:TextBox Grid.Column="1" Margin="5" MinHeight="24" Name="XAMLName" Text="{Binding Path=Element.XAMLName, UpdateSourceTrigger=PropertyChanged}" LabelText="XAML Name" IsEnabled="{Binding Path=Element.HasXAMLType}" VerticalContentAlignment="Center" Validate="ElementName_Validate" />
 	</Grid>
-	<TabControl Grid.Row="5" Margin="0,5,0,0" >
+	<TabControl Grid.Row="6" Margin="0,5,0,0" >
 		<TabItem Padding="10,5" IsSelected="True">
 			<TabItem.Header>
 				<TextBlock Text="Options" FontSize="12pt"/>

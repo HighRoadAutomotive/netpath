@@ -57,6 +57,11 @@ namespace NETPath.Interface.Data
 			e.IsValid = true;
 		}
 
+		private void GenerateContractName_Unchecked(object sender, RoutedEventArgs e)
+		{
+			ContractName.Text = "";
+		}
+
 		private void GenerateClientType_Unchecked(object sender, RoutedEventArgs e)
 		{
 			ClientName.Text = "";

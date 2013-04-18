@@ -307,6 +307,28 @@ namespace NETPath.Projects
 		public string DataName { get { return (string)GetValue(DataNameProperty); } set { SetValue(DataNameProperty, value); } }
 		public static readonly DependencyProperty DataNameProperty = DependencyProperty.Register("DataName", typeof(string), typeof(DataElement), new PropertyMetadata(""));
 
+		public bool HasContractName { get { return (bool)GetValue(HasContractNameProperty); } set { SetValue(HasContractNameProperty, value); } }
+		public static readonly DependencyProperty HasContractNameProperty = DependencyProperty.Register("HasContractName", typeof(bool), typeof(DataElement), new PropertyMetadata(false, HasContractNameChangedCallback));
+
+		private static void HasContractNameChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as DataElement;
+			if (t == null) return;
+
+			if (Convert.ToBoolean(e.NewValue))
+			{
+				if (t.ContractName == "") t.ContractName = t.DataName;
+			}
+			else
+			{
+				t.HasClientType = false;
+				t.ContractName = "";
+			}
+		}
+
+		public string ContractName { get { return (string)GetValue(ContractNameProperty); } set { SetValue(ContractNameProperty, value); } }
+		public static readonly DependencyProperty ContractNameProperty = DependencyProperty.Register("ContractName", typeof(string), typeof(DataElement), new PropertyMetadata(""));
+
 		public bool HasClientType { get { return (bool)GetValue(HasClientTypeProperty); } set { SetValue(HasClientTypeProperty, value); } }
 		public static readonly DependencyProperty HasClientTypeProperty = DependencyProperty.Register("HasClientType", typeof(bool), typeof(DataElement), new PropertyMetadata(false, HasClientTypeChangedCallback));
 
@@ -317,7 +339,8 @@ namespace NETPath.Projects
 
 			if (Convert.ToBoolean(e.NewValue))
 			{
-				t.ClientName = t.DataName;
+				if (t.ClientName == "") t.ClientName = t.DataName;
+				t.HasContractName = true;
 			}
 			else
 			{
@@ -345,7 +368,7 @@ namespace NETPath.Projects
 
 			if (Convert.ToBoolean(e.NewValue))
 			{
-				t.XAMLName = t.DataName;
+				if(t.XAMLName == "") t.XAMLName = t.DataName;
 			}
 			else
 			{

@@ -99,26 +99,30 @@
 												<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/Property.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 												<TextBlock Text="{Binding Path=DataName}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="11pt" />
 											</StackPanel>
-											<TextBlock Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" >
+											<TextBlock Foreground="{StaticResource ReadOnlyFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" >
 												<TextBlock.Text>
-													<MultiBinding StringFormat="Server: {0} {1}">
+													<MultiBinding StringFormat="Type: {0}">
 														<Binding Path="DataType.TypeName" />
-														<Binding Path="DataName" />
 													</MultiBinding>
 												</TextBlock.Text>
 											</TextBlock>
-											<TextBlock Visibility="{Binding Path=HasClientType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" >
+											<TextBlock Visibility="{Binding Path=HasContractName, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource ReadOnlyFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" >
 												<TextBlock.Text>
-													<MultiBinding StringFormat="Client: {0} {1}">
-														<Binding Path="ClientType.TypeName" />
+													<MultiBinding StringFormat="Contract: {0}">
+														<Binding Path="ContractName" />
+													</MultiBinding>
+												</TextBlock.Text>
+											</TextBlock>
+											<TextBlock Visibility="{Binding Path=HasClientType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource ReadOnlyFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" >
+												<TextBlock.Text>
+													<MultiBinding StringFormat="Client: {0}">
 														<Binding Path="ClientName" />
 													</MultiBinding>
 												</TextBlock.Text>
 											</TextBlock>
-											<TextBlock Visibility="{Binding Path=HasXAMLType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" >
+											<TextBlock Visibility="{Binding Path=HasXAMLType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource ReadOnlyFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" >
 												<TextBlock.Text>
-													<MultiBinding StringFormat="XAML: {0} {1}">
-														<Binding Path="XAMLType.TypeName" />
+													<MultiBinding StringFormat="XAML: {0}">
 														<Binding Path="XAMLName" />
 													</MultiBinding>
 												</TextBlock.Text>
