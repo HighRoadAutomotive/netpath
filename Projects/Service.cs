@@ -455,7 +455,6 @@ namespace NETPath.Projects
 			var t = o as Method;
 			if (t == null) return;
 
-			if (Convert.ToBoolean(e.NewValue) == false) t.REST.Unregister();
 			t.REST = Convert.ToBoolean(e.NewValue) ? new MethodREST(t) : null;
 		}
 
@@ -828,27 +827,15 @@ namespace NETPath.Projects
 		GET,
 		POST,
 		PUT,
-		DELETE,
+		DELETE
 	}
 
 	public class MethodREST : DependencyObject
 	{
 		public Guid ID { get; private set; }
 
-		public string RESTName { get { return (string)GetValue(RESTNameProperty); } set { SetValue(RESTNameProperty, value); } }
-		public static readonly DependencyProperty RESTNameProperty = DependencyProperty.Register("RESTName", typeof(string), typeof(MethodREST), new PropertyMetadata(""));
-
 		public string UriTemplate { get { return (string)GetValue(UriTemplateProperty); } set { SetValue(UriTemplateProperty, value); } }
 		public static readonly DependencyProperty UriTemplateProperty = DependencyProperty.Register("UriTemplate", typeof(string), typeof(MethodREST), new PropertyMetadata("/"));
-
-		public bool UseParameterFormat { get { return (bool)GetValue(UseParameterFormatProperty); } set { SetValue(UseParameterFormatProperty, value); } }
-		public static readonly DependencyProperty UseParameterFormatProperty = DependencyProperty.Register("UseParameterFormat", typeof(bool), typeof(MethodREST), new PropertyMetadata(false, UseParameterFormatChangedCallback));
-
-		private static void UseParameterFormatChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
-		{
-			var t = o as MethodREST;
-			if (t != null) t.UriTemplate = t.BuildUriTemplate();
-		}
 
 		public MethodRESTVerbs Method { get { return (MethodRESTVerbs)GetValue(MethodProperty); } set { SetValue(MethodProperty, value); } }
 		public static readonly DependencyProperty MethodProperty = DependencyProperty.Register("Method", typeof(MethodRESTVerbs), typeof(MethodREST), new PropertyMetadata(MethodRESTVerbs.GET));
@@ -862,8 +849,8 @@ namespace NETPath.Projects
 		public WebMessageFormat ResponseFormat { get { return (WebMessageFormat)GetValue(ResponseFormatProperty); } set { SetValue(ResponseFormatProperty, value); } }
 		public static readonly DependencyProperty ResponseFormatProperty = DependencyProperty.Register("ResponseFormat", typeof(WebMessageFormat), typeof(MethodREST), new PropertyMetadata(WebMessageFormat.Xml));
 
-		[IgnoreDataMember] private Method owner;
-		public Method Owner { get { return owner; } set { owner = value; if (owner != null) owner.Parameters.CollectionChanged += Parameters_CollectionChanged; UriTemplate = BuildUriTemplate(); } }
+		[IgnoreDataMember] private Method owner; 
+		public Method Owner { get; set; }
 
 		public MethodREST() { }		
 
@@ -871,43 +858,7 @@ namespace NETPath.Projects
 		{
 			ID = new Guid();
 			this.Owner = Owner;
-			this.Owner.Parameters.CollectionChanged += Parameters_CollectionChanged;
-
-			UriTemplate = BuildUriTemplate();
 		}
 
-		private void Parameters_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-		{
-			UriTemplate = BuildUriTemplate();
-		}
-
-		public void Unregister()
-		{
-			Owner.Parameters.CollectionChanged -= Parameters_CollectionChanged;
-		}
-
-		public string BuildUriTemplate()
-		{
-			var code = new StringBuilder();
-			if (Owner.Parameters.Any(a => a.Type.TypeMode == DataTypeMode.Primitive || a.Type.TypeMode == DataTypeMode.Enum))
-				code.AppendFormat(UseParameterFormat ? "{0}?" : "{0}", string.IsNullOrEmpty(RESTName) ? Owner.ServerName : RESTName);
-			else
-				return string.IsNullOrEmpty(RESTName) ? Owner.ServerName : RESTName;
-
-			foreach(MethodParameter mp in Owner.Parameters.Where(a => a.Type.TypeMode == DataTypeMode.Primitive || a.Type.TypeMode == DataTypeMode.Enum))
-			{
-				if (mp.Type.TypeMode == DataTypeMode.Primitive && (mp.Type.Primitive == PrimitiveTypes.None || mp.Type.Primitive == PrimitiveTypes.ByteArray || mp.Type.Primitive == PrimitiveTypes.Void || mp.Type.Primitive == PrimitiveTypes.Object || mp.Type.Primitive == PrimitiveTypes.URI || mp.Type.Primitive == PrimitiveTypes.Version))
-				{
-					mp.IsRESTInvalid = true;
-					continue;
-				}
-
-				code.AppendFormat(UseParameterFormat ? "&{0}={{{0}}}" : "/{{{0}}}", mp.Name);
-			}
-
-			Method = Owner.Parameters.Any(a => a.Type.TypeMode == DataTypeMode.Struct || a.Type.TypeMode == DataTypeMode.Class) ? (Method == MethodRESTVerbs.GET ? MethodRESTVerbs.POST : Method) : MethodRESTVerbs.GET;
-
-			return code.Replace("?&", "?").ToString();
-		}
 	}
 }
