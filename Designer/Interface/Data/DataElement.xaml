@@ -33,9 +33,9 @@
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="*" />
 	</Grid.RowDefinitions>
-	<TextBlock Grid.Row="0" FontSize="14pt" >
+	<TextBlock Grid.Row="0" FontSize="14pt" FontFamily="{StaticResource CodeFontFamily}" >
 		<TextBlock.Text>
-			<MultiBinding StringFormat=" {0} {1} {2}">
+			<MultiBinding StringFormat=" {0} {1};">
 				<Binding Path="Element.DataType.TypeName" />
 				<Binding Path="Element.DataName" />
 			</MultiBinding>

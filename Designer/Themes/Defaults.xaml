@@ -24,6 +24,7 @@
 	<SolidColorBrush x:Key="SelectedFontColor" Color="#FF141414" />
 	<FontFamily x:Key="DefaultFontFamily">./#Segoe UI</FontFamily>
 	<FontWeight x:Key="DefaultFontWeight">Normal</FontWeight>
+	<FontFamily x:Key="CodeFontFamily">./#Consolas</FontFamily>
 	<SolidColorBrush x:Key="DisabledFontColor" Color="#FFAAAAAA" />
 	<SolidColorBrush x:Key="ReadOnlyFontColor" Color="#FFC4C4C4" />
 	
