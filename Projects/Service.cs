@@ -447,20 +447,6 @@ namespace NETPath.Projects
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(Method));
 
-		public bool IsRESTMethod { get { return (bool)GetValue(IsRESTMethodProperty); } set { SetValue(IsRESTMethodProperty, value); } }
-		public static readonly DependencyProperty IsRESTMethodProperty = DependencyProperty.Register("IsRESTMethod", typeof(bool), typeof(Method), new PropertyMetadata(false, IsRESTMethodChangedCallback));
-
-		private static void IsRESTMethodChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
-		{
-			var t = o as Method;
-			if (t == null) return;
-
-			t.REST = Convert.ToBoolean(e.NewValue) ? new MethodREST(t) : null;
-		}
-
-		public MethodREST REST { get { return (MethodREST)GetValue(RESTProperty); } set { SetValue(RESTProperty, value); } }
-		public static readonly DependencyProperty RESTProperty = DependencyProperty.Register("REST", typeof(MethodREST), typeof(Method));
-
 		public ObservableCollection<MethodParameter> Parameters { get { return (ObservableCollection<MethodParameter>)GetValue(ParametersProperty); } set { SetValue(ParametersProperty, value); } }
 		public static readonly DependencyProperty ParametersProperty = DependencyProperty.Register("Parameters", typeof(ObservableCollection<MethodParameter>), typeof(Method));
 
@@ -820,45 +806,5 @@ namespace NETPath.Projects
 			else
 				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
 		}
-	}
-
-	public enum MethodRESTVerbs
-	{
-		GET,
-		POST,
-		PUT,
-		DELETE
-	}
-
-	public class MethodREST : DependencyObject
-	{
-		public Guid ID { get; private set; }
-
-		public string UriTemplate { get { return (string)GetValue(UriTemplateProperty); } set { SetValue(UriTemplateProperty, value); } }
-		public static readonly DependencyProperty UriTemplateProperty = DependencyProperty.Register("UriTemplate", typeof(string), typeof(MethodREST), new PropertyMetadata("/"));
-
-		public MethodRESTVerbs Method { get { return (MethodRESTVerbs)GetValue(MethodProperty); } set { SetValue(MethodProperty, value); } }
-		public static readonly DependencyProperty MethodProperty = DependencyProperty.Register("Method", typeof(MethodRESTVerbs), typeof(MethodREST), new PropertyMetadata(MethodRESTVerbs.GET));
-
-		public WebMessageBodyStyle BodyStyle { get { return (WebMessageBodyStyle)GetValue(BodyStyleProperty); } set { SetValue(BodyStyleProperty, value); } }
-		public static readonly DependencyProperty BodyStyleProperty = DependencyProperty.Register("BodyStyle", typeof(WebMessageBodyStyle), typeof(MethodREST), new PropertyMetadata(WebMessageBodyStyle.Bare));
-
-		public WebMessageFormat RequestFormat { get { return (WebMessageFormat)GetValue(RequestFormatProperty); } set { SetValue(RequestFormatProperty, value); } }
-		public static readonly DependencyProperty RequestFormatProperty = DependencyProperty.Register("RequestFormat", typeof(WebMessageFormat), typeof(MethodREST), new PropertyMetadata(WebMessageFormat.Xml));
-
-		public WebMessageFormat ResponseFormat { get { return (WebMessageFormat)GetValue(ResponseFormatProperty); } set { SetValue(ResponseFormatProperty, value); } }
-		public static readonly DependencyProperty ResponseFormatProperty = DependencyProperty.Register("ResponseFormat", typeof(WebMessageFormat), typeof(MethodREST), new PropertyMetadata(WebMessageFormat.Xml));
-
-		[IgnoreDataMember] private Method owner; 
-		public Method Owner { get; set; }
-
-		public MethodREST() { }		
-
-		public MethodREST(Method Owner)
-		{
-			ID = new Guid();
-			this.Owner = Owner;
-		}
-
 	}
 }

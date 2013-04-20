@@ -3,323 +3,323 @@
   <Class Name="NETPath.Projects.Project">
     <Position X="0.5" Y="0.5" Width="4.75" />
     <TypeIdentifier>
-      <HashCode>AAEAAggAAAIAgAECKAgAVkQAABBQKAIQgAAABJEgADA=</HashCode>
+      <HashCode>QAUEAIgAAACQpAAEJAgAwsQAAAhAIkAFhYAIAJNAADA=</HashCode>
       <FileName>Project.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.Service">
     <Position X="0.5" Y="36" Width="4.75" />
     <TypeIdentifier>
-      <HashCode>AAAYAAgSQAIQAAAKKAAAFAAAABACGAAQgAIEBAAgQCA=</HashCode>
+      <HashCode>iAQIEAAaK00oBAoMArQwEjAiMIhqkGGAoQAsCKAMCyA=</HashCode>
       <FileName>Service.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.Data">
     <Position X="6" Y="36" Width="3.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAgAAIIAAEACKAEQFAAAABACCAAQgAAABAAyCCA=</HashCode>
+      <HashCode>BMaIADAQAICSAAAACBEQACBAIAAMgICAoAAAAAACQGI=</HashCode>
       <FileName>Data.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.DataElement">
-    <Position X="6" Y="44.25" Width="3.5" />
+    <Position X="6" Y="45.25" Width="3.5" />
     <TypeIdentifier>
-      <HashCode>gEEAIAyiAAYEgGgSKBCAEAQwFAACmEAQiAAABAARGiA=</HashCode>
+      <HashCode>pEEoIBySAA5EuQgUCBCDYgAwNAEMACQQyAAFAAAJEyM=</HashCode>
       <FileName>Data.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.Enum">
     <Position X="10.25" Y="36" Width="3.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAgAAIIAAAACKAEQFAAAABAACAAYgAAABEAiADA=</HashCode>
+      <HashCode>AAAAAAAAAIAAAAAAAAAQAAAAAAAMAAAIgAAAAEAAADA=</HashCode>
       <FileName>Enum.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.EnumElement">
-    <Position X="10.25" Y="44.25" Width="3.5" />
+    <Position X="10.25" Y="41.25" Width="3.5" />
     <TypeIdentifier>
-      <HashCode>AAgAAAiAAAIAgAgCKAAQEEQAAAAACAAQgAAgBACQEiA=</HashCode>
+      <HashCode>IAAAAEjAIBAAgQgEAAAAAEwAAAIOgQAEgAAAAoCAECA=</HashCode>
       <FileName>Enum.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.MethodParameter">
-    <Position X="0.5" Y="55.5" Width="4.75" />
+    <Position X="0.5" Y="60.25" Width="4.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAiAAAAAgAgAIAAAAAQAAAAAAAAAgQAAAAAAEiA=</HashCode>
+      <HashCode>AAAAAAiAAAAAgAkFIAAAQAQAAAAMAAAAgQAAAAAAkCA=</HashCode>
       <FileName>Service.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.Operation">
-    <Position X="0.5" Y="44.25" Width="4.75" />
+    <Position X="0.5" Y="52" Width="4.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAiAAAIAigAKKAACEAQAAAABCAAQgAAABAAEAiA=</HashCode>
+      <HashCode>AAAgAACAQAAAmgCMAABgQAAAACABCADAwAAAAAAEBCA=</HashCode>
       <FileName>Service.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="NETPath.Projects.Reference">
-    <Position X="6" Y="0.5" Width="3.5" />
-    <TypeIdentifier>
-      <HashCode>IAAAAAAAAAQAgAIkAAAAAAQAAAgAAAgAACAABAAQAiA=</HashCode>
-      <FileName>Project.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.BindingSecurityTCP">
     <Position X="30.25" Y="37.5" Width="5" />
     <TypeIdentifier>
-      <HashCode>QAAAAAgAAIABAAAAIAgAAAACAgAAAAAAAAAAAQEAAEQ=</HashCode>
+      <HashCode>QAAAAAgAAIABAAAAAAgAAAACAAAAAAAAAAAAAQEAAEQ=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.BindingSecurityMSMQ">
     <Position X="30.25" Y="50" Width="5" />
     <TypeIdentifier>
-      <HashCode>QAIAgAgAAIADAAAAIAAAAAADAgAAIAAAAAAAAQAABEQ=</HashCode>
+      <HashCode>QAIAgAgAAIADAAAAAAAAAAADAAAAIAAAAAAAAQAABEQ=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.BindingSecurityPeerTCP">
     <Position X="30.25" Y="57.5" Width="5" />
     <TypeIdentifier>
-      <HashCode>QAAAAAAAAIAAAAAAIAgAAAAAAgAAAAAAAAAAAAEAAAA=</HashCode>
+      <HashCode>QAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.BindingSecurityMSMQIntegration">
     <Position X="30.25" Y="69.5" Width="5" />
     <TypeIdentifier>
-      <HashCode>QAIAgAgAAIACAAAAIAAAAAADAgAAIAAAAAAAAAAABAA=</HashCode>
+      <HashCode>QAIAgAgAAIACAAAAAAAAAAADAAAAIAAAAAAAAAAABAA=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.BindingSecurity">
     <Position X="30.25" Y="0.5" Width="5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAgAAAIAAAACCAAAEAAAAgAACAAQgAAABAAAACA=</HashCode>
+      <HashCode>AAAAAACAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.BindingSecurityBasicHTTP">
     <Position X="30.25" Y="7.75" Width="5" />
     <TypeIdentifier>
-      <HashCode>QAAQABAAAIABAAAAIAgAAAAAAgAIAAAAAAAAAQEAAkQ=</HashCode>
+      <HashCode>QAAQABAAAIABAAAAAAgAAAAAAAAIAAAAAAAAAQEAAkQ=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.BindingSecurityWSHTTP">
     <Position X="30.25" Y="15" Width="5" />
     <TypeIdentifier>
-      <HashCode>QAAQABAAIIABAAAAIAgAAAAAAgAIAAIAAAAAAcEAAkQ=</HashCode>
+      <HashCode>QAAQABAAIIABAAAAAAgAAAAAAAAIAAIAAAAAAcEAAkQ=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.BindingSecurityWSDualHTTP">
     <Position X="30.25" Y="22.75" Width="5" />
     <TypeIdentifier>
-      <HashCode>QAAAAAAAAIABAAAAIAAAAAAAAgAAAAIAAAAAAYAAAEQ=</HashCode>
+      <HashCode>QAAAAAAAAIABAAAAAAAAAAAAAAAAAAIAAAAAAYAAAEQ=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.BindingSecurityWSFederationHTTP">
     <Position X="30.25" Y="29" Width="5" />
     <TypeIdentifier>
-      <HashCode>QAAAAgAAIIIBAAAAICABAAAAAmAAAAIAEAAAAcAAAEQ=</HashCode>
+      <HashCode>QABAAgAAIIIBAAAAACABAAAAAGAAAAIAEAgAAMAAAAQ=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.BindingSecurityNamedPipe">
     <Position X="30.25" Y="44.25" Width="5" />
     <TypeIdentifier>
-      <HashCode>QAAAAAgAAIAAAAAAIAAAAAACAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>QAAAAAgAAIAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.BindingSecurityWebHTTP">
     <Position X="30.25" Y="63" Width="5" />
     <TypeIdentifier>
-      <HashCode>QAAQABAAAIAAAAAAIAgAAAAAAgAIAAAAAAAAAAEAAgA=</HashCode>
+      <HashCode>QAAQABAAAIAAAAAAAAgAAAAAAAAIAAAAAAAAAAEAAgA=</HashCode>
       <FileName>Security.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.ServiceBinding">
     <Position X="22" Y="0.5" Width="5" />
     <TypeIdentifier>
-      <HashCode>AAQAEAgAkAIAAAACCAAgEAgAAgkAKAAQgCCABAQAACA=</HashCode>
+      <HashCode>AAQAEAgAkAAAAAAAAAAgAAgAAAAMIAAAgCCAAAAAACA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.ServiceBindingBasicHTTP">
     <Position X="22" Y="10.5" Width="5" />
     <TypeIdentifier>
-      <HashCode>ABCgAAAACAAICAIAIAABAICKgiBAAAgIAAAEAAB4AAA=</HashCode>
+      <HashCode>EBCgAAAACAgICAIAAAABAICKgCBIAggIAAAEAAB4AAg=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.ServiceBindingWSHTTP">
     <Position X="22" Y="20" Width="5" />
     <TypeIdentifier>
-      <HashCode>QBCgAEAACAAICBAAYAABAIKCgiBAAAgIAAAEAIBKAAA=</HashCode>
+      <HashCode>UBCgAEAACggICBEAQAABAIKCgCBIAggIAAAEAIBKAAg=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.ServiceBindingWS2007HTTP">
     <Position X="22" Y="30" Width="5" />
     <TypeIdentifier>
-      <HashCode>QBCgAEAACAAICBAAYAABAIKCgiBAAAgIAAAEAIBKAAA=</HashCode>
+      <HashCode>QBCgAEAACAAICBAAQAABAIKCgCBAAAgIAAAEAIBKAAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.ServiceBindingWSDualHTTP">
     <Position X="22" Y="40.25" Width="5" />
     <TypeIdentifier>
-      <HashCode>ABCgAEAACAAICBAAYIABAIACgiBAAAgAAAAEAJBKAAA=</HashCode>
+      <HashCode>ABCgAEAACAAICBAAQIABAIACgCBAAAgAAAAEAJBKAAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.ServiceBindingWSFederationHTTP">
     <Position X="22" Y="50" Width="5" />
     <TypeIdentifier>
-      <HashCode>QBCgAEAACAAICBAAYAEBCIIKgiBAAAgAAAAEAIBKAAA=</HashCode>
+      <HashCode>QBCgAEAACAAICBAAQAEBCIIKgCBAAAgAAAAEAIBKAAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.ServiceBindingWS2007FederationHTTP">
     <Position X="22" Y="60.5" Width="5" />
     <TypeIdentifier>
-      <HashCode>QBCgAEAACAAICBAAYAEBCIIKgiBAAAgAAAAEAIBKAAA=</HashCode>
+      <HashCode>QBCgAEAACAAICBAAQAEBCIIKgCBAAAgAAAAEAIBKAAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.ServiceBindingTCP">
     <Position X="22" Y="71.25" Width="5" />
     <TypeIdentifier>
-      <HashCode>QBAAAEAAAEAAABJAYAAAAIIIgiAIAAAAAABEAJB6AAA=</HashCode>
+      <HashCode>UBAAAEAAAkgAABNAQAAAAIIIgCAIAgAAAABEAJB6AAg=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.ServiceBindingNamedPipe">
     <Position X="22" Y="81.75" Width="5" />
     <TypeIdentifier>
-      <HashCode>ABAAAEAAAEAAAAIAIAAAAIAIgiAIAAAAAAAEABB4AAA=</HashCode>
+      <HashCode>ABAAAEAAAEAAAAIAAAAAAIAIgCAIAAAAAAAEABB4AAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.ServiceBindingMSMQ">
     <Position X="22" Y="90.5" Width="5" />
     <TypeIdentifier>
-      <HashCode>KBQgAABIACEAJAIAIAgAAIBAkiAYEkAAAiA9AwBIAAA=</HashCode>
+      <HashCode>KBQgAABIACEAJAIAAAgAAIBAkCAYEkAAAiA9AwBIAAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.ServiceBindingPeerTCP">
     <Position X="22" Y="102.5" Width="5" />
     <TypeIdentifier>
-      <HashCode>ABAAACAAAAAAAACAIAAEAIAACiAAAAAAAAAEAABIAAA=</HashCode>
+      <HashCode>ABAAACAAAAAAAACAAAAEAIAACCAAAAAAAAAEAABIAAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.ServiceBindingWebHTTP">
     <Position X="22" Y="109.5" Width="5" />
     <TypeIdentifier>
-      <HashCode>ABCgAAAAACAASAIAIAABAICqgiBAAAAIAAAEAAB4AAA=</HashCode>
+      <HashCode>ABCgAAAAACAASAIAIAABAICqgCBAAAAIAAAEAAB4AAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.ServiceBindingMSMQIntegration">
     <Position X="22" Y="119" Width="5" />
     <TypeIdentifier>
-      <HashCode>CAQgAgBIAAEAJAIAIAAAAIBAkiAYEkABAiA9AwBAAAA=</HashCode>
+      <HashCode>CAQgAgBIAAEAJAIAAAAAAIBAkCAYEkABAiA9AwBAAAA=</HashCode>
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.Host">
     <Position X="14.5" Y="0.5" Width="5" />
     <TypeIdentifier>
-      <HashCode>QEIgAAgAkBIAAAIiKUAAMAAAAAEGaAAQgCCFBAAAADA=</HashCode>
+      <HashCode>QEIgAAgAkBAAAAIgCUAAIAAAAAEOYAAAgCCFAAAAADA=</HashCode>
       <FileName>Host.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.HostCredentials">
     <Position X="14.5" Y="13.25" Width="5" />
     <TypeIdentifier>
-      <HashCode>QCDBAAyCyGGAiAAFMAoQARgjAkAAIsEADIAgoSGASAM=</HashCode>
+      <HashCode>QCDBAAyCyGGAiAAFEAoQARgjAkAAIsEADIAgoSGASAM=</HashCode>
       <FileName>Host.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.HostDebugBehavior">
     <Position X="14.5" Y="33.25" Width="5" />
     <TypeIdentifier>
-      <HashCode>AAAgAAAAAgAQQAAAIAACAAAAACQEAIAAADAAQAAAAAw=</HashCode>
+      <HashCode>AAAgAAAAAgAQQAAAAAACAAAAACQEAIAAADAAQAAAAAw=</HashCode>
       <FileName>Host.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.HostBehavior">
     <Position X="14.5" Y="28.25" Width="5" />
     <TypeIdentifier>
-      <HashCode>AgAAAQgAAAAAgAAAAAAAQAQAAAAAAAAAgAAAAAAAAiA=</HashCode>
+      <HashCode>AgAAAQgAAAAAkAAEAAAAQAQBAAAAAAAAgAAAAAAAACA=</HashCode>
       <FileName>Host.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.HostMetadataBehavior">
     <Position X="14.5" Y="39.5" Width="5" />
     <TypeIdentifier>
-      <HashCode>AAAAABAAUAQAAAAAIAAAEAAABAQQCCAAgBAQAIAAAAA=</HashCode>
+      <HashCode>AAAoABAAUAQAAAAAAAAAEAAABAQQCCAAgBAQAIAAAAA=</HashCode>
       <FileName>Host.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.HostThrottlingBehavior">
     <Position X="14.5" Y="45.75" Width="5" />
     <TypeIdentifier>
-      <HashCode>AAAAAwAAAAAAAAAAIAAAAABAAAwAAAgAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAwAAAAAAAAAAAAAAAABAAAwAAAgAAAAAAAAAAAA=</HashCode>
       <FileName>Host.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.Solution">
-    <Position X="6" Y="12.5" Width="3.5" />
+    <Position X="6" Y="0.5" Width="3.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAgAAAAAgAAAAAAAAAQAAAgAAAAAAAAAAAAAAgA=</HashCode>
-      <FileName>Project.cs</FileName>
+      <HashCode>AAAAAIgAAAAAoAAAAAAAgAQAAAAAAAAAAQACAAAAAQA=</HashCode>
+      <FileName>Solution.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.HostEndpoint">
     <Position X="14.5" Y="50.75" Width="5" />
     <TypeIdentifier>
-      <HashCode>AgCIAAggDAAAgAgAIABAQASQBAAAAACAgAEAwAAAAiA=</HashCode>
+      <HashCode>AgCIAAggDAAAkAgEAABAQASYBAAAAACAgAEAwAAAgCA=</HashCode>
       <FileName>Host.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.HostEndpointAddressHeader">
     <Position X="14.5" Y="59.25" Width="5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAgAAAAAgAAAAAAAAAQAAAAAIAAAAAAAAAAAAgA=</HashCode>
+      <HashCode>AAAAAAgAAAAAgAAEAAAAAAQAAAAAIAAAAAAAAAAAAAA=</HashCode>
       <FileName>Host.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.Namespace">
-    <Position X="6" Y="18.75" Width="3.5" />
+    <Position X="6.25" Y="12.5" Width="3.75" />
     <TypeIdentifier>
-      <HashCode>gACAgAjAAAIQBIAiqAhUlIAAADAACBAYgkAEBAAgCCA=</HashCode>
+      <HashCode>gACAgAzAAIAQBIAguAhUkAAAACAAABCohlAAAAAgACA=</HashCode>
       <FileName>Namespace.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.Property">
-    <Position X="0.5" Y="62.75" Width="4.75" />
+    <Position X="0.5" Y="66.25" Width="4.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAQIAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAQIAAAAAAAAAAMAAAACAAAAAAABAA=</HashCode>
       <FileName>Service.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.DataType">
-    <Position X="0.5" Y="18.75" Width="4.75" />
+    <Position X="0.5" Y="12.5" Width="4.75" />
     <TypeIdentifier>
-      <HashCode>CAAAARwgAADggCAAAAAAQIQAAIAAkFAwAACAgMAAAgA=</HashCode>
+      <HashCode>CAFIIRyhYAB5iCAEIAAgQIQAiIAECPSgAECEgIAAGCA=</HashCode>
       <FileName>DataType.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="NETPath.Projects.ProjectNETOutputPath">
-    <Position X="6" Y="5.5" Width="3.5" />
+  <Class Name="NETPath.Projects.RESTService">
+    <Position X="6.25" Y="23" Width="3.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAEAAAAAAgAIIAAEEAAAABYAAAAAAAAAAAAAAAgA=</HashCode>
-      <FileName>Project.cs</FileName>
+      <HashCode>AAQIAAAaCA0gAAoIADQQACAiEIhiEEAAoQAMCAAACSA=</HashCode>
+      <FileName>RESTService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NETPath.Projects.RESTMethod">
+    <Position X="10.25" Y="23" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>ABAgAACARAQAmkLMIADgQgIEACANCAHCwIAQBAgEBCA=</HashCode>
+      <FileName>RESTService.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Enum Name="NETPath.Projects.BindingSecurityAlgorithmSuite">
@@ -343,10 +343,10 @@
       <FileName>Binding.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="NETPath.Projects.ProjectNETOutputFramework">
+  <Enum Name="NETPath.Projects.ProjectGenerationFramework">
     <Position X="10" Y="5.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAEAAAAAAAAAAAAaBAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAEAAAAAAAAAAAAahAAAAAAAAAAAABAAAAAA=</HashCode>
       <FileName>Project.cs</FileName>
     </TypeIdentifier>
   </Enum>
@@ -360,7 +360,7 @@
   <Enum Name="NETPath.Projects.DataScope">
     <Position X="6" Y="61" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAIEAAAAAEAAAAAAAAAAACAAAQAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAICAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
       <FileName>Data.cs</FileName>
     </TypeIdentifier>
   </Enum>
@@ -374,7 +374,7 @@
   <Enum Name="NETPath.Projects.DataTypeMode">
     <Position X="0.5" Y="26.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAASAAwAAIAAAAAAAAABAAAAAAAAIAACAA=</HashCode>
+      <HashCode>AAAAAAAAAAAASAAwAAJAAAAAwAAAJAAAAAAAAIAAAAA=</HashCode>
       <FileName>DataType.cs</FileName>
     </TypeIdentifier>
   </Enum>

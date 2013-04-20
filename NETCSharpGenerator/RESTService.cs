@@ -46,6 +46,9 @@ namespace NETPath.Generators.NET.CS
 						AddMessage(new CompileMessage("GS2006", "The method '" + m.ServerName + "' in the '" + o.Name + "' service contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
 				if (m.ReturnType == null)
 					AddMessage(new CompileMessage("GS2007", "The method '" + m.ServerName + "' in the '" + o.Name + "' service has a blank Return Type. A Return Type MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
+				else
+					if (m.IsRESTMethod && m.ReturnType.TypeMode == DataTypeMode.Primitive && (m.ReturnType.Primitive == PrimitiveTypes.Void || m.ReturnType.Primitive == PrimitiveTypes.None))
+						AddMessage(new CompileMessage("GS2012", "The method return type '" + m.ReturnType + "' in the '" + o.Name + "' service is not a valid REST return type. Please specify a valid REST return type.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
 				if (m.ReturnType.TypeMode == DataTypeMode.Namespace || m.ReturnType.TypeMode == DataTypeMode.Interface)
 					AddMessage(new CompileMessage("GS2013", "The method return type '" + m.ReturnType + "' in the '" + o.Name + "' service is not a valid return type. Please specify a valid return type.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
 
@@ -53,6 +56,8 @@ namespace NETPath.Generators.NET.CS
 				{
 					if(string.IsNullOrEmpty(mp.Name))
 						AddMessage(new CompileMessage("GS2008", "The method parameter '" + m.ServerName + "' in the '" + o.Name + "' service has a parameter with a blank name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
+					if (m.IsRESTMethod && mp.IsRESTInvalid)
+						AddMessage(new CompileMessage("GS2009", "The method REST parameter '" + m.ServerName + "' in the '" + m.ServerName + "' method is not a valid REST parameter. Please specify a valid REST parameter.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
 					if (mp.Name == "__callback")
 						AddMessage(new CompileMessage("GS2016", "The name of the method parameter '" + mp.Name + "' in the '" + m.ServerName + "' method is invalid. Please rename it.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
 				}
@@ -860,6 +865,8 @@ namespace NETPath.Generators.NET.CS
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 			}
 			code.AppendLine(string.Format("\t\t[OperationContract({0}{1}{2}{3})]", string.Format("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}", o.ProtectionLevel), o.Owner.SessionMode == SessionMode.Required ? o.IsInitiating ? ", IsInitiating = true" : ", IsInitiating = false" : "", o.Owner.SessionMode == SessionMode.Required ? o.IsTerminating ? ", IsTerminating = true" : ", IsTerminating = false" : "", o.IsOneWay ? ", IsOneWay = true" : ""));
+			if (!IsCallback && o.IsRESTMethod && (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35))
+				code.AppendLine(string.Format("\t\t[System.ServiceModel.Web.{0}(UriTemplate=\"{1}\", {2}BodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.{3}, RequestFormat = System.ServiceModel.Web.WebMessageFormat.{4}, ResponseFormat = System.ServiceModel.Web.WebMessageFormat.{5})]", o.REST.Method == MethodRESTVerbs.GET ? "WebGet" : "WebInvoke", o.REST.UriTemplate, o.REST.Method != MethodRESTVerbs.GET ? string.Format("Method = \"{0}\", ", o.REST.Method) : "", o.REST.BodyStyle, o.REST.RequestFormat, o.REST.ResponseFormat));
 			code.AppendFormat("\t\t{0} {1}(", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName);
 			foreach (MethodParameter op in o.Parameters)
 				code.AppendFormat("{0},", GenerateMethodParameterServerCode(op));
@@ -884,6 +891,8 @@ namespace NETPath.Generators.NET.CS
 					code.AppendLine(string.Format("\t\t///<param name='AsyncState'>An object representing the state of the operation.</param>"));
 				}
 				code.AppendLine(string.Format("\t\t[OperationContract({0}, AsyncPattern = true{1}{2}{3})]", string.Format("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}", o.ProtectionLevel), o.Owner.SessionMode == SessionMode.Required ? o.IsInitiating ? ", IsInitiating = true" : ", IsInitiating = false" : "", o.Owner.SessionMode == SessionMode.Required ? o.IsTerminating ? ", IsTerminating = true" : ", IsTerminating = false" : "", o.IsOneWay ? ", IsOneWay = true" : ""));
+				if (!IsCallback && o.IsRESTMethod && (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35))
+					code.AppendLine(string.Format("\t\t[System.ServiceModel.Web.{0}(UriTemplate=\"{1}\", {2}BodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.{3}, RequestFormat = System.ServiceModel.Web.WebMessageFormat.{4}, ResponseFormat = System.ServiceModel.Web.WebMessageFormat.{5})]", o.REST.Method == MethodRESTVerbs.GET ? "WebGet" : "WebInvoke", o.REST.UriTemplate, o.REST.Method != MethodRESTVerbs.GET ? string.Format("Method = \"{0}\", ", o.REST.Method) : "", o.REST.BodyStyle, o.REST.RequestFormat, o.REST.ResponseFormat));
 				code.AppendFormat("\t\tIAsyncResult Begin{0}(", o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("{0},", GenerateMethodParameterServerCode(op));
@@ -917,6 +926,8 @@ namespace NETPath.Generators.NET.CS
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
 				code.AppendLine(string.Format("\t\t[OperationContract({0}{1}{2}{3})]", string.Format("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}", o.ProtectionLevel), o.Owner.SessionMode == SessionMode.Required ? o.IsInitiating ? ", IsInitiating = true" : ", IsInitiating = false" : "", o.Owner.SessionMode == SessionMode.Required ? o.IsTerminating ? ", IsTerminating = true" : ", IsTerminating = false" : "", o.IsOneWay ? ", IsOneWay = true" : ""));
+				if (!IsCallback && o.IsRESTMethod && (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35))
+					code.AppendLine(string.Format("\t\t[System.ServiceModel.Web.{0}(UriTemplate=\"{1}\", {2}BodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.{3}, RequestFormat = System.ServiceModel.Web.WebMessageFormat.{4}, ResponseFormat = System.ServiceModel.Web.WebMessageFormat.{5})]", o.REST.Method == MethodRESTVerbs.GET ? "WebGet" : "WebInvoke", o.REST.UriTemplate, o.REST.Method != MethodRESTVerbs.GET ? string.Format("Method = \"{0}\", ", o.REST.Method) : "", o.REST.BodyStyle, o.REST.RequestFormat, o.REST.ResponseFormat));
 				if (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) code.AppendFormat("\t\tSystem.Threading.Tasks.Task {0}Async(", o.ServerName);
 				else code.AppendFormat("\t\tSystem.Threading.Tasks.Task<{0}> {1}Async(", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
@@ -944,7 +955,10 @@ namespace NETPath.Generators.NET.CS
 				foreach (MethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 			}
-			code.AppendLine(string.Format(o.IsOneWay ? "\t\t[OperationContract(IsOneWay = true, Action = \"{0}/I{1}/{2}\")]" : "\t\t[OperationContract(Action = \"{0}/I{1}/{2}\", ReplyAction = \"{0}/I{1}/{2}Response\")]", o.Owner.Parent.FullURI.Substring(0, o.Owner.Parent.FullURI.Length - 1), o.Owner.Name, o.ServerName));
+			if (!IsCallback && o.IsRESTMethod && (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35))
+				code.AppendLine(string.Format("\t\t[OperationContract]\r\n\t\t[System.ServiceModel.Web.{0}(UriTemplate=\"{1}\", {2}BodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.{3}, RequestFormat = System.ServiceModel.Web.WebMessageFormat.{4}, ResponseFormat = System.ServiceModel.Web.WebMessageFormat.{5})]", o.REST.Method == MethodRESTVerbs.GET ? "WebGet" : "WebInvoke", o.REST.UriTemplate, o.REST.Method != MethodRESTVerbs.GET ? string.Format("Method = \"{0}\", ", o.REST.Method) : "", o.REST.BodyStyle, o.REST.RequestFormat, o.REST.ResponseFormat));
+			else
+				code.AppendLine(string.Format(o.IsOneWay ? "\t\t[OperationContract(IsOneWay = true, Action = \"{0}/I{1}/{2}\")]" : "\t\t[OperationContract(Action = \"{0}/I{1}/{2}\", ReplyAction = \"{0}/I{1}/{2}Response\")]", o.Owner.Parent.FullURI.Substring(0, o.Owner.Parent.FullURI.Length - 1), o.Owner.Name, o.ServerName));
 			code.AppendFormat("\t\t{0} {1}(", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName);
 			foreach (MethodParameter op in o.Parameters)
 				code.AppendFormat("{0}{1}", GenerateMethodParameterClientCode(op), o.Parameters.IndexOf(op) != (o.Parameters.Count() - 1) ? ", " : "");
@@ -966,7 +980,10 @@ namespace NETPath.Generators.NET.CS
 					code.AppendLine(string.Format("\t\t///<param name='Callback'>The function to call when the operation is complete.</param>"));
 					code.AppendLine(string.Format("\t\t///<param name='AsyncState'>An object representing the state of the operation.</param>"));
 				}
-				code.AppendLine(string.Format(o.IsOneWay ? "\t\t[OperationContract(IsOneWay = true, Action = \"{0}/I{1}/{2}\")]" : "\t\t[OperationContract(Action = \"{0}/I{1}/{2}\", ReplyAction = \"{0}/I{1}/{2}Response\")]", o.Owner.Parent.FullURI.Substring(0, o.Owner.Parent.FullURI.Length - 1), o.Owner.Name, o.ServerName));
+				if (!IsCallback && o.IsRESTMethod && (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35))
+					code.AppendLine(string.Format("\t\t[OperationContract]\r\n\t\t[System.ServiceModel.Web.{0}(UriTemplate=\"{1}\", {2}BodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.{3}, RequestFormat = System.ServiceModel.Web.WebMessageFormat.{4}, ResponseFormat = System.ServiceModel.Web.WebMessageFormat.{5})]", o.REST.Method == MethodRESTVerbs.GET ? "WebGet" : "WebInvoke", o.REST.UriTemplate, o.REST.Method != MethodRESTVerbs.GET ? string.Format("Method = \"{0}\", ", o.REST.Method) : "", o.REST.BodyStyle, o.REST.RequestFormat, o.REST.ResponseFormat));
+				else
+					code.AppendLine(string.Format(o.IsOneWay ? "\t\t[OperationContract(IsOneWay = true, Action = \"{0}/I{1}/{2}\")]" : "\t\t[OperationContract(Action = \"{0}/I{1}/{2}\", ReplyAction = \"{0}/I{1}/{2}Response\")]", o.Owner.Parent.FullURI.Substring(0, o.Owner.Parent.FullURI.Length - 1), o.Owner.Name, o.ServerName));
 				code.AppendFormat("\t\tIAsyncResult Begin{0}(", o.HasClientType ? o.ClientName : o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
@@ -999,7 +1016,10 @@ namespace NETPath.Generators.NET.CS
 					foreach (MethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
 						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				}
-				code.AppendLine(string.Format(o.IsOneWay ? "\t\t[OperationContract(IsOneWay = true, Action = \"{0}/I{1}/{2}\")]" : "\t\t[OperationContract(Action = \"{0}/I{1}/{2}\", ReplyAction = \"{0}/I{1}/{2}Response\")]", o.Owner.Parent.FullURI.Substring(0, o.Owner.Parent.FullURI.Length - 1), o.Owner.Name, o.ServerName));
+				if (!IsCallback && o.IsRESTMethod && (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35))
+					code.AppendLine(string.Format("\t\t[OperationContract]\r\n\t\t[System.ServiceModel.Web.{0}(UriTemplate=\"{1}\", {2}BodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.{3}, RequestFormat = System.ServiceModel.Web.WebMessageFormat.{4}, ResponseFormat = System.ServiceModel.Web.WebMessageFormat.{5})]", o.REST.Method == MethodRESTVerbs.GET ? "WebGet" : "WebInvoke", o.REST.UriTemplate, o.REST.Method != MethodRESTVerbs.GET ? string.Format("Method = \"{0}\", ", o.REST.Method) : "", o.REST.BodyStyle, o.REST.RequestFormat, o.REST.ResponseFormat));
+				else
+					code.AppendLine(string.Format(o.IsOneWay ? "\t\t[OperationContract(IsOneWay = true, Action = \"{0}/I{1}/{2}\")]" : "\t\t[OperationContract(Action = \"{0}/I{1}/{2}\", ReplyAction = \"{0}/I{1}/{2}Response\")]", o.Owner.Parent.FullURI.Substring(0, o.Owner.Parent.FullURI.Length - 1), o.Owner.Name, o.ServerName));
 				if (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) code.AppendFormat("\t\tSystem.Threading.Tasks.Task {0}Async(", o.HasClientType ? o.ClientName : o.ServerName);
 				else code.AppendFormat("\t\tSystem.Threading.Tasks.Task<{0}> {1}Async(", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.HasClientType ? o.ClientName : o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
