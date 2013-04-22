@@ -40,6 +40,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.IdentityModel" />
+    <Reference Include="System.Net" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Utilities.NET40">
@@ -70,6 +71,7 @@
     <Compile Include="DependencyStack.cs" />
     <Compile Include="DREObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RESTClientBase.cs" />
     <Compile Include="ServerBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

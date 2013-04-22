@@ -23,9 +23,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("NETPath 2 Windows Runtime 8 Toolkit")]
 [assembly: AssemblyDescription("NETPath 2 Programmer Toolkit for the Window Runtime 8")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Prospective Software")]
+[assembly: AssemblyCompany("Prospective Software Inc.")]
 [assembly: AssemblyProduct("NETPath 2")]
-[assembly: AssemblyCopyright("Copyright © Prospective Software 2012")]
+[assembly: AssemblyCopyright("Copyright © 2012-2013 Prospective Software Inc.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -40,5 +40,5 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.2000.0")]
+[assembly: AssemblyFileVersion("2.0.2000.13160")]
 [assembly: ComVisible(false)]
