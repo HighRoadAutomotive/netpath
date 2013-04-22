@@ -31,6 +31,9 @@ namespace NETPath.Projects
 		public ObservableCollection<Service> Services { get { return (ObservableCollection<Service>)GetValue(ServicesProperty); } set { SetValue(ServicesProperty, value); } }
 		public static readonly DependencyProperty ServicesProperty = DependencyProperty.Register("Services", typeof(ObservableCollection<Service>), typeof(Namespace));
 
+		public ObservableCollection<RESTService> RESTServices { get { return (ObservableCollection<RESTService>)GetValue(RESTServicesProperty); } set { SetValue(RESTServicesProperty, value); } }
+		public static readonly DependencyProperty RESTServicesProperty = DependencyProperty.Register("RESTServices", typeof(ObservableCollection<RESTService>), typeof(Namespace));
+
 		public ObservableCollection<ServiceBinding> Bindings { get { return (ObservableCollection<ServiceBinding>)GetValue(BindingsProperty); } set { SetValue(BindingsProperty, value); } }
 		public static readonly DependencyProperty BindingsProperty = DependencyProperty.Register("Bindings", typeof(ObservableCollection<ServiceBinding>), typeof(Namespace));
 
@@ -50,6 +53,7 @@ namespace NETPath.Projects
 			Enums = new ObservableCollection<Enum>();
 			Data = new ObservableCollection<Data>();
 			Services = new ObservableCollection<Service>();
+			RESTServices = new ObservableCollection<RESTService>();
 			Bindings = new ObservableCollection<ServiceBinding>();
 			Hosts = new ObservableCollection<Host>();
 			URI = "";
@@ -61,6 +65,7 @@ namespace NETPath.Projects
 			Enums = new ObservableCollection<Enum>();
 			Data = new ObservableCollection<Data>();
 			Services = new ObservableCollection<Service>();
+			RESTServices = new ObservableCollection<RESTService>();
 			Bindings = new ObservableCollection<ServiceBinding>();
 			Hosts = new ObservableCollection<Host>();
 			ID = Guid.NewGuid();

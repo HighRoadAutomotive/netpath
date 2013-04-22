@@ -66,6 +66,12 @@ namespace NETPath.Interface
 				if (t == null) return;
 				DialogService.ShowMessageDialog("NETPath", "Delete Service?", "Are you sure you want to delete the '" + t.Declaration + "' service?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Services.Remove(t); }, true), new DialogAction("No", false, true));
 			}
+			if (dt == typeof(Projects.RESTService))
+			{
+				var t = e.Parameter as Projects.RESTService;
+				if (t == null) return;
+				DialogService.ShowMessageDialog("NETPath", "Delete REST Service?", "Are you sure you want to delete the '" + t.Declaration + "' REST service?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.RESTServices.Remove(t); }, true), new DialogAction("No", false, true));
+			}
 			if (dt == typeof(Projects.Data))
 			{
 				var t = e.Parameter as Projects.Data;
@@ -158,6 +164,9 @@ namespace NETPath.Interface
 			if (Item.GetType() == typeof(Projects.Service))
 				ActivePage = new Service.Service(Item as Projects.Service);
 
+			if (Item.GetType() == typeof(Projects.RESTService))
+				ActivePage = new REST.Service(Item as Projects.RESTService);
+
 			if (Item.GetType() == typeof(Projects.Data))
 				ActivePage = new Data.Data(Item as Projects.Data);
 
@@ -239,6 +248,11 @@ namespace NETPath.Interface
 						OpenProjectItem(t.Parent.Services[0]);
 						return;
 					}
+					if (t.Parent.RESTServices.Count > 0)
+					{
+						OpenProjectItem(t.Parent.RESTServices[0]);
+						return;
+					}
 					if (t.Parent.Data.Count > 0)
 					{
 						OpenProjectItem(t.Parent.Data[0]);
@@ -271,6 +285,50 @@ namespace NETPath.Interface
 				int ic = t.Parent.Services.Count - 1;
 				if (idx < ic)
 					OpenProjectItem(t.Parent.Services[idx + 1]);
+				else
+				{
+					if (t.Parent.RESTServices.Count > 0)
+					{
+						OpenProjectItem(t.Parent.RESTServices[0]);
+						return;
+					}
+					if (t.Parent.Data.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Data[0]);
+						return;
+					}
+					if (t.Parent.Enums.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Enums[0]);
+						return;
+					}
+					if (t.Parent.Bindings.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Bindings[0]);
+						return;
+					}
+					if (t.Parent.Hosts.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Hosts[0]);
+						return;
+					}
+					if (t.Parent.Children.Count > 0)
+					{
+						OpenProjectItem(t.Parent.Children[0]);
+						return;
+					}
+					if (t.Parent != null && !Equals(t.Parent, t.Parent.Owner.Namespace)) OpenProjectItem(t.Parent);
+					else OpenProjectItem(Project);
+				}
+			}
+			if (dt == typeof(Projects.RESTService))
+			{
+				var t = Item as Projects.RESTService;
+				if (t == null) return;
+				int idx = t.Parent.RESTServices.IndexOf(t);
+				int ic = t.Parent.RESTServices.Count - 1;
+				if (idx < ic)
+					OpenProjectItem(t.Parent.RESTServices[idx + 1]);
 				else
 				{
 					if (t.Parent.Data.Count > 0)
@@ -337,6 +395,11 @@ namespace NETPath.Interface
 						OpenProjectItem(t.Parent.Services[0]);
 						return;
 					}
+					if (t.Parent.RESTServices.Count > 0)
+					{
+						OpenProjectItem(t.Parent.RESTServices[0]);
+						return;
+					}
 					if (t.Parent != null && !Equals(t.Parent, t.Parent.Owner.Namespace)) OpenProjectItem(t.Parent);
 					else OpenProjectItem(Project);
 				}
@@ -369,6 +432,11 @@ namespace NETPath.Interface
 					if (t.Parent.Services.Count > 0)
 					{
 						OpenProjectItem(t.Parent.Services[0]);
+						return;
+					}
+					if (t.Parent.RESTServices.Count > 0)
+					{
+						OpenProjectItem(t.Parent.RESTServices[0]);
 						return;
 					}
 					if (t.Parent.Data.Count > 0)
@@ -405,6 +473,11 @@ namespace NETPath.Interface
 						OpenProjectItem(t.Parent.Services[0]);
 						return;
 					}
+					if (t.Parent.RESTServices.Count > 0)
+					{
+						OpenProjectItem(t.Parent.RESTServices[0]);
+						return;
+					}
 					if (t.Parent.Data.Count > 0)
 					{
 						OpenProjectItem(t.Parent.Data[0]);
@@ -437,6 +510,11 @@ namespace NETPath.Interface
 					if (t.Parent.Services.Count > 0)
 					{
 						OpenProjectItem(t.Parent.Services[0]);
+						return;
+					}
+					if (t.Parent.RESTServices.Count > 0)
+					{
+						OpenProjectItem(t.Parent.RESTServices[0]);
 						return;
 					}
 					if (t.Parent.Data.Count > 0)
@@ -872,6 +950,13 @@ namespace NETPath.Interface
 					return "Service";
 				if (T != null) return T.Name;
 			}
+			if (valueType == typeof(Projects.RESTService))
+			{
+				var T = value as Projects.RESTService;
+				if (T != null && string.IsNullOrEmpty(T.Name))
+					return "REST Service";
+				if (T != null) return T.Name;
+			}
 			if (valueType == typeof(Method))
 			{
 				var T = value as Operation;
@@ -970,6 +1055,13 @@ namespace NETPath.Interface
 					return "Service";
 				if (T != null) return T.Parent.Owner.Name;
 			}
+			if (valueType == typeof(Projects.RESTService))
+			{
+				var T = value as Projects.RESTService;
+				if (T != null && string.IsNullOrEmpty(T.Parent.Owner.Name))
+					return "REST Service";
+				if (T != null) return T.Parent.Owner.Name;
+			}
 			if (valueType == typeof(Projects.Data))
 			{
 				var T = value as Projects.Data;
@@ -1004,6 +1096,7 @@ namespace NETPath.Interface
 			if (valueType == typeof(DependencyProject)) return "pack://application:,,,/NETPath;component/Icons/X16/DependencyProject.png";
 			if (valueType == typeof(Projects.Namespace)) return "pack://application:,,,/NETPath;component/Icons/X16/Namespace.png";
 			if (valueType == typeof(Projects.Service)) return "pack://application:,,,/NETPath;component/Icons/X16/Service.png";
+			if (valueType == typeof(Projects.RESTService)) return "pack://application:,,,/NETPath;component/Icons/X16/REST.png";
 			if (valueType == typeof(Operation)) return "pack://application:,,,/NETPath;component/Icons/X16/Method.png";
 			if (valueType == typeof(MethodParameter)) return "pack://application:,,,/NETPath;component/Icons/X16/Property.png";
 			if (valueType == typeof(Property)) return "pack://application:,,,/NETPath;component/Icons/X16/Property.png";

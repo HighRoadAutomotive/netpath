@@ -157,7 +157,8 @@
 					</ListBox.Resources>
 					<ListBox.Items>
 						<Root:NewItemType DataType="1" Title="Namespace" Description="Namespaces are used to organize services in WCF." ImageSource="pack://application:,,,/NETPath;component/Icons/X32/Namespace.png" />
-						<Root:NewItemType DataType="2" Title="Service" Description="Services are used to organize services in WCF." ImageSource="pack://application:,,,/NETPath;component/Icons/X32/Service.png" />
+						<Root:NewItemType DataType="2" Title="Service" Description="Services are used to organize service operations in WCF." ImageSource="pack://application:,,,/NETPath;component/Icons/X32/Service.png" />
+						<Root:NewItemType DataType="7" Title="REST" Description="REST Services are used to provide access to REST enabled services." ImageSource="pack://application:,,,/NETPath;component/Icons/X32/REST.png" />
 						<Root:NewItemType DataType="3" Title="Data" Description="Data contracts are used to send data in WCF." ImageSource="pack://application:,,,/NETPath;component/Icons/X32/Data.png" />
 						<Root:NewItemType DataType="4" Title="Enumeration" Description="Enumeration contracts are used to create enums for WCF." ImageSource="pack://application:,,,/NETPath;component/Icons/X32/Enum.png" />
 						<Root:NewItemType DataType="5" Title="Binding" Description="Bindings in WCF determine how a service will communicate." ImageSource="pack://application:,,,/NETPath;component/Icons/X32/Binding.png" />

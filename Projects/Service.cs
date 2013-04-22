@@ -719,9 +719,6 @@ namespace NETPath.Projects
 		public bool IsHidden { get { return (bool)GetValue(IsHiddenProperty); } set { SetValue(IsHiddenProperty, value); } }
 		public static readonly DependencyProperty IsHiddenProperty = DependencyProperty.Register("IsHidden", typeof(bool), typeof(MethodParameter));
 
-		public bool IsRESTInvalid { get { return (bool)GetValue(IsRESTInvalidProperty); } set { SetValue(IsRESTInvalidProperty, value); } }
-		public static readonly DependencyProperty IsRESTInvalidProperty = DependencyProperty.Register("IsRESTInvalid", typeof(bool), typeof(MethodParameter), new PropertyMetadata(false));
-
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(MethodParameter));
 

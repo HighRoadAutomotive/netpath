@@ -271,6 +271,12 @@
     <Compile Include="Interface\Project\Project.xaml.cs">
       <DependentUpon>Project.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interface\REST\Method.xaml.cs">
+      <DependentUpon>Method.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\REST\Service.xaml.cs">
+      <DependentUpon>Service.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interface\Service\Converters.cs" />
     <Compile Include="Interface\Service\DataChangeMethod.xaml.cs">
       <DependentUpon>DataChangeMethod.xaml</DependentUpon>
@@ -444,6 +450,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Interface\Project\Project.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\REST\Method.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\REST\Service.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -623,9 +637,6 @@
     <Resource Include="Icons\X32\WSDualHTTP.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\X16\Reference.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Icons\X16\Binding.png" />
   </ItemGroup>
   <ItemGroup>
@@ -640,28 +651,10 @@
     <Resource Include="Icons\X32\Service.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\X32\ServiceAdd.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\ServiceDelete.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Icons\X32\Binding.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\X32\BindingAdd.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\BindingDelete.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Icons\X32\BindingSecurity.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\BindingSecurityAdd.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\BindingSecurityDelete.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\X16\Namespace.png" />
@@ -716,17 +709,11 @@
     <Resource Include="Icons\X32\Property.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\X32\HostAdd.png" />
-    <Resource Include="Icons\X32\HostDelete.png" />
     <None Include="Icons\X32\Source\Host.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\X16\Project.png" />
     <Resource Include="Icons\X16\Solution.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X24\Project.png" />
-    <Resource Include="Icons\X24\Solution.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\X32\Project.png" />
@@ -761,10 +748,6 @@
     <Resource Include="Icons\X16\MoveUp.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\X32\OperationAdd.png" />
-    <Resource Include="Icons\X32\OperationDelete.png" />
-    <Resource Include="Icons\X32\PropertyAdd.png" />
-    <Resource Include="Icons\X32\PropertyDelete.png" />
     <None Include="Icons\X32\Source\Operation.png" />
     <None Include="Icons\X32\Source\Property.png" />
   </ItemGroup>
@@ -784,7 +767,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\X16\DependencyProject.png" />
-    <Resource Include="Icons\X24\DependencyProject.png" />
     <Resource Include="Icons\X32\DependencyProject.png" />
     <Resource Include="Icons\X64\DependencyProject.png" />
   </ItemGroup>
@@ -809,15 +791,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\X16\ReportBug.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X24\BuildProject.png" />
-    <Resource Include="Icons\X24\BuildSolution.png" />
-    <Resource Include="Icons\X24\Help.png" />
-    <Resource Include="Icons\X24\NewItem.png" />
-    <Resource Include="Icons\X24\ReportBug.png" />
-    <Resource Include="Icons\X24\Save.png" />
-    <Resource Include="Icons\X24\SaveAs.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\X32\NewItem.png" />
@@ -900,9 +873,6 @@
     <Resource Include="Icons\X16\BehaviorThrottling.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\Thumbnails\Intro.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Icons\X16\DataChangeMethod.png" />
   </ItemGroup>
   <ItemGroup>
@@ -925,6 +895,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\X64\Open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\X16\REST.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\X32\REST.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
