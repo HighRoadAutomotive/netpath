@@ -5,7 +5,7 @@ using System.Text;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace NETPath.SDK.NET45
+namespace System.ServiceModel
 {
 	public abstract class RESTClientBase
 	{
