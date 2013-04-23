@@ -8,8 +8,9 @@
 	xmlns:Projects="clr-namespace:NETPath.Projects;assembly=NETPath.Projects"
 	xmlns:Docs="clr-namespace:NETPath.Interface.Documentation"
 	xmlns:pc="http://schemas.propsectivesoftware.com/pc"
-	xmlns:sf="http://schemas.syncfusion.com/wpf"
-	d:DesignHeight="950" d:DesignWidth="1000" DataContext="{Binding RelativeSource={RelativeSource Self}}" UseLayoutRounding="True" >
+	xmlns:sf="http://schemas.syncfusion.com/wpf" xmlns:Host="clr-namespace:NETPath.Interface.Host"
+	  xmlns:Bindings="clr-namespace:NETPath.Interface.Bindings"
+	  d:DesignHeight="950" d:DesignWidth="1000" DataContext="{Binding RelativeSource={RelativeSource Self}}" UseLayoutRounding="True" >
 	<Grid.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
@@ -22,6 +23,21 @@
 					<Service:ConcurrencyModeConverter x:Key="ConcurrencyModeConverter" />
 					<Service:InstanceContextModeConverter x:Key="InstanceContextModeConverter" />
 					<Service:IsolationLevelConverter x:Key="IsolationLevelConverter" />
+					<Bindings:HostNameComparisonModeConverter x:Key="HostNameComparisonModeConverter" />
+					<Bindings:ServiceBindingTextEncodingConverter x:Key="ServiceBindingTextEncodingConverter" />
+					<Bindings:TransferModeConverter x:Key="TransferModeConverter" />
+					<Bindings:BasicHttpSecurityModeConverter x:Key="BasicHttpSecurityModeConverter" />
+					<Bindings:HttpClientCredentialTypeConverter x:Key="HttpClientCredentialTypeConverter" />
+					<Bindings:HttpProxyCredentialTypeConverter x:Key="HttpProxyCredentialTypeConverter" />
+					<Host:PrincipalPermissionModeConverter x:Key="PrincipalPermissionModeConverter" />
+					<Host:X509CertificateValidationModeConverter x:Key="X509CertificateValidationModeConverter" />
+					<Host:X509RevocationModeConverter x:Key="X509RevocationModeConverter" />
+					<Host:StoreLocationConverter x:Key="StoreLocationConverter" />
+					<Host:UserNamePasswordValidationModeConverter x:Key="UserNamePasswordValidationModeConverter" />
+					<Service:WebMessageBodyStyleConverter x:Key="WebMessageBodyStyleConverter" />
+					<Service:WebMessageFormatConverter x:Key="WebMessageFormatConverter" />
+					<pc:LongConverter x:Key="LongConverter" />
+					<pc:IntConverter x:Key="IntConverter" />
 					<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
 
 					<DataTemplate x:Key="{x:Type Projects:RESTMethod}" DataType="{x:Type Projects:RESTMethod}">
@@ -185,6 +201,565 @@
 				<ToggleButton Content="Transaction Auto Complete On Session Close" IsChecked="{Binding Path=ServiceType.SBTransactionAutoCompleteOnSessionClose}" Margin="5" Grid.Column="1" Grid.Row="5" />
 				<ToggleButton Content="Use Synchronization Context" IsChecked="{Binding Path=ServiceType.SBUseSynchronizationContext}" Margin="5" Grid.Column="0" Grid.Row="6" />
 				<ToggleButton Content="Validate Must Understand" IsChecked="{Binding Path=ServiceType.SBValidateMustUnderstand}" Margin="5" Grid.Column="1" Grid.Row="6" />
+			</Grid>
+		</TabItem>
+		<TabItem Padding="10,5">
+			<TabItem.Header>
+				<TextBlock Text="Host" FontSize="12pt"/>
+			</TabItem.Header>
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+				<Grid Grid.Row="0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<Label Content="Open Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" />
+					<sf:TimeSpanEdit Value="{Binding Path=ServiceType.OpenTimeout, Mode=TwoWay}" Name="OpenTimeout" HorizontalAlignment="Left" Margin="100,5,5,5" Grid.Row="0" Grid.Column="0" Format="hh:mm:ss" ShowArrowButtons="False" VerticalContentAlignment="Center" Width="60" />
+					<Label Content="Close Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="1"  />
+					<sf:TimeSpanEdit Value="{Binding Path=ServiceType.CloseTimeout, Mode=TwoWay}" Name="CloseTimeout" HorizontalAlignment="Left" Margin="100,5,5,5" Grid.Row="0" Grid.Column="1" Format="hh:mm:ss" ShowArrowButtons="False" VerticalContentAlignment="Center" Width="60" />
+					<ToggleButton IsChecked="{Binding Path=ServiceType.AuthorizationImpersonateCallerForAllOperations}" Name="AuthorizationImpersonateCallerForAllOperations" Content="Impersonate Caller for all Operations" Margin="5" Grid.Row="1" Grid.Column="2" />
+					<ToggleButton IsChecked="{Binding Path=ServiceType.AuthorizationImpersonateOnSerializingReply}" Name="AuthorizationImpersonateOnSerializingReply" Content="Impersonate On Serializing Reply" Margin="5" Grid.Row="1" Grid.Column="3" />
+					<Label Content="Manual Flow Control Limit:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="1" Grid.ColumnSpan="2" />
+					<sf:IntegerTextBox Value="{Binding Path=ServiceType.ManualFlowControlLimit}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Margin="5" Grid.Row="1" Grid.Column="1" Name="ManualFlowControlLimit" />
+					<Label Content="Permission Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="3" />
+					<ComboBox Margin="120,5,5,5" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="3" SelectedIndex="{Binding Path=ServiceType.AuthorizationPrincipalPermissionMode, Converter={StaticResource PrincipalPermissionModeConverter}}" >
+						<ComboBox.Items>
+							<ComboBoxItem Content="None" />
+							<ComboBoxItem Content="Use Windows Groups" />
+							<ComboBoxItem Content="Use ASP.NET Roles" />
+							<ComboBoxItem Content="Custom" />
+						</ComboBox.Items>
+					</ComboBox>
+					<Label Content="Configuration Name:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="2" />
+					<pc:TextBox Text="{Binding Path=ServiceType.HostConfigurationName}" Margin="138,5,5,5" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="2" ToolTip="{Binding Path=ServiceType.HostConfigurationName}" />
+				</Grid>
+				<TabControl Grid.Row="1" Margin="0,10,0,0" >
+					<TabItem IsSelected="True">
+						<TabItem.Header>
+							<TextBlock Text="Endpoint" FontSize="12pt"/>
+						</TabItem.Header>
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="*" />
+							</Grid.RowDefinitions>
+							<Grid Grid.Row="0">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+								<Label Grid.Row="0" Grid.ColumnSpan="2" Content="Address" FontSize="12pt" Margin="0,5,0,0" />
+								<Label Content="Address:" Height="Auto" HorizontalAlignment="Left" Margin="0,1,0,0" VerticalContentAlignment="Center" Grid.Row="1" />
+								<pc:TextBox Text="{Binding Path=ServiceType.EndpointAddress}" Name="ServerAddress" Height="23" Margin="65,5,5,5" VerticalAlignment="Top" LabelText="Use Machine Name" Grid.Row="1" Grid.ColumnSpan="2" />
+								<Label Content="Port:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Column="0" Grid.Row="2" />
+								<sf:IntegerTextBox Margin="65,5,5,5" Value="{Binding Path=ServiceType.EndpointPort}" Grid.Row="2" Name="ServerPort" HorizontalContentAlignment="Left" />
+								<ToggleButton IsChecked="{Binding Path=ServiceType.EndpointUseHTTPS}" Content="Use HTTPS" Margin="5" Grid.Column="1" Grid.Row="2" />
+								<Grid Grid.Row="3" Grid.ColumnSpan="2" MinHeight="100" MaxHeight="150">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="75" />
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="*"/>
+									</Grid.RowDefinitions>
+									<Label Content="Address Header:" Height="Auto" HorizontalAlignment="Left" Margin="0,1,0,0" VerticalContentAlignment="Center" Width="Auto" />
+									<pc:TextBox Name="AddressHeader" Height="23" Margin="111,5,5,5" VerticalAlignment="Top" TextChanged="AddressHeader_TextChanged" />
+									<Label Content="Name:" Height="Auto" HorizontalAlignment="Left" Margin="5,1,0,0" VerticalContentAlignment="Center" Width="Auto" Grid.Column="1" />
+									<pc:TextBox Name="AddressHeaderName" Height="23" Margin="56,5,5,5" VerticalAlignment="Top" Grid.Column="1" TextChanged="AddressHeaderName_TextChanged" />
+									<Button Content="Add" Height="23" Margin="5" Name="AddAddressHeader" VerticalAlignment="Top" Grid.Column="2" Click="AddAddressHeader_Click" />
+									<ListBox Grid.ColumnSpan="3" Grid.Row="1" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ItemsSource="{Binding Path=Data.EndpointAddressHeaders}" Margin="0" Name="AddressHeadersList" BorderThickness="0" Background="Transparent" >
+										<ListBox.ItemTemplate>
+											<DataTemplate DataType="{x:Type Projects:HostEndpointAddressHeader}">
+												<Border Background="Transparent" BorderBrush="#01FFFFFF" BorderThickness="0" CornerRadius="0" Name="BG">
+													<Grid>
+														<Grid.ColumnDefinitions>
+															<ColumnDefinition Width="2*" />
+															<ColumnDefinition Width="*" />
+															<ColumnDefinition Width="24" />
+														</Grid.ColumnDefinitions>
+														<Grid.RowDefinitions>
+															<RowDefinition Height="Auto" />
+														</Grid.RowDefinitions>
+														<TextBlock Grid.Column="0" Text="{Binding Path=Namespace}" TextTrimming="CharacterEllipsis" TextWrapping="Wrap" VerticalAlignment="Center" />
+														<TextBlock Grid.Column="1" Text="{Binding Path=Name}" TextTrimming="CharacterEllipsis" TextWrapping="Wrap" VerticalAlignment="Center" />
+														<Button Name="DeleteAddressHeader" Visibility="Hidden" Grid.Column="2" Margin="1,1,2,1" Padding="0" Click="DeleteAddressHeader_Click">
+															<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+														</Button>
+													</Grid>
+												</Border>
+												<DataTemplate.Triggers>
+													<DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsMouseOver}" Value="True">
+														<Setter Property="Background" TargetName="BG" Value="{StaticResource MouseOverBackgroundColor}" />
+														<Setter Property="Visibility" TargetName="DeleteAddressHeader" Value="Visible" />
+													</DataTrigger>
+													<DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Value="True">
+														<Setter Property="Background" TargetName="BG" Value="{StaticResource DefaultSelectionColor}" />
+														<Setter Property="Visibility" TargetName="DeleteAddressHeader" Value="Visible" />
+													</DataTrigger>
+												</DataTemplate.Triggers>
+											</DataTemplate>
+										</ListBox.ItemTemplate>
+										<ListBox.Resources>
+											<SolidColorBrush Color="#00FFFFFF" x:Key="{x:Static SystemColors.HighlightBrushKey}" />
+										</ListBox.Resources>
+									</ListBox>
+								</Grid>
+							</Grid>
+							<Grid Grid.Row="1" DataContext="{Binding Path=ServiceType.EndpointBinding}">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<Label Grid.Column="0" Content="Timeouts" FontSize="12pt" Margin="0,5,0,0" />
+								<Label Content="Open Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
+								<sf:TimeSpanEdit Value="{Binding Path=OpenTimeout, Mode=TwoWay}" Name="BindingOpenTimeout" Margin="105,5,5,5" Format="hh:mm:ss" ShowArrowButtons="False" Height="24" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" FontSize="10pt" />
+								<Label Content="Close Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
+								<sf:TimeSpanEdit Value="{Binding Path=CloseTimeout, Mode=TwoWay}" Name="BindingCloseTimeout" Margin="105,5,5,5" Format="hh:mm:ss" ShowArrowButtons="False" Height="24" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" FontSize="10pt" />
+								<Label Content="Send Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" />
+								<sf:TimeSpanEdit Value="{Binding Path=SendTimeout, Mode=TwoWay}" Name="SendTimeout" Margin="105,5,5,5" Format="hh:mm:ss" ShowArrowButtons="False" Height="24" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" FontSize="10pt" />
+								<Label Content="Receive Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="1" />
+								<sf:TimeSpanEdit Value="{Binding Path=ReceiveTimeout, Mode=TwoWay}" Name="ReceiveTimeout" Margin="115,5,5,5" Format="hh:mm:ss" ShowArrowButtons="False" Height="24" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="1" FontSize="10pt" />
+							</Grid>
+							<Grid Grid.Row="2" DataContext="{Binding Path=ServiceType.EndpointBinding}">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<Label Grid.Column="0" Content="Resources" FontSize="12pt" Margin="0,5,0,0" />
+								<Label Content="Max Buffer Pool Size:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
+								<pc:TextBox Text="{Binding Path=MaxBufferPoolSize, Converter={StaticResource LongConverter}}" Name="MaxBufferPoolSize" Height="23" Margin="140,5,5,5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" Validate="MaxBufferPoolSize_Validate" />
+								<Label Content="Max Buffer Size:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
+								<pc:TextBox Text="{Binding Path=MaxBufferSize, Converter={StaticResource LongConverter}}" Name="MaxBufferSize" Height="23" Margin="125,5,5,5" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" Validate="MaxBufferSize_Validate" />
+								<Label Content="Max Received Message Size:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" />
+								<pc:TextBox Text="{Binding Path=MaxReceivedMessageSize, Converter={StaticResource LongConverter}}" Name="MaxReceivedMessageSize" Height="23" Margin="180,5,5,5" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" Validate="MaxReceivedMessageSize_Validate" />
+							</Grid>
+							<Grid Grid.Row="3" DataContext="{Binding Path=ServiceType.EndpointBinding}">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<Label Grid.Column="0" Content="Options" FontSize="12pt" Margin="0,5,0,0" />
+								<ToggleButton IsChecked="{Binding Path=AllowCookies}" Content="Allow Cookies" Margin="5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
+								<ToggleButton IsChecked="{Binding Path=CrossDomainScriptAccessEnabled}" Content="Cross Domain Script Access" Margin="5" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
+								<Label Content="Host Name Comparison Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" />
+								<ComboBox Height="23" Margin="200,5,5,5" SelectedIndex="{Binding Path=HostNameComparisonMode, Converter={StaticResource HostNameComparisonModeConverter}}" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" >
+									<ComboBox.Items>
+										<ComboBoxItem Content="Strong Wildcard" />
+										<ComboBoxItem Content="Exact" />
+										<ComboBoxItem Content="Weak Wildcard" />
+									</ComboBox.Items>
+								</ComboBox>
+								<Label Content="Transfer Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="2" />
+								<ComboBox Height="23" Margin="130,5,5,5" SelectedIndex="{Binding Path=TransferMode, Converter={StaticResource TransferModeConverter}}" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="2" >
+									<ComboBoxItem Content="Buffered" />
+									<ComboBoxItem Content="Streamed" />
+									<ComboBoxItem Content="Streamed Request" />
+									<ComboBoxItem Content="Streamed Response" />
+								</ComboBox>
+								<Label Content="Write Encoding:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="3" />
+								<ComboBox Height="23" Margin="200,5,5,5" SelectedIndex="{Binding Path=WriteEncoding, Converter={StaticResource ServiceBindingTextEncodingConverter}}" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="3" >
+									<ComboBox.Items>
+										<ComboBoxItem Content="ASCII" />
+										<ComboBoxItem Content="UTF7" />
+										<ComboBoxItem Content="UTF8" />
+										<ComboBoxItem Content="UTF16" />
+										<ComboBoxItem Content="UTF32" />
+									</ComboBox.Items>
+								</ComboBox>
+							</Grid>
+							<Grid Grid.Row="4" DataContext="{Binding Path=ServiceType.EndpointBinding}">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<Label Grid.Column="0" Content="Proxy" FontSize="12pt" Margin="0,5,0,0" />
+								<ToggleButton IsChecked="{Binding Path=BypassProxyOnLocal}" Name="BypassProxyOnLocal" Content="Bypass Proxy for Local Addresses" Margin="5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
+								<ToggleButton IsChecked="{Binding Path=UseDefaultWebProxy}" Name="UseDefaultWebProxy" Content="Use Default Web Proxy" Margin="5" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
+								<Label Content="Proxy Address:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" />
+								<pc:TextBox Text="{Binding Path=ProxyAddress}" Height="23" Margin="100,5,5,5" Name="ProxyAddress" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" TextChanged="ProxyAddress_TextChanged" Validate="ProxyAddress_Validate" ToolTip="{Binding Path=Binding.ProxyAddress}" />
+							</Grid>
+							<Grid Grid.Row="5" DataContext="{Binding Path=ServiceType.EndpointBinding.Security}">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+								<Label Grid.Column="0" Content="Security" FontSize="12pt" Margin="0,5,0,0" />
+								<Label Content="Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
+								<ComboBox Height="23" Margin="210,5,5,5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" SelectedIndex="{Binding Path=Mode, Converter={StaticResource BasicHttpSecurityModeConverter}}" >
+									<ComboBox.Items>
+										<ComboBoxItem Content="None" />
+										<ComboBoxItem Content="Transport" />
+										<ComboBoxItem Content="Message" />
+										<ComboBoxItem Content="Transport With Message Credential" />
+										<ComboBoxItem Content="Transport Credential Only" />
+									</ComboBox.Items>
+								</ComboBox>
+								<Label Content="Transport Realm:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
+								<pc:TextBox Text="{Binding Path=TransportRealm}" Height="23" Margin="210,5,5,5" Name="TransportRealm" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
+								<Label Content="Transport Client Credential Type:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" />
+								<ComboBox Height="23" Margin="210,5,5,5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" SelectedIndex="{Binding Path=TransportClientCredentialType, Converter={StaticResource HttpClientCredentialTypeConverter}}" >
+									<ComboBoxItem Content="None" />
+									<ComboBoxItem Content="Basic" />
+									<ComboBoxItem Content="Digest" />
+									<ComboBoxItem Content="NTLM" />
+									<ComboBoxItem Content="Windows" />
+									<ComboBoxItem Content="Certificate" />
+								</ComboBox>
+								<Label Content="Transport Protection Level:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="2" />
+								<ComboBox Height="23" Margin="210,5,5,5" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="2" SelectedIndex="{Binding Path=TransportProxyCredentialType, Converter={StaticResource HttpProxyCredentialTypeConverter}}" >
+									<ComboBoxItem Content="None" />
+									<ComboBoxItem Content="Basic" />
+									<ComboBoxItem Content="Digest" />
+									<ComboBoxItem Content="NTLM" />
+									<ComboBoxItem Content="Windows" />
+								</ComboBox>
+							</Grid>
+						</Grid>
+					</TabItem>
+					<TabItem>
+						<TabItem.Header>
+							<TextBlock Text="Behaviors" FontSize="12pt"/>
+						</TabItem.Header>
+						<Grid DataContext="{Binding Path=ServiceType}">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="*" />
+							</Grid.RowDefinitions>
+							<Grid Grid.Row="0">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+								<ToggleButton IsChecked="{Binding Path=HasDebugBehavior}" Content="Debug Behavior" Margin="5" Grid.Row="1" Grid.Column="0" />
+								<ToggleButton IsChecked="{Binding Path=HasThrottlingBehavior}" Content="Throtting Behavior" Margin="5" Grid.Row="1" Grid.Column="1" />
+								<ToggleButton IsChecked="{Binding Path=HasWebHTTPBehavior}" Content="WebHTTP Behavior" Margin="5" Grid.Row="1" Grid.Column="2" />
+							</Grid>
+							<Grid Grid.Row="1" Visibility="{Binding Path=HasDebugBehavior, Converter={StaticResource BoolVisibilityConverter}}" >
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="*" />
+								</Grid.RowDefinitions>
+								<Label Grid.Row="0" Grid.ColumnSpan="2" Content="Debug Behavior" FontSize="12pt" Margin="0,5,0,0" />
+								<ToggleButton Content="Include Exception Detail In Faults" Height="23" IsChecked="{Binding Path=DebugBehavior.IncludeExceptionDetailInFaults}" Margin="5" Name="IncludeExceptionDetailInFaults" Grid.Row="1" Grid.Column="1" />
+								<Grid Grid.Row="2" Grid.ColumnSpan="2" >
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="125" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+									<ToggleButton Content="HTTP Help Page" Height="23" IsChecked="{Binding Path=DebugBehavior.HttpHelpPageEnabled}" Margin="5" Name="HttpHelpPageEnabled" VerticalAlignment="Top" Grid.Row="0" />
+									<pc:TextBox Text="{Binding Path=DebugBehavior.HttpHelpPageUrl}" Height="23" Margin="5" VerticalAlignment="Top" Name="DebugHttpHelpPageUrl" LabelText="URL" Grid.Row="0" Grid.Column="1"  IsEnabled="{Binding Path=DebugBehavior.HttpHelpPageEnabled}" TextChanged="DebugHttpHelpPageUrl_TextChanged" Validate="DebugHttpHelpPageUrl_Validate" ToolTip="{Binding Path=HttpHelpPageUrl}" />
+								</Grid>
+								<Grid Grid.Row="3" Grid.ColumnSpan="2" >
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="125" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+									<ToggleButton Content="HTTPS Help Page" Height="23" IsChecked="{Binding Path=DebugBehavior.HttpsHelpPageEnabled}" Margin="5" Name="HttpsHelpPageEnabled" VerticalAlignment="Top" Grid.Row="0" />
+									<pc:TextBox Text="{Binding Path=DebugBehavior.HttpsHelpPageUrl}" Height="23" Margin="5" VerticalAlignment="Top" Name="DebugHttpsHelpPageUrl" LabelText="URL" Grid.Row="0" Grid.Column="1"  IsEnabled="{Binding Path=DebugBehavior.HttpsHelpPageEnabled}" TextChanged="DebugHttpsHelpPageUrl_TextChanged" Validate="DebugHttpsHelpPageUrl_Validate" ToolTip="{Binding Path=HttpsHelpPageUrl}" />
+								</Grid>
+							</Grid>
+							<Grid Grid.Row="2" Visibility="{Binding Path=HasThrottlingBehavior, Converter={StaticResource BoolVisibilityConverter}}">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="*" />
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="180" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+								<Label Grid.Row="0" Grid.ColumnSpan="2" Content="Throttling Behavior" FontSize="12pt" Margin="0,5,0,0" />
+								<Label Content="Max Concurrent Calls:" Height="Auto" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="2" />
+								<sf:IntegerTextBox Margin="5" Value="{Binding Path=ThrottlingBehavior.MaxConcurrentCalls}" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1" HorizontalContentAlignment="Left" Name="MaxConcurrentCalls" />
+								<Label Content="Max Concurrent Instances:" Height="Auto" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="3" />
+								<sf:IntegerTextBox Margin="5" Value="{Binding Path=ThrottlingBehavior.MaxConcurrentInstances}" VerticalAlignment="Top" Grid.Row="3" Grid.Column="1" HorizontalContentAlignment="Left" Name="MaxConcurrentInstances" />
+								<Label Content="Max Concurrent Sessions:" Height="28" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalContentAlignment="Center" Grid.Row="4" />
+								<sf:IntegerTextBox Margin="5" Value="{Binding Path=ThrottlingBehavior.MaxConcurrentSessions}" VerticalAlignment="Top" Grid.Row="4" Grid.Column="1" HorizontalContentAlignment="Left" Name="MaxConcurrentSessions" />
+							</Grid>
+							<Grid Grid.Row="3" Visibility="{Binding Path=HasWebHTTPBehavior, Converter={StaticResource BoolVisibilityConverter}}">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="*" />
+								</Grid.RowDefinitions>
+								<Label Grid.Row="0" Grid.ColumnSpan="2" Content="WebHTTP Behavior" FontSize="12pt" Margin="0,5,0,0" />
+								<ToggleButton Content="Automatic Formatting" Height="23" IsChecked="{Binding Path=WebHTTPBehavior.AutomaticFormatSelectionEnabled}" Margin="5" Name="AutomaticFormatSelectionEnabled" Grid.Row="1" Grid.Column="0" />
+								<ToggleButton Content="Fault Exceptions" Height="23" IsChecked="{Binding Path=WebHTTPBehavior.FaultExceptionEnabled}" Margin="5" Name="FaultExceptionEnabled" Grid.Row="1" Grid.Column="1" />
+								<ToggleButton Content="Help Enabled" Height="23" IsChecked="{Binding Path=WebHTTPBehavior.HelpEnabled}" Margin="5" Name="HelpEnabled" Grid.Row="1" Grid.Column="2" />
+								<Label Content="Default Body Style:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" />
+								<ComboBox Height="23" Margin="5" SelectedIndex="{Binding Path=WebHTTPBehavior.DefaultBodyStyle, Converter={StaticResource WebMessageBodyStyleConverter}}" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" >
+									<ComboBoxItem Content="Bare" />
+									<ComboBoxItem Content="Wrapped" />
+									<ComboBoxItem Content="Wrapped Request" />
+									<ComboBoxItem Content="Wrapped Response" />
+								</ComboBox>
+								<Label Content="Default Outgoing Request Format:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" />
+								<ComboBox Height="23" Margin="5" SelectedIndex="{Binding Path=WebHTTPBehavior.DefaultOutgoingRequestFormat, Converter={StaticResource WebMessageFormatConverter}}" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" >
+									<ComboBoxItem Content="XML" />
+									<ComboBoxItem Content="JSON" />
+								</ComboBox>
+								<Label Content="Default Outgoing Response Format:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" />
+								<ComboBox Height="23" Margin="5" SelectedIndex="{Binding Path=WebHTTPBehavior.DefaultOutgoingResponseFormat, Converter={StaticResource WebMessageFormatConverter}}" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" >
+									<ComboBoxItem Content="XML" />
+									<ComboBoxItem Content="JSON" />
+								</ComboBox>
+							</Grid>
+						</Grid>
+					</TabItem>
+					<TabItem>
+						<TabItem.Header>
+							<TextBlock Text="Security" FontSize="12pt"/>
+						</TabItem.Header>
+						<Grid DataContext="{Binding Path=ServiceType.Credentials}" >
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="*"/>
+							</Grid.RowDefinitions>
+							<Grid Grid.Row="0" Grid.ColumnSpan="3">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+								<ToggleButton IsChecked="{Binding Path=UseCertificatesSecurity}" Content="Certificate" Margin="5" Grid.Row="1" Grid.Column="0" />
+								<ToggleButton IsChecked="{Binding Path=UseIssuedTokenSecurity}" Content="Issued Token" Margin="5" Grid.Row="1" Grid.Column="1" />
+								<ToggleButton IsChecked="{Binding Path=UsePeerSecurity}" Content="Peer" Margin="5" Grid.Row="1" Grid.Column="2" />
+								<ToggleButton IsChecked="{Binding Path=UseUserNamePasswordSecurity}" Content="Username/Password" Margin="5" Grid.Row="1" Grid.Column="3" />
+								<ToggleButton IsChecked="{Binding Path=UseWindowsServiceSecurity}" Content="Windows Service" Margin="5" Grid.Row="1" Grid.Column="4" />
+							</Grid>
+							<GroupBox Grid.Column="0" Grid.Row="1" Header="Certificate" Margin="5" Visibility="{Binding Path=UseCertificatesSecurity, Converter={StaticResource BoolVisibilityConverter}}">
+								<Grid>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+									</Grid.RowDefinitions>
+									<ToggleButton Content="Include Windows Groups" Height="23" IsChecked="{Binding Path=ClientCertificateAuthenticationIncludeWindowsGroups}" Margin="5" Name="ClientCertificateAuthenticationIncludeWindowsGroups" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" />
+									<ToggleButton Content="Map to Windows Account" Height="23" IsChecked="{Binding Path=ClientCertificateAuthenticationMapClientCertificateToWindowsAccount}" Margin="5" Name="ClientCertificateAuthenticationMapClientCertificateToWindowsAccount" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0" />
+									<Label Content="Validation Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" />
+									<ComboBox Height="23" Margin="126,5,5,5" SelectedIndex="{Binding Path=ClientCertificateAuthenticationValidationMode, Converter={StaticResource X509CertificateValidationModeConverter}}" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" >
+										<ComboBoxItem Content="None" />
+										<ComboBoxItem Content="Peer Trust" />
+										<ComboBoxItem Content="Chain Trust" />
+										<ComboBoxItem Content="Peer or Chain Trust" />
+										<ComboBoxItem Content="Custom" />
+									</ComboBox>
+									<Label Content="Revocation Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" />
+									<ComboBox Height="23" Margin="126,5,5,5" SelectedIndex="{Binding Path=ClientCertificateAuthenticationRevocationMode, Converter={StaticResource X509RevocationModeConverter}}" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" >
+										<ComboBoxItem Content="No Check" />
+										<ComboBoxItem Content="Online" />
+										<ComboBoxItem Content="Offline" />
+									</ComboBox>
+									<Label Content="Store Location:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="0" />
+									<ComboBox Height="23" Margin="126,5,5,5" SelectedIndex="{Binding Path=ClientCertificateAuthenticationStoreLocation, Converter={StaticResource StoreLocationConverter}}" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="0" >
+										<ComboBoxItem Content="Current User" />
+										<ComboBoxItem Content="Local Machine" />
+									</ComboBox>
+								</Grid>
+							</GroupBox>
+							<GroupBox Grid.Column="0" Grid.Row="2" Header="Issued Token" Margin="5" Visibility="{Binding Path=UseIssuedTokenSecurity, Converter={StaticResource BoolVisibilityConverter}}">
+								<Grid>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+									</Grid.RowDefinitions>
+									<ToggleButton Content="Allow Untrusted Issuers" Height="23" IsChecked="{Binding Path=IssuedTokenAllowUntrustedRsaIssuers}" Margin="5" Name="IssuedTokenAllowUntrustedRsaIssuers" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" />
+									<Label Content="Validation Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0" />
+									<ComboBox Height="23" Margin="126,5,5,5" SelectedIndex="{Binding Path=IssuedTokenCertificateValidationMode, Converter={StaticResource X509CertificateValidationModeConverter}}" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0" >
+										<ComboBoxItem Content="None" />
+										<ComboBoxItem Content="Peer Trust" />
+										<ComboBoxItem Content="Chain Trust" />
+										<ComboBoxItem Content="Peer or Chain Trust" />
+										<ComboBoxItem Content="Custom" />
+									</ComboBox>
+									<Label Content="Revocation Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" />
+									<ComboBox Height="23" Margin="126,5,5,5" SelectedIndex="{Binding Path=IssuedTokenRevocationMode, Converter={StaticResource X509RevocationModeConverter}}" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" >
+										<ComboBoxItem Content="No Check" />
+										<ComboBoxItem Content="Online" />
+										<ComboBoxItem Content="Offline" />
+									</ComboBox>
+									<Label Content="Store Location:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" />
+									<ComboBox Height="23" Margin="126,5,5,5" SelectedIndex="{Binding Path=IssuedTokenTrustedStoreLocation, Converter={StaticResource StoreLocationConverter}}" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" >
+										<ComboBoxItem Content="Current User" />
+										<ComboBoxItem Content="Local Machine" />
+									</ComboBox>
+								</Grid>
+							</GroupBox>
+							<GroupBox Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Header="Peer" Margin="5" Visibility="{Binding Path=UsePeerSecurity, Converter={StaticResource BoolVisibilityConverter}}">
+								<Grid>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+									</Grid.RowDefinitions>
+									<Label Content="Mesh Password:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" />
+									<pc:TextBox Text="{Binding Path=PeerMeshPassword}" Height="23" Margin="135,5,5,5" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" />
+									<Label Content="Sender Validation:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0" />
+									<ComboBox Height="23" Margin="135,5,5,5" SelectedIndex="{Binding Path=PeerMessageSenderAuthenticationCertificateValidationMode, Converter={StaticResource X509CertificateValidationModeConverter}}" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0" >
+										<ComboBoxItem Content="None" />
+										<ComboBoxItem Content="Peer Trust" />
+										<ComboBoxItem Content="Chain Trust" />
+										<ComboBoxItem Content="Peer or Chain Trust" />
+										<ComboBoxItem Content="Custom" />
+									</ComboBox>
+									<Label Content="Sender Revocation:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" />
+									<ComboBox Height="23" Margin="135,5,5,5" SelectedIndex="{Binding Path=PeerMessageSenderAuthenticationRevocationMode, Converter={StaticResource X509RevocationModeConverter}}" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" >
+										<ComboBoxItem Content="No Check" />
+										<ComboBoxItem Content="Online" />
+										<ComboBoxItem Content="Offline" />
+									</ComboBox>
+									<Label Content="Sender Store:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" />
+									<ComboBox Height="23" Margin="135,5,5,5" SelectedIndex="{Binding Path=PeerMessageSenderAuthenticationTrustedStoreLocation, Converter={StaticResource StoreLocationConverter}}" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" >
+										<ComboBoxItem Content="Current User" />
+										<ComboBoxItem Content="Local Machine" />
+									</ComboBox>
+									<Label Content="Peer Validation:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="0" />
+									<ComboBox Height="23" Margin="135,5,5,5" SelectedIndex="{Binding Path=PeerAuthenticationCertificateValidationMode, Converter={StaticResource X509CertificateValidationModeConverter}}" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="0" >
+										<ComboBoxItem Content="None" />
+										<ComboBoxItem Content="Peer Trust" />
+										<ComboBoxItem Content="Chain Trust" />
+										<ComboBoxItem Content="Peer or Chain Trust" />
+										<ComboBoxItem Content="Custom" />
+									</ComboBox>
+									<Label Content="Peer Revocation:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="5" Grid.Column="0" />
+									<ComboBox Height="23" Margin="135,5,5,5" SelectedIndex="{Binding Path=PeerAuthenticationRevocationMode, Converter={StaticResource X509RevocationModeConverter}}" VerticalContentAlignment="Center" Grid.Row="5" Grid.Column="0" >
+										<ComboBoxItem Content="No Check" />
+										<ComboBoxItem Content="Online" />
+										<ComboBoxItem Content="Offline" />
+									</ComboBox>
+									<Label Content="Peer Store:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="6" Grid.Column="0" />
+									<ComboBox Height="23" Margin="135,5,5,5" SelectedIndex="{Binding Path=PeerAuthenticationTrustedStoreLocation, Converter={StaticResource StoreLocationConverter}}" VerticalContentAlignment="Center" Grid.Row="6" Grid.Column="0" >
+										<ComboBoxItem Content="Current User" />
+										<ComboBoxItem Content="Local Machine" />
+									</ComboBox>
+								</Grid>
+							</GroupBox>
+							<GroupBox Grid.Column="2" Grid.Row="1" Header="Username/Password" Margin="5" Visibility="{Binding Path=UseUserNamePasswordSecurity, Converter={StaticResource BoolVisibilityConverter}}">
+								<Grid>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+									</Grid.RowDefinitions>
+									<ToggleButton Content="Include Windows Groups" Height="23" Grid.Row="0" IsChecked="{Binding Path=UserNamePasswordCacheLogonTokens}" Margin="5" Name="UserNamePasswordCacheLogonTokens" />
+									<ToggleButton Content="Cache Logon Tokens" Height="23" Grid.Row="1" IsChecked="{Binding Path=UserNamePasswordIncludeWindowsGroups}" Margin="5" Name="UserNamePasswordIncludeWindowsGroups" />
+									<Label Content="Cached Token Lifetime:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" />
+									<sf:TimeSpanEdit Format="hh:mm:ss" ShowArrowButtons="False" Height="24" Margin="176,5,5,5" Value="{Binding Path=UserNamePasswordCachedLogonTokenLifetime, Mode=TwoWay}" Name="UserNamePasswordCachedLogonTokenLifetime" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0"  />
+									<Label Content="Max Cached Logon Tokens:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" />
+									<sf:IntegerTextBox Margin="176,5,5,5" Value="{Binding Path=UserNamePasswordMaxCachedLogonTokens}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Grid.Row="3" Grid.Column="0" Name="UserNamePasswordMaxCachedLogonTokens" />
+									<Label Content="Validation Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="0" />
+									<ComboBox Height="23" Margin="115,5,5,5" SelectedIndex="{Binding Path=UserNamePasswordValidationMode, Converter={StaticResource UserNamePasswordValidationModeConverter}}" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="0"  >
+										<ComboBoxItem Content="None" />
+										<ComboBoxItem Content="Peer Trust" />
+										<ComboBoxItem Content="Chain Trust" />
+										<ComboBoxItem Content="Peer or Chain Trust" />
+										<ComboBoxItem Content="Custom" />
+									</ComboBox>
+								</Grid>
+							</GroupBox>
+							<GroupBox Grid.Column="2" Grid.Row="2" Header="Windows Service" Margin="5" Visibility="{Binding Path=UseWindowsServiceSecurity, Converter={StaticResource BoolVisibilityConverter}}">
+								<Grid>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+									</Grid.RowDefinitions>
+									<ToggleButton Content="Allow Anonymous Logon" Grid.Row="0"  IsChecked="{Binding Path=WindowsServiceIncludeWindowsGroups}" Margin="5" Name="WindowsServiceIncludeWindowsGroups" VerticalAlignment="Top" />
+									<ToggleButton Content="Include Windows Groups" Grid.Row="1" IsChecked="{Binding Path=WindowsServiceAllowAnonymousLogons}" Margin="5" Name="WindowsServiceAllowAnonymousLogons" VerticalAlignment="Top" />
+								</Grid>
+							</GroupBox>
+						</Grid>
+					</TabItem>
+				</TabControl>
 			</Grid>
 		</TabItem>
 		<TabItem Padding="10,5">

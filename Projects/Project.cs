@@ -368,23 +368,27 @@ namespace NETPath.Projects
 
 			if (tt == typeof(Enum))
 				foreach (var t in ns.Enums)
-					Type.IsSelected = false;
+					t.IsSelected = false;
 
 			if (tt == typeof(Data))
-				foreach (var t in ns.Enums)
-					Type.IsSelected = false;
+				foreach (var t in ns.Data)
+					t.IsSelected = false;
 
 			if (tt == typeof(Service))
-				foreach (var t in ns.Enums)
-					Type.IsSelected = false;
+				foreach (var t in ns.Services)
+					t.IsSelected = false;
+
+			if (tt == typeof(RESTService))
+				foreach (var t in ns.RESTServices)
+					t.IsSelected = false;
 
 			if (tt == typeof(Host))
-				foreach (var t in ns.Enums)
-					Type.IsSelected = false;
+				foreach (var t in ns.Hosts)
+					t.IsSelected = false;
 
 			if (tt == typeof(ServiceBinding))
-				foreach (var t in ns.Enums)
-					Type.IsSelected = false;
+				foreach (var t in ns.Bindings)
+					t.IsSelected = false;
 
 			foreach(var tn in ns.Children)
 				SetSelected(Type, tn);

@@ -72,10 +72,97 @@ namespace NETPath.Projects
 		public bool SBValidateMustUnderstand { get { return (bool)GetValue(SBValidateMustUnderstandProperty); } set { SetValue(SBValidateMustUnderstandProperty, value); } }
 		public static readonly DependencyProperty SBValidateMustUnderstandProperty = DependencyProperty.Register("SBValidateMustUnderstand", typeof(bool), typeof(RESTService), new PropertyMetadata(true));
 
-		public RESTService() : base(DataTypeMode.Class)
+		//Host
+		public HostCredentials Credentials { get { return (HostCredentials)GetValue(CredentialsProperty); } set { SetValue(CredentialsProperty, value); } }
+		public static readonly DependencyProperty CredentialsProperty = DependencyProperty.Register("Credentials", typeof(HostCredentials), typeof(RESTService));
+
+		public string HostConfigurationName { get { return (string)GetValue(HostConfigurationNameProperty); } set { SetValue(HostConfigurationNameProperty, value); } }
+		public static readonly DependencyProperty HostConfigurationNameProperty = DependencyProperty.Register("HostConfigurationName", typeof(string), typeof(RESTService));
+
+		public TimeSpan CloseTimeout { get { return (TimeSpan)GetValue(CloseTimeoutProperty); } set { SetValue(CloseTimeoutProperty, value); } }
+		public static readonly DependencyProperty CloseTimeoutProperty = DependencyProperty.Register("CloseTimeout", typeof(TimeSpan), typeof(RESTService), new PropertyMetadata(new TimeSpan(0, 1, 0)));
+
+		public TimeSpan OpenTimeout { get { return (TimeSpan)GetValue(OpenTimeoutProperty); } set { SetValue(OpenTimeoutProperty, value); } }
+		public static readonly DependencyProperty OpenTimeoutProperty = DependencyProperty.Register("OpenTimeout", typeof(TimeSpan), typeof(RESTService), new PropertyMetadata(new TimeSpan(0, 1, 0)));
+
+		public int ManualFlowControlLimit { get { return (int)GetValue(ManualFlowControlLimitProperty); } set { SetValue(ManualFlowControlLimitProperty, value); } }
+		public static readonly DependencyProperty ManualFlowControlLimitProperty = DependencyProperty.Register("ManualFlowControlLimit", typeof(int), typeof(RESTService));
+
+		public bool AuthorizationImpersonateCallerForAllOperations { get { return (bool)GetValue(AuthorizationImpersonateCallerForAllOperationsProperty); } set { SetValue(AuthorizationImpersonateCallerForAllOperationsProperty, value); } }
+		public static readonly DependencyProperty AuthorizationImpersonateCallerForAllOperationsProperty = DependencyProperty.Register("AuthorizationImpersonateCallerForAllOperations", typeof(bool), typeof(RESTService));
+
+		public bool AuthorizationImpersonateOnSerializingReply { get { return (bool)GetValue(AuthorizationImpersonateOnSerializingReplyProperty); } set { SetValue(AuthorizationImpersonateOnSerializingReplyProperty, value); } }
+		public static readonly DependencyProperty AuthorizationImpersonateOnSerializingReplyProperty = DependencyProperty.Register("AuthorizationImpersonateOnSerializingReply", typeof(bool), typeof(RESTService), new PropertyMetadata(false));
+
+		public System.ServiceModel.Description.PrincipalPermissionMode AuthorizationPrincipalPermissionMode { get { return (System.ServiceModel.Description.PrincipalPermissionMode)GetValue(AuthorizationPrincipalPermissionModeProperty); } set { SetValue(AuthorizationPrincipalPermissionModeProperty, value); } }
+		public static readonly DependencyProperty AuthorizationPrincipalPermissionModeProperty = DependencyProperty.Register("AuthorizationPrincipalPermissionMode", typeof(System.ServiceModel.Description.PrincipalPermissionMode), typeof(RESTService));
+
+		//Endpoint
+		public string EndpointAddress { get { return (string)GetValue(EndpointAddressProperty); } set { SetValue(EndpointAddressProperty, value); } }
+		public static readonly DependencyProperty EndpointAddressProperty = DependencyProperty.Register("EndpointAddress", typeof(string), typeof(RESTService));
+
+		public int EndpointPort { get { return (int)GetValue(EndpointPortProperty); } set { SetValue(EndpointPortProperty, value); } }
+		public static readonly DependencyProperty EndpointPortProperty = DependencyProperty.Register("EndpointPort", typeof(int), typeof(RESTService));
+
+		public bool EndpointUseHTTPS { get { return (bool)GetValue(EndpointUseHTTPSProperty); } set { SetValue(EndpointUseHTTPSProperty, value); } }
+		public static readonly DependencyProperty EndpointUseHTTPSProperty = DependencyProperty.Register("EndpointUseHTTPS", typeof(bool), typeof(RESTService), new PropertyMetadata(false));
+
+		public ObservableCollection<HostEndpointAddressHeader> EndpointAddressHeaders { get { return (ObservableCollection<HostEndpointAddressHeader>)GetValue(EndpointAddressHeadersProperty); } set { SetValue(EndpointAddressHeadersProperty, value); } }
+		public static readonly DependencyProperty EndpointAddressHeadersProperty = DependencyProperty.Register("EndpointAddressHeaders", typeof(ObservableCollection<HostEndpointAddressHeader>), typeof(RESTService));
+
+		public ServiceBindingWebHTTP EndpointBinding { get { return (ServiceBindingWebHTTP)GetValue(EndpointBindingProperty); } set { SetValue(EndpointBindingProperty, value); } }
+		public static readonly DependencyProperty EndpointBindingProperty = DependencyProperty.Register("EndpointBinding", typeof(ServiceBindingWebHTTP), typeof(RESTService));
+
+		//Behaviors
+		public bool HasDebugBehavior { get { return (bool)GetValue(HasDebugBehaviorProperty); } set { SetValue(HasDebugBehaviorProperty, value); } }
+		public static readonly DependencyProperty HasDebugBehaviorProperty = DependencyProperty.Register("HasDebugBehavior", typeof(bool), typeof(RESTService), new PropertyMetadata(false, HasDebugBehaviorChangedCallback));
+
+		private static void HasDebugBehaviorChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
 		{
+			var de = o as RESTService;
+			if (de == null) return;
+			de.DebugBehavior = ((bool) e.NewValue) ? new HostDebugBehavior() : null;
+		}
+
+		public HostDebugBehavior DebugBehavior { get { return (HostDebugBehavior)GetValue(DebugBehaviorProperty); } set { SetValue(DebugBehaviorProperty, value); } }
+		public static readonly DependencyProperty DebugBehaviorProperty = DependencyProperty.Register("DebugBehavior", typeof(HostDebugBehavior), typeof(RESTService));
+
+		public bool HasThrottlingBehavior { get { return (bool)GetValue(HasThrottlingBehaviorProperty); } set { SetValue(HasThrottlingBehaviorProperty, value); } }
+		public static readonly DependencyProperty HasThrottlingBehaviorProperty = DependencyProperty.Register("HasThrottlingBehavior", typeof(bool), typeof(RESTService), new PropertyMetadata(false, HasThrottlingBehaviorChangedCallback));
+
+		private static void HasThrottlingBehaviorChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var de = o as RESTService;
+			if (de == null) return;
+			de.ThrottlingBehavior = ((bool)e.NewValue) ? new HostThrottlingBehavior() : null;
+		}
+
+		public HostThrottlingBehavior ThrottlingBehavior { get { return (HostThrottlingBehavior)GetValue(ThrottlingBehaviorProperty); } set { SetValue(ThrottlingBehaviorProperty, value); } }
+		public static readonly DependencyProperty ThrottlingBehaviorProperty = DependencyProperty.Register("ThrottlingBehavior", typeof(HostThrottlingBehavior), typeof(RESTService));
+
+		public bool HasWebHTTPBehavior { get { return (bool)GetValue(HasWebHTTPBehaviorProperty); } set { SetValue(HasWebHTTPBehaviorProperty, value); } }
+		public static readonly DependencyProperty HasWebHTTPBehaviorProperty = DependencyProperty.Register("HasWebHTTPBehavior", typeof(bool), typeof(RESTService), new PropertyMetadata(true, HasWebHTTPBehaviorChangedCallback));
+
+		private static void HasWebHTTPBehaviorChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var de = o as RESTService;
+			if (de == null) return;
+			de.WebHTTPBehavior = ((bool)e.NewValue) ? new HostWebHTTPBehavior() : null;
+		}
+
+		public HostWebHTTPBehavior WebHTTPBehavior { get { return (HostWebHTTPBehavior)GetValue(WebHTTPBehaviorProperty); } set { SetValue(WebHTTPBehaviorProperty, value); } }
+		public static readonly DependencyProperty WebHTTPBehaviorProperty = DependencyProperty.Register("WebHTTPBehavior", typeof(HostWebHTTPBehavior), typeof(RESTService));
+
+		public RESTService()
+			: base(DataTypeMode.Class)
+		{
+			ID = Guid.NewGuid();
 			ServiceOperations = new ObservableCollection<RESTMethod>();
 			ServiceDocumentation = new Documentation { IsClass = true };
+			EndpointBinding = new ServiceBindingWebHTTP();
+			EndpointAddressHeaders = new ObservableCollection<HostEndpointAddressHeader>();
+			WebHTTPBehavior = new HostWebHTTPBehavior();
+			Credentials = new HostCredentials();
 		}
 
 		public RESTService(string Name, Namespace Parent) : base(DataTypeMode.Class)
@@ -86,6 +173,10 @@ namespace NETPath.Projects
 			ID = Guid.NewGuid();
 			ConfigurationName = "";
 			ServiceDocumentation = new Documentation { IsClass = true };
+			EndpointBinding = new ServiceBindingWebHTTP();
+			EndpointAddressHeaders = new ObservableCollection<HostEndpointAddressHeader>();
+			WebHTTPBehavior = new HostWebHTTPBehavior();
+			Credentials = new HostCredentials();
 		}
 
 		public void AddKnownType(DataType Type)
@@ -196,7 +287,7 @@ namespace NETPath.Projects
 
 		private static void ReturnTypeChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs p)
 		{
-			var de = o as Operation;
+			var de = o as RESTMethod;
 			if (de == null) return;
 			var nt = p.NewValue as DataType;
 			if (nt == null) return;

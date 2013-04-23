@@ -40,7 +40,7 @@ namespace NETPath.Projects
 		public static readonly DependencyProperty OpenTimeoutProperty = DependencyProperty.Register("OpenTimeout", typeof(TimeSpan), typeof(Host), new PropertyMetadata(new TimeSpan(0, 1, 0)));
 
 		public int ManualFlowControlLimit { get { return (int)GetValue(ManualFlowControlLimitProperty); } set { SetValue(ManualFlowControlLimitProperty, value); } }
-		public static readonly DependencyProperty ManualFlowControlLimitProperty = DependencyProperty.Register("ManualFlowControlLimit", typeof(int), typeof(Project));
+		public static readonly DependencyProperty ManualFlowControlLimitProperty = DependencyProperty.Register("ManualFlowControlLimit", typeof(int), typeof(Host));
 
 		public bool AuthorizationImpersonateCallerForAllOperations { get { return (bool)GetValue(AuthorizationImpersonateCallerForAllOperationsProperty); } set { SetValue(AuthorizationImpersonateCallerForAllOperationsProperty, value); } }
 		public static readonly DependencyProperty AuthorizationImpersonateCallerForAllOperationsProperty = DependencyProperty.Register("AuthorizationImpersonateCallerForAllOperations", typeof(bool), typeof(Host));
@@ -334,7 +334,7 @@ namespace NETPath.Projects
 		public static readonly DependencyProperty UsePeerSecurityProperty = DependencyProperty.Register("UsePeerSecurity", typeof(bool), typeof(HostCredentials));
 		
 		public bool UseUserNamePasswordSecurity { get { return (bool)GetValue(UseUserNamePasswordSecurityProperty); } set { SetValue(UseUserNamePasswordSecurityProperty, value); } }
-		public static readonly DependencyProperty UseUserNamePasswordSecurityProperty = DependencyProperty.Register("UseUserNamePasswordSecurity", typeof(bool), typeof(HostCredentials));
+		public static readonly DependencyProperty UseUserNamePasswordSecurityProperty = DependencyProperty.Register("UseUserNamePasswordSecurity", typeof(bool), typeof(HostCredentials), new PropertyMetadata(true));
 		
 		public bool UseWindowsServiceSecurity { get { return (bool)GetValue(UseWindowsServiceSecurityProperty); } set { SetValue(UseWindowsServiceSecurityProperty, value); } }
 		public static readonly DependencyProperty UseWindowsServiceSecurityProperty = DependencyProperty.Register("UseWindowsServiceSecurity", typeof(bool), typeof(HostCredentials));
@@ -548,7 +548,17 @@ namespace NETPath.Projects
 		public bool IncludeExceptionDetailInFaults { get { return (bool)GetValue(IncludeExceptionDetailInFaultsProperty); } set { SetValue(IncludeExceptionDetailInFaultsProperty, value); } }
 		public static readonly DependencyProperty IncludeExceptionDetailInFaultsProperty = DependencyProperty.Register("IncludeExceptionDetailInFaults", typeof(bool), typeof(HostDebugBehavior));
 				
-		public HostDebugBehavior() { }
+		public HostDebugBehavior()
+		{
+			ID = Guid.NewGuid();
+			HttpHelpPageBinding = null;
+			HttpHelpPageEnabled = false;
+			HttpHelpPageUrl = "";
+			HttpsHelpPageBinding = null;
+			HttpsHelpPageEnabled = false;
+			HttpsHelpPageUrl = "";
+			IncludeExceptionDetailInFaults = false;
+		}
 
 		public HostDebugBehavior(string Name, Host Parent)
 		{
@@ -611,7 +621,18 @@ namespace NETPath.Projects
 		public string HttpsGetUrl { get { return (string)GetValue(HttpsGetUrlProperty); } set { SetValue(HttpsGetUrlProperty, value); } }
 		public static readonly DependencyProperty HttpsGetUrlProperty = DependencyProperty.Register("HttpsGetUrl", typeof(string), typeof(HostMetadataBehavior));
 
-		public HostMetadataBehavior() { }
+		public HostMetadataBehavior()
+		{
+			ID = Guid.NewGuid();
+
+			ExternalMetadataLocation = "";
+			HttpGetBinding = null;
+			HttpGetEnabled = false;
+			HttpGetUrl = "";
+			HttpsGetBinding = null;
+			HttpsGetEnabled = false;
+			HttpsGetUrl = "";
+		}
 
 		public HostMetadataBehavior(string Name, Host Parent)
 		{
@@ -641,7 +662,14 @@ namespace NETPath.Projects
 		public int MaxConcurrentSessions { get { return (int)GetValue(MaxConcurrentSessionsProperty); } set { SetValue(MaxConcurrentSessionsProperty, value); } }
 		public static readonly DependencyProperty MaxConcurrentSessionsProperty = DependencyProperty.Register("MaxConcurrentSessions", typeof(int), typeof(HostThrottlingBehavior));
 
-		public HostThrottlingBehavior() { }
+		public HostThrottlingBehavior()
+		{
+			ID = Guid.NewGuid();
+
+			MaxConcurrentCalls = 16;
+			MaxConcurrentInstances = 26;
+			MaxConcurrentSessions = 10;
+		}
 
 		public HostThrottlingBehavior(string Name, Host Parent)
 		{
@@ -676,7 +704,10 @@ namespace NETPath.Projects
 		public bool HelpEnabled { get { return (bool)GetValue(HelpEnabledProperty); } set { SetValue(HelpEnabledProperty, value); } }
 		public static readonly DependencyProperty HelpEnabledProperty = DependencyProperty.Register("HelpEnabled", typeof(bool), typeof(HostWebHTTPBehavior), new PropertyMetadata(false));
 
-		public HostWebHTTPBehavior() { }
+		public HostWebHTTPBehavior()
+		{
+			ID = Guid.NewGuid();
+		}
 
 		public HostWebHTTPBehavior(string Name, Host Parent)
 		{

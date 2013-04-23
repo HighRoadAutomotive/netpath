@@ -11,6 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using NETPath.Projects.Helpers;
+using Prospective.Controls;
 using Prospective.Controls.Dialogs;
 using NETPath.Projects;
 using NETPath.Projects.Helpers;
@@ -50,7 +52,9 @@ namespace NETPath.Interface.REST
 			if (s != null) ServiceOperationsList.SelectedItem = s;
 		}
 
-		#region - Service Drag/Drop Support - 
+		#region - Operations Screen -
+
+		#region - Service Drag/Drop Support -
 
 		private void ServiceOperationsList_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
@@ -219,5 +223,106 @@ namespace NETPath.Interface.REST
 
 			DialogService.ShowMessageDialog("NETPath", "Delete Method?", "Are you sure you want to delete the '" + OP.ReturnType + " " + OP.ServerName + "' method?", new DialogAction("Yes", () => ServiceType.ServiceOperations.Remove(OP), true), new DialogAction("No", false, true));
 		}
+
+		#endregion
+
+		#region - Endpoint Screen -
+
+		private void AddAddressHeader_Click(object sender, RoutedEventArgs e)
+		{
+			if (IsAddressHeaderValid() == false) return;
+			ServiceType.EndpointAddressHeaders.Add(new Projects.HostEndpointAddressHeader(AddressHeaderName.Text, AddressHeader.Text));
+		}
+
+		private void AddressHeader_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			AddAddressHeader.IsEnabled = true;
+			if (IsAddressHeaderValid() == false)
+				AddAddressHeader.IsEnabled = false;
+		}
+
+		private void AddressHeaderName_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			AddAddressHeader.IsEnabled = true;
+			if (IsAddressHeaderValid() == false)
+				AddAddressHeader.IsEnabled = false;
+		}
+
+		private void DeleteAddressHeader_Click(object sender, RoutedEventArgs e)
+		{
+			var lbi = Globals.GetVisualParent<ListBoxItem>(sender);
+			var OP = lbi.Content as Projects.HostEndpointAddressHeader;
+			if (OP == null) return;
+
+			DialogService.ShowMessageDialog("NETPath", "Delete Endpoint Address Header?", "Are you sure you want to delete the address header '" + OP.Name + "'?", new DialogAction("Yes", () => ServiceType.EndpointAddressHeaders.Remove(OP), true), new DialogAction("No", false, true));
+		}
+
+		private bool IsAddressHeaderValid()
+		{
+			if (!RegExs.MatchHTTPURI.IsMatch(AddressHeader.Text)) return false;
+			if (AddressHeader.Text == "") return false;
+			if (AddressHeaderName.Text == "") return false;
+			return true;
+		}
+
+		private void ProxyAddress_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			if (IsLoaded == false) return;
+			ServiceType.EndpointBinding.ProxyAddress = RegExs.ReplaceSpaces.Replace(ProxyAddress.Text, @"");
+		}
+
+		private void ProxyAddress_Validate(object sender, ValidateEventArgs e)
+		{
+			e.IsValid = RegExs.MatchHTTPURI.IsMatch(ProxyAddress.Text);
+		}
+
+		private void MaxBufferPoolSize_Validate(object sender, ValidateEventArgs e)
+		{
+			e.IsValid = true;
+			try { Convert.ToInt64(MaxBufferPoolSize.Text); }
+			catch (Exception) { e.IsValid = false; }
+		}
+
+		private void MaxBufferSize_Validate(object sender, ValidateEventArgs e)
+		{
+			e.IsValid = true;
+			try { Convert.ToInt64(MaxBufferSize.Text); }
+			catch (Exception) { e.IsValid = false; }
+		}
+
+		private void MaxReceivedMessageSize_Validate(object sender, ValidateEventArgs e)
+		{
+			e.IsValid = true;
+			try { Convert.ToInt64(MaxReceivedMessageSize.Text); }
+			catch (Exception) { e.IsValid = false; }
+		}
+
+		#endregion
+
+		#region - Behaviors Screen -
+
+		private void DebugHttpHelpPageUrl_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			if (IsLoaded == false) return;
+			ServiceType.DebugBehavior.HttpHelpPageUrl = RegExs.ReplaceSpaces.Replace(DebugHttpHelpPageUrl.Text, "");
+		}
+
+		private void DebugHttpHelpPageUrl_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		{
+			e.IsValid = RegExs.MatchHTTPURI.IsMatch(DebugHttpHelpPageUrl.Text);
+		}
+
+		private void DebugHttpsHelpPageUrl_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			if (IsLoaded == false) return;
+			ServiceType.DebugBehavior.HttpsHelpPageUrl = RegExs.ReplaceSpaces.Replace(DebugHttpsHelpPageUrl.Text, "");
+		}
+
+		private void DebugHttpsHelpPageUrl_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		{
+			e.IsValid = RegExs.MatchHTTPURI.IsMatch(DebugHttpsHelpPageUrl.Text);
+		}
+
+		#endregion
 	}
 }

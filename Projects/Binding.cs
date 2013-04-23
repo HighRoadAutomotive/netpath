@@ -1326,7 +1326,27 @@ namespace NETPath.Projects
 		public ServiceBindingTextEncoding WriteEncoding { get { return (ServiceBindingTextEncoding)GetValue(WriteEncodingProperty); } set { SetValue(WriteEncodingProperty, value); } }
 		public static readonly DependencyProperty WriteEncodingProperty = DependencyProperty.Register("WriteEncoding", typeof(ServiceBindingTextEncoding), typeof(ServiceBindingWebHTTP));
 
-		public ServiceBindingWebHTTP() : base() { }
+		public ServiceBindingWebHTTP() : base()
+		{
+			InheritedTypes.Add(new DataType("System.ServiceModel.WebHttpBinding", DataTypeMode.Class));
+			Security = new BindingSecurityWebHTTP(this);
+
+			CloseTimeout = new TimeSpan(0, 1, 0);
+			OpenTimeout = new TimeSpan(0, 1, 0);
+			ReceiveTimeout = new TimeSpan(0, 10, 0);
+			SendTimeout = new TimeSpan(0, 1, 0);
+
+			AllowCookies = false;
+			BypassProxyOnLocal = false;
+			CrossDomainScriptAccessEnabled = false;
+			HostNameComparisonMode = System.ServiceModel.HostNameComparisonMode.StrongWildcard;
+			MaxBufferPoolSize = 524288;
+			MaxBufferSize = 65536;
+			MaxReceivedMessageSize = 65536;
+			TransferMode = System.ServiceModel.TransferMode.Buffered;
+			UseDefaultWebProxy = true;
+			WriteEncoding = ServiceBindingTextEncoding.UTF8;
+		}
 
 		public ServiceBindingWebHTTP(string Name, Namespace Parent) : base()
 		{

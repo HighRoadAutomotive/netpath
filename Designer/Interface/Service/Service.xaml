@@ -306,7 +306,7 @@
 						<Label Content="Max Items In Object Graph:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" Margin="0" Width="Auto" />
 						<sf:IntegerTextBox Value="{Binding Path=ServiceType.SBMaxItemsInObjectGraph}" Margin="175,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Name="SBMaxItemsInObjectGraph" Grid.Row="2" Grid.Column="0" FontSize="10pt" ToolTip="Specify the number of Items in the Serialization Object Graph (0 is Int32.MaxValue)." />
 						<Label Content="Transaction Timeout:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" Margin="0" Width="Auto" />
-						<sf:TimeSpanEdit Value="{Binding Path=ServiceType.SBTransactionTimeout, Mode=TwoWay}" Margin="175,5,5,5" Format="hh:mm:ss" ShowArrowButtons="False" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="2" FontSize="10pt" Style="{DynamicResource TimeSpanEditStyle}" />
+						<sf:TimeSpanEdit Value="{Binding Path=ServiceType.SBTransactionTimeout, Mode=TwoWay}" Margin="175,5,5,5" Format="hh:mm:ss" ShowArrowButtons="False" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="2" FontSize="10pt" />
 						<ToggleButton Content="Automatic Session Shutdown" IsChecked="{Binding Path=ServiceType.SBAutomaticSessionShutdown}" Margin="5" Grid.Column="0" Grid.Row="3" />
 						<ToggleButton Content="Ensure Ordered Dispatch" IsChecked="{Binding Path=ServiceType.SBEnsureOrderedDispatch}" Margin="5" Grid.Column="1" Grid.Row="3" />
 						<ToggleButton Content="Ignore Extension Data Object" IsChecked="{Binding Path=ServiceType.SBIgnoreExtensionDataObject}" Margin="5" Grid.Column="0" Grid.Row="4" />

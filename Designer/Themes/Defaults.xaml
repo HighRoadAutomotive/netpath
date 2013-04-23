@@ -43,6 +43,7 @@
 	<SolidColorBrush x:Key="DefaultSelectionColor" Color="#880078C8" />
 	<SolidColorBrush x:Key="ScrollBarColor" Color="#FFCCCCCC" />
 	<SolidColorBrush x:Key="ToolTipBackground" Color="#DD222222" />
+	<SolidColorBrush x:Key="WinRTFeatureBackgroundColor" Color="#3300FF00" />
 
 	<!-- Button -->
 	<SolidColorBrush x:Key="ButtonBorderColor" Color="#FF999999" />

@@ -287,6 +287,9 @@ namespace NETPath.Projects
 			foreach (Service s in Services)
 				if (s.IsSelected) return s;
 
+			foreach (RESTService s in RESTServices)
+				if (s.IsSelected) return s;
+
 			foreach (Data s in Data)
 				if (s.IsSelected) return s;
 

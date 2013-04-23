@@ -59,7 +59,7 @@ namespace NETPath.Interface.Host
 
 		private void HttpGetUrl_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
 		{
-			e.IsValid = RegExs.MatchCodeName.IsMatch(HttpGetUrl.Text);
+			e.IsValid = RegExs.MatchHTTPURI.IsMatch(HttpGetUrl.Text);
 		}
 
 		private void HttpsGetUrl_TextChanged(object sender, TextChangedEventArgs e)
@@ -70,7 +70,7 @@ namespace NETPath.Interface.Host
 
 		private void HttpsGetUrl_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
 		{
-			e.IsValid = RegExs.MatchCodeName.IsMatch(HttpsGetUrl.Text);
+			e.IsValid = RegExs.MatchHTTPURI.IsMatch(HttpsGetUrl.Text);
 		}
 	}
 }

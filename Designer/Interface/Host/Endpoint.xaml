@@ -55,7 +55,7 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
-		<Label Grid.Row="0" Grid.ColumnSpan="2" Content="Server Endpoint Options" FontSize="12pt" Margin="0,5,0,0" />
+		<Label Grid.Row="0" Grid.ColumnSpan="2" Content="Server Options" FontSize="12pt" Margin="0,5,0,0" />
 		<Label Content="Address:" Height="Auto" HorizontalAlignment="Left" Margin="0,1,0,0" VerticalContentAlignment="Center" Grid.Row="1" />
 		<pc:TextBox Text="{Binding Path=Data.ServerAddress}" Name="ServerAddress" Height="23" Margin="65,5,5,5" VerticalAlignment="Top" LabelText="Use Machine Name" Grid.Row="1" Grid.ColumnSpan="2" ToolTip="{Binding Path=Data.ServerAddress}" />
 		<Label Content="Port:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Column="0" Grid.Row="2" />
@@ -73,7 +73,7 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
-		<Label Grid.Row="0" Grid.ColumnSpan="2" Content="Client Endpoint Options" FontSize="12pt" Margin="0,5,0,0" />
+		<Label Grid.Row="0" Grid.ColumnSpan="2" Content="Client Options" FontSize="12pt" Margin="0,5,0,0" />
 		<Label Content="Address:" Height="Auto" HorizontalAlignment="Left" Margin="0,1,0,0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="1" />
 		<pc:TextBox Text="{Binding Path=Data.ClientAddress}" Name="ClientAddress" LabelText="Use Machine Name" Height="23" Margin="61,5,5,5" VerticalAlignment="Top" Grid.Row="1" Grid.Column="0" ToolTip="{Binding Path=Data.ClientAddress}" />
 		<Label Content="Identity:" Height="Auto" HorizontalAlignment="Left" Margin="0,1,0,0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="1" Grid.Column="1" />

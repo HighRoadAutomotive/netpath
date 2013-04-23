@@ -64,11 +64,6 @@ namespace NETPath.Generators.NET.CS
 			}
 		}
 
-		public static bool CanGenerateAsync(Service o, bool IsServer)
-		{
-			return IsServer ? (o.AsynchronyMode == ServiceAsynchronyMode.Server || o.AsynchronyMode == ServiceAsynchronyMode.Both) : (o.AsynchronyMode == ServiceAsynchronyMode.Client || o.AsynchronyMode == ServiceAsynchronyMode.Both || o.AsynchronyMode == ServiceAsynchronyMode.Default);
-		}
-
 		#region - Server Interfaces -
 
 		public static string GenerateServerCode(RESTService o)
@@ -88,8 +83,36 @@ namespace NETPath.Generators.NET.CS
 			//Generate the service proxy
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 			code.AppendLine(string.Format("\t[System.ServiceModel.ServiceBehaviorAttribute(AutomaticSessionShutdown = {0}, ConcurrencyMode = ConcurrencyMode.{1}, IgnoreExtensionDataObject = {2}, IncludeExceptionDetailInFaults = {3}, MaxItemsInObjectGraph = {4}, {5}TransactionTimeout = \"{6}\", UseSynchronizationContext = {7}, ValidateMustUnderstand = {8}, AddressFilterMode = AddressFilterMode.{9}, EnsureOrderedDispatch = {10}, InstanceContextMode = InstanceContextMode.{11}, ReleaseServiceInstanceOnTransactionComplete = {12}, TransactionAutoCompleteOnSessionClose = {13})]", o.SBAutomaticSessionShutdown ? "true" : "false", o.SBConcurrencyMode, o.SBIgnoreExtensionDataObject ? "true" : "false", o.SBIncludeExceptionDetailInFaults ? "true" : "false", o.SBMaxItemsInObjectGraph > 0 ? Convert.ToString(o.SBMaxItemsInObjectGraph) : "Int32.MaxValue", o.SBTransactionIsolationLevel != IsolationLevel.Unspecified ? string.Format("TransactionIsolationLevel = System.Transactions.IsolationLevel.{0}", o.SBTransactionIsolationLevel) : "", o.SBTransactionTimeout, o.SBUseSynchronizationContext ? "true" : "false", o.SBValidateMustUnderstand ? "true" : "false", o.SBAddressFilterMode, o.SBEnsureOrderedDispatch ? "true" : "false", o.SBInstanceContextMode, o.SBReleaseServiceInstanceOnTransactionComplete ? "true" : "false", o.SBTransactionAutoCompleteOnSessionClose ? "true" : "false"));
-			code.AppendLine(string.Format("\t{0} abstract class {1}Base : ServerBase<{1}Base>, I{1}", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
+			code.AppendLine(string.Format("\t{0} abstract class {1}Base<T> : RESTServerBase, I{1} where T : {1}Base<T>", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
 			code.AppendLine("\t{");
+			code.AppendLine(string.Format("\t\tpublic {0}Base(string BaseAddress, string DefaultEndpointAddress) : base(typeof(T), new Uri[] {{ new Uri(BaseAddress) }})", o.Name));
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tthis.DefaultEndpointAddress = new Uri(DefaultEndpointAddress);");
+			code.AppendLine("\t\t\tInitialize();");
+			code.AppendLine("\t\t}");
+			code.AppendLine();
+			code.AppendLine(string.Format("\t\tpublic {0}Base(Uri BaseURI, Uri DefaultEndpointAddress) : base(typeof(T), new Uri[] {{ BaseURI }})", o.Name));
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tthis.DefaultEndpointAddress = DefaultEndpointAddress;");
+			code.AppendLine("\t\t\tInitialize();");
+			code.AppendLine("\t\t}");
+			code.AppendLine();
+			code.AppendLine(string.Format("\t\tpublic {0}Base(Uri[] BaseURIs, Uri DefaultEndpointAddress) : base(typeof(T), BaseURIs)", o.Name));
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tthis.DefaultEndpointAddress = DefaultEndpointAddress;");
+			code.AppendLine("\t\t\tInitialize();");
+			code.AppendLine("\t\t}");
+			code.AppendLine();
+			code.AppendLine("\t\tprivate void Initialize()");
+			code.AppendLine("\t\t{");
+			code.AppendLine(GenerateBinding(o.EndpointBinding));
+			code.AppendLine(GenerateCredentialsCode(o.Credentials));
+			if (o.HasDebugBehavior) code.AppendLine(GenerateBehaviorCode(o.DebugBehavior));
+			if (o.HasThrottlingBehavior) code.AppendLine(GenerateBehaviorCode(o.ThrottlingBehavior));
+			if (o.HasWebHTTPBehavior) code.AppendLine(GenerateBehaviorCode(o.WebHTTPBehavior));
+			code.AppendLine(string.Format("\t\t\tEndpoint = Host.AddServiceEndpoint(typeof(I{0}), Binding, DefaultEndpointAddress);", o.Name));
+			code.AppendLine(string.Format("\t\t\tEndpoint.Behaviors.Add(WebHttpBehavior);"));
+			code.AppendLine("\t\t}");
 			foreach (RESTMethod m in o.ServiceOperations)
 				code.AppendLine(GenerateServerProxyMethod(m));
 			code.AppendLine("\t}");
@@ -286,6 +309,125 @@ namespace NETPath.Generators.NET.CS
 			}
 			
 			return string.Format("{0} {1}", DataTypeGenerator.GenerateType(o.Type), o.Name);
+		}
+
+		#endregion
+
+		#region - Host -
+
+		public static string GenerateBinding(ServiceBindingWebHTTP b)
+		{
+			var code = new StringBuilder();
+			code.AppendLine(string.Format("\t\t\tBinding.AllowCookies = {0};", b.AllowCookies ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+			code.AppendLine(string.Format("\t\t\tBinding.BypassProxyOnLocal = {0};", b.BypassProxyOnLocal ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+			code.AppendLine(string.Format("\t\t\tBinding.CrossDomainScriptAccessEnabled = {0};", b.CrossDomainScriptAccessEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+			code.AppendLine(string.Format("\t\t\tBinding.HostNameComparisonMode = HostNameComparisonMode.{0};", System.Enum.GetName(typeof(HostNameComparisonMode), b.HostNameComparisonMode)));
+			code.AppendLine(string.Format("\t\t\tBinding.MaxBufferPoolSize = {0};", b.MaxBufferPoolSize));
+			code.AppendLine(string.Format("\t\t\tBinding.MaxBufferSize = {0};", Convert.ToInt32(b.MaxBufferSize)));
+			code.AppendLine(string.Format("\t\t\tBinding.MaxReceivedMessageSize = {0};", b.MaxReceivedMessageSize));
+			code.AppendLine(string.Format("\t\t\tBinding.TransferMode = TransferMode.{0};", System.Enum.GetName(typeof(TransferMode), b.TransferMode)));
+			code.AppendLine(string.Format("\t\t\tBinding.WriteEncoding = System.Text.Encoding.{0};", System.Enum.GetName(typeof(ServiceBindingTextEncoding), b.WriteEncoding)));
+			if (!string.IsNullOrEmpty(b.ProxyAddress) && b.UseDefaultWebProxy == false)
+			{
+				code.AppendLine(string.Format("\t\t\tBinding.ProxyAddress = new Uri(\"{0}\");", b.ProxyAddress));
+				code.AppendLine(string.Format("\t\t\tBinding.UseDefaultWebProxy = false;"));
+			}
+			if (b.Security != null)
+			{
+				code.AppendLine(string.Format("\t\t\tBinding.Security.Mode = WebHttpSecurityMode.{0};", System.Enum.GetName(typeof(WebHttpSecurityMode), b.Security.Mode)));
+				code.AppendLine(string.Format("\t\t\tBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.{0};", System.Enum.GetName(typeof(HttpClientCredentialType), b.Security.TransportClientCredentialType)));
+				code.AppendLine(string.Format("\t\t\tBinding.Security.Transport.ProxyCredentialType = HttpProxyCredentialType.{0};", System.Enum.GetName(typeof(HttpProxyCredentialType), b.Security.TransportProxyCredentialType)));
+				code.AppendLine(string.Format("\t\t\tBinding.Security.Transport.Realm = \"{0}\";", b.Security.TransportRealm));
+			}
+			return code.ToString();
+		}
+
+		public static string GenerateCredentialsCode(HostCredentials o)
+		{
+			var code = new StringBuilder();
+			if (o.UseCertificatesSecurity)
+			{
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.ClientCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.Security.X509CertificateValidationMode), o.ClientCertificateAuthenticationValidationMode)));
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.ClientCertificate.Authentication.IncludeWindowsGroups = {0};", o.ClientCertificateAuthenticationIncludeWindowsGroups ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.ClientCertificate.Authentication.MapClientCertificateToWindowsAccount = {0};", o.ClientCertificateAuthenticationMapClientCertificateToWindowsAccount ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.ClientCertificate.Authentication.RevocationMode = System.Security.Cryptography.X509Certificates.X509RevocationMode.{0};", System.Enum.GetName(typeof(System.Security.Cryptography.X509Certificates.X509RevocationMode), o.ClientCertificateAuthenticationRevocationMode)));
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.ClientCertificate.Authentication.TrustedStoreLocation = System.Security.Cryptography.X509Certificates.StoreLocation.{0};", System.Enum.GetName(typeof(System.Security.Cryptography.X509Certificates.StoreLocation), o.ClientCertificateAuthenticationStoreLocation)));
+			}
+			if (o.UseIssuedTokenSecurity)
+			{
+				foreach (string aauri in o.IssuedTokenAllowedAudiencesUris) code.AppendLine(string.Format("\t\t\tthis.IssuedTokenAuthentication.AllowedAudienceUris.Add(\"{0}\");", aauri));
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.IssuedTokenAuthentication.AllowUntrustedRsaIssuers = {0};", o.IssuedTokenAllowUntrustedRsaIssuers ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.IssuedTokenAuthentication.AudienceUriMode = System.IdentityModel.Selectors.AudienceUriMode.{0};", System.Enum.GetName(typeof(System.IdentityModel.Selectors.AudienceUriMode), o.IssuedTokenAudienceUriMode)));
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.IssuedTokenAuthentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.Security.X509CertificateValidationMode), o.IssuedTokenCertificateValidationMode)));
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.IssuedTokenAuthentication.RevocationMode = System.Security.Cryptography.X509Certificates.X509RevocationMode.{0};", System.Enum.GetName(typeof(System.Security.Cryptography.X509Certificates.X509RevocationMode), o.IssuedTokenRevocationMode)));
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.IssuedTokenAuthentication.TrustedStoreLocation = System.Security.Cryptography.X509Certificates.StoreLocation.{0};", System.Enum.GetName(typeof(System.Security.Cryptography.X509Certificates.StoreLocation), o.IssuedTokenTrustedStoreLocation)));
+			}
+			if (o.UsePeerSecurity)
+			{
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.Peer.MeshPassword = \"{0}\";", o.PeerMeshPassword));
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.Peer.MessageSenderAuthentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.Security.X509CertificateValidationMode), o.PeerMessageSenderAuthenticationCertificateValidationMode)));
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.Peer.MessageSenderAuthentication.RevocationMode = System.Security.Cryptography.X509Certificates.X509RevocationMode.{0};", System.Enum.GetName(typeof(System.Security.Cryptography.X509Certificates.X509RevocationMode), o.PeerMessageSenderAuthenticationRevocationMode)));
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.Peer.MessageSenderAuthentication.TrustedStoreLocation = System.Security.Cryptography.X509Certificates.StoreLocation.{0};", System.Enum.GetName(typeof(System.Security.Cryptography.X509Certificates.StoreLocation), o.PeerMessageSenderAuthenticationTrustedStoreLocation)));
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.Peer.PeerAuthentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.Security.X509CertificateValidationMode), o.PeerAuthenticationCertificateValidationMode)));
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.Peer.PeerAuthentication.RevocationMode = System.Security.Cryptography.X509Certificates.X509RevocationMode.{0};", System.Enum.GetName(typeof(System.Security.Cryptography.X509Certificates.X509RevocationMode), o.PeerAuthenticationRevocationMode)));
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.Peer.PeerAuthentication.TrustedStoreLocation = System.Security.Cryptography.X509Certificates.StoreLocation.{0};", System.Enum.GetName(typeof(System.Security.Cryptography.X509Certificates.StoreLocation), o.PeerAuthenticationTrustedStoreLocation)));
+			}
+			if (o.UseUserNamePasswordSecurity)
+			{
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.UserNameAuthentication.CachedLogonTokenLifetime = new TimeSpan({0});", o.UserNamePasswordCachedLogonTokenLifetime.Ticks));
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.UserNameAuthentication.CacheLogonTokens = {0};", o.UserNamePasswordCacheLogonTokens ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.UserNameAuthentication.IncludeWindowsGroups = {0};", o.UserNamePasswordIncludeWindowsGroups ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.UserNameAuthentication.MaxCachedLogonTokens = {0};", o.UserNamePasswordMaxCachedLogonTokens));
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.UserNameAuthentication.UserNamePasswordValidationMode = System.ServiceModel.Security.UserNamePasswordValidationMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.Security.UserNamePasswordValidationMode), o.UserNamePasswordValidationMode)));
+			}
+			if (o.UseWindowsServiceSecurity)
+			{
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.WindowsAuthentication.AllowAnonymousLogons = {0};", o.WindowsServiceAllowAnonymousLogons ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+				code.AppendLine(string.Format("\t\t\tHost.Credentials.WindowsAuthentication.IncludeWindowsGroups = {0};", o.WindowsServiceIncludeWindowsGroups ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+			}
+			return code.ToString();
+		}
+
+		public static string GenerateBehaviorCode(HostBehavior o)
+		{
+			Type t = o.GetType();
+			var code = new StringBuilder();
+			if (t == typeof(HostDebugBehavior))
+			{
+				var b = o as HostDebugBehavior;
+				if (b == null) return "";
+				if (b.HttpHelpPageEnabled)
+				{
+					code.AppendLine(string.Format("\t\t\tDebugBehavior.HttpHelpPageBinding = new {0}();", DataTypeGenerator.GenerateType(b.HttpHelpPageBinding)));
+					code.AppendLine(string.Format("\t\t\tDebugBehavior.HttpHelpPageUrl = new Uri(\"{0}\");", b.HttpHelpPageUrl));
+				}
+				if (b.HttpsHelpPageEnabled)
+				{
+					code.AppendLine(string.Format("\t\t\tDebugBehavior.HttpsHelpPageEnabled = {0};", b.HttpsHelpPageEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+					code.AppendLine(string.Format("\t\t\tDebugBehavior.HttpsHelpPageUrl = new Uri(\"{0}\");", b.HttpsHelpPageUrl));
+				}
+				code.AppendLine(string.Format("\t\t\tDebugBehavior.IncludeExceptionDetailInFaults = {0};", b.IncludeExceptionDetailInFaults ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+			}
+			if (t == typeof(HostThrottlingBehavior))
+			{
+				var b = o as HostThrottlingBehavior;
+				if (b == null) return "";
+				code.AppendLine(string.Format("\t\t\tThrottlingBehavior.MaxConcurrentCalls = {0};", b.MaxConcurrentCalls));
+				code.AppendLine(string.Format("\t\t\tThrottlingBehavior.MaxConcurrentInstances = {0};", b.MaxConcurrentInstances));
+				code.AppendLine(string.Format("\t\t\tThrottlingBehavior.MaxConcurrentSessions = {0};", b.MaxConcurrentSessions));
+			}
+			if (t == typeof(HostWebHTTPBehavior))
+			{
+				var b = o as HostWebHTTPBehavior;
+				if (b == null) return "";
+				code.AppendLine(string.Format("\t\t\tWebHttpBehavior.AutomaticFormatSelectionEnabled = {0};", b.AutomaticFormatSelectionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+				code.AppendLine(string.Format("\t\t\tWebHttpBehavior.DefaultBodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.{0};", System.Enum.GetName(typeof(WebMessageBodyStyle), b.DefaultBodyStyle)));
+				code.AppendLine(string.Format("\t\t\tWebHttpBehavior.DefaultOutgoingRequestFormat = System.ServiceModel.Web.WebMessageFormat.{0};", System.Enum.GetName(typeof(WebMessageFormat), b.DefaultOutgoingRequestFormat)));
+				code.AppendLine(string.Format("\t\t\tWebHttpBehavior.DefaultOutgoingResponseFormat = System.ServiceModel.Web.WebMessageFormat.{0};", System.Enum.GetName(typeof(WebMessageFormat), b.DefaultOutgoingResponseFormat)));
+				code.AppendLine(string.Format("\t\t\tWebHttpBehavior.FaultExceptionEnabled = {0};", b.FaultExceptionEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+				code.AppendLine(string.Format("\t\t\tWebHttpBehavior.HelpEnabled = {0};", b.HelpEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
+			}
+			return code.ToString();
 		}
 
 		#endregion

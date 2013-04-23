@@ -1632,11 +1632,11 @@ namespace NETPath.Generators.NET.CS
 			var code = new StringBuilder();
 			if (o.UseCertificatesSecurity)
 			{
-				code.AppendFormat("\t\t\tthis.ClientCertificate.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.Security.X509CertificateValidationMode), o.ClientCertificateAuthenticationValidationMode), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.ClientCertificate.IncludeWindowsGroups = {0};{1}", o.ClientCertificateAuthenticationIncludeWindowsGroups ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.ClientCertificate.MapClientCertificateToWindowsAccount = {0};{1}", o.ClientCertificateAuthenticationMapClientCertificateToWindowsAccount ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.ClientCertificate.RevocationMode = System.Security.Cryptography.X509Certificates.X509RevocationMode.{0};{1}", System.Enum.GetName(typeof(System.Security.Cryptography.X509Certificates.X509RevocationMode), o.ClientCertificateAuthenticationRevocationMode), Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.ClientCertificate.TrustedStoreLocation = System.Security.Cryptography.X509Certificates.StoreLocation.{0};{1}", System.Enum.GetName(typeof(System.Security.Cryptography.X509Certificates.StoreLocation), o.ClientCertificateAuthenticationStoreLocation), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ClientCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.Security.X509CertificateValidationMode), o.ClientCertificateAuthenticationValidationMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ClientCertificate.Authentication.IncludeWindowsGroups = {0};{1}", o.ClientCertificateAuthenticationIncludeWindowsGroups ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ClientCertificate.Authentication.MapClientCertificateToWindowsAccount = {0};{1}", o.ClientCertificateAuthenticationMapClientCertificateToWindowsAccount ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ClientCertificate.Authentication.RevocationMode = System.Security.Cryptography.X509Certificates.X509RevocationMode.{0};{1}", System.Enum.GetName(typeof(System.Security.Cryptography.X509Certificates.X509RevocationMode), o.ClientCertificateAuthenticationRevocationMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.ClientCertificate.Authentication.TrustedStoreLocation = System.Security.Cryptography.X509Certificates.StoreLocation.{0};{1}", System.Enum.GetName(typeof(System.Security.Cryptography.X509Certificates.StoreLocation), o.ClientCertificateAuthenticationStoreLocation), Environment.NewLine);
 			}
 			if (o.UseIssuedTokenSecurity)
 			{
@@ -1663,7 +1663,7 @@ namespace NETPath.Generators.NET.CS
 				code.AppendFormat("\t\t\tthis.UserNameAuthentication.CacheLogonTokens = {0};{1}", o.UserNamePasswordCacheLogonTokens ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.UserNameAuthentication.IncludeWindowsGroups = {0};{1}", o.UserNamePasswordIncludeWindowsGroups ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower(), Environment.NewLine);
 				code.AppendFormat("\t\t\tthis.UserNameAuthentication.MaxCachedLogonTokens = {0};{1}", o.UserNamePasswordMaxCachedLogonTokens, Environment.NewLine);
-				code.AppendFormat("\t\t\tthis.UserNameAuthentication.CertificateValidationMode = System.ServiceModel.Security.UserNamePasswordValidationMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.Security.UserNamePasswordValidationMode), o.UserNamePasswordValidationMode), Environment.NewLine);
+				code.AppendFormat("\t\t\tthis.UserNameAuthentication.UserNamePasswordValidationMode = System.ServiceModel.Security.UserNamePasswordValidationMode.{0};{1}", System.Enum.GetName(typeof(System.ServiceModel.Security.UserNamePasswordValidationMode), o.UserNamePasswordValidationMode), Environment.NewLine);
 			}
 			if (o.UseWindowsServiceSecurity)
 			{

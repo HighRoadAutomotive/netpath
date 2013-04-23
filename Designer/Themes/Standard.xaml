@@ -68,6 +68,7 @@
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="UseLayoutRounding" Value="True" />
 		<Setter Property="Padding" Value="10,4" />
+		<Setter Property="MinHeight" Value="24" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type ToggleButton}">
@@ -116,7 +117,7 @@
 		<Setter Property="OverridesDefaultStyle" Value="True"/>
 		<Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
 		<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-		<Setter Property="MinHeight" Value="20"/>
+		<Setter Property="MinHeight" Value="24" />
 		<Setter Property="AllowDrop" Value="true"/>
 		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
@@ -174,7 +175,7 @@
 		<Setter Property="OverridesDefaultStyle" Value="True"/>
 		<Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
 		<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-		<Setter Property="MinHeight" Value="20"/>
+		<Setter Property="MinHeight" Value="24" />
 		<Setter Property="AllowDrop" Value="true"/>
 		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
@@ -270,6 +271,7 @@
 		<Setter Property="HorizontalContentAlignment" Value="Center" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="Padding" Value="10,2" />
+		<Setter Property="MinHeight" Value="24" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type Button}">
