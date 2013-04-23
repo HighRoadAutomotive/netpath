@@ -107,9 +107,6 @@ namespace NETPath.Projects
 		public bool EndpointUseHTTPS { get { return (bool)GetValue(EndpointUseHTTPSProperty); } set { SetValue(EndpointUseHTTPSProperty, value); } }
 		public static readonly DependencyProperty EndpointUseHTTPSProperty = DependencyProperty.Register("EndpointUseHTTPS", typeof(bool), typeof(RESTService), new PropertyMetadata(false));
 
-		public ObservableCollection<HostEndpointAddressHeader> EndpointAddressHeaders { get { return (ObservableCollection<HostEndpointAddressHeader>)GetValue(EndpointAddressHeadersProperty); } set { SetValue(EndpointAddressHeadersProperty, value); } }
-		public static readonly DependencyProperty EndpointAddressHeadersProperty = DependencyProperty.Register("EndpointAddressHeaders", typeof(ObservableCollection<HostEndpointAddressHeader>), typeof(RESTService));
-
 		public ServiceBindingWebHTTP EndpointBinding { get { return (ServiceBindingWebHTTP)GetValue(EndpointBindingProperty); } set { SetValue(EndpointBindingProperty, value); } }
 		public static readonly DependencyProperty EndpointBindingProperty = DependencyProperty.Register("EndpointBinding", typeof(ServiceBindingWebHTTP), typeof(RESTService));
 
@@ -160,7 +157,6 @@ namespace NETPath.Projects
 			ServiceOperations = new ObservableCollection<RESTMethod>();
 			ServiceDocumentation = new Documentation { IsClass = true };
 			EndpointBinding = new ServiceBindingWebHTTP();
-			EndpointAddressHeaders = new ObservableCollection<HostEndpointAddressHeader>();
 			WebHTTPBehavior = new HostWebHTTPBehavior();
 			Credentials = new HostCredentials();
 		}
@@ -174,7 +170,6 @@ namespace NETPath.Projects
 			ConfigurationName = "";
 			ServiceDocumentation = new Documentation { IsClass = true };
 			EndpointBinding = new ServiceBindingWebHTTP();
-			EndpointAddressHeaders = new ObservableCollection<HostEndpointAddressHeader>();
 			WebHTTPBehavior = new HostWebHTTPBehavior();
 			Credentials = new HostCredentials();
 		}

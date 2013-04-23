@@ -55,7 +55,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bindings.cs" />
-    <None Include="RESTService.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="DataType.cs" />
     <Compile Include="Documentation.cs" />
@@ -64,6 +63,7 @@
     <Compile Include="Host.cs" />
     <Compile Include="Namespace.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RESTService.cs" />
     <Compile Include="Security.cs" />
     <Compile Include="Service.cs" />
   </ItemGroup>

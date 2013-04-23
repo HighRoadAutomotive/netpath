@@ -677,6 +677,7 @@
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
 		<Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}"/>
 		<Setter Property="BorderBrush" Value="{StaticResource DefaultBorderColor}"/>
+		<Setter Property="MinHeight" Value="24"/>
 		<Setter Property="BorderThickness" Value="0"/>
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 		<Setter Property="HorizontalContentAlignment" Value="Stretch" />

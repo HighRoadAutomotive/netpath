@@ -228,43 +228,6 @@ namespace NETPath.Interface.REST
 
 		#region - Endpoint Screen -
 
-		private void AddAddressHeader_Click(object sender, RoutedEventArgs e)
-		{
-			if (IsAddressHeaderValid() == false) return;
-			ServiceType.EndpointAddressHeaders.Add(new Projects.HostEndpointAddressHeader(AddressHeaderName.Text, AddressHeader.Text));
-		}
-
-		private void AddressHeader_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			AddAddressHeader.IsEnabled = true;
-			if (IsAddressHeaderValid() == false)
-				AddAddressHeader.IsEnabled = false;
-		}
-
-		private void AddressHeaderName_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			AddAddressHeader.IsEnabled = true;
-			if (IsAddressHeaderValid() == false)
-				AddAddressHeader.IsEnabled = false;
-		}
-
-		private void DeleteAddressHeader_Click(object sender, RoutedEventArgs e)
-		{
-			var lbi = Globals.GetVisualParent<ListBoxItem>(sender);
-			var OP = lbi.Content as Projects.HostEndpointAddressHeader;
-			if (OP == null) return;
-
-			DialogService.ShowMessageDialog("NETPath", "Delete Endpoint Address Header?", "Are you sure you want to delete the address header '" + OP.Name + "'?", new DialogAction("Yes", () => ServiceType.EndpointAddressHeaders.Remove(OP), true), new DialogAction("No", false, true));
-		}
-
-		private bool IsAddressHeaderValid()
-		{
-			if (!RegExs.MatchHTTPURI.IsMatch(AddressHeader.Text)) return false;
-			if (AddressHeader.Text == "") return false;
-			if (AddressHeaderName.Text == "") return false;
-			return true;
-		}
-
 		private void ProxyAddress_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			if (IsLoaded == false) return;

@@ -90,6 +90,17 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine();
 			}
 
+			if (o.RESTServices.Count > 0)
+			{
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tREST Service Contracts");
+				code.AppendLine("\t**************************************************************************/");
+				code.AppendLine();
+				foreach (RESTService se in o.RESTServices)
+					code.AppendLine(RESTServiceGenerator.GenerateServerCode(se));
+				code.AppendLine();
+			}
+
 			if (o.Bindings.Count > 0)
 			{
 				code.AppendLine("\t/**************************************************************************");

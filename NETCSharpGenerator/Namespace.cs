@@ -729,16 +729,16 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine();
 			}
 
-			if (o.RESTServices.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tREST Service Contracts");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (RESTService se in o.RESTServices)
-					code.AppendLine(RESTServiceGenerator.GenerateClientCode40(se));
-				code.AppendLine();
-			}
+			//if (o.RESTServices.Count > 0)
+			//{
+			//	code.AppendLine("\t/**************************************************************************");
+			//	code.AppendLine("\t*\tREST Service Contracts");
+			//	code.AppendLine("\t**************************************************************************/");
+			//	code.AppendLine();
+			//	foreach (RESTService se in o.RESTServices)
+			//		code.AppendLine(RESTServiceGenerator.GenerateClientCode40(se));
+			//	code.AppendLine();
+			//}
 
 			if (o.Bindings.Count > 0)
 			{
@@ -804,16 +804,16 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine();
 			}
 
-			if (o.RESTServices.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tREST Service Contracts");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (RESTService se in o.RESTServices)
-					code.AppendLine(RESTServiceGenerator.GenerateClientCode40(se));
-				code.AppendLine();
-			}
+			//if (o.RESTServices.Count > 0)
+			//{
+			//	code.AppendLine("\t/**************************************************************************");
+			//	code.AppendLine("\t*\tREST Service Contracts");
+			//	code.AppendLine("\t**************************************************************************/");
+			//	code.AppendLine();
+			//	foreach (RESTService se in o.RESTServices)
+			//		code.AppendLine(RESTServiceGenerator.GenerateClientCode40(se));
+			//	code.AppendLine();
+			//}
 
 			if (o.Bindings.Count > 0)
 			{
@@ -877,16 +877,16 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine();
 			}
 
-			if (o.RESTServices.Count > 0)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tREST Service Contracts");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (RESTService se in o.RESTServices)
-					code.AppendLine(RESTServiceGenerator.GenerateClientCode45(se));
-				code.AppendLine();
-			}
+			//if (o.RESTServices.Count > 0)
+			//{
+			//	code.AppendLine("\t/**************************************************************************");
+			//	code.AppendLine("\t*\tREST Service Contracts");
+			//	code.AppendLine("\t**************************************************************************/");
+			//	code.AppendLine();
+			//	foreach (RESTService se in o.RESTServices)
+			//		code.AppendLine(RESTServiceGenerator.GenerateClientCode45(se));
+			//	code.AppendLine();
+			//}
 
 			if (o.Bindings.Count > 0)
 			{

@@ -318,6 +318,9 @@ namespace NETPath.Projects
 			foreach (Service s in Services)
 				s.IsSelected = false;
 
+			foreach (RESTService s in RESTServices)
+				s.IsSelected = false;
+
 			foreach (Data s in Data)
 				s.IsSelected = false;
 
@@ -327,7 +330,7 @@ namespace NETPath.Projects
 			foreach (Namespace s in Children)
 			{
 				s.IsSelected = false;
-				s.SetSelectedItem(null);
+				s.SetSelectedItem(Item);
 			}
 
 			if (Item == null) return;

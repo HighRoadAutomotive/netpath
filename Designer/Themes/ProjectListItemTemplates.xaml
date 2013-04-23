@@ -15,7 +15,7 @@
 
 	<SolidColorBrush x:Key="NamespaceContainerColor" Color="#44000099" />
 	<SolidColorBrush x:Key="ServiceContainerColor" Color="#AA006600" />
-	<SolidColorBrush x:Key="RESTContainerColor" Color="#AA339900" />
+	<SolidColorBrush x:Key="RESTContainerColor" Color="#AA669933" />
 	<SolidColorBrush x:Key="DataContainerColor" Color="#AA006699" />
 	<SolidColorBrush x:Key="EnumContainerColor" Color="#AA0033FF" />
 	<SolidColorBrush x:Key="HostContainerColor" Color="#AA660000" />
