@@ -9,6 +9,9 @@ using System.Runtime.Serialization;
 using System.Transactions;
 using System.ServiceModel;
 using System.ServiceModel.Web;
+using System.Net;
+using System.Net.Http;
+using System.Net.Cache;
 
 namespace NETPath.Projects
 {
@@ -16,6 +19,15 @@ namespace NETPath.Projects
 	{
 		public ObservableCollection<RESTMethod> ServiceOperations { get { return (ObservableCollection<RESTMethod>)GetValue(ServiceOperationsProperty); } set { SetValue(ServiceOperationsProperty, value); } }
 		public static readonly DependencyProperty ServiceOperationsProperty = DependencyProperty.Register("ServiceOperations", typeof(ObservableCollection<RESTMethod>), typeof(RESTService));
+
+		public ObservableCollection<RESTHTTPConfiguration> RequestConfigurations { get { return (ObservableCollection<RESTHTTPConfiguration>)GetValue(RequestConfigurationsProperty); } set { SetValue(RequestConfigurationsProperty, value); } }
+		public static readonly DependencyProperty RequestConfigurationsProperty = DependencyProperty.Register("RequestConfigurations", typeof(ObservableCollection<RESTHTTPConfiguration>), typeof(ObservableCollection<RESTHTTPConfiguration>));
+
+		public bool GenerateServer { get { return (bool)GetValue(GenerateServerProperty); } set { SetValue(GenerateServerProperty, value); } }
+		public static readonly DependencyProperty GenerateServerProperty = DependencyProperty.Register("GenerateServer", typeof(bool), typeof(RESTService), new PropertyMetadata(true));
+
+		public bool GenerateClient { get { return (bool)GetValue(GenerateClientProperty); } set { SetValue(GenerateClientProperty, value); } }
+		public static readonly DependencyProperty GenerateClientProperty = DependencyProperty.Register("GenerateClient", typeof(bool), typeof(RESTService), new PropertyMetadata(true));
 
 		public ProtectionLevel ProtectionLevel { get { return (ProtectionLevel)GetValue(ProtectionLevelProperty); } set { SetValue(ProtectionLevelProperty, value); } }
 		public static readonly DependencyProperty ProtectionLevelProperty = DependencyProperty.Register("ProtectionLevel", typeof(ProtectionLevel), typeof(RESTService));
@@ -150,11 +162,11 @@ namespace NETPath.Projects
 		public HostWebHTTPBehavior WebHTTPBehavior { get { return (HostWebHTTPBehavior)GetValue(WebHTTPBehaviorProperty); } set { SetValue(WebHTTPBehaviorProperty, value); } }
 		public static readonly DependencyProperty WebHTTPBehaviorProperty = DependencyProperty.Register("WebHTTPBehavior", typeof(HostWebHTTPBehavior), typeof(RESTService));
 
-		public RESTService()
-			: base(DataTypeMode.Class)
+		public RESTService() : base(DataTypeMode.Class)
 		{
 			ID = Guid.NewGuid();
 			ServiceOperations = new ObservableCollection<RESTMethod>();
+			RequestConfigurations = new ObservableCollection<RESTHTTPConfiguration>();
 			ServiceDocumentation = new Documentation { IsClass = true };
 			EndpointBinding = new ServiceBindingWebHTTP();
 			WebHTTPBehavior = new HostWebHTTPBehavior();
@@ -166,6 +178,7 @@ namespace NETPath.Projects
 			this.Name = Name;
 			this.Parent = Parent;
 			ServiceOperations = new ObservableCollection<RESTMethod>();
+			RequestConfigurations = new ObservableCollection<RESTHTTPConfiguration>();
 			ID = Guid.NewGuid();
 			ConfigurationName = "";
 			ServiceDocumentation = new Documentation { IsClass = true };
@@ -328,7 +341,10 @@ namespace NETPath.Projects
 
 		public WebMessageFormat ResponseFormat { get { return (WebMessageFormat)GetValue(ResponseFormatProperty); } set { SetValue(ResponseFormatProperty, value); } }
 		public static readonly DependencyProperty ResponseFormatProperty = DependencyProperty.Register("ResponseFormat", typeof(WebMessageFormat), typeof(RESTMethod), new PropertyMetadata(WebMessageFormat.Xml));
-		
+
+		public RESTHTTPConfiguration RequestConfiguration { get { return (RESTHTTPConfiguration)GetValue(RequestConfigurationProperty); } set { SetValue(RequestConfigurationProperty, value); } }
+		public static readonly DependencyProperty RequestConfigurationProperty = DependencyProperty.Register("RequestConfiguration", typeof(RESTMethod), typeof(RESTMethod), new PropertyMetadata(null));
+
 		//System
 		[IgnoreDataMember] public string Declaration { get { return (string)GetValue(DeclarationProperty); } protected set { SetValue(DeclarationPropertyKey, value); } }
 		private static readonly DependencyPropertyKey DeclarationPropertyKey = DependencyProperty.RegisterReadOnly("Declaration", typeof(string), typeof(RESTMethod), new PropertyMetadata(""));
@@ -573,5 +589,176 @@ namespace NETPath.Projects
 			else
 				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
 		}
+	}
+	
+	public enum CookieContainerMode
+	{
+		None,
+		Instance,
+		Global
+	}
+
+	public enum CredentialsMode
+	{
+		None,
+		Allowed,
+		Required
+	}
+
+	public abstract class RESTHTTPConfiguration : DependencyObject
+	{
+		//System
+		public Guid ID { get; set; }
+
+		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
+		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(RESTHTTPConfiguration), new PropertyMetadata(""));
+
+		public bool IsSelected { get { return (bool)GetValue(IsSelectedProperty); } set { SetValue(IsSelectedProperty, value); } }
+		public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.Register("IsSelected", typeof(bool), typeof(RESTHTTPConfiguration), new PropertyMetadata(false));
+
+		//HTTP Request Configuration
+		public bool AllowAutoRedirect { get { return (bool)GetValue(AllowAutoRedirectProperty); } set { SetValue(AllowAutoRedirectProperty, value); } }
+		public static readonly DependencyProperty AllowAutoRedirectProperty = DependencyProperty.Register("AllowAutoRedirect", typeof(bool), typeof(RESTHTTPConfiguration), new PropertyMetadata(true));
+
+		public DecompressionMethods AutomaticDecompression { get { return (DecompressionMethods)GetValue(AutomaticDecompressionProperty); } set { SetValue(AutomaticDecompressionProperty, value); } }
+		public static readonly DependencyProperty AutomaticDecompressionProperty = DependencyProperty.Register("AutomaticDecompression", typeof(DecompressionMethods), typeof(RESTHTTPConfiguration), new PropertyMetadata(DecompressionMethods.None));
+
+		public int MaxAutomaticRedirections { get { return (int)GetValue(MaxAutomaticRedirectionsProperty); } set { SetValue(MaxAutomaticRedirectionsProperty, value); } }
+		public static readonly DependencyProperty MaxAutomaticRedirectionsProperty = DependencyProperty.Register("MaxAutomaticRedirections", typeof(int), typeof(RESTHTTPConfiguration), new PropertyMetadata(50));
+
+		public bool UseProxy { get { return (bool)GetValue(UseProxyProperty); } set { SetValue(UseProxyProperty, value); } }
+		public static readonly DependencyProperty UseProxyProperty = DependencyProperty.Register("UseProxy", typeof(bool), typeof(RESTHTTPConfiguration), new PropertyMetadata(false));
+
+		//Security
+		public CredentialsMode CredentialsMode { get { return (CredentialsMode)GetValue(CredentialsModeProperty); } set { SetValue(CredentialsModeProperty, value); } }
+		public static readonly DependencyProperty CredentialsModeProperty = DependencyProperty.Register("CredentialsMode", typeof(CredentialsMode), typeof(RESTHTTPConfiguration), new PropertyMetadata(CredentialsMode.None));
+
+		public CookieContainerMode CookieContainerMode { get { return (CookieContainerMode)GetValue(CookieContainerModeProperty); } set { SetValue(CookieContainerModeProperty, value); } }
+		public static readonly DependencyProperty CookieContainerModeProperty = DependencyProperty.Register("CookieContainerMode", typeof(CookieContainerMode), typeof(RESTHTTPConfiguration), new PropertyMetadata(CookieContainerMode.Global));
+
+		public bool PreAuthenticate { get { return (bool)GetValue(PreAuthenticateProperty); } set { SetValue(PreAuthenticateProperty, value); } }
+		public static readonly DependencyProperty PreAuthenticateProperty = DependencyProperty.Register("PreAuthenticate", typeof(bool), typeof(RESTHTTPConfiguration), new PropertyMetadata(false));
+
+		public bool UseDefaultCredentials { get { return (bool)GetValue(UseDefaultCredentialsProperty); } set { SetValue(UseDefaultCredentialsProperty, value); } }
+		public static readonly DependencyProperty UseDefaultCredentialsProperty = DependencyProperty.Register("UseDefaultCredentials", typeof(bool), typeof(RESTHTTPConfiguration), new PropertyMetadata(false));
+
+		public RESTHTTPConfiguration()
+		{
+			ID = Guid.NewGuid();
+		}
+
+		public RESTHTTPConfiguration(string Name)
+		{
+			ID = Guid.NewGuid();
+			this.Name = Name;
+		}
+	}
+
+	public class RESTHTTPWebConfiguration : RESTHTTPConfiguration
+	{
+		//HTTP Request Configuration
+		public string ConnectionGroupName { get { return (string)GetValue(ConnectionGroupNameProperty); } set { SetValue(ConnectionGroupNameProperty, value); } }
+		public static readonly DependencyProperty ConnectionGroupNameProperty = DependencyProperty.Register("ConnectionGroupName", typeof(string), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(null));
+
+		public bool CanContinue { get { return (bool)GetValue(CanContinueProperty); } set { SetValue(CanContinueProperty, value); } }
+		public static readonly DependencyProperty CanContinueProperty = DependencyProperty.Register("CanContinue", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(false));
+
+		public TimeSpan ContinueTimeout { get { return (TimeSpan)GetValue(ContinueTimeoutProperty); } set { SetValue(ContinueTimeoutProperty, value); } }
+		public static readonly DependencyProperty ContinueTimeoutProperty = DependencyProperty.Register("ContinueTimeout", typeof(TimeSpan), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(new TimeSpan(0,0,100)));
+
+		public bool KeepAlive { get { return (bool)GetValue(KeepAliveProperty); } set { SetValue(KeepAliveProperty, value); } }
+		public static readonly DependencyProperty KeepAliveProperty = DependencyProperty.Register("KeepAlive", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(true));
+
+		public int MaximumResponseHeadersLength { get { return (int)GetValue(MaximumResponseHeadersLengthProperty); } set { SetValue(MaximumResponseHeadersLengthProperty, value); } }
+		public static readonly DependencyProperty MaximumResponseHeadersLengthProperty = DependencyProperty.Register("MaximumResponseHeadersLength", typeof(int), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(-1));
+
+		public RequestCacheLevel RequestCacheLevel { get { return (RequestCacheLevel)GetValue(RequestCacheLevelProperty); } set { SetValue(RequestCacheLevelProperty, value); } }
+		public static readonly DependencyProperty RequestCacheLevelProperty = DependencyProperty.Register("RequestCacheLevel", typeof(RequestCacheLevel), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(RequestCacheLevel.Default));
+
+		public bool UseHTTP10 { get { return (bool)GetValue(UseHTTP10Property); } set { SetValue(UseHTTP10Property, value); } }
+		public static readonly DependencyProperty UseHTTP10Property = DependencyProperty.Register("UseHTTP10", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(false));
+
+		public bool Pipelined { get { return (bool)GetValue(PipelinedProperty); } set { SetValue(PipelinedProperty, value); } }
+		public static readonly DependencyProperty PipelinedProperty = DependencyProperty.Register("Pipelined", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(true));
+
+		public TimeSpan ReadWriteTimeout { get { return (TimeSpan)GetValue(ReadWriteTimeoutProperty); } set { SetValue(ReadWriteTimeoutProperty, value); } }
+		public static readonly DependencyProperty ReadWriteTimeoutProperty = DependencyProperty.Register("ReadWriteTimeout", typeof(TimeSpan), typeof(RESTHTTPConfiguration), new PropertyMetadata(new TimeSpan(0,0,30)));
+
+		public TimeSpan Timeout { get { return (TimeSpan)GetValue(TimeoutProperty); } set { SetValue(TimeoutProperty, value); } }
+		public static readonly DependencyProperty TimeoutProperty = DependencyProperty.Register("Timeout", typeof(TimeSpan), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(new TimeSpan(0, 0, 100)));
+
+		//Headers
+		public bool Accept { get { return (bool)GetValue(AcceptProperty); } set { SetValue(AcceptProperty, value); } }
+		public static readonly DependencyProperty AcceptProperty = DependencyProperty.Register("Accept", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(false));
+
+		public bool Connection { get { return (bool)GetValue(ConnectionProperty); } set { SetValue(ConnectionProperty, value); } }
+		public static readonly DependencyProperty ConnectionProperty = DependencyProperty.Register("Connection", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(false));
+
+		public bool ContentType { get { return (bool)GetValue(ContentTypeProperty); } set { SetValue(ContentTypeProperty, value); } }
+		public static readonly DependencyProperty ContentTypeProperty = DependencyProperty.Register("ContentType", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(false));
+
+		public bool Date { get { return (bool)GetValue(DateProperty); } set { SetValue(DateProperty, value); } }
+		public static readonly DependencyProperty DateProperty = DependencyProperty.Register("Date", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(false));
+
+		public bool Expect { get { return (bool)GetValue(ExpectProperty); } set { SetValue(ExpectProperty, value); } }
+		public static readonly DependencyProperty ExpectProperty = DependencyProperty.Register("Expect", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(false));
+
+		public bool Host { get { return (bool)GetValue(HostProperty); } set { SetValue(HostProperty, value); } }
+		public static readonly DependencyProperty HostProperty = DependencyProperty.Register("Host", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(false));
+
+		public bool IfModifiedSince { get { return (bool)GetValue(IfModifiedSinceProperty); } set { SetValue(IfModifiedSinceProperty, value); } }
+		public static readonly DependencyProperty IfModifiedSinceProperty = DependencyProperty.Register("IfModifiedSince", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(false));
+
+		public bool Referrer { get { return (bool)GetValue(ReferrerProperty); } set { SetValue(ReferrerProperty, value); } }
+		public static readonly DependencyProperty ReferrerProperty = DependencyProperty.Register("Referrer", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(false));
+
+		public bool TransferEncoding { get { return (bool)GetValue(TransferEncodingProperty); } set { SetValue(TransferEncodingProperty, value); } }
+		public static readonly DependencyProperty TransferEncodingProperty = DependencyProperty.Register("TransferEncoding", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(false));
+
+		public bool UserAgent { get { return (bool)GetValue(UserAgentProperty); } set { SetValue(UserAgentProperty, value); } }
+		public static readonly DependencyProperty UserAgentProperty = DependencyProperty.Register("UserAgent", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(false));
+
+		//Security
+		public AuthenticationLevel AuthenticationLevel { get { return (AuthenticationLevel)GetValue(AuthenticationLevelProperty); } set { SetValue(AuthenticationLevelProperty, value); } }
+		public static readonly DependencyProperty AuthenticationLevelProperty = DependencyProperty.Register("AuthenticationLevel", typeof(AuthenticationLevel), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(AuthenticationLevel.MutualAuthRequested));
+
+		public System.Security.Principal.TokenImpersonationLevel ImpersonationLevel { get { return (System.Security.Principal.TokenImpersonationLevel)GetValue(ImpersonationLevelProperty); } set { SetValue(ImpersonationLevelProperty, value); } }
+		public static readonly DependencyProperty ImpersonationLevelProperty = DependencyProperty.Register("ImpersonationLevel", typeof(System.Security.Principal.TokenImpersonationLevel), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(System.Security.Principal.TokenImpersonationLevel.None));
+
+		public bool UseServiceCertificateValidation { get { return (bool)GetValue(UseServiceCertificateValidationProperty); } set { SetValue(UseServiceCertificateValidationProperty, value); } }
+		public static readonly DependencyProperty UseServiceCertificateValidationProperty = DependencyProperty.Register("UseServiceCertificateValidation", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(false));
+
+		public bool UnsafeAuthenticatedConnectionSharing { get { return (bool)GetValue(UnsafeAuthenticatedConnectionSharingProperty); } set { SetValue(UnsafeAuthenticatedConnectionSharingProperty, value); } }
+		public static readonly DependencyProperty UnsafeAuthenticatedConnectionSharingProperty = DependencyProperty.Register("UnsafeAuthenticatedConnectionSharing", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(false));
+
+		//Content
+		public bool AllowReadStreamBuffering { get { return (bool)GetValue(AllowReadStreamBufferingProperty); } set { SetValue(AllowReadStreamBufferingProperty, value); } }
+		public static readonly DependencyProperty AllowReadStreamBufferingProperty = DependencyProperty.Register("AllowReadStreamBuffering", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(true));
+
+		public bool AllowWriteStreamBuffering { get { return (bool)GetValue(AllowWriteStreamBufferingProperty); } set { SetValue(AllowWriteStreamBufferingProperty, value); } }
+		public static readonly DependencyProperty AllowWriteStreamBufferingProperty = DependencyProperty.Register("AllowWriteStreamBuffering", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(true));
+
+		public string MediaType { get { return (string)GetValue(MediaTypeProperty); } set { SetValue(MediaTypeProperty, value); } }
+		public static readonly DependencyProperty MediaTypeProperty = DependencyProperty.Register("MediaType", typeof(string), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(null));
+
+		public bool SendChunked { get { return (bool)GetValue(SendChunkedProperty); } set { SetValue(SendChunkedProperty, value); } }
+		public static readonly DependencyProperty SendChunkedProperty = DependencyProperty.Register("SendChunked", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(false));
+
+		public RESTHTTPWebConfiguration() { }
+
+		public RESTHTTPWebConfiguration(string Name): base(Name) { }
+	}
+
+	public class RESTHTTPClientConfiguration : RESTHTTPConfiguration
+	{
+		public ClientCertificateOption ClientCertificateOptions { get { return (ClientCertificateOption)GetValue(ClientCertificateOptionsProperty); } set { SetValue(ClientCertificateOptionsProperty, value); } }
+		public static readonly DependencyProperty ClientCertificateOptionsProperty = DependencyProperty.Register("ClientCertificateOptions", typeof(ClientCertificateOption), typeof(RESTHTTPClientConfiguration), new PropertyMetadata(ClientCertificateOption.Automatic));
+
+		public long MaxRequestContentBufferSize { get { return (long)GetValue(MaxRequestContentBufferSizeProperty); } set { SetValue(MaxRequestContentBufferSizeProperty, value); } }
+		public static readonly DependencyProperty MaxRequestContentBufferSizeProperty = DependencyProperty.Register("MaxRequestContentBufferSize", typeof(long), typeof(RESTHTTPClientConfiguration), new PropertyMetadata(21474836480L));
+
+		public RESTHTTPClientConfiguration() { }
+		
+		public RESTHTTPClientConfiguration(string Name) : base(Name) { }
 	}
 }

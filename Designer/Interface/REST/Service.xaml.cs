@@ -15,7 +15,6 @@ using NETPath.Projects.Helpers;
 using Prospective.Controls;
 using Prospective.Controls.Dialogs;
 using NETPath.Projects;
-using NETPath.Projects.Helpers;
 
 namespace NETPath.Interface.REST
 {
@@ -30,8 +29,8 @@ namespace NETPath.Interface.REST
 		public object ActiveOperation { get { return GetValue(ActiveOperationProperty); } set { SetValue(ActiveOperationProperty, value); } }
 		public static readonly DependencyProperty ActiveOperationProperty = DependencyProperty.Register("ActiveOperation", typeof(object), typeof(Service));
 
-		public object ActiveCallback { get { return GetValue(ActiveCallbackProperty); } set { SetValue(ActiveCallbackProperty, value); } }
-		public static readonly DependencyProperty ActiveCallbackProperty = DependencyProperty.Register("ActiveCallback", typeof(object), typeof(Service));
+		public object ActiveConfiguration { get { return GetValue(ActiveConfigurationProperty); } set { SetValue(ActiveConfigurationProperty, value); } }
+		public static readonly DependencyProperty ActiveConfigurationProperty = DependencyProperty.Register("ActiveConfiguration", typeof(object), typeof(Service));
 
 		private int DragItemStartIndex;
 		private int DragItemNewIndex;
@@ -50,6 +49,9 @@ namespace NETPath.Interface.REST
 
 			RESTMethod s = ServiceType.ServiceOperations.FirstOrDefault(a => a.IsSelected);
 			if (s != null) ServiceOperationsList.SelectedItem = s;
+
+			RESTHTTPConfiguration c = ServiceType.RequestConfigurations.FirstOrDefault(a => a.IsSelected);
+			if (c != null) ConfigurationList.SelectedItem = c;
 		}
 
 		#region - Operations Screen -
@@ -222,6 +224,77 @@ namespace NETPath.Interface.REST
 			if (OP == null) return;
 
 			DialogService.ShowMessageDialog("NETPath", "Delete Method?", "Are you sure you want to delete the '" + OP.ReturnType + " " + OP.ServerName + "' method?", new DialogAction("Yes", () => ServiceType.ServiceOperations.Remove(OP), true), new DialogAction("No", false, true));
+		}
+
+		#endregion
+
+		#region - Client Configuration Screen -
+
+		private void AddHttpConfigurationName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		{
+			AddHttpWebConfiguration.IsEnabled = false;
+			AddHttpClientConfiguration.IsEnabled = false;
+
+			e.IsValid = true;
+			if (string.IsNullOrEmpty(AddHttpConfigurationName.Text)) return;
+
+			e.IsValid = RegExs.MatchCodeName.IsMatch(RegExs.ReplaceSpaces.Replace(AddHttpConfigurationName.Text, ""));
+
+			AddHttpWebConfiguration.IsEnabled = e.IsValid;
+			AddHttpClientConfiguration.IsEnabled = e.IsValid;
+		}
+
+		private void AddHttpWebConfiguration_Click(object Sender, RoutedEventArgs E)
+		{
+			var t = new RESTHTTPWebConfiguration(AddHttpConfigurationName.Text);
+			ServiceType.RequestConfigurations.Add(t);
+
+			AddHttpConfigurationName.Focus();
+			AddHttpConfigurationName.Text = "";
+
+			ConfigurationList.SelectedItem = t;
+		}
+
+		private void AddHttpClientConfiguration_Click(object Sender, RoutedEventArgs E)
+		{
+			var t = new RESTHTTPClientConfiguration(AddHttpConfigurationName.Text);
+			ServiceType.RequestConfigurations.Add(t);
+
+			AddHttpConfigurationName.Focus();
+			AddHttpConfigurationName.Text = "";
+
+			ConfigurationList.SelectedItem = t;
+		}
+
+		private void ConfigurationList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			var w = ConfigurationList.SelectedItem as RESTHTTPWebConfiguration;
+			var c = ConfigurationList.SelectedItem as RESTHTTPClientConfiguration;
+			if (w == null && c == null) return;
+
+
+			//Set the new item as selected.
+			foreach (RESTHTTPConfiguration o in ServiceType.RequestConfigurations)
+				o.IsSelected = false;
+			if (w != null)
+			{
+				w.IsSelected = true;
+				ActiveConfiguration = new HttpWebConfig(w);
+			}
+			else
+			{
+				c.IsSelected = true;
+				ActiveConfiguration = new HttpClientConfig(c);
+			}
+		}
+
+		private void DeleteConfiguration_Click(object sender, RoutedEventArgs e)
+		{
+			var lbi = Globals.GetVisualParent<ListBoxItem>(sender);
+			var OP = lbi.Content as RESTHTTPConfiguration;
+			if (OP == null) return;
+
+			DialogService.ShowMessageDialog("NETPath", "Delete HTTP Configuration?", "Are you sure you want to delete the '" + OP.Name + "' HTTP Configuration?", new DialogAction("Yes", () => ServiceType.RequestConfigurations.Remove(OP), true), new DialogAction("No", false, true));
 		}
 
 		#endregion

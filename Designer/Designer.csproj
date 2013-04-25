@@ -125,6 +125,8 @@
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IdentityModel" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Printing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
@@ -270,6 +272,13 @@
     </Compile>
     <Compile Include="Interface\Project\Project.xaml.cs">
       <DependentUpon>Project.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\REST\Converters.cs" />
+    <Compile Include="Interface\REST\HttpWebConfig.xaml.cs">
+      <DependentUpon>HttpWebConfig.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\REST\HttpClientConfig.xaml.cs">
+      <DependentUpon>HttpClientConfig.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interface\REST\Method.xaml.cs">
       <DependentUpon>Method.xaml</DependentUpon>
@@ -452,6 +461,14 @@
     <Page Include="Interface\Project\Project.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\REST\HttpWebConfig.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\REST\HttpClientConfig.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Interface\REST\Method.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -901,6 +918,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\X32\REST.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\X16\HttpClientConfig.png" />
+    <Resource Include="Icons\X16\HttpWebConfig.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
