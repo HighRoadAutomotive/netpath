@@ -131,14 +131,12 @@ namespace NETPath.Generators.NET.CS
 			//Generate the Proxy Class
 			if (o.ClientDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.ClientDocumentation));
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t{0} abstract partial class {1}", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
+			code.AppendLine(string.Format("\t{0} abstract partial class {1} : RESTClientBase", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
 			code.AppendLine("\t{");
-			code.AppendLine(string.Format("\t\tpublic {0}(string BaseURI)", o.Name));
-			code.AppendLine("\t\t{");
-			code.AppendLine("\t\t}");
+			code.AppendLine(string.Format("\t\tprotected {0}(string BaseURI, CookieContainer Cookies = null, NetworkCredential Credentials = null, CredentialCache CredentialCache = null, IWebProxy Proxy = null) : base(BaseURI, Cookies, Credentials, CredentialCache, Proxy) {{ }}", o.Name));
 			code.AppendLine();
-			foreach (RESTMethod m in o.ServiceOperations)
-				code.AppendLine(GenerateMethodClientCode40(m));
+			foreach (RESTMethod m in o.ServiceOperations.Where(a => a.RequestConfiguration.GetType() == typeof(RESTHTTPWebConfiguration)))
+				code.AppendLine(m.ClientAsync ? GenerateClientMethodWebAsync40(m) : GenerateClientMethodWeb40(m));
 			code.AppendLine("\t}");
 
 			return code.ToString();
@@ -151,14 +149,25 @@ namespace NETPath.Generators.NET.CS
 			//Generate the Proxy Class
 			if (o.ClientDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.ClientDocumentation));
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t{0} partial class {1}", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
+			code.AppendLine(string.Format("\t{0} abstract partial class {1} : RESTClientBase", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
 			code.AppendLine("\t{");
-			code.AppendLine(string.Format("\t\tpublic {0}()", o.Name));
+			foreach (RESTHTTPClientConfiguration c in o.ServiceOperations.Where(a => a.RequestConfiguration.GetType() == typeof(RESTHTTPClientConfiguration)).Select(a => a.RequestConfiguration))
+				code.AppendLine(string.Format("\t\tprotected HttpClient {0}Client {{ get; private set; }}", RegExs.ReplaceSpaces.Replace(c.Name, "")));
+			code.AppendLine(string.Format("\t\tprotected {0}(string BaseURI, CookieContainer Cookies = null, NetworkCredential Credentials = null, CredentialCache CredentialCache = null, IWebProxy Proxy = null) : base(BaseURI, Cookies, Credentials, CredentialCache, Proxy)", o.Name));
 			code.AppendLine("\t\t{");
+			foreach (RESTHTTPClientConfiguration c in o.ServiceOperations.Where(a => a.RequestConfiguration.GetType() == typeof (RESTHTTPClientConfiguration)).Select(a => a.RequestConfiguration))
+				code.AppendLine(string.Format("\t\t\t{0}Client = new HttpClient(new HttpClientHandler() {{ AllowAutoRedirect = {1}, AutomaticDecompression = System.Net.DecompressionMethods.{2}, ClientCertificateOptions = System.Net.Http.ClientCertificateOption.{3}, CookieContainer = {4}, Credentials = this.Credentials ?? this.CredentialCache, MaxAutomaticRedirections = {5}, MaxRequestContentBufferSize = {6}, PreAuthenticate = {7}, Proxy = this.Proxy, UseCookies = {8}, UseDefaultCredentials = {9}, UseProxy = {10} }});", 
+					RegExs.ReplaceSpaces.Replace(c.Name, ""), c.AllowAutoRedirect ? bool.TrueString.ToLower() : bool.FalseString.ToLower(), c.AutomaticDecompression, c.ClientCertificateOptions,
+					c.CookieContainerMode == CookieContainerMode.None ? "null" : c.CookieContainerMode == CookieContainerMode.Global ? "GlobalCookies" : c.CookieContainerMode == CookieContainerMode.Instance ? "Cookies" : "new CookieContainer()",
+					c.MaxAutomaticRedirections, c.MaxRequestContentBufferSize, c.PreAuthenticate ? bool.TrueString.ToLower() : bool.FalseString.ToLower(), 
+					(c.CookieContainerMode == CookieContainerMode.None || c.CookieContainerMode == CookieContainerMode.Custom) ? bool.FalseString.ToLower() : bool.TrueString.ToLower(),
+					c.UseDefaultCredentials ? bool.TrueString.ToLower() : bool.FalseString.ToLower(), c.UseProxy ? bool.TrueString.ToLower() : bool.FalseString.ToLower()));
 			code.AppendLine("\t\t}");
 			code.AppendLine();
-			foreach (RESTMethod m in o.ServiceOperations)
-				code.AppendLine(GenerateMethodClientCode45(m));
+			foreach (RESTMethod m in o.ServiceOperations.Where(a => a.RequestConfiguration.GetType() == typeof(RESTHTTPClientConfiguration)))
+				code.AppendLine(m.ClientAsync ? GenerateClientMethodClientAsync45(m) : GenerateClientMethodClient45(m));
+			foreach (RESTMethod m in o.ServiceOperations.Where(a => a.RequestConfiguration.GetType() == typeof(RESTHTTPWebConfiguration)))
+				code.AppendLine(m.ClientAsync ? GenerateClientMethodWebAsync45(m) : GenerateClientMethodWeb45(m));
 			code.AppendLine("\t}");
 
 			return code.ToString();
@@ -206,9 +215,9 @@ namespace NETPath.Generators.NET.CS
 
 		#endregion
 
-		#region - Client Proxy Methods -
+		#region - Client HttpWebRequest Methods -
 
-		public static string GenerateMethodClientSync(RESTMethod o)
+		public static string GenerateClientMethodWeb40(RESTMethod o)
 		{
 			var code = new StringBuilder();
 			if (o.Documentation != null)
@@ -217,64 +226,146 @@ namespace NETPath.Generators.NET.CS
 				foreach (RESTMethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 			}
-			code.AppendFormat("\t\tpublic {0} {1}(", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName);
+			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendFormat("\t\tpublic virtual HttpWebResponse {0}(", o.ServerName);
+			else code.AppendFormat("\t\tpublic virtual Tuple<{0}, HttpWebResponse> {1}(", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName);
 			foreach (RESTMethodParameter op in o.Parameters)
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
-			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
-			code.AppendLine(")");
+			code.AppendLine("RESTHttpWebConfig Configuration = null)");
 			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tvar rc = Configuration ?? new RESTHttpWebConfig();");
 			code.AppendLine("\t\t}");
 			return code.ToString();
 		}
 
-		public static string GenerateMethodClientCode40(RESTMethod o)
+		public static string GenerateClientMethodWebAsync40(RESTMethod o)
 		{
 			var code = new StringBuilder();
 
-			if (o.ClientAsync)
+			if (o.Documentation != null)
 			{
-				if (o.Documentation != null)
-				{
-					code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-					foreach (RESTMethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
-						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
-				}
-				code.AppendFormat("\t\tpublic void {0}(", o.ServerName);
-				foreach (RESTMethodParameter op in o.Parameters)
-					code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
-				if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
-				code.AppendLine(")");
-				code.AppendLine("\t\t{");
-				code.AppendLine("\t\t}");
+				code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
+				foreach (RESTMethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
+					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 			}
-			else
-				code.Append(GenerateMethodClientSync(o));
+			code.AppendFormat("\t\tpublic virtual void {0}(", o.ServerName);
+			foreach (RESTMethodParameter op in o.Parameters)
+				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+			code.AppendLine("RESTHttpWebConfig Configuration = null)");
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tvar rc = Configuration ?? new RESTHttpWebConfig();");
+			code.AppendLine("\t\t}");
 
 			return code.ToString();
 		}
 
-		public static string GenerateMethodClientCode45(RESTMethod o)
+		public static string GenerateClientMethodWeb45(RESTMethod o)
+		{
+			var code = new StringBuilder();
+			if (o.Documentation != null)
+			{
+				code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
+				foreach (RESTMethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
+					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
+			}
+			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendFormat("\t\tpublic virtual HttpWebResponse {0}(", o.ServerName);
+			else code.AppendFormat("\t\tpublic virtual Tuple<{0}, HttpWebResponse> {1}(", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName);
+			foreach (RESTMethodParameter op in o.Parameters)
+				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+			code.AppendLine("RESTHttpWebConfig Configuration = null)");
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tvar rc = Configuration ?? new RESTHttpWebConfig();");
+			code.AppendLine("\t\t}");
+			return code.ToString();
+		}
+
+		public static string GenerateClientMethodWebAsync45(RESTMethod o)
 		{
 			var code = new StringBuilder();
 
-			if (o.ClientAsync)
+			if (o.Documentation != null)
 			{
-				if (o.Documentation != null)
-				{
-					code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-					foreach (RESTMethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
-						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
-				}
-				if (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) code.AppendFormat("\t\tpublic System.Threading.Tasks.Task {0}Async(", o.ServerName);
-				else code.AppendFormat("\t\tpublic System.Threading.Tasks.Task<{0}> {1}Async(", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName);
-				foreach (RESTMethodParameter op in o.Parameters)
-					code.AppendFormat("{0}{1}", GenerateMethodParameterClientCode(op), o.Parameters.IndexOf(op) != (o.Parameters.Count() - 1) ? ", " : "");
-				code.AppendLine(")");
-				code.AppendLine("\t\t{");
-				code.AppendLine("\t\t}");
+				code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
+				foreach (RESTMethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
+					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 			}
+			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task<HttpWebResponse> {0}Async(", o.ServerName);
+			else code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task<Tuple<{0}, HttpWebResponse>> {1}Async(", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName);
+			foreach (RESTMethodParameter op in o.Parameters)
+				code.AppendFormat("{0}{1}", GenerateMethodParameterClientCode(op), o.Parameters.IndexOf(op) != (o.Parameters.Count() - 1) ? ", " : "");
+			code.AppendLine("RESTHttpWebConfig Configuration = null)");
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tvar rc = Configuration ?? new RESTHttpWebConfig();");
+			code.AppendLine("\t\t}");
+
+			return code.ToString();
+		}
+
+		#endregion
+
+		#region - Client HttpClient Methods -
+
+		public static string GenerateClientMethodClient45(RESTMethod o)
+		{
+			var code = new StringBuilder();
+			if (o.Documentation != null)
+			{
+				code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
+				foreach (RESTMethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
+					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
+			}
+			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendFormat("\t\tpublic virtual HttpResponseMessage {0}(", o.ServerName);
+			else code.AppendFormat("\t\tpublic virtual Tuple<{0}, HttpResponseMessage> {1}(", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName);
+			foreach (RESTMethodParameter op in o.Parameters)
+				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+			code.AppendLine("RESTHttpClientConfig Configuration = null)");
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tvar rc = Configuration ?? new RESTHttpClientConfig();");
+			code.AppendLine("\t\t}");
+			return code.ToString();
+		}
+
+		public static string GenerateClientMethodClientAsync45(RESTMethod o)
+		{
+			var code = new StringBuilder();
+
+			if (o.Documentation != null)
+			{
+				code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
+				foreach (RESTMethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
+					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
+			}
+			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task<HttpResponseMessage> {0}Async(", o.ServerName);
+			else code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task<Tuple<{0}, HttpResponseMessage>> {1}Async(", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName);
+			foreach (RESTMethodParameter op in o.Parameters)
+				code.AppendFormat("{0}{1}", GenerateMethodParameterClientCode(op), o.Parameters.IndexOf(op) != (o.Parameters.Count() - 1) ? ", " : "");
+			code.AppendLine("RESTHttpClientConfig Configuration = null)");
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tHttpResponseMessage rr = null;");
+			if (!((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent)) code.AppendFormat("\t\t\tstring rs = \"\";");
+			if (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) code.AppendFormat("\t\treturn System.Threading.Tasks.Task.Factory.StartNew(async() => {{");
+			else code.AppendFormat("\t\treturn System.Threading.Tasks.Task.Factory.StartNew(async() => {{");
+			code.AppendLine("\t\t\t\tvar rc = Configuration ?? new RESTHttpClientConfig();");
+			code.Append("\t\t\t\tvar params = new Dictionary() {{ ");
+			foreach (RESTMethodParameter op in o.Parameters.Where(a => a.Type.TypeMode == DataTypeMode.Primitive || a.Type.TypeMode == DataTypeMode.Enum))
+				code.AppendFormat("{{ Key = \"{0}\", Value = {0} }} ", op.Name);
+			code.AppendLine("}};");
+			code.AppendLine("\t\t\t\tvar rc = new StringContent(\"\", System.Text.Encoding.UTF8);");
+			code.AppendLine(string.Format("\t\t\t\tvar rm = CreateRequest(BaseURI + ParseURI(\"{0}\", params), HttpMethod.{1}, rc, 0, {2});", o.UriTemplate, o.Method, o.RequestConfiguration.UseHTTP10 ? bool.TrueString.ToLower() : bool.FalseString.ToLower()));
+			code.AppendLine(string.Format("\t\t\t\trr = await {0}Client.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseContentRead);", RegExs.ReplaceSpaces.Replace(o.RequestConfiguration.Name, "")));
+			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine("\t\t\t}}).ContinueWith((t) => {{");
+			else code.AppendLine("\t\t\t}}).ContinueWith(async(t) => {{");
+			code.AppendLine("\t\t\t\trr.EnsureSuccessStatusCode();");
+			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendFormat("\t\t\treturn rr;");
+			else code.AppendLine("\t\t\t\trs = await rr.ReadAsStringAsync();");
+			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine("\t\t\t}});");
 			else
-				code.Append(GenerateMethodClientSync(o));
+			{
+				code.AppendLine("\t\t\t}}).ContinueWith((t) => {{");
+				//TODO: Added deserialization code here
+				code.AppendFormat("\t\t\t\treturn new Tuple<{0}, HttpResponseMessage>(null, rr);", DataTypeGenerator.GenerateType(o.ReturnType)); 
+				code.AppendLine("\t\t\t}});");
+			}
+			code.AppendLine("\t\t}");
 
 			return code.ToString();
 		}

@@ -79,6 +79,7 @@
 			<ComboBoxItem Content="None" />
 			<ComboBoxItem Content="Instance" />
 			<ComboBoxItem Content="Global" />
+			<ComboBoxItem Content="Custom" />
 		</ComboBox>
 	</Grid>
 	<Label Grid.Row="5" Content="Content" FontSize="12pt" Margin="0,5,0,0" />

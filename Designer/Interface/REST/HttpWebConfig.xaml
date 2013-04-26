@@ -27,8 +27,6 @@
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
-		<RowDefinition Height="Auto" />
-		<RowDefinition Height="Auto" />
 	</Grid.RowDefinitions>
 	<Label Content="Name:" Grid.Row="0" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="100" Padding="10,2,0,2" Margin="5,0" />
 	<pc:TextBox Text="{Binding Path=Name}" Name="ServerName" Grid.Row="0" Height="23" Margin="110,5,5,5" ToolTip="{Binding Path=Name}" />
@@ -57,7 +55,7 @@
 		<ToggleButton Content="Use Proxy" IsChecked="{Binding Path=UseProxy}" Margin="5" Grid.Column="0" Grid.Row="1" />
 		<ToggleButton Content="Can Continue" IsChecked="{Binding Path=CanContinue}" Margin="5" Grid.Column="1" Grid.Row="1" />
 		<Label Content="Continue Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" />
-		<sf:TimeSpanEdit Value="{Binding Path=ContinueTimeout, Mode=TwoWay}" Margin="120,5,5,5" Format="hh:mm:ss" ShowArrowButtons="False" Height="24" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" FontSize="10pt" IsEnabled="{Binding Path=CanContinue}" />
+		<sf:TimeSpanEdit Value="{Binding Path=ContinueTimeout, Mode=TwoWay}" Margin="120,5,5,5" Format="hh:mm:ss" ShowArrowButtons="False" Background="{StaticResource WinRTFeatureBackgroundColor}" Height="24" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" FontSize="10pt" />
 		<ToggleButton Content="Use HTTP 1.0" IsChecked="{Binding Path=UseHTTP10}" Margin="5" Grid.Column="0" Grid.Row="2" />
 		<ToggleButton Content="Keep Alive" IsChecked="{Binding Path=KeepAlive}" Margin="5" Grid.Column="1" Grid.Row="2" />
 		<ToggleButton Content="Pipelined" IsChecked="{Binding Path=Pipelined}" Margin="5" Grid.Column="2" Grid.Row="2" />
@@ -86,30 +84,30 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
-		<ToggleButton Content="Use Default Credentials" IsChecked="{Binding Path=UseDefaultCredentials}" Margin="5" Grid.Column="0" Grid.Row="0" />
-		<Label Content="Credentials Mode:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0" />
-		<ComboBox Height="23" Margin="135,5,5,5" SelectedIndex="{Binding Path=CredentialsMode, Converter={StaticResource CredentialsModeConverter}}" Grid.Column="1" Grid.Row="0" >
+		<ToggleButton Content="Use Default Credentials" IsChecked="{Binding Path=UseDefaultCredentials}" Background="{StaticResource WinRTFeatureBackgroundColor}" Margin="5" Grid.Column="1" Grid.Row="0" />
+		<Label Content="Credentials Mode:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="0" />
+		<ComboBox Height="23" Margin="135,5,5,5" SelectedIndex="{Binding Path=CredentialsMode, Converter={StaticResource CredentialsModeConverter}}" Grid.Column="0" Grid.Row="0" >
 			<ComboBoxItem Content="None" />
 			<ComboBoxItem Content="Allowed" />
 			<ComboBoxItem Content="Required" />
 		</ComboBox>
-		<ToggleButton Content="Use Service Certificate Validation" IsChecked="{Binding Path=UseServiceCertificateValidation}" Margin="5" Grid.Column="0" Grid.Row="1" />
-		<Label Content="Cookie Container:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
-		<ComboBox Height="23" Margin="135,5,5,5" SelectedIndex="{Binding Path=CookieContainerMode, Converter={StaticResource CookieContainerModeConverter}}" Grid.Column="1" Grid.Row="1" >
+		<ToggleButton Content="Pre-Authenticate" IsChecked="{Binding Path=PreAuthenticate}" Margin="5" Grid.Column="1" Grid.Row="1" />
+		<Label Content="Cookie Container:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
+		<ComboBox Height="23" Margin="135,5,5,5" SelectedIndex="{Binding Path=CookieContainerMode, Converter={StaticResource CookieContainerModeConverter}}" Background="{StaticResource WinRTFeatureBackgroundColor}" Grid.Column="0" Grid.Row="1" >
 			<ComboBoxItem Content="None" />
 			<ComboBoxItem Content="Instance" />
 			<ComboBoxItem Content="Global" />
+			<ComboBoxItem Content="Custom" />
 		</ComboBox>
-		<ToggleButton Content="Pre-Authenticate" IsChecked="{Binding Path=PreAuthenticate}" Margin="5" Grid.Column="0" Grid.Row="2" />
-		<Label Content="Authentication Level:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="2" />
-		<ComboBox Height="23" Margin="135,5,5,5" SelectedIndex="{Binding Path=AuthenticationLevel, Converter={StaticResource AuthenticationLevelConverter}}" Grid.Column="1" Grid.Row="2" >
+		<ToggleButton Content="Unsafe Authenticated Connection Sharing" IsChecked="{Binding Path=UnsafeAuthenticatedConnectionSharing}" Margin="5" Grid.Column="1" Grid.Row="2" />
+		<Label Content="Authentication Level:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" />
+		<ComboBox Height="23" Margin="135,5,5,5" SelectedIndex="{Binding Path=AuthenticationLevel, Converter={StaticResource AuthenticationLevelConverter}}" Grid.Column="0" Grid.Row="2" >
 			<ComboBoxItem Content="None" />
 			<ComboBoxItem Content="Mutual Authorization Requested" />
 			<ComboBoxItem Content="Mutual Authorization Required" />
 		</ComboBox>
-		<ToggleButton Content="Unsafe Authenticated Connection Sharing" IsChecked="{Binding Path=UnsafeAuthenticatedConnectionSharing}" Margin="5" Grid.Column="0" Grid.Row="3" />
-		<Label Content="Token Impersonation:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="3" />
-		<ComboBox Height="23" Margin="135,5,5,5" SelectedIndex="{Binding Path=TokenImpersonationLevel, Converter={StaticResource TokenImpersonationLevelConverter}}" Grid.Column="1" Grid.Row="3" >
+		<Label Content="Token Impersonation:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="3" />
+		<ComboBox Height="23" Margin="135,5,5,5" SelectedIndex="{Binding Path=TokenImpersonationLevel, Converter={StaticResource TokenImpersonationLevelConverter}}" Grid.Column="0" Grid.Row="3" >
 			<ComboBoxItem Content="None" />
 			<ComboBoxItem Content="Anonymous" />
 			<ComboBoxItem Content="Identification" />
@@ -130,31 +128,7 @@
 		<Label Content="Media Type:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="0" />
 		<TextBox Text="{Binding Path=MediaType}" Margin="85,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Grid.Column="0" Grid.Row="0" FontSize="10pt" />
 		<ToggleButton Content="Send Chunked" IsChecked="{Binding Path=SendChunked}" Margin="5" Grid.Column="1" Grid.Row="0" />
-		<ToggleButton Content="Allow Read Stream Buffering" IsChecked="{Binding Path=AllowReadStreamBuffering}" Margin="5" Grid.Column="0" Grid.Row="1" />
+		<ToggleButton Content="Allow Read Stream Buffering" IsChecked="{Binding Path=AllowReadStreamBuffering}" Background="{StaticResource WinRTFeatureBackgroundColor}" Margin="5" Grid.Column="0" Grid.Row="1" />
 		<ToggleButton Content="Allow Write Stream Buffering" IsChecked="{Binding Path=AllowWriteStreamBuffering}" Margin="5" Grid.Column="1" Grid.Row="1" />
-	</Grid>
-	<Label Grid.Row="7" Content="Headers" FontSize="12pt" Margin="0,5,0,0" />
-	<Grid Grid.Row="8">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="*"/>
-		</Grid.ColumnDefinitions>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-		<ToggleButton Content="Accept" IsChecked="{Binding Path=Accept}" Margin="5" Grid.Column="0" Grid.Row="0" />
-		<ToggleButton Content="Connection" IsChecked="{Binding Path=Connection}" Margin="5" Grid.Column="1" Grid.Row="0" />
-		<ToggleButton Content="ContentType" IsChecked="{Binding Path=ContentType}" Margin="5" Grid.Column="0" Grid.Row="1" />
-		<ToggleButton Content="Date" IsChecked="{Binding Path=Date}" Margin="5" Grid.Column="1" Grid.Row="1" />
-		<ToggleButton Content="Expect" IsChecked="{Binding Path=Expect}" Margin="5" Grid.Column="0" Grid.Row="2" />
-		<ToggleButton Content="Host" IsChecked="{Binding Path=Host}" Margin="5" Grid.Column="1" Grid.Row="2" />
-		<ToggleButton Content="If Modified Since" IsChecked="{Binding Path=IfModifiedSince}" Margin="5" Grid.Column="0" Grid.Row="3" />
-		<ToggleButton Content="Referrer" IsChecked="{Binding Path=Referrer}" Margin="5" Grid.Column="1" Grid.Row="3" />
-		<ToggleButton Content="Transfer Encoding" IsChecked="{Binding Path=TransferEncoding}" Margin="5" Grid.Column="0" Grid.Row="4" />
-		<ToggleButton Content="User Agent" IsChecked="{Binding Path=UserAgent}" Margin="5" Grid.Column="1" Grid.Row="4" />
 	</Grid>
 </Grid>
