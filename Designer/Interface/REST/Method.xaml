@@ -181,7 +181,7 @@
 				<Border x:Name="ProjectBinding" Visibility="Collapsed" DataContext="{Binding Path=ServiceProject}" />
 				<ListBox Grid.Row="1" Name="ValuesList" AllowDrop="True" BorderThickness="0" Background="Transparent" Margin="0" SelectionMode="Single" Padding="-1,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.IsVirtualizing="False" ItemContainerStyle="{StaticResource StretchedContainerStyle}" PreviewMouseLeftButtonDown="ValuesList_PreviewMouseLeftButtonDown" PreviewMouseMove="ValuesList_PreviewMouseMove" QueryContinueDrag="ValuesList_QueryContinueDrag" DragLeave="ValuesList_DragLeave" PreviewDragOver="ValuesList_PreviewDragOver" PreviewDrop="ValuesList_Drop" >
 					<ListBox.ItemTemplate>
-						<DataTemplate DataType="{x:Type Projects:MethodParameter}">
+						<DataTemplate DataType="{x:Type Projects:RESTMethodParameter}">
 							<Border x:Name="BG" IsHitTestVisible="True" Background="#01FFFFFF">
 								<Grid>
 									<Grid.RowDefinitions>
@@ -192,14 +192,16 @@
 										<ColumnDefinition Width="*" />
 										<ColumnDefinition Width="75" />
 										<ColumnDefinition Width="75" />
+										<ColumnDefinition Width="75" />
 										<ColumnDefinition Width="30" />
 									</Grid.ColumnDefinitions>
 									<Data:TypeSelector x:Name="OperationParameterDataType" OpenType="{Binding Path=Type, Mode=TwoWay}" Project="{Binding ElementName=ProjectBinding, Path=DataContext}" Grid.Column="0" Margin="0,5,5,5" VerticalContentAlignment="Center" ToolTip="{Binding Path=Type}"  />
 									<pc:TextBox Name="OperationParameterElementName" Text="{Binding Path=Name}" Grid.Column="1" Margin="5" VerticalContentAlignment="Center" PreviewKeyDown="OperationParameterElementName_PreviewKeyDown" Validate="OperationParameterElementName_Validate" ToolTip="{Binding Path=Name}" />
 									<pc:TextBox Name="OperationParameterDocumentation" Text="{Binding Path=Documentation.Summary}" LabelText="Documentation" Margin="5" Grid.Column="2" VerticalContentAlignment="Center" PreviewKeyDown="OperationParameterDocumentation_PreviewKeyDown" ToolTip="{Binding Path=Name}" />
-									<ToggleButton Content="Hidden" IsChecked="{Binding Path=IsHidden}" Margin="5" Grid.Column="3" />
-									<Label Content="Click to Move" FontSize="10" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="4" />
-									<Button Name="DeleteOperationParameter" Visibility="Hidden" Grid.Column="5" Margin="1,1,2,1" Padding="0" Click="DeleteOperationParameter_Click">
+									<RadioButton Content="Serialize" IsChecked="{Binding Path=Serialize}" Grid.Column="3" IsEnabled="{Binding Path=IsSerializable}" />
+									<ToggleButton Content="Hidden" IsChecked="{Binding Path=IsHidden}" Margin="5" Grid.Column="4" />
+									<Label Content="Click to Move" FontSize="10" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="5" />
+									<Button Name="DeleteOperationParameter" Visibility="Hidden" Grid.Column="6" Margin="1,1,2,1" Padding="0" Click="DeleteOperationParameter_Click">
 										<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
 									</Button>
 								</Grid>

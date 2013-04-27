@@ -521,7 +521,7 @@ namespace NETPath.Projects
 			var de = o as RESTMethodParameter;
 			if (de == null) return;
 
-			foreach (var t in de.Parent.Parameters)
+			foreach (var t in de.Parent.Parameters.Where(a => !Equals(a, de)))
 				t.Serialize = false;
 			de.Serialize = true;
 		}
@@ -550,6 +550,9 @@ namespace NETPath.Projects
 			this.Owner = Owner;
 			this.Parent = Parent;
 			Documentation = new Documentation { IsParameter = true };
+
+			IsSerializable = false;
+			if (Type.TypeMode == DataTypeMode.Array || Type.TypeMode == DataTypeMode.Class || Type.TypeMode == DataTypeMode.Collection || Type.TypeMode == DataTypeMode.Dictionary || Type.TypeMode == DataTypeMode.Struct || Type.TypeMode == DataTypeMode.Queue || Type.TypeMode == DataTypeMode.Stack) IsSerializable = true;
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
