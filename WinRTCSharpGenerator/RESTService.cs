@@ -31,6 +31,8 @@ namespace NETPath.Generators.WinRT.CS
 
 			foreach (RESTMethod m in Operations)
 			{
+				if (m.RequestConfiguration.GetType() == typeof(RESTHTTPClientConfiguration) && Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40)
+					AddMessage(new CompileMessage("GS2018", "The method '" + o.Name + "' in the '" + o.Name + "' service uses an HttpClient configuration which is not supported during .NET 4.0 code generation. This method will not be generated.", CompileMessageSeverity.WARN, o, m, m.GetType(), o.Parent.Owner.ID));
 				if (string.IsNullOrEmpty(m.ServerName))
 					AddMessage(new CompileMessage("GS2004", "An method in the '" + o.Name + "' service has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
 				else
@@ -56,8 +58,8 @@ namespace NETPath.Generators.WinRT.CS
 				{
 					if(string.IsNullOrEmpty(mp.Name))
 						AddMessage(new CompileMessage("GS2008", "The method parameter '" + m.ServerName + "' in the '" + o.Name + "' service has a parameter with a blank name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
-					if (mp.IsRESTInvalid)
-						AddMessage(new CompileMessage("GS2009", "The method REST parameter '" + m.ServerName + "' in the '" + m.ServerName + "' method is not a valid REST parameter. Please specify a valid REST parameter.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
+					//if (mp.IsRESTInvalid)
+					//	AddMessage(new CompileMessage("GS2009", "The method REST parameter '" + m.ServerName + "' in the '" + m.ServerName + "' method is not a valid REST parameter. Please specify a valid REST parameter.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
 					if (mp.Name == "__callback")
 						AddMessage(new CompileMessage("GS2016", "The name of the method parameter '" + mp.Name + "' in the '" + m.ServerName + "' method is invalid. Please rename it.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
 				}

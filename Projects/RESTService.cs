@@ -343,7 +343,7 @@ namespace NETPath.Projects
 		public static readonly DependencyProperty ResponseFormatProperty = DependencyProperty.Register("ResponseFormat", typeof(WebMessageFormat), typeof(RESTMethod), new PropertyMetadata(WebMessageFormat.Xml));
 
 		public RESTHTTPConfiguration RequestConfiguration { get { return (RESTHTTPConfiguration)GetValue(RequestConfigurationProperty); } set { SetValue(RequestConfigurationProperty, value); } }
-		public static readonly DependencyProperty RequestConfigurationProperty = DependencyProperty.Register("RequestConfiguration", typeof(RESTMethod), typeof(RESTMethod), new PropertyMetadata(null));
+		public static readonly DependencyProperty RequestConfigurationProperty = DependencyProperty.Register("RequestConfiguration", typeof(RESTHTTPConfiguration), typeof(RESTMethod), new PropertyMetadata(null));
 
 		public bool DeserializeContent { get { return (bool)GetValue(DeserializeContentProperty); } set { SetValue(DeserializeContentProperty, value); } }
 		public static readonly DependencyProperty DeserializeContentProperty = DependencyProperty.Register("DeserializeContent", typeof(bool), typeof(RESTMethod), new PropertyMetadata(true));
@@ -356,7 +356,8 @@ namespace NETPath.Projects
 		public bool IsSelected { get { return (bool)GetValue(IsSelectedProperty); } set { SetValue(IsSelectedProperty, value); } }
 		public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.Register("IsSelected", typeof(bool), typeof(RESTMethod), new PropertyMetadata(false));
 
-		public RESTService Owner { get; set; }
+		public RESTService Owner { get { return (RESTService)GetValue(OwnerProperty); } set { SetValue(OwnerProperty, value); } }
+		public static readonly DependencyProperty OwnerProperty = DependencyProperty.Register("Owner", typeof(RESTService), typeof(RESTMethod));
 
 		public RESTMethod()
 		{
@@ -486,7 +487,7 @@ namespace NETPath.Projects
 
 		private static void TypeChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs p)
 		{
-			var de = o as Operation;
+			var de = o as RESTMethodParameter;
 			if (de == null) return;
 			var nt = p.NewValue as DataType;
 			if (nt == null) return;
@@ -497,6 +498,9 @@ namespace NETPath.Projects
 			if (nt.TypeMode == DataTypeMode.Array && nt.CollectionGenericType.TypeMode == DataTypeMode.Primitive) de.Owner.AddKnownType(nt);
 			if (ot.TypeMode == DataTypeMode.Primitive && ot.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.RemoveKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
 			if (nt.TypeMode == DataTypeMode.Primitive && nt.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.AddKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
+
+			de.IsSerializable = false;
+			if (nt.TypeMode == DataTypeMode.Array || nt.TypeMode == DataTypeMode.Class || nt.TypeMode == DataTypeMode.Collection || nt.TypeMode == DataTypeMode.Dictionary || nt.TypeMode == DataTypeMode.Struct || nt.TypeMode == DataTypeMode.Queue || nt.TypeMode == DataTypeMode.Stack) de.IsSerializable = true;
 		}
 
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value ?? "", @"")); } }
@@ -505,8 +509,22 @@ namespace NETPath.Projects
 		public bool IsHidden { get { return (bool)GetValue(IsHiddenProperty); } set { SetValue(IsHiddenProperty, value); } }
 		public static readonly DependencyProperty IsHiddenProperty = DependencyProperty.Register("IsHidden", typeof(bool), typeof(RESTMethodParameter));
 
-		public bool IsRESTInvalid { get { return (bool)GetValue(IsRESTInvalidProperty); } set { SetValue(IsRESTInvalidProperty, value); } }
-		public static readonly DependencyProperty IsRESTInvalidProperty = DependencyProperty.Register("IsRESTInvalid", typeof(bool), typeof(RESTMethodParameter), new PropertyMetadata(false));
+		[IgnoreDataMember] public bool IsSerializable { get { return (bool)GetValue(IsSerializableProperty); } protected set { SetValue(IsSerializablePropertyKey, value); } }
+		private static readonly DependencyPropertyKey IsSerializablePropertyKey = DependencyProperty.RegisterReadOnly("IsSerializable", typeof(bool), typeof(RESTMethodParameter), new PropertyMetadata(false));
+		public static readonly DependencyProperty IsSerializableProperty = IsSerializablePropertyKey.DependencyProperty;
+
+		public bool Serialize { get { return (bool)GetValue(SerializeProperty); } set { SetValue(SerializeProperty, value); } }
+		public static readonly DependencyProperty SerializeProperty = DependencyProperty.Register("Serialize", typeof(bool), typeof(RESTMethodParameter), new PropertyMetadata(false, SerializeChangedCallback));
+
+		private static void SerializeChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var de = o as RESTMethodParameter;
+			if (de == null) return;
+
+			foreach (var t in de.Parent.Parameters)
+				t.Serialize = false;
+			de.Serialize = true;
+		}
 
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(RESTMethodParameter));
@@ -607,6 +625,14 @@ namespace NETPath.Projects
 		None,
 		Allowed,
 		Required
+	}
+
+	public enum ContentMode
+	{
+		Default,
+		ByteArray,
+		String,
+		Stream
 	}
 
 	public abstract class RESTHTTPConfiguration : DependencyObject
@@ -726,6 +752,9 @@ namespace NETPath.Projects
 
 		public long MaxRequestContentBufferSize { get { return (long)GetValue(MaxRequestContentBufferSizeProperty); } set { SetValue(MaxRequestContentBufferSizeProperty, value); } }
 		public static readonly DependencyProperty MaxRequestContentBufferSizeProperty = DependencyProperty.Register("MaxRequestContentBufferSize", typeof(long), typeof(RESTHTTPClientConfiguration), new PropertyMetadata(21474836480L));
+
+		public ContentMode ContentMode { get { return (ContentMode)GetValue(ContentModeProperty); } set { SetValue(ContentModeProperty, value); } }
+		public static readonly DependencyProperty ContentModeProperty = DependencyProperty.Register("ContentMode", typeof(ContentMode), typeof(RESTHTTPClientConfiguration), new PropertyMetadata(ContentMode.Default));
 
 		public RESTHTTPClientConfiguration() { }
 		

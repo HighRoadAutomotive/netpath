@@ -4,6 +4,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" 
 	xmlns:Service="clr-namespace:NETPath.Interface.Service"
+	xmlns:REST="clr-namespace:NETPath.Interface.REST"
 	xmlns:Data="clr-namespace:NETPath.Interface.Data"
 	xmlns:Projects="clr-namespace:NETPath.Projects;assembly=NETPath.Projects"
 	xmlns:Docs="clr-namespace:NETPath.Interface.Documentation"
@@ -15,6 +16,64 @@
 		<Service:WebMessageBodyStyleConverter x:Key="WebMessageBodyStyleConverter"/>
 		<Service:WebMessageFormatConverter x:Key="WebMessageFormatConverter" />
 		<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
+		<DataTemplate x:Key="RESTHTTPClientConfigurationTemplate" DataType="{x:Type Projects:RESTHTTPClientConfiguration}">
+			<Grid Name="ItemGrid" >
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+				<Border x:Name="ItemBG" Grid.ColumnSpan="2" Background="Transparent" CornerRadius="5" />
+				<StackPanel Orientation="Vertical">
+					<StackPanel Orientation="Horizontal">
+						<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/HttpClientConfig.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
+						<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" />
+					</StackPanel>
+				</StackPanel>
+			</Grid>
+		</DataTemplate>
+		<DataTemplate x:Key="RESTHTTPWebConfigurationTemplate" DataType="{x:Type Projects:RESTHTTPWebConfiguration}">
+			<Grid Name="ItemGrid" >
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+				<Border x:Name="ItemBG" Grid.ColumnSpan="2" Background="Transparent" CornerRadius="5" />
+				<StackPanel Orientation="Vertical" >
+					<StackPanel Orientation="Horizontal">
+						<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/HttpWebConfig.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
+						<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" />
+					</StackPanel>
+				</StackPanel>
+			</Grid>
+		</DataTemplate>
+		<REST:RequestConfigurationTemplateSelector x:Key="RequestConfigurationTemplateSelector" WebTemplate="{StaticResource RESTHTTPWebConfigurationTemplate}" ClientTemplate="{StaticResource RESTHTTPClientConfigurationTemplate}" />
+		<Style x:Key="{x:Type ComboBoxItem}" TargetType="{x:Type ComboBoxItem}">
+			<Setter Property="SnapsToDevicePixels" Value="true"/>
+			<Setter Property="OverridesDefaultStyle" Value="true"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="ComboBoxItem">
+						<Border Name="Border" Padding="2" SnapsToDevicePixels="true">
+							<ContentPresenter Content="{Binding Content}" ContentTemplateSelector="{Binding ContentTemplateSelector}" />
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsHighlighted" Value="true">
+								<Setter TargetName="Border" Property="Background" Value="{StaticResource SelectedBackgroundBrush}"/>
+							</Trigger>
+							<Trigger Property="IsEnabled" Value="false">
+								<Setter Property="Foreground" Value="{StaticResource DisabledForegroundBrush}"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
 	</Grid.Resources>
 	<Grid.RowDefinitions>
 		<RowDefinition Height="Auto" />
@@ -63,32 +122,34 @@
 		</Grid.RowDefinitions>
 		<Label Grid.Row="0" Content="REST" FontSize="12pt" Margin="0,5,0,0" />
 		<Label Content="URI Template:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="1" />
-		<pc:TextBox Text="{Binding Path=MethodData.UriTemplate}" Height="23" Margin="111,5,5,5" VerticalContentAlignment="Center" Grid.Row="1" Grid.ColumnSpan="2" />
+		<pc:TextBox Text="{Binding Path=MethodData.UriTemplate}" Height="23" Margin="120,5,5,5" VerticalContentAlignment="Center" Grid.Row="1" Grid.ColumnSpan="2" />
 		<Label Content="HTTP Verb:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" />
-		<ComboBox Height="23" Margin="111,5,5,5" SelectedIndex="{Binding Path=MethodData.Method, Converter={StaticResource MethodRESTVerbsConverter}}" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" >
+		<ComboBox Height="23" Margin="120,5,5,5" SelectedIndex="{Binding Path=MethodData.Method, Converter={StaticResource MethodRESTVerbsConverter}}" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" >
 			<ComboBoxItem Content="GET" />
 			<ComboBoxItem Content="POST" />
 			<ComboBoxItem Content="PUT" />
 			<ComboBoxItem Content="DELETE" />
 		</ComboBox>
 		<Label Content="Body Style:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1" />
-		<ComboBox Height="23" Margin="120,5,5,5" SelectedIndex="{Binding Path=MethodData.BodyStyle, Converter={StaticResource WebMessageBodyStyleConverter}}" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1" >
+		<ComboBox Height="23" Margin="130,5,5,5" SelectedIndex="{Binding Path=MethodData.BodyStyle, Converter={StaticResource WebMessageBodyStyleConverter}}" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1" >
 			<ComboBoxItem Content="Bare" />
 			<ComboBoxItem Content="Wrapped" />
 			<ComboBoxItem Content="Wrapped Request" />
 			<ComboBoxItem Content="Wrapped Response" />
 		</ComboBox>
 		<Label Content="Request Format:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" />
-		<ComboBox Height="23" Margin="111,5,5,5" SelectedIndex="{Binding Path=MethodData.RequestFormat, Converter={StaticResource WebMessageFormatConverter}}" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" >
+		<ComboBox Height="23" Margin="120,5,5,5" SelectedIndex="{Binding Path=MethodData.RequestFormat, Converter={StaticResource WebMessageFormatConverter}}" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" >
 			<ComboBoxItem Content="XML" />
 			<ComboBoxItem Content="JSON" />
 		</ComboBox>
 		<Label Content="Response Format:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="1" />
-		<ComboBox Height="23" Margin="120,5,5,5" SelectedIndex="{Binding Path=MethodData.ResponseFormat, Converter={StaticResource WebMessageFormatConverter}}" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="1" >
+		<ComboBox Height="23" Margin="130,5,5,5" SelectedIndex="{Binding Path=MethodData.ResponseFormat, Converter={StaticResource WebMessageFormatConverter}}" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="1" >
 			<ComboBoxItem Content="XML" />
 			<ComboBoxItem Content="JSON" />
 		</ComboBox>
 		<ToggleButton Content="Deserialize Content" IsChecked="{Binding Path=MethodData.DeserializeContent}" Margin="5" Grid.Column="0" Grid.Row="4" />
+		<Label Content="Client Configuration:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="1" />
+		<ComboBox SelectedItem="{Binding Path=MethodData.RequestConfiguration}" ItemsSource="{Binding Path=MethodData.Owner.RequestConfigurations}" ItemTemplateSelector="{StaticResource RequestConfigurationTemplateSelector}" Height="23" Margin="130,5,5,5" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="1" />
 	</Grid>
 	<TabControl Grid.Row="6" Margin="0,10,0,0">
 		<TabItem Padding="10,5" IsSelected="True">

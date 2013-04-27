@@ -4,6 +4,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" 
 	xmlns:Service="clr-namespace:NETPath.Interface.Service"
+	xmlns:REST="clr-namespace:NETPath.Interface.REST"
 	xmlns:Data="clr-namespace:NETPath.Interface.Data"
 	xmlns:Projects="clr-namespace:NETPath.Projects;assembly=NETPath.Projects"
 	xmlns:Docs="clr-namespace:NETPath.Interface.Documentation"
@@ -85,7 +86,7 @@
 						</DataTemplate.Triggers>
 					</DataTemplate>
 
-					<DataTemplate x:Key="{x:Type Projects:RESTHTTPClientConfiguration}" DataType="{x:Type Projects:RESTHTTPClientConfiguration}">
+					<DataTemplate x:Key="RESTHTTPClientConfigurationTemplate" DataType="{x:Type Projects:RESTHTTPClientConfiguration}">
 						<Grid Name="ItemGrid" >
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="*" />
@@ -122,7 +123,7 @@
 						</DataTemplate.Triggers>
 					</DataTemplate>
 
-					<DataTemplate x:Key="{x:Type Projects:RESTHTTPWebConfiguration}" DataType="{x:Type Projects:RESTHTTPWebConfiguration}">
+					<DataTemplate x:Key="RESTHTTPWebConfigurationTemplate" DataType="{x:Type Projects:RESTHTTPWebConfiguration}">
 						<Grid Name="ItemGrid" >
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="*" />
@@ -158,6 +159,7 @@
 							</DataTrigger>
 						</DataTemplate.Triggers>
 					</DataTemplate>
+					<REST:RequestConfigurationTemplateSelector x:Key="RequestConfigurationTemplateSelector" WebTemplate="{StaticResource RESTHTTPWebConfigurationTemplate}" ClientTemplate="{StaticResource RESTHTTPClientConfigurationTemplate}" />
 				</ResourceDictionary>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
@@ -244,7 +246,7 @@
 						<ColumnDefinition Width="230" />
 						<ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
-					<ListBox x:Name="ConfigurationList" Grid.Column="0" ItemsSource="{Binding Path=ServiceType.RequestConfigurations}" AllowDrop="True" BorderThickness="0" Background="Transparent" Margin="0" SelectionMode="Single" Padding="-1,0" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.IsVirtualizing="False" SelectionChanged="ConfigurationList_SelectionChanged" />
+					<ListBox x:Name="ConfigurationList" Grid.Column="0" ItemsSource="{Binding Path=ServiceType.RequestConfigurations}" ItemTemplateSelector="{StaticResource RequestConfigurationTemplateSelector}" AllowDrop="True" BorderThickness="0" Background="Transparent" Margin="0" SelectionMode="Single" Padding="-1,0" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.IsVirtualizing="False" SelectionChanged="ConfigurationList_SelectionChanged" />
 					<ContentPresenter Grid.Column="1" Grid.Row="1" Margin="5,0,0,0" Content="{Binding Path=ActiveConfiguration}" />
 				</Grid>
 			</Grid>

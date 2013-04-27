@@ -652,7 +652,7 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type ComboBoxItem}">
 					<Border BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
-						<ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+						<ContentPresenter Content="{TemplateBinding Content}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
 					</Border>
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsMouseOver" Value="True">
@@ -701,7 +701,8 @@
 							<Popup PlacementTarget="{Binding ElementName=BG}" x:Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" IsOpen="{TemplateBinding IsDropDownOpen}" Margin="0" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom" UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
 								<Border x:Name="DropDownBorder" Width="{TemplateBinding ActualWidth}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="{TemplateBinding Background}" Padding="2" HorizontalAlignment="Stretch" UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
 									<ScrollViewer x:Name="DropDownScrollViewer" HorizontalAlignment="Stretch" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" >
-										<ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" UseLayoutRounding="{TemplateBinding UseLayoutRounding}"/>
+										<!--<ItemsControl ItemsSource="{TemplateBinding ItemsSource}" x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" ItemContainerStyle="{TemplateBinding ItemContainerStyle}" ItemContainerStyleSelector="{TemplateBinding ItemContainerStyleSelector}" ItemTemplateSelector="{TemplateBinding ItemTemplateSelector}" ItemTemplate="{TemplateBinding ItemTemplate}" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" />-->
+										<StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
 									</ScrollViewer>
 								</Border>
 							</Popup>

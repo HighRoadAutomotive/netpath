@@ -14,9 +14,11 @@
 		<REST:CookieContainerModeConverter x:Key="CookieContainerModeConverter" />
 		<REST:CredentialsModeConverter x:Key="CredentialsModeConverter" />
 		<REST:DecompressionMethodsConverter x:Key="DecompressionMethodsConverter" />
+		<REST:ContentModeConverter x:Key="ContentModeConverter" />
 		<REST:RequestCacheLevelConverter x:Key="RequestCacheLevelConverter" />
 		<Service:MethodRESTVerbsConverter x:Key="MethodRESTVerbsConverter" />
 		<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
+		<pc:NotBoolVisibilityConverter x:Key="NotBoolVisibilityConverter" />
 	</Grid.Resources>
 	<Grid.RowDefinitions>
 		<RowDefinition Height="Auto" />
@@ -38,6 +40,7 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<ToggleButton Content="Allow Automatic Redirects" IsChecked="{Binding Path=AllowAutoRedirects}" Margin="5" Grid.Column="0" Grid.Row="0" />
 		<Label Content="Max Automatic Redirections:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0" />
@@ -49,6 +52,7 @@
 			<ComboBoxItem Content="Deflate" />
 		</ComboBox>
 		<ToggleButton Content="Use Proxy" IsChecked="{Binding Path=UseProxy}" Margin="5" Grid.Column="1" Grid.Row="1" />
+		<ToggleButton Content="Use HTTP 1.0" IsChecked="{Binding Path=UseHTTP10}" Margin="5" Grid.Column="0" Grid.Row="2" />
 	</Grid>
 	<Label Grid.Row="3" Content="Security" FontSize="12pt" Margin="0,5,0,0" />
 	<Grid Grid.Row="4">
@@ -94,5 +98,12 @@
 		</Grid.RowDefinitions>
 		<Label Content="Max Request Content Buffer Size:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="0" />
 		<sf:IntegerTextBox Value="{Binding Path=MaxRequestContentBufferSize}" Margin="205,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Grid.Column="0" Grid.Row="0" FontSize="10pt" />
+		<Label Content="Content Mode:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0" />
+		<ComboBox Height="23" Margin="105,5,5,5" SelectedIndex="{Binding Path=ContentMode, Converter={StaticResource ContentModeConverter}}" Grid.Column="1" Grid.Row="0" >
+			<ComboBoxItem Content="Default" />
+			<ComboBoxItem Content="ByteArray" />
+			<ComboBoxItem Content="String" />
+			<ComboBoxItem Content="Stream" />
+		</ComboBox>
 	</Grid>
 </Grid>
