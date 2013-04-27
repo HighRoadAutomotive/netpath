@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Security;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -46,9 +49,41 @@ namespace System.ServiceModel
 				t = Regex.Replace(t, string.Format("\\{{{0}\\}}", kvp.Key), kvp.Value.ToString(), RegexOptions.IgnoreCase);
 			return t;
 		}
+
+		public string SerializeJSON<T>(T value)
+		{
+			var ms = new MemoryStream();
+			var dcjs = new DataContractJsonSerializer(typeof(T));
+			dcjs.WriteObject(ms, value);
+			var da = ms.ToArray();
+			return Encoding.UTF8.GetString(da, 0, da.Length);
+		}
+
+		public T DeserializeJSON<T>(string value)
+		{
+			var ms = new MemoryStream(Encoding.UTF8.GetBytes(value));
+			var dcjs = new DataContractJsonSerializer(typeof(T));
+			return (T)dcjs.ReadObject(ms);
+		}
+
+		public string SerializeXML<T>(T value)
+		{
+			var ms = new MemoryStream();
+			var dcjs = new DataContractSerializer(typeof(T));
+			dcjs.WriteObject(ms, value);
+			var da = ms.ToArray();
+			return Encoding.UTF8.GetString(da, 0, da.Length);
+		}
+
+		public T DeserializeXML<T>(string value)
+		{
+			var ms = new MemoryStream(Encoding.UTF8.GetBytes(value));
+			var dcjs = new DataContractSerializer(typeof(T));
+			return (T)dcjs.ReadObject(ms);
+		}
 	}
 
-	public sealed class RESTHTTPWebConfig
+	public sealed class RESTHttpWebConfig
 	{
 		public CookieContainer CookieContainer { get; set; }
 		public WebHeaderCollection Headers { get; private set; }
@@ -101,7 +136,7 @@ namespace System.ServiceModel
 		public string Via { get { return Headers[HttpRequestHeader.Via]; } set { Headers[HttpRequestHeader.Via] = value; } }
 		public string Warning { get { return Headers[HttpRequestHeader.Warning]; } set { Headers[HttpRequestHeader.Warning] = value; } }
 
-		public RESTHTTPWebConfig()
+		public RESTHttpWebConfig()
 		{
 			Headers = new WebHeaderCollection();
 		}

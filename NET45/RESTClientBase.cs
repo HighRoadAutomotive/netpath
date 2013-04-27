@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Security;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -48,9 +51,41 @@ namespace System.ServiceModel
 				t = Regex.Replace(t, string.Format("\\{{{0}\\}}", kvp.Key), kvp.Value.ToString(), RegexOptions.IgnoreCase);
 			return t;
 		}
+
+		public string SerializeJSON<T>(T value)
+		{
+			var ms = new MemoryStream();
+			var dcjs = new DataContractJsonSerializer(typeof(T));
+			dcjs.WriteObject(ms, value);
+			var da = ms.ToArray();
+			return Encoding.UTF8.GetString(da, 0, da.Length);
+		}
+
+		public T DeserializeJSON<T>(string value)
+		{
+			var ms = new MemoryStream(Encoding.UTF8.GetBytes(value));
+			var dcjs = new DataContractJsonSerializer(typeof(T));
+			return (T)dcjs.ReadObject(ms);
+		}
+
+		public string SerializeXML<T>(T value)
+		{
+			var ms = new MemoryStream();
+			var dcjs = new DataContractSerializer(typeof(T));
+			dcjs.WriteObject(ms, value);
+			var da = ms.ToArray();
+			return Encoding.UTF8.GetString(da, 0, da.Length);
+		}
+
+		public T DeserializeXML<T>(string value)
+		{
+			var ms = new MemoryStream(Encoding.UTF8.GetBytes(value));
+			var dcjs = new DataContractSerializer(typeof(T));
+			return (T)dcjs.ReadObject(ms);
+		}
 	}
 
-	public sealed class RESTHTTPWebConfig
+	public sealed class RESTHttpWebConfig
 	{
 		public CookieContainer CookieContainer { get; set; }
 		public WebHeaderCollection Headers { get; private set; }
@@ -104,7 +139,7 @@ namespace System.ServiceModel
 		public string Via { get { return Headers[HttpRequestHeader.Via]; } set { Headers[HttpRequestHeader.Via] = value; } }
 		public string Warning { get { return Headers[HttpRequestHeader.Warning]; } set { Headers[HttpRequestHeader.Warning] = value; } }
 
-		public RESTHTTPWebConfig()
+		public RESTHttpWebConfig()
 		{
 			Headers = new WebHeaderCollection();
 		}
@@ -127,7 +162,7 @@ namespace System.ServiceModel
 		}
 	}
 
-	public sealed class RESTHTTPClientConfig
+	public sealed class RESTHttpClientConfig
 	{
 		//Request Headers
 		public List<MediaTypeWithQualityHeaderValue> Accept { get; private set; }
@@ -169,7 +204,7 @@ namespace System.ServiceModel
 		public DateTimeOffset? Expires { get; private set; }
 		public DateTimeOffset? LastModified { get; private set; }
 
-		public RESTHTTPClientConfig()
+		public RESTHttpClientConfig()
 		{
 			//Request Headers
 			Accept = new List<MediaTypeWithQualityHeaderValue>();
@@ -195,7 +230,7 @@ namespace System.ServiceModel
 			ContentLanguage = new List<string>();
 		}
 
-		public HttpRequestMessage CreateRequest(string RequestUri, HttpMethod Method, HttpContent Content, long ContentLength, bool UseHTTP10 = false)
+		public HttpRequestMessage CreateRequest(string RequestUri, HttpMethod Method, HttpContent Content, bool UseHTTP10 = false)
 		{
 			var t = new HttpRequestMessage(Method, new Uri(RequestUri, UriKind.RelativeOrAbsolute));
 			if (UseHTTP10) t.Version = HttpVersion.Version10;
@@ -234,7 +269,6 @@ namespace System.ServiceModel
 			t.Content.Headers.ContentDisposition = ContentDisposition;
 			foreach (var x in ContentEncoding) t.Content.Headers.ContentEncoding.Add(x);
 			foreach (var x in ContentLanguage) t.Content.Headers.ContentLanguage.Add(x);
-			t.Content.Headers.ContentLength = ContentLength;
 			t.Content.Headers.ContentLocation = ContentLocation;
 			t.Content.Headers.ContentRange = ContentRange;
 			t.Content.Headers.ContentType = ContentType;
