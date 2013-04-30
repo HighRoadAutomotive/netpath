@@ -68,6 +68,7 @@
 			<ComboBoxItem Content="Revalidate" />
 			<ComboBoxItem Content="Reload" />
 			<ComboBoxItem Content="No Cache No Store" />
+			<ComboBoxItem Content="Cache Or Next Cache Only" />
 		</ComboBox>
 		<Label Content="Connection Group Name:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="3" />
 		<TextBox Text="{Binding Path=ConnectionGroupName}" Margin="160,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" FontSize="10pt" />

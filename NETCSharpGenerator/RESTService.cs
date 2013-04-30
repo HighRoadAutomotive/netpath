@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Cache;
+using System.Net.Security;
+using System.Security.Principal;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Text;
@@ -221,6 +224,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateClientMethodWeb40(RESTMethod o)
 		{
+			var conf = o.RequestConfiguration as RESTHTTPWebConfiguration;
 			var code = new StringBuilder();
 			if (o.Documentation != null)
 			{
@@ -235,12 +239,59 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine("RESTHttpWebConfig Configuration = null)");
 			code.AppendLine("\t\t{");
 			code.AppendLine("\t\t\tvar rc = Configuration ?? new RESTHttpWebConfig();");
+			if (conf.CookieContainerMode != CookieContainerMode.Custom) code.AppendLine(string.Format("\t\t\trc.CookieContainer = {0};", conf.CookieContainerMode == CookieContainerMode.Global ? "GlobalCookies" : conf.CookieContainerMode == CookieContainerMode.Instance ? "Cookies" : "null"));
+			code.Append("\t\t\tvar rp = new Dictionary<string, object>() { ");
+			foreach (RESTMethodParameter op in o.Parameters.Where(a => a.Type.TypeMode == DataTypeMode.Primitive || a.Type.TypeMode == DataTypeMode.Enum))
+				code.AppendFormat("{{ \"{0}\", {0} }} ", op.Name);
+			code.AppendLine("};");
+			if (o.Parameters.Any(a => a.Serialize))
+			{
+				if (o.ResponseFormat == WebMessageFormat.Json) code.AppendLine(string.Format("\t\t\tvar rd = Encoding.UTF8.GetBytes(SerializeJSON<{0}>({1}));", DataTypeGenerator.GenerateType(o.Parameters.First(a => a.Serialize).Type), o.ServerName));
+				if (o.ResponseFormat == WebMessageFormat.Xml) code.AppendLine(string.Format("\t\t\tvar rd = Encoding.UTF8.GetBytes(SerializeXML<{0}>({1}));", DataTypeGenerator.GenerateType(o.Parameters.First(a => a.Serialize).Type), o.ServerName));
+			}
+			code.AppendLine(string.Format("\t\t\tvar rm = rc.CreateRequest(BaseURI + ParseURI(\"{0}\", rp), \"{1}\", {2}, {3});", o.UriTemplate, o.Method, o.Parameters.Any(a => a.Serialize) ? "rd" : "null", o.RequestConfiguration.UseHTTP10 ? bool.TrueString.ToLower() : bool.FalseString.ToLower()));
+			if (!conf.AllowAutoRedirect) code.AppendLine("\t\t\trm.AllowAutoRedirect = false;");
+			if (!conf.AllowReadStreamBuffering) code.AppendLine("\t\t\trm.AllowReadStreamBuffering = false;");
+			if (!conf.AllowWriteStreamBuffering) code.AppendLine("\t\t\trm.AllowWriteStreamBuffering = false;");
+			if (conf.AuthenticationLevel != AuthenticationLevel.MutualAuthRequested) code.AppendLine(string.Format("\t\t\trm.AuthenticationLevel = System.Net.Security.AuthenticationLevel.{0}", conf.AuthenticationLevel));
+			code.AppendLine(conf.CanContinue ? string.Format("\t\t\trm.ContinueTimeout = new TimeSpan({0});", conf.ContinueTimeout.Ticks) : "\t\t\trm.ContinueDelegate = null;");
+			if (!(string.IsNullOrEmpty(conf.ConnectionGroupName))) code.AppendLine(string.Format("\t\t\trm.ConnectionGroupName = \"{0}\";", conf.ConnectionGroupName));
+			if (conf.ImpersonationLevel != TokenImpersonationLevel.None) code.AppendLine(string.Format("\t\t\trm.ImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.{0}", conf.ImpersonationLevel));
+			if (!conf.KeepAlive) code.AppendLine("\t\t\trm.KeepAlive = false;");
+			if (conf.MaxAutomaticRedirections != 50) code.AppendLine(string.Format("\t\t\trm.MaxAutomaticRedirections = {0};", conf.MaxAutomaticRedirections));
+			if (conf.MaximumResponseHeadersLength != -1) code.AppendLine(string.Format("\t\t\trm.MaximumResponseHeadersLength = {0};", conf.MaximumResponseHeadersLength));
+			if (!(string.IsNullOrEmpty(conf.MediaType))) code.AppendLine(string.Format("\t\t\trm.MediaType = \"{0}\";", conf.MediaType));
+			if (!conf.Pipelined) code.AppendLine("\t\t\trm.Pipelined = false;");
+			if (conf.PreAuthenticate) code.AppendLine("\t\t\trm.PreAuthenticate = true;");
+			if (conf.ReadWriteTimeout != new TimeSpan(0, 0, 30)) code.AppendLine(string.Format("\t\t\trm.ReadWriteTimeout = new TimeSpan({0});", conf.ReadWriteTimeout.Ticks));
+			if (conf.RequestCacheLevel != HttpRequestCacheLevel.Default) code.AppendLine(string.Format("\t\t\trm.CachePolicy = HttpRequestCachePolicy(HttpRequestCacheLevel.{0});", conf.RequestCacheLevel));
+			if (conf.SendChunked) code.AppendLine("\t\t\trm.SendChunked = true;");
+			if (conf.Timeout != new TimeSpan(0, 0, 100)) code.AppendLine(string.Format("\t\t\trm.Timeout = new TimeSpan({0});", conf.Timeout.Ticks));
+			if (conf.UnsafeAuthenticatedConnectionSharing) code.AppendLine("\t\t\trm.UnsafeAuthenticatedConnectionSharing = true;");
+			if (conf.UseDefaultCredentials) code.AppendLine("\t\t\trm.UseDefaultCredentials = true;");
+			code.AppendLine(string.Format("\t\t\tvar rr = (System.Net.HttpWebResponse)rm.GetResponse();"));
+			code.AppendLine("\t\t\tEnsureSuccessStatusCode(rr.StatusCode, rr.StatusDescription);");
+			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine("\t\t\treturn  rr;");
+			else
+			{
+				code.AppendLine("\t\t\tvar rss = rr.GetResponseStream();");
+				code.AppendLine("\t\t\tvar rsd = new byte[rr.ContentLength];");
+				code.AppendLine("\t\t\trss.Read(rsd, 0, Convert.ToInt32(rr.ContentLength));");
+				code.AppendLine("\t\t\tvar rs = Encoding.UTF8.GetString(rsd);");
+			}
+			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.Append("");
+			else
+			{
+				if (o.ResponseFormat == WebMessageFormat.Json) code.AppendLine(string.Format("\t\t\treturn new Tuple<{0}, System.Net.HttpWebResponse>(DeserializeJSON<{0}>(rs), rr);", DataTypeGenerator.GenerateType(o.ReturnType)));
+				if (o.ResponseFormat == WebMessageFormat.Xml) code.AppendLine(string.Format("\t\t\treturn new Tuple<{0}, System.Net.HttpWebResponse>(DeserializeXML<{0}>(rs), rr);", DataTypeGenerator.GenerateType(o.ReturnType)));
+			}
 			code.AppendLine("\t\t}");
 			return code.ToString();
 		}
 
 		public static string GenerateClientMethodWebAsync40(RESTMethod o)
 		{
+			var conf = o.RequestConfiguration as RESTHTTPWebConfiguration;
 			var code = new StringBuilder();
 
 			if (o.Documentation != null)
@@ -254,7 +305,58 @@ namespace NETPath.Generators.NET.CS
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 			code.AppendLine("RESTHttpWebConfig Configuration = null)");
 			code.AppendLine("\t\t{");
-			code.AppendLine("\t\t\tvar rc = Configuration ?? new RESTHttpWebConfig();");
+			code.AppendLine("\t\t\tSystem.Net.HttpWebResponse rr = null;");
+			if (!(o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine("\t\t\tstring rs = \"\";");
+			code.AppendLine("\t\t\tSystem.Threading.Tasks.Task.Factory.StartNew(() => {");
+			code.AppendLine("\t\t\t\tvar rc = Configuration ?? new RESTHttpWebConfig();");
+			if (conf.CookieContainerMode != CookieContainerMode.Custom) code.AppendLine(string.Format("\t\t\t\trc.CookieContainer = {0};", conf.CookieContainerMode == CookieContainerMode.Global ? "GlobalCookies" : conf.CookieContainerMode == CookieContainerMode.Instance ? "Cookies" : "null"));
+			code.Append("\t\t\t\tvar rp = new Dictionary<string, object>() { ");
+			foreach (RESTMethodParameter op in o.Parameters.Where(a => a.Type.TypeMode == DataTypeMode.Primitive || a.Type.TypeMode == DataTypeMode.Enum))
+				code.AppendFormat("{{ \"{0}\", {0} }} ", op.Name);
+			code.AppendLine("};");
+			if (o.Parameters.Any(a => a.Serialize))
+			{
+				if (o.ResponseFormat == WebMessageFormat.Json) code.AppendLine(string.Format("\t\t\t\tvar rd = Encoding.UTF8.GetBytes(SerializeJSON<{0}>({1}));", DataTypeGenerator.GenerateType(o.Parameters.First(a => a.Serialize).Type), o.ServerName));
+				if (o.ResponseFormat == WebMessageFormat.Xml) code.AppendLine(string.Format("\t\t\t\tvar rd = Encoding.UTF8.GetBytes(SerializeXML<{0}>({1}));", DataTypeGenerator.GenerateType(o.Parameters.First(a => a.Serialize).Type), o.ServerName));
+			}
+			code.AppendLine(string.Format("\t\t\t\tvar rm = rc.CreateRequest(BaseURI + ParseURI(\"{0}\", rp), \"{1}\", {2}, {3});", o.UriTemplate, o.Method, o.Parameters.Any(a => a.Serialize) ? "rd" : "null", o.RequestConfiguration.UseHTTP10 ? bool.TrueString.ToLower() : bool.FalseString.ToLower()));
+			if (!conf.AllowAutoRedirect) code.AppendLine("\t\t\t\trm.AllowAutoRedirect = false;");
+			if (!conf.AllowReadStreamBuffering) code.AppendLine("\t\t\t\trm.AllowReadStreamBuffering = false;");
+			if (!conf.AllowWriteStreamBuffering) code.AppendLine("\t\t\t\trm.AllowWriteStreamBuffering = false;");
+			if (conf.AuthenticationLevel != AuthenticationLevel.MutualAuthRequested) code.AppendLine(string.Format("\t\t\t\trm.AuthenticationLevel = System.Net.Security.AuthenticationLevel.{0}", conf.AuthenticationLevel));
+			code.AppendLine(conf.CanContinue ? string.Format("\t\t\t\trm.ContinueTimeout = new TimeSpan({0});", conf.ContinueTimeout.Ticks) : "\t\t\t\trm.ContinueDelegate = null;");
+			if (!(string.IsNullOrEmpty(conf.ConnectionGroupName))) code.AppendLine(string.Format("\t\t\t\trm.ConnectionGroupName = \"{0}\";", conf.ConnectionGroupName));
+			if (conf.ImpersonationLevel != TokenImpersonationLevel.None) code.AppendLine(string.Format("\t\t\t\trm.ImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.{0}", conf.ImpersonationLevel));
+			if (!conf.KeepAlive) code.AppendLine("\t\t\t\trm.KeepAlive = false;");
+			if (conf.MaxAutomaticRedirections != 50) code.AppendLine(string.Format("\t\t\t\trm.MaxAutomaticRedirections = {0};", conf.MaxAutomaticRedirections));
+			if (conf.MaximumResponseHeadersLength != -1) code.AppendLine(string.Format("\t\t\t\trm.MaximumResponseHeadersLength = {0};", conf.MaximumResponseHeadersLength));
+			if (!(string.IsNullOrEmpty(conf.MediaType))) code.AppendLine(string.Format("\t\t\t\trm.MediaType = \"{0}\";", conf.MediaType));
+			if (!conf.Pipelined) code.AppendLine("\t\t\t\trm.Pipelined = false;");
+			if (conf.PreAuthenticate) code.AppendLine("\t\t\t\trm.PreAuthenticate = true;");
+			if (conf.ReadWriteTimeout != new TimeSpan(0, 0, 30)) code.AppendLine(string.Format("\t\t\t\trm.ReadWriteTimeout = new TimeSpan({0});", conf.ReadWriteTimeout.Ticks));
+			if (conf.RequestCacheLevel != HttpRequestCacheLevel.Default) code.AppendLine(string.Format("\t\t\t\trm.CachePolicy = HttpRequestCachePolicy(HttpRequestCacheLevel.{0});", conf.RequestCacheLevel));
+			if (conf.SendChunked) code.AppendLine("\t\t\t\trm.SendChunked = true;");
+			if (conf.Timeout != new TimeSpan(0, 0, 100)) code.AppendLine(string.Format("\t\t\t\trm.Timeout = new TimeSpan({0});", conf.Timeout.Ticks));
+			if (conf.UnsafeAuthenticatedConnectionSharing) code.AppendLine("\t\t\t\trm.UnsafeAuthenticatedConnectionSharing = true;");
+			if (conf.UseDefaultCredentials) code.AppendLine("\t\t\t\trm.UseDefaultCredentials = true;");
+			code.AppendLine(string.Format("\t\t\t\trr = (System.Net.HttpWebResponse)rm.GetResponse();"));
+			code.AppendLine("\t\t\t\tEnsureSuccessStatusCode(rr.StatusCode, rr.StatusDescription);");
+			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine(string.Format("\t\t\t}).ContinueWith((t) => {0}Result(rr));", o.ServerName));
+			else
+			{
+				code.AppendLine("\t\t\t\tvar rss = rr.GetResponseStream();");
+				code.AppendLine("\t\t\t\tvar rsd = new byte[rr.ContentLength];");
+				code.AppendLine("\t\t\t\trss.Read(rsd, 0, Convert.ToInt32(rr.ContentLength));");
+				code.AppendLine("\t\t\t\trs = Encoding.UTF8.GetString(rsd);");
+			}
+			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.Append("");
+			else
+			{
+				code.Append("\t\t\t}).ContinueWith((t) => ");
+				if (o.ResponseFormat == WebMessageFormat.Json) code.Append(string.Format("{1}Result(DeserializeJSON<{0}>(rs), rr)", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName));
+				if (o.ResponseFormat == WebMessageFormat.Xml) code.Append(string.Format("{1}Result(DeserializeXML<{0}>(rs), rr)", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName));
+				code.AppendLine(");");
+			}
 			code.AppendLine("\t\t}");
 			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine(string.Format("\t\tpublic abstract void {0}Result(System.Net.HttpWebResponse Response);", o.ServerName));
 			else code.AppendLine(string.Format("\t\tpublic abstract void {0}Result({1} Value, System.Net.HttpWebResponse Response);", o.ServerName, DataTypeGenerator.GenerateType(o.ReturnType)));
@@ -263,6 +365,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateClientMethodWeb45(RESTMethod o)
 		{
+			var conf = o.RequestConfiguration as RESTHTTPWebConfiguration;
 			var code = new StringBuilder();
 			if (o.Documentation != null)
 			{
@@ -277,6 +380,52 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine("RESTHttpWebConfig Configuration = null)");
 			code.AppendLine("\t\t{");
 			code.AppendLine("\t\t\tvar rc = Configuration ?? new RESTHttpWebConfig();");
+			if (conf.CookieContainerMode != CookieContainerMode.Custom) code.AppendLine(string.Format("\t\t\trc.CookieContainer = {0};", conf.CookieContainerMode == CookieContainerMode.Global ? "GlobalCookies" : conf.CookieContainerMode == CookieContainerMode.Instance ? "Cookies" : "null"));
+			code.Append("\t\t\tvar rp = new Dictionary<string, object>() { ");
+			foreach (RESTMethodParameter op in o.Parameters.Where(a => a.Type.TypeMode == DataTypeMode.Primitive || a.Type.TypeMode == DataTypeMode.Enum))
+				code.AppendFormat("{{ \"{0}\", {0} }} ", op.Name);
+			code.AppendLine("};");
+			if (o.Parameters.Any(a => a.Serialize))
+			{
+				if (o.ResponseFormat == WebMessageFormat.Json) code.AppendLine(string.Format("\t\t\tvar rd = Encoding.UTF8.GetBytes(SerializeJSON<{0}>({1}));", DataTypeGenerator.GenerateType(o.Parameters.First(a => a.Serialize).Type), o.ServerName));
+				if (o.ResponseFormat == WebMessageFormat.Xml) code.AppendLine(string.Format("\t\t\tvar rd = Encoding.UTF8.GetBytes(SerializeXML<{0}>({1}));", DataTypeGenerator.GenerateType(o.Parameters.First(a => a.Serialize).Type), o.ServerName));
+			}
+			code.AppendLine(string.Format("\t\t\tvar rm = await rc.CreateRequestAsync(BaseURI + ParseURI(\"{0}\", rp), \"{1}\", {2}, {3});", o.UriTemplate, o.Method, o.Parameters.Any(a => a.Serialize) ? "rd" : "null", o.RequestConfiguration.UseHTTP10 ? bool.TrueString.ToLower() : bool.FalseString.ToLower()));
+			if (!conf.AllowAutoRedirect) code.AppendLine("\t\t\trm.AllowAutoRedirect = false;");
+			if (!conf.AllowReadStreamBuffering) code.AppendLine("\t\t\trm.AllowReadStreamBuffering = false;");
+			if (!conf.AllowWriteStreamBuffering) code.AppendLine("\t\t\trm.AllowWriteStreamBuffering = false;");
+			if (conf.AuthenticationLevel != AuthenticationLevel.MutualAuthRequested) code.AppendLine(string.Format("\t\t\trm.AuthenticationLevel = System.Net.Security.AuthenticationLevel.{0}", conf.AuthenticationLevel));
+			code.AppendLine(conf.CanContinue ? string.Format("\t\t\trm.ContinueTimeout = new TimeSpan({0});", conf.ContinueTimeout.Ticks) : "\t\t\trm.ContinueDelegate = null;");
+			if (!(string.IsNullOrEmpty(conf.ConnectionGroupName))) code.AppendLine(string.Format("\t\t\trm.ConnectionGroupName = \"{0}\";", conf.ConnectionGroupName));
+			if (conf.ImpersonationLevel != TokenImpersonationLevel.None) code.AppendLine(string.Format("\t\t\trm.ImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.{0}", conf.ImpersonationLevel));
+			if (!conf.KeepAlive) code.AppendLine("\t\t\trm.KeepAlive = false;");
+			if (conf.MaxAutomaticRedirections != 50) code.AppendLine(string.Format("\t\t\trm.MaxAutomaticRedirections = {0};", conf.MaxAutomaticRedirections));
+			if (conf.MaximumResponseHeadersLength != -1) code.AppendLine(string.Format("\t\t\trm.MaximumResponseHeadersLength = {0};", conf.MaximumResponseHeadersLength));
+			if (!(string.IsNullOrEmpty(conf.MediaType))) code.AppendLine(string.Format("\t\t\trm.MediaType = \"{0}\";", conf.MediaType));
+			if (!conf.Pipelined) code.AppendLine("\t\t\trm.Pipelined = false;");
+			if (conf.PreAuthenticate) code.AppendLine("\t\t\trm.PreAuthenticate = true;");
+			if (conf.ReadWriteTimeout != new TimeSpan(0, 0, 30)) code.AppendLine(string.Format("\t\t\trm.ReadWriteTimeout = new TimeSpan({0});", conf.ReadWriteTimeout.Ticks));
+			if (conf.RequestCacheLevel != HttpRequestCacheLevel.Default) code.AppendLine(string.Format("\t\t\trm.CachePolicy = HttpRequestCachePolicy(HttpRequestCacheLevel.{0});", conf.RequestCacheLevel));
+			if (conf.SendChunked) code.AppendLine("\t\t\trm.SendChunked = true;");
+			if (conf.Timeout != new TimeSpan(0, 0, 100)) code.AppendLine(string.Format("\t\t\trm.Timeout = new TimeSpan({0});", conf.Timeout.Ticks));
+			if (conf.UnsafeAuthenticatedConnectionSharing) code.AppendLine("\t\t\trm.UnsafeAuthenticatedConnectionSharing = true;");
+			if (conf.UseDefaultCredentials) code.AppendLine("\t\t\trm.UseDefaultCredentials = true;");
+			code.AppendLine(string.Format("\t\t\tvar rr = (System.Net.HttpWebResponse) await rm.GetResponseAsync();"));
+			code.AppendLine("\t\t\tEnsureSuccessStatusCode(rr.StatusCode, rr.StatusDescription);");
+			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine(string.Format("\t\t\t{0}Result(rr);", o.ServerName));
+			else
+			{
+				code.AppendLine("\t\t\tvar rss = rr.GetResponseStream();");
+				code.AppendLine("\t\t\tvar rsd = new byte[rr.ContentLength];");
+				code.AppendLine("\t\t\tawait rss.ReadAsync(rsd, 0, Convert.ToInt32(rr.ContentLength));");
+				code.AppendLine("\t\t\tvar rs = Encoding.UTF8.GetString(rsd);");
+			}
+			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.Append("");
+			else
+			{
+				if (o.ResponseFormat == WebMessageFormat.Json) code.AppendLine(string.Format("\t\t\t{1}Result(DeserializeJSON<{0}>(rs), rr);", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName));
+				if (o.ResponseFormat == WebMessageFormat.Xml) code.AppendLine(string.Format("\t\t\t{1}Result(DeserializeXML<{0}>(rs), rr);", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName));
+			}
 			code.AppendLine("\t\t}");
 			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine(string.Format("\t\tpublic abstract void {0}Result(System.Net.HttpWebResponse Response);", o.ServerName));
 			else code.AppendLine(string.Format("\t\tpublic abstract void {0}Result({1} Value, System.Net.HttpWebResponse Response);", o.ServerName, DataTypeGenerator.GenerateType(o.ReturnType)));
@@ -285,6 +434,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateClientMethodWebAsync45(RESTMethod o)
 		{
+			var conf = o.RequestConfiguration as RESTHTTPWebConfiguration;
 			var code = new StringBuilder();
 
 			if (o.Documentation != null)
@@ -296,10 +446,61 @@ namespace NETPath.Generators.NET.CS
 			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task<HttpWebResponse> {0}Async(", o.ServerName);
 			else code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task<Tuple<{0}, HttpWebResponse>> {1}Async(", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName);
 			foreach (RESTMethodParameter op in o.Parameters)
-				code.AppendFormat("{0}{1}", GenerateMethodParameterClientCode(op), o.Parameters.IndexOf(op) != (o.Parameters.Count() - 1) ? ", " : "");
+				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 			code.AppendLine("RESTHttpWebConfig Configuration = null)");
 			code.AppendLine("\t\t{");
-			code.AppendLine("\t\t\tvar rc = Configuration ?? new RESTHttpWebConfig();");
+			code.AppendLine("\t\t\tSystem.Net.HttpWebResponse rr = null;");
+			if (!(o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine("\t\t\tstring rs = \"\";");
+			code.AppendLine("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(async() => {");
+			code.AppendLine("\t\t\t\tvar rc = Configuration ?? new RESTHttpWebConfig();");
+			if (conf.CookieContainerMode != CookieContainerMode.Custom) code.AppendLine(string.Format("\t\t\t\trc.CookieContainer = {0};", conf.CookieContainerMode == CookieContainerMode.Global ? "GlobalCookies" : conf.CookieContainerMode == CookieContainerMode.Instance ? "Cookies" : "null"));
+			code.Append("\t\t\t\tvar rp = new Dictionary<string, object>() { ");
+			foreach (RESTMethodParameter op in o.Parameters.Where(a => a.Type.TypeMode == DataTypeMode.Primitive || a.Type.TypeMode == DataTypeMode.Enum))
+				code.AppendFormat("{{ \"{0}\", {0} }} ", op.Name);
+			code.AppendLine("};");
+			if (o.Parameters.Any(a => a.Serialize))
+			{
+				if (o.ResponseFormat == WebMessageFormat.Json) code.AppendLine(string.Format("\t\t\t\tvar rd = Encoding.UTF8.GetBytes(SerializeJSON<{0}>({1}));", DataTypeGenerator.GenerateType(o.Parameters.First(a => a.Serialize).Type), o.ServerName));
+				if (o.ResponseFormat == WebMessageFormat.Xml) code.AppendLine(string.Format("\t\t\t\tvar rd = Encoding.UTF8.GetBytes(SerializeXML<{0}>({1}));", DataTypeGenerator.GenerateType(o.Parameters.First(a => a.Serialize).Type), o.ServerName));
+			}
+			code.AppendLine(string.Format("\t\t\t\tvar rm = await rc.CreateRequestAsync(BaseURI + ParseURI(\"{0}\", rp), \"{1}\", {2}, {3});", o.UriTemplate, o.Method, o.Parameters.Any(a => a.Serialize) ? "rd" : "null", o.RequestConfiguration.UseHTTP10 ? bool.TrueString.ToLower() : bool.FalseString.ToLower()));
+			if (!conf.AllowAutoRedirect) code.AppendLine("\t\t\t\trm.AllowAutoRedirect = false;");
+			if (!conf.AllowReadStreamBuffering) code.AppendLine("\t\t\t\trm.AllowReadStreamBuffering = false;");
+			if (!conf.AllowWriteStreamBuffering) code.AppendLine("\t\t\t\trm.AllowWriteStreamBuffering = false;");
+			if (conf.AuthenticationLevel != AuthenticationLevel.MutualAuthRequested) code.AppendLine(string.Format("\t\t\t\trm.AuthenticationLevel = System.Net.Security.AuthenticationLevel.{0}", conf.AuthenticationLevel));
+			code.AppendLine(conf.CanContinue ? string.Format("\t\t\t\trm.ContinueTimeout = new TimeSpan({0});", conf.ContinueTimeout.Ticks) : "\t\t\t\trm.ContinueDelegate = null;");
+			if (!(string.IsNullOrEmpty(conf.ConnectionGroupName))) code.AppendLine(string.Format("\t\t\t\trm.ConnectionGroupName = \"{0}\";", conf.ConnectionGroupName));
+			if (conf.ImpersonationLevel != TokenImpersonationLevel.None) code.AppendLine(string.Format("\t\t\t\trm.ImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.{0}", conf.ImpersonationLevel));
+			if (!conf.KeepAlive) code.AppendLine("\t\t\t\trm.KeepAlive = false;");
+			if (conf.MaxAutomaticRedirections != 50) code.AppendLine(string.Format("\t\t\t\trm.MaxAutomaticRedirections = {0};", conf.MaxAutomaticRedirections));
+			if (conf.MaximumResponseHeadersLength != -1) code.AppendLine(string.Format("\t\t\t\trm.MaximumResponseHeadersLength = {0};", conf.MaximumResponseHeadersLength));
+			if (!(string.IsNullOrEmpty(conf.MediaType))) code.AppendLine(string.Format("\t\t\t\trm.MediaType = \"{0}\";", conf.MediaType));
+			if (!conf.Pipelined) code.AppendLine("\t\t\t\trm.Pipelined = false;");
+			if (conf.PreAuthenticate) code.AppendLine("\t\t\t\trm.PreAuthenticate = true;");
+			if (conf.ReadWriteTimeout != new TimeSpan(0, 0, 30)) code.AppendLine(string.Format("\t\t\t\trm.ReadWriteTimeout = new TimeSpan({0});", conf.ReadWriteTimeout.Ticks));
+			if (conf.RequestCacheLevel != HttpRequestCacheLevel.Default) code.AppendLine(string.Format("\t\t\t\trm.CachePolicy = HttpRequestCachePolicy(HttpRequestCacheLevel.{0});", conf.RequestCacheLevel));
+			if (conf.SendChunked) code.AppendLine("\t\t\t\trm.SendChunked = true;");
+			if (conf.Timeout != new TimeSpan(0, 0, 100)) code.AppendLine(string.Format("\t\t\t\trm.Timeout = new TimeSpan({0});", conf.Timeout.Ticks));
+			if (conf.UnsafeAuthenticatedConnectionSharing) code.AppendLine("\t\t\t\trm.UnsafeAuthenticatedConnectionSharing = true;");
+			if (conf.UseDefaultCredentials) code.AppendLine("\t\t\t\trm.UseDefaultCredentials = true;");
+			code.AppendLine(string.Format("\t\t\t\trr = (System.Net.HttpWebResponse) await rm.GetResponseAsync();"));
+			code.AppendLine("\t\t\t\tEnsureSuccessStatusCode(rr.StatusCode, rr.StatusDescription);");
+			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine("\t\t\t}).ContinueWith((t) => rr);");
+			else
+			{
+				code.AppendLine("\t\t\t\tvar rss = rr.GetResponseStream();");
+				code.AppendLine("\t\t\t\tvar rsd = new byte[rr.ContentLength];");
+				code.AppendLine("\t\t\t\tawait rss.ReadAsync(rsd, 0, Convert.ToInt32(rr.ContentLength));");
+				code.AppendLine("\t\t\t\trs = Encoding.UTF8.GetString(rsd);");
+			}
+			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.Append("");
+			else
+			{
+				code.Append("\t\t\t}).ContinueWith((t) => ");
+				if (o.ResponseFormat == WebMessageFormat.Json) code.Append(string.Format("new Tuple<{0}, System.Net.HttpWebResponse>(DeserializeJSON<{0}>(rs), rr)", DataTypeGenerator.GenerateType(o.ReturnType)));
+				if (o.ResponseFormat == WebMessageFormat.Xml) code.Append(string.Format("new Tuple<{0}, System.Net.HttpWebResponse>(DeserializeXML<{0}>(rs), rr)", DataTypeGenerator.GenerateType(o.ReturnType)));
+				code.AppendLine(");");
+			}
 			code.AppendLine("\t\t}");
 
 			return code.ToString();

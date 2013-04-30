@@ -81,28 +81,30 @@ namespace NETPath.Interface.REST
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			var lt = (System.Net.Cache.RequestCacheLevel)value;
-			if (lt == System.Net.Cache.RequestCacheLevel.Default) return 0;
-			if (lt == System.Net.Cache.RequestCacheLevel.BypassCache) return 1;
-			if (lt == System.Net.Cache.RequestCacheLevel.CacheOnly) return 2;
-			if (lt == System.Net.Cache.RequestCacheLevel.CacheIfAvailable) return 3;
-			if (lt == System.Net.Cache.RequestCacheLevel.Revalidate) return 4;
-			if (lt == System.Net.Cache.RequestCacheLevel.Reload) return 5;
-			if (lt == System.Net.Cache.RequestCacheLevel.NoCacheNoStore) return 6;
+			var lt = (System.Net.Cache.HttpRequestCacheLevel)value;
+			if (lt == System.Net.Cache.HttpRequestCacheLevel.Default) return 0;
+			if (lt == System.Net.Cache.HttpRequestCacheLevel.BypassCache) return 1;
+			if (lt == System.Net.Cache.HttpRequestCacheLevel.CacheOnly) return 2;
+			if (lt == System.Net.Cache.HttpRequestCacheLevel.CacheIfAvailable) return 3;
+			if (lt == System.Net.Cache.HttpRequestCacheLevel.Revalidate) return 4;
+			if (lt == System.Net.Cache.HttpRequestCacheLevel.Reload) return 5;
+			if (lt == System.Net.Cache.HttpRequestCacheLevel.NoCacheNoStore) return 6;
+			if (lt == System.Net.Cache.HttpRequestCacheLevel.CacheOrNextCacheOnly) return 7;
 			return 0;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			var lt = (int)value;
-			if (lt == 0) return System.Net.Cache.RequestCacheLevel.Default;
-			if (lt == 1) return System.Net.Cache.RequestCacheLevel.BypassCache;
-			if (lt == 2) return System.Net.Cache.RequestCacheLevel.CacheOnly;
-			if (lt == 3) return System.Net.Cache.RequestCacheLevel.CacheIfAvailable;
-			if (lt == 4) return System.Net.Cache.RequestCacheLevel.Revalidate;
-			if (lt == 5) return System.Net.Cache.RequestCacheLevel.Reload;
-			if (lt == 6) return System.Net.Cache.RequestCacheLevel.NoCacheNoStore;
-			return System.Net.Cache.RequestCacheLevel.Default;
+			if (lt == 0) return System.Net.Cache.HttpRequestCacheLevel.Default;
+			if (lt == 1) return System.Net.Cache.HttpRequestCacheLevel.BypassCache;
+			if (lt == 2) return System.Net.Cache.HttpRequestCacheLevel.CacheOnly;
+			if (lt == 3) return System.Net.Cache.HttpRequestCacheLevel.CacheIfAvailable;
+			if (lt == 4) return System.Net.Cache.HttpRequestCacheLevel.Revalidate;
+			if (lt == 5) return System.Net.Cache.HttpRequestCacheLevel.Reload;
+			if (lt == 6) return System.Net.Cache.HttpRequestCacheLevel.NoCacheNoStore;
+			if (lt == 7) return System.Net.Cache.HttpRequestCacheLevel.CacheOrNextCacheOnly;
+			return System.Net.Cache.HttpRequestCacheLevel.Default;
 		}
 	}
 

@@ -708,8 +708,8 @@ namespace NETPath.Projects
 		public int MaximumResponseHeadersLength { get { return (int)GetValue(MaximumResponseHeadersLengthProperty); } set { SetValue(MaximumResponseHeadersLengthProperty, value); } }
 		public static readonly DependencyProperty MaximumResponseHeadersLengthProperty = DependencyProperty.Register("MaximumResponseHeadersLength", typeof(int), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(-1));
 
-		public RequestCacheLevel RequestCacheLevel { get { return (RequestCacheLevel)GetValue(RequestCacheLevelProperty); } set { SetValue(RequestCacheLevelProperty, value); } }
-		public static readonly DependencyProperty RequestCacheLevelProperty = DependencyProperty.Register("RequestCacheLevel", typeof(RequestCacheLevel), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(RequestCacheLevel.Default));
+		public HttpRequestCacheLevel RequestCacheLevel { get { return (HttpRequestCacheLevel)GetValue(RequestCacheLevelProperty); } set { SetValue(RequestCacheLevelProperty, value); } }
+		public static readonly DependencyProperty RequestCacheLevelProperty = DependencyProperty.Register("RequestCacheLevel", typeof(HttpRequestCacheLevel), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(HttpRequestCacheLevel.Default));
 
 		public bool Pipelined { get { return (bool)GetValue(PipelinedProperty); } set { SetValue(PipelinedProperty, value); } }
 		public static readonly DependencyProperty PipelinedProperty = DependencyProperty.Register("Pipelined", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(true));
