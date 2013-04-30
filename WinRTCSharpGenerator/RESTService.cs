@@ -254,6 +254,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine("\t\t\tvar rsd = new byte[rr.ContentLength];");
 				code.AppendLine("\t\t\tawait rss.ReadAsync(rsd, 0, Convert.ToInt32(rr.ContentLength));");
 				code.AppendLine("\t\t\tvar rs = Encoding.UTF8.GetString(rsd);");
+				code.AppendLine("\t\t\trr.Close();");
 			}
 			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.Append("");
 			else
@@ -324,6 +325,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine("\t\t\t\tvar rsd = new byte[rr.ContentLength];");
 				code.AppendLine("\t\t\t\tawait rss.ReadAsync(rsd, 0, Convert.ToInt32(rr.ContentLength));");
 				code.AppendLine("\t\t\t\trs = Encoding.UTF8.GetString(rsd);");
+				code.AppendLine("\t\t\t\trr.Close();");
 			}
 			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.Append("");
 			else
