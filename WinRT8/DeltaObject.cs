@@ -30,7 +30,8 @@ namespace System
 		[XmlIgnore, IgnoreDataMember] private ConcurrentDictionary<HashID, object> values;
 		[XmlIgnore, IgnoreDataMember] private ConcurrentQueue<ChangeObjectItem> modifications;
 		[XmlIgnore, IgnoreDataMember] private long ChangeCount;
-		[XmlIgnore, IgnoreDataMember] public long BatchInterval { get; protected set; }
+		[IgnoreDataMember, XmlIgnore] private long batchInterval;
+		[IgnoreDataMember, XmlIgnore] public long BatchInterval { get { return batchInterval; } protected set { batchInterval = value; } }
 		[IgnoreDataMember, XmlIgnore] private DependencyObjectEx baseXAMLObject;
 		[IgnoreDataMember, XmlIgnore] protected DependencyObjectEx BaseXAMLObject { get { return baseXAMLObject; } set { if (baseXAMLObject == null) baseXAMLObject = value; } }
 

@@ -205,14 +205,8 @@ namespace System.ServiceModel
 
 		//Content Headers
 		public List<string> Allow { get; private set; }
-		public ContentDispositionHeaderValue ContentDisposition { get; private set; }
 		public List<string> ContentEncoding { get; private set; }
 		public List<string> ContentLanguage { get; private set; }
-		public Uri ContentLocation { get; private set; }
-		public ContentRangeHeaderValue ContentRange { get; private set; }
-		public MediaTypeHeaderValue ContentType { get; private set; }
-		public DateTimeOffset? Expires { get; private set; }
-		public DateTimeOffset? LastModified { get; private set; }
 
 		public RESTHttpClientConfig()
 		{
@@ -276,14 +270,8 @@ namespace System.ServiceModel
 
 			//Content Headers
 			foreach (var x in Allow) t.Content.Headers.Allow.Add(x);
-			t.Content.Headers.ContentDisposition = ContentDisposition;
 			foreach (var x in ContentEncoding) t.Content.Headers.ContentEncoding.Add(x);
 			foreach (var x in ContentLanguage) t.Content.Headers.ContentLanguage.Add(x);
-			t.Content.Headers.ContentLocation = ContentLocation;
-			t.Content.Headers.ContentRange = ContentRange;
-			t.Content.Headers.ContentType = ContentType;
-			t.Content.Headers.Expires = Expires;
-			t.Content.Headers.LastModified = LastModified;
 
 			return t;
 		}
