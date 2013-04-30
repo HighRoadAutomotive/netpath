@@ -81,6 +81,13 @@ namespace System.ServiceModel
 			var dcjs = new DataContractSerializer(typeof(T));
 			return (T)dcjs.ReadObject(ms);
 		}
+
+		protected void EnsureSuccessStatusCode(HttpStatusCode Status, string StatusDescription)
+		{
+			if (Status == HttpStatusCode.Continue || Status == HttpStatusCode.SwitchingProtocols) return;
+			if (Status == HttpStatusCode.OK || Status == HttpStatusCode.Created || Status == HttpStatusCode.Accepted || Status == HttpStatusCode.NonAuthoritativeInformation || Status == HttpStatusCode.NoContent || Status == HttpStatusCode.ResetContent || Status == HttpStatusCode.PartialContent) return;
+			throw new Exception(string.Format("HTTP Status: {0}" + Environment.NewLine + "Status Description: {1}", Status, StatusDescription));
+		}
 	}
 
 	public sealed class RESTHttpWebConfig
@@ -141,18 +148,27 @@ namespace System.ServiceModel
 			Headers = new WebHeaderCollection();
 		}
 
-		public HttpWebRequest CreateRequest(string RequestUri, CookieContainer CookieContainer = null, bool UseHTTP10 = false)
+		public HttpWebRequest CreateRequest(string RequestUri, string Method, byte[] Content = null, bool UseHTTP10 = false)
 		{
 			var t = (HttpWebRequest)WebRequest.Create(new Uri(RequestUri, UriKind.Absolute));
 
 			if (UseHTTP10) t.ProtocolVersion = new Version(1, 0);
 			if (NetworkCredential != null) t.Credentials = NetworkCredential;
 			if (CredentialCache != null) t.Credentials = CredentialCache;
-			t.CookieContainer = this.CookieContainer ?? CookieContainer;
+			t.CookieContainer = CookieContainer;
 			t.ClientCertificates = ClientCertificates;
 			t.Proxy = Proxy;
 			t.Headers = Headers;
 			t.ContinueDelegate = Continuation;
+			t.Method = Method;
+
+			if (Content != null)
+			{
+				t.Headers[HttpRequestHeader.ContentLength] = Content.Length.ToString();
+				Stream s = t.GetRequestStream();
+				s.Write(Content, 0, Content.Length);
+				s.Flush();
+			}
 
 			return t;
 		}

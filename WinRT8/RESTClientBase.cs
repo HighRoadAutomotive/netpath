@@ -81,6 +81,13 @@ namespace System.ServiceModel
 			var dcjs = new DataContractSerializer(typeof(T));
 			return (T)dcjs.ReadObject(ms);
 		}
+
+		protected void EnsureSuccessStatusCode(HttpStatusCode Status, string StatusDescription)
+		{
+			if (Status == HttpStatusCode.Continue || Status == HttpStatusCode.SwitchingProtocols) return;
+			if (Status == HttpStatusCode.OK || Status == HttpStatusCode.Created || Status == HttpStatusCode.Accepted || Status == HttpStatusCode.NonAuthoritativeInformation || Status == HttpStatusCode.NoContent || Status == HttpStatusCode.ResetContent || Status == HttpStatusCode.PartialContent) return;
+			throw new Exception(string.Format("HTTP Status: {0}" + Environment.NewLine + "Status Description: {1}", Status, StatusDescription));
+		}
 	}
 
 	public sealed class RESTHttpWebConfig
@@ -138,17 +145,30 @@ namespace System.ServiceModel
 			Headers = new WebHeaderCollection();
 		}
 
-		public HttpWebRequest CreateRequest(string RequestUri, CookieContainer CookieContainer = null)
+		public Task<HttpWebRequest> CreateRequestAsync(string RequestUri, string Method, byte[] Content = null, CookieContainer CookieContainer = null)
 		{
-			var t = (HttpWebRequest)WebRequest.Create(new Uri(RequestUri, UriKind.Absolute));
+			HttpWebRequest ret = null;
+			return System.Threading.Tasks.Task.Factory.StartNew(async () =>
+			{
+				var t = (HttpWebRequest) WebRequest.Create(new Uri(RequestUri, UriKind.Absolute));
 
-			if (NetworkCredential != null) t.Credentials = NetworkCredential;
-			if (CredentialCache != null) t.Credentials = CredentialCache;
-			t.CookieContainer = this.CookieContainer ?? CookieContainer;
-			t.Proxy = Proxy;
-			t.Headers = Headers;
+				if (NetworkCredential != null) t.Credentials = NetworkCredential;
+				if (CredentialCache != null) t.Credentials = CredentialCache;
+				t.CookieContainer = this.CookieContainer ?? CookieContainer;
+				t.Proxy = Proxy;
+				t.Headers = Headers;
+				t.Method = Method;
 
-			return t;
+				if (Content != null)
+				{
+					t.Headers[HttpRequestHeader.ContentLength] = Content.Length.ToString();
+					Stream s = await t.GetRequestStreamAsync();
+					await s.WriteAsync(Content, 0, Content.Length);
+					await s.FlushAsync();
+				}
+
+				ret = t;
+			}).ContinueWith((t) => ret);
 		}
 	}
 
