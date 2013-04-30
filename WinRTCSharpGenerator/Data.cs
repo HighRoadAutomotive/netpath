@@ -124,32 +124,35 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine();
 			}
 
-			code.AppendLine("\t\t//Implicit Conversion");
-			code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
-			code.AppendLine("\t\t{");
-			if (o.CMDEnabled)
+			if (o.HasXAMLType)
 			{
-				code.AppendLine("\t\t\tif (Data == null) return null;");
-				code.AppendLine(string.Format("\t\t\t{0} v = null;", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t\tif (Window.Current.Dispatcher.HasThreadAccess) v = ConvertFromXAMLObject(Data);");
-				code.AppendLine("\t\t\telse Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { v = ConvertFromXAMLObject(Data); });");
-				code.AppendLine("\t\t\treturn v;");
-			}
-			else
-			{
-				code.AppendLine("\t\t\tData.DataObject.UpdateFromXAML();");
-				code.AppendLine("\t\t\treturn Data.DataObject;");
-			}
-			code.AppendLine("\t\t}");
-			code.AppendLine();
-			if (!o.CMDEnabled)
-			{
-				code.AppendLine("\t\tprivate void UpdateFromXAML()");
+				code.AppendLine("\t\t//Implicit Conversion");
+				code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
 				code.AppendLine("\t\t{");
-				foreach (DataElement de in o.Elements)
-					code.Append(GenerateElementProxyUpdateCode45(de, o));
+				if (o.CMDEnabled)
+				{
+					code.AppendLine("\t\t\tif (Data == null) return null;");
+					code.AppendLine(string.Format("\t\t\t{0} v = null;", o.HasClientType ? o.ClientType.Name : o.Name));
+					code.AppendLine("\t\t\tif (Window.Current.Dispatcher.HasThreadAccess) v = ConvertFromXAMLObject(Data);");
+					code.AppendLine("\t\t\telse Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { v = ConvertFromXAMLObject(Data); });");
+					code.AppendLine("\t\t\treturn v;");
+				}
+				else
+				{
+					code.AppendLine("\t\t\tData.DataObject.UpdateFromXAML();");
+					code.AppendLine("\t\t\treturn Data.DataObject;");
+				}
 				code.AppendLine("\t\t}");
 				code.AppendLine();
+				if (!o.CMDEnabled)
+				{
+					code.AppendLine("\t\tprivate void UpdateFromXAML()");
+					code.AppendLine("\t\t{");
+					foreach (DataElement de in o.Elements)
+						code.Append(GenerateElementProxyUpdateCode45(de, o));
+					code.AppendLine("\t\t}");
+					code.AppendLine();
+				}
 			}
 
 			code.AppendLine("\t\t//Constuctors");
@@ -181,13 +184,16 @@ namespace NETPath.Generators.WinRT.CS
 			}
 			code.AppendLine();
 
-			code.AppendLine("\t\t//DTO->XMAL Conversion Function");
-			code.AppendLine(string.Format("\t\tpublic static {0} ConvertFromXAMLObject({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
-			code.AppendLine("\t\t{");
-			code.AppendLine("\t\t\tif (Data.DataObject != null) return Data.DataObject;");
-			code.AppendLine(string.Format("\t\t\treturn new {0}(Data);", o.HasClientType ? o.ClientType.Name : o.Name));
-			code.AppendLine("\t\t}");
-			code.AppendLine();
+			if (o.HasXAMLType)
+			{
+				code.AppendLine("\t\t//DTO->XMAL Conversion Function");
+				code.AppendLine(string.Format("\t\tpublic static {0} ConvertFromXAMLObject({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
+				code.AppendLine("\t\t{");
+				code.AppendLine("\t\t\tif (Data.DataObject != null) return Data.DataObject;");
+				code.AppendLine(string.Format("\t\t\treturn new {0}(Data);", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+			}
 
 			int protoCount = 0;
 			if (o.DREEnabled) code.AppendLine(GenerateElementDCMProxyCode45(o.DREID, ref protoCount, true));
