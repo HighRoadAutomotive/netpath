@@ -1572,7 +1572,7 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine("\t\t}");
 			}
 			else
-				code.Append(GenerateMethodProxyCode40(o, IsCallback, IsServer));
+				code.Append(GenerateMethodProxyCode40(o, IsServer, IsCallback));
 
 			return code.ToString();
 		}
