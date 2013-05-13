@@ -196,6 +196,13 @@ namespace System
 				var tt = value as DeltaCollectionBase;
 				if (tt != null) tt.ClearChangedHandlers();
 
+				//Trigger batch updates if needed
+				if (EnableBatching && tt == null && BatchInterval > 0)
+				{
+					modifications.Enqueue(new ChangeObjectItem(true, de.ID));
+					IncrementChangeCount();
+				}
+
 				//Call the property updated callback
 				if (temp != null && de.DeltaPropertyUpdatedCallback != null) de.DeltaPropertyUpdatedCallback(this, (T)temp, de.DefaultValue);
 			}
@@ -204,6 +211,13 @@ namespace System
 				//Setup the change event handler
 				var tt = value as DeltaCollectionBase;
 				if (tt != null) tt.Changed += (Sender, Args) => IncrementChangeCount();
+
+				//Trigger batch updates if needed
+				if (EnableBatching && tt == null && BatchInterval > 0)
+				{
+					modifications.Enqueue(new ChangeObjectItem(true, de.ID));
+					IncrementChangeCount();
+				}
 
 				//Update the values
 				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
