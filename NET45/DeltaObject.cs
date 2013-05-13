@@ -34,6 +34,8 @@ namespace System
 		[IgnoreDataMember, XmlIgnore] public long BatchInterval { get { return batchInterval; } protected set { batchInterval = value; } }
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private DependencyObjectEx baseXAMLObject;
 		[IgnoreDataMember, XmlIgnore] protected DependencyObjectEx BaseXAMLObject { get { return baseXAMLObject; } set { if (baseXAMLObject == null) baseXAMLObject = value; } }
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private int enableBatching;
+		[IgnoreDataMember, XmlIgnore] protected bool EnableBatching { get { return enableBatching != 0; } set { Threading.Interlocked.Exchange(ref enableBatching, value ? 1 : 0); } }
 
 		protected DeltaObject()
 		{
@@ -41,6 +43,7 @@ namespace System
 			values = new ConcurrentDictionary<HashID, object>();
 			ChangeCount = 0;
 			BatchInterval = 0;
+			EnableBatching = false;
 			baseXAMLObject = null;
 		}
 
@@ -50,6 +53,7 @@ namespace System
 			values = new ConcurrentDictionary<HashID, object>();
 			ChangeCount = 0;
 			BatchInterval = 0;
+			EnableBatching = false;
 			this.baseXAMLObject = baseXAMLObject;
 		}
 
@@ -59,6 +63,7 @@ namespace System
 			values = new ConcurrentDictionary<HashID, object>();
 			ChangeCount = 0;
 			this.BatchInterval = BatchInterval;
+			EnableBatching = false;
 			baseXAMLObject = null;
 		}
 
@@ -68,6 +73,7 @@ namespace System
 			values = new ConcurrentDictionary<HashID, object>();
 			ChangeCount = 0;
 			this.BatchInterval = BatchInterval;
+			EnableBatching = false;
 			this.baseXAMLObject = baseXAMLObject;
 		}
 
@@ -94,7 +100,7 @@ namespace System
 				//Remove the value from the list, which sets it to the default value.
 				object temp;
 				values.TryRemove(de.ID, out temp);
-				if (BatchInterval > 0)
+				if (EnableBatching && BatchInterval > 0)
 				{
 					modifications.Enqueue(new ChangeObjectItem(true, de.ID));
 					IncrementChangeCount();
@@ -118,7 +124,7 @@ namespace System
 
 				//Update the value
 				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
-				if (BatchInterval > 0)
+				if (EnableBatching && BatchInterval > 0)
 				{
 					modifications.Enqueue(new ChangeObjectItem(false, de.ID, value));
 					IncrementChangeCount();
@@ -143,7 +149,7 @@ namespace System
 				//Remove the value from the list, which sets it to the default value.
 				object temp;
 				values.TryRemove(de.ID, out temp);
-				if (BatchInterval > 0)
+				if (EnableBatching && BatchInterval > 0)
 				{
 					modifications.Enqueue(new ChangeObjectItem(true, de.ID));
 					IncrementChangeCount();
@@ -161,7 +167,7 @@ namespace System
 			{
 				//Update the value
 				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
-				if (BatchInterval > 0)
+				if (EnableBatching && BatchInterval > 0)
 				{
 					modifications.Enqueue(new ChangeObjectItem(false, de.ID, value));
 					IncrementChangeCount();
@@ -188,7 +194,7 @@ namespace System
 				//Remove the value from the list, which sets it to the default value.
 				object temp;
 				values.TryRemove(de.ID, out temp);
-				if (BatchInterval > 0)
+				if (EnableBatching && BatchInterval > 0)
 				{
 					modifications.Enqueue(new ChangeObjectItem(true, de.ID));
 					IncrementChangeCount();
@@ -206,7 +212,7 @@ namespace System
 			{
 				//Update the value
 				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
-				if (BatchInterval > 0)
+				if (EnableBatching && BatchInterval > 0)
 				{
 					modifications.Enqueue(new ChangeObjectItem(false, de.ID, value));
 					IncrementChangeCount();
