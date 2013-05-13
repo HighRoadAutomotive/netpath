@@ -172,6 +172,7 @@ namespace NETPath.Generators.WinRT.CS
 					if (de.DataType.TypeMode == DataTypeMode.Dictionary && de.HasXAMLType)
 						code.AppendLine(string.Format("\t\t\t{0}.SetEvents((xk, xv) => {{ XAMLObject.{1}.AddOrUpdateNoUpdate(xk, xv, (k,v) => xv);  {0}Added(xk, xv); }}, (xk, xv) => {{ {2} result; XAMLObject.{1}.TryRemoveNoUpdate(xk, out result); {0}Removed(xk, xv); }}, (x) => {{ XAMLObject.{1}.ClearNoUpdate(); {0}Cleared(x); }}, (xk, ox, nx) => {{ XAMLObject.{1}.AddOrUpdateNoUpdate(xk, nx, (k,v) => nx); {0}Updated(xk, ox, nx); }});", de.HasClientType ? de.ClientName : de.DataName, de.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(de.DataType.DictionaryValueGenericType))));
 				}
+			if (o.DREEnabled) code.AppendLine("\t\t\tEnableBatching = true;");
 			code.AppendLine("\t\t}");
 			if (o.HasXAMLType)
 			{
@@ -180,6 +181,7 @@ namespace NETPath.Generators.WinRT.CS
 				if (!o.CMDEnabled) code.AppendLine("\t\t\tBaseXAMLObject = Data;");
 				foreach (DataElement de in o.Elements)
 					code.Append(GenerateElementProxyConstructorCode45(de, o));
+				if (o.DREEnabled) code.AppendLine("\t\t\tEnableBatching = true;");
 				code.AppendLine("\t\t}");
 			}
 			code.AppendLine();
@@ -235,6 +237,7 @@ namespace NETPath.Generators.WinRT.CS
 					if (de.DataType.TypeMode == DataTypeMode.Dictionary && de.HasXAMLType)
 						code.AppendLine(string.Format("\t\t\t{0}.SetEvents((xk, xv) => {{ {0}Added(xk, xv); }}, (xk, xv) => {{ {0}Removed(xk, xv); }}, (x) => {{ {0}Cleared(x); }}, (xk, ox, nx) => {{ {0}Updated(xk, ox, nx); }});", de.HasClientType ? de.ClientName : de.DataName));
 				}
+			if (o.DREEnabled) code.AppendLine("\t\t\tEnableBatching = true;");
 			code.AppendLine("\t\t}");
 			if (o.DREEnabled)
 			{
