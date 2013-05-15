@@ -242,27 +242,24 @@ namespace NETPath.Generators.WinRT.CS
 			if (o.DREEnabled)
 			{
 				code.AppendLine("\t\t//Data Revision Exchange Support");
-				code.AppendLine("\t\tprotected override void BatchUpdates()");
+				code.AppendLine(string.Format("\t\tprotected override {0}void BatchUpdates()", o.DataRevisionServiceNames.Any(a => a.IsAwaitable) ? "async " : ""));
 				code.AppendLine("\t\t{");
 				if (o.Elements.Any(a => a.DREUpdateMode == DataUpdateMode.Batch))
 				{
+					code.AppendLine("\t\t\tvar delta = new List<CMDItemBase>(GetDeltaValues());");
 					foreach (var drs in o.DataRevisionServiceNames.Where(d => d.IsServer == IsServer))
 					{
-						if (!IsServer && Globals.CurrentProjectID == drs.ProjectID)
-						{
-							code.Append(string.Format("\t\t\t{0}Proxy.Current.BatchUpdate{1}DRE({2}, GetDeltaValues()", drs.Path, o.HasClientType ? o.ClientType.Name : o.Name, o.DREID.HasClientType ? o.DREID.ClientName : o.DREID.DataName));
-							foreach (var t in o.Elements.Where(a => a.DREUpdateMode == DataUpdateMode.Batch && (a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
-								code.Append(string.Format(", {0}.GetDelta()", t.HasClientType ? t.ClientName : t.DataName));
-							code.AppendLine(");");
-						}
+						if (o.Elements.Any(a => a.DREUpdateMode == DataUpdateMode.Batch) && !IsServer && Globals.CurrentProjectID == drs.ProjectID)
+							code.AppendLine(string.Format("\t\t\t{4}{0}Proxy.Current.BatchUpdate{1}DRE{3}({2},", drs.Path, o.HasClientType ? o.ClientType.Name : o.Name, o.DREID.HasClientType ? o.DREID.ClientName : o.DREID.DataName, drs.IsAwaitable ? "Async" : "", drs.IsAwaitable ? "await " : ""));
 						else if (IsServer)
-						{
-							code.Append(string.Format("\t\t\t{0}Base.CallbackBatchUpdate{1}DRE{2}, GetDeltaValues()", drs.Path, o.Name, o.DREID.DataName));
-							foreach (var t in o.Elements.Where(a => a.DREUpdateMode == DataUpdateMode.Batch && (a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
-								code.Append(string.Format(", {0}.GetDelta()", t.HasClientType ? t.ClientName : t.DataName));
-
-							code.AppendLine(");");
-						}
+							code.AppendLine(string.Format("\t\t\t{4}{0}Base.CallbackBatchUpdate{1}DRE{3}({2},", drs.Path, o.Name, o.DREID.DataName, drs.IsAwaitable ? "Async" : "", drs.IsAwaitable ? "await " : ""));
+						else continue;
+						foreach (var t in o.Elements.Where(a => a.DREUpdateMode == DataUpdateMode.Batch && !(a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
+							code.AppendLine(string.Format("\t\t\t\tdelta.FirstOrDefault(a => a.Key == {0}Property.ID) != null ? delta.First(a => a.Key == {0}Property.ID) as CMDItemValue<{1}> : null,", t.HasClientType ? t.ClientName : t.DataName, DataTypeGenerator.GenerateType(t.DataType)));
+						foreach (var t in o.Elements.Where(a => a.DREUpdateMode == DataUpdateMode.Batch && (a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
+							code.AppendLine(string.Format("\t\t\t\t{0}.GetDelta(),", t.HasClientType ? t.ClientName : t.DataName));
+						code.Remove(code.Length - 3, 3);
+						code.AppendLine(");");
 					}
 				}
 				code.AppendLine("\t\t}");

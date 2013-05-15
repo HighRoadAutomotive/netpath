@@ -295,6 +295,7 @@ namespace NETPath.Projects
 					                  new ProjectUsingNamespace("System.Collections.ObjectModel", true, true, true, true, true),
 					                  new ProjectUsingNamespace("System.Collections.Specialized", true, true, true, true, true),
 					                  new ProjectUsingNamespace("System.ComponentModel", true, true, true, true, true),
+					                  new ProjectUsingNamespace("System.Linq", true, true, true, true, true),
 					                  new ProjectUsingNamespace("System.Net", true, true, true, true, true),
 					                  new ProjectUsingNamespace("System.Net.Security", true, true, true, true, false),
 					                  new ProjectUsingNamespace("System.Reflection", true, true, true, true, true),

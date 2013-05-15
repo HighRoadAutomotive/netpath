@@ -970,7 +970,7 @@ namespace NETPath.Generators.WinRT.CS
 
 		#endregion
 
-		#region - Service DCM -
+		#region - Service DRE -
 
 		public static string GenerateServiceInterfaceDCM45(DataChangeMethod o, bool IsServer)
 		{
@@ -1060,7 +1060,8 @@ namespace NETPath.Generators.WinRT.CS
 				var tp = new ObservableCollection<MethodParameter>();
 				var x = new Method(string.Format("BatchUpdate{0}DRE", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
-				tp.Add(new MethodParameter(new DataType("IEnumerable", DataTypeMode.Collection) { CollectionGenericType = new DataType("ChangeObjectItem", DataTypeMode.Struct, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) }, "Values", o.Owner, x));
+				foreach (DataElement de in dcmtype.Elements.Where(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch && a.DataType.TypeMode != DataTypeMode.Collection && a.DataType.TypeMode != DataTypeMode.Dictionary))
+					tp.Add(new MethodParameter(new DataType("CMDItemValue", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) { CollectionGenericType = de.DataType }, string.Format("{0}Delta", de.HasClientType ? de.ClientName : de.DataName), o.Owner, x));
 				foreach (DataElement de in dcmtype.Elements.Where(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch && a.DataType.TypeMode == DataTypeMode.Collection))
 				{
 					DataType edt = de.DataType;
@@ -1070,12 +1071,6 @@ namespace NETPath.Generators.WinRT.CS
 				{
 					DataType edt = de.DataType;
 					tp.Add(new MethodParameter(new DataType("IEnumerable", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) { CollectionGenericType = new DataType("ChangeDictionaryItem", DataTypeMode.Dictionary, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) { DictionaryKeyGenericType = edt.DictionaryKeyGenericType, DictionaryValueGenericType = edt.DictionaryValueGenericType } }, string.Format("{0}Delta", de.HasClientType ? de.ClientName : de.DataName), o.Owner, x));
-				}
-
-				foreach (DataElement de in dcmtype.Elements.Where(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch))
-				{
-					DataType edt = de.DataType;
-					code.AppendLine(string.Format("\t\t[ServiceKnownType(typeof({0}))]", edt));
 				}
 
 				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false) : GenerateClientInterfaceMethodCode45(x));
@@ -1224,7 +1219,8 @@ namespace NETPath.Generators.WinRT.CS
 				var tp = new ObservableCollection<MethodParameter>();
 				var x = new Method(string.Format("BatchUpdate{0}DRE", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
-				tp.Add(new MethodParameter(new DataType("IEnumerable", DataTypeMode.Collection) { CollectionGenericType = new DataType("ChangeObjectItem", DataTypeMode.Struct, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) }, "Values", o.Owner, x));
+				foreach (DataElement de in dcmtype.Elements.Where(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch && a.DataType.TypeMode != DataTypeMode.Collection && a.DataType.TypeMode != DataTypeMode.Dictionary))
+					tp.Add(new MethodParameter(new DataType("CMDItemValue", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) { CollectionGenericType = de.DataType }, string.Format("{0}Delta", de.HasClientType ? de.ClientName : de.DataName), o.Owner, x));
 				foreach (DataElement de in dcmtype.Elements.Where(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch && a.DataType.TypeMode == DataTypeMode.Collection))
 				{
 					DataType edt = de.DataType;
@@ -1349,7 +1345,8 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t\t\tvar t = {0}.GetDataFromID(UpdateID);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType)));
 				code.AppendLine(string.Format("\t\t\t\tif (t != null)"));
 				code.AppendLine("\t\t\t\t{");
-				code.AppendLine(string.Format("\t\t\t\t\tt.ApplyDeltaValues(Values);"));
+				foreach (var de in o.Parameters.Where(a => a.Type.Name == "CMDItemValue"))
+					code.AppendLine(string.Format("\t\t\t\t\tt.ApplyDelta({0});", de.Name));
 				foreach (DataElement de in DCMType.Elements.Where(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch && (a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
 					code.AppendLine(string.Format("\t\t\t\t\tt.{0}.ApplyDelta({0}Delta);", de.HasClientType ? de.ClientName : de.DataName));
 				code.AppendLine("\t\t\t\t}");
@@ -1386,7 +1383,8 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t\t\tvar t = {0}.GetDataFromID(UpdateID);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType)));
 				code.AppendLine(string.Format("\t\t\t\tif (t != null)"));
 				code.AppendLine("\t\t\t\t{");
-				code.AppendLine(string.Format("\t\t\t\t\tt.ApplyDeltaValues(Values);"));
+				foreach (var de in o.Parameters.Where(a => a.Type.Name == "CMDItemValue"))
+					code.AppendLine(string.Format("\t\t\t\t\tt.ApplyDelta({0});", de.Name));
 				foreach (DataElement de in DCMType.Elements.Where(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch && (a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
 					code.AppendLine(string.Format("\t\t\t\t\tt.{0}.ApplyDelta({0}Delta);", de.HasClientType ? de.ClientName : de.DataName));
 				code.AppendLine("\t\t\t\t}");
@@ -1489,7 +1487,7 @@ namespace NETPath.Generators.WinRT.CS
 
 		#endregion
 
-		#region - Callback DCM -
+		#region - Callback DRE -
 
 		public static string GenerateCallbackInterfaceDCM45(DataChangeMethod o, bool IsServer)
 		{
@@ -1579,7 +1577,8 @@ namespace NETPath.Generators.WinRT.CS
 				var tp = new ObservableCollection<MethodParameter>();
 				var x = new Method(string.Format("BatchUpdate{0}DRECallback", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
-				tp.Add(new MethodParameter(new DataType("IEnumerable", DataTypeMode.Collection) { CollectionGenericType = new DataType("ChangeObjectItem", DataTypeMode.Struct, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) }, "Values", o.Owner, x));
+				foreach (DataElement de in dcmtype.Elements.Where(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch && a.DataType.TypeMode != DataTypeMode.Collection && a.DataType.TypeMode != DataTypeMode.Dictionary))
+					tp.Add(new MethodParameter(new DataType("CMDItemValue", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) { CollectionGenericType = de.DataType }, string.Format("{0}Delta", de.HasClientType ? de.ClientName : de.DataName), o.Owner, x));
 				foreach (DataElement de in dcmtype.Elements.Where(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch && a.DataType.TypeMode == DataTypeMode.Collection))
 				{
 					DataType edt = de.DataType;
@@ -1589,12 +1588,6 @@ namespace NETPath.Generators.WinRT.CS
 				{
 					DataType edt = de.DataType;
 					tp.Add(new MethodParameter(new DataType("IEnumerable", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) { CollectionGenericType = new DataType("ChangeDictionaryItem", DataTypeMode.Dictionary, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) { DictionaryKeyGenericType = edt.DictionaryKeyGenericType, DictionaryValueGenericType = edt.DictionaryValueGenericType } }, string.Format("{0}Delta", de.HasClientType ? de.ClientName : de.DataName), o.Owner, x));
-				}
-
-				foreach (DataElement de in dcmtype.Elements.Where(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch))
-				{
-					DataType edt = de.DataType;
-					code.AppendLine(string.Format("\t\t[ServiceKnownType(typeof({0}))]", edt));
 				}
 
 				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, true) : GenerateClientInterfaceMethodCode45(x));
@@ -1725,7 +1718,8 @@ namespace NETPath.Generators.WinRT.CS
 				var tp = new ObservableCollection<MethodParameter>();
 				var x = new Method(string.Format("BatchUpdate{0}DRECallback", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
 				tp.Add(new MethodParameter(new DataType(PrimitiveTypes.GUID), "UpdateID", o.Owner, x));
-				tp.Add(new MethodParameter(new DataType("IEnumerable", DataTypeMode.Collection) { CollectionGenericType = new DataType("ChangeObjectItem", DataTypeMode.Struct, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) }, "Values", o.Owner, x));
+				foreach (DataElement de in dcmtype.Elements.Where(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch && a.DataType.TypeMode != DataTypeMode.Collection && a.DataType.TypeMode != DataTypeMode.Dictionary))
+					tp.Add(new MethodParameter(new DataType("CMDItemValue", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8) { CollectionGenericType = de.DataType }, string.Format("{0}Delta", de.HasClientType ? de.ClientName : de.DataName), o.Owner, x));
 				foreach (DataElement de in dcmtype.Elements.Where(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch && a.DataType.TypeMode == DataTypeMode.Collection))
 				{
 					DataType edt = de.DataType;
@@ -1812,7 +1806,8 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t\t\tvar t = {0}.GetDataFromID(UpdateID);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType)));
 				code.AppendLine(string.Format("\t\t\t\tif (t != null)"));
 				code.AppendLine("\t\t\t\t{");
-				code.AppendLine(string.Format("\t\t\t\t\tt.ApplyDeltaValues(Values);"));
+				foreach (var de in o.Parameters.Where(a => a.Type.Name == "CMDItemValue"))
+					code.AppendLine(string.Format("\t\t\t\t\tt.ApplyDelta({0});", de.Name));
 				foreach (DataElement de in DCMType.Elements.Where(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch && (a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
 					code.AppendLine(string.Format("\t\t\t\t\tt.{0}.ApplyDelta({0}Delta);", de.HasClientType ? de.ClientName : de.DataName));
 				code.AppendLine("\t\t\t\t}");
@@ -1831,7 +1826,8 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t\t\tvar t = {0}.GetDataFromID(UpdateID);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType)));
 				code.AppendLine(string.Format("\t\t\t\tif (t != null)"));
 				code.AppendLine("\t\t\t\t{");
-				code.AppendLine(string.Format("\t\t\t\t\tt.ApplyDeltaValues(Values);"));
+				foreach (var de in o.Parameters.Where(a => a.Type.Name == "CMDItemValue"))
+					code.AppendLine(string.Format("\t\t\t\t\tt.ApplyDelta({0});", de.Name));
 				foreach (DataElement de in DCMType.Elements.Where(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch && (a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
 					code.AppendLine(string.Format("\t\t\t\t\tt.{0}.ApplyDelta({0}Delta);", de.HasClientType ? de.ClientName : de.DataName));
 				code.AppendLine("\t\t\t\t}");
