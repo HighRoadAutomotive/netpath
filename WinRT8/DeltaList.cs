@@ -114,6 +114,7 @@ namespace System.Collections.Generic
 
 		public void ApplyDelta(IEnumerable<ChangeListItem<T>> delta)
 		{
+			if (delta == null) return;
 			ocl.EnterWriteLock();
 			try
 			{
@@ -168,7 +169,7 @@ namespace System.Collections.Generic
 			ChangeListItem<T> td;
 			while (dl.TryDequeue(out td))
 				tdl.Add(td);
-			return tdl;
+			return tdl.Count > 0 ? tdl : null;
 		}
 
 		public void ClearDelta()

@@ -28,7 +28,7 @@ namespace System
 	public abstract class DeltaObject
 	{
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private ConcurrentDictionary<HashID, object> values;
-		[NonSerialized, IgnoreDataMember, XmlIgnore] private ConcurrentQueue<ChangeObjectItem> modifications;
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private ConcurrentQueue<CMDItemBase> modifications;
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private long ChangeCount;
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private long batchInterval;
 		[IgnoreDataMember, XmlIgnore] public long BatchInterval { get { return batchInterval; } protected set { batchInterval = value; } }
@@ -39,7 +39,7 @@ namespace System
 
 		protected DeltaObject()
 		{
-			modifications = new ConcurrentQueue<ChangeObjectItem>();
+			modifications = new ConcurrentQueue<CMDItemBase>();
 			values = new ConcurrentDictionary<HashID, object>();
 			ChangeCount = 0;
 			BatchInterval = 0;
@@ -49,7 +49,7 @@ namespace System
 
 		protected DeltaObject(DependencyObjectEx baseXAMLObject)
 		{
-			modifications = new ConcurrentQueue<ChangeObjectItem>();
+			modifications = new ConcurrentQueue<CMDItemBase>();
 			values = new ConcurrentDictionary<HashID, object>();
 			ChangeCount = 0;
 			BatchInterval = 0;
@@ -59,7 +59,7 @@ namespace System
 
 		protected DeltaObject(long BatchInterval)
 		{
-			modifications = new ConcurrentQueue<ChangeObjectItem>();
+			modifications = new ConcurrentQueue<CMDItemBase>();
 			values = new ConcurrentDictionary<HashID, object>();
 			ChangeCount = 0;
 			this.BatchInterval = BatchInterval;
@@ -69,7 +69,7 @@ namespace System
 
 		protected DeltaObject(DependencyObjectEx baseXAMLObject, long BatchInterval)
 		{
-			modifications = new ConcurrentQueue<ChangeObjectItem>();
+			modifications = new ConcurrentQueue<CMDItemBase>();
 			values = new ConcurrentDictionary<HashID, object>();
 			ChangeCount = 0;
 			this.BatchInterval = BatchInterval;
@@ -99,10 +99,11 @@ namespace System
 			{
 				//Remove the value from the list, which sets it to the default value.
 				object temp;
-				values.TryRemove(de.ID, out temp);
+				if (!values.TryRemove(de.ID, out temp)) return;
+
 				if (EnableBatching && BatchInterval > 0)
 				{
-					modifications.Enqueue(new ChangeObjectItem(true, de.ID));
+					modifications.Enqueue(new CMDItemValue<T>(true, de.ID));
 					IncrementChangeCount();
 				}
 
@@ -126,7 +127,7 @@ namespace System
 				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
 				if (EnableBatching && BatchInterval > 0)
 				{
-					modifications.Enqueue(new ChangeObjectItem(false, de.ID, value));
+					modifications.Enqueue(new CMDItemValue<T>(false, de.ID, value));
 					IncrementChangeCount();
 				}
 
@@ -148,10 +149,11 @@ namespace System
 			{
 				//Remove the value from the list, which sets it to the default value.
 				object temp;
-				values.TryRemove(de.ID, out temp);
+				if (!values.TryRemove(de.ID, out temp)) return;
+
 				if (EnableBatching && BatchInterval > 0)
 				{
-					modifications.Enqueue(new ChangeObjectItem(true, de.ID));
+					modifications.Enqueue(new CMDItemValue<T>(true, de.ID));
 					IncrementChangeCount();
 				}
 
@@ -169,7 +171,7 @@ namespace System
 				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
 				if (EnableBatching && BatchInterval > 0)
 				{
-					modifications.Enqueue(new ChangeObjectItem(false, de.ID, value));
+					modifications.Enqueue(new CMDItemValue<T>(false, de.ID, value));
 					IncrementChangeCount();
 				}
 
@@ -193,10 +195,11 @@ namespace System
 			{
 				//Remove the value from the list, which sets it to the default value.
 				object temp;
-				values.TryRemove(de.ID, out temp);
+				if (!values.TryRemove(de.ID, out temp)) return;
+
 				if (EnableBatching && BatchInterval > 0)
 				{
-					modifications.Enqueue(new ChangeObjectItem(true, de.ID));
+					modifications.Enqueue(new CMDItemValue<T>(true, de.ID));
 					IncrementChangeCount();
 				}
 
@@ -214,7 +217,7 @@ namespace System
 				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
 				if (EnableBatching && BatchInterval > 0)
 				{
-					modifications.Enqueue(new ChangeObjectItem(false, de.ID, value));
+					modifications.Enqueue(new CMDItemValue<T>(false, de.ID, value));
 					IncrementChangeCount();
 				}
 
@@ -235,16 +238,16 @@ namespace System
 			{
 				//Remove the value from the list, which sets it to the default value.
 				object temp;
-				values.TryRemove(de.ID, out temp);
+				if (!values.TryRemove(de.ID, out temp)) return;
 
 				//Clear the changed event handlers
-				var tt = value as DeltaCollectionBase;
+				var tt = temp as DeltaCollectionBase;
 				if (tt != null) tt.ClearChangedHandlers();
 
 				//Trigger batch updates if needed
 				if (EnableBatching && tt == null && BatchInterval > 0)
 				{
-					modifications.Enqueue(new ChangeObjectItem(true, de.ID));
+					modifications.Enqueue(new CMDItemValue<T>(true, de.ID));
 					IncrementChangeCount();
 				}
 
@@ -258,17 +261,17 @@ namespace System
 				if (tt != null) tt.Changed += (Sender, Args) => IncrementChangeCount();
 
 				//Update the values
-				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
+				var temp = (T)values.AddOrUpdate(de.ID, value, (p, v) => value);
 
 				//Trigger batch updates if needed
 				if (EnableBatching && tt == null && BatchInterval > 0)
 				{
-					modifications.Enqueue(new ChangeObjectItem(true, de.ID));
+					modifications.Enqueue(new CMDItemValue<T>(true, de.ID));
 					IncrementChangeCount();
 				}
 
 				//Call the property updated callback
-				if (temp != null && de.DeltaPropertyUpdatedCallback != null) de.DeltaPropertyUpdatedCallback(this, (T)temp, value);
+				if (de.DeltaPropertyUpdatedCallback != null) de.DeltaPropertyUpdatedCallback(this, temp, value);
 			}
 		}
 
@@ -277,7 +280,7 @@ namespace System
 			object temp;
 			if (!values.TryRemove(de.ID, out temp))
 			{
-				modifications.Enqueue(new ChangeObjectItem(true, de.ID));
+				modifications.Enqueue(new CMDItemValue<T>(true, de.ID));
 				IncrementChangeCount();
 				var tt = temp as DeltaCollectionBase;
 				if (tt != null) tt.ClearChangedHandlers();
@@ -286,18 +289,16 @@ namespace System
 				de.DeltaPropertyChangedCallback(this, (T) temp, de.DefaultValue);
 		}
 
-		public void ApplyDeltaValues(IEnumerable<ChangeObjectItem> values)
+		public void ApplyDelta<T>(CMDItemValue<T> v)
 		{
-			foreach (var v in values)
+			if (v == null) return;
+			if (v.UseDefault)
 			{
-				if (v.UseDefault)
-				{
-					object temp;
-					this.values.TryRemove(v.Key, out temp);
-				}
-				else
-					this.values.AddOrUpdate(v.Key, v.Value, (p, a) => v.Value);
+				object temp;
+				values.TryRemove(v.Key, out temp);
 			}
+			else
+				values.AddOrUpdate(v.Key, v.Value, (p, a) => v.Value);
 		}
 
 		public Dictionary<HashID, object> GetNonDefaultValues()
@@ -305,9 +306,13 @@ namespace System
 			return values.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 		}
 
-		public IEnumerable<ChangeObjectItem> GetDeltaValues()
+		public IEnumerable<CMDItemBase> GetDeltaValues()
 		{
-			return modifications.ToArray();
+			var til = new List<CMDItemBase>();
+			CMDItemBase t;
+			while (modifications.TryDequeue(out t))
+				if (t != null) til.Add(t);
+			return til.GroupBy(a => a.Key).Select(a => a.Last()).ToArray();
 		}
 
 		protected virtual void IncrementChangeCount()
@@ -324,7 +329,7 @@ namespace System
 
 		protected void OnDeserializingBase(StreamingContext context)
 		{
-			modifications = new ConcurrentQueue<ChangeObjectItem>();
+			modifications = new ConcurrentQueue<CMDItemBase>();
 			values = new ConcurrentDictionary<HashID, object>();
 			ChangeCount = 0;
 			BatchInterval = 0;

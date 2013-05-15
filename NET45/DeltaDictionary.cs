@@ -92,7 +92,7 @@ namespace System.Collections.Generic
 			ChangeDictionaryItem<TKey, TValue> td;
 			while(dl.TryDequeue(out td))
 				tdl.Add(td);
-			return tdl;
+			return tdl.Count > 0 ? tdl : null;
 		}
 
 		public void ClearDelta()

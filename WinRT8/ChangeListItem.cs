@@ -32,6 +32,7 @@ namespace System.Collections.Generic
 	}
 
 	[DataContract(Namespace = "http://www.prospectivesoftware.com/")]
+	[ProtoBuf.ProtoContract(SkipConstructor = true, UseProtoMembersOnly = false, InferTagFromName = true, DataMemberOffset = 1)]
 	public struct ChangeListItem<T>
 	{
 		[DataMember(Order = 0)] public ListItemChangeMode Mode { get; private set; }
@@ -55,6 +56,7 @@ namespace System.Collections.Generic
 	}
 
 	[DataContract(Namespace = "http://www.prospectivesoftware.com/")]
+	[ProtoBuf.ProtoContract(SkipConstructor = true, UseProtoMembersOnly = false, InferTagFromName = true, DataMemberOffset = 1)]
 	public struct ChangeDictionaryItem<TKey, T>
 	{
 		[DataMember(Order = 0)] public ListItemChangeMode Mode { get; private set; }
@@ -70,17 +72,31 @@ namespace System.Collections.Generic
 	}
 
 	[DataContract(Namespace = "http://www.prospectivesoftware.com/")]
-	public struct ChangeObjectItem
+	[ProtoBuf.ProtoContract(SkipConstructor = true, UseProtoMembersOnly = false, InferTagFromName = true, DataMemberOffset = 1)]
+	public abstract class CMDItemBase
 	{
-		[DataMember(Order = 0)] public bool UseDefault { get; private set; }
-		[DataMember(Order = 1)] public HashID Key { get; private set; }
-		[DataMember(Order = 2)] public object Value { get; private set; }
+		[DataMember(Order = 0)] public bool UseDefault { get; protected set; }
+		[DataMember(Order = 1)] public HashID Key { get; protected set; }
 
-		public ChangeObjectItem(bool UseDefault, HashID Key, object Value = null) : this()
+		public abstract object GetValue();
+	}
+
+	[DataContract(Namespace = "http://www.prospectivesoftware.com/")]
+	[ProtoBuf.ProtoContract(SkipConstructor = true, UseProtoMembersOnly = false, InferTagFromName = true, DataMemberOffset = 1)]
+	public class CMDItemValue<T> : CMDItemBase
+	{
+		[DataMember(Order = 3)] public T Value { get; private set; }
+
+		public CMDItemValue(bool UseDefault, HashID Key, T Value = default(T))
 		{
 			this.UseDefault = UseDefault;
 			this.Key = Key;
 			this.Value = Value;
+		}
+
+		public override object GetValue()
+		{
+			return Value;
 		}
 	}
 }
