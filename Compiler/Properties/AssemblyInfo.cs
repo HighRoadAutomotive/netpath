@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("NETPath Compiler")]
 [assembly: AssemblyDescription("The compiler for NETPath")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Prospective Software Inc.")]
-[assembly: AssemblyProduct("NETPath 2")]
-[assembly: AssemblyCopyright("Copyright © 2012-2013 Prospective Software Inc.")]
+[assembly: AssemblyCompany("Prospective Software")]
+[assembly: AssemblyProduct("NETPath")]
+[assembly: AssemblyCopyright("Copyright © 2012-2013 Prospective Software")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,4 +33,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.0.13192")]
+[assembly: AssemblyFileVersion("2.0.0.13213")]

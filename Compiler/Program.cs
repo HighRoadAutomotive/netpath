@@ -31,7 +31,7 @@ namespace NETPath.Compiler
 		{
 			string appPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\";
 			ApplicationVersion = new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo(appPath + "npsc.exe").FileVersion);
-			ApplicationTitle = "NETPath Service Compiler - BETA";
+			ApplicationTitle = "NETPath Service Compiler";
 
 			if (args.GetLongLength(0) == 0) Environment.Exit(0);
 
@@ -46,13 +46,13 @@ namespace NETPath.Compiler
 			var t = new CryptoLicense("NgAAAVKb1dSPMM4BgC7KbyR4zgFNG/5h+9s3tmGvwerMnzfvh7MoEFx9eEY02pTdvOE2lu7yrZxnu/oGXVgjPNa01zM=", vk);
 			if (t.Status != LicenseStatus.Valid)
 			{
-				Console.WriteLine("This copy of NETPath is BETA software and expired on {0}.", t.DateExpires.ToShortDateString());
+				Console.WriteLine("This copy of NETPath is pre-release software and expired on {0}.", t.DateExpires.ToShortDateString());
 				Console.WriteLine("Please visit us at http://www.prospectivesoftware.com to purchase a license if you wish to continue to use this software.");
 				Environment.Exit(4);
 			}
 			else
 			{
-				Console.WriteLine("This copy of NETPath is BETA software and will expire on {0}.", t.DateExpires.ToShortDateString());
+				Console.WriteLine("This copy of NETPath is pre-release software and will expire on {0}.", t.DateExpires.ToShortDateString());
 			}
 
 			ErrorStream = Console.OpenStandardError();

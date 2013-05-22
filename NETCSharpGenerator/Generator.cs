@@ -371,7 +371,7 @@ namespace NETPath.Generators.NET.CS
 	internal static class Globals
 	{
 		public static readonly Version ApplicationVersion;
-		public const string ApplicationTitle = "NETPath .NET C# Generator - BETA";
+		public const string ApplicationTitle = "NETPath .NET C# Generator";
 
 		public static ProjectGenerationFramework CurrentGenerationTarget { get; set; }
 		public static Guid CurrentProjectID { get; set; }

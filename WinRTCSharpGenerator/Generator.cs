@@ -320,7 +320,7 @@ namespace NETPath.Generators.WinRT.CS
 	internal static class Globals
 	{
 		public static readonly Version ApplicationVersion;
-		public const string ApplicationTitle = "NETPath WinRT C# Generator - BETA";
+		public const string ApplicationTitle = "NETPath WinRT C# Generator";
 
 		public static ProjectGenerationFramework CurrentGenerationTarget { get; set; }
 		public static Guid CurrentProjectID;

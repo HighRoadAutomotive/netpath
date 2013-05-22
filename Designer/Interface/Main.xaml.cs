@@ -493,7 +493,7 @@ namespace NETPath.Interface
 			AddExistingProject.IsEnabled = true;
 			SystemProjectMenu.Visibility = Visibility.Visible;
 			ScreenButtonsPanel.Visibility = Visibility.Visible;
-			Title = Globals.Solution.Name + " - NETPath 2 - BETA";
+			Title = Globals.Solution.Name + " - NETPath";
 		}
 
 		public void CloseSolution(bool AskBeforeClose = false, bool Closing = false, Action ContinueYes = null, Action ContinueNo = null)
@@ -526,7 +526,7 @@ namespace NETPath.Interface
 			AddExistingProject.IsEnabled = false;
 			SystemProjectMenu.Visibility = Visibility.Collapsed;
 			ScreenButtonsPanel.Visibility = Visibility.Collapsed;
-			Title = "NETPath 2 - BETA";
+			Title = "NETPath";
 
 			ActiveProjectScreen.Visibility = Visibility.Collapsed;
 			HomeScreen.Visibility = Visibility.Visible;
