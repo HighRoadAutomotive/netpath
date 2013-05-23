@@ -57,7 +57,7 @@ namespace NETPath.Compiler
 
 			ErrorStream = Console.OpenStandardError();
 
-			OpenProject = Project.Open(SolutionPath, ProjectPath);
+			OpenProject = Project.Open(Path.Combine(Directory.GetCurrentDirectory(), SolutionPath), ProjectPath);
 
 			IGenerator NET = Loader.LoadModule(GenerationModule.NET, GenerationLanguage.CSharp);
 			NET.Initialize("NgAAAVKb1dSPMM4BgC7KbyR4zgFNG/5h+9s3tmGvwerMnzfvh7MoEFx9eEY02pTdvOE2lu7yrZxnu/oGXVgjPNa01zM=", OutputHandler, AddMessage);
@@ -116,14 +116,13 @@ namespace NETPath.Compiler
 			Quiet = false;
 			PrintHeader();
 
-			Console.WriteLine("Usage: wasc <solution file> <project file> [options]");
+			Console.WriteLine("Usage: npsc <solution file> <project file> [options]");
 			Console.WriteLine();
+			Console.WriteLine("<solution file>\tThe path to the solution file relative to the current working directory.");
+			Console.WriteLine("<project file>\tThe path to the project file relative to solution file.");
 			Console.WriteLine("-log\tSave the output to a log file. Usage: -log \"<directory>\".");
-			Console.WriteLine();
 			Console.WriteLine("-stderr\tEnables stderr output.");
-			Console.WriteLine();
 			Console.WriteLine("-q\tSupresses informational output.");
-			Console.WriteLine();
 			Console.WriteLine("-?\tDisplay this message. Overrides all other options.");
 
 			Environment.Exit(0);
@@ -135,13 +134,13 @@ namespace NETPath.Compiler
 			if (Quiet) return;
 			Console.WriteLine(ApplicationTitle);
 			Console.WriteLine("Version: {0}", ApplicationVersion);
-			Console.WriteLine("Copyright © 2012-2013 Prospective Software Inc.");
+			Console.WriteLine("Copyright: 2012-2013 Prospective Software Inc.");
 			Console.WriteLine();
 
 			if (LogFile == null) return;
 			LogFile.WriteLine(ApplicationTitle);
 			LogFile.WriteLine("Version: {0}", ApplicationVersion);
-			LogFile.WriteLine("Copyright © 2012-2013 Prospective Software Inc.");
+			LogFile.WriteLine("Copyright: 2012-2013 Prospective Software Inc.");
 			LogFile.WriteLine();
 		}
 
