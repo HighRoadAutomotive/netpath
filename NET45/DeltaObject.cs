@@ -266,7 +266,7 @@ namespace System
 				//Trigger batch updates if needed
 				if (EnableBatching && tt == null && BatchInterval > 0)
 				{
-					modifications.Enqueue(new CMDItemValue<T>(true, de.ID));
+					modifications.Enqueue(new CMDItemValue<T>(false, de.ID, value));
 					IncrementChangeCount();
 				}
 
