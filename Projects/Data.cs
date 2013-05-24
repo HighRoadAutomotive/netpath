@@ -108,7 +108,6 @@ namespace NETPath.Projects
 		public int DREBatchCount { get { return (int)GetValue(DREBatchCountProperty); } set { SetValue(DREBatchCountProperty, value); } }
 		public static readonly DependencyProperty DREBatchCountProperty = DependencyProperty.Register("DREBatchCount", typeof(int), typeof(Data), new PropertyMetadata(0));
 
-		[IgnoreDataMember] public DataElement DREID { get { return new DataElement(new DataType(PrimitiveTypes.GUID), "_DREID", this) { IsDataMember = true, IsReadOnly = true, DREEnabled = true, DREUpdateMode = DataUpdateMode.None, ProtocolBufferEnabled = Elements.Any(a => a.ProtocolBufferEnabled) }; } }
 		[IgnoreDataMember] public List<DataRevisionName> DataRevisionServiceNames { get; set; }
 
 		//Protocol Buffers
@@ -302,6 +301,14 @@ namespace NETPath.Projects
 			if (nt.TypeMode == DataTypeMode.Array && nt.CollectionGenericType.TypeMode == DataTypeMode.Primitive) de.Owner.AddKnownType(nt);
 			if (ot.TypeMode == DataTypeMode.Primitive && ot.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.RemoveKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
 			if (nt.TypeMode == DataTypeMode.Primitive && nt.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.AddKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
+
+			if (de.DataType.TypeMode == DataTypeMode.Primitive && (de.DataType.Primitive == PrimitiveTypes.Byte || de.DataType.Primitive == PrimitiveTypes.SByte || de.DataType.Primitive == PrimitiveTypes.Short || de.DataType.Primitive == PrimitiveTypes.Int || de.DataType.Primitive == PrimitiveTypes.Long || de.DataType.Primitive == PrimitiveTypes.UShort || de.DataType.Primitive == PrimitiveTypes.UInt || de.DataType.Primitive == PrimitiveTypes.ULong || de.DataType.Primitive == PrimitiveTypes.String || de.DataType.Primitive == PrimitiveTypes.GUID))
+				de.DRECanPrimaryKey = true;
+			else
+			{
+				de.DRECanPrimaryKey = false;
+				de.DREPrimaryKey = false;
+			}
 		}
 
 		public string DataName { get { return (string)GetValue(DataNameProperty); } set { SetValue(DataNameProperty, value); } }
@@ -437,7 +444,39 @@ namespace NETPath.Projects
 
 		//Date Revision Exchange
 		public bool DREEnabled { get { return (bool)GetValue(DREEnabledProperty); } set { SetValue(DREEnabledProperty, value); } }
-		public static readonly DependencyProperty DREEnabledProperty = DependencyProperty.Register("DREEnabled", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
+		public static readonly DependencyProperty DREEnabledProperty = DependencyProperty.Register("DREEnabled", typeof(bool), typeof(DataElement), new PropertyMetadata(false, DREEnabledChangedCallback));
+
+		private static void DREEnabledChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as DataElement;
+			if (t == null) return;
+
+			if (t.DataType.TypeMode == DataTypeMode.Primitive && (t.DataType.Primitive == PrimitiveTypes.Byte || t.DataType.Primitive == PrimitiveTypes.SByte || t.DataType.Primitive == PrimitiveTypes.Short || t.DataType.Primitive == PrimitiveTypes.Int || t.DataType.Primitive == PrimitiveTypes.Long || t.DataType.Primitive == PrimitiveTypes.UShort || t.DataType.Primitive == PrimitiveTypes.UInt || t.DataType.Primitive == PrimitiveTypes.ULong || t.DataType.Primitive == PrimitiveTypes.String || t.DataType.Primitive == PrimitiveTypes.GUID))
+				t.DRECanPrimaryKey = true;
+			else
+			{
+				t.DRECanPrimaryKey = false;
+				t.DREPrimaryKey = false;
+			}
+		}
+
+		[IgnoreDataMember] public bool DRECanPrimaryKey { get { return (bool)GetValue(DRECanPrimaryKeyProperty); } protected set { SetValue(DRECanPrimaryKeyPropertyKey, value); } }
+		private static readonly DependencyPropertyKey DRECanPrimaryKeyPropertyKey = DependencyProperty.RegisterReadOnly("DRECanPrimaryKey", typeof(bool), typeof(Operation), new PropertyMetadata(false));
+		public static readonly DependencyProperty DRECanPrimaryKeyProperty = DRECanPrimaryKeyPropertyKey.DependencyProperty;
+
+		public bool DREPrimaryKey { get { return (bool)GetValue(DREPrimaryKeyProperty); } set { SetValue(DREPrimaryKeyProperty, value); } }
+		public static readonly DependencyProperty DREPrimaryKeyProperty = DependencyProperty.Register("DREPrimaryKey", typeof(bool), typeof(DataElement ), new PropertyMetadata(false, DREPrimaryKeyChangedCallback));
+
+		private static void DREPrimaryKeyChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as DataElement;
+			if (t == null) return;
+			if (t.Owner == null) return;
+			if (!Convert.ToBoolean(e.NewValue)) return;
+
+			foreach (var x in t.Owner.Elements)
+				if(x.ID != t.ID) x.DREPrimaryKey = false;
+		}
 
 		public DataUpdateMode DREUpdateMode { get { return (DataUpdateMode)GetValue(DREUpdateModeProperty); } set { SetValue(DREUpdateModeProperty, value); } }
 		public static readonly DependencyProperty DREUpdateModeProperty = DependencyProperty.Register("DREUpdateMode", typeof(DataUpdateMode), typeof(DataElement), new PropertyMetadata(DataUpdateMode.Immediate));

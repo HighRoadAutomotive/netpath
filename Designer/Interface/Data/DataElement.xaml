@@ -15,6 +15,8 @@
 				<ResourceDictionary>
 					<Data:ElementOrderConverter x:Key="ElementOrderConverter" />
 					<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
+					<pc:NotBoolConverter x:Key="NotBoolConverter" />
+					<pc:NotBoolVisibilityConverter x:Key="NotBoolVisibilityConverter" />
 					<pc:NullBoolValueConverter x:Key="NullBoolValueConverter" />
 					<Data:DCMUpdateModeConverter x:Key="DCMUpdateModeConverter" />
 				</ResourceDictionary>
@@ -133,8 +135,9 @@
 					<pc:TextBox Name="AttachedTargetTypes" Grid.Row="1" Grid.Column="1" Margin="5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Text="{Binding Path=Element.AttachedTargetTypes}" ToolTip="Please enter the Target Types as a common seperated list." />
 					<pc:TextBox Name="AttachedAttributeTypes" Grid.Row="1" Grid.Column="2" Margin="5,5,0,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Text="{Binding Path=Element.AttachedAttributeTypes}" ToolTip="Please enter the Attribute Types as a common seperated list." />
 				</Grid>
-				<Grid Name="DCMGrid" Grid.Row="2" Margin="0,5,0,0" Visibility="{Binding Path=Element.DREEnabled, Converter={StaticResource BoolVisibilityConverter}}" >
+				<Grid Name="DREGrid" Grid.Row="2" Margin="0,5,0,0" Visibility="{Binding Path=Element.DREEnabled, Converter={StaticResource BoolVisibilityConverter}}" >
 					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
 					<Grid.RowDefinitions>
@@ -142,8 +145,9 @@
 						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
 					<Label Grid.ColumnSpan="1" Grid.Row="0" Content="Data Revision Exchange" FontSize="12pt" />
-					<Label Content="Update Mode:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="1" Grid.Column="0" />
-					<ComboBox Margin="95,5,5,5" VerticalContentAlignment="Center" SelectedIndex="{Binding Path=Element.DREUpdateMode, Converter={StaticResource DCMUpdateModeConverter}}" Grid.Column="0" Grid.Row="1" >
+					<ToggleButton Grid.Row="1" Grid.Column="0" Content="Is Primary Key" Margin="0,5,5,5" VerticalAlignment="Top" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.DREPrimaryKey}" IsEnabled="{Binding Path=Element.DRECanPrimaryKey}"  ToolTip="Determines if the current member is the primary key for the object." />
+					<Label Content="Update Mode:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="1" Grid.Column="1" />
+					<ComboBox Margin="95,5,5,5" VerticalContentAlignment="Center" SelectedIndex="{Binding Path=Element.DREUpdateMode, Converter={StaticResource DCMUpdateModeConverter}}" IsEnabled="{Binding Path=Element.DREPrimaryKey, Converter={StaticResource NotBoolConverter}}"  Grid.Column="1" Grid.Row="1" >
 						<ComboBoxItem Content="Immediate" />
 						<ComboBoxItem Content="Batch" />
 					</ComboBox>
