@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Prospective Software")]
 [assembly: AssemblyProduct("NETPath")]
-[assembly: AssemblyCopyright("Copyright © 2012-2013 Prospective Software.")]
+[assembly: AssemblyCopyright("Copyright © 2012-2013 Prospective Software")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,4 +33,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.0.13213")]
+[assembly: AssemblyFileVersion("2.0.0.13214")]
