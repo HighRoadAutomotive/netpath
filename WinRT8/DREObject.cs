@@ -65,16 +65,16 @@ namespace System
 			return !data.__crl.IsEmpty || __dcm.TryRemove(DataID, out data);
 		}
 
-		protected void SetDREID(string PrimaryKey) { if (_DREID == Guid.Empty) _DREID = new HashID(PrimaryKey).ToGUID(); }
-		protected void SetDREID(byte PrimaryKey) { if (_DREID == Guid.Empty) _DREID = new HashID(new byte[] { PrimaryKey }).ToGUID(); }
-		protected void SetDREID(sbyte PrimaryKey) { if (_DREID == Guid.Empty) _DREID = new HashID(BitConverter.GetBytes(PrimaryKey)).ToGUID(); }
-		protected void SetDREID(short PrimaryKey) { if (_DREID == Guid.Empty) _DREID = new HashID(BitConverter.GetBytes(PrimaryKey)).ToGUID(); }
-		protected void SetDREID(int PrimaryKey) { if (_DREID == Guid.Empty) _DREID = new HashID(BitConverter.GetBytes(PrimaryKey)).ToGUID(); }
-		protected void SetDREID(long PrimaryKey) { if (_DREID == Guid.Empty) _DREID = new HashID(BitConverter.GetBytes(PrimaryKey)).ToGUID(); }
-		protected void SetDREID(ushort PrimaryKey) { if (_DREID == Guid.Empty) _DREID = new HashID(BitConverter.GetBytes(PrimaryKey)).ToGUID(); }
-		protected void SetDREID(uint PrimaryKey) { if (_DREID == Guid.Empty) _DREID = new HashID(BitConverter.GetBytes(PrimaryKey)).ToGUID(); }
-		protected void SetDREID(ulong PrimaryKey) { if (_DREID == Guid.Empty) _DREID = new HashID(BitConverter.GetBytes(PrimaryKey)).ToGUID(); }
-		protected void SetDREID(Guid PrimaryKey) { if (_DREID == Guid.Empty) _DREID = new HashID(PrimaryKey.ToByteArray()).ToGUID(); }
+		protected void SetDREID(string PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(PrimaryKey).ToGUID(); }
+		protected void SetDREID(byte PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(new byte[] { PrimaryKey }).ToGUID(); }
+		protected void SetDREID(sbyte PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(BitConverter.GetBytes(PrimaryKey)).ToGUID(); }
+		protected void SetDREID(short PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(BitConverter.GetBytes(PrimaryKey)).ToGUID(); }
+		protected void SetDREID(int PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(BitConverter.GetBytes(PrimaryKey)).ToGUID(); }
+		protected void SetDREID(long PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(BitConverter.GetBytes(PrimaryKey)).ToGUID(); }
+		protected void SetDREID(ushort PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(BitConverter.GetBytes(PrimaryKey)).ToGUID(); }
+		protected void SetDREID(uint PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(BitConverter.GetBytes(PrimaryKey)).ToGUID(); }
+		protected void SetDREID(ulong PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(BitConverter.GetBytes(PrimaryKey)).ToGUID(); }
+		protected void SetDREID(Guid PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(PrimaryKey.ToByteArray()).ToGUID(); }
 
 		[IgnoreDataMember, XmlIgnore] public IEnumerable<Guid> ClientList { get { return __crl.Keys; } }
 		[IgnoreDataMember, XmlIgnore] private ConcurrentDictionary<Guid, Guid> __crl = new ConcurrentDictionary<Guid, Guid>();
