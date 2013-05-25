@@ -86,7 +86,7 @@ namespace NETPath.Generators.WinRT.CS
 
 			code.Append(GenerateProxyDCMCode(o, true));
 
-			int protoCount = 0;
+			int protoCount = 1;
 			foreach (DataElement de in o.Elements.Where(a => !a.IsHidden))
 				code.AppendLine(o.CMDEnabled ? GenerateElementDCMServerCode45(de, ref protoCount) : GenerateElementServerCode45(de, ref protoCount));
 			code.AppendLine("\t}");
@@ -196,7 +196,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine();
 			}
 
-			int protoCount = 0;
+			int protoCount = 1;
 			foreach (DataElement de in o.Elements.Where(a => !a.IsHidden && a.IsDataMember))
 				code.AppendLine(o.CMDEnabled ? GenerateElementDCMProxyCode45(de, ref protoCount) : GenerateElementProxyCode45(de, ref protoCount));
 			code.AppendLine("\t}");
