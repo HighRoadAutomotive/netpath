@@ -12,6 +12,7 @@ using Windows.UI.Xaml;
 namespace System
 {
 	[DataContract]
+	[ProtoBuf.ProtoContract]
 	public abstract class DREObject<T> : DeltaObject where T : DREObject<T>
 	{
 		[IgnoreDataMember, XmlIgnore] private static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, T> __dcm;
@@ -101,7 +102,7 @@ namespace System
 			_DREID = Guid.Empty;
 		}
 
-		[DataMember] public Guid _DREID { get; private set; }
+		[DataMember][ProtoMember(1)] public Guid _DREID { get; private set; }
 
 		protected abstract void BatchUpdates();
 
