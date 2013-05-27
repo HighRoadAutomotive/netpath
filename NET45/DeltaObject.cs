@@ -327,7 +327,7 @@ namespace System
 			Threading.Interlocked.Exchange(ref ChangeCount, 0);
 		}
 
-		protected void OnDeserializingBase(StreamingContext context)
+		protected virtual void OnDeserializingBase(StreamingContext context)
 		{
 			modifications = new ConcurrentQueue<CMDItemBase>();
 			values = new ConcurrentDictionary<HashID, object>();

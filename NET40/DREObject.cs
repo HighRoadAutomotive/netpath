@@ -101,6 +101,12 @@ namespace System
 		{
 			_DREID = Guid.Empty;
 		}
+		
+		protected override sealed void OnDeserializingBase(StreamingContext context)
+		{
+			base.OnDeserializingBase(context);
+			__crl = new ConcurrentDictionary<Guid, Guid>();
+		}
 
 		[DataMember][ProtoMember(1)] public Guid _DREID { get; private set; }
 
