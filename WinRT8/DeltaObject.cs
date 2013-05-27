@@ -250,9 +250,15 @@ namespace System
 			{
 				object temp;
 				values.TryRemove(v.Key, out temp);
+				var de = DeltaPropertyBase.FromID(v.Key) as DeltaProperty<T>;
+				if (de != null && de.DeltaPropertyUpdatedCallback != null) de.DeltaPropertyUpdatedCallback(this, (T)temp, de.DefaultValue);
 			}
 			else
-				values.AddOrUpdate(v.Key, v.Value, (p, a) => v.Value);
+			{
+				var temp = values.AddOrUpdate(v.Key, v.Value, (p, a) => v.Value);
+				var de = DeltaPropertyBase.FromID(v.Key) as DeltaProperty<T>;
+				if (de != null && de.DeltaPropertyUpdatedCallback != null) de.DeltaPropertyUpdatedCallback(this, (T)temp, v.Value);
+			}
 		}
 
 		public Dictionary<HashID, object> GetNonDefaultValues()
