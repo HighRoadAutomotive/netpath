@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
+using System.Windows;
 
 namespace System
 {
@@ -44,6 +45,8 @@ namespace System
 		public Type OwnerType { get; protected set; }
 		public Type PropertyType { get; protected set; }
 		internal object defaultValue { get; set; }
+		public DependencyProperty XAMLProperty { get; protected set; }
+		public DependencyPropertyKey XAMLPropertyKey { get; protected set; }
 
 		internal static DeltaPropertyBase FromID(HashID ID)
 		{
@@ -62,7 +65,7 @@ namespace System
 		internal Action<DeltaObject, T, T> DeltaPropertyUpdatedCallback { get; private set; }
 		internal Func<DeltaObject, T, bool> DeltaValidateValueCallback { get; private set; }
 
-		private DeltaProperty(HashID ID, HashID OwnerID, Type OwnerType)
+		private DeltaProperty(HashID ID, HashID OwnerID, Type OwnerType, DependencyProperty XAMLProperty = null, DependencyPropertyKey XAMLPropertyKey = null)
 		{
 			this.ID = ID;
 			this.OwnerID = OwnerID;
@@ -71,10 +74,12 @@ namespace System
 			DefaultValue = default(T);
 			DeltaPropertyChangedCallback = null;
 			DeltaValidateValueCallback = null;
+			this.XAMLProperty = XAMLProperty;
+			this.XAMLPropertyKey = XAMLPropertyKey;
 			Mode = PropertyMode.Value;
 		}
 
-		private DeltaProperty(HashID ID, HashID OwnerID, Type OwnerType, T DefaultValue)
+		private DeltaProperty(HashID ID, HashID OwnerID, Type OwnerType, T DefaultValue, DependencyProperty XAMLProperty = null, DependencyPropertyKey XAMLPropertyKey = null)
 		{
 			this.ID = ID;
 			this.OwnerID = OwnerID;
@@ -83,10 +88,12 @@ namespace System
 			this.DefaultValue = DefaultValue;
 			DeltaPropertyChangedCallback = null;
 			DeltaValidateValueCallback = null;
+			this.XAMLProperty = XAMLProperty;
+			this.XAMLPropertyKey = XAMLPropertyKey;
 			Mode = PropertyMode.Value;
 		}
 
-		private DeltaProperty(HashID ID, HashID OwnerID, Type OwnerType, T DefaultValue, Action<DeltaObject, T, T> DeltaPropertyChangedCallback, Action<DeltaObject, T, T> DeltaPropertyUpdatedCallback = null, Func<DeltaObject, T, bool> DeltaValidateValueCallback = null)
+		private DeltaProperty(HashID ID, HashID OwnerID, Type OwnerType, T DefaultValue, Action<DeltaObject, T, T> DeltaPropertyChangedCallback, Action<DeltaObject, T, T> DeltaPropertyUpdatedCallback = null, Func<DeltaObject, T, bool> DeltaValidateValueCallback = null, DependencyProperty XAMLProperty = null, DependencyPropertyKey XAMLPropertyKey = null)
 		{
 			this.ID = ID;
 			this.OwnerID = OwnerID;
@@ -96,6 +103,8 @@ namespace System
 			this.DeltaPropertyChangedCallback = DeltaPropertyChangedCallback;
 			this.DeltaPropertyUpdatedCallback = DeltaPropertyUpdatedCallback;
 			this.DeltaValidateValueCallback = DeltaValidateValueCallback;
+			this.XAMLProperty = XAMLProperty;
+			this.XAMLPropertyKey = XAMLPropertyKey;
 			Mode = PropertyMode.Value;
 		}
 
@@ -111,25 +120,25 @@ namespace System
 			Mode = PropertyMode.Value;
 		}
 
-		public static DeltaProperty<TType> Register<TType>(string Name, Type OwnerType)
+		public static DeltaProperty<TType> Register<TType>(string Name, Type OwnerType, DependencyProperty XAMLProperty = null, DependencyPropertyKey XAMLPropertyKey = null)
 		{
-			var np = new DeltaProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType);
+			var np = new DeltaProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType, XAMLProperty, XAMLPropertyKey);
 			if (!registered.TryAdd(np.ID, np))
 				throw new ArgumentException(string.Format("Unable to register the DeltaProperty '{0}' on type '{1}'. A DeltaProperty with the same Name and OwnerType has already been registered.", Name, np.OwnerType));
 			return np;
 		}
 
-		public static DeltaProperty<TType> Register<TType>(string Name, Type OwnerType, TType defaultValue)
+		public static DeltaProperty<TType> Register<TType>(string Name, Type OwnerType, TType defaultValue, DependencyProperty XAMLProperty = null, DependencyPropertyKey XAMLPropertyKey = null)
 		{
-			var np = new DeltaProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType, defaultValue);
+			var np = new DeltaProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType, defaultValue, XAMLProperty, XAMLPropertyKey);
 			if (!registered.TryAdd(np.ID, np))
 				throw new ArgumentException(string.Format("Unable to register the DeltaProperty '{0}' on type '{1}'. A DeltaProperty with the same Name and OwnerType has already been registered.", Name, np.OwnerType));
 			return np;
 		}
 
-		public static DeltaProperty<TType> Register<TType>(string Name, Type OwnerType, TType defaultValue, Action<DeltaObject, TType, TType> DeltaPropertyChangedCallback, Action<DeltaObject, TType, TType> DeltaPropertyUpdatedCallback = null, Func<DeltaObject, TType, bool> DeltaValidateValueCallback = null)
+		public static DeltaProperty<TType> Register<TType>(string Name, Type OwnerType, TType defaultValue, Action<DeltaObject, TType, TType> DeltaPropertyChangedCallback, Action<DeltaObject, TType, TType> DeltaPropertyUpdatedCallback = null, Func<DeltaObject, TType, bool> DeltaValidateValueCallback = null, DependencyProperty XAMLProperty = null, DependencyPropertyKey XAMLPropertyKey = null)
 		{
-			var np = new DeltaProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType, defaultValue, DeltaPropertyChangedCallback, DeltaPropertyUpdatedCallback, DeltaValidateValueCallback);
+			var np = new DeltaProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType, defaultValue, DeltaPropertyChangedCallback, DeltaPropertyUpdatedCallback, DeltaValidateValueCallback, XAMLProperty, XAMLPropertyKey);
 			if (!registered.TryAdd(np.ID, np))
 				throw new ArgumentException(string.Format("Unable to register the DeltaProperty '{0}' on type '{1}'. A DeltaProperty with the same Name and OwnerType has already been registered.", Name, np.OwnerType));
 			return np;

@@ -111,6 +111,9 @@ namespace System
 				var tt = temp as DeltaCollectionBase;
 				if (tt != null) tt.ClearChangedHandlers();
 
+				if (de.XAMLProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLProperty, de.defaultValue);
+				if (de.XAMLPropertyKey != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLPropertyKey, de.defaultValue);
+
 				//Call the property updated callback
 				if (temp != null && de.DeltaPropertyUpdatedCallback != null && baseXAMLObject != null) de.DeltaPropertyUpdatedCallback(this, (T)temp, de.DefaultValue);
 
@@ -131,6 +134,9 @@ namespace System
 					IncrementChangeCount();
 				}
 
+				if (de.XAMLProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLProperty, value);
+				if (de.XAMLPropertyKey != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLPropertyKey, value);
+
 				//Call the property updated callback
 				if (temp != null && de.DeltaPropertyUpdatedCallback != null && baseXAMLObject != null) de.DeltaPropertyUpdatedCallback(this, (T)temp, value);
 
@@ -139,97 +145,6 @@ namespace System
 			}
 		}
 
-		public void SetValue<T>(DeltaProperty<T> de, T value, DependencyProperty xamlProperty)
-		{
-			//Call the validator to see if this value is acceptable
-			if (de.DeltaValidateValueCallback != null && !de.DeltaValidateValueCallback(this, value)) return;
-
-			//If the new value is the default value remove this from the modified values list, otherwise add/update it.
-			if (EqualityComparer<T>.Default.Equals(value, de.DefaultValue))
-			{
-				//Remove the value from the list, which sets it to the default value.
-				object temp;
-				if (!values.TryRemove(de.ID, out temp)) return;
-
-				if (EnableBatching && BatchInterval > 0)
-				{
-					modifications.Enqueue(new CMDItemValue<T>(true, de.ID));
-					IncrementChangeCount();
-				}
-
-				if (xamlProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(xamlProperty, de.defaultValue);
-
-				//Call the property updated callback
-				if (temp != null && de.DeltaPropertyUpdatedCallback != null) de.DeltaPropertyUpdatedCallback(this, (T)temp, de.DefaultValue);
-
-				//Call the property changed callback
-				if (temp != null && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, de.DefaultValue);
-			}
-			else
-			{
-				//Update the value
-				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
-				if (EnableBatching && BatchInterval > 0)
-				{
-					modifications.Enqueue(new CMDItemValue<T>(false, de.ID, value));
-					IncrementChangeCount();
-				}
-
-				if (xamlProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(xamlProperty, value);
-
-				//Call the property updated callback
-				if (temp != null && de.DeltaPropertyUpdatedCallback != null) de.DeltaPropertyUpdatedCallback(this, (T)temp, value);
-
-				//Call the property changed callback
-				if (temp != null && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, value);
-			}
-		}
-
-		public void SetValue<T>(DeltaProperty<T> de, T value, DependencyPropertyKey xamlProperty)
-		{
-			//Call the validator to see if this value is acceptable
-			if (de.DeltaValidateValueCallback != null && !de.DeltaValidateValueCallback(this, value)) return;
-
-			//If the new value is the default value remove this from the modified values list, otherwise add/update it.
-			if (EqualityComparer<T>.Default.Equals(value, de.DefaultValue))
-			{
-				//Remove the value from the list, which sets it to the default value.
-				object temp;
-				if (!values.TryRemove(de.ID, out temp)) return;
-
-				if (EnableBatching && BatchInterval > 0)
-				{
-					modifications.Enqueue(new CMDItemValue<T>(true, de.ID));
-					IncrementChangeCount();
-				}
-
-				if (xamlProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(xamlProperty, de.defaultValue);
-				
-				//Call the property updated callback
-				if (temp != null && de.DeltaPropertyUpdatedCallback != null) de.DeltaPropertyUpdatedCallback(this, (T)temp, de.DefaultValue);
-
-				//Call the property changed callback
-				if (temp != null && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, de.DefaultValue);
-			}
-			else
-			{
-				//Update the value
-				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
-				if (EnableBatching && BatchInterval > 0)
-				{
-					modifications.Enqueue(new CMDItemValue<T>(false, de.ID, value));
-					IncrementChangeCount();
-				}
-
-				if (xamlProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(xamlProperty, value);
-
-				//Call the property updated callback
-				if (temp != null && de.DeltaPropertyUpdatedCallback != null) de.DeltaPropertyUpdatedCallback(this, (T)temp, value);
-
-				//Call the property changed callback
-				if (temp != null && de.DeltaPropertyChangedCallback != null) de.DeltaPropertyChangedCallback(this, (T)temp, value);
-			}
-		}
 		public void UpdateValue<T>(DeltaProperty<T> de, T value)
 		{
 			//If the new value is the default value remove this from the modified values list, otherwise add/update it.
@@ -296,13 +211,15 @@ namespace System
 				object temp;
 				values.TryRemove(v.Key, out temp);
 				var de = DeltaPropertyBase.FromID(v.Key) as DeltaProperty<T>;
-				if (de != null && de.DeltaPropertyUpdatedCallback != null) de.DeltaPropertyUpdatedCallback(this, (T)temp, de.DefaultValue);
+				if (de != null && de.XAMLProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLProperty, de.DefaultValue);
+				if (de != null && de.XAMLPropertyKey != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLPropertyKey, de.DefaultValue);
 			}
 			else
 			{
 				var temp = values.AddOrUpdate(v.Key, v.Value, (p, a) => v.Value);
 				var de = DeltaPropertyBase.FromID(v.Key) as DeltaProperty<T>;
-				if (de != null && de.DeltaPropertyUpdatedCallback != null) de.DeltaPropertyUpdatedCallback(this, (T)temp, v.Value);
+				if (de != null && de.XAMLProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLProperty, v.Value);
+				if (de != null && de.XAMLPropertyKey != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLPropertyKey, v.Value);
 			}
 		}
 
