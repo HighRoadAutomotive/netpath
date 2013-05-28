@@ -291,17 +291,19 @@ namespace NETPath.Projects
 			var de = o as DataElement;
 			if (de == null) return;
 
-			if (de.Owner == null) return;
 			var nt = p.NewValue as DataType;
 			if (nt == null) return;
-			var ot = p.OldValue as DataType;
-			if (ot == null) return;
-			
-			if (ot.TypeMode == DataTypeMode.Array && ot.CollectionGenericType.TypeMode == DataTypeMode.Primitive) de.Owner.RemoveKnownType(nt);
-			if (nt.TypeMode == DataTypeMode.Array && nt.CollectionGenericType.TypeMode == DataTypeMode.Primitive) de.Owner.AddKnownType(nt);
-			if (ot.TypeMode == DataTypeMode.Primitive && ot.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.RemoveKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
-			if (nt.TypeMode == DataTypeMode.Primitive && nt.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.AddKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
 
+			de.CanPropertyChanged = true;
+			de.CanPropertyUpdated = true;
+			if (nt.TypeMode == DataTypeMode.Collection || nt.TypeMode == DataTypeMode.Dictionary || nt.TypeMode == DataTypeMode.Queue || nt.TypeMode == DataTypeMode.Stack)
+			{
+				de.CanPropertyChanged = false;
+				de.PropertyChangedCallback = false;
+				de.CanPropertyUpdated = false;
+				de.PropertyUpdatedCallback = false;
+			}
+			
 			if (de.DataType.TypeMode == DataTypeMode.Primitive && (de.DataType.Primitive == PrimitiveTypes.Byte || de.DataType.Primitive == PrimitiveTypes.SByte || de.DataType.Primitive == PrimitiveTypes.Short || de.DataType.Primitive == PrimitiveTypes.Int || de.DataType.Primitive == PrimitiveTypes.Long || de.DataType.Primitive == PrimitiveTypes.UShort || de.DataType.Primitive == PrimitiveTypes.UInt || de.DataType.Primitive == PrimitiveTypes.ULong || de.DataType.Primitive == PrimitiveTypes.String || de.DataType.Primitive == PrimitiveTypes.GUID))
 				de.DRECanPrimaryKey = true;
 			else
@@ -309,6 +311,15 @@ namespace NETPath.Projects
 				de.DRECanPrimaryKey = false;
 				de.DREPrimaryKey = false;
 			}
+	
+			var ot = p.OldValue as DataType;
+			if (ot == null) return;
+			if (de.Owner == null) return;
+			
+			if (ot.TypeMode == DataTypeMode.Array && ot.CollectionGenericType.TypeMode == DataTypeMode.Primitive) de.Owner.RemoveKnownType(nt);
+			if (nt.TypeMode == DataTypeMode.Array && nt.CollectionGenericType.TypeMode == DataTypeMode.Primitive) de.Owner.AddKnownType(nt);
+			if (ot.TypeMode == DataTypeMode.Primitive && ot.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.RemoveKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
+			if (nt.TypeMode == DataTypeMode.Primitive && nt.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.AddKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
 		}
 
 		public string DataName { get { return (string)GetValue(DataNameProperty); } set { SetValue(DataNameProperty, value); } }
@@ -422,6 +433,24 @@ namespace NETPath.Projects
 
 		public int Order { get { return (int)GetValue(OrderProperty); } set { SetValue(OrderProperty, value); } }
 		public static readonly DependencyProperty OrderProperty = DependencyProperty.Register("Order", typeof(int), typeof(DataElement), new PropertyMetadata(-1));
+
+		//Callbacks
+		[IgnoreDataMember] public bool CanPropertyChanged { get { return (bool)GetValue(CanPropertyChangedProperty); } protected set { SetValue(CanPropertyChangedPropertyKey, value); } }
+		private static readonly DependencyPropertyKey CanPropertyChangedPropertyKey = DependencyProperty.RegisterReadOnly("CanPropertyChanged", typeof(bool), typeof(Operation), new PropertyMetadata(false));
+		public static readonly DependencyProperty CanPropertyChangedProperty = CanPropertyChangedPropertyKey.DependencyProperty;
+
+		[IgnoreDataMember] public bool CanPropertyUpdated { get { return (bool)GetValue(CanPropertyUpdatedProperty); } protected set { SetValue(CanPropertyUpdatedPropertyKey, value); } }
+		private static readonly DependencyPropertyKey CanPropertyUpdatedPropertyKey = DependencyProperty.RegisterReadOnly("CanPropertyUpdated", typeof(bool), typeof(Operation), new PropertyMetadata(false));
+		public static readonly DependencyProperty CanPropertyUpdatedProperty = CanPropertyUpdatedPropertyKey.DependencyProperty;
+
+		public bool PropertyChangedCallback { get { return (bool)GetValue(PropertyChangedCallbackProperty); } set { SetValue(PropertyChangedCallbackProperty, value); } }
+		public static readonly DependencyProperty PropertyChangedCallbackProperty = DependencyProperty.Register("PropertyChangedCallback", typeof(bool), typeof(Data), new PropertyMetadata(false));
+
+		public bool PropertyUpdatedCallback { get { return (bool)GetValue(PropertyUpdatedCallbackProperty); } set { SetValue(PropertyUpdatedCallbackProperty, value); } }
+		public static readonly DependencyProperty PropertyUpdatedCallbackProperty = DependencyProperty.Register("PropertyUpdatedCallback", typeof(bool), typeof(Data), new PropertyMetadata(false));
+
+		public bool PropertyValidationCallback { get { return (bool)GetValue(PropertyValidationCallbackProperty); } set { SetValue(PropertyValidationCallbackProperty, value); } }
+		public static readonly DependencyProperty PropertyValidationCallbackProperty = DependencyProperty.Register("PropertyValidationCallback", typeof(bool), typeof(Data), new PropertyMetadata(false));
 
 		//XAML Class Settings
 		public bool IsAttached { get { return (bool)GetValue(IsAttachedProperty); } set { SetValue(IsAttachedProperty, value); } }
