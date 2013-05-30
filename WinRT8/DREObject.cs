@@ -114,7 +114,7 @@ namespace System
 
 		protected sealed override void IncrementChangeCount()
 		{
-			if (ChangeCount >= BatchInterval) BatchUpdates();
+			if (ChangeCount >= (BatchInterval - 1)) BatchUpdates();
 			base.IncrementChangeCount();
 		}
 	}
