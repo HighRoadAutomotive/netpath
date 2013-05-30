@@ -242,7 +242,7 @@ namespace System
 
 			//If the change count is greater than the interval run the batch updates.
 			//Note that we don't need to use CompareExchange here because we only care if the value is greater-than-or-equal-to the batch interval, not what the exact overage is.
-			if (ChangeCount <= BatchInterval) return;
+			if (ChangeCount < BatchInterval) return;
 			Threading.Interlocked.Exchange(ref changeCount, 0);
 		}
 
