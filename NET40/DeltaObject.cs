@@ -29,7 +29,8 @@ namespace System
 	{
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private ConcurrentDictionary<HashID, object> values;
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private ConcurrentQueue<CMDItemBase> modifications;
-		[NonSerialized, IgnoreDataMember, XmlIgnore] private long ChangeCount;
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private long changeCount;
+		[IgnoreDataMember, XmlIgnore] protected long ChangeCount { get { return changeCount; } }
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private long batchInterval;
 		[IgnoreDataMember, XmlIgnore] public long BatchInterval { get { return batchInterval; } protected set { batchInterval = value; } }
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private DependencyObjectEx baseXAMLObject; 
@@ -41,7 +42,7 @@ namespace System
 		{
 			modifications = new ConcurrentQueue<CMDItemBase>();
 			values = new ConcurrentDictionary<HashID, object>();
-			ChangeCount = 0;
+			changeCount = 0;
 			BatchInterval = 0;
 			EnableBatching = false;
 			baseXAMLObject = null;
@@ -51,7 +52,7 @@ namespace System
 		{
 			modifications = new ConcurrentQueue<CMDItemBase>();
 			values = new ConcurrentDictionary<HashID, object>();
-			ChangeCount = 0;
+			changeCount = 0;
 			BatchInterval = 0;
 			EnableBatching = false;
 			this.baseXAMLObject = baseXAMLObject;
@@ -61,7 +62,7 @@ namespace System
 		{
 			modifications = new ConcurrentQueue<CMDItemBase>();
 			values = new ConcurrentDictionary<HashID, object>();
-			ChangeCount = 0;
+			changeCount = 0;
 			this.BatchInterval = BatchInterval;
 			EnableBatching = false;
 			baseXAMLObject = null;
@@ -71,7 +72,7 @@ namespace System
 		{
 			modifications = new ConcurrentQueue<CMDItemBase>();
 			values = new ConcurrentDictionary<HashID, object>();
-			ChangeCount = 0;
+			changeCount = 0;
 			this.BatchInterval = BatchInterval;
 			EnableBatching = false;
 			this.baseXAMLObject = baseXAMLObject;
@@ -241,19 +242,19 @@ namespace System
 		{
 			//If the change notification interval is less than zero, do nothing.
 			if (BatchInterval < 1) return;
-			Threading.Interlocked.Increment(ref ChangeCount);
+			Threading.Interlocked.Increment(ref changeCount);
 
 			//If the change count is greater than the interval run the batch updates.
 			//Note that we don't need to use CompareExchange here because we only care if the value is greater-than-or-equal-to the batch interval, not what the exact overage is.
 			if (ChangeCount <= BatchInterval) return;
-			Threading.Interlocked.Exchange(ref ChangeCount, 0);
+			Threading.Interlocked.Exchange(ref changeCount, 0);
 		}
 
 		protected virtual void OnDeserializingBase(StreamingContext context)
 		{
 			modifications = new ConcurrentQueue<CMDItemBase>();
 			values = new ConcurrentDictionary<HashID, object>();
-			ChangeCount = 0;
+			changeCount = 0;
 			BatchInterval = 0;
 		}
 	}
