@@ -486,6 +486,7 @@ namespace NETPath.Projects
 			{
 				t.DRECanPrimaryKey = false;
 				t.DREPrimaryKey = false;
+				t.DREUpdateMode = DataUpdateMode.Immediate;
 			}
 		}
 
