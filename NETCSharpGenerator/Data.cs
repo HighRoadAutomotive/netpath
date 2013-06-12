@@ -401,7 +401,7 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.XAMLType, false, false, true)));
 			code.AppendLine("\t{");
 			if (!o.CMDEnabled) code.AppendLine(string.Format("\t\tprivate {0} BaseDataObject;", o.HasClientType ? o.ClientType.Name : o.Name));
-			code.AppendLine(string.Format("\t\tpublic {0} DataObject {{ get {{ return BaseDataObject as {0}; }} {1}}}", o.HasClientType ? o.ClientType.Name : o.Name, !o.CMDEnabled ? "set { BaseDataObject = value; } " : ""));
+			code.AppendLine(string.Format("\t\tpublic {0} DataObject {{ get {{ if (BaseDataObject == null) BaseDataObject = new {0}(); return BaseDataObject as {0}; }} {1}}}", o.HasClientType ? o.ClientType.Name : o.Name, !o.CMDEnabled ? "set { BaseDataObject = value; } " : ""));
 			code.AppendLine();
 
 			if (o.XAMLHasExtensionData)

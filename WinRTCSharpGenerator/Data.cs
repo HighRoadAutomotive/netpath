@@ -108,7 +108,7 @@ namespace NETPath.Generators.WinRT.CS
 			if (o.HasXAMLType)
 			{
 				if (!o.CMDEnabled) code.AppendLine(string.Format("\t\tprivate {0} BaseXAMLObject;", o.XAMLType.Name));
-				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get {{ if(BaseXAMLObject == null) Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {{ BaseXAMLObject = new {0}(this); }}); return BaseXAMLObject as {0}; }} {1}}}", o.XAMLType.Name, !o.CMDEnabled ? "set { BaseXAMLObject = value; } " : ""));
+				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get {{ if (BaseXAMLObject == null) Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {{ BaseXAMLObject = new {0}(this); }}).GetResults(); return BaseXAMLObject as {0}; }} {1}}}", o.XAMLType.Name, !o.CMDEnabled ? "set { BaseXAMLObject = value; } " : ""));
 				code.AppendLine();
 			}
 			code.Append(GenerateProxyDCMCode(o));
@@ -133,7 +133,7 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendLine("\t\t\tif (Data == null) return null;");
 					code.AppendLine(string.Format("\t\t\t{0} v = null;", o.HasClientType ? o.ClientType.Name : o.Name));
 					code.AppendLine("\t\t\tif (Window.Current.Dispatcher.HasThreadAccess) v = ConvertFromXAMLObject(Data);");
-					code.AppendLine("\t\t\telse Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { v = ConvertFromXAMLObject(Data); });");
+					code.AppendLine("\t\t\telse Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { v = ConvertFromXAMLObject(Data); }).GetResults();");
 					code.AppendLine("\t\t\treturn v;");
 				}
 				else
@@ -162,7 +162,7 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendLine(string.Format("\t\t\t{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.DataType, o.CMDEnabled)), de.HasClientType ? de.ClientName : de.DataName));
 				else if (de.DataType.TypeMode == DataTypeMode.Array)
 					code.AppendLine(string.Format("\t\t\t{1} = new {0}[0];", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.DataType.CollectionGenericType, o.CMDEnabled)), de.HasClientType ? de.ClientName : de.DataName));
-			if (o.HasXAMLType) code.AppendLine(string.Format("\t\t\tWindow.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {{ BaseXAMLObject = new {0}(this); }});", o.XAMLType.Name));
+			if (o.HasXAMLType) code.AppendLine(string.Format("\t\t\tWindow.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {{ BaseXAMLObject = new {0}(this); }}).GetResults();", o.XAMLType.Name));
 			if (o.CMDEnabled && o.HasXAMLType)
 				foreach (DataElement de in o.Elements)
 				{
@@ -218,7 +218,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine("\t\t[OnDeserialized]");
 			code.AppendLine("\t\tprivate void OnDeserialized(StreamingContext context)");
 			code.AppendLine("\t\t{");
-			if (o.HasXAMLType && !IsServer) code.AppendLine(string.Format("\t\t\tWindow.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {{ BaseXAMLObject = new {0}(this); }});", o.XAMLType.Name));
+			if (o.HasXAMLType && !IsServer) code.AppendLine(string.Format("\t\t\tWindow.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {{ BaseXAMLObject = new {0}(this); }}).GetResults();", o.XAMLType.Name));
 			if (o.CMDEnabled && o.HasXAMLType)
 				foreach (DataElement de in o.Elements)
 				{
@@ -281,7 +281,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.XAMLType, false, false, true)));
 			code.AppendLine("\t{");
 			if (!o.CMDEnabled) code.AppendLine(string.Format("\t\tprivate {0} BaseDataObject;", o.HasClientType ? o.ClientType.Name : o.Name));
-			code.AppendLine(string.Format("\t\tpublic {0} DataObject {{ get {{ return BaseDataObject as {0}; }} {1}}}", o.HasClientType ? o.ClientType.Name : o.Name, !o.CMDEnabled ? "set { BaseDataObject = value; } " : ""));
+			code.AppendLine(string.Format("\t\tpublic {0} DataObject {{ get {{ if (BaseDataObject == null) BaseDataObject = new {0}(); return BaseDataObject as {0}; }} {1}}}", o.HasClientType ? o.ClientType.Name : o.Name, !o.CMDEnabled ? "set { BaseDataObject = value; } " : ""));
 			code.AppendLine();
 
 			code.AppendLine("\t\t//Properties");
@@ -295,7 +295,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine("\t\t\tif (Data == null) return null;");
 				code.AppendLine(string.Format("\t\t\t{0} v = null;", o.XAMLType.Name));
 				code.AppendLine("\t\t\tif (Window.Current.Dispatcher.HasThreadAccess) v = ConvertToXAMLObject(Data);");
-				code.AppendLine("\t\t\telse Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { v = ConvertToXAMLObject(Data); });");
+				code.AppendLine("\t\t\telse Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { v = ConvertToXAMLObject(Data); }).GetResults();");
 				code.AppendLine("\t\t\treturn v;");
 			}
 			else
