@@ -963,7 +963,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(");");
 			}
 			else
-				code.Append(GenerateClientInterfaceSyncMethod(o));
+				code.Append(GenerateClientCallbackSyncMethod(o));
 
 			return code.ToString();
 		}

@@ -45,7 +45,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine(string.Format("[assembly: System.Runtime.Serialization.ContractNamespaceAttribute(\"{0}\", ClrNamespace=\"{1}\")]", o.FullURI, o.FullName));
 
 			foreach (Namespace tn in o.Children)
-				code.AppendLine(GenerateContractNamespaceAttributes(tn));
+				code.Append(GenerateContractNamespaceAttributes(tn));
 
 			return code.ToString();
 		}
