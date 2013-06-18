@@ -241,7 +241,7 @@
 				</ListBox.ItemTemplate>
 			</ListBox>
 		</Grid>
-		<StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="2" Margin="0" HorizontalAlignment="Right" >
+		<StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="2" Margin="30,0" HorizontalAlignment="Right" >
 			<Button x:Name="ShowProject" Content="PROJECT" Width="200" FontSize="12pt" Click="ShowProject_Click" />
 			<ToggleButton x:Name="ShowFindReplace" Background="#4400FF00" Width="200" FontSize="12pt" Checked="ShowFindReplace_Checked" >
 				<StackPanel Orientation="Horizontal">
@@ -255,7 +255,16 @@
 					<TextBlock Text="{Binding Path=ErrorCount, TargetNullValue=''}" FontSize="9pt" Margin="2,0,0,0" />
 				</StackPanel>
 			</ToggleButton>
-			<ToggleButton x:Name="ShowOutput" Content="OUTPUT" Background="#440000FF" Width="200" FontSize="12pt" Checked="ShowOutput_Checked" />
+			<ToggleButton x:Name="ShowOutput" Content="OUTPUT" Background="#443333FF" Width="200" FontSize="12pt" Checked="ShowOutput_Checked" />
 		</StackPanel>
+		<Border Height="30" Width="30" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" IsHitTestVisible="False">
+			<Border.Background>
+				<LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+					<GradientStop Color="#FF222222" Offset="0" />
+					<GradientStop Color="#FF222222" Offset="0.5" />
+					<GradientStop Color="#FF0078C8" Offset="1" />
+				</LinearGradientBrush>
+			</Border.Background>
+		</Border>
 	</Grid>
 </ContentControl>
