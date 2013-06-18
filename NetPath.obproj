@@ -24,32 +24,32 @@
     <Rule Type="0" Target="6" Visibility="31" Pattern="wc:NETPath.Interface.Service.Method.*" BaseClassPattern="ct:" Enabled="True" ImmediateParentOnly="True" />
     <Rule Type="0" Target="6" Visibility="31" Pattern="wc:NETPath.Interface.Service.Property.*" BaseClassPattern="ct:" Enabled="True" ImmediateParentOnly="True" />
   </ObfuscationRules>
-  <Assembly Load="true" Path=".\Build\NETPath.exe" XapEntryName="" KeyFilePath=".\ProspectiveSoftwareCodeSigning.pfx" CertFilePath=".\ProspectiveSoftwareCodeSigning.pfx" TimeStampURL="http://timestamp.digicert.com" Embed="True" AddExceptionReporting="False" PfxPassword="TQBBAFMAUwByAGUAbABhAHkAMQA=" PfxPasswordCert="TQBBAFMAUwByAGUAbABhAHkAMQA=">
+  <Assembly Load="true" Path=".\Build\NETPath.exe" XapEntryName="" KeyFilePath="" CertFilePath=".\ProspectiveSoftwareCodeSigning.pfx" TimeStampURL="http://timestamp.digicert.com" Embed="True" AddExceptionReporting="False" PfxPassword="TQBBAFMAUwByAGUAbABhAHkAMQA=" PfxPasswordCert="TQBBAFMAUwByAGUAbABhAHkAMQA=">
     <ObfuscationSettings EncryptStrings="True" EncryptMethods="True" EncryptConstants="True" SuppressReflector="True" ReduceMetaData="False" ObfuscationDisposition="0" FlowObfuscation="3" SuppressILDASM="True" SuppressReflection="True" CombineResources="True" EncryptResources="True" CompressResources="True" MarkAsSealed="True" EnableTamperDetection="False" EnableAntiDebugging="True" SymbolRenaming="True" HideExternalCalls="True" HideInternalCalls="True" GeneratePdbFile="True" ObfuscatePdbFileNames="True" IncludeLocalVariablesInPdbFile="True" Encrypt="False" Compress="False" MSBuild="False" ObfuscatedNamespace="A" RetainNamespace="False" ModuleInitializationMethod="" LicensingMerge="False" RemoveConstants="False">
       <Watermarks Watermark0="" Watermark1="" Watermark2="" Watermark3="" Watermark4="" Watermark5="" Watermark6="" Watermark7="" Watermark8="" Watermark9="" />
     </ObfuscationSettings>
   </Assembly>
-  <Assembly Load="true" Path=".\Build\NETPath.Generators.Interfaces.dll" XapEntryName="" KeyFilePath=".\ProspectiveSoftwareCodeSigning.pfx" CertFilePath=".\ProspectiveSoftwareCodeSigning.pfx" TimeStampURL="http://timestamp.digicert.com" Embed="True" AddExceptionReporting="False" PfxPassword="TQBBAFMAUwByAGUAbABhAHkAMQA=" PfxPasswordCert="TQBBAFMAUwByAGUAbABhAHkAMQA=">
+  <Assembly Load="true" Path=".\Build\NETPath.Generators.Interfaces.dll" XapEntryName="" KeyFilePath="" CertFilePath=".\ProspectiveSoftwareCodeSigning.pfx" TimeStampURL="http://timestamp.digicert.com" Embed="True" AddExceptionReporting="False" PfxPassword="TQBBAFMAUwByAGUAbABhAHkAMQA=" PfxPasswordCert="TQBBAFMAUwByAGUAbABhAHkAMQA=">
     <ObfuscationSettings EncryptStrings="True" EncryptMethods="True" EncryptConstants="True" SuppressReflector="True" ReduceMetaData="False" ObfuscationDisposition="1" FlowObfuscation="3" SuppressILDASM="True" SuppressReflection="True" CombineResources="True" EncryptResources="True" CompressResources="True" MarkAsSealed="True" EnableTamperDetection="False" EnableAntiDebugging="True" SymbolRenaming="True" HideExternalCalls="True" HideInternalCalls="True" GeneratePdbFile="True" ObfuscatePdbFileNames="True" IncludeLocalVariablesInPdbFile="True" Encrypt="False" Compress="False" MSBuild="False" ObfuscatedNamespace="A" RetainNamespace="False" ModuleInitializationMethod="" LicensingMerge="False" RemoveConstants="False">
       <Watermarks Watermark0="" Watermark1="" Watermark2="" Watermark3="" Watermark4="" Watermark5="" Watermark6="" Watermark7="" Watermark8="" Watermark9="" />
     </ObfuscationSettings>
   </Assembly>
-  <Assembly Load="true" Path=".\Build\NETPath.Generators.NET.CS.dll" XapEntryName="" KeyFilePath=".\ProspectiveSoftwareCodeSigning.pfx" CertFilePath=".\ProspectiveSoftwareCodeSigning.pfx" TimeStampURL="http://timestamp.digicert.com" Embed="True" AddExceptionReporting="False" PfxPassword="TQBBAFMAUwByAGUAbABhAHkAMQA=" PfxPasswordCert="TQBBAFMAUwByAGUAbABhAHkAMQA=">
+  <Assembly Load="true" Path=".\Build\NETPath.Generators.NET.CS.dll" XapEntryName="" KeyFilePath="" CertFilePath=".\ProspectiveSoftwareCodeSigning.pfx" TimeStampURL="http://timestamp.digicert.com" Embed="True" AddExceptionReporting="False" PfxPassword="TQBBAFMAUwByAGUAbABhAHkAMQA=" PfxPasswordCert="TQBBAFMAUwByAGUAbABhAHkAMQA=">
     <ObfuscationSettings EncryptStrings="True" EncryptMethods="True" EncryptConstants="True" SuppressReflector="True" ReduceMetaData="False" ObfuscationDisposition="1" FlowObfuscation="3" SuppressILDASM="True" SuppressReflection="True" CombineResources="True" EncryptResources="True" CompressResources="True" MarkAsSealed="True" EnableTamperDetection="False" EnableAntiDebugging="True" SymbolRenaming="True" HideExternalCalls="True" HideInternalCalls="True" GeneratePdbFile="True" ObfuscatePdbFileNames="True" IncludeLocalVariablesInPdbFile="True" Encrypt="False" Compress="False" MSBuild="False" ObfuscatedNamespace="A" RetainNamespace="False" ModuleInitializationMethod="" LicensingMerge="False" RemoveConstants="False">
       <Watermarks Watermark0="" Watermark1="" Watermark2="" Watermark3="" Watermark4="" Watermark5="" Watermark6="" Watermark7="" Watermark8="" Watermark9="" />
     </ObfuscationSettings>
   </Assembly>
-  <Assembly Load="true" Path=".\Build\NETPath.Generators.WinRT.CS.dll" XapEntryName="" KeyFilePath=".\ProspectiveSoftwareCodeSigning.pfx" CertFilePath=".\ProspectiveSoftwareCodeSigning.pfx" TimeStampURL="http://timestamp.digicert.com" Embed="True" AddExceptionReporting="False" PfxPassword="TQBBAFMAUwByAGUAbABhAHkAMQA=" PfxPasswordCert="TQBBAFMAUwByAGUAbABhAHkAMQA=">
+  <Assembly Load="true" Path=".\Build\NETPath.Generators.WinRT.CS.dll" XapEntryName="" KeyFilePath="" CertFilePath=".\ProspectiveSoftwareCodeSigning.pfx" TimeStampURL="http://timestamp.digicert.com" Embed="True" AddExceptionReporting="False" PfxPassword="TQBBAFMAUwByAGUAbABhAHkAMQA=" PfxPasswordCert="TQBBAFMAUwByAGUAbABhAHkAMQA=">
     <ObfuscationSettings EncryptStrings="True" EncryptMethods="True" EncryptConstants="True" SuppressReflector="True" ReduceMetaData="False" ObfuscationDisposition="1" FlowObfuscation="3" SuppressILDASM="True" SuppressReflection="True" CombineResources="True" EncryptResources="True" CompressResources="True" MarkAsSealed="True" EnableTamperDetection="False" EnableAntiDebugging="True" SymbolRenaming="True" HideExternalCalls="True" HideInternalCalls="True" GeneratePdbFile="True" ObfuscatePdbFileNames="True" IncludeLocalVariablesInPdbFile="True" Encrypt="False" Compress="False" MSBuild="False" ObfuscatedNamespace="A" RetainNamespace="False" ModuleInitializationMethod="" LicensingMerge="False" RemoveConstants="False">
       <Watermarks Watermark0="" Watermark1="" Watermark2="" Watermark3="" Watermark4="" Watermark5="" Watermark6="" Watermark7="" Watermark8="" Watermark9="" />
     </ObfuscationSettings>
   </Assembly>
-  <Assembly Load="true" Path=".\Build\NETPath.Projects.dll" XapEntryName="" KeyFilePath=".\ProspectiveSoftwareCodeSigning.pfx" CertFilePath=".\ProspectiveSoftwareCodeSigning.pfx" TimeStampURL="http://timestamp.digicert.com" Embed="True" AddExceptionReporting="False" PfxPassword="TQBBAFMAUwByAGUAbABhAHkAMQA=" PfxPasswordCert="TQBBAFMAUwByAGUAbABhAHkAMQA=">
+  <Assembly Load="true" Path=".\Build\NETPath.Projects.dll" XapEntryName="" KeyFilePath="" CertFilePath=".\ProspectiveSoftwareCodeSigning.pfx" TimeStampURL="http://timestamp.digicert.com" Embed="True" AddExceptionReporting="False" PfxPassword="TQBBAFMAUwByAGUAbABhAHkAMQA=" PfxPasswordCert="TQBBAFMAUwByAGUAbABhAHkAMQA=">
     <ObfuscationSettings EncryptStrings="True" EncryptMethods="True" EncryptConstants="True" SuppressReflector="True" ReduceMetaData="False" ObfuscationDisposition="1" FlowObfuscation="3" SuppressILDASM="True" SuppressReflection="True" CombineResources="True" EncryptResources="True" CompressResources="True" MarkAsSealed="True" EnableTamperDetection="False" EnableAntiDebugging="True" SymbolRenaming="True" HideExternalCalls="True" HideInternalCalls="True" GeneratePdbFile="True" ObfuscatePdbFileNames="True" IncludeLocalVariablesInPdbFile="True" Encrypt="False" Compress="False" MSBuild="False" ObfuscatedNamespace="A" RetainNamespace="False" ModuleInitializationMethod="" LicensingMerge="False" RemoveConstants="False">
       <Watermarks Watermark0="" Watermark1="" Watermark2="" Watermark3="" Watermark4="" Watermark5="" Watermark6="" Watermark7="" Watermark8="" Watermark9="" />
     </ObfuscationSettings>
   </Assembly>
-  <Assembly Load="true" Path=".\Build\npsc.exe" XapEntryName="" KeyFilePath=".\ProspectiveSoftwareCodeSigning.pfx" CertFilePath=".\ProspectiveSoftwareCodeSigning.pfx" TimeStampURL="http://timestamp.digicert.com" Embed="True" AddExceptionReporting="False" PfxPassword="TQBBAFMAUwByAGUAbABhAHkAMQA=" PfxPasswordCert="TQBBAFMAUwByAGUAbABhAHkAMQA=">
+  <Assembly Load="true" Path=".\Build\npsc.exe" XapEntryName="" KeyFilePath="" CertFilePath=".\ProspectiveSoftwareCodeSigning.pfx" TimeStampURL="http://timestamp.digicert.com" Embed="True" AddExceptionReporting="False" PfxPassword="TQBBAFMAUwByAGUAbABhAHkAMQA=" PfxPasswordCert="TQBBAFMAUwByAGUAbABhAHkAMQA=">
     <ObfuscationSettings EncryptStrings="True" EncryptMethods="True" EncryptConstants="True" SuppressReflector="True" ReduceMetaData="False" ObfuscationDisposition="0" FlowObfuscation="3" SuppressILDASM="True" SuppressReflection="True" CombineResources="True" EncryptResources="True" CompressResources="True" MarkAsSealed="True" EnableTamperDetection="False" EnableAntiDebugging="True" SymbolRenaming="True" HideExternalCalls="True" HideInternalCalls="True" GeneratePdbFile="True" ObfuscatePdbFileNames="True" IncludeLocalVariablesInPdbFile="True" Encrypt="False" Compress="False" MSBuild="False" ObfuscatedNamespace="A" RetainNamespace="False" ModuleInitializationMethod="" LicensingMerge="False" RemoveConstants="False">
       <Watermarks Watermark0="" Watermark1="" Watermark2="" Watermark3="" Watermark4="" Watermark5="" Watermark6="" Watermark7="" Watermark8="" Watermark9="" />
     </ObfuscationSettings>
@@ -60,7 +60,6 @@
     <WS ID="NETPath.Interface.Bindings.WSFederationHTTP..ctor(ServiceBindingWSFederationHTTP Binding)5914" />
     <WS ID="NETPath.Interface.Data.TypeSelector..ctor()5414" />
     <WS ID="NETPath.Interface.Host.Endpoint..ctor(HostEndpoint Data)5914" />
-    <WS ID="NETPath.Interface.Dialogs.NewItem.NewItemBindingTypesList_SelectionChanged(Object sender, SelectionChangedEventArgs e)597" />
     <WS ID="NETPath.Interface.Host.MetadataBehavior..ctor()549" />
     <WS ID="NETPath.Interface.Host.WebHTTPBehavior..ctor()549" />
     <WS ID="NETPath.Interface.Host.MetadataBehavior..ctor(HostMetadataBehavior Data)5925" />
@@ -68,24 +67,25 @@
     <WS ID="NETPath.Interface.Dialogs.NewItem.NewItemProjectNamespaceRoot_Checked(Object sender, RoutedEventArgs e)5912" />
     <WS ID="NETPath.Interface.Host.Endpoint..ctor(HostEndpoint Data)59118" />
     <WS ID="NETPath.Interface.Host.WebHTTPBehavior..ctor(HostWebHTTPBehavior Data)5413" />
-    <WS ID="NETPath.Interface.Host.ThrottlingBehavior..ctor()549" />
+    <WS ID="NETPath.Generators.Interfaces.Loader.LoadModule(GenerationModule Module, GenerationLanguage Language)1485" />
+    <WS ID="NETPath.Interface.Dialogs.NewItem.NewItemTypesList_SelectionChanged(Object sender, SelectionChangedEventArgs e)59172" />
     <WS ID="NETPath.Interface.Documentation.Class..ctor()549" />
     <WS ID="NETPath.Interface.Host.DebugBehavior..ctor(HostDebugBehavior Data)5435" />
+    <WS ID="NETPath.Interface.Dialogs.NewItem.NewItemTypesList_SelectionChanged(Object sender, SelectionChangedEventArgs e)59114" />
+    <WS ID="NETPath.Interface.Host.ThrottlingBehavior..ctor(HostThrottlingBehavior Data)5413" />
     <WS ID="NETPath.Interface.Host.DebugBehavior..ctor()549" />
-    <WS ID="NETPath.Interface.Host.MetadataBehavior..ctor(HostMetadataBehavior Data)5914" />
     <WS ID="NETPath.Interface.Host.DebugBehavior..ctor(HostDebugBehavior Data)5914" />
     <WS ID="NETPath.Interface.Documentation.Standard..ctor()549" />
     <WS ID="NETPath.Interface.Bindings.WS2007FederationHTTP..ctor(ServiceBindingWS2007FederationHTTP Binding)5914" />
+    <WS ID="NETPath.Interface.Host.Endpoint..ctor()549" />
     <WS ID="NETPath.Interface.Host.Host..ctor(Host Data)5946" />
-    <WS ID="NETPath.Interface.Dialogs.NewItem.NewItemTypesList_SelectionChanged(Object sender, SelectionChangedEventArgs e)59172" />
-    <WS ID="NETPath.Generators.Interfaces.Loader.LoadModule(GenerationModule Module, GenerationLanguage Language)1485" />
+    <WS ID="NETPath.Interface.Host.MetadataBehavior..ctor(HostMetadataBehavior Data)5914" />
     <WS ID="NETPath.Interface.Host.MetadataBehavior..ctor(HostMetadataBehavior Data)5435" />
-    <WS ID="NETPath.Interface.Host.ThrottlingBehavior..ctor(HostThrottlingBehavior Data)5413" />
+    <WS ID="NETPath.Interface.Host.ThrottlingBehavior..ctor()549" />
     <WS ID="NETPath.Interface.Service.Method..ctor(Method Data)5922" />
     <WS ID="NETPath.Interface.Service.Property..ctor(Property Data)5420" />
-    <WS ID="NETPath.Interface.Dialogs.NewItem.NewItemTypesList_SelectionChanged(Object sender, SelectionChangedEventArgs e)59114" />
+    <WS ID="NETPath.Interface.Dialogs.NewItem.NewItemBindingTypesList_SelectionChanged(Object sender, SelectionChangedEventArgs e)597" />
     <WS ID="NETPath.Interface.Service.Property..ctor()549" />
-    <WS ID="NETPath.Interface.Host.Endpoint..ctor()549" />
     <WS ID="NETPath.Interface.Data.TypeEditor..ctor()5419" />
     <WS ID="NETPath.Interface.Service.Method..ctor(Method Data)5426" />
   </WarningSuppressions>
