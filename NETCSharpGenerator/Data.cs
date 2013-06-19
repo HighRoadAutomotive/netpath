@@ -357,19 +357,19 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine("\t\t//Data Revision Exchange Support");
 				code.AppendLine(string.Format("\t\tprotected override {0}void BatchUpdates()", o.DataRevisionServiceNames.Any(a => a.IsAwaitable) ? "async " : ""));
 				code.AppendLine("\t\t{");
-				if (o.Elements.Any(a => a.DREUpdateMode == DataUpdateMode.Batch))
+				if (o.Elements.Any(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch))
 				{
 					code.AppendLine("\t\t\tvar delta = new List<CMDItemBase>(GetDeltaValues());");
 					foreach (var drs in o.DataRevisionServiceNames.Where(d => d.IsServer == IsServer))
 					{
-						if (o.Elements.Any(a => a.DREUpdateMode == DataUpdateMode.Batch) && !IsServer && Globals.CurrentProjectID == drs.ProjectID)
+						if (o.Elements.Any(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch) && !IsServer && Globals.CurrentProjectID == drs.ProjectID)
 							code.AppendLine(string.Format("\t\t\t{4}{0}Proxy.Current.BatchUpdate{1}DRE{3}({2},", drs.Path, o.HasClientType ? o.ClientType.Name : o.Name, "_DREID", drs.IsAwaitable ? "Async" : "", drs.IsAwaitable ? "await " : ""));
 						else if (IsServer)
 							code.AppendLine(string.Format("\t\t\t{4}{0}Base.CallbackBatchUpdate{1}DRE{3}(Guid.Empty, {2},", drs.Path, o.Name, "_DREID", drs.IsAwaitable ? "Async" : "", drs.IsAwaitable ? "await " : ""));
 						else continue;
-						foreach (var t in o.Elements.Where(a => a.DREUpdateMode == DataUpdateMode.Batch && !a.DREPrimaryKey && !(a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
+						foreach (var t in o.Elements.Where(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch && !a.DREPrimaryKey && !(a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
 							code.AppendLine(string.Format("\t\t\t\tdelta.FirstOrDefault(a => a.Key == {0}Property.ID) != null ? delta.First(a => a.Key == {0}Property.ID) as CMDItemValue<{1}> : null,", t.HasClientType ? t.ClientName : t.DataName, DataTypeGenerator.GenerateType(t.DataType)));
-						foreach (var t in o.Elements.Where(a => a.DREUpdateMode == DataUpdateMode.Batch && !a.DREPrimaryKey && (a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
+						foreach (var t in o.Elements.Where(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch && !a.DREPrimaryKey && (a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
 							code.AppendLine(string.Format("\t\t\t\t{0}.GetDelta(),", t.HasClientType ? t.ClientName : t.DataName));
 						code.Remove(code.Length - 3, 3);
 						code.AppendLine(");");
