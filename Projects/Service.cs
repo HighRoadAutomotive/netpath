@@ -72,7 +72,7 @@ namespace NETPath.Projects
 		public static readonly DependencyProperty SBMaxItemsInObjectGraphProperty = DependencyProperty.Register("SBMaxItemsInObjectGraph", typeof(int), typeof(Service), new PropertyMetadata(65536));
 
 		public bool SBReleaseServiceInstanceOnTransactionComplete { get { return (bool)GetValue(SBReleaseServiceInstanceOnTransactionCompleteProperty); } set { SetValue(SBReleaseServiceInstanceOnTransactionCompleteProperty, value); } }
-		public static readonly DependencyProperty SBReleaseServiceInstanceOnTransactionCompleteProperty = DependencyProperty.Register("SReleaseServiceInstanceOnTransactionComplete", typeof(bool), typeof(Service), new PropertyMetadata(true));
+		public static readonly DependencyProperty SBReleaseServiceInstanceOnTransactionCompleteProperty = DependencyProperty.Register("SReleaseServiceInstanceOnTransactionComplete", typeof(bool), typeof(Service), new PropertyMetadata(false));
 
 		public bool SBTransactionAutoCompleteOnSessionClose { get { return (bool)GetValue(SBTransactionAutoCompleteOnSessionCloseProperty); } set { SetValue(SBTransactionAutoCompleteOnSessionCloseProperty, value); } }
 		public static readonly DependencyProperty SBTransactionAutoCompleteOnSessionCloseProperty = DependencyProperty.Register("SBTransactionAutoCompleteOnSessionClose", typeof(bool), typeof(Service), new PropertyMetadata(false));
@@ -81,7 +81,7 @@ namespace NETPath.Projects
 		public static readonly DependencyProperty SBTransactionIsolationLevelProperty = DependencyProperty.Register("SBTransactionIsolationLevel", typeof(IsolationLevel), typeof(Service), new PropertyMetadata(IsolationLevel.Unspecified));
 
 		public TimeSpan SBTransactionTimeout { get { return (TimeSpan)GetValue(SBTransactionTimeoutProperty); } set { SetValue(SBTransactionTimeoutProperty, value); } }
-		public static readonly DependencyProperty SBTransactionTimeoutProperty = DependencyProperty.Register("SBTransactionTimeout", typeof(TimeSpan), typeof(Service), new PropertyMetadata(new TimeSpan(0, 0, 30)));
+		public static readonly DependencyProperty SBTransactionTimeoutProperty = DependencyProperty.Register("SBTransactionTimeout", typeof(TimeSpan), typeof(Service), new PropertyMetadata(new TimeSpan(0, 0, 00)));
 
 		public bool SBUseSynchronizationContext { get { return (bool)GetValue(SBUseSynchronizationContextProperty); } set { SetValue(SBUseSynchronizationContextProperty, value); } }
 		public static readonly DependencyProperty SBUseSynchronizationContextProperty = DependencyProperty.Register("SBUseSynchronizationContext", typeof(bool), typeof(Service), new PropertyMetadata(true));
@@ -109,7 +109,7 @@ namespace NETPath.Projects
 		public static readonly DependencyProperty CBTransactionIsolationLevelProperty = DependencyProperty.Register("CBTransactionIsolationLevel", typeof(IsolationLevel), typeof(Service), new PropertyMetadata(IsolationLevel.Unspecified));
 
 		public TimeSpan CBTransactionTimeout { get { return (TimeSpan)GetValue(CBTransactionTimeoutProperty); } set { SetValue(CBTransactionTimeoutProperty, value); } }
-		public static readonly DependencyProperty CBTransactionTimeoutProperty = DependencyProperty.Register("CBTransactionTimeout", typeof(TimeSpan), typeof(Service), new PropertyMetadata(new TimeSpan(0, 0, 30)));
+		public static readonly DependencyProperty CBTransactionTimeoutProperty = DependencyProperty.Register("CBTransactionTimeout", typeof(TimeSpan), typeof(Service), new PropertyMetadata(new TimeSpan(0, 0, 00)));
 
 		public bool CBUseSynchronizationContext { get { return (bool)GetValue(CBUseSynchronizationContextProperty); } set { SetValue(CBUseSynchronizationContextProperty, value); } }
 		public static readonly DependencyProperty CBUseSynchronizationContextProperty = DependencyProperty.Register("CBUseSynchronizationContext", typeof(bool), typeof(Service), new PropertyMetadata(true));
