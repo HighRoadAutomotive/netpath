@@ -235,4 +235,74 @@ namespace NETPath.Interface.Service
 			return System.Transactions.IsolationLevel.Unspecified;
 		}
 	}
+
+	[ValueConversion(typeof(System.ServiceModel.ImpersonationOption), typeof(int))]
+	public class ImpersonationOptionConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (System.ServiceModel.ImpersonationOption)value;
+			if (lt == System.ServiceModel.ImpersonationOption.Allowed) return 0;
+			if (lt == System.ServiceModel.ImpersonationOption.NotAllowed) return 1;
+			if (lt == System.ServiceModel.ImpersonationOption.Required) return 2;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return System.ServiceModel.ImpersonationOption.Allowed;
+			if (lt == 1) return System.ServiceModel.ImpersonationOption.NotAllowed;
+			if (lt == 2) return System.ServiceModel.ImpersonationOption.Required;
+			return System.ServiceModel.ImpersonationOption.Allowed;
+		}
+	}
+
+	[ValueConversion(typeof(System.ServiceModel.ReleaseInstanceMode), typeof(int))]
+	public class ReleaseInstanceModeConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (System.ServiceModel.ReleaseInstanceMode)value;
+			if (lt == System.ServiceModel.ReleaseInstanceMode.None) return 0;
+			if (lt == System.ServiceModel.ReleaseInstanceMode.AfterCall) return 1;
+			if (lt == System.ServiceModel.ReleaseInstanceMode.BeforeAndAfterCall) return 2;
+			if (lt == System.ServiceModel.ReleaseInstanceMode.BeforeCall) return 3;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return System.ServiceModel.ReleaseInstanceMode.None;
+			if (lt == 1) return System.ServiceModel.ReleaseInstanceMode.AfterCall;
+			if (lt == 2) return System.ServiceModel.ReleaseInstanceMode.BeforeAndAfterCall;
+			if (lt == 3) return System.ServiceModel.ReleaseInstanceMode.BeforeCall;
+			return System.ServiceModel.ReleaseInstanceMode.None;
+		}
+	}
+
+	[ValueConversion(typeof(Projects.TransactionFlowMode), typeof(int))]
+	public class TransactionFlowModeConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (Projects.TransactionFlowMode)value;
+			if (lt == Projects.TransactionFlowMode.None) return 0;
+			if (lt == Projects.TransactionFlowMode.Allowed) return 1;
+			if (lt == Projects.TransactionFlowMode.Mandatory) return 2;
+			if (lt == Projects.TransactionFlowMode.NotAllowed) return 3;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return Projects.TransactionFlowMode.None;
+			if (lt == 1) return Projects.TransactionFlowMode.Allowed;
+			if (lt == 2) return Projects.TransactionFlowMode.Mandatory;
+			if (lt == 3) return Projects.TransactionFlowMode.NotAllowed;
+			return Projects.TransactionFlowMode.None;
+		}
+	}
 }

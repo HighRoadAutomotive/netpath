@@ -20,6 +20,14 @@ namespace NETPath.Projects
 		Both = 3,
 	}
 
+	public enum TransactionFlowMode
+	{
+		None = 0,
+		Allowed = 1,
+		Mandatory = 2,
+		NotAllowed = 3,
+	}
+
 	public class Service : DataType
 	{
 		public ObservableCollection<Operation> ServiceOperations { get { return (ObservableCollection<Operation>)GetValue(ServiceOperationsProperty); } set { SetValue(ServiceOperationsProperty, value); } }
@@ -72,7 +80,7 @@ namespace NETPath.Projects
 		public static readonly DependencyProperty SBMaxItemsInObjectGraphProperty = DependencyProperty.Register("SBMaxItemsInObjectGraph", typeof(int), typeof(Service), new PropertyMetadata(65536));
 
 		public bool SBReleaseServiceInstanceOnTransactionComplete { get { return (bool)GetValue(SBReleaseServiceInstanceOnTransactionCompleteProperty); } set { SetValue(SBReleaseServiceInstanceOnTransactionCompleteProperty, value); } }
-		public static readonly DependencyProperty SBReleaseServiceInstanceOnTransactionCompleteProperty = DependencyProperty.Register("SReleaseServiceInstanceOnTransactionComplete", typeof(bool), typeof(Service), new PropertyMetadata(false));
+		public static readonly DependencyProperty SBReleaseServiceInstanceOnTransactionCompleteProperty = DependencyProperty.Register("SReleaseServiceInstanceOnTransactionComplete", typeof(bool), typeof(Service), new PropertyMetadata(true));
 
 		public bool SBTransactionAutoCompleteOnSessionClose { get { return (bool)GetValue(SBTransactionAutoCompleteOnSessionCloseProperty); } set { SetValue(SBTransactionAutoCompleteOnSessionCloseProperty, value); } }
 		public static readonly DependencyProperty SBTransactionAutoCompleteOnSessionCloseProperty = DependencyProperty.Register("SBTransactionAutoCompleteOnSessionClose", typeof(bool), typeof(Service), new PropertyMetadata(false));
@@ -447,6 +455,32 @@ namespace NETPath.Projects
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(Method));
 
+		public ObservableCollection<MethodParameter> Parameters { get { return (ObservableCollection<MethodParameter>)GetValue(ParametersProperty); } set { SetValue(ParametersProperty, value); } }
+		public static readonly DependencyProperty ParametersProperty = DependencyProperty.Register("Parameters", typeof(ObservableCollection<MethodParameter>), typeof(Method));
+
+		// Behavior
+		public bool HasOperationBehavior { get { return (bool)GetValue(HasOperationBehaviorProperty); } set { SetValue(HasOperationBehaviorProperty, value); } }
+		public static readonly DependencyProperty HasOperationBehaviorProperty = DependencyProperty.Register("HasOperationBehavior", typeof(bool), typeof(Method), new PropertyMetadata(false));
+
+		public bool OBAutoDisposeParameters { get { return (bool)GetValue(OBAutoDisposeParametersProperty); } set { SetValue(OBAutoDisposeParametersProperty, value); } }
+		public static readonly DependencyProperty OBAutoDisposeParametersProperty = DependencyProperty.Register("OBAutoDisposeParameters", typeof(bool), typeof(Method), new PropertyMetadata(true));
+
+		public ImpersonationOption OBImpersonation { get { return (ImpersonationOption)GetValue(OBImpersonationProperty); } set { SetValue(OBImpersonationProperty, value); } }
+		public static readonly DependencyProperty OBImpersonationProperty = DependencyProperty.Register("OBImpersonation", typeof(ImpersonationOption), typeof(Method), new PropertyMetadata(ImpersonationOption.NotAllowed));
+
+		public ReleaseInstanceMode OBReleaseInstanceMode { get { return (ReleaseInstanceMode)GetValue(OBReleaseInstanceModeProperty); } set { SetValue(OBReleaseInstanceModeProperty, value); } }
+		public static readonly DependencyProperty OBReleaseInstanceModeProperty = DependencyProperty.Register("OBReleaseInstanceMode", typeof(ReleaseInstanceMode), typeof(Method), new PropertyMetadata(ReleaseInstanceMode.None));
+
+		public bool OBTransactionAutoComplete { get { return (bool)GetValue(OBTransactionAutoCompleteProperty); } set { SetValue(OBTransactionAutoCompleteProperty, value); } }
+		public static readonly DependencyProperty OBTransactionAutoCompleteProperty = DependencyProperty.Register("OBTransactionAutoComplete", typeof(bool), typeof(Method), new PropertyMetadata(true));
+
+		public bool OBTransactionScopeRequired { get { return (bool)GetValue(OBTransactionScopeRequiredProperty); } set { SetValue(OBTransactionScopeRequiredProperty, value); } }
+		public static readonly DependencyProperty OBTransactionScopeRequiredProperty = DependencyProperty.Register("OBTransactionScopeRequired", typeof(bool), typeof(Method), new PropertyMetadata(false));
+
+		public TransactionFlowMode OBTransactionFlowMode { get { return (TransactionFlowMode)GetValue(OBTransactionFlowModeProperty); } set { SetValue(OBTransactionFlowModeProperty, value); } }
+		public static readonly DependencyProperty OBTransactionFlowModeProperty = DependencyProperty.Register("OBTransactionFlowMode", typeof(TransactionFlowMode), typeof(Method), new PropertyMetadata(TransactionFlowMode.None));
+
+		// REST
 		public bool IsRESTMethod { get { return (bool)GetValue(IsRESTMethodProperty); } set { SetValue(IsRESTMethodProperty, value); } }
 		public static readonly DependencyProperty IsRESTMethodProperty = DependencyProperty.Register("IsRESTMethod", typeof(bool), typeof(Method), new PropertyMetadata(false, IsRESTMethodChangedCallback));
 
@@ -460,9 +494,6 @@ namespace NETPath.Projects
 
 		public MethodREST REST { get { return (MethodREST)GetValue(RESTProperty); } set { SetValue(RESTProperty, value); } }
 		public static readonly DependencyProperty RESTProperty = DependencyProperty.Register("REST", typeof(MethodREST), typeof(Method));
-
-		public ObservableCollection<MethodParameter> Parameters { get { return (ObservableCollection<MethodParameter>)GetValue(ParametersProperty); } set { SetValue(ParametersProperty, value); } }
-		public static readonly DependencyProperty ParametersProperty = DependencyProperty.Register("Parameters", typeof(ObservableCollection<MethodParameter>), typeof(Method));
 
 		public Method()
 		{
