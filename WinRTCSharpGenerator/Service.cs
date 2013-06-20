@@ -1062,7 +1062,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, false) : GenerateClientInterfaceMethodCode45(x));
 			}
 
-			if (dcmtype.Elements.Any(a => a.DREUpdateMode == DataUpdateMode.Batch))
+			if (dcmtype.Elements.Any(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch))
 			{
 				var tp = new ObservableCollection<MethodParameter>();
 				var x = new Method(string.Format("BatchUpdate{0}DRE", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
@@ -1221,7 +1221,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.Append(IsServer ? GenerateServiceServerImmediateMethodDCM45(x, dcmtype, de.DataName, edt.TypeMode, o.UseTPLForCallbacks) : GenerateServiceClientMethodDCM45(x, o.UseTPLForCallbacks));
 			}
 
-			if (dcmtype.Elements.Any(a => a.DREUpdateMode == DataUpdateMode.Batch))
+			if (dcmtype.Elements.Any(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch))
 			{
 				var tp = new ObservableCollection<MethodParameter>();
 				var x = new Method(string.Format("BatchUpdate{0}DRE", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
@@ -1579,7 +1579,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, true) : GenerateClientInterfaceMethodCode45(x));
 			}
 
-			if (dcmtype.Elements.Any(a => a.DREUpdateMode == DataUpdateMode.Batch))
+			if (dcmtype.Elements.Any(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch))
 			{
 				var tp = new ObservableCollection<MethodParameter>();
 				var x = new Method(string.Format("BatchUpdate{0}DRECallback", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
@@ -1720,7 +1720,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.Append(!IsServer ? GenerateCallbackClientImmediateMethodDCM45(x, dcmtype, de.DataName, edt.TypeMode, o.UseTPLForCallbacks) : GenerateCallbackServerMethodDCM45(x, o.UseTPLForCallbacks));
 			}
 
-			if (dcmtype.Elements.Any(a => a.DREUpdateMode == DataUpdateMode.Batch))
+			if (dcmtype.Elements.Any(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch))
 			{
 				var tp = new ObservableCollection<MethodParameter>();
 				var x = new Method(string.Format("BatchUpdate{0}DRECallback", dcmtype.Name), o.Owner) { Parameters = tp, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = new DataType(PrimitiveTypes.Void) };
