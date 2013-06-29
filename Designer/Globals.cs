@@ -22,6 +22,8 @@ namespace NETPath
 		public static string ApplicationPath { get; set; }
 		public static Version ApplicationVersion { get; set; }
 		public static string ArgSolutionPath { get; set; }
+		public static Prospective.Server.Licensing.UsageData Usage { get; set; }
+		public const string LicenseVerification = "AAAEAAG6rTV/gUg+VZjvEZQDqWy9l63DgzkUSg0tyJOBDDS58FKoRvErRfUkvxdlgUCCTTvw5b7lXtVPFxd3HI+SFzzTi5X0neWXCNXjWX/FVnIaCBioKHG6eYwgSE86j2ybYQbGlmy+R9vpj3cA12E6a4efoQl/5yqawkUk67iQGnJi0YiA6LUAQUoCN+XipZN3pEn+EuAPGVAz1W0b8pYX99oSrWr3CQwnGCg6/2Y5radzYdPDsZgWkKkWhPU/ZGXcDo+GB4e35OaO6hp8lcq3lmxc+3Ic9eDsVK1kHaccRI/hWcgmkp39/3/zk1mnVtgiED8RI0eUniUTWXTGVTtBvBGLAwABAAE=";
 
 		public static bool IsNewVersionAvailable { get; set; }
 		public static string NewVersionPath { get; set; }

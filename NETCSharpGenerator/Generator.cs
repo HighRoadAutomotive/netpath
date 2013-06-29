@@ -88,6 +88,7 @@ namespace NETPath.Generators.NET.CS
 		{
 			var t = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
 			if (t.Status != LicenseStatus.Valid) return;
+			if (!t.IsFeaturePresentEx(1)) return;
 
 			if (string.IsNullOrEmpty(Data.ServerOutputFile))
 				AddMessage(new CompileMessage("GS0003", "The '" + Data.Name + "' project does not have a Server Assembly Name. You must specify a Server Assembly Name.", CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Data.ID));
@@ -121,6 +122,7 @@ namespace NETPath.Generators.NET.CS
 		{
 			var t = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
 			if (t.Status != LicenseStatus.Valid) return "";
+			if (!t.IsFeaturePresentEx(1)) return "";
 
 			Globals.CurrentGenerationTarget = Framework;
 
@@ -132,6 +134,7 @@ namespace NETPath.Generators.NET.CS
 		{
 			var t = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
 			if (t.Status != LicenseStatus.Valid) return "";
+			if (!t.IsFeaturePresentEx(1)) return "";
 
 			Globals.CurrentGenerationTarget = Framework;
 
@@ -377,7 +380,7 @@ namespace NETPath.Generators.NET.CS
 		public static Guid CurrentProjectID { get; set; }
 		
 		public static string LicenseKey { get; set; }
-		public const string LicenseVerification = "AMAAMACnZigmLe9LpWcsYIBVFHYRZeUhr1oYyxDRFmL/qon4ijMx6X/xXyYldZs/A8Df9MsDAAEAAQ==";
+		public const string LicenseVerification = "AAAEAAG6rTV/gUg+VZjvEZQDqWy9l63DgzkUSg0tyJOBDDS58FKoRvErRfUkvxdlgUCCTTvw5b7lXtVPFxd3HI+SFzzTi5X0neWXCNXjWX/FVnIaCBioKHG6eYwgSE86j2ybYQbGlmy+R9vpj3cA12E6a4efoQl/5yqawkUk67iQGnJi0YiA6LUAQUoCN+XipZN3pEn+EuAPGVAz1W0b8pYX99oSrWr3CQwnGCg6/2Y5radzYdPDsZgWkKkWhPU/ZGXcDo+GB4e35OaO6hp8lcq3lmxc+3Ic9eDsVK1kHaccRI/hWcgmkp39/3/zk1mnVtgiED8RI0eUniUTWXTGVTtBvBGLAwABAAE=";
 
 		static Globals()
 		{

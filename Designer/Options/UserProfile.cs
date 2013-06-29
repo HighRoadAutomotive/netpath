@@ -18,6 +18,8 @@ namespace NETPath.Options
 		public Guid ID { get { return id; } }
 		public string User { get; set; }
 		public string ComputerName { get; set; }
+		public Prospective.Server.Licensing.UsageData PriorUsage { get; set; }
+		[IgnoreDataMember] public string SKU { get; set; }
 		public List<RecentSolution> RecentProjects { get; set; }
 		public List<RecentSolution> ImportantProjects { get; set; }
 
@@ -31,13 +33,27 @@ namespace NETPath.Options
 		public TimeSpan AutomaticBackupsInterval { get { return (TimeSpan)GetValue(AutomaticBackupsIntervalProperty); } set { SetValue(AutomaticBackupsIntervalProperty, value); } }
 		public static readonly DependencyProperty AutomaticBackupsIntervalProperty = DependencyProperty.Register("AutomaticBackupsInterval", typeof(TimeSpan), typeof(UserProfile));
 
-		//Main Window Configuration
-		public int Monitor { get; set; }
-		public bool IsWindowMaximized { get; set; }
-		public int WindowX { get; set; }
-		public int WindowY { get; set; }
-		public int WindowHeight { get; set; }
-		public int WindowWidth { get; set; }
+		//License Information
+		public bool IsUsageEnabled { get { return (bool)GetValue(IsUsageEnabledProperty); } set { SetValue(IsUsageEnabledProperty, value); } }
+		public static readonly DependencyProperty IsUsageEnabledProperty = DependencyProperty.Register("IsUsageEnabled", typeof(bool), typeof(UserProfile), new PropertyMetadata(false));
+
+		public bool IsTrial { get { return (bool)GetValue(IsTrialProperty); } set { SetValue(IsTrialProperty, value); } }
+		public static readonly DependencyProperty IsTrialProperty = DependencyProperty.Register("IsTrial", typeof(bool), typeof(UserProfile), new PropertyMetadata(false));
+
+		public string LicenseeName { get { return (string)GetValue(DeclarationProperty); } internal set { SetValue(DeclarationProperty, value); } }
+		private static readonly DependencyProperty DeclarationProperty = DependencyProperty.Register("Declaration", typeof(string), typeof(UserProfile), new PropertyMetadata(""));
+
+		public string Serial { get { return (string)GetValue(SerialProperty); } set { SetValue(SerialProperty, value); } }
+		public static readonly DependencyProperty SerialProperty = DependencyProperty.Register("Serial", typeof(string), typeof(UserProfile), new PropertyMetadata(""));
+
+		public string License { get { return (string)GetValue(LicenseProperty); } set { SetValue(LicenseProperty, value); } }
+		public static readonly DependencyProperty LicenseProperty = DependencyProperty.Register("License", typeof(string), typeof(UserProfile), new PropertyMetadata(""));
+
+		public string UserName { get { return (string)GetValue(UserNameProperty); } set { SetValue(UserNameProperty, value); } }
+		public static readonly DependencyProperty UserNameProperty = DependencyProperty.Register("UserName", typeof(string), typeof(UserProfile), new PropertyMetadata(""));
+
+		public string UserEmail { get { return (string)GetValue(UserEmailProperty); } set { SetValue(UserEmailProperty, value); } }
+		public static readonly DependencyProperty UserEmailProperty = DependencyProperty.Register("UserEmail", typeof(string), typeof(UserProfile), new PropertyMetadata(""));
 
 		public UserProfile()
 		{
@@ -53,9 +69,11 @@ namespace NETPath.Options
 			RecentProjects = new List<RecentSolution>();
 			ImportantProjects = new List<RecentSolution>();
 			DefaultProjectFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			Monitor = 0;
 			AutomaticBackupsEnabled = true;
 			AutomaticBackupsInterval = new TimeSpan(0, 5, 0);
+			IsTrial = true;
+			IsUsageEnabled = true;
+			Serial = "TRIAL";
 		}
 
 		public static UserProfile Open(string Path)

@@ -42,17 +42,18 @@ namespace NETPath.Compiler
 
 			PrintHeader();
 
-			const string vk = "AMAAMACnZigmLe9LpWcsYIBVFHYRZeUhr1oYyxDRFmL/qon4ijMx6X/xXyYldZs/A8Df9MsDAAEAAQ==";
-			var t = new CryptoLicense("NgAAAVKb1dSPMM4BgC7KbyR4zgFNG/5h+9s3tmGvwerMnzfvh7MoEFx9eEY02pTdvOE2lu7yrZxnu/oGXVgjPNa01zM=", vk);
+			const string lic = "FACAAEaR+9dgdM4BAQNUsbrHWerJElJe1mwbYMfD9oP5NDjkX10HHZGT2+BWJClw+rEip3LXwSEvOI5NxbIV9KtnubS1wt2Ay3KqT6CL/ds6njfwnOisLB1BEJE8bymCiSZmU82Ij05i2wAfxYz4j0WfCZsCdR835J5kVPw3kTI+1KJLkHPUN1rI7uQbdkCtdIDwRvt8HAfOYh3rR5e0GETZ/ctzXnnT90w/ps+1TK5dh9hy6y6rrBap/KX+OeLWwccMfGSFoBEKjPXynozWNuK4IFOQr5b8TDjXcrG3OrLIZiAk2Qz2kX6+wvjedxO3Q4nB0vOuUO2zD5HngyxQt6B7xXz8OAlxpuYgLSk5";
+			const string vk = "AAAEAAG6rTV/gUg+VZjvEZQDqWy9l63DgzkUSg0tyJOBDDS58FKoRvErRfUkvxdlgUCCTTvw5b7lXtVPFxd3HI+SFzzTi5X0neWXCNXjWX/FVnIaCBioKHG6eYwgSE86j2ybYQbGlmy+R9vpj3cA12E6a4efoQl/5yqawkUk67iQGnJi0YiA6LUAQUoCN+XipZN3pEn+EuAPGVAz1W0b8pYX99oSrWr3CQwnGCg6/2Y5radzYdPDsZgWkKkWhPU/ZGXcDo+GB4e35OaO6hp8lcq3lmxc+3Ic9eDsVK1kHaccRI/hWcgmkp39/3/zk1mnVtgiED8RI0eUniUTWXTGVTtBvBGLAwABAAE=";
+			var t = new CryptoLicense(lic, vk);
 			if (t.Status != LicenseStatus.Valid)
 			{
-				Console.WriteLine("This copy of NETPath is pre-release software and expired on {0}.", t.DateExpires.ToShortDateString());
+				Console.WriteLine("This copy of NETPath is trial software and expired on {0}.", t.DateExpires.ToShortDateString());
 				Console.WriteLine("Please visit us at http://www.prospectivesoftware.com to purchase a license if you wish to continue to use this software.");
 				Environment.Exit(4);
 			}
 			else
 			{
-				Console.WriteLine("This copy of NETPath is pre-release software and will expire on {0}.", t.DateExpires.ToShortDateString());
+				Console.WriteLine("This copy of NETPath is trial software and will expire on {0}.", t.DateExpires.ToShortDateString());
 			}
 
 			ErrorStream = Console.OpenStandardError();
@@ -60,9 +61,9 @@ namespace NETPath.Compiler
 			OpenProject = Project.Open(Path.Combine(Directory.GetCurrentDirectory(), SolutionPath), ProjectPath);
 
 			IGenerator NET = Loader.LoadModule(GenerationModule.NET, GenerationLanguage.CSharp);
-			NET.Initialize("NgAAAVKb1dSPMM4BgC7KbyR4zgFNG/5h+9s3tmGvwerMnzfvh7MoEFx9eEY02pTdvOE2lu7yrZxnu/oGXVgjPNa01zM=", OutputHandler, AddMessage);
+			NET.Initialize(lic, OutputHandler, AddMessage);
 			IGenerator WinRT = Loader.LoadModule(GenerationModule.WindowsRuntime, GenerationLanguage.CSharp);
-			WinRT.Initialize("NgAAAVKb1dSPMM4BgC7KbyR4zgFNG/5h+9s3tmGvwerMnzfvh7MoEFx9eEY02pTdvOE2lu7yrZxnu/oGXVgjPNa01zM=", OutputHandler, AddMessage);
+			WinRT.Initialize(lic, OutputHandler, AddMessage);
 
 			//Run project code generation
 			if (NET.IsInitialized && WinRT.IsInitialized)

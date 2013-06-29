@@ -103,6 +103,9 @@
       <HintPath>C:\Program Files (x86)\Actipro Software\WPF-Controls\v12.2.0571\Assemblies\ActiproSoftware.Shared.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Licensing">
+      <HintPath>..\..\..\Licensing\Build\Licensing.dll</HintPath>
+    </Reference>
     <Reference Include="LogicNP.CryptoLicensing, Version=9.0.0.0, Culture=neutral, PublicKeyToken=4a3c0a4c668b48b4">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\LogicNP Software\CryptoLicensing For .Net 2013\LogicNP.CryptoLicensing.dll</HintPath>
