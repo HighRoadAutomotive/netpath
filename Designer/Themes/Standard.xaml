@@ -159,60 +159,6 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-
-	<Style x:Key="{x:Type pc:NumericBox}" TargetType="{x:Type pc:NumericBox}">
-		<Setter Property="CaretBrush" Value="{StaticResource DefaultFontColor}" />
-		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
-		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
-		<Setter Property="SelectionBrush" Value="{StaticResource DefaultSelectionColor}" />
-		<Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}"/>
-		<Setter Property="BorderBrush" Value="Transparent"/>
-		<Setter Property="BorderThickness" Value="0" />
-		<Setter Property="UseLayoutRounding" Value="true"/>
-		<Setter Property="OverridesDefaultStyle" Value="True"/>
-		<Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
-		<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-		<Setter Property="MinHeight" Value="24" />
-		<Setter Property="AllowDrop" Value="true"/>
-		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-		<Setter Property="VerticalContentAlignment" Value="Center" />
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type pc:NumericBox}">
-					<Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
-						<ScrollViewer x:Name="PART_ContentHost" Foreground="{TemplateBinding Foreground}" FontWeight="{TemplateBinding FontWeight}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="1,2" UseLayoutRounding="True" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
-					</Border>
-					<ControlTemplate.Triggers>
-						<Trigger Property="IsEnabled" Value="False">
-							<Setter TargetName="Border" Property="Background" Value="{StaticResource DisabledBackgroundColor}"/>
-							<Setter Property="Foreground" Value="{StaticResource DisabledFontColor}"/>
-						</Trigger>
-						<Trigger Property="IsMouseOver" Value="True">
-							<Setter TargetName="Border" Property="Background" Value="{StaticResource MouseOverBackgroundColor}"/>
-						</Trigger>
-						<Trigger Property="IsKeyboardFocused" Value="True">
-							<Setter TargetName="Border" Property="Background" Value="{StaticResource FocusedBackgroundColor}"/>
-						</Trigger>
-						<MultiTrigger>
-							<MultiTrigger.Conditions>
-								<Condition Property="VerticalScrollBarVisibility" Value="Visible"/>
-								<Condition Property="AcceptsReturn" Value="True"/>
-							</MultiTrigger.Conditions>
-							<Setter Property="VerticalContentAlignment" Value="Top"/>
-						</MultiTrigger>
-						<MultiTrigger>
-							<MultiTrigger.Conditions>
-								<Condition Property="VerticalScrollBarVisibility" Value="Visible"/>
-								<Condition Property="AcceptsReturn" Value="True"/>
-							</MultiTrigger.Conditions>
-							<Setter Property="VerticalContentAlignment" Value="Top"/>
-						</MultiTrigger>
-					</ControlTemplate.Triggers>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>
 	
 	<Style x:Key="{x:Type PasswordBox}" TargetType="{x:Type PasswordBox}">
 		<Setter Property="PasswordChar" Value="●"/>
