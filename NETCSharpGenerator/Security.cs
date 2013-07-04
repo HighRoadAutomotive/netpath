@@ -157,7 +157,7 @@ namespace NETPath.Generators.NET.CS
 		public static string GenerateCode45(BindingSecurityBasicHTTPS o)
 		{
 			var code = new StringBuilder();
-			code.AppendLine(string.Format("\t\t\tthis.Security.Mode = BasicHttpSecurityMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpSecurityMode), o.Mode)));
+			code.AppendLine(string.Format("\t\t\tthis.Security.Mode = BasicHttpsSecurityMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpsSecurityMode), o.Mode)));
 			code.AppendLine(string.Format("\t\t\tthis.Security.Message.AlgorithmSuite = System.ServiceModel.Security.SecurityAlgorithmSuite.{0};", System.Enum.GetName(typeof(BindingSecurityAlgorithmSuite), o.MessageAlgorithmSuite)));
 			code.AppendLine(string.Format("\t\t\tthis.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.{0};", System.Enum.GetName(typeof(System.ServiceModel.BasicHttpMessageCredentialType), o.MessageClientCredentialType)));
 			code.AppendLine(string.Format("\t\t\tthis.Security.Transport.ClientCredentialType = HttpClientCredentialType.{0};", System.Enum.GetName(typeof(System.ServiceModel.HttpClientCredentialType), o.TransportClientCredentialType)));

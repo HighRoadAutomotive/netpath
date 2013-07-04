@@ -54,21 +54,24 @@ namespace NETPath
 			}
 
 #if LICENSE
-			DateTime servertime = Prospective.Server.Licensing.LicensingClient.GetDateTime();
-			DateTime localtime = DateTime.UtcNow;
-
-			if (localtime > servertime.AddHours(-2) && localtime < servertime.AddHours(2))
+			if (CheckForInternetConnection())
 			{
-				if (Globals.UserProfile.IsTrial || Globals.UserProfile.Serial == "TRIAL" || Globals.UserProfile.License == "")
-				{
-					InitializeUsageData();
-					Globals.InitializeCodeGenerators("lgKkAVJQzjxpdM4BHgAcAE5QMjBUUkkjUHJvc3BlY3RpdmUgU29mdHdhcmUBAzdrgDQFwUK+35DB7JVSoJdNhP6J1+i+aXlSvgdxxIQjTwmIlFmjQ5afJpevTTpY5+czoQeJl9SW6A/MAVvoU/wjAu3mfv5XNvfnxwwOqBpS1gc9rVipqgZgSKwAi197kJ7wqkXhbHPjrkE+ATwOB2rCEunyJ8sKrGAO810ovBXs2GWhgJUC/i2TDN456PmIrAN4DqS/tgL9aKdvefI0CxNIa5QPmQIocQDgjuppTT2op9wVTj/GxRMLxZBr4Iy1ktCB5CiT0ILzc0+umxYR5RSVKJwMlwWZjO528mKv1k4m07uaH1Tsz2V5sTVKYkAmfDmITZwei+phCkBbI0Xjy6E=");
-					var lic = new LogicNP.CryptoLicensing.CryptoLicense("lgKkAVJQzjxpdM4BHgAcAE5QMjBUUkkjUHJvc3BlY3RpdmUgU29mdHdhcmUBAzdrgDQFwUK+35DB7JVSoJdNhP6J1+i+aXlSvgdxxIQjTwmIlFmjQ5afJpevTTpY5+czoQeJl9SW6A/MAVvoU/wjAu3mfv5XNvfnxwwOqBpS1gc9rVipqgZgSKwAi197kJ7wqkXhbHPjrkE+ATwOB2rCEunyJ8sKrGAO810ovBXs2GWhgJUC/i2TDN456PmIrAN4DqS/tgL9aKdvefI0CxNIa5QPmQIocQDgjuppTT2op9wVTj/GxRMLxZBr4Iy1ktCB5CiT0ILzc0+umxYR5RSVKJwMlwWZjO528mKv1k4m07uaH1Tsz2V5sTVKYkAmfDmITZwei+phCkBbI0Xjy6E=", Globals.LicenseVerification);
-					Globals.UserProfile.SKU = lic.UserData.Split(new[] { '#' })[0];
-					Globals.UserProfile.LicenseeName = lic.UserData.Split(new[] { '#' })[1];
+				DateTime servertime = LicensingClient.GetDateTime();
+				DateTime localtime = DateTime.UtcNow;
 
-					if (CheckForInternetConnection())
+				if (localtime > servertime.AddHours(-2) && localtime < servertime.AddHours(2))
+				{
+					if (Globals.UserProfile.IsTrial || Globals.UserProfile.Serial == "TRIAL" || Globals.UserProfile.License == "")
 					{
+						Globals.InitializeCodeGenerators(Globals.TrialLicense);
+						var lic = new LogicNP.CryptoLicensing.CryptoLicense(Globals.TrialLicense, Globals.LicenseVerification);
+						Globals.UserProfile.SKU = lic.GetUserDataFieldValue("SKU", "#");
+						Globals.UserProfile.LicenseeName = lic.GetUserDataFieldValue("LicenseeName", "#");
+
+						Globals.UserProfile.Serial = "TRIAL";
+						Globals.UserProfile.IsTrial = true;
+						Globals.UserProfile.IsUsageEnabled = true;
+						Globals.UserProfile.License = "";
 						try
 						{
 							if (Globals.UserProfile.PriorUsage != null) await LicensingClient.PostUsage(Globals.UserProfile.PriorUsage);
@@ -77,25 +80,23 @@ namespace NETPath
 						{
 						}
 					}
-				}
-				else
-				{
-					Globals.InitializeCodeGenerators(Globals.UserProfile.License);
-					var lic = new LogicNP.CryptoLicensing.CryptoLicense(Globals.UserProfile.License, Globals.LicenseVerification);
-					Globals.UserProfile.SKU = lic.UserData.Split(new[] { '#' })[0];
-					Globals.UserProfile.LicenseeName = lic.UserData.Split(new[] { '#' })[1];
-					
-					if (CheckForInternetConnection())
+					else
 					{
+						Globals.InitializeCodeGenerators(Globals.UserProfile.License);
+						var lic = new LogicNP.CryptoLicensing.CryptoLicense(Globals.UserProfile.License, Globals.LicenseVerification);
+						Globals.UserProfile.SKU = lic.GetUserDataFieldValue("SKU", "#");
+						Globals.UserProfile.LicenseeName = lic.GetUserDataFieldValue("LicenseeName", "#");
+
 						try
 						{
-							Prospective.Server.Licensing.LicenseData LD = await Prospective.Server.Licensing.LicensingClient.Retrieve(Globals.UserProfile.Serial, Globals.ApplicationVersion);
-							if(Globals.UserProfile.PriorUsage != null) await LicensingClient.PostUsage(Globals.UserProfile.PriorUsage);
+							LicenseData LD = await LicensingClient.Retrieve(Globals.UserProfile.Serial, Globals.ApplicationVersion);
+							if (Globals.UserProfile.PriorUsage != null) await LicensingClient.PostUsage(Globals.UserProfile.PriorUsage);
 							Globals.UserProfile.UserName = LD.UserName;
 							if (LD.Revoked)
 							{
 								Globals.UserProfile.Serial = "TRIAL";
 								Globals.UserProfile.IsTrial = true;
+								Globals.UserProfile.IsUsageEnabled = true;
 								Globals.UserProfile.License = "";
 							}
 						}
@@ -103,6 +104,28 @@ namespace NETPath
 						{
 						}
 					}
+				}
+			}
+			else
+			{
+				if (Globals.UserProfile.IsTrial || Globals.UserProfile.Serial == "TRIAL" || Globals.UserProfile.License == "")
+				{
+					Globals.InitializeCodeGenerators(Globals.TrialLicense);
+					var lic = new LogicNP.CryptoLicensing.CryptoLicense(Globals.TrialLicense, Globals.LicenseVerification);
+					Globals.UserProfile.SKU = lic.GetUserDataFieldValue("SKU", "#");
+					Globals.UserProfile.LicenseeName = lic.GetUserDataFieldValue("LicenseeName", "#");
+
+					Globals.UserProfile.Serial = "TRIAL";
+					Globals.UserProfile.IsTrial = true;
+					Globals.UserProfile.IsUsageEnabled = true;
+					Globals.UserProfile.License = "";
+				}
+				else
+				{
+					Globals.InitializeCodeGenerators(Globals.UserProfile.License);
+					var lic = new LogicNP.CryptoLicensing.CryptoLicense(Globals.UserProfile.License, Globals.LicenseVerification);
+					Globals.UserProfile.SKU = lic.GetUserDataFieldValue("SKU", "#");
+					Globals.UserProfile.LicenseeName = lic.GetUserDataFieldValue("LicenseeName", "#");
 				}
 			}
 

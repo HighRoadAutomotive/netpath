@@ -292,6 +292,26 @@ namespace NETPath.Interface.Bindings
 		}
 	}
 
+	[ValueConversion(typeof(System.ServiceModel.BasicHttpsSecurityMode), typeof(int))]
+	public class BasicHttpsSecurityModeConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			System.ServiceModel.BasicHttpsSecurityMode lt = (System.ServiceModel.BasicHttpsSecurityMode)value;
+			if (lt == System.ServiceModel.BasicHttpsSecurityMode.Transport) return 0;
+			if (lt == System.ServiceModel.BasicHttpsSecurityMode.TransportWithMessageCredential) return 1;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			int lt = (int)value;
+			if (lt == 0) return System.ServiceModel.BasicHttpsSecurityMode.Transport;
+			if (lt == 1) return System.ServiceModel.BasicHttpsSecurityMode.TransportWithMessageCredential;
+			return System.ServiceModel.BasicHttpsSecurityMode.Transport;
+		}
+	}
+
 	[ValueConversion(typeof(System.ServiceModel.BasicHttpMessageCredentialType), typeof(int))]
 	public class BasicHttpMessageCredentialTypeConverter : IValueConverter
 	{

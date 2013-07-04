@@ -106,9 +106,9 @@
     <Reference Include="Licensing">
       <HintPath>..\..\..\Licensing\Build\Licensing.dll</HintPath>
     </Reference>
-    <Reference Include="LogicNP.CryptoLicensing, Version=9.0.0.0, Culture=neutral, PublicKeyToken=4a3c0a4c668b48b4">
+    <Reference Include="LogicNP.CryptoLicensing, Version=10.0.0.0, Culture=neutral, PublicKeyToken=4a3c0a4c668b48b4">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\LogicNP Software\CryptoLicensing For .Net 2013\LogicNP.CryptoLicensing.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\LogicNP Software\CryptoLicensing For .Net 2013 R2\LogicNP.CryptoLicensing.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack">
       <HintPath>..\..\..\..\Downloads\Controls\Windows API Code Pack\binaries\Microsoft.WindowsAPICodePack.dll</HintPath>
@@ -216,6 +216,9 @@
     </Compile>
     <Compile Include="Interface\Data\TypeSelector.xaml.cs">
       <DependentUpon>TypeSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\Dialogs\SetLicense.xaml.cs">
+      <DependentUpon>SetLicense.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interface\Dialogs\ReportSuggestion.xaml.cs">
       <DependentUpon>ReportSuggestion.xaml</DependentUpon>
@@ -388,6 +391,10 @@
     <Page Include="Interface\Data\TypeSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Interface\Dialogs\SetLicense.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Interface\Dialogs\ReportSuggestion.xaml">
       <Generator>MSBuild:Compile</Generator>

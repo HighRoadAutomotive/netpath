@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -8,7 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
 using System.Windows.Navigation;
-
+using LogicNP.CryptoLicensing;
 using Prospective.Controls.Dialogs;
 using NETPath.Options;
 
@@ -67,20 +68,141 @@ namespace NETPath.Interface
 			UserProfile = Globals.UserProfile;
 			if (Globals.UserProfile.AutomaticBackupsEnabled) AutomaticBackupsEnabled.Content = "Yes";
 			AboutVersion.Content = "Version " + FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).FileVersion;
-			ProductTitle.Content = "Prospective Software NETPath Professional";
 
-			//Set the logo in the options screen.
+			SetLogo();
+		}
+
+		#region - Licensing -
+
+		private void RetrieveLicense()
+		{
+			var t = new Dialogs.SetLicense();
+			DialogService.ShowContentDialog("NETPath", "Enter License Information", t, new DialogAction("Activate", () => InstallLicense(t)), new DialogAction("Cancel", false, true));
+		}
+
+		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
+		private async void InstallLicense(Dialogs.SetLicense lic)
+		{
+			if (App.CheckForInternetConnection())
+			{
+				try
+				{
+					await Prospective.Server.Licensing.LicensingClient.Update(lic.Serial, lic.UserName, lic.UserEmail);
+				}
+				catch
+				{
+				}
+				Prospective.Server.Licensing.LicenseData licdata = null;
+				try
+				{
+					licdata = await Prospective.Server.Licensing.LicensingClient.Retrieve(lic.Serial, Globals.ApplicationVersion);
+				}
+				catch
+				{
+				}
+
+				if (licdata == null)
+				{
+					DialogService.ShowMessageDialog("NETPath", "Unable to Retrieve License", "We were unable to retrieve your license. Please make sure that you are connected to the internet and try again. If the problem persists please contact Prospective Software Support at support@prospectivesoftware.com", new DialogAction("Continue Trial"), new DialogAction("Install License", RetrieveLicense));
+				}
+				else
+				{
+					Globals.UserProfile.License = licdata.Key;
+					var tl = new CryptoLicense(Globals.UserProfile.License, Globals.LicenseVerification);
+					Globals.UserProfile.SKU = tl.GetUserDataFieldValue("SKU", "#");
+					Globals.UserProfile.LicenseeName = tl.GetUserDataFieldValue("LicenseeName", "#");
+					Globals.UserProfile.UserName = licdata.UserName;
+					UserProfile.Save(Globals.UserProfilePath, Globals.UserProfile);
+					DialogService.ShowMessageDialog("NETPath", "License Successfully Installed", "Your license has been successfully installed and is ready for immediate use.", new DialogAction("Continue", true));
+				}
+			}
+			else
+			{
+				DialogService.ShowMessageDialog("NETPath", "Unable to Retrieve License", "We were unable to retrieve your license. Please make sure that you are connected to the internet and try again. If the problem persists please contact Prospective Software Support at support@prospectivesoftware.com", new DialogAction("Continue Trial"), new DialogAction("Install License", RetrieveLicense));
+			}
+		}
+
+		//Set the logo in the options screen.
+		private void SetLogo()
+		{
 			var logo = new BitmapImage();
 			logo.BeginInit();
-			logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoProfessional.png");
+#if LICENSE
+			if (Globals.UserProfile.IsTrial || Globals.UserProfile.Serial == "TRIAL" || Globals.UserProfile.License == "")
+			{
+				logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoTrial.png");
+				ProductTitle.Content = "Prospective Software NETPath Trial";
+			}
+			else
+			{
+				var lic = new CryptoLicense(Globals.UserProfile.License, Globals.LicenseVerification);
+				if (lic.Status == LicenseStatus.Valid)
+				{
+					logo.UriSource = lic.IsFeaturePresentEx(1) ? new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoProfessional.png") : new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoWinRT.png");
+					ProductTitle.Content = lic.IsFeaturePresentEx(1) ? "Prospective Software NETPath Professional" : "Prospective Software NETPath for Windows Runtime";
+				}
+				else
+				{
+					ProductTitle.Content = "Prospective Software NETPath Trial";
+					logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoTrial.png");
+				}
+			}
+#else
+			logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoDeveloper.png");
+			ProductTitle.Content = "Prospective Software NETPath Internal Developer";
+#endif
 			logo.EndInit();
 			SKULevel.Source = logo;
 		}
 
+		private void PurchaseLicense()
+		{
+			var proc = new Process {StartInfo = {UseShellExecute = true, FileName = "http://www.prospectivesoftware.com/pages/netpath"}};
+			proc.Start();
+		}
+
+		private async void DownloadUpdates(Prospective.Server.Licensing.LicenseData licdata)
+		{
+			var proc = new Process { StartInfo = { UseShellExecute = true, FileName = "http://www.prospectivesoftware.com/pages/netpath" } };
+			proc.Start();
+		}
+
+		#endregion
+
 		#region - Window Events -
 
-		private void Main_SourceInitialized(object sender, EventArgs e)
+		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
+		private async void Main_SourceInitialized(object sender, EventArgs e)
 		{
+#if LICENSE
+			if ((Globals.UserProfile.IsTrial && !Globals.UserProfile.IsTrialInfoSet) || Globals.UserProfile.Serial == "TRIAL" || Globals.UserProfile.License == "")
+			{
+				var lic = new CryptoLicense(Globals.UserProfile.License, Globals.LicenseVerification);
+				if (lic.Status == LicenseStatus.Valid)
+					DialogService.ShowMessageDialog("NETPath", "Begin Your Trial?", "Would you like to install a license key or begin your trial?", new DialogAction("Continue Trial"), new DialogAction("Install License", RetrieveLicense));
+				else
+					DialogService.ShowMessageDialog("NETPath", "Expired Trial Notice", "Your trial has expired and you will be unable to generate any code based on the changes made to your project files.", new DialogAction("Continue"), new DialogAction("Purchase License", PurchaseLicense));
+			}
+			else if ((Globals.UserProfile.IsTrial && Globals.UserProfile.IsTrialInfoSet) || Globals.UserProfile.Serial == "TRIAL" || Globals.UserProfile.License == "")
+			{
+				var lic = new CryptoLicense(Globals.UserProfile.License, Globals.LicenseVerification);
+				if (lic.Status == LicenseStatus.Valid)
+					DialogService.ShowMessageDialog("NETPath", "Continue Your Trial?", string.Format("Would you like to install a license key or continue with your trial? Please note that your trial will expire in {0} days.", lic.RemainingUsageDays), new DialogAction("Continue Trial"), new DialogAction("Install License", RetrieveLicense));
+				else
+					DialogService.ShowMessageDialog("NETPath", "Expired Trial Notice", "Your trial has expired and you will be unable to generate any code based on the changes made to your project files.", new DialogAction("Continue"), new DialogAction("Purchase License", PurchaseLicense));
+			}
+
+			if (!App.CheckForInternetConnection()) return;
+			try
+			{
+				var ld = await Prospective.Server.Licensing.LicensingClient.Retrieve(Globals.UserProfile.Serial, Globals.ApplicationVersion);
+				if (ld.AvailableUpdates.Count > 0)
+					DialogService.ShowMessageDialog("NETPath", "Updates Available", "There are updates available for NETPath. Would you like to download and install them?", new DialogAction("Yes", () => DownloadUpdates(ld), true), new DialogAction("No", false, true));
+			}
+			catch
+			{
+			}
+#endif
 		}
 
 		private void Main_StateChanged(object sender, EventArgs e)

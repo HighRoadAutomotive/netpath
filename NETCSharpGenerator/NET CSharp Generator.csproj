@@ -30,9 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LogicNP.CryptoLicensing, Version=9.0.0.0, Culture=neutral, PublicKeyToken=4a3c0a4c668b48b4">
+    <Reference Include="LogicNP.CryptoLicensing, Version=10.0.0.0, Culture=neutral, PublicKeyToken=4a3c0a4c668b48b4">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\LogicNP Software\CryptoLicensing For .Net 2013\LogicNP.CryptoLicensing.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\LogicNP Software\CryptoLicensing For .Net 2013 R2\LogicNP.CryptoLicensing.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />

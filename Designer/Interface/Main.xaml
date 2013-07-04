@@ -20,6 +20,7 @@
 			<apm:SlideTransition Mode="Out" IsFromContentPushed="True" x:Key="HeaderTransition" />
 			<pc:UriToBitmapImageConverter x:Key="UriToBitmapImageConverter" />
 			<pc:StripHTMLConverter x:Key="StripHTMLConverter"/>
+			<pc:NotBoolConverter x:Key="NotBoolConverter" />
 			<Style x:Key="{x:Type local:RecentProjectItem}" TargetType="{x:Type local:RecentProjectItem}">
 				<Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}" />
 				<Setter Property="BorderBrush" Value="Transparent" />
@@ -538,13 +539,15 @@
 									<StackPanel Grid.Row="0">
 										<Label Content="Prospective Software NETPath Professional" Padding="4,0" Name="ProductTitle" />
 										<Label Name="AboutVersion" Content="Version: 1.0.0.0" Padding="4,0" />
-										<Label Content="© 2012 Prospective Software Inc." Padding="4,0" />
+										<Label Content="Copyright © 2012-2013 Prospective Software Inc." Padding="4,0" />
 										<Label Content="All Rights Reserved." Padding="4,0" />
 									</StackPanel>
 									<StackPanel Grid.Row="2">
 										<Label Content="Licensed To:" Foreground="DodgerBlue" Padding="4,0" />
-										<Label Name="LicenseName" Content="" Padding="4,0" Visibility="Collapsed" />
-										<Label Name="LicenseCompany" Content="Prospective Software" Padding="4,0" />
+										<Label Content="{Binding Path=UserProfile.Serial}" Padding="4,0" />
+										<Label Content="{Binding Path=UserProfile.LicenseeName}" Padding="4,0" />
+										<Label Content="{Binding Path=UserProfile.UserName}" Padding="4,0" />
+										<CheckBox Content="Send anonymous usage statistics to Prospective Software" Padding="4" IsEnabled="{Binding Path=UserProfile.IsTrial, Converter={StaticResource NotBoolConverter}}" />
 									</StackPanel>
 								</Grid>
 								<Grid UseLayoutRounding="True" Margin="0,0,0,10">
@@ -565,8 +568,8 @@
 										</Hyperlink>
 									</TextBlock>
 									<TextBlock Text="Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it, may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law." Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" Grid.Row="1" />
-									<TextBlock Text="Windows is a registered trademark of Microsoft Corporation in the United States and other countries." Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" Margin="0,10,0,5" Grid.Row="2" />
-									<TextBlock Text="" Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" Margin="0,10,0,5" Grid.Row="3">
+									<TextBlock Text="Microsoft Windows is a registered trademark of Microsoft Corporation in the United States and other countries." Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" Margin="0,10,0,5" Grid.Row="2" />
+									<TextBlock Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" Margin="0,10,0,5" Grid.Row="3">
 										NETPath makes use of the open-source Oxygen Icons. Due to the licensing of these icons we are required to post the modified versions of these icons for download on our website. You can use the link below to download the icons or you can head over the Open Icon Library project to download the unaltered icons. <LineBreak/>
 										<Hyperlink NavigateUri="http://downloads.prospectivesoftware.com/netpath/2.0/ModifiedIcons.zip" RequestNavigate="Hyperlink_RequestNavigate" >
 											Download the Modified Oxygen Icons
@@ -575,11 +578,11 @@
 											Visit the Open Icon Library and download the Oxygen Icon Theme
 										</Hyperlink>
 									</TextBlock>
-									<TextBlock Text="NETPath makes use of the follow open-source projects" Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" Margin="0,10,0,5" Grid.Row="4" >
+									<TextBlock Foreground="{StaticResource DefaultFontColor}" FontSize="9pt" TextWrapping="Wrap" Padding="4,0" Margin="0,10,0,5" Grid.Row="4" >
 										NETPath makes use of the follow open-source projects:<LineBreak/>
-										<Hyperlink NavigateUri="https://github.com/prospectivesoftware/netpathsdk/" RequestNavigate="Hyperlink_RequestNavigate">NETPath SDK</Hyperlink> Copyright 2013 Prospective Software<LineBreak />
-										<Hyperlink NavigateUri="https://github.com/prospectivesoftware/systemutilities/" RequestNavigate="Hyperlink_RequestNavigate">System.Utilities</Hyperlink> Copyright 2013 Prospective Software<LineBreak />
-										<Hyperlink NavigateUri="https://code.google.com/p/protobuf-net/" RequestNavigate="Hyperlink_RequestNavigate">ProtoBuf-Net</Hyperlink> Copyright 2008 Marc Gravell
+										<Hyperlink NavigateUri="https://github.com/prospectivesoftware/netpathsdk/" RequestNavigate="Hyperlink_RequestNavigate">NETPath SDK</Hyperlink> Copyright © 2012-2013 Prospective Software<LineBreak />
+										<Hyperlink NavigateUri="https://github.com/prospectivesoftware/systemutilities/" RequestNavigate="Hyperlink_RequestNavigate">System.Utilities</Hyperlink> Copyright © 2012-2013 Prospective Software<LineBreak />
+										<Hyperlink NavigateUri="https://code.google.com/p/protobuf-net/" RequestNavigate="Hyperlink_RequestNavigate">ProtoBuf-Net</Hyperlink> Copyright © 2008 Marc Gravell
 									</TextBlock>
 								</Grid>
 							</StackPanel>

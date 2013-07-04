@@ -39,6 +39,7 @@ namespace NETPath.Options
 
 		public bool IsTrial { get { return (bool)GetValue(IsTrialProperty); } set { SetValue(IsTrialProperty, value); } }
 		public static readonly DependencyProperty IsTrialProperty = DependencyProperty.Register("IsTrial", typeof(bool), typeof(UserProfile), new PropertyMetadata(false));
+		public bool IsTrialInfoSet { get; set; }
 
 		public string LicenseeName { get { return (string)GetValue(DeclarationProperty); } internal set { SetValue(DeclarationProperty, value); } }
 		private static readonly DependencyProperty DeclarationProperty = DependencyProperty.Register("Declaration", typeof(string), typeof(UserProfile), new PropertyMetadata(""));
@@ -72,6 +73,7 @@ namespace NETPath.Options
 			AutomaticBackupsEnabled = true;
 			AutomaticBackupsInterval = new TimeSpan(0, 5, 0);
 			IsTrial = true;
+			IsTrialInfoSet = false;
 			IsUsageEnabled = true;
 			Serial = "TRIAL";
 		}
