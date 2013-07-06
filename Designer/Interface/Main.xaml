@@ -547,7 +547,7 @@
 										<Label Content="{Binding Path=UserProfile.Serial}" Padding="4,0" />
 										<Label Content="{Binding Path=UserProfile.LicenseeName}" Padding="4,0" />
 										<Label Content="{Binding Path=UserProfile.UserName}" Padding="4,0" />
-										<CheckBox Content="Send anonymous usage statistics to Prospective Software" Padding="4" IsEnabled="{Binding Path=UserProfile.IsTrial, Converter={StaticResource NotBoolConverter}}" />
+										<CheckBox Content="Send anonymous usage statistics to Prospective Software" Padding="4" IsChecked="{Binding Path=UserProfile.IsUsageEnabled}" IsEnabled="{Binding Path=UserProfile.IsTrial, Converter={StaticResource NotBoolConverter}}" />
 									</StackPanel>
 								</Grid>
 								<Grid UseLayoutRounding="True" Margin="0,0,0,10">

@@ -217,6 +217,9 @@
     <Compile Include="Interface\Data\TypeSelector.xaml.cs">
       <DependentUpon>TypeSelector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interface\Dialogs\SetTrial.xaml.cs">
+      <DependentUpon>SetTrial.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interface\Dialogs\SetLicense.xaml.cs">
       <DependentUpon>SetLicense.xaml</DependentUpon>
     </Compile>
@@ -391,6 +394,10 @@
     <Page Include="Interface\Data\TypeSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Interface\Dialogs\SetTrial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Interface\Dialogs\SetLicense.xaml">
       <Generator>MSBuild:Compile</Generator>

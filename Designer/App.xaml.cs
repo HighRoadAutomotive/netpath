@@ -130,11 +130,22 @@ namespace NETPath
 			}
 
 #else
-			CheckForInternetConnection();
-			Globals.InitializeCodeGenerators("FACAAEaR+9dgdM4BAQNUsbrHWerJElJe1mwbYMfD9oP5NDjkX10HHZGT2+BWJClw+rEip3LXwSEvOI5NxbIV9KtnubS1wt2Ay3KqT6CL/ds6njfwnOisLB1BEJE8bymCiSZmU82Ij05i2wAfxYz4j0WfCZsCdR835J5kVPw3kTI+1KJLkHPUN1rI7uQbdkCtdIDwRvt8HAfOYh3rR5e0GETZ/ctzXnnT90w/ps+1TK5dh9hy6y6rrBap/KX+OeLWwccMfGSFoBEKjPXynozWNuK4IFOQr5b8TDjXcrG3OrLIZiAk2Qz2kX6+wvjedxO3Q4nB0vOuUO2zD5HngyxQt6B7xXz8OAlxpuYgLSk5");
+			const string dlicstr = "lACAAKDqGNLFec4BLwBTS1U9TlAyMERFVkVMI0xpY2Vuc2VlTmFtZT1Qcm9zcGVjdGl2ZSBTb2Z0d2FyZQEDYNPfndvL/fVI9TMrQtzW5EB3tlrP+Cjqul235DtwXSHp2EKFSLbKMu1yUe1cJo7T4lZiRXlaYl/gWatpwIox3ljklAOirTXn5teu4O6gEYgQAOT8EPLIHYY8vuQaA4F354a5VSn46OvL3Uy/PyPhMH76MkAJFsRthWSJaKhFjai+thUVHRZpI9likQKH1oqEjvPpVNSetu/sj/GpbxNHuAObwf3erXKFilYW9iFZIcozUwah58ZlwGoG6TKabOJPCO0NUT5aaNsHMfWO0yDL/0l3RnPjZyaRLN6mg/FnbZG0lA7iNHLs5E1sSLzf8ZxHAwHi0WFyO5c9ePfdwdWW0A==";
+			Globals.InitializeCodeGenerators(dlicstr);
+			var dlic = new LogicNP.CryptoLicensing.CryptoLicense(dlicstr, Globals.LicenseVerification);
+			Globals.UserProfile.SKU = dlic.GetUserDataFieldValue("SKU", "#");
+			Globals.UserProfile.LicenseeName = dlic.GetUserDataFieldValue("LicenseeName", "#");
 			Globals.UserProfile.IsTrial = false;
 			Globals.UserProfile.Serial = "DEVELOPER";
+			try
+			{
+				if (Globals.UserProfile.PriorUsage != null && CheckForInternetConnection()) await LicensingClient.PostUsage(Globals.UserProfile.PriorUsage);
+			}
+			catch (Exception)
+			{
+			}
 #endif
+
 			InitializeUsageData();
 		}
 
@@ -153,7 +164,7 @@ namespace NETPath
 			Globals.Usage.CLRVersion = Environment.Version;
 			Globals.Usage.OSVersion = Environment.OSVersion.ToString();
 			Globals.Usage.Processors = Environment.ProcessorCount;
-			Globals.Usage.UserID = System.Utilities.Cryptography.Hash.Compute512Hex(Environment.UserDomainName + "\\" + Environment.UserName);
+			Globals.Usage.UserID = System.Utilities.Cryptography.Hash.Compute512Hex(Environment.MachineName + Environment.UserDomainName + "\\" + Environment.UserName);
 			Globals.Usage.StartTime = DateTime.UtcNow;
 			Globals.UserProfile.PriorUsage = Globals.Usage;
 		}

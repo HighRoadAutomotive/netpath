@@ -7,6 +7,8 @@
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
 		<RowDefinition Height="*" />
 	</Grid.RowDefinitions>
 	<Label Content="Serial:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="0" FontSize="12pt" />
@@ -15,4 +17,6 @@
 	<TextBox Text="{Binding Path=UserName}" IsReadOnly="True" Height="Auto" Margin="100,5,5,5" VerticalContentAlignment="Center" Grid.Row="1" FontSize="12pt" />
 	<Label Content="Your Email:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="2" FontSize="12pt" />
 	<TextBox Text="{Binding Path=UserEmail}" IsReadOnly="True" Height="Auto" Margin="100,5,5,5" VerticalContentAlignment="Center" Grid.Row="2" FontSize="12pt" />
+	<CheckBox Content="Reveice email with updates about this product." IsChecked="{Binding Path=AllowProductEmails}" Height="Auto" Margin="100,5,5,5" HorizontalContentAlignment="Left" Grid.Row="3" FontSize="12pt" />
+	<CheckBox Content="Reveice email about new products and services from Prospective Software." IsChecked="{Binding Path=AllowOtherEmails}" Height="Auto" Margin="100,5,5,5" HorizontalContentAlignment="Left" Grid.Row="4" FontSize="12pt" />
 </Grid>

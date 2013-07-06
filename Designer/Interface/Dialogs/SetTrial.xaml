@@ -1,0 +1,275 @@
+﻿<Grid x:Class="NETPath.Interface.Dialogs.SetTrial"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		DataContext="{Binding RelativeSource={RelativeSource Self}}" 
+		MinHeight="75" MinWidth="600" Margin="5">
+	<Grid.RowDefinitions>
+		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
+		<RowDefinition Height="*" />
+	</Grid.RowDefinitions>
+	<Label Content="Your Name:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="0" FontSize="12pt" />
+	<TextBox x:Name="YourName" Text="{Binding Path=UserName}" IsReadOnly="True" Height="Auto" Margin="100,5,5,5" VerticalContentAlignment="Center" Grid.Row="0" FontSize="12pt" />
+	<Label Content="Your Email:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="1" FontSize="12pt" />
+	<TextBox Text="{Binding Path=UserEmail}" IsReadOnly="True" Height="Auto" Margin="100,5,5,5" VerticalContentAlignment="Center" Grid.Row="1" FontSize="12pt" />
+	<Label Content="Company:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="2" FontSize="12pt" />
+	<TextBox Text="{Binding Path=Company}" Height="27" Margin="100,5,5,5" VerticalContentAlignment="Center" Grid.Row="2" FontSize="12pt" />
+	<Label Content="Country:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="3" FontSize="12pt" />
+	<ComboBox Text="{Binding Path=Country}" Height="27" Margin="100,5,5,5" VerticalContentAlignment="Center" Grid.Row="3" FontSize="12pt">
+		<ComboBoxItem>AFGHANISTAN</ComboBoxItem>
+		<ComboBoxItem>ÅLAND ISLANDS</ComboBoxItem>
+		<ComboBoxItem>ALBANIA</ComboBoxItem>
+		<ComboBoxItem>ALGERIA</ComboBoxItem>
+		<ComboBoxItem>AMERICAN SAMOA</ComboBoxItem>
+		<ComboBoxItem>ANDORRA</ComboBoxItem>
+		<ComboBoxItem>ANGOLA</ComboBoxItem>
+		<ComboBoxItem>ANGUILLA</ComboBoxItem>
+		<ComboBoxItem>ANTARCTICA</ComboBoxItem>
+		<ComboBoxItem>ANTIGUA AND BARBUDA</ComboBoxItem>
+		<ComboBoxItem>ARGENTINA</ComboBoxItem>
+		<ComboBoxItem>ARMENIA</ComboBoxItem>
+		<ComboBoxItem>ARUBA</ComboBoxItem>
+		<ComboBoxItem>AUSTRALIA</ComboBoxItem>
+		<ComboBoxItem>AUSTRIA</ComboBoxItem>
+		<ComboBoxItem>AZERBAIJAN</ComboBoxItem>
+		<ComboBoxItem>BAHAMAS</ComboBoxItem>
+		<ComboBoxItem>BAHRAIN</ComboBoxItem>
+		<ComboBoxItem>BANGLADESH</ComboBoxItem>
+		<ComboBoxItem>BARBADOS</ComboBoxItem>
+		<ComboBoxItem>BELARUS</ComboBoxItem>
+		<ComboBoxItem>BELGIUM</ComboBoxItem>
+		<ComboBoxItem>BELIZE</ComboBoxItem>
+		<ComboBoxItem>BENIN</ComboBoxItem>
+		<ComboBoxItem>BERMUDA</ComboBoxItem>
+		<ComboBoxItem>BHUTAN</ComboBoxItem>
+		<ComboBoxItem>BOLIVIA</ComboBoxItem>
+		<ComboBoxItem>BONAIRE</ComboBoxItem>
+		<ComboBoxItem>BOSNIA AND HERZEGOVINA</ComboBoxItem>
+		<ComboBoxItem>BOTSWANA</ComboBoxItem>
+		<ComboBoxItem>BOUVET ISLAND</ComboBoxItem>
+		<ComboBoxItem>BRAZIL</ComboBoxItem>
+		<ComboBoxItem>BRITISH INDIAN OCEAN TERRITORY</ComboBoxItem>
+		<ComboBoxItem>BRUNEI DARUSSALAM</ComboBoxItem>
+		<ComboBoxItem>BULGARIA</ComboBoxItem>
+		<ComboBoxItem>BURKINA FASO</ComboBoxItem>
+		<ComboBoxItem>BURUNDI</ComboBoxItem>
+		<ComboBoxItem>CAMBODIA</ComboBoxItem>
+		<ComboBoxItem>CAMEROON</ComboBoxItem>
+		<ComboBoxItem>CANADA</ComboBoxItem>
+		<ComboBoxItem>CAPE VERDE</ComboBoxItem>
+		<ComboBoxItem>CAYMAN ISLANDS</ComboBoxItem>
+		<ComboBoxItem>CENTRAL AFRICAN REPUBLIC</ComboBoxItem>
+		<ComboBoxItem>CHAD</ComboBoxItem>
+		<ComboBoxItem>CHILE</ComboBoxItem>
+		<ComboBoxItem>CHINA</ComboBoxItem>
+		<ComboBoxItem>CHRISTMAS ISLAND</ComboBoxItem>
+		<ComboBoxItem>COCOS (KEELING) ISLANDS</ComboBoxItem>
+		<ComboBoxItem>COLOMBIA</ComboBoxItem>
+		<ComboBoxItem>COMOROS</ComboBoxItem>
+		<ComboBoxItem>CONGO</ComboBoxItem>
+		<ComboBoxItem>CONGO</ComboBoxItem>
+		<ComboBoxItem>COOK ISLANDS</ComboBoxItem>
+		<ComboBoxItem>COSTA RICA</ComboBoxItem>
+		<ComboBoxItem>CÔTE D'IVOIRE</ComboBoxItem>
+		<ComboBoxItem>CROATIA</ComboBoxItem>
+		<ComboBoxItem>CUBA</ComboBoxItem>
+		<ComboBoxItem>CURAÇAO</ComboBoxItem>
+		<ComboBoxItem>CYPRUS</ComboBoxItem>
+		<ComboBoxItem>CZECH REPUBLIC</ComboBoxItem>
+		<ComboBoxItem>DENMARK</ComboBoxItem>
+		<ComboBoxItem>DJIBOUTI</ComboBoxItem>
+		<ComboBoxItem>DOMINICA</ComboBoxItem>
+		<ComboBoxItem>DOMINICAN REPUBLIC</ComboBoxItem>
+		<ComboBoxItem>ECUADOR</ComboBoxItem>
+		<ComboBoxItem>EGYPT</ComboBoxItem>
+		<ComboBoxItem>EL SALVADOR</ComboBoxItem>
+		<ComboBoxItem>EQUATORIAL GUINEA</ComboBoxItem>
+		<ComboBoxItem>ERITREA</ComboBoxItem>
+		<ComboBoxItem>ESTONIA</ComboBoxItem>
+		<ComboBoxItem>ETHIOPIA</ComboBoxItem>
+		<ComboBoxItem>FALKLAND ISLANDS (MALVINAS)</ComboBoxItem>
+		<ComboBoxItem>FAROE ISLANDS</ComboBoxItem>
+		<ComboBoxItem>FIJI</ComboBoxItem>
+		<ComboBoxItem>FINLAND</ComboBoxItem>
+		<ComboBoxItem>FRANCE</ComboBoxItem>
+		<ComboBoxItem>FRENCH GUIANA</ComboBoxItem>
+		<ComboBoxItem>FRENCH POLYNESIA</ComboBoxItem>
+		<ComboBoxItem>FRENCH SOUTHERN TERRITORIES</ComboBoxItem>
+		<ComboBoxItem>GABON</ComboBoxItem>
+		<ComboBoxItem>GAMBIA</ComboBoxItem>
+		<ComboBoxItem>GEORGIA</ComboBoxItem>
+		<ComboBoxItem>GERMANY</ComboBoxItem>
+		<ComboBoxItem>GHANA</ComboBoxItem>
+		<ComboBoxItem>GIBRALTAR</ComboBoxItem>
+		<ComboBoxItem>GREECE</ComboBoxItem>
+		<ComboBoxItem>GREENLAND</ComboBoxItem>
+		<ComboBoxItem>GRENADA</ComboBoxItem>
+		<ComboBoxItem>GUADELOUPE</ComboBoxItem>
+		<ComboBoxItem>GUAM</ComboBoxItem>
+		<ComboBoxItem>GUATEMALA</ComboBoxItem>
+		<ComboBoxItem>GUERNSEY</ComboBoxItem>
+		<ComboBoxItem>GUINEA</ComboBoxItem>
+		<ComboBoxItem>GUINEA-BISSAU</ComboBoxItem>
+		<ComboBoxItem>GUYANA</ComboBoxItem>
+		<ComboBoxItem>HAITI</ComboBoxItem>
+		<ComboBoxItem>HEARD ISLAND AND MCDONALD ISLANDS</ComboBoxItem>
+		<ComboBoxItem>HOLY SEE (VATICAN CITY STATE)</ComboBoxItem>
+		<ComboBoxItem>HONDURAS</ComboBoxItem>
+		<ComboBoxItem>HONG KONG</ComboBoxItem>
+		<ComboBoxItem>HUNGARY</ComboBoxItem>
+		<ComboBoxItem>ICELAND</ComboBoxItem>
+		<ComboBoxItem>INDIA</ComboBoxItem>
+		<ComboBoxItem>INDONESIA</ComboBoxItem>
+		<ComboBoxItem>IRAN</ComboBoxItem>
+		<ComboBoxItem>IRAQ</ComboBoxItem>
+		<ComboBoxItem>IRELAND</ComboBoxItem>
+		<ComboBoxItem>ISLE OF MAN</ComboBoxItem>
+		<ComboBoxItem>ISRAEL</ComboBoxItem>
+		<ComboBoxItem>ITALY</ComboBoxItem>
+		<ComboBoxItem>JAMAICA</ComboBoxItem>
+		<ComboBoxItem>JAPAN</ComboBoxItem>
+		<ComboBoxItem>JERSEY</ComboBoxItem>
+		<ComboBoxItem>JORDAN</ComboBoxItem>
+		<ComboBoxItem>KAZAKHSTAN</ComboBoxItem>
+		<ComboBoxItem>KENYA</ComboBoxItem>
+		<ComboBoxItem>KIRIBATI</ComboBoxItem>
+		<ComboBoxItem>KOREA</ComboBoxItem>
+		<ComboBoxItem>KOREA</ComboBoxItem>
+		<ComboBoxItem>KUWAIT</ComboBoxItem>
+		<ComboBoxItem>KYRGYZSTAN</ComboBoxItem>
+		<ComboBoxItem>LAO PEOPLE'S DEMOCRATIC REPUBLIC</ComboBoxItem>
+		<ComboBoxItem>LATVIA</ComboBoxItem>
+		<ComboBoxItem>LEBANON</ComboBoxItem>
+		<ComboBoxItem>LESOTHO</ComboBoxItem>
+		<ComboBoxItem>LIBERIA</ComboBoxItem>
+		<ComboBoxItem>LIBYA</ComboBoxItem>
+		<ComboBoxItem>LIECHTENSTEIN</ComboBoxItem>
+		<ComboBoxItem>LITHUANIA</ComboBoxItem>
+		<ComboBoxItem>LUXEMBOURG</ComboBoxItem>
+		<ComboBoxItem>MACAO</ComboBoxItem>
+		<ComboBoxItem>MACEDONIA</ComboBoxItem>
+		<ComboBoxItem>MADAGASCAR</ComboBoxItem>
+		<ComboBoxItem>MALAWI</ComboBoxItem>
+		<ComboBoxItem>MALAYSIA</ComboBoxItem>
+		<ComboBoxItem>MALDIVES</ComboBoxItem>
+		<ComboBoxItem>MALI</ComboBoxItem>
+		<ComboBoxItem>MALTA</ComboBoxItem>
+		<ComboBoxItem>MARSHALL ISLANDS</ComboBoxItem>
+		<ComboBoxItem>MARTINIQUE</ComboBoxItem>
+		<ComboBoxItem>MAURITANIA</ComboBoxItem>
+		<ComboBoxItem>MAURITIUS</ComboBoxItem>
+		<ComboBoxItem>MAYOTTE</ComboBoxItem>
+		<ComboBoxItem>MEXICO</ComboBoxItem>
+		<ComboBoxItem>MICRONESIA</ComboBoxItem>
+		<ComboBoxItem>MOLDOVA</ComboBoxItem>
+		<ComboBoxItem>MONACO</ComboBoxItem>
+		<ComboBoxItem>MONGOLIA</ComboBoxItem>
+		<ComboBoxItem>MONTENEGRO</ComboBoxItem>
+		<ComboBoxItem>MONTSERRAT</ComboBoxItem>
+		<ComboBoxItem>MOROCCO</ComboBoxItem>
+		<ComboBoxItem>MOZAMBIQUE</ComboBoxItem>
+		<ComboBoxItem>MYANMAR</ComboBoxItem>
+		<ComboBoxItem>NAMIBIA</ComboBoxItem>
+		<ComboBoxItem>NAURU</ComboBoxItem>
+		<ComboBoxItem>NEPAL</ComboBoxItem>
+		<ComboBoxItem>NETHERLANDS</ComboBoxItem>
+		<ComboBoxItem>NEW CALEDONIA</ComboBoxItem>
+		<ComboBoxItem>NEW ZEALAND</ComboBoxItem>
+		<ComboBoxItem>NICARAGUA</ComboBoxItem>
+		<ComboBoxItem>NIGER</ComboBoxItem>
+		<ComboBoxItem>NIGERIA</ComboBoxItem>
+		<ComboBoxItem>NIUE</ComboBoxItem>
+		<ComboBoxItem>NORFOLK ISLAND</ComboBoxItem>
+		<ComboBoxItem>NORTHERN MARIANA ISLANDS</ComboBoxItem>
+		<ComboBoxItem>NORWAY</ComboBoxItem>
+		<ComboBoxItem>OMAN</ComboBoxItem>
+		<ComboBoxItem>PAKISTAN</ComboBoxItem>
+		<ComboBoxItem>PALAU</ComboBoxItem>
+		<ComboBoxItem>PALESTINE</ComboBoxItem>
+		<ComboBoxItem>PANAMA</ComboBoxItem>
+		<ComboBoxItem>PAPUA NEW GUINEA</ComboBoxItem>
+		<ComboBoxItem>PARAGUAY</ComboBoxItem>
+		<ComboBoxItem>PERU</ComboBoxItem>
+		<ComboBoxItem>PHILIPPINES</ComboBoxItem>
+		<ComboBoxItem>PITCAIRN</ComboBoxItem>
+		<ComboBoxItem>POLAND</ComboBoxItem>
+		<ComboBoxItem>PORTUGAL</ComboBoxItem>
+		<ComboBoxItem>PUERTO RICO</ComboBoxItem>
+		<ComboBoxItem>QATAR</ComboBoxItem>
+		<ComboBoxItem>RÉUNION</ComboBoxItem>
+		<ComboBoxItem>ROMANIA</ComboBoxItem>
+		<ComboBoxItem>RUSSIAN FEDERATION</ComboBoxItem>
+		<ComboBoxItem>RWANDA</ComboBoxItem>
+		<ComboBoxItem>SAINT BARTHÉLEMY</ComboBoxItem>
+		<ComboBoxItem>SAINT HELENA</ComboBoxItem>
+		<ComboBoxItem>SAINT KITTS AND NEVIS</ComboBoxItem>
+		<ComboBoxItem>SAINT LUCIA</ComboBoxItem>
+		<ComboBoxItem>SAINT MARTIN (FRENCH PART)</ComboBoxItem>
+		<ComboBoxItem>SAINT PIERRE AND MIQUELON</ComboBoxItem>
+		<ComboBoxItem>SAINT VINCENT AND THE GRENADINES</ComboBoxItem>
+		<ComboBoxItem>SAMOA</ComboBoxItem>
+		<ComboBoxItem>SAN MARINO</ComboBoxItem>
+		<ComboBoxItem>SAO TOME AND PRINCIPE</ComboBoxItem>
+		<ComboBoxItem>SAUDI ARABIA</ComboBoxItem>
+		<ComboBoxItem>SENEGAL</ComboBoxItem>
+		<ComboBoxItem>SERBIA</ComboBoxItem>
+		<ComboBoxItem>SEYCHELLES</ComboBoxItem>
+		<ComboBoxItem>SIERRA LEONE</ComboBoxItem>
+		<ComboBoxItem>SINGAPORE</ComboBoxItem>
+		<ComboBoxItem>SINT MAARTEN (DUTCH PART)</ComboBoxItem>
+		<ComboBoxItem>SLOVAKIA</ComboBoxItem>
+		<ComboBoxItem>SLOVENIA</ComboBoxItem>
+		<ComboBoxItem>SOLOMON ISLANDS</ComboBoxItem>
+		<ComboBoxItem>SOMALIA</ComboBoxItem>
+		<ComboBoxItem>SOUTH AFRICA</ComboBoxItem>
+		<ComboBoxItem>SOUTH GEORGIA AND THE SOUTH SANDWICH ISLANDS</ComboBoxItem>
+		<ComboBoxItem>SOUTH SUDAN</ComboBoxItem>
+		<ComboBoxItem>SPAIN</ComboBoxItem>
+		<ComboBoxItem>SRI LANKA</ComboBoxItem>
+		<ComboBoxItem>SUDAN</ComboBoxItem>
+		<ComboBoxItem>SURINAME</ComboBoxItem>
+		<ComboBoxItem>SVALBARD AND JAN MAYEN</ComboBoxItem>
+		<ComboBoxItem>SWAZILAND</ComboBoxItem>
+		<ComboBoxItem>SWEDEN</ComboBoxItem>
+		<ComboBoxItem>SWITZERLAND</ComboBoxItem>
+		<ComboBoxItem>SYRIAN ARAB REPUBLIC</ComboBoxItem>
+		<ComboBoxItem>TAIWAN</ComboBoxItem>
+		<ComboBoxItem>TAJIKISTAN</ComboBoxItem>
+		<ComboBoxItem>TANZANIA</ComboBoxItem>
+		<ComboBoxItem>THAILAND</ComboBoxItem>
+		<ComboBoxItem>TIMOR-LESTE</ComboBoxItem>
+		<ComboBoxItem>TOGO</ComboBoxItem>
+		<ComboBoxItem>TOKELAU</ComboBoxItem>
+		<ComboBoxItem>TONGA</ComboBoxItem>
+		<ComboBoxItem>TRINIDAD AND TOBAGO</ComboBoxItem>
+		<ComboBoxItem>TUNISIA</ComboBoxItem>
+		<ComboBoxItem>TURKEY</ComboBoxItem>
+		<ComboBoxItem>TURKMENISTAN</ComboBoxItem>
+		<ComboBoxItem>TURKS AND CAICOS ISLANDS</ComboBoxItem>
+		<ComboBoxItem>TUVALU</ComboBoxItem>
+		<ComboBoxItem>UGANDA</ComboBoxItem>
+		<ComboBoxItem>UKRAINE</ComboBoxItem>
+		<ComboBoxItem>UNITED ARAB EMIRATES</ComboBoxItem>
+		<ComboBoxItem>UNITED KINGDOM</ComboBoxItem>
+		<ComboBoxItem>UNITED STATES</ComboBoxItem>
+		<ComboBoxItem>UNITED STATES MINOR OUTLYING ISLANDS</ComboBoxItem>
+		<ComboBoxItem>URUGUAY</ComboBoxItem>
+		<ComboBoxItem>UZBEKISTAN</ComboBoxItem>
+		<ComboBoxItem>VANUATU</ComboBoxItem>
+		<ComboBoxItem>VENEZUELA</ComboBoxItem>
+		<ComboBoxItem>VIET NAM</ComboBoxItem>
+		<ComboBoxItem>VIRGIN ISLANDS</ComboBoxItem>
+		<ComboBoxItem>VIRGIN ISLANDS</ComboBoxItem>
+		<ComboBoxItem>WALLIS AND FUTUNA</ComboBoxItem>
+		<ComboBoxItem>WESTERN SAHARA</ComboBoxItem>
+		<ComboBoxItem>YEMEN</ComboBoxItem>
+		<ComboBoxItem>ZAMBIA</ComboBoxItem>
+		<ComboBoxItem>ZIMBABWE</ComboBoxItem>
+	</ComboBox>
+	<CheckBox Content="Reveice email with updates about this product." IsChecked="{Binding Path=AllowProductEmails}" Height="Auto" Margin="100,5,5,5" HorizontalContentAlignment="Left" Grid.Row="4" FontSize="12pt" />
+	<CheckBox Content="Reveice email about new products and services from Prospective Software." IsChecked="{Binding Path=AllowOtherEmails}" Height="Auto" Margin="100,5,5,5" HorizontalContentAlignment="Left" Grid.Row="5" FontSize="12pt" />
+</Grid>

@@ -87,7 +87,7 @@ namespace NETPath.Interface
 			{
 				try
 				{
-					await Prospective.Server.Licensing.LicensingClient.Update(lic.Serial, lic.UserName, lic.UserEmail);
+					await Prospective.Server.Licensing.LicensingClient.Update(lic.Serial, lic.UserName, lic.UserEmail, lic.AllowProductEmails, lic.AllowOtherEmails);
 				}
 				catch
 				{
@@ -155,6 +155,31 @@ namespace NETPath.Interface
 			SKULevel.Source = logo;
 		}
 
+		public void StartTrial()
+		{
+			var t = new Dialogs.SetTrial();
+			DialogService.ShowContentDialog("NETPath", "Please Enter Your Information", t, new DialogAction("Activate", () => ConfigTrial(t)), new DialogAction("Cancel", false, true));
+		}
+
+		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
+		private async void ConfigTrial(Dialogs.SetTrial lic)
+		{
+			if (App.CheckForInternetConnection())
+			{
+				try
+				{
+					await Prospective.Server.Licensing.LicensingClient.PostTrialData(lic.UserName, lic.UserEmail, lic.Company, lic.Country, lic.AllowProductEmails, lic.AllowProductEmails, Globals.UserProfile.SKU, Globals.Usage.UserID, Globals.ApplicationVersion);
+				}
+				catch
+				{
+					DialogService.ShowMessageDialog("NETPath", "Unable to Configure Trial", "We were unable to configure your trial. Please make sure that you are connected to the internet and try again. If the problem persists please contact Prospective Software Support at support@prospectivesoftware.com", new DialogAction("Continue Trial"), new DialogAction("Install License", RetrieveLicense));
+				}
+			}
+			else
+			{
+				DialogService.ShowMessageDialog("NETPath", "Unable to Configure Trial", "We were unable to configure your trial. Please make sure that you are connected to the internet and try again. If the problem persists please contact Prospective Software Support at support@prospectivesoftware.com", new DialogAction("Continue Trial"), new DialogAction("Install License", RetrieveLicense));
+			}
+		}
 		private void PurchaseLicense()
 		{
 			var proc = new Process {StartInfo = {UseShellExecute = true, FileName = "http://www.prospectivesoftware.com/pages/netpath"}};
@@ -177,32 +202,32 @@ namespace NETPath.Interface
 #if LICENSE
 			if ((Globals.UserProfile.IsTrial && !Globals.UserProfile.IsTrialInfoSet) || Globals.UserProfile.Serial == "TRIAL" || Globals.UserProfile.License == "")
 			{
-				var lic = new CryptoLicense(Globals.UserProfile.License, Globals.LicenseVerification);
+				var lic = new CryptoLicense(Globals.TrialLicense, Globals.LicenseVerification);
 				if (lic.Status == LicenseStatus.Valid)
-					DialogService.ShowMessageDialog("NETPath", "Begin Your Trial?", "Would you like to install a license key or begin your trial?", new DialogAction("Continue Trial"), new DialogAction("Install License", RetrieveLicense));
+					DialogService.ShowMessageDialog("NETPath", "Begin Your Trial?", "Would you like to install a license or begin your trial?", new DialogAction("Start Trial", StartTrial), new DialogAction("Install License", RetrieveLicense), new DialogAction("Purchase License", PurchaseLicense, false, false, true));
 				else
-					DialogService.ShowMessageDialog("NETPath", "Expired Trial Notice", "Your trial has expired and you will be unable to generate any code based on the changes made to your project files.", new DialogAction("Continue"), new DialogAction("Purchase License", PurchaseLicense));
+					DialogService.ShowMessageDialog("NETPath", "Expired Trial Notice", "Your trial has expired and you will be unable to generate any code based on the changes made to your project files. If you would like to continue using NETPath please purchase a license by clicking the purchase license button.", new DialogAction("Continue"), new DialogAction("Purchase License", PurchaseLicense, false, false, true));
 			}
 			else if ((Globals.UserProfile.IsTrial && Globals.UserProfile.IsTrialInfoSet) || Globals.UserProfile.Serial == "TRIAL" || Globals.UserProfile.License == "")
 			{
-				var lic = new CryptoLicense(Globals.UserProfile.License, Globals.LicenseVerification);
+				var lic = new CryptoLicense(Globals.TrialLicense, Globals.LicenseVerification);
 				if (lic.Status == LicenseStatus.Valid)
-					DialogService.ShowMessageDialog("NETPath", "Continue Your Trial?", string.Format("Would you like to install a license key or continue with your trial? Please note that your trial will expire in {0} days.", lic.RemainingUsageDays), new DialogAction("Continue Trial"), new DialogAction("Install License", RetrieveLicense));
+					DialogService.ShowMessageDialog("NETPath", "Continue Your Trial?", string.Format("Would you like to install a license key or continue with your trial? Please note that your trial will expire in {0} days.", lic.RemainingUsageDays), new DialogAction("Continue Trial"), new DialogAction("Install License", RetrieveLicense), new DialogAction("Purchase License", PurchaseLicense, false, false, true));
 				else
-					DialogService.ShowMessageDialog("NETPath", "Expired Trial Notice", "Your trial has expired and you will be unable to generate any code based on the changes made to your project files.", new DialogAction("Continue"), new DialogAction("Purchase License", PurchaseLicense));
+					DialogService.ShowMessageDialog("NETPath", "Expired Trial Notice", "Your trial has expired and you will be unable to generate any code based on the changes made to your project files. If you would like to continue using NETPath please purchase a license by clicking the purchase license button.", new DialogAction("Continue"), new DialogAction("Purchase License", PurchaseLicense, false, false, true));
 			}
+			else if (!App.CheckForInternetConnection()) return;
 
-			if (!App.CheckForInternetConnection()) return;
+#endif
 			try
 			{
 				var ld = await Prospective.Server.Licensing.LicensingClient.Retrieve(Globals.UserProfile.Serial, Globals.ApplicationVersion);
-				if (ld.AvailableUpdates.Count > 0)
+				if (ld.AvailableUpdates.Count > 0 || ld.FullUpdateRequired)
 					DialogService.ShowMessageDialog("NETPath", "Updates Available", "There are updates available for NETPath. Would you like to download and install them?", new DialogAction("Yes", () => DownloadUpdates(ld), true), new DialogAction("No", false, true));
 			}
 			catch
 			{
 			}
-#endif
 		}
 
 		private void Main_StateChanged(object sender, EventArgs e)
