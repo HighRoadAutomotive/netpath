@@ -11,26 +11,6 @@
 		<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/Standard.xaml"/>
 	</ResourceDictionary.MergedDictionaries>
 
-	<!-- Label -->
-
-	<Style TargetType="{x:Type pc:Label}">
-		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
-		<Setter Property="Background" Value="Transparent" />
-		<Setter Property="BorderBrush" Value="Transparent" />
-		<Setter Property="BorderThickness" Value="0" />
-		<Setter Property="Width" Value="120" />
-		<Setter Property="Height" Value="28" />
-		<Setter Property="Padding" Value="5" />
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type pc:Label}">
-					<Border x:Name="PART_Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" CornerRadius="{TemplateBinding CornerRadius}">
-						<AccessText x:Name="PART_TextBlock" Margin="0" LineStackingStrategy="BlockLineHeight" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" FontStretch="{TemplateBinding FontStretch}" FontStyle="{TemplateBinding FontStyle}" FontWeight="{TemplateBinding FontWeight}" Text="{TemplateBinding Text}" TextAlignment="{TemplateBinding TextAlignment}" TextDecorations="{TemplateBinding TextDecorations}" TextEffects="{TemplateBinding TextEffects}" TextTrimming="{TemplateBinding TextTrimming}" TextWrapping="{TemplateBinding TextWrapping}" />
-					</Border>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>
 
 	<!-- Button -->
 
@@ -122,40 +102,7 @@
 		</Setter>
 	</Style>
 
-	<!-- RadioButton -->
-
-	<Style x:Key="{x:Type pc:RadioButton}" TargetType="{x:Type pc:RadioButton}" BasedOn="{StaticResource {x:Type RadioButton}}">
-		<Style.Triggers>
-			<MultiTrigger>
-				<MultiTrigger.Conditions>
-					<Condition Property="IsFocused" Value="False"></Condition>
-					<Condition Property="IsRequired" Value="True"></Condition>
-				</MultiTrigger.Conditions>
-				<MultiTrigger.Setters>
-					<Setter Property="Foreground" Value="{StaticResource RequiredForegroundColor}" />
-				</MultiTrigger.Setters>
-			</MultiTrigger>
-		</Style.Triggers>
-	</Style>
-
-
-	<!-- CheckBox -->
-
-	<Style x:Key="{x:Type pc:CheckBox}" TargetType="{x:Type pc:CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
-		<Style.Triggers>
-			<MultiTrigger>
-				<MultiTrigger.Conditions>
-					<Condition Property="IsFocused" Value="False"></Condition>
-					<Condition Property="IsRequired" Value="True"></Condition>
-				</MultiTrigger.Conditions>
-				<MultiTrigger.Setters>
-					<Setter Property="Foreground" Value="{StaticResource RequiredForegroundColor}" />
-				</MultiTrigger.Setters>
-			</MultiTrigger>
-		</Style.Triggers>
-	</Style>
-
-
+	
 	<!-- TextBox -->
 
 	<Style x:Key="{x:Type pc:TextBox}" TargetType="{x:Type pc:TextBox}">
@@ -185,22 +132,11 @@
 						<MultiTrigger>
 							<MultiTrigger.Conditions>
 								<Condition Property="IsFocused" Value="False"></Condition>
-								<Condition Property="IsUpdated" Value="False"></Condition>
 								<Condition Property="IsInvalid" Value="False"></Condition>
 								<Condition Property="IsRequired" Value="True"></Condition>
 							</MultiTrigger.Conditions>
 							<MultiTrigger.Setters>
 								<Setter Property="Background" Value="{StaticResource RequiredBackgroundColor}" />
-							</MultiTrigger.Setters>
-						</MultiTrigger>
-						<MultiTrigger>
-							<MultiTrigger.Conditions>
-								<Condition Property="IsFocused" Value="False"></Condition>
-								<Condition Property="IsInvalid" Value="False"></Condition>
-								<Condition Property="IsUpdated" Value="True"></Condition>
-							</MultiTrigger.Conditions>
-							<MultiTrigger.Setters>
-								<Setter Property="Background" Value="{StaticResource UpdatedBackgroundColor}" />
 							</MultiTrigger.Setters>
 						</MultiTrigger>
 						<MultiTrigger>
@@ -259,73 +195,6 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</Style>
-
-
-	<!-- ComboBox -->
-
-	<Style x:Key="{x:Type pc:ComboBox}" TargetType="{x:Type pc:ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
-		<Setter Property="LabelTextColor" Value="{StaticResource ReadOnlyFontColor}" />
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type pc:ComboBox}">
-					<Border x:Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="0"  >
-						<Grid x:Name="LayoutGrid">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" Width="0"/>
-							</Grid.ColumnDefinitions>
-							<Popup PlacementTarget="{Binding ElementName=BG}" x:Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}" Margin="0" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom" UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
-								<Border x:Name="DropDownBorder" Width="{TemplateBinding ActualWidth}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="{TemplateBinding Background}" Padding="2" HorizontalAlignment="Stretch" UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
-									<ScrollViewer x:Name="DropDownScrollViewer" HorizontalAlignment="Stretch" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" >
-										<ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" UseLayoutRounding="{TemplateBinding UseLayoutRounding}"/>
-									</ScrollViewer>
-								</Border>
-							</Popup>
-							<ToggleButton Name="Toggle" Visibility="Hidden" BorderThickness="0" Background="Transparent" Grid.ColumnSpan="2" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" IsEnabled="{TemplateBinding IsEnabled}" Style="{StaticResource ComboBoxToggleButton}" UseLayoutRounding="{TemplateBinding UseLayoutRounding}"/>
-							<ContentPresenter ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Content="{TemplateBinding SelectionBoxItem}" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="false" Margin="{TemplateBinding Padding}" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-							<Label x:Name="PART_LabelText" Margin="2" Grid.Column="0" VerticalAlignment="Center" Foreground="{TemplateBinding LabelTextColor}" Content="{TemplateBinding LabelText}" Padding="2,0,0,0" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" Visibility="Collapsed" IsHitTestVisible="False" />
-						</Grid>
-					</Border>
-					<ControlTemplate.Triggers>
-						<Trigger Property="HasValue" Value="True">
-							<Setter Property="Visibility" TargetName="PART_LabelText" Value="Hidden" />
-						</Trigger>
-						<Trigger Property="HasItems" Value="false">
-							<Setter Property="Height" TargetName="DropDownBorder" Value="95"/>
-						</Trigger>
-						<Trigger Property="IsGrouping" Value="true">
-							<Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
-						</Trigger>
-						<Trigger Property="IsDropDownOpen" Value="True" >
-							<Setter Property="Background" Value="{StaticResource ItemSelectorBackgroundColor}" />
-							<Setter TargetName="Toggle" Property="Visibility" Value="Visible" />
-						</Trigger>
-						<Trigger Property="IsMouseOver" Value="True">
-							<Setter TargetName="Toggle" Property="Visibility" Value="Visible" />
-						</Trigger>
-						<Trigger Property="IsFocused" Value="True">
-							<Setter Property="Background" Value="{StaticResource FocusedBackgroundColor}" />
-							<Setter TargetName="PART_LabelText" Property="Visibility" Value="Collapsed" />
-						</Trigger>
-						<Trigger Property="SelectedIndex" Value="-1">
-							<Setter TargetName="PART_LabelText" Property="Visibility" Value="Visible" />
-						</Trigger>
-					</ControlTemplate.Triggers>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-		<Style.Triggers>
-			<MultiTrigger>
-				<MultiTrigger.Conditions>
-					<Condition Property="IsKeyboardFocusWithin" Value="False"></Condition>
-					<Condition Property="IsRequired" Value="True"></Condition>
-				</MultiTrigger.Conditions>
-				<MultiTrigger.Setters>
-					<Setter Property="Background" Value="{StaticResource RequiredBackgroundColor}" />
-			</MultiTrigger.Setters>
-			</MultiTrigger>
-		</Style.Triggers>
 	</Style>
 	
 </ResourceDictionary>
