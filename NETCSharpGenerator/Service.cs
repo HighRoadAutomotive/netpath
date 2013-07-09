@@ -997,7 +997,7 @@ namespace NETPath.Generators.NET.CS
 		{
 			var code = new StringBuilder();
 
-			if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, false))
+			if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, false) && !o.IsTerminating)
 			{
 				if (o.Documentation != null)
 				{
@@ -1314,12 +1314,13 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine(")");
 			code.AppendLine("\t\t{");
 			if (o.IsInitiating) code.AppendLine("\t\t\tbase.Initialize();");
-			code.AppendFormat("\t\t\t{0}{2}.{1}(", o.ReturnType.Primitive != PrimitiveTypes.Void ? "return " : "", o.HasClientType ? o.ClientName : o.ServerName, IsCallback ? "__callback" : "base.Channel");
+			code.AppendFormat("\t\t\t{0}{2}.{1}(", o.ReturnType.Primitive != PrimitiveTypes.Void && !o.IsTerminating ? "return " : o.ReturnType.Primitive != PrimitiveTypes.Void && o.IsTerminating ? "var __t = " : "", o.HasClientType ? o.ClientName : o.ServerName, IsCallback ? "__callback" : "base.Channel");
 			foreach (MethodParameter op in o.Parameters)
 				code.AppendFormat("{0}, ", op.Name);
 			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
 			code.AppendLine(");");
 			if (o.IsTerminating) code.AppendLine("\t\t\tbase.Terminate();");
+			if (o.IsTerminating && o.ReturnType.Primitive != PrimitiveTypes.Void) code.AppendLine("\t\t\treturn __t;");
 			code.AppendLine("\t\t}");
 			return code.ToString();
 		}
@@ -1561,7 +1562,7 @@ namespace NETPath.Generators.NET.CS
 		{
 			var code = new StringBuilder();
 
-			if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, IsServer))
+			if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, IsServer) && !o.IsTerminating)
 			{
 				if (o.Documentation != null)
 				{
@@ -1580,7 +1581,6 @@ namespace NETPath.Generators.NET.CS
 				foreach (MethodParameter op in o.Parameters)
 					code.AppendFormat("{0}{1}", op.Name, o.Parameters.IndexOf(op) != (o.Parameters.Count() - 1) ? ", " : "");
 				code.AppendLine(");");
-				if (o.IsTerminating) code.AppendLine("\t\t\tbase.Terminate();");
 				code.AppendLine("\t\t}");
 			}
 			else

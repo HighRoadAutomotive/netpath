@@ -182,7 +182,7 @@ namespace NETPath.Interface
 		}
 		private void PurchaseLicense()
 		{
-			var proc = new Process {StartInfo = {UseShellExecute = true, FileName = "http://www.prospectivesoftware.com/pages/netpath"}};
+			var proc = new Process { StartInfo = { UseShellExecute = true, FileName = "http://www.prospectivesoftware.com/pages/netpath" } };
 			proc.Start();
 		}
 
