@@ -214,7 +214,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\t\tthis.TransferMode = TransferMode.{0};", System.Enum.GetName(typeof(System.ServiceModel.TransferMode), b.TransferMode)));
 				code.AppendLine(string.Format("\t\t\tthis.WebSocketSettings.DisablePayloadMasking = {0};", b.DisablePayloadMasking ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 				code.AppendLine(string.Format("\t\t\tthis.WebSocketSettings.KeepAliveInterval = new TimeSpan({0});", b.KeepAliveInterval.Ticks));
-				code.AppendLine(string.Format("\t\t\tthis.WebSocketSettings.SubProtocol = \"{0}\";", b.SubProtocol));
+				code.AppendLine(string.Format("\t\t\tthis.WebSocketSettings.SubProtocol = {0};", string.IsNullOrWhiteSpace(b.SubProtocol) ? "null" : string.Format("\"{0}\"", b.SubProtocol)));
 				code.AppendLine(string.Format("\t\t\tthis.WebSocketSettings.TransportUsage = System.ServiceModel.Channels.WebSocketTransportUsage.{0};", System.Enum.GetName(typeof(System.ServiceModel.Channels.WebSocketTransportUsage), b.TransportUsage)));
 				if (Globals.CurrentGenerationTarget != ProjectGenerationFramework.WIN8)
 				{
