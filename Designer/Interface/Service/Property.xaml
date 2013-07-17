@@ -22,20 +22,22 @@
 	</Grid.RowDefinitions>
 	<TextBlock Text="{Binding Path=PropertyData.Declaration}" FontSize="14pt" Margin="0,5" Grid.Row="0" />
 	<Label Grid.Row="1" Content="Data Type:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="80" />
-	<Data:TypeSelector OpenType="{Binding Path=PropertyData.ReturnType, Mode=TwoWay}" Project="{Binding Path=ServiceProject}"  Grid.Row="1" Margin="85,5,0,5" />
+	<Data:TypeSelector OpenType="{Binding Path=PropertyData.ReturnType, Mode=TwoWay}" Project="{Binding Path=ServiceProject}"  Grid.Row="1" Margin="85,5,5,5" />
 	<Label Content="Name:" Grid.Row="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="80" />
-	<pc:TextBox Text="{Binding Path=PropertyData.ServerName}" Grid.Row="2" Height="23" Margin="85,5,0,5" ToolTip="{Binding Path=PropertyData.ServerName}" />
+	<pc:TextBox Text="{Binding Path=PropertyData.ServerName}" Grid.Row="2" Height="23" Margin="85,5,5,5" ToolTip="{Binding Path=PropertyData.ServerName}" />
 	<Label Grid.Row="3" Content="Options" FontSize="12pt" Margin="0,5,0,0" />
 	<Grid Grid.Row="4">
 		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="2*"/>
 		</Grid.ColumnDefinitions>
 		<ToggleButton Content="Read-Only" IsChecked="{Binding Path=PropertyData.IsReadOnly}" Margin="0,5,5,5" Grid.Column="0" />
 		<ToggleButton Content="One Way" IsChecked="{Binding Path=PropertyData.IsOneWay}" Margin="5" Grid.Column="1" />
-		<Label Content="Protection Level:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="2" />
-		<ComboBox Height="23" Margin="110,5,0,5" SelectedIndex="{Binding Path=PropertyData.ProtectionLevel, Converter={StaticResource ProtectionLevelConverter}}" Grid.Column="2" >
+		<ToggleButton Content="Hidden" IsChecked="{Binding Path=PropertyData.IsHidden}" Margin="5" Grid.Column="2" />
+		<Label Content="Protection Level:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="3" />
+		<ComboBox Height="23" Margin="110,5,5,5" SelectedIndex="{Binding Path=PropertyData.ProtectionLevel, Converter={StaticResource ProtectionLevelConverter}}" Grid.Column="3" >
 			<ComboBoxItem Content="None" />
 			<ComboBoxItem Content="Sign" />
 			<ComboBoxItem Content="Encrypt and Sign" />

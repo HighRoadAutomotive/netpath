@@ -851,6 +851,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateServiceInterfaceSyncMethod(Method o, bool IsCallback)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			if (o.Documentation != null)
@@ -873,6 +874,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateServiceInterfaceMethodCode40(Method o, bool IsCallback)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 			
 			if (o.UseAsyncPattern && CanGenerateAsync(o.Owner, true))
@@ -910,6 +912,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateServiceInterfaceMethodCode45(Method o, bool IsCallback)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, true))
@@ -942,6 +945,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateClientInterfaceSyncMethod(Method o, bool IsCallback)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			if (o.Documentation != null)
@@ -960,6 +964,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateClientInterfaceMethodCode40(Method o, bool IsCallback)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			if (o.UseAsyncPattern && CanGenerateAsync(o.Owner, false))
@@ -995,6 +1000,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateClientInterfaceMethodCode45(Method o, bool IsCallback)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, false) && !o.IsTerminating)
@@ -1024,6 +1030,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateServerProxyPropertyCode(Property o)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("\t\tpublic abstract {0} {1} {{ get; {2}}}",  DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName, o.IsReadOnly ? "" : "set; ");
@@ -1033,6 +1040,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateServerProxySyncMethod(Method o)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 			if (o.Documentation != null)
 			{
@@ -1052,6 +1060,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateServerProxyMethodCode40(Method o)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			if (o.UseAsyncPattern && CanGenerateAsync(o.Owner, true))
@@ -1089,6 +1098,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateServerProxyMethodCode45(Method o)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, true))
@@ -1119,6 +1129,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateServerCallbackSyncMethodProxy(Method o)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 			if (o.Documentation != null)
 			{
@@ -1143,6 +1154,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateServerCallbackMethodProxyCode40(Method o)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			if (o.UseAsyncPattern && CanGenerateAsync(o.Owner, true))
@@ -1253,6 +1265,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateServerCallbackMethodProxyCode45(Method o)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, true))
@@ -1287,6 +1300,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateMethodProxyConstructorCode(Method o, bool IsServer)
 		{
+			if (o.IsHidden) return "";
 			if (o.UseAsyncPattern && CanGenerateAsync(o.Owner, IsServer))
 			{
 				var code = new StringBuilder();
@@ -1300,6 +1314,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateSyncMethodProxy(Method o, bool IsCallback)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 			if (o.Documentation != null)
 			{
@@ -1448,6 +1463,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateMethodProxyCode40(Method o, bool IsServer, bool IsCallback)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			if (o.UseAsyncPattern && CanGenerateAsync(o.Owner, IsServer))
@@ -1560,6 +1576,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateMethodProxyCode45(Method o, bool IsServer, bool IsCallback)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, IsServer) && !o.IsTerminating)
@@ -1595,6 +1612,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateClientCallbackSyncMethod(Method o, bool IsAsync = false, bool IsAwait = false)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			if (o.Documentation != null)
@@ -1612,6 +1630,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateCallbackClientMethodCode40(Method o)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			if (o.UseAsyncPattern && CanGenerateAsync(o.Owner, false))
@@ -1659,6 +1678,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateCallbackClientMethodCode45(Method o)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, false))
@@ -1688,6 +1708,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateServiceInterfaceDCM40(DataChangeMethod o, bool IsServer)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			var dcmtype = o.ReturnType as Data;
@@ -1798,6 +1819,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateServiceInterfaceDCM45(DataChangeMethod o, bool IsServer)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			var dcmtype = o.ReturnType as Data;
@@ -1907,6 +1929,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateServiceImplementationDCM40(DataChangeMethod o, bool IsServer)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			var dcmtype = o.ReturnType as Data;
@@ -2160,6 +2183,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateServiceImplementationDCM45(DataChangeMethod o, bool IsServer)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 			var dcmtype = o.ReturnType as Data;
 			if (dcmtype == null) dcmtype = Generator.ReferenceRetrieve(o.Owner.Parent.Owner, o.Owner.Parent.Owner.Namespace, o.ReturnType.ID) as Data;
@@ -2568,6 +2592,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateCallbackInterfaceDCM40(DataChangeMethod o, bool IsServer)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			var dcmtype = o.ReturnType as Data;
@@ -2677,6 +2702,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateCallbackInterfaceDCM45(DataChangeMethod o, bool IsServer)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			var dcmtype = o.ReturnType as Data;
@@ -2786,6 +2812,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateCallbackImplementationDCM40(DataChangeMethod o, bool IsServer)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			var dcmtype = o.ReturnType as Data;
@@ -2973,6 +3000,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GenerateCallbackImplementationDCM45(DataChangeMethod o, bool IsServer)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 			var dcmtype = o.ReturnType as Data;
 			if (dcmtype == null) dcmtype = Generator.ReferenceRetrieve(o.Owner.Parent.Owner, o.Owner.Parent.Owner.Namespace, o.ReturnType.ID) as Data;
@@ -3311,6 +3339,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GeneratePropertyServerCode45(Property o)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendFormat("\t\t{0} {1} {{ ", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName);
@@ -3357,6 +3386,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GeneratePropertyInterfaceCode45(Property o)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			code.AppendLine(string.Format(o.IsOneWay ? "\t\t[OperationContract(IsOneWay = true, Action = \"{0}/{1}/Get{2}\")]" : "\t\t[OperationContract(Action = \"{0}/{1}/Get{2}\", ReplyAction = \"{0}/{1}/Set{2}Response\")]", o.Owner.Parent.FullURI.Substring(0, o.Owner.Parent.FullURI.Length - 1), o.Owner.Name, o.ServerName));
@@ -3371,6 +3401,7 @@ namespace NETPath.Generators.NET.CS
 
 		public static string GeneratePropertyClientCode(Property o)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			code.AppendLine(string.Format("\t\t{0} I{1}.Get{2}()", DataTypeGenerator.GenerateType(o.ReturnType), o.Owner.HasClientType ? o.Owner.ClientType.Name : o.Owner.Name, o.ServerName));

@@ -114,7 +114,7 @@ namespace NETPath
 			//Get all services with DRE in the solution.
 			var sl = new List<Service>();
 			foreach (var p in Globals.Projects)
-				sl.AddRange(DataRevisionServiceSan(p.Namespace));
+				sl.AddRange(DataRevisionServiceScan(p.Namespace));
 
 			//Clean all DataRevisionServiceNames lists
 			foreach (var p in Globals.Projects)
@@ -126,17 +126,18 @@ namespace NETPath
 				{
 					Data t = DataReivsionReferenceRetrieve(sv.Parent.Owner, sv.Parent.Owner.Namespace, dre.ReturnType.ID);
 					if (t == null) continue;
+					if (dre.IsHidden) continue;
 					t.DataRevisionServiceNames.Add(new DataRevisionName(string.Format("{0}.{1}", sv.Parent, sv.Name), true, dre.UseAwaitPattern && CanGenerateAsync(sv, true), sv.Parent.Owner.ID));
 					t.DataRevisionServiceNames.Add(new DataRevisionName(string.Format("{0}.{1}", sv.Parent, sv.HasClientType ? sv.ClientType.Name : sv.Name), false, dre.UseAwaitPattern && CanGenerateAsync(sv, false), sv.Parent.Owner.ID));
 				}
 		}
 
-		internal static List<Service> DataRevisionServiceSan(Namespace Namespace)
+		internal static List<Service> DataRevisionServiceScan(Namespace Namespace)
 		{
 			List<Service> sl = Namespace.Services.Where(sv => sv.HasDCMOperations).ToList();
 
 			foreach(var n in Namespace.Children)
-				sl.AddRange(DataRevisionServiceSan(n));
+				sl.AddRange(DataRevisionServiceScan(n));
 
 			return sl;
 		}

@@ -121,6 +121,7 @@
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
 					<Label Grid.Row="0" Content="Options" FontSize="12pt" Margin="0,5,0,0" />
 					<ToggleButton Content="Synchronous" IsChecked="{Binding Path=MethodData.UseSyncPattern}" Margin="5" Grid.Column="0" Grid.Row="1" />
@@ -131,8 +132,9 @@
 					<ToggleButton Content="Terminating" IsChecked="{Binding Path=MethodData.IsTerminating}" Margin="5" Grid.Column="2" Grid.Row="2" Checked="Terminating_Checked" />
 					<ToggleButton Content="Operation Behavior" IsChecked="{Binding Path=MethodData.HasOperationBehavior}" Margin="5" Grid.Column="0" Grid.Row="3" />
 					<ToggleButton Content="REST Method" IsChecked="{Binding Path=MethodData.IsRESTMethod}" Margin="5" Grid.Column="1" Grid.Row="3" />
-					<Label Content="Protection:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="3" />
-					<ComboBox Height="23" Margin="75,5,5,5" SelectedIndex="{Binding Path=MethodData.ProtectionLevel, Converter={StaticResource ProtectionLevelConverter}}" Grid.Column="2" Grid.Row="3" >
+					<ToggleButton Content="Hidden" IsChecked="{Binding Path=MethodData.IsHidden}" Margin="5" Grid.Column="2" Grid.Row="3" />
+					<Label Content="Protection:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="4" />
+					<ComboBox Height="23" Margin="75,5,5,5" SelectedIndex="{Binding Path=MethodData.ProtectionLevel, Converter={StaticResource ProtectionLevelConverter}}" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3" >
 						<ComboBoxItem Content="None" />
 						<ComboBoxItem Content="Sign" />
 						<ComboBoxItem Content="Encrypt and Sign" />

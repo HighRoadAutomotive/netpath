@@ -163,6 +163,7 @@ namespace NETPath.Generators.WinRT.CS
 
 		public static string GenerateServiceInterfaceMethod(RESTMethod o)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			if (o.Documentation != null)
@@ -188,6 +189,7 @@ namespace NETPath.Generators.WinRT.CS
 
 		public static string GenerateServerProxyMethod(RESTMethod o)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 			code.AppendFormat("\t\tpublic abstract {0} {1}(", o.ReturnType.HasClientType ? DataTypeGenerator.GenerateType(o.ReturnType.ClientType) : DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName);
 			foreach (RESTMethodParameter op in o.Parameters)
@@ -203,6 +205,7 @@ namespace NETPath.Generators.WinRT.CS
 
 		public static string GenerateClientMethodWeb45(RESTMethod o)
 		{
+			if (o.IsHidden) return "";
 			var conf = o.RequestConfiguration as RESTHTTPWebConfiguration;
 			var code = new StringBuilder();
 			if (o.Documentation != null)
@@ -270,6 +273,7 @@ namespace NETPath.Generators.WinRT.CS
 
 		public static string GenerateClientMethodWebAsync45(RESTMethod o)
 		{
+			if (o.IsHidden) return "";
 			var conf = o.RequestConfiguration as RESTHTTPWebConfiguration;
 			var code = new StringBuilder();
 
@@ -345,6 +349,7 @@ namespace NETPath.Generators.WinRT.CS
 
 		public static string GenerateClientMethodClient45(RESTMethod o)
 		{
+			if (o.IsHidden) return "";
 			var conf = o.RequestConfiguration as RESTHTTPClientConfiguration;
 			var code = new StringBuilder();
 			if (o.Documentation != null)
@@ -391,6 +396,7 @@ namespace NETPath.Generators.WinRT.CS
 
 		public static string GenerateClientMethodClientAsync45(RESTMethod o)
 		{
+			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
 			if (o.Documentation != null)
