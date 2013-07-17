@@ -124,30 +124,6 @@ namespace NETPath.Interface.Data
 
 		private void ValuesList_PreviewMouseMove(object sender, MouseEventArgs e)
 		{
-			ContentPresenter cp = GetListBoxItemPresenter();
-			if (cp == null) return;
-			var ts = ValuesList.ItemTemplate.FindName("DataType", cp) as Prospective.Controls.TextBox;
-			if (ts == null) return;
-			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("ElementName", cp) as Prospective.Controls.TextBox;
-			if (ts == null) return;
-			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("Order", cp) as Prospective.Controls.TextBox;
-			if (ts == null) return;
-			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("WPFDataType", cp) as Prospective.Controls.TextBox;
-			if (ts == null) return;
-			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("WPFName", cp) as Prospective.Controls.TextBox;
-			if (ts == null) return;
-			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("AttachedTargetTypes", cp) as Prospective.Controls.TextBox;
-			if (ts == null) return;
-			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("AttachedAttributeTypes", cp) as Prospective.Controls.TextBox;
-			if (ts == null) return;
-			if (ts.IsKeyboardFocusWithin) return;
-
 			if (e.LeftButton != MouseButtonState.Pressed || IsDragging) return;
 			Point position = e.GetPosition(null);
 
@@ -203,30 +179,6 @@ namespace NETPath.Interface.Data
 
 		private void ValuesList_PreviewDragOver(object sender, DragEventArgs e)
 		{
-			ContentPresenter cp = GetListBoxItemPresenter();
-			if (cp == null) return;
-			var ts = ValuesList.ItemTemplate.FindName("DataType", cp) as Prospective.Controls.TextBox;
-			if (ts == null) return;
-			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("ElementName", cp) as Prospective.Controls.TextBox;
-			if (ts == null) return;
-			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("Order", cp) as Prospective.Controls.TextBox;
-			if (ts == null) return;
-			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("WPFDataType", cp) as Prospective.Controls.TextBox;
-			if (ts == null) return;
-			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("WPFName", cp) as Prospective.Controls.TextBox;
-			if (ts == null) return;
-			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("AttachedTargetTypes", cp) as Prospective.Controls.TextBox;
-			if (ts == null) return;
-			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("AttachedAttributeTypes", cp) as Prospective.Controls.TextBox;
-			if (ts == null) return;
-			if (ts.IsKeyboardFocusWithin) return;
-
 			if (dragAdorner != null)
 			{
 				dragAdorner.LeftOffset = e.GetPosition(ValuesList).X;

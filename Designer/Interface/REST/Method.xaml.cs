@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -63,10 +64,13 @@ namespace NETPath.Interface.REST
 		{
 			ContentPresenter cp = GetListBoxItemPresenter();
 			if (cp == null) return;
-			var ts = ValuesList.ItemTemplate.FindName("OperationParameterDataType", cp) as Prospective.Controls.TextBox;
+			var tds = ValuesList.ItemTemplate.FindName("OperationParameterDataType", cp) as NETPath.Interface.Data.TypeSelector;
+			if (tds == null) return;
+			if (tds.IsKeyboardFocusWithin) return;
+			var ts = ValuesList.ItemTemplate.FindName("OperationParameterElementName", cp) as Prospective.Controls.TextBox;
 			if (ts == null) return;
 			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("OperationParameterElementName", cp) as Prospective.Controls.TextBox;
+			ts = ValuesList.ItemTemplate.FindName("OperationParameterDocumentation", cp) as Prospective.Controls.TextBox;
 			if (ts == null) return;
 			if (ts.IsKeyboardFocusWithin) return;
 
@@ -135,10 +139,13 @@ namespace NETPath.Interface.REST
 		{
 			ContentPresenter cp = GetListBoxItemPresenter();
 			if (cp == null) return;
-			var ts = ValuesList.ItemTemplate.FindName("OperationParameterDataType", cp) as Prospective.Controls.TextBox;
+			var tds = ValuesList.ItemTemplate.FindName("OperationParameterDataType", cp) as NETPath.Interface.Data.TypeSelector;
+			if (tds == null) return;
+			if (tds.IsKeyboardFocusWithin) return;
+			var ts = ValuesList.ItemTemplate.FindName("OperationParameterElementName", cp) as Prospective.Controls.TextBox;
 			if (ts == null) return;
 			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("OperationParameterElementName", cp) as Prospective.Controls.TextBox;
+			ts = ValuesList.ItemTemplate.FindName("OperationParameterDocumentation", cp) as Prospective.Controls.TextBox;
 			if (ts == null) return;
 			if (ts.IsKeyboardFocusWithin) return;
 
