@@ -42,12 +42,19 @@ namespace System.ServiceModel
 
 		protected virtual void Terminate()
 		{
-			OperationContext.Current.Channel.Faulted -= ChannelFaulted;
-			OperationContext.Current.Channel.Closing -= ChannelClosed;
+			try
+			{
+				OperationContext.Current.Channel.Faulted -= ChannelFaulted;
+				OperationContext.Current.Channel.Closing -= ChannelClosed;
 
-			if (OperationContext.Current.Channel.State != CommunicationState.Closed && OperationContext.Current.Channel.State != CommunicationState.Closing)
-				OperationContext.Current.Channel.Close();
-			IsTerminated = true;
+				if (OperationContext.Current.Channel.State != CommunicationState.Faulted)
+					OperationContext.Current.Channel.Close();
+			}
+			catch (Exception ex) { }
+			finally
+			{
+				IsTerminated = true;
+			}
 		}
 
 		protected virtual void ChannelClosed(object sender, EventArgs e)
@@ -57,7 +64,8 @@ namespace System.ServiceModel
 
 		protected virtual void ChannelFaulted(object sender, EventArgs e)
 		{
-			ChannelClosed(sender, e);
+			OperationContext.Current.Channel.Abort();
+			Terminate();
 		}
 	}
 
@@ -158,7 +166,7 @@ namespace System.ServiceModel
 
 		protected override void ChannelFaulted(object sender, EventArgs e)
 		{
-			ChannelClosed(sender, e);
+			Terminate();
 		}
 
 		private void CallbackDisconnected()
