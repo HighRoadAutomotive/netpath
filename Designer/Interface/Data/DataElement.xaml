@@ -50,7 +50,7 @@
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<Label Content="Type:" Margin="0,5,5,5" HorizontalContentAlignment="Center" />
-		<Data:TypeSelector Grid.Column="1" Margin="5" x:Name="DataType" OpenType="{Binding Path=Element.DataType, Mode=TwoWay}" LabelText="Type" VerticalContentAlignment="Center" ToolTip="{Binding Path=Element.DataType}"  />
+		<Data:TypeSelector Grid.Column="1" Margin="5,5,0,5" x:Name="DataType" OpenType="{Binding Path=Element.DataType, Mode=TwoWay}" LabelText="Type" VerticalContentAlignment="Center" ToolTip="{Binding Path=Element.DataType}"  />
 	</Grid>
 	<Grid Name="ServerGrid" Grid.Row="2" >
 		<Grid.ColumnDefinitions>
@@ -58,7 +58,7 @@
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<Label Content="Server:" Margin="0,5,5,5" HorizontalContentAlignment="Center" />
-		<pc:TextBox Grid.Column="1" Margin="5" Name="ElementName" Text="{Binding Path=Element.DataName, UpdateSourceTrigger=PropertyChanged}" LabelText="Server Name" VerticalContentAlignment="Center" Validate="ElementName_Validate" />
+		<pc:TextBox Grid.Column="1" Margin="5,5,0,5" Name="ElementName" Text="{Binding Path=Element.DataName, UpdateSourceTrigger=PropertyChanged}" LabelText="Server Name" VerticalContentAlignment="Center" Validate="ElementName_Validate" />
 	</Grid>
 	<Grid Name="ContractGrid" Grid.Row="3" >
 		<Grid.ColumnDefinitions>
@@ -66,7 +66,7 @@
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<ToggleButton Grid.Column="0" Margin="0,5,5,5" Content="Contract:" Padding="2,0" IsChecked="{Binding Path=Element.HasContractName}" IsEnabled="{Binding Path=Element.IsDataMember}" ToolTip="Tells NETPath to use a different name for the data during serialization." Unchecked="GenerateContractName_Unchecked" />
-		<pc:TextBox Grid.Column="1" Margin="5" MinHeight="24" Name="ContractName" Text="{Binding Path=Element.ContractName, UpdateSourceTrigger=PropertyChanged}" LabelText="Contract Name" IsEnabled="{Binding Path=Element.HasContractName}" VerticalContentAlignment="Center" />
+		<pc:TextBox Grid.Column="1" Margin="5,5,0,5" MinHeight="24" Name="ContractName" Text="{Binding Path=Element.ContractName, UpdateSourceTrigger=PropertyChanged}" LabelText="Contract Name" IsEnabled="{Binding Path=Element.HasContractName}" VerticalContentAlignment="Center" />
 	</Grid>
 	<Grid Name="ClientGrid" Grid.Row="4" >
 		<Grid.ColumnDefinitions>
@@ -74,7 +74,7 @@
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<ToggleButton Grid.Column="0" Margin="0,5,5,5" Content="Client:" Padding="2,0" IsChecked="{Binding Path=Element.HasClientType}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="GenerateClientType" ToolTip="Tells NETPath to generate a different member type for the client." Unchecked="GenerateClientType_Unchecked" />
-		<pc:TextBox Grid.Column="1" Margin="5" MinHeight="24" Name="ClientName" Text="{Binding Path=Element.ClientName, UpdateSourceTrigger=PropertyChanged}" LabelText="Client Name" IsEnabled="{Binding Path=Element.HasClientType}" VerticalContentAlignment="Center" Validate="ElementName_Validate" />
+		<pc:TextBox Grid.Column="1" Margin="5,5,0,5" MinHeight="24" Name="ClientName" Text="{Binding Path=Element.ClientName, UpdateSourceTrigger=PropertyChanged}" LabelText="Client Name" IsEnabled="{Binding Path=Element.HasClientType}" VerticalContentAlignment="Center" Validate="ElementName_Validate" />
 	</Grid>
 	<Grid Name="XAMLGrid" Grid.Row="5" >
 		<Grid.ColumnDefinitions>
@@ -82,7 +82,7 @@
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<ToggleButton Grid.Column="0" Margin="0,5,5,5" Content="XAML:" Padding="2,0" IsChecked="{Binding Path=Element.HasXAMLType}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="GenerateXAMLBinding" ToolTip="Tells NETPath to generate a WPF binding for this member." Unchecked="GenerateXAMLBinding_Unchecked" />
-		<pc:TextBox Grid.Column="1" Margin="5" MinHeight="24" Name="XAMLName" Text="{Binding Path=Element.XAMLName, UpdateSourceTrigger=PropertyChanged}" LabelText="XAML Name" IsEnabled="{Binding Path=Element.HasXAMLType}" VerticalContentAlignment="Center" Validate="ElementName_Validate" />
+		<pc:TextBox Grid.Column="1" Margin="5,5,0,5" MinHeight="24" Name="XAMLName" Text="{Binding Path=Element.XAMLName, UpdateSourceTrigger=PropertyChanged}" LabelText="XAML Name" IsEnabled="{Binding Path=Element.HasXAMLType}" VerticalContentAlignment="Center" Validate="ElementName_Validate" />
 	</Grid>
 	<Grid Name="OrderGrid" Grid.Row="6" >
 		<Grid.ColumnDefinitions>
