@@ -59,7 +59,6 @@
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
-		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>
 		<Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}"/>
 		<Setter Property="BorderBrush" Value="{StaticResource DefaultBorderColor}"/>
 		<Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -650,8 +649,8 @@
 									</ScrollViewer>
 								</Border>
 							</Popup>
-							<ToggleButton Name="Toggle" Visibility="Hidden" BorderThickness="0" Background="Transparent" Grid.ColumnSpan="2" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" IsEnabled="{TemplateBinding IsEnabled}" Style="{StaticResource ComboBoxToggleButton}" UseLayoutRounding="{TemplateBinding UseLayoutRounding}"/>
-							<ContentPresenter ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Content="{TemplateBinding SelectionBoxItem}" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="false" Margin="{TemplateBinding Padding}" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+							<ToggleButton Grid.Column="0" Name="Toggle" Visibility="Hidden" Grid.ColumnSpan="2" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" IsEnabled="{TemplateBinding IsEnabled}" Style="{StaticResource ComboBoxToggleButton}" UseLayoutRounding="{TemplateBinding UseLayoutRounding}"/>
+							<ContentPresenter Grid.Column="0" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Content="{TemplateBinding SelectionBoxItem}" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="false" Margin="{TemplateBinding Padding}" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
 						</Grid>
 					</Border>
 					<ControlTemplate.Triggers>
@@ -740,8 +739,6 @@
 				</Track>
 			</Border>
 		</Grid>
-		<ControlTemplate.Triggers>
-		</ControlTemplate.Triggers>
 	</ControlTemplate>
 	<ControlTemplate x:Key="VerticalScrollBarTemplate" TargetType="{x:Type ScrollBar}">
 		<Grid x:Name="Bg" UseLayoutRounding="true" Background="{TemplateBinding Background}">
@@ -762,8 +759,6 @@
 				</Track>
 			</Border>
 		</Grid>
-		<ControlTemplate.Triggers>
-		</ControlTemplate.Triggers>
 	</ControlTemplate>
 	<Style x:Key="{x:Type ScrollBar}" TargetType="{x:Type ScrollBar}">
 		<Setter Property="Background" Value="Transparent"/>
@@ -789,7 +784,6 @@
 	</Style>
 
 	<Style x:Key="{x:Type TabControl}" TargetType="{x:Type TabControl}">
-		<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
 		<Setter Property="Padding" Value="0"/>
 		<Setter Property="BorderThickness" Value="0,1,0,0"/>
 		<Setter Property="BorderBrush" Value="{StaticResource WindowBorderColor}"/>
@@ -860,7 +854,6 @@
 
 	<Style x:Key="{x:Type TabItem}" TargetType="{x:Type TabItem}">
 		<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-		<Setter Property="Foreground" Value="Black"/>
 		<Setter Property="BorderBrush" Value="Transparent"/>
 		<Setter Property="Background" Value="{StaticResource WindowBorderColor}"/>
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>
@@ -971,7 +964,6 @@
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="TextElement.FontFamily" Value="{StaticResource DefaultFontFamily}" />
 		<Setter Property="TextElement.FontWeight" Value="{StaticResource DefaultFontWeight}" />
-		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>
 		<Setter Property="Margin" Value="0" />
 		<Setter Property="Padding" Value="3,2" />
 		<Setter Property="Template">
@@ -986,7 +978,6 @@
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
-		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}"/>
 		<Setter Property="ItemContainerStyle" Value="{StaticResource ListViewItemContainerStyle}" />
 	</Style>
 
