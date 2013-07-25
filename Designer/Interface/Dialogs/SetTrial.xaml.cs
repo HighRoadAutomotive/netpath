@@ -23,7 +23,6 @@ namespace NETPath.Interface.Dialogs
 		public ContentDialog Host { get { return _host; } set { _host = value; ActionState(false); } }
 		public void SetFocus()
 		{
-			YourName.Focus();
 		}
 
 		private void ActionState(bool Enabled)
@@ -32,17 +31,32 @@ namespace NETPath.Interface.Dialogs
 				da.IsEnabled = Enabled;
 		}
 
-		internal string UserName { get { return (string)GetValue(UserNameProperty); } set { SetValue(UserNameProperty, value); } }
-		public static readonly DependencyProperty UserNameProperty = DependencyProperty.Register("UserName", typeof(string), typeof(SetLicense), new PropertyMetadata(""));
+		public SetTrial()
+		{
+			InitializeComponent();
+		}
+
+		public string UserName { get { return (string)GetValue(UserNameProperty); } set { SetValue(UserNameProperty, value); } }
+		public static readonly DependencyProperty UserNameProperty = DependencyProperty.Register("UserName", typeof(string), typeof(SetTrial), new PropertyMetadata("", PropertyChangedCallback));
+
+		private static void PropertyChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as SetTrial;
+			if (t == null) return;
+
+			if(!string.IsNullOrWhiteSpace(t.UserName) && !string.IsNullOrWhiteSpace(t.UserEmail) && !string.IsNullOrWhiteSpace(t.Country) && !string.IsNullOrWhiteSpace(t.Country))
+				foreach (DialogAction da in t.Actions.Where(a => !a.IsCancel))
+					da.IsEnabled = true;
+		}
 
 		public string UserEmail { get { return (string)GetValue(UserEmailProperty); } set { SetValue(UserEmailProperty, value); } }
-		public static readonly DependencyProperty UserEmailProperty = DependencyProperty.Register("UserEmail", typeof(string), typeof(SetLicense), new PropertyMetadata(""));
+		public static readonly DependencyProperty UserEmailProperty = DependencyProperty.Register("UserEmail", typeof(string), typeof(SetTrial), new PropertyMetadata("", PropertyChangedCallback));
 
-		internal string Company { get { return (string)GetValue(CompanyProperty); } set { SetValue(CompanyProperty, value); } }
-		public static readonly DependencyProperty CompanyProperty = DependencyProperty.Register("Company", typeof(string), typeof(SetLicense), new PropertyMetadata(""));
+		public string Company { get { return (string)GetValue(CompanyProperty); } set { SetValue(CompanyProperty, value); } }
+		public static readonly DependencyProperty CompanyProperty = DependencyProperty.Register("Company", typeof(string), typeof(SetTrial), new PropertyMetadata("", PropertyChangedCallback));
 
 		public string Country { get { return (string)GetValue(CountryProperty); } set { SetValue(CountryProperty, value); } }
-		public static readonly DependencyProperty CountryProperty = DependencyProperty.Register("Country", typeof(string), typeof(SetTrial), new PropertyMetadata("United States"));
+		public static readonly DependencyProperty CountryProperty = DependencyProperty.Register("Country", typeof(string), typeof(SetTrial), new PropertyMetadata("UNITED STATES", PropertyChangedCallback));
 
 		public bool AllowProductEmails { get { return (bool)GetValue(AllowProductEmailsProperty); } set { SetValue(AllowProductEmailsProperty, value); } }
 		public static readonly DependencyProperty AllowProductEmailsProperty = DependencyProperty.Register("AllowProductEmails", typeof(bool), typeof(SetTrial), new PropertyMetadata(true));

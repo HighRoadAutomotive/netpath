@@ -158,7 +158,7 @@ namespace NETPath.Interface
 		public void StartTrial()
 		{
 			var t = new Dialogs.SetTrial();
-			DialogService.ShowContentDialog("NETPath", "Please Enter Your Information", t, new DialogAction("Activate", () => ConfigTrial(t)), new DialogAction("Cancel", false, true));
+			DialogService.ShowContentDialog("NETPath", "Please Enter Your Information", t, new DialogAction("Activate", () => ConfigTrial(t)), new DialogAction("Cancel", Close, false, true));
 		}
 
 		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
@@ -169,6 +169,7 @@ namespace NETPath.Interface
 				try
 				{
 					await Prospective.Server.Licensing.LicensingClient.PostTrialData(lic.UserName, lic.UserEmail, lic.Company, lic.Country, lic.AllowProductEmails, lic.AllowProductEmails, Globals.UserProfile.SKU, Globals.Usage.UserID, Globals.ApplicationVersion);
+					Globals.UserProfile.IsTrialInfoSet = true;
 				}
 				catch
 				{
@@ -200,7 +201,7 @@ namespace NETPath.Interface
 		private async void Main_SourceInitialized(object sender, EventArgs e)
 		{
 #if LICENSE
-			if ((Globals.UserProfile.IsTrial && !Globals.UserProfile.IsTrialInfoSet) || Globals.UserProfile.Serial == "TRIAL" || Globals.UserProfile.License == "")
+			if ((Globals.UserProfile.IsTrial && !Globals.UserProfile.IsTrialInfoSet) && Globals.UserProfile.Serial == "TRIAL" && Globals.UserProfile.License == "")
 			{
 				var lic = new CryptoLicense(Globals.TrialLicense, Globals.LicenseVerification);
 				if (lic.Status == LicenseStatus.Valid)
@@ -208,7 +209,7 @@ namespace NETPath.Interface
 				else
 					DialogService.ShowMessageDialog("NETPath", "Expired Trial Notice", "Your trial has expired and you will be unable to generate any code based on the changes made to your project files. If you would like to continue using NETPath please purchase a license by clicking the purchase license button.", new DialogAction("Continue"), new DialogAction("Purchase License", PurchaseLicense, false, false, true));
 			}
-			else if ((Globals.UserProfile.IsTrial && Globals.UserProfile.IsTrialInfoSet) || Globals.UserProfile.Serial == "TRIAL" || Globals.UserProfile.License == "")
+			else if ((Globals.UserProfile.IsTrial && Globals.UserProfile.IsTrialInfoSet) && Globals.UserProfile.Serial == "TRIAL" && Globals.UserProfile.License == "")
 			{
 				var lic = new CryptoLicense(Globals.TrialLicense, Globals.LicenseVerification);
 				if (lic.Status == LicenseStatus.Valid)

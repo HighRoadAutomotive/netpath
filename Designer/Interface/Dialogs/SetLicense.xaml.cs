@@ -32,6 +32,11 @@ namespace NETPath.Interface.Dialogs
 				da.IsEnabled = Enabled;
 		}
 
+		public SetLicense()
+		{
+			InitializeComponent();
+		}
+
 		internal string Serial { get { return (string)GetValue(SerialProperty); } set { SetValue(SerialProperty, value); } }
 		public static readonly DependencyProperty SerialProperty = DependencyProperty.Register("Serial", typeof(string), typeof(SetLicense), new PropertyMetadata(""));
 
