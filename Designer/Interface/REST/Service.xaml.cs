@@ -159,7 +159,7 @@ namespace NETPath.Interface.REST
 		private void AddServiceMemberType_ValidationChanged(object Sender, RoutedEventArgs E)
 		{
 			if (AddServiceMemberType.OpenType == null) return;
-			AddServiceMethod.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && AddServiceMemberType.OpenType.Primitive != PrimitiveTypes.Void && !AddServiceMemberName.IsInvalid && AddServiceMemberType.IsValid);
+			AddServiceMethod.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && !AddServiceMemberName.IsInvalid && AddServiceMemberType.IsValid);
 		}
 
 		private void AddServiceMemberName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
@@ -169,7 +169,7 @@ namespace NETPath.Interface.REST
 
 			e.IsValid = RegExs.MatchCodeName.IsMatch(AddServiceMemberName.Text);
 			if (AddServiceMemberType.OpenType == null) return;
-			AddServiceMethod.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && AddServiceMemberType.OpenType.Primitive != PrimitiveTypes.Void && !AddServiceMemberName.IsInvalid && AddServiceMemberType.IsValid);
+			AddServiceMethod.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && !AddServiceMemberName.IsInvalid && AddServiceMemberType.IsValid);
 		}
 
 		private void AddServiceMemberName_KeyUp(object sender, KeyEventArgs e)
@@ -186,7 +186,7 @@ namespace NETPath.Interface.REST
 				AddServiceMethod.IsEnabled = false;
 				return;
 			}
-			if (AddServiceMemberType.OpenType != null && AddServiceMemberType.OpenType.Primitive != PrimitiveTypes.Void && AddServiceMemberName.Text != "") AddServiceMethod.IsEnabled = true;
+			if (AddServiceMemberType.OpenType != null && AddServiceMemberName.Text != "") AddServiceMethod.IsEnabled = true;
 			else AddServiceMethod.IsEnabled = false;
 		}
 

@@ -13,7 +13,7 @@
 		<Bindings:HostNameComparisonModeConverter x:Key="HostNameComparisonModeConverter" />
 		<Bindings:ServiceBindingTextEncodingConverter x:Key="ServiceBindingTextEncodingConverter" />
 		<Bindings:TransferModeConverter x:Key="TransferModeConverter" />
-		<Bindings:BasicHttpSecurityModeConverter x:Key="BasicHttpSecurityModeConverter" />
+		<Bindings:WebHttpSecurityModeConverter x:Key="WebHttpSecurityModeConverter" />
 		<Bindings:HttpClientCredentialTypeConverter x:Key="HttpClientCredentialTypeConverter" />
 		<Bindings:HttpProxyCredentialTypeConverter x:Key="HttpProxyCredentialTypeConverter" />
 		<pc:LongConverter x:Key="LongConverter" />
@@ -144,12 +144,10 @@
 		</Grid.ColumnDefinitions>
 		<Label Grid.Column="0" Content="Security" FontSize="12pt" Margin="0,5,0,0" />
 		<Label Content="Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
-		<ComboBox Height="23" Margin="210,5,5,5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" SelectedIndex="{Binding Path=Mode, Converter={StaticResource BasicHttpSecurityModeConverter}}" >
+		<ComboBox Height="23" Margin="210,5,5,5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" SelectedIndex="{Binding Path=Mode, Converter={StaticResource WebHttpSecurityModeConverter}}" >
 			<ComboBox.Items>
 				<ComboBoxItem Content="None" />
 				<ComboBoxItem Content="Transport" />
-				<ComboBoxItem Content="Message" />
-				<ComboBoxItem Content="Transport With Message Credential" />
 				<ComboBoxItem Content="Transport Credential Only" />
 			</ComboBox.Items>
 		</ComboBox>
