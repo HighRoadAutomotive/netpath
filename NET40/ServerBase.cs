@@ -79,6 +79,11 @@ namespace System.ServiceModel
 			Clients = new DeltaDictionary<Guid, T>();
 		}
 
+		protected static CType AddClient<CType>(CType Client) where CType : ServerDuplexBase<T, TCallback, TCallbackInterface>
+		{
+			return Clients.AddOrUpdate(Client.ClientID, Client as T, (k, v) => Client as T) as CType;
+		}
+
 		public static CType GetClient<CType>(Guid ClientID) where CType : ServerDuplexBase<T, TCallback, TCallbackInterface>
 		{
 			T v;
@@ -109,6 +114,12 @@ namespace System.ServiceModel
 			DType data = DREObject<DType>.GetDataFromID(UpdateID);
 			if(data == null) return new List<Guid>();
 			return data.ClientList;
+		}
+
+		protected static bool RemoveClient(Guid ClientID)
+		{
+			T val;
+			return Clients.TryRemoveNoUpdate(ClientID, out val);
 		}
 
 		public TCallback Callback { get; private set; }
