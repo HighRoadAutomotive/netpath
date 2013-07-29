@@ -20,6 +20,7 @@
 					<Host:X509RevocationModeConverter x:Key="X509RevocationModeConverter" />
 					<Host:StoreLocationConverter x:Key="StoreLocationConverter" />
 					<Host:UserNamePasswordValidationModeConverter x:Key="UserNamePasswordValidationModeConverter" />
+					<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
 					<!-- Endpoint Template -->
 					<DataTemplate x:Key="{x:Type Projects:HostEndpoint}" DataType="{x:Type Projects:HostEndpoint}">
 						<Grid Name="ItemGrid" >
@@ -220,6 +221,7 @@
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
 		<RowDefinition Height="*" />
 	</Grid.RowDefinitions>
 	<Label Grid.Row="0" Margin="5" Padding="0,2" Content="Server Class:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" />
@@ -333,9 +335,24 @@
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="*"/>
 				</Grid.RowDefinitions>
-				<GroupBox Grid.Column="0" Grid.Row="0" Header="Certificate" Margin="5">
+				<Grid Grid.Row="0" Grid.ColumnSpan="3">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<ToggleButton IsChecked="{Binding Path=UseCertificatesSecurity}" Content="Certificate" Margin="5" Grid.Column="0" />
+					<ToggleButton IsChecked="{Binding Path=UseIssuedTokenSecurity}" Content="Issued Token" Margin="5" Grid.Column="1" />
+					<ToggleButton IsChecked="{Binding Path=UsePeerSecurity}" Content="Peer" Margin="5" Grid.Column="2" />
+					<ToggleButton IsChecked="{Binding Path=UseUserNamePasswordSecurity}" Content="Username/Password" Margin="5" Grid.Column="3" />
+					<ToggleButton IsChecked="{Binding Path=UseWindowsServiceSecurity}" Content="Windows Service" Margin="5" Grid.Column="4" />
+				</Grid>
+				<GroupBox Grid.Column="0" Grid.Row="1" Header="Certificate" Margin="5" Visibility="{Binding Path=UseCertificatesSecurity, Converter={StaticResource BoolVisibilityConverter}}">
 					<Grid>
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
@@ -367,7 +384,7 @@
 						</ComboBox>
 					</Grid>
 				</GroupBox>
-				<GroupBox Grid.Column="0" Grid.Row="1" Header="Issued Token" Margin="5">
+				<GroupBox Grid.Column="0" Grid.Row="2" Header="Issued Token" Margin="5" Visibility="{Binding Path=UseIssuedTokenSecurity, Converter={StaticResource BoolVisibilityConverter}}">
 					<Grid>
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
@@ -397,7 +414,7 @@
 						</ComboBox>
 					</Grid>
 				</GroupBox>
-				<GroupBox Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Header="Peer" Margin="5">
+				<GroupBox Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Header="Peer" Margin="5" Visibility="{Binding Path=UsePeerSecurity, Converter={StaticResource BoolVisibilityConverter}}">
 					<Grid>
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
@@ -450,7 +467,7 @@
 						</ComboBox>
 					</Grid>
 				</GroupBox>
-				<GroupBox Grid.Column="2" Grid.Row="0" Header="Username/Password" Margin="5">
+				<GroupBox Grid.Column="2" Grid.Row="1" Header="Username/Password" Margin="5" Visibility="{Binding Path=UseUserNamePasswordSecurity, Converter={StaticResource BoolVisibilityConverter}}">
 					<Grid>
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
@@ -475,7 +492,7 @@
 						</ComboBox>
 					</Grid>
 				</GroupBox>
-				<GroupBox Grid.Column="2" Grid.Row="1" Header="Windows Service" Margin="5">
+				<GroupBox Grid.Column="2" Grid.Row="2" Header="Windows Service" Margin="5" Visibility="{Binding Path=UseWindowsServiceSecurity, Converter={StaticResource BoolVisibilityConverter}}">
 					<Grid>
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />

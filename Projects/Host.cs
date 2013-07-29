@@ -325,19 +325,19 @@ namespace NETPath.Projects
 	public class HostCredentials : DependencyObject
 	{
 		public bool UseCertificatesSecurity { get { return (bool)GetValue(UseCertificatesSecurityProperty); } set { SetValue(UseCertificatesSecurityProperty, value); } }
-		public static readonly DependencyProperty UseCertificatesSecurityProperty = DependencyProperty.Register("UseCertificatesSecurity", typeof(bool), typeof(HostCredentials));
+		public static readonly DependencyProperty UseCertificatesSecurityProperty = DependencyProperty.Register("UseCertificatesSecurity", typeof(bool), typeof(HostCredentials), new PropertyMetadata(false));
 		
 		public bool UseIssuedTokenSecurity { get { return (bool)GetValue(UseIssuedTokenSecurityProperty); } set { SetValue(UseIssuedTokenSecurityProperty, value); } }
-		public static readonly DependencyProperty UseIssuedTokenSecurityProperty = DependencyProperty.Register("UseIssuedTokenSecurity", typeof(bool), typeof(HostCredentials));
+		public static readonly DependencyProperty UseIssuedTokenSecurityProperty = DependencyProperty.Register("UseIssuedTokenSecurity", typeof(bool), typeof(HostCredentials), new PropertyMetadata(false));
 		
 		public bool UsePeerSecurity { get { return (bool)GetValue(UsePeerSecurityProperty); } set { SetValue(UsePeerSecurityProperty, value); } }
-		public static readonly DependencyProperty UsePeerSecurityProperty = DependencyProperty.Register("UsePeerSecurity", typeof(bool), typeof(HostCredentials));
+		public static readonly DependencyProperty UsePeerSecurityProperty = DependencyProperty.Register("UsePeerSecurity", typeof(bool), typeof(HostCredentials), new PropertyMetadata(false));
 		
 		public bool UseUserNamePasswordSecurity { get { return (bool)GetValue(UseUserNamePasswordSecurityProperty); } set { SetValue(UseUserNamePasswordSecurityProperty, value); } }
-		public static readonly DependencyProperty UseUserNamePasswordSecurityProperty = DependencyProperty.Register("UseUserNamePasswordSecurity", typeof(bool), typeof(HostCredentials), new PropertyMetadata(true));
+		public static readonly DependencyProperty UseUserNamePasswordSecurityProperty = DependencyProperty.Register("UseUserNamePasswordSecurity", typeof(bool), typeof(HostCredentials), new PropertyMetadata(false));
 		
 		public bool UseWindowsServiceSecurity { get { return (bool)GetValue(UseWindowsServiceSecurityProperty); } set { SetValue(UseWindowsServiceSecurityProperty, value); } }
-		public static readonly DependencyProperty UseWindowsServiceSecurityProperty = DependencyProperty.Register("UseWindowsServiceSecurity", typeof(bool), typeof(HostCredentials));
+		public static readonly DependencyProperty UseWindowsServiceSecurityProperty = DependencyProperty.Register("UseWindowsServiceSecurity", typeof(bool), typeof(HostCredentials), new PropertyMetadata(false));
 
 		public System.ServiceModel.Security.X509CertificateValidationMode ClientCertificateAuthenticationValidationMode { get { return (System.ServiceModel.Security.X509CertificateValidationMode)GetValue(ClientCertificateAuthenticationValidationModeProperty); } set { SetValue(ClientCertificateAuthenticationValidationModeProperty, value); } }
 		public static readonly DependencyProperty ClientCertificateAuthenticationValidationModeProperty = DependencyProperty.Register("ClientCertificateAuthenticationValidationMode", typeof(System.ServiceModel.Security.X509CertificateValidationMode), typeof(HostBehavior), new PropertyMetadata(System.ServiceModel.Security.X509CertificateValidationMode.None));
