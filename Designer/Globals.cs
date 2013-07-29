@@ -6,6 +6,7 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using System.Windows;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Threading;
 using NETPath.Interface;
@@ -23,6 +24,9 @@ namespace NETPath
 		public static Version ApplicationVersion { get; set; }
 		public static string ArgSolutionPath { get; set; }
 		public static Prospective.Server.Licensing.UsageData Usage { get; set; }
+#if !LICENSE
+		public const string DeveloperLicense = "lACAAANkeNgajM4BHQBTS1U9UFNOUDEwREVWRUwjTGljZW5zZWVOYW1lPQEDIDWl0JTJolyStHo39u5RCfDtyAOgKF4mqK3/MZatPesBgWC8UrkztNZ978BlgDV5blIDygklocVyUBqtWtICfGKBMUKHnGu8stoU39yHJXlFAoBFp2mElezUyKvPE2r5XxH6ZM20YjjjUIrfxeCXJONUljSP8lq3jQJ7TwrAcOlK+RAqb+K/kbTgAaafBHLEQTy2/AOlVbpKFBE0oFHI1Pnf1ypYSDm9BWX0hCgc0/Ksx6ENSZUMP2MVxMUpmzu07zHjNCvtXGDLyQhjxzJeiTuGk0kDcIs3Qbqh0dEHFPSs1QEhU924XUtHGtuOlOXVepO6hIT4QM/Bgn4ROgAo6A==";
+#endif
 		public const string TrialLicense = "lgKkARmvMXTEec4BHgAvAFNLVT1OUDIwVFJJQUwjTGljZW5zZWVOYW1lPVByb3NwZWN0aXZlIFNvZnR3YXJlAQNEZ9ul5WCNDyXclcMH0Y/O5xklUKqd0W1M/lZjqHL9jcp7tt741X38fW4nYB7Xb88vVO6ks+KNQ7RvKoyjVI1j86CkkQXWvGkgpq6STx0ORAfhmEnvn0+AyfKWAuMn6ZQCzFYoZ46V9SwA+FQz2+vpM2+DP6Ik1QfvHnrirxDLEsndJzuzSGB+3MFEZd+0k2BtA9yUSa7CRa+6QAfHQjZf4FWxVMrJQ7hcSEvN8fLd9oCLozBCVYEtpNPPEyLNB1Kfq2nBJKkO+36gTYR1CvqW+UXvMa0jtDYe1+5la89Kiis7tvH4vMiFwSxKdpy1krparGtHBT7xQT6xGhwzUo7p";
 		public const string LicenseVerification = "AAAEAAG6rTV/gUg+VZjvEZQDqWy9l63DgzkUSg0tyJOBDDS58FKoRvErRfUkvxdlgUCCTTvw5b7lXtVPFxd3HI+SFzzTi5X0neWXCNXjWX/FVnIaCBioKHG6eYwgSE86j2ybYQbGlmy+R9vpj3cA12E6a4efoQl/5yqawkUk67iQGnJi0YiA6LUAQUoCN+XipZN3pEn+EuAPGVAz1W0b8pYX99oSrWr3CQwnGCg6/2Y5radzYdPDsZgWkKkWhPU/ZGXcDo+GB4e35OaO6hp8lcq3lmxc+3Ic9eDsVK1kHaccRI/hWcgmkp39/3/zk1mnVtgiED8RI0eUniUTWXTGVTtBvBGLAwABAAE=";
 

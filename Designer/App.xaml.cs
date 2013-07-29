@@ -130,9 +130,8 @@ namespace NETPath
 			}
 
 #else
-			const string dlicstr = "lACAAKDqGNLFec4BLwBTS1U9TlAyMERFVkVMI0xpY2Vuc2VlTmFtZT1Qcm9zcGVjdGl2ZSBTb2Z0d2FyZQEDYNPfndvL/fVI9TMrQtzW5EB3tlrP+Cjqul235DtwXSHp2EKFSLbKMu1yUe1cJo7T4lZiRXlaYl/gWatpwIox3ljklAOirTXn5teu4O6gEYgQAOT8EPLIHYY8vuQaA4F354a5VSn46OvL3Uy/PyPhMH76MkAJFsRthWSJaKhFjai+thUVHRZpI9likQKH1oqEjvPpVNSetu/sj/GpbxNHuAObwf3erXKFilYW9iFZIcozUwah58ZlwGoG6TKabOJPCO0NUT5aaNsHMfWO0yDL/0l3RnPjZyaRLN6mg/FnbZG0lA7iNHLs5E1sSLzf8ZxHAwHi0WFyO5c9ePfdwdWW0A==";
-			Globals.InitializeCodeGenerators(dlicstr);
-			var dlic = new LogicNP.CryptoLicensing.CryptoLicense(dlicstr, Globals.LicenseVerification);
+			Globals.InitializeCodeGenerators(Globals.DeveloperLicense);
+			var dlic = new LogicNP.CryptoLicensing.CryptoLicense(Globals.DeveloperLicense, Globals.LicenseVerification);
 			Globals.UserProfile.SKU = dlic.GetUserDataFieldValue("SKU", "#");
 			Globals.UserProfile.LicenseeName = dlic.GetUserDataFieldValue("LicenseeName", "#");
 			Globals.UserProfile.IsTrial = false;
