@@ -19,8 +19,8 @@ namespace System.ServiceModel
 		public ServiceDebugBehavior DebugBehavior { get; protected set; }
 		public ServiceThrottlingBehavior ThrottlingBehavior { get; protected set; }
 		public WebHttpBehavior WebHttpBehavior { get; protected set; }
-		
-		public RESTServerBase(Type ServiceType, Uri[] BaseAddresses)
+
+		public RESTServerBase(Type ServiceType, Uri[] BaseAddresses, WebHttpSecurityMode SecurityMode)
 		{
 			DebugBehavior = new ServiceDebugBehavior();
 			ThrottlingBehavior = new ServiceThrottlingBehavior();
@@ -30,7 +30,7 @@ namespace System.ServiceModel
 			Host.Description.Behaviors.Clear();
 			Host.Description.Behaviors.Add(DebugBehavior);
 			Host.Description.Behaviors.Add(ThrottlingBehavior);
-			Binding = new WebHttpBinding(WebHttpSecurityMode.None);
+			Binding = new WebHttpBinding(SecurityMode);
 		}
 
 		public virtual void Open()
