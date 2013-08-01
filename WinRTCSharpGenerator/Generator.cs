@@ -118,7 +118,7 @@ namespace NETPath.Generators.WinRT.CS
 	    {
 			var t = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
 			if (t.Status != LicenseStatus.Valid) return "";
-			if (!t.IsFeaturePresentEx(0)) return "";
+			if (!t.IsFeaturePresentEx(1)) return "";
 
 			Globals.CurrentGenerationTarget = ProjectGenerationFramework.NET45;
 
@@ -130,7 +130,7 @@ namespace NETPath.Generators.WinRT.CS
 		{
 			var t = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
 			if (t.Status != LicenseStatus.Valid) return "";
-			if (!t.IsFeaturePresentEx(0)) return "";
+			if (!t.IsFeaturePresentEx(1)) return "";
 
 			Globals.CurrentGenerationTarget = ProjectGenerationFramework.WIN8;
 

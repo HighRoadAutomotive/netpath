@@ -122,7 +122,7 @@ namespace NETPath.Generators.NET.CS
 		{
 			var t = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
 			if (t.Status != LicenseStatus.Valid) return "";
-			if (!t.IsFeaturePresentEx(1)) return "";
+			if (!t.IsFeaturePresentEx(2)) return "";
 
 			Globals.CurrentGenerationTarget = Framework;
 
@@ -134,7 +134,7 @@ namespace NETPath.Generators.NET.CS
 		{
 			var t = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
 			if (t.Status != LicenseStatus.Valid) return "";
-			if (!t.IsFeaturePresentEx(1)) return "";
+			if (!t.IsFeaturePresentEx(2)) return "";
 
 			Globals.CurrentGenerationTarget = Framework;
 

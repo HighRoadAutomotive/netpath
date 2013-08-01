@@ -1313,7 +1313,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
 				code.AppendLine("\t\t}");
 			}
-			else
+			if (o.UseSyncPattern)
 			{
 				code.AppendFormat("\t\tpublic virtual void {0}(", o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
@@ -1398,7 +1398,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
 				code.AppendLine("\t\t}");
 			}
-			else
+			if (o.UseSyncPattern)
 			{
 				code.AppendFormat("\t\tpublic virtual void {0}(", o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
@@ -1465,7 +1465,7 @@ namespace NETPath.Generators.WinRT.CS
 				}
 				code.AppendLine("\t\t}");
 			}
-			else
+			if (o.UseSyncPattern)
 			{
 				code.AppendFormat("\t\tpublic virtual {1} {0}(", o.HasClientType ? o.ClientName : o.ServerName, DataTypeGenerator.GenerateType(o.ReturnType));
 				foreach (MethodParameter op in o.Parameters)
@@ -1644,7 +1644,7 @@ namespace NETPath.Generators.WinRT.CS
 						foreach (MethodParameter mp in o.GetParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.GetParameters.IndexOf(mp) < o.GetParameters.Count - 1 ? ", " : ""));
 						code.AppendLine(");");
 					}
-					else
+					if (o.UseSyncPattern)
 					{
 						code.Append(string.Format("\t\tpublic abstract {1} Get{0}DRECallback(", dcmtype.Name, o.ReturnType.HasClientType ? o.ReturnType.ClientType : o.ReturnType));
 						foreach (MethodParameter mp in o.GetParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.GetParameters.IndexOf(mp) < o.GetParameters.Count - 1 ? ", " : ""));
@@ -1662,7 +1662,7 @@ namespace NETPath.Generators.WinRT.CS
 						foreach (MethodParameter mp in o.DeleteParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.DeleteParameters.IndexOf(mp) < o.DeleteParameters.Count - 1 ? ", " : ""));
 						code.AppendLine(");");
 					}
-					else
+					if (o.UseSyncPattern)
 					{
 						code.Append(string.Format("\t\tpublic abstract void New{0}DRECallback({1} DREData{2}", dcmtype.Name, DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype), o.NewParameters.Count != 0 ? ", " : ""));
 						foreach (MethodParameter mp in o.NewParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.NewParameters.IndexOf(mp) < o.NewParameters.Count - 1 ? ", " : ""));
@@ -1683,7 +1683,7 @@ namespace NETPath.Generators.WinRT.CS
 						foreach (MethodParameter mp in o.CloseParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.CloseParameters.IndexOf(mp) < o.CloseParameters.Count - 1 ? ", " : ""));
 						code.AppendLine(");");
 					}
-					else
+					if (o.UseSyncPattern)
 					{
 						code.Append(string.Format("\t\tpublic abstract void Open{0}DRECallback(Guid DREDataID{1}", dcmtype.Name, o.OpenParameters.Count != 0 ? ", " : ""));
 						foreach (MethodParameter mp in o.OpenParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.OpenParameters.IndexOf(mp) < o.OpenParameters.Count - 1 ? ", " : ""));
@@ -1794,7 +1794,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
 				code.AppendLine("\t\t}");
 			}
-			else
+			if (o.UseSyncPattern)
 			{
 				code.AppendFormat("\t\tpublic virtual void {0}(", o.HasClientType ? o.ClientName : o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
@@ -1843,7 +1843,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
 				code.AppendLine("\t\t}");
 			}
-			else
+			if (o.UseSyncPattern)
 			{
 				code.AppendFormat("\t\tpublic virtual void {0}(", o.HasClientType ? o.ClientName : o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
@@ -1895,7 +1895,7 @@ namespace NETPath.Generators.WinRT.CS
 				}
 				code.AppendLine("\t\t}");
 			}
-			else
+			if (o.UseSyncPattern)
 			{
 				code.AppendFormat("\t\tpublic virtual void {0}(", o.HasClientType ? o.ClientName : o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
