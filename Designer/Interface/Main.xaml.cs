@@ -77,7 +77,7 @@ namespace NETPath.Interface
 		private void RetrieveLicense()
 		{
 			var t = new Dialogs.SetLicense();
-			DialogService.ShowContentDialog("NETPath", "Enter License Information", t, new DialogAction("Activate", () => InstallLicense(t)), new DialogAction("Cancel", false, true));
+			DialogService.ShowContentDialog("NETPath", "Enter License Information", t, new DialogAction("Activate", () => InstallLicense(t)), new DialogAction("Cancel", Close, false, true));
 		}
 
 		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
