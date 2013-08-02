@@ -22,13 +22,11 @@ namespace System.ServiceModel
 
 		public RESTServerBase(Type ServiceType, Uri[] BaseAddresses, WebHttpSecurityMode SecurityMode)
 		{
-			DebugBehavior = new ServiceDebugBehavior();
 			ThrottlingBehavior = new ServiceThrottlingBehavior();
 			WebHttpBehavior = new WebHttpBehavior();
 
 			Host = new WebServiceHost(ServiceType, BaseAddresses);
-			Host.Description.Behaviors.Clear();
-			Host.Description.Behaviors.Add(DebugBehavior);
+			DebugBehavior = Host.Description.Behaviors.Find<ServiceDebugBehavior>();
 			Host.Description.Behaviors.Add(ThrottlingBehavior);
 			Binding = new WebHttpBinding(SecurityMode);
 		}
