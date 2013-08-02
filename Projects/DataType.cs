@@ -138,8 +138,12 @@ namespace NETPath.Projects
 
 		public Namespace Parent { get { return (Namespace)GetValue(ParentProperty); } set { SetValue(ParentProperty, value); } }
 		public static readonly DependencyProperty ParentProperty = DependencyProperty.Register("Parent", typeof(Namespace), typeof(DataType));
-
-		[IgnoreDataMember] public string TypeName { get { return (string)GetValue(TypeNameProperty); } private set { SetValue(TypeNamePropertyKey, value); } }
+		
+		public bool IsNullable { get { return (bool)GetValue(IsNullableProperty); } set { SetValue(IsNullableProperty, value); } }
+		public static readonly DependencyProperty IsNullableProperty = DependencyProperty.Register("IsNullable", typeof(bool), typeof(DataType), new PropertyMetadata(false));
+		
+		[IgnoreDataMember]
+		public string TypeName { get { return (string)GetValue(TypeNameProperty); } private set { SetValue(TypeNamePropertyKey, value); } }
 		private static readonly DependencyPropertyKey TypeNamePropertyKey = DependencyProperty.RegisterReadOnly("TypeName", typeof(string), typeof(DataType), new PropertyMetadata(""));
 		public static readonly DependencyProperty TypeNameProperty = TypeNamePropertyKey.DependencyProperty;
 
@@ -172,6 +176,7 @@ namespace NETPath.Projects
 
 		internal DataType()
 		{
+			ID = Guid.NewGuid();
 			Name = "";
 			Scope = DataScope.Public;
 			TypeMode = DataTypeMode.Class;
@@ -191,6 +196,7 @@ namespace NETPath.Projects
 			if (Mode == DataTypeMode.Interface) throw new ArgumentException("Cannot use DataTypeMode.Interface without specifying an external Interface. Please use the External Type constructor.");
 			if (Mode == DataTypeMode.Collection) throw new ArgumentException("Cannot use DataTypeMode.Collection without specifying an external Collection. Please use the External Type constructor.");
 			if (Mode == DataTypeMode.Dictionary) throw new ArgumentException("Cannot use DataTypeMode.Dictionary without specifying an external Dictionary. Please use the External Type constructor.");
+			ID = Guid.NewGuid();
 			Scope = DataScope.Public;
 			TypeMode = Mode;
 			Partial = (Mode == DataTypeMode.Class || Mode == DataTypeMode.Struct);
@@ -203,10 +209,12 @@ namespace NETPath.Projects
 			SupportedFrameworks = SupportedFrameworks.None;
 		}
 
-		public DataType(PrimitiveTypes Primitive)
+		public DataType(PrimitiveTypes Primitive, bool IsNullable = false)
 		{
 			if (Primitive == PrimitiveTypes.None) throw new ArgumentException("Cannot set PrimitiveTypes.None using the Primitive DataType constructor. Please use the Mode Type constructor.");
+			ID = Guid.NewGuid();
 			this.Primitive = Primitive;
+			this.IsNullable = IsNullable;
 			Scope = DataScope.Public;
 			Partial = false;
 			HasClientType = false;
@@ -245,6 +253,7 @@ namespace NETPath.Projects
 			if (ExternalType == DataTypeMode.Primitive) throw new ArgumentException("Cannot use DataTypeMode.Primitive as an external type. Please use the Primitive Type constructor.");
 			if (ExternalType == DataTypeMode.Namespace) throw new ArgumentException("Cannot use DataTypeMode.Namespace as an external type. Please use the Mode Type constructor.");
 			if (ExternalType == DataTypeMode.Array) throw new ArgumentException("Cannot use DataTypeMode.Array as an external type.");
+			ID = Guid.NewGuid();
 			Name = External;
 			Scope = DataScope.Public;
 			Partial = false;
@@ -320,40 +329,40 @@ namespace NETPath.Projects
 
 			if (TypeMode == DataTypeMode.Primitive)
 			{
-				if (Primitive == PrimitiveTypes.Void) return string.Format("{0} void", ToScopeString());
-				if (Primitive == PrimitiveTypes.Object) return string.Format("{0} object", ToScopeString());
-				if (Primitive == PrimitiveTypes.Byte) return string.Format("{0} byte", ToScopeString());
-				if (Primitive == PrimitiveTypes.SByte) return string.Format("{0} sbyte", ToScopeString());
-				if (Primitive == PrimitiveTypes.Short) return string.Format("{0} short", ToScopeString());
-				if (Primitive == PrimitiveTypes.Int) return string.Format("{0} int", ToScopeString());
-				if (Primitive == PrimitiveTypes.Long) return string.Format("{0} long", ToScopeString());
-				if (Primitive == PrimitiveTypes.UShort) return string.Format("{0} ushort", ToScopeString());
-				if (Primitive == PrimitiveTypes.UInt) return string.Format("{0} uint", ToScopeString());
-				if (Primitive == PrimitiveTypes.ULong) return string.Format("{0} ulong", ToScopeString());
-				if (Primitive == PrimitiveTypes.Float) return string.Format("{0} float", ToScopeString());
-				if (Primitive == PrimitiveTypes.Double) return string.Format("{0} double", ToScopeString());
-				if (Primitive == PrimitiveTypes.Decimal) return string.Format("{0} decimal", ToScopeString());
-				if (Primitive == PrimitiveTypes.Bool) return string.Format("{0} bool", ToScopeString());
-				if (Primitive == PrimitiveTypes.Char) return string.Format("{0} char", ToScopeString());
-				if (Primitive == PrimitiveTypes.String) return string.Format("{0} string", ToScopeString());
-				if (Primitive == PrimitiveTypes.DateTime) return string.Format("{0} DateTime", ToScopeString());
-				if (Primitive == PrimitiveTypes.DateTimeOffset) return string.Format("{0} DateTimeOffset", ToScopeString());
-				if (Primitive == PrimitiveTypes.TimeSpan) return string.Format("{0} TimeSpan", ToScopeString());
-				if (Primitive == PrimitiveTypes.GUID) return string.Format("{0} Guid", ToScopeString());
-				if (Primitive == PrimitiveTypes.URI) return string.Format("{0} Uri", ToScopeString());
-				if (Primitive == PrimitiveTypes.Version) return string.Format("{0} Version", ToScopeString());
-				if (Primitive == PrimitiveTypes.ByteArray) return string.Format("{0} byte[]", ToScopeString());
+				if (Primitive == PrimitiveTypes.Void) return string.Format("{0} void{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Object) return string.Format("{0} object{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Byte) return string.Format("{0} byte{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.SByte) return string.Format("{0} sbyte{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Short) return string.Format("{0} short{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Int) return string.Format("{0} int{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Long) return string.Format("{0} long{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.UShort) return string.Format("{0} ushort{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.UInt) return string.Format("{0} uint{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.ULong) return string.Format("{0} ulong{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Float) return string.Format("{0} float{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Double) return string.Format("{0} double{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Decimal) return string.Format("{0} decimal{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Bool) return string.Format("{0} bool{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Char) return string.Format("{0} char{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.String) return string.Format("{0} string{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.DateTime) return string.Format("{0} DateTime{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.DateTimeOffset) return string.Format("{0} DateTimeOffset{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.TimeSpan) return string.Format("{0} TimeSpan{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.GUID) return string.Format("{0} Guid{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.URI) return string.Format("{0} Uri{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Version) return string.Format("{0} Version{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.ByteArray) return string.Format("{0} byte[]{1}", ToScopeString(), IsNullable ? "?" : "");
 			}
 			else if (TypeMode == DataTypeMode.Namespace)
 				return Parent == null ? string.Format("namespace {0}", Name) : string.Format("namespace {0}.{1}", Parent.FullName, Name);
 			else if (IsExternalType == false && (TypeMode == DataTypeMode.Class || TypeMode == DataTypeMode.Struct || TypeMode == DataTypeMode.Enum))
-				return string.Format("{0} {1}{2}{3}{4} {5}{6}", ToScopeString(), Partial ? "partial " : "", Abstract ? "abstract " : "", Sealed ? "sealed " : "", ToStorageClassString(), Name, ToInheritedString());
+				return string.Format("{0} {1}{1}{2}{3}{4} {5}{6}", ToScopeString(), Partial ? "partial " : "", Abstract ? "abstract " : "", Sealed ? "sealed " : "", ToStorageClassString(), Name, ToInheritedString());
 			else if (TypeMode == DataTypeMode.Array)
-				return string.Format("{0} {1}[] {2}", ToScopeString(), CollectionGenericType, Name);
+				return string.Format("{0} {1}[]{3} {2}", ToScopeString(), CollectionGenericType, Name, IsNullable ? "?" : "");
 			else if (TypeMode == DataTypeMode.Collection || TypeMode == DataTypeMode.Stack || TypeMode == DataTypeMode.Queue)
-				return string.Format("{0} {1}<{2}>", ToScopeString(), Name, CollectionGenericType);
+				return string.Format("{0} {1}<{2}>{3}", ToScopeString(), Name, CollectionGenericType, IsNullable ? "?" : "");
 			else if (TypeMode == DataTypeMode.Dictionary)
-				return string.Format("{0} {1}<{2}, {3}>", ToScopeString(), Name, DictionaryKeyGenericType, DictionaryValueGenericType);
+				return string.Format("{0} {1}<{2}, {3}>{4}", ToScopeString(), Name, DictionaryKeyGenericType, DictionaryValueGenericType, IsNullable ? "?" : "");
 			else if (IsExternalType)
 				return Name;
 			return Name;
@@ -366,39 +375,39 @@ namespace NETPath.Projects
 			if (TypeMode == DataTypeMode.Primitive)
 			{
 				if (Primitive == PrimitiveTypes.Void) return "void";
-				if (Primitive == PrimitiveTypes.Object) return "object";
-				if (Primitive == PrimitiveTypes.Byte) return "byte";
-				if (Primitive == PrimitiveTypes.SByte) return "sbyte";
-				if (Primitive == PrimitiveTypes.Short) return "short";
-				if (Primitive == PrimitiveTypes.Int) return "int";
-				if (Primitive == PrimitiveTypes.Long) return "long";
-				if (Primitive == PrimitiveTypes.UShort) return "ushort";
-				if (Primitive == PrimitiveTypes.UInt) return "uint";
-				if (Primitive == PrimitiveTypes.ULong) return "ulong";
-				if (Primitive == PrimitiveTypes.Float) return "float";
-				if (Primitive == PrimitiveTypes.Double) return "double";
-				if (Primitive == PrimitiveTypes.Decimal) return "decimal";
-				if (Primitive == PrimitiveTypes.Bool) return "bool";
-				if (Primitive == PrimitiveTypes.Char) return "char";
-				if (Primitive == PrimitiveTypes.String) return "string";
-				if (Primitive == PrimitiveTypes.DateTime) return "DateTime";
-				if (Primitive == PrimitiveTypes.DateTimeOffset) return "DateTimeOffset";
-				if (Primitive == PrimitiveTypes.TimeSpan) return "TimeSpan";
-				if (Primitive == PrimitiveTypes.GUID) return "Guid";
-				if (Primitive == PrimitiveTypes.URI) return "Uri";
-				if (Primitive == PrimitiveTypes.Version) return "Version";
-				if (Primitive == PrimitiveTypes.ByteArray) return "byte[]";
+				if (Primitive == PrimitiveTypes.Object) return string.Format("object{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Byte) return string.Format("byte{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.SByte) return string.Format("sbyte{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Short) return string.Format("short{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Int) return string.Format("int{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Long) return string.Format("long{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.UShort) return string.Format("ushort{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.UInt) return string.Format("uint{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.ULong) return string.Format("ulong{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Float) return string.Format("float{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Double) return string.Format("double{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Decimal) return string.Format("decimal{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Bool) return string.Format("bool{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Char) return string.Format("char{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.String) return string.Format("string{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.DateTime) return string.Format("DateTime{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.DateTimeOffset) return string.Format("DateTimeOffset{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.TimeSpan) return string.Format("TimeSpan{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.GUID) return string.Format("Guid{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.URI) return string.Format("Uri{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Version) return string.Format("Version{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.ByteArray) return string.Format("byte[]{0}", IsNullable ? "?" : "");
 			}
 			else if (TypeMode == DataTypeMode.Namespace)
-				return Parent == null ? Name : string.Format("{0}.{1}", Parent.FullName, Name);
+				return Parent == null ? Name : string.Format("{0}.{1}{2}", Parent.FullName, Name, IsNullable ? "?" : "");
 			else if (TypeMode == DataTypeMode.Class || TypeMode == DataTypeMode.Struct || TypeMode == DataTypeMode.Enum)
-				return Parent != null ? string.Format("{0}.{1}", Parent.FullName, Name) : Name;
+				return Parent != null ? string.Format("{0}.{1}{2}", Parent.FullName, Name, IsNullable ? "?" : "") : Name;
 			else if (TypeMode == DataTypeMode.Array)
-				return string.Format("{0}[]", CollectionGenericType);
+				return string.Format("{0}[]{1}", CollectionGenericType, IsNullable ? "?" : "");
 			else if (TypeMode == DataTypeMode.Collection || TypeMode == DataTypeMode.Stack || TypeMode == DataTypeMode.Queue)
-				return string.Format("{0}<{1}>", Name, CollectionGenericType != null ? CollectionGenericType.ToString() : "");
+				return string.Format("{0}<{1}{2}>", Name, CollectionGenericType != null ? CollectionGenericType.ToString() : "", IsNullable ? "?" : "");
 			else if (TypeMode == DataTypeMode.Dictionary)
-				return string.Format("{0}<{1}, {2}>", Name, DictionaryKeyGenericType != null ? DictionaryKeyGenericType.ToString() : "", DictionaryValueGenericType != null ? DictionaryValueGenericType.ToString() : "");
+				return string.Format("{0}<{1}, {2}>{3}", Name, DictionaryKeyGenericType != null ? DictionaryKeyGenericType.ToString() : "", DictionaryValueGenericType != null ? DictionaryValueGenericType.ToString() : "", IsNullable ? "?" : "");
 			return Name;
 		}
 

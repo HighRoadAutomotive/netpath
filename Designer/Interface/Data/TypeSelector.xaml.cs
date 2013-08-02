@@ -106,6 +106,7 @@ namespace NETPath.Interface.Data
 		public bool IsInheriting { get { return (bool)GetValue(IsInheritingProperty); } set { SetValue(IsInheritingProperty, value); } }
 		public static readonly DependencyProperty IsInheritingProperty = DependencyProperty.Register("IsInheriting", typeof(bool), typeof(TypeSelector), new PropertyMetadata(false));
 
+		private bool IsNullable { get; set; }
 		private bool IsInitializing { get; set; }
 		private bool IsSettingType { get; set; }
 
@@ -202,7 +203,7 @@ namespace NETPath.Interface.Data
 						//Edit the dictionary key type
 						if (cp > go && cp <= gs)
 						{
-							Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(go, gs - go).Replace("<", "").Replace(",", "").Replace(">", "").Trim(),false)); //Search for results without collections, the compiler does not support nested collections.
+							Results = new ObservableCollection<DataType>(IntProject.SearchTypes(sstr = TypeName.Text.Substring(go, gs - go).Replace("<", "").Replace(",", "").Replace(">", "").Trim(), false)); //Search for results without collections, the compiler does not support nested collections.
 							SelectDictionaryKey = true;
 						}
 
@@ -234,7 +235,15 @@ namespace NETPath.Interface.Data
 					TypeName.Text = TypeName.Text.Replace("[", "").Replace("]", "");
 
 				if (OpenType != null && TypeName.Text.EndsWith("[]") && TypeName.Text != "byte[]" && OpenType.TypeMode != DataTypeMode.Array)
-					OpenType = new DataType(DataTypeMode.Array) { CollectionGenericType = OpenType };
+					OpenType = new DataType(DataTypeMode.Array) {CollectionGenericType = OpenType};
+
+				if (OpenType != null && TypeName.Text.EndsWith("?") && (OpenType.TypeMode == DataTypeMode.Primitive && !(OpenType.Primitive == PrimitiveTypes.ByteArray || OpenType.Primitive == PrimitiveTypes.String || OpenType.Primitive == PrimitiveTypes.Object || OpenType.Primitive == PrimitiveTypes.URI || OpenType.Primitive == PrimitiveTypes.Version || OpenType.Primitive == PrimitiveTypes.Void)))
+					OpenType = new DataType(OpenType.Primitive, IsNullable = true);
+				else if (OpenType != null && (OpenType.TypeMode == DataTypeMode.Primitive && !(OpenType.Primitive == PrimitiveTypes.ByteArray || OpenType.Primitive == PrimitiveTypes.String || OpenType.Primitive == PrimitiveTypes.Object || OpenType.Primitive == PrimitiveTypes.URI || OpenType.Primitive == PrimitiveTypes.Version || OpenType.Primitive == PrimitiveTypes.Void)))
+				{
+					OpenType = new DataType(OpenType.Primitive, IsNullable = false);
+					TypeName.Text = TypeName.Text.Replace("?", "");
+				}
 			}
 			else
 			{

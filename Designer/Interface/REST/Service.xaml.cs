@@ -351,6 +351,7 @@ namespace NETPath.Interface.REST
 		private void DebugHttpsHelpPageUrl_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			if (IsLoaded == false) return;
+			if (ServiceType.DebugBehavior == null) return;
 			ServiceType.DebugBehavior.HttpsHelpPageUrl = RegExs.ReplaceSpaces.Replace(DebugHttpsHelpPageUrl.Text, "");
 		}
 
