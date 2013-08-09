@@ -2,10 +2,10 @@ IMPORTANT: THIS IS TO CERTIFY THE RIGHT TO USE THE PROSPECTIVE SOFTWARE PRODUCT 
 
 ========LICENSE DETAILS========
 
-Product: <<PRODUCTNAME>> 
-Reference #: <<INVOICEID>> 
-Date of Issue: <<DATEOFISSUE>> 
-License Term: <<LICENSETERM>> 
+Product: <<PRODUCTNAME>>
+Reference #: <<INVOICEID>>
+Date of Issue: <<DATEOFISSUE>>
+License Term: Unlimited
 Subscription Term: <<SUPPORTTERM>>
 Number of Authorized Users: <<LICENSECOUNT>>
 
@@ -24,6 +24,9 @@ To check availability of new NETPath releases, please visit:
 http://www.prospectivesoftware.com/pages/netpath
 
 =========INSTALLATION==========
+
+Download the NETPath Installer from the following link:
+<<INSTALLURL>>
 
 Run NETPath and follow the Installation Wizard's instructions. To register for use of the software or change your existing registration details, go to the Options Screen of the software and enter the Licensee Name and License Key(s) included below into the registration dialog:
 Licensee Name: <<LICENSEENAME>>
