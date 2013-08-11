@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 using LogicNP.CryptoLicensing;
+using NETPath.Options;
 using NETPath.Projects;
 using NETPath.Generators.Interfaces;
 
@@ -22,6 +23,9 @@ namespace NETPath.Compiler
 		public static bool Quiet { get; private set; }
 		public static string ApplicationTitle { get; set; }
 		public static Version ApplicationVersion { get; set; }
+		public static UserProfile UserProfile { get; set; }
+		private const string TrialLicense = "lgKkARmvMXTEec4BHgAvAFNLVT1OUDIwVFJJQUwjTGljZW5zZWVOYW1lPVByb3NwZWN0aXZlIFNvZnR3YXJlAQNEZ9ul5WCNDyXclcMH0Y/O5xklUKqd0W1M/lZjqHL9jcp7tt741X38fW4nYB7Xb88vVO6ks+KNQ7RvKoyjVI1j86CkkQXWvGkgpq6STx0ORAfhmEnvn0+AyfKWAuMn6ZQCzFYoZ46V9SwA+FQz2+vpM2+DP6Ik1QfvHnrirxDLEsndJzuzSGB+3MFEZd+0k2BtA9yUSa7CRa+6QAfHQjZf4FWxVMrJQ7hcSEvN8fLd9oCLozBCVYEtpNPPEyLNB1Kfq2nBJKkO+36gTYR1CvqW+UXvMa0jtDYe1+5la89Kiis7tvH4vMiFwSxKdpy1krparGtHBT7xQT6xGhwzUo7p";
+		private const string LicenseVerification = "AAAEAAG6rTV/gUg+VZjvEZQDqWy9l63DgzkUSg0tyJOBDDS58FKoRvErRfUkvxdlgUCCTTvw5b7lXtVPFxd3HI+SFzzTi5X0neWXCNXjWX/FVnIaCBioKHG6eYwgSE86j2ybYQbGlmy+R9vpj3cA12E6a4efoQl/5yqawkUk67iQGnJi0YiA6LUAQUoCN+XipZN3pEn+EuAPGVAz1W0b8pYX99oSrWr3CQwnGCg6/2Y5radzYdPDsZgWkKkWhPU/ZGXcDo+GB4e35OaO6hp8lcq3lmxc+3Ic9eDsVK1kHaccRI/hWcgmkp39/3/zk1mnVtgiED8RI0eUniUTWXTGVTtBvBGLAwABAAE=";
 
 		private static List<CompileMessage> Messages { get; set; }
 		public static CompileMessageSeverity HighestSeverity { get; private set; }
@@ -42,9 +46,16 @@ namespace NETPath.Compiler
 
 			PrintHeader();
 
-			const string lic = "FACAAEaR+9dgdM4BAQNUsbrHWerJElJe1mwbYMfD9oP5NDjkX10HHZGT2+BWJClw+rEip3LXwSEvOI5NxbIV9KtnubS1wt2Ay3KqT6CL/ds6njfwnOisLB1BEJE8bymCiSZmU82Ij05i2wAfxYz4j0WfCZsCdR835J5kVPw3kTI+1KJLkHPUN1rI7uQbdkCtdIDwRvt8HAfOYh3rR5e0GETZ/ctzXnnT90w/ps+1TK5dh9hy6y6rrBap/KX+OeLWwccMfGSFoBEKjPXynozWNuK4IFOQr5b8TDjXcrG3OrLIZiAk2Qz2kX6+wvjedxO3Q4nB0vOuUO2zD5HngyxQt6B7xXz8OAlxpuYgLSk5";
-			const string vk = "AAAEAAG6rTV/gUg+VZjvEZQDqWy9l63DgzkUSg0tyJOBDDS58FKoRvErRfUkvxdlgUCCTTvw5b7lXtVPFxd3HI+SFzzTi5X0neWXCNXjWX/FVnIaCBioKHG6eYwgSE86j2ybYQbGlmy+R9vpj3cA12E6a4efoQl/5yqawkUk67iQGnJi0YiA6LUAQUoCN+XipZN3pEn+EuAPGVAz1W0b8pYX99oSrWr3CQwnGCg6/2Y5radzYdPDsZgWkKkWhPU/ZGXcDo+GB4e35OaO6hp8lcq3lmxc+3Ic9eDsVK1kHaccRI/hWcgmkp39/3/zk1mnVtgiED8RI0eUniUTWXTGVTtBvBGLAwABAAE=";
-			var t = new CryptoLicense(lic, vk);
+			string lic = TrialLicense;
+#if LICENSE
+			//Check license key
+			string UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Prospective Software\\NETPath\\";
+			UserProfilePath = Path.Combine(UserProfilePath, "profile.dat");
+			if (File.Exists(UserProfilePath))
+				UserProfile = UserProfile.Open(UserProfilePath);
+			if (UserProfile.IsTrial || UserProfile.Serial == "TRIAL" || UserProfile.License == "")
+				lic = UserProfile.License;
+			var t = new CryptoLicense(lic, LicenseVerification);
 			if (t.Status != LicenseStatus.Valid)
 			{
 				Console.WriteLine("This copy of NETPath is trial software and expired on {0}.", t.DateExpires.ToShortDateString());
@@ -55,6 +66,7 @@ namespace NETPath.Compiler
 			{
 				Console.WriteLine("This copy of NETPath is trial software and will expire on {0}.", t.DateExpires.ToShortDateString());
 			}
+#endif
 
 			ErrorStream = Console.OpenStandardError();
 
