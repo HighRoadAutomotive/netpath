@@ -91,6 +91,7 @@ namespace NETPath
 						{
 							LicenseData LD = await LicensingClient.Retrieve(Globals.UserProfile.Serial, Globals.ApplicationVersion);
 							if (Globals.UserProfile.PriorUsage != null) await LicensingClient.PostUsage(Globals.UserProfile.PriorUsage);
+							if (LD.MaxLicensedVersion < Globals.ApplicationVersion) Current.Shutdown(-10);
 							Globals.UserProfile.UserName = LD.UserName;
 							if (LD.Revoked)
 							{
