@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
+using System.ServiceModel.Syndication;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -9,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
 using System.Windows.Navigation;
+using System.Xml;
 using LogicNP.CryptoLicensing;
 using Prospective.Controls.Dialogs;
 using NETPath.Options;
@@ -70,6 +72,12 @@ namespace NETPath.Interface
 			AboutVersion.Content = "Version " + FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).FileVersion;
 
 			SetLogo();
+
+			using (XmlReader reader = XmlReader.Create("http://www.prospectivesoftware.com/blogs/netpathlink.atom"))
+			{
+				SyndicationFeed feed = SyndicationFeed.Load(reader);
+				NewsList.ItemsSource = feed.Items;
+			}
 		}
 
 		#region - Licensing -

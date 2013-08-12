@@ -453,10 +453,10 @@
 									<TextBlock Text="LATEST NEWS" FontSize="12pt"/>
 								</TabItem.Header>
 								<TabItem.Resources>
-									<XmlDataProvider x:Key="Blog" Source="http://www.netpath.us.com/rss?containerid=15"/>
+									<XmlDataProvider x:Key="Blog" Source="http://www.prospectivesoftware.com/blogs/netpathlink.atom"/>
 									<pc:XmlDateConverter x:Key="XmlDateConverter" />
 								</TabItem.Resources>
-								<ListBox ItemsSource="{Binding Source={StaticResource Blog}, XPath=/rss/channel/item }" BorderThickness="0" Margin="0,5" Padding="-1" SelectionMode="Single" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.IsVirtualizing="False" ItemContainerStyle="{StaticResource StretchedContainerStyle}" >
+								<ListBox x:Name="NewsList" BorderThickness="0" Margin="0,5" Padding="-1" SelectionMode="Single" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.IsVirtualizing="False" ItemContainerStyle="{StaticResource StretchedContainerStyle}" >
 									<ListBox.Resources>
 										<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
 									</ListBox.Resources>
@@ -469,11 +469,11 @@
 														<ColumnDefinition Width="Auto" />
 													</Grid.ColumnDefinitions>
 													<TextBlock Grid.Column="0">
-														<Hyperlink NavigateUri="{Binding XPath=link}" RequestNavigate="Hyperlink_RequestNavigate" ><TextBlock Text="{Binding XPath=title}" FontSize="16pt" Style="{StaticResource HyperlinkTextBlock}"/></Hyperlink>
+														<Hyperlink NavigateUri="{Binding Path=Id}" RequestNavigate="Hyperlink_RequestNavigate" ><TextBlock Text="{Binding Path=Title.Text}" FontSize="16pt" Style="{StaticResource HyperlinkTextBlock}"/></Hyperlink>
 													</TextBlock>
-													<TextBlock Text="{Binding XPath=pubDate, StringFormat={}{0: MMMM dd, yyyy HH:mm}, Converter={StaticResource XmlDateConverter}}" Foreground="{StaticResource DefaultFontColor}" FontSize="10pt" TextWrapping="NoWrap" Grid.Column="1"/>
+													<TextBlock Text="{Binding Path=PublishDate, StringFormat={}{0: MMMM dd, yyyy HH:mm}}" Foreground="{StaticResource DefaultFontColor}" FontSize="10pt" TextWrapping="NoWrap" Grid.Column="1"/>
 												</Grid>
-												<TextBlock Margin="40,0,20,10" Text="{Binding XPath=description, Converter={StaticResource StripHTMLConverter}}" Foreground="{StaticResource DefaultFontColor}" FontSize="12pt" TextWrapping="Wrap"/>
+												<TextBlock Margin="40,0,20,10" Text="{Binding Path=Summary.Text, Converter={StaticResource StripHTMLConverter}}" Foreground="{StaticResource DefaultFontColor}" FontSize="12pt" TextWrapping="Wrap"/>
 											</StackPanel>
 										</DataTemplate>
 									</ListBox.ItemTemplate>
