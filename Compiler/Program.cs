@@ -58,13 +58,13 @@ namespace NETPath.Compiler
 			var t = new CryptoLicense(lic, LicenseVerification);
 			if (t.Status != LicenseStatus.Valid)
 			{
-				Console.WriteLine("This copy of NETPath is trial software and expired on {0}.", t.DateExpires.ToShortDateString());
+				Console.WriteLine("This copy of NETPath is trial software and expired on {0}.", DateTime.Now.AddDays(-(t.CurrentUsageDays - t.MaxUsageDays)).ToShortDateString());
 				Console.WriteLine("Please visit us at http://www.prospectivesoftware.com to purchase a license if you wish to continue to use this software.");
 				Environment.Exit(4);
 			}
 			else
 			{
-				Console.WriteLine("This copy of NETPath is trial software and will expire on {0}.", t.DateExpires.ToShortDateString());
+				Console.WriteLine("This copy of NETPath is trial software and will expire on {0}.", DateTime.Now.AddDays(t.RemainingUsageDays).ToShortDateString());
 			}
 #endif
 
