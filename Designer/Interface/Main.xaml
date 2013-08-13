@@ -295,7 +295,7 @@
 				<Button x:Name="CloseWindow" Grid.Column="7" Style="{StaticResource WindowControlButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="CloseWindow_Click">
 					<Image Source="pack://application:,,,/NETPath;component/Icons/WindowClose.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
 				</Button>
-				<Border x:Name="ScreenButtonsPanel" Height="34" Visibility="Collapsed" Grid.Row="1" Grid.ColumnSpan="7" BorderBrush="{StaticResource WindowBorderColor}" BorderThickness="0,1,0,0">
+				<Border x:Name="ScreenButtonsPanel" Height="34" Visibility="Collapsed" Grid.Row="1" Grid.ColumnSpan="8" BorderBrush="{StaticResource WindowBorderColor}" BorderThickness="0,1,0,0">
 					<Grid pc:WindowChrome.IsHitTestVisibleInChrome="True" >
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto" />
