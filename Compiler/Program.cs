@@ -53,7 +53,7 @@ namespace NETPath.Compiler
 			UserProfilePath = Path.Combine(UserProfilePath, "profile.dat");
 			if (File.Exists(UserProfilePath))
 				UserProfile = UserProfile.Open(UserProfilePath);
-			if (UserProfile.IsTrial || UserProfile.Serial == "TRIAL" || UserProfile.License == "")
+			if (!(UserProfile.IsTrial || UserProfile.Serial == "TRIAL" || UserProfile.License == ""))
 				lic = UserProfile.License;
 			var t = new CryptoLicense(lic, LicenseVerification);
 			if (t.Status != LicenseStatus.Valid)
