@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.IO;
 using System.Windows.Media;
@@ -24,7 +25,14 @@ namespace NETPath
 
 			//Check to see if the User Profile path exists and make a folder if it does not.
 			Globals.UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Prospective Software\\NETPath\\";
-			if (Directory.Exists(Globals.UserProfilePath) == false) Directory.CreateDirectory(Globals.UserProfilePath);
+			if (!Directory.Exists(Globals.UserProfilePath)) Directory.CreateDirectory(Globals.UserProfilePath);
+			
+			//Create the UpdateStore directory if it does not exist and clean it out if it does.
+			Globals.UpdateStore = Path.Combine(Globals.UserProfilePath, "UpdateStore");
+			if (!Directory.Exists(Globals.UpdateStore)) Directory.CreateDirectory(Globals.UpdateStore);
+			var ufl = new List<string>(Directory.EnumerateFiles(Globals.UpdateStore));
+			foreach(string uf in ufl)
+				File.Delete(uf);
 
 			//Load the user profile if it exists or make a new one if it doesn't.
 			Globals.UserProfilePath = Path.Combine(Globals.UserProfilePath, "profile.dat");
@@ -91,6 +99,7 @@ namespace NETPath
 						{
 							LicenseData LD = await LicensingClient.Retrieve(Globals.UserProfile.Serial, Globals.ApplicationVersion);
 							if (Globals.UserProfile.PriorUsage != null) await LicensingClient.PostUsage(Globals.UserProfile.PriorUsage);
+							if (LD.AvailableUpdates.Count > 0) Globals.AvailableUpdates = new List<AvailableUpdateXAML>(LD.XAMLObject.AvailableUpdates);
 							if (LD.MaxLicensedVersion < Globals.ApplicationVersion) Current.Shutdown(-10);
 							Globals.UserProfile.UserName = LD.UserName;
 							if (LD.Revoked)
@@ -139,7 +148,12 @@ namespace NETPath
 			Globals.UserProfile.Serial = "DEVELOPER";
 			try
 			{
-				if (Globals.UserProfile.PriorUsage != null && CheckForInternetConnection()) await LicensingClient.PostUsage(Globals.UserProfile.PriorUsage);
+				if (CheckForInternetConnection())
+				{
+					LicenseData LD = await LicensingClient.Retrieve(Globals.UserProfile.Serial, Globals.ApplicationVersion);
+					if (LD != null && LD.AvailableUpdates.Count > 0) Globals.AvailableUpdates = new List<AvailableUpdateXAML>(LD.XAMLObject.AvailableUpdates);
+					if (Globals.UserProfile.PriorUsage != null) await LicensingClient.PostUsage(Globals.UserProfile.PriorUsage);
+				}
 			}
 			catch (Exception)
 			{

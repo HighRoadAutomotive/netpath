@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
-using System.Net.Http;
+using System.Net;
 using System.ServiceModel.Syndication;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +16,7 @@ using System.Xml;
 using LogicNP.CryptoLicensing;
 using Prospective.Controls.Dialogs;
 using NETPath.Options;
+using Prospective.Server.Licensing;
 
 namespace NETPath.Interface
 {
@@ -38,6 +41,15 @@ namespace NETPath.Interface
 
 		public ObservableCollection<SolutionItem> ProjectScreens { get { return (ObservableCollection<SolutionItem>)GetValue(ProjectScreensProperty); } set { SetValue(ProjectScreensProperty, value); } }
 		public static readonly DependencyProperty ProjectScreensProperty = DependencyProperty.Register("ProjectScreens", typeof(ObservableCollection<SolutionItem>), typeof(Main), new PropertyMetadata(null));
+
+		public ObservableCollection<AvailableUpdateXAML> AvailableUpdates { get { return (ObservableCollection<AvailableUpdateXAML>)GetValue(AvailableUpdatesProperty); } set { SetValue(AvailableUpdatesProperty, value); } }
+		public static readonly DependencyProperty AvailableUpdatesProperty = DependencyProperty.Register("AvailableUpdates", typeof(ObservableCollection<AvailableUpdateXAML>), typeof(Main), new PropertyMetadata(null));
+
+		public AvailableUpdateXAML SelectedUpdate { get { return (AvailableUpdateXAML)GetValue(SelectedUpdateProperty); } set { SetValue(SelectedUpdateProperty, value); } }
+		public static readonly DependencyProperty SelectedUpdateProperty = DependencyProperty.Register("SelectedUpdate", typeof(AvailableUpdateXAML), typeof(Main), new PropertyMetadata(null));
+
+		private WebClient UpdateDownloader { get; set; }
+		private string UpdateStorePath { get; set; }
 
 		private SaveCloseMode CloseMode { get; set; }
 
@@ -69,7 +81,7 @@ namespace NETPath.Interface
 			//Initialize the Options screen.
 			UserProfile = Globals.UserProfile;
 			if (Globals.UserProfile.AutomaticBackupsEnabled) AutomaticBackupsEnabled.Content = "Yes";
-			AboutVersion.Content = "Version " + FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).FileVersion;
+			AboutVersion.Content = string.Format("Version: {0}", FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).FileVersion);
 
 			SetLogo();
 
@@ -78,6 +90,13 @@ namespace NETPath.Interface
 				SyndicationFeed feed = SyndicationFeed.Load(reader);
 				NewsList.ItemsSource = feed.Items;
 			}
+
+			if (Globals.AvailableUpdates != null)
+			{
+				SystemUpdates.Visibility = Visibility.Visible;
+				AvailableUpdates = new ObservableCollection<AvailableUpdateXAML>(Globals.AvailableUpdates);
+			}
+			UpdateDownloader = null;
 		}
 
 		#region - Licensing -
@@ -195,12 +214,6 @@ namespace NETPath.Interface
 			proc.Start();
 		}
 
-		private async void DownloadUpdates(Prospective.Server.Licensing.LicenseData licdata)
-		{
-			var proc = new Process { StartInfo = { UseShellExecute = true, FileName = "http://www.prospectivesoftware.com/pages/netpath" } };
-			proc.Start();
-		}
-
 		#endregion
 
 		#region - Window Events -
@@ -228,15 +241,6 @@ namespace NETPath.Interface
 			else if (!App.CheckForInternetConnection()) return;
 
 #endif
-			try
-			{
-				var ld = await Prospective.Server.Licensing.LicensingClient.Retrieve(Globals.UserProfile.Serial, Globals.ApplicationVersion);
-				if (ld.AvailableUpdates.Count > 0 || ld.FullUpdateRequired)
-					DialogService.ShowMessageDialog("NETPath", "Updates Available", "There are updates available for NETPath. Would you like to download and install them?", new DialogAction("Yes", () => DownloadUpdates(ld), true), new DialogAction("No", false, true));
-			}
-			catch
-			{
-			}
 		}
 
 		private void Main_StateChanged(object sender, EventArgs e)
@@ -319,6 +323,7 @@ namespace NETPath.Interface
 			ActiveProjectScreen.Visibility = Visibility.Collapsed;
 			HomeScreen.Visibility = Visibility.Visible;
 			OptionsScreen.Visibility = Visibility.Collapsed;
+			UpdatesScreen.Visibility = Visibility.Collapsed;
 		}
 
 		private void SystemMenu_Click(object sender, RoutedEventArgs e)
@@ -368,6 +373,15 @@ namespace NETPath.Interface
 			ActiveProjectScreen.Visibility = Visibility.Collapsed;
 			HomeScreen.Visibility = Visibility.Collapsed;
 			OptionsScreen.Visibility = Visibility.Visible;
+			UpdatesScreen.Visibility = Visibility.Collapsed;
+		}
+
+		private void SystemUpdates_Click(object Sender, RoutedEventArgs E)
+		{
+			ActiveProjectScreen.Visibility = Visibility.Collapsed;
+			HomeScreen.Visibility = Visibility.Collapsed;
+			OptionsScreen.Visibility = Visibility.Collapsed;
+			UpdatesScreen.Visibility = Visibility.Visible;
 		}
 
 		private void SystemMenuExit_Click(object sender, RoutedEventArgs e)
@@ -469,17 +483,6 @@ namespace NETPath.Interface
 			Globals.SaveSolution(false);
 		}
 
-		private void UpdateYes_Click(object sender, RoutedEventArgs e)
-		{
-			Process.Start(new ProcessStartInfo(Globals.NewVersionPath));
-			Application.Current.Shutdown(0);
-		}
-
-		private void UpdateNo_Click(object sender, RoutedEventArgs e)
-		{
-			UpdateAvailable.Visibility = Visibility.Collapsed;
-		}
-
 		public void RefreshRecentList()
 		{
 			if (Globals.UserProfile.ImportantProjects.Count > 0) Globals.UserProfile.ImportantProjects.Sort((p1, p2) => p2.LastAccessed.CompareTo(p1.LastAccessed));
@@ -579,8 +582,59 @@ namespace NETPath.Interface
 
 		#endregion
 
-		#region - Solutions - 
-		
+		#region - Updates -
+
+		private void AvailableUpdatesList_SelectionChanged(object Sender, SelectionChangedEventArgs E)
+		{
+			SelectedUpdate = AvailableUpdatesList.SelectedItem as AvailableUpdateXAML;
+			if (UpdateDownloader != null)
+				UpdateDownloader.CancelAsync();
+			UpdateStorePath = "";
+		}
+
+		private void BeginUpdate_Click(object Sender, RoutedEventArgs E)
+		{
+			using (UpdateDownloader = new WebClient())
+			{
+				UpdateDownloader.DownloadFileCompleted += Completed;
+				UpdateDownloader.DownloadProgressChanged += ProgressChanged;
+				UpdateStorePath = Path.Combine(Globals.UpdateStore, string.Format("{0}.exe", Guid.NewGuid()));
+				DownloadProgressPanel.Visibility = Visibility.Visible;
+
+				try
+				{
+					UpdateDownloader.DownloadFileAsync(new Uri(SelectedUpdate.URL), UpdateStorePath);
+				}
+				catch (Exception ex)
+				{
+					DialogService.ShowMessageDialog("NETPath", "Problem Downloading Update", "NETpath has encountered a problem downloading the selected update. Please restart NETPath and try again. If the problem persists, please contacts us at support@prospectivesoftware.com", new DialogAction("OK", true));
+				}
+			}
+		}
+
+		private void ProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+		{
+			DownloadProgressBar.Value = e.ProgressPercentage;
+			DownloadProgress.Text = string.Format("{0}% Downloaded", e.ProgressPercentage);
+		}
+
+		private void Completed(object sender, AsyncCompletedEventArgs e)
+		{
+			DownloadProgressPanel.Visibility = Visibility.Collapsed;
+			if (e.Cancelled)
+			{
+				File.Delete(UpdateStorePath);       // Delete the incomplete file if the download is canceled
+				return;
+			}
+
+			Process.Start(new ProcessStartInfo(UpdateStorePath));
+			CloseMode = SaveCloseMode.Save;
+			Close();
+		}
+		#endregion
+
+		#region - Solutions -
+
 		public void NewSolution(string Name, string Path)
 		{
 			if (Globals.Solution != null)

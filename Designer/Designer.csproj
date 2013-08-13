@@ -942,6 +942,15 @@
     <Resource Include="Icons\X16\HttpClientConfig.png" />
     <Resource Include="Icons\X16\HttpWebConfig.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\X32\Update.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\X16\Update.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\X16\Download.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

@@ -30,8 +30,8 @@ namespace NETPath
 		public const string TrialLicense = "lgKkARmvMXTEec4BHgAvAFNLVT1OUDIwVFJJQUwjTGljZW5zZWVOYW1lPVByb3NwZWN0aXZlIFNvZnR3YXJlAQNEZ9ul5WCNDyXclcMH0Y/O5xklUKqd0W1M/lZjqHL9jcp7tt741X38fW4nYB7Xb88vVO6ks+KNQ7RvKoyjVI1j86CkkQXWvGkgpq6STx0ORAfhmEnvn0+AyfKWAuMn6ZQCzFYoZ46V9SwA+FQz2+vpM2+DP6Ik1QfvHnrirxDLEsndJzuzSGB+3MFEZd+0k2BtA9yUSa7CRa+6QAfHQjZf4FWxVMrJQ7hcSEvN8fLd9oCLozBCVYEtpNPPEyLNB1Kfq2nBJKkO+36gTYR1CvqW+UXvMa0jtDYe1+5la89Kiis7tvH4vMiFwSxKdpy1krparGtHBT7xQT6xGhwzUo7p";
 		public const string LicenseVerification = "AAAEAAG6rTV/gUg+VZjvEZQDqWy9l63DgzkUSg0tyJOBDDS58FKoRvErRfUkvxdlgUCCTTvw5b7lXtVPFxd3HI+SFzzTi5X0neWXCNXjWX/FVnIaCBioKHG6eYwgSE86j2ybYQbGlmy+R9vpj3cA12E6a4efoQl/5yqawkUk67iQGnJi0YiA6LUAQUoCN+XipZN3pEn+EuAPGVAz1W0b8pYX99oSrWr3CQwnGCg6/2Y5radzYdPDsZgWkKkWhPU/ZGXcDo+GB4e35OaO6hp8lcq3lmxc+3Ic9eDsVK1kHaccRI/hWcgmkp39/3/zk1mnVtgiED8RI0eUniUTWXTGVTtBvBGLAwABAAE=";
 
-		public static bool IsNewVersionAvailable { get; set; }
-		public static string NewVersionPath { get; set; }
+		public static List<Prospective.Server.Licensing.AvailableUpdateXAML> AvailableUpdates { get; set; }
+		public static string UpdateStore { get; set; }
 
 		public static string LicenseKeyPath { get; set; }
 
