@@ -38,18 +38,28 @@ namespace NETPath.Interface.Dialogs
 		}
 
 		internal string Serial { get { return (string)GetValue(SerialProperty); } set { SetValue(SerialProperty, value); } }
-		public static readonly DependencyProperty SerialProperty = DependencyProperty.Register("Serial", typeof(string), typeof(SetLicense), new PropertyMetadata(""));
+		public static readonly DependencyProperty SerialProperty = DependencyProperty.Register("Serial", typeof(string), typeof(SetLicense), new PropertyMetadata("", PropertyChangedCallback));
 
 		internal string UserName { get { return (string)GetValue(UserNameProperty); } set { SetValue(UserNameProperty, value); } }
-		public static readonly DependencyProperty UserNameProperty = DependencyProperty.Register("UserName", typeof(string), typeof(SetLicense), new PropertyMetadata(""));
+		public static readonly DependencyProperty UserNameProperty = DependencyProperty.Register("UserName", typeof(string), typeof(SetLicense), new PropertyMetadata("", PropertyChangedCallback));
 
 		public string UserEmail { get { return (string)GetValue(UserEmailProperty); } set { SetValue(UserEmailProperty, value); } }
-		public static readonly DependencyProperty UserEmailProperty = DependencyProperty.Register("UserEmail", typeof(string), typeof(SetLicense), new PropertyMetadata(""));
+		public static readonly DependencyProperty UserEmailProperty = DependencyProperty.Register("UserEmail", typeof(string), typeof(SetLicense), new PropertyMetadata("", PropertyChangedCallback));
 
 		public bool AllowProductEmails { get { return (bool)GetValue(AllowProductEmailsProperty); } set { SetValue(AllowProductEmailsProperty, value); } }
 		public static readonly DependencyProperty AllowProductEmailsProperty = DependencyProperty.Register("AllowProductEmails", typeof(bool), typeof(SetLicense), new PropertyMetadata(true));
 
 		public bool AllowOtherEmails { get { return (bool)GetValue(AllowOtherEmailsProperty); } set { SetValue(AllowOtherEmailsProperty, value); } }
 		public static readonly DependencyProperty AllowOtherEmailsProperty = DependencyProperty.Register("AllowOtherEmails", typeof(bool), typeof(SetLicense), new PropertyMetadata(false));
+
+		private static void PropertyChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as SetLicense;
+			if (t == null) return;
+
+			if (!string.IsNullOrWhiteSpace(t.UserName) && !string.IsNullOrWhiteSpace(t.UserEmail) && !string.IsNullOrWhiteSpace(t.Serial))
+				foreach (DialogAction da in t.Actions.Where(a => !a.IsCancel))
+					da.IsEnabled = true;
+		}
 	}
 }
