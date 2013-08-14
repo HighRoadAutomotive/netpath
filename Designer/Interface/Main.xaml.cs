@@ -134,8 +134,11 @@ namespace NETPath.Interface
 				}
 				else
 				{
+					Globals.UserProfile.IsTrialInfoSet = false;
+					Globals.UserProfile.IsTrial = false;
 					Globals.UserProfile.License = licdata.Key;
 					var tl = new CryptoLicense(Globals.UserProfile.License, Globals.LicenseVerification);
+					Globals.UserProfile.Serial = lic.Serial;
 					Globals.UserProfile.SKU = tl.GetUserDataFieldValue("SKU", "#");
 					Globals.UserProfile.LicenseeName = tl.GetUserDataFieldValue("LicenseeName", "#");
 					Globals.UserProfile.UserName = licdata.UserName;
@@ -228,7 +231,7 @@ namespace NETPath.Interface
 				if (lic.Status == LicenseStatus.Valid)
 					DialogService.ShowMessageDialog("NETPath", "Begin Your Trial?", "Would you like to install a license or begin your trial?", new DialogAction("Start Trial", StartTrial), new DialogAction("Install License", RetrieveLicense), new DialogAction("Purchase License", PurchaseLicense, false, false, true));
 				else
-					DialogService.ShowMessageDialog("NETPath", "Expired Trial Notice", "Your trial has expired and you will be unable to generate any code based on the changes made to your project files. If you would like to continue using NETPath please purchase a license by clicking the purchase license button.", new DialogAction("Continue"), new DialogAction("Purchase License", PurchaseLicense, false, false, true));
+					DialogService.ShowMessageDialog("NETPath", "Expired Trial Notice", "Your trial has expired and you will be unable to generate any code based on the changes made to your project files. If you would like to continue using NETPath please purchase a license by clicking the purchase license button.", new DialogAction("Continue"), new DialogAction("Install License", RetrieveLicense), new DialogAction("Purchase License", PurchaseLicense, false, false, true));
 			}
 			else if ((Globals.UserProfile.IsTrial && Globals.UserProfile.IsTrialInfoSet) && Globals.UserProfile.Serial == "TRIAL" && Globals.UserProfile.License == "")
 			{
@@ -236,7 +239,7 @@ namespace NETPath.Interface
 				if (lic.Status == LicenseStatus.Valid)
 					DialogService.ShowMessageDialog("NETPath", "Continue Your Trial?", string.Format("Would you like to install a license key or continue with your trial? Please note that your trial will expire in {0} days.", lic.RemainingUsageDays), new DialogAction("Continue Trial"), new DialogAction("Install License", RetrieveLicense), new DialogAction("Purchase License", PurchaseLicense, false, false, true));
 				else
-					DialogService.ShowMessageDialog("NETPath", "Expired Trial Notice", "Your trial has expired and you will be unable to generate any code based on the changes made to your project files. If you would like to continue using NETPath please purchase a license by clicking the purchase license button.", new DialogAction("Continue"), new DialogAction("Purchase License", PurchaseLicense, false, false, true));
+					DialogService.ShowMessageDialog("NETPath", "Expired Trial Notice", "Your trial has expired and you will be unable to generate any code based on the changes made to your project files. If you would like to continue using NETPath please purchase a license by clicking the purchase license button.", new DialogAction("Continue"), new DialogAction("Install License", RetrieveLicense), new DialogAction("Purchase License", PurchaseLicense, false, false, true));
 			}
 			else if (!App.CheckForInternetConnection()) return;
 #endif
