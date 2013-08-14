@@ -142,6 +142,7 @@ namespace NETPath.Interface
 					Globals.UserProfile.SKU = tl.GetUserDataFieldValue("SKU", "#");
 					Globals.UserProfile.LicenseeName = tl.GetUserDataFieldValue("LicenseeName", "#");
 					Globals.UserProfile.UserName = licdata.UserName;
+					Globals.UserProfile.UserEmail = lic.UserEmail;
 					UserProfile.Save(Globals.UserProfilePath, Globals.UserProfile);
 					DialogService.ShowMessageDialog("NETPath", "License Successfully Installed", "Your license has been successfully installed and is ready for immediate use.", new DialogAction("Continue", true));
 				}
