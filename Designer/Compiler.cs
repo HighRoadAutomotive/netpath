@@ -58,6 +58,8 @@ namespace NETPath
 			}
 			else if (WinRT.IsInitialized)
 				await WinRT.BuildAsync(NavWindow.Project);
+			else if (NET.IsInitialized)
+				await NET.BuildAsync(NavWindow.Project);
 			else
 				GeneratorOutput("FATAL ERROR: Unable to initialize any code generators.");
 
