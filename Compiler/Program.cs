@@ -62,7 +62,7 @@ namespace NETPath.Compiler
 				Console.WriteLine("Please visit us at http://www.prospectivesoftware.com to purchase a license if you wish to continue to use this software.");
 				Environment.Exit(4);
 			}
-			else
+			else if (lic == TrialLicense)
 			{
 				Console.WriteLine("This copy of NETPath is trial software and will expire on {0}.", DateTime.Now.AddDays(t.RemainingUsageDays).ToShortDateString());
 			}
