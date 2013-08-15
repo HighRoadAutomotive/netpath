@@ -51,7 +51,7 @@ namespace System
 
 		internal Action<CMDObject, T, T> CMDPropertyChangedCallback { get; private set; }
 		internal Action<CMDObject, T, T> CMDPropertyUpdatedCallback { get; private set; }
-		internal Func<CMDObject, T, bool> DeltaValidateValueCallback { get; private set; }
+		internal Func<CMDObject, T, bool> CMDValidateValueCallback { get; private set; }
 
 		private CMDProperty(HashID ID, HashID OwnerID, Type OwnerType)
 		{
@@ -61,7 +61,7 @@ namespace System
 			PropertyType = typeof(T);
 			DefaultValue = default(T);
 			CMDPropertyChangedCallback = null;
-			DeltaValidateValueCallback = null;
+			CMDValidateValueCallback = null;
 		}
 
 		private CMDProperty(HashID ID, HashID OwnerID, Type OwnerType, T DefaultValue)
@@ -72,10 +72,10 @@ namespace System
 			PropertyType = typeof(T);
 			this.DefaultValue = DefaultValue;
 			CMDPropertyChangedCallback = null;
-			DeltaValidateValueCallback = null;
+			CMDValidateValueCallback = null;
 		}
 
-		private CMDProperty(HashID ID, HashID OwnerID, Type OwnerType, T DefaultValue, Action<CMDObject, T, T> CMDPropertyChangedCallback, Action<CMDObject, T, T> CMDPropertyUpdatedCallback = null, Func<CMDObject, T, bool> DeltaValidateValueCallback = null)
+		private CMDProperty(HashID ID, HashID OwnerID, Type OwnerType, T DefaultValue, Action<CMDObject, T, T> CMDPropertyChangedCallback, Action<CMDObject, T, T> CMDPropertyUpdatedCallback = null, Func<CMDObject, T, bool> CMDValidateValueCallback = null)
 		{
 			this.ID = ID;
 			this.OwnerID = OwnerID;
@@ -84,7 +84,7 @@ namespace System
 			this.DefaultValue = DefaultValue;
 			this.CMDPropertyChangedCallback = CMDPropertyChangedCallback;
 			this.CMDPropertyUpdatedCallback = CMDPropertyUpdatedCallback;
-			this.DeltaValidateValueCallback = DeltaValidateValueCallback;
+			this.CMDValidateValueCallback = CMDValidateValueCallback;
 		}
 
 		private CMDProperty(HashID ID, HashID OwnerID, Type OwnerType, Action<CMDObject, T, T> CMDPropertyChangedCallback)
@@ -95,7 +95,7 @@ namespace System
 			PropertyType = typeof(T);
 			DefaultValue = default(T);
 			this.CMDPropertyChangedCallback = CMDPropertyChangedCallback;
-			DeltaValidateValueCallback = null;
+			CMDValidateValueCallback = null;
 		}
 
 		public static CMDProperty<TType> Register<TType>(string Name, Type OwnerType)
@@ -114,9 +114,9 @@ namespace System
 			return np;
 		}
 
-		public static CMDProperty<TType> Register<TType>(string Name, Type OwnerType, TType defaultValue, Action<CMDObject, TType, TType> CMDPropertyChangedCallback, Action<CMDObject, TType, TType> CMDPropertyUpdatedCallback = null, Func<CMDObject, TType, bool> DeltaValidateValueCallback = null)
+		public static CMDProperty<TType> Register<TType>(string Name, Type OwnerType, TType defaultValue, Action<CMDObject, TType, TType> CMDPropertyChangedCallback, Action<CMDObject, TType, TType> CMDPropertyUpdatedCallback = null, Func<CMDObject, TType, bool> CMDValidateValueCallback = null)
 		{
-			var np = new CMDProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType, defaultValue, CMDPropertyChangedCallback, CMDPropertyUpdatedCallback, DeltaValidateValueCallback);
+			var np = new CMDProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType, defaultValue, CMDPropertyChangedCallback, CMDPropertyUpdatedCallback, CMDValidateValueCallback);
 			if (!registered.TryAdd(np.ID, np))
 				throw new ArgumentException(string.Format("Unable to register the CMDProperty '{0}' on type '{1}'. A CMDProperty with the same Name and OwnerType has already been registered.", Name, np.OwnerType));
 			return np;
