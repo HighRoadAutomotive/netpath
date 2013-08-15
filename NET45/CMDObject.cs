@@ -34,7 +34,7 @@ namespace System
 		public void SetValue<T>(CMDProperty<T> de, T value)
 		{
 			//Call the validator to see if this value is acceptable
-			if (de.DeltaValidateValueCallback != null && !de.DeltaValidateValueCallback(this, value)) return;
+			if (de.CMDValidateValueCallback != null && !de.CMDValidateValueCallback(this, value)) return;
 
 			//If the new value is the default value remove this from the modified values list, otherwise add/update it.
 			if (EqualityComparer<T>.Default.Equals(value, de.DefaultValue))
