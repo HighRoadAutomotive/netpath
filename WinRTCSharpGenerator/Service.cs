@@ -99,7 +99,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(GenerateServiceInterfaceDCM45(m, true));
 			code.AppendLine("\t}");
 
-			if (o.HasCallback)
+			if (o.HasCallback || o.HasDCMOperations)
 			{
 				//Generate the service proxy
 				if (o.CallbackDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.CallbackDocumentation));
@@ -185,7 +185,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine("\t}");
 			code.AppendLine();
 			//Generate Callback Interface (if any)
-			if (o.HasCallback)
+			if (o.HasCallback || o.HasDCMOperations)
 			{
 				if (o.CallbackDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.CallbackDocumentation));
 				foreach (DataType dt in o.KnownTypes)
@@ -213,7 +213,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 			code.AppendLine(string.Format("\t{0} partial class {1}Proxy : {2}, I{1}", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.HasDCMOperations || o.HasCallbackOperations ? string.Format("System.ServiceModel.ClientDuplexBaseEx<{0}Proxy, I{0}>", o.HasClientType ? o.ClientType.Name : o.Name) : string.Format("System.ServiceModel.ClientBaseEx<{0}Proxy, I{0}>", o.HasClientType ? o.ClientType.Name : o.Name)));
 			code.AppendLine("\t{");
-			if (o.HasCallbackOperations)
+			if (o.HasCallbackOperations || o.HasDCMOperations)
 			{
 				code.AppendLine(string.Format("\t\tpublic {0}Proxy()", o.HasClientType ? o.ClientType.Name : o.Name));
 				code.AppendLine("\t\t{");
@@ -226,7 +226,7 @@ namespace NETPath.Generators.WinRT.CS
 				{
 					code.AppendLine(string.Format("\t\tpublic {0}Proxy(Guid ClientID)", o.HasClientType ? o.ClientType.Name : o.Name));
 					code.AppendLine("\t\t{");
-					if (o.HasDCMOperations) code.AppendLine("\t\t\tbase.ClientID = ClientID;");
+					code.AppendLine("\t\t\tbase.ClientID = ClientID;");
 					foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
 						code.Append(GenerateMethodProxyConstructorCode(m, false));
 					code.AppendLine("\t\t}");
@@ -265,35 +265,30 @@ namespace NETPath.Generators.WinRT.CS
 			{
 				code.AppendLine(string.Format("\t\tpublic {0}Proxy()", o.HasClientType ? o.ClientType.Name : o.Name));
 				code.AppendLine("\t\t{");
-				if (o.HasDCMOperations) code.AppendLine("\t\t\tbase.ClientID = Guid.NewGuid();");
 				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
 					code.Append(GenerateMethodProxyConstructorCode(m, false));
 				code.AppendLine("\t\t}");
 				code.AppendLine();
 				code.AppendLine(string.Format("\t\tpublic {0}Proxy({1}string endpointConfigurationName) : base(endpointConfigurationName)", o.HasClientType ? o.ClientType.Name : o.Name, o.HasDCMOperations ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
-				if (o.HasDCMOperations) code.AppendLine("\t\t\tbase.ClientID = ClientID;");
 				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
 					code.Append(GenerateMethodProxyConstructorCode(m, false));
 				code.AppendLine("\t\t}");
 				code.AppendLine();
 				code.AppendLine(string.Format("\t\tpublic {0}Proxy({1}string endpointConfigurationName, string remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name, o.HasDCMOperations ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
-				if (o.HasDCMOperations) code.AppendLine("\t\t\tbase.ClientID = ClientID;");
 				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
 					code.Append(GenerateMethodProxyConstructorCode(m, false));
 				code.AppendLine("\t\t}");
 				code.AppendLine();
 				code.AppendLine(string.Format("\t\tpublic {0}Proxy({1}string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : base(endpointConfigurationName, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name, o.HasDCMOperations ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
-				if (o.HasDCMOperations) code.AppendLine("\t\t\tbase.ClientID = ClientID;");
 				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
 					code.Append(GenerateMethodProxyConstructorCode(m, false));
 				code.AppendLine("\t\t}");
 				code.AppendLine();
 				code.AppendLine(string.Format("\t\tpublic {0}Proxy({1}System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : base(binding, remoteAddress)", o.HasClientType ? o.ClientType.Name : o.Name, o.HasDCMOperations ? "Guid ClientID, " : ""));
 				code.AppendLine("\t\t{");
-				if (o.HasDCMOperations) code.AppendLine("\t\t\tbase.ClientID = ClientID;");
 				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
 					code.Append(GenerateMethodProxyConstructorCode(m, false));
 				code.AppendLine("\t\t}");
@@ -1119,7 +1114,7 @@ namespace NETPath.Generators.WinRT.CS
 			{
 				if (o.GenerateGetFunction)
 				{
-					if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, true))
+					if (o.UseAwaitPattern)
 					{
 						code.Append(string.Format("\t\tpublic abstract System.Threading.Tasks.Task<{1}> Get{0}DREAsync(", dcmtype.Name, o.ReturnType.HasClientType ? o.ReturnType.ClientType : o.ReturnType));
 						foreach (MethodParameter mp in o.GetParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.GetParameters.IndexOf(mp) < o.GetParameters.Count - 1 ? ", " : ""));
@@ -1134,7 +1129,7 @@ namespace NETPath.Generators.WinRT.CS
 				}
 				if (o.GenerateNewDeleteFunction)
 				{
-					if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, true))
+					if (o.UseAwaitPattern)
 					{
 						code.Append(string.Format("\t\tpublic virtual System.Threading.Tasks.Task New{0}DREAsync({1} DREData{2}", dcmtype.Name, DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype), o.NewParameters.Count != 0 ? ", " : ""));
 						foreach (MethodParameter mp in o.NewParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.NewParameters.IndexOf(mp) < o.NewParameters.Count - 1 ? ", " : ""));
@@ -1165,7 +1160,7 @@ namespace NETPath.Generators.WinRT.CS
 						code.AppendLine("\t\t}");
 					}
 				}
-				if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, true))
+				if (o.GenerateOpenCloseFunction)
 				{
 					if (o.UseAwaitPattern)
 					{
@@ -1272,7 +1267,7 @@ namespace NETPath.Generators.WinRT.CS
 		public static string GenerateServiceServerImmediateMethodDCM45(Method o, DataType DCMType, string ElementName, DataTypeMode TypeMode, bool UseTPL)
 		{
 			var code = new StringBuilder();
-			if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, true))
+			if (o.UseAwaitPattern)
 			{
 				code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task {0}Async(", o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
@@ -1313,7 +1308,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
 				code.AppendLine("\t\t}");
 			}
-			if (o.UseSyncPattern)
+			else
 			{
 				code.AppendFormat("\t\tpublic virtual void {0}(", o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
@@ -1360,7 +1355,7 @@ namespace NETPath.Generators.WinRT.CS
 		public static string GenerateServiceServerBatchMethodDCM45(Method o, Data DCMType, bool UseTPL)
 		{
 			var code = new StringBuilder();
-			if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, true))
+			if (o.UseAwaitPattern)
 			{
 				code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task {0}Async(", o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
@@ -1398,7 +1393,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
 				code.AppendLine("\t\t}");
 			}
-			if (o.UseSyncPattern)
+			else
 			{
 				code.AppendFormat("\t\tpublic virtual void {0}(", o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
@@ -1442,7 +1437,7 @@ namespace NETPath.Generators.WinRT.CS
 		public static string GenerateServiceClientMethodDCM45(Method o, bool UseTPL, bool IsImmediate = true)
 		{
 			var code = new StringBuilder();
-			if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, false))
+			if (o.UseAwaitPattern )
 			{
 				if (o.ReturnType.Primitive == PrimitiveTypes.Void) code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task {0}Async(", o.HasClientType ? o.ClientName : o.ServerName);
 				else code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task<{1}> {0}Async(", o.HasClientType ? o.ClientName : o.ServerName, DataTypeGenerator.GenerateType(o.ReturnType));
@@ -1465,7 +1460,7 @@ namespace NETPath.Generators.WinRT.CS
 				}
 				code.AppendLine("\t\t}");
 			}
-			if (o.UseSyncPattern)
+			else
 			{
 				code.AppendFormat("\t\tpublic virtual {1} {0}(", o.HasClientType ? o.ClientName : o.ServerName, DataTypeGenerator.GenerateType(o.ReturnType));
 				foreach (MethodParameter op in o.Parameters)
@@ -1644,7 +1639,7 @@ namespace NETPath.Generators.WinRT.CS
 						foreach (MethodParameter mp in o.GetParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.GetParameters.IndexOf(mp) < o.GetParameters.Count - 1 ? ", " : ""));
 						code.AppendLine(");");
 					}
-					if (o.UseSyncPattern)
+					else
 					{
 						code.Append(string.Format("\t\tpublic abstract {1} Get{0}DRECallback(", dcmtype.Name, o.ReturnType.HasClientType ? o.ReturnType.ClientType : o.ReturnType));
 						foreach (MethodParameter mp in o.GetParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.GetParameters.IndexOf(mp) < o.GetParameters.Count - 1 ? ", " : ""));
@@ -1662,7 +1657,7 @@ namespace NETPath.Generators.WinRT.CS
 						foreach (MethodParameter mp in o.DeleteParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.DeleteParameters.IndexOf(mp) < o.DeleteParameters.Count - 1 ? ", " : ""));
 						code.AppendLine(");");
 					}
-					if (o.UseSyncPattern)
+					else
 					{
 						code.Append(string.Format("\t\tpublic abstract void New{0}DRECallback({1} DREData{2}", dcmtype.Name, DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype), o.NewParameters.Count != 0 ? ", " : ""));
 						foreach (MethodParameter mp in o.NewParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.NewParameters.IndexOf(mp) < o.NewParameters.Count - 1 ? ", " : ""));
@@ -1674,7 +1669,7 @@ namespace NETPath.Generators.WinRT.CS
 				}
 				if (o.GenerateOpenCloseFunction)
 				{
-					if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, false))
+					if (o.UseAwaitPattern)
 					{
 						code.Append(string.Format("\t\tpublic abstract System.Threading.Tasks.Task Open{0}DRECallbackAsync(Guid DREDataID{1}", dcmtype.Name, o.OpenParameters.Count != 0 ? ", " : ""));
 						foreach (MethodParameter mp in o.OpenParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.OpenParameters.IndexOf(mp) < o.OpenParameters.Count - 1 ? ", " : ""));
@@ -1683,7 +1678,7 @@ namespace NETPath.Generators.WinRT.CS
 						foreach (MethodParameter mp in o.CloseParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.CloseParameters.IndexOf(mp) < o.CloseParameters.Count - 1 ? ", " : ""));
 						code.AppendLine(");");
 					}
-					if (o.UseSyncPattern)
+					else
 					{
 						code.Append(string.Format("\t\tpublic abstract void Open{0}DRECallback(Guid DREDataID{1}", dcmtype.Name, o.OpenParameters.Count != 0 ? ", " : ""));
 						foreach (MethodParameter mp in o.OpenParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.OpenParameters.IndexOf(mp) < o.OpenParameters.Count - 1 ? ", " : ""));
@@ -1771,7 +1766,7 @@ namespace NETPath.Generators.WinRT.CS
 		public static string GenerateCallbackClientImmediateMethodDCM45(Method o, DataType DCMType, string ElementName, DataTypeMode TypeMode, bool UseTPL)
 		{
 			var code = new StringBuilder();
-			if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, false))
+			if (o.UseAwaitPattern)
 			{
 				code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task {0}Async(", o.HasClientType ? o.ClientName : o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
@@ -1794,7 +1789,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
 				code.AppendLine("\t\t}");
 			}
-			if (o.UseSyncPattern)
+			else
 			{
 				code.AppendFormat("\t\tpublic virtual void {0}(", o.HasClientType ? o.ClientName : o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
@@ -1823,7 +1818,7 @@ namespace NETPath.Generators.WinRT.CS
 		public static string GenerateCallbackClientBatchMethodDCM45(Method o, Data DCMType, bool UseTPL)
 		{
 			var code = new StringBuilder();
-			if (o.UseAwaitPattern && CanGenerateAsync(o.Owner, false))
+			if (o.UseAwaitPattern)
 			{
 				code.AppendFormat("\t\tpublic virtual System.Threading.Tasks.Task {0}Async(", o.HasClientType ? o.ClientName : o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
@@ -1843,7 +1838,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine("\t\t\t}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);");
 				code.AppendLine("\t\t}");
 			}
-			if (o.UseSyncPattern)
+			else
 			{
 				code.AppendFormat("\t\tpublic virtual void {0}(", o.HasClientType ? o.ClientName : o.ServerName);
 				foreach (MethodParameter op in o.Parameters)
@@ -1895,7 +1890,7 @@ namespace NETPath.Generators.WinRT.CS
 				}
 				code.AppendLine("\t\t}");
 			}
-			if (o.UseSyncPattern)
+			else
 			{
 				code.AppendFormat("\t\tpublic virtual void {0}(", o.HasClientType ? o.ClientName : o.ServerName);
 				foreach (MethodParameter op in o.Parameters)

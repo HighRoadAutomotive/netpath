@@ -20,7 +20,7 @@ namespace NETPath.Interface.Bindings
 	internal partial class NamedPipe : Grid
 	{
 		public ServiceBindingNamedPipe Binding { get { return (ServiceBindingNamedPipe)GetValue(BindingProperty); } set { SetValue(BindingProperty, value); } }
-		public static readonly DependencyProperty BindingProperty = DependencyProperty.Register("Binding", typeof(ServiceBindingTCP), typeof(NamedPipe));
+		public static readonly DependencyProperty BindingProperty = DependencyProperty.Register("Binding", typeof(ServiceBindingNamedPipe), typeof(NamedPipe));
 
 		public NamedPipe()
 		{
