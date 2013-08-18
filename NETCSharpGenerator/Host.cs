@@ -1489,7 +1489,7 @@ namespace NETPath.Generators.NET.CS
 					}
 					else if (o.Binding.GetType() == typeof(ServiceBindingNamedPipe))
 					{
-						uri = "string.Format(\"net.p2p://{0}/" + o.Name + "\", Address)";
+						uri = "string.Format(\"net.pipe://{0}/" + o.Name + "\", Address)";
 					}
 				}
 			}
@@ -1526,7 +1526,7 @@ namespace NETPath.Generators.NET.CS
 					}
 					else if (o.Binding.GetType() == typeof(ServiceBindingNamedPipe))
 					{
-						uri = "\"net.p2p://" + tca + "/" + o.Name + "\"";
+						uri = "\"net.pipe://" + tca + "/" + o.Name + "\"";
 					}
 				}
 				else
@@ -1560,7 +1560,7 @@ namespace NETPath.Generators.NET.CS
 					}
 					else if (o.Binding.GetType() == typeof(ServiceBindingNamedPipe))
 					{
-						uri = "string.Format(\"net.p2p://{0}/" + o.Name + "\", Address)";
+						uri = "string.Format(\"net.pipe://{0}/" + o.Name + "\", Address)";
 					}
 				}
 			}
