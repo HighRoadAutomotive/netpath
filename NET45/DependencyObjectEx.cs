@@ -30,7 +30,7 @@ namespace System.Windows
 		private readonly ConcurrentDictionary<int, object> values;
 		private DeltaObject baseDataObject;
 		internal protected DeltaObject BaseDataObject { get { return baseDataObject; } set { if (baseDataObject == null) baseDataObject = value; } }
-		protected bool IsExternalUpdate { get; private set; }
+		protected bool IsExternalUpdate { get; set; }
 
 		protected DependencyObjectEx()
 		{

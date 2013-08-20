@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml
 		private readonly ConcurrentDictionary<int, object> values;
 		private DeltaObject baseDataObject;
 		protected DeltaObject BaseDataObject { get { return baseDataObject; } set { if (baseDataObject == null) baseDataObject = value; } }
-		protected bool IsExternalUpdate { get; private set; }
+		protected bool IsExternalUpdate { get; set; }
 
 		protected DependencyObjectEx()
 		{
