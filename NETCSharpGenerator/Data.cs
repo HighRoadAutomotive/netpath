@@ -464,9 +464,11 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine();
 			code.AppendLine(string.Format("\t\tpublic {0}({1} Data){2}", o.XAMLType.Name, o.HasClientType ? o.ClientType.Name : o.Name, o.CMDEnabled ? " : base(Data)" : ""));
 			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tIsExternalUpdate = true;");
 			if (!o.CMDEnabled) code.AppendLine("\t\t\tBaseDataObject = Data;");
 			foreach (DataElement de in o.Elements)
 				code.Append(GenerateElementXAMLConstructorCode45(de, o));
+			code.AppendLine("\t\t\tIsExternalUpdate = false;");
 			code.AppendLine("\t\t}");
 			code.AppendLine();
 
