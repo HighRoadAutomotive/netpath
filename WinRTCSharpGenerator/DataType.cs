@@ -27,7 +27,7 @@ namespace NETPath.Generators.WinRT.CS
 			if (o.TypeMode == DataTypeMode.Class || ForceClass)
 			{
 				sb.AppendFormat("{0} {1}{2}{3}class {4}", GenerateScope(o.Scope), o.Partial ? "partial " : "", o.Abstract ? "abstract " : "", o.Sealed ? "sealed " : "", o.Name);
-				if (IsDeltaObject && !IsDREObject) sb.Append(" : DeltaObject");
+				if (IsDeltaObject && !IsDREObject) sb.Append(" : CMDObject");
 				if (IsDeltaObject && IsDREObject) sb.Append(string.Format(" : DREObject<{0}>", o.Name));
 				if (o.InheritedTypes.Any() || ImpliedExtensionData || HasWinFormsDatabinding)
 				{
