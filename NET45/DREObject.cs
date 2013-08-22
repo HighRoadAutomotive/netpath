@@ -175,6 +175,36 @@ namespace System
 			if (de.XAMLPropertyKey != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLPropertyKey, value);
 		}
 
+		public void UpdateValueNoXAML<T>(DREProperty<T> de, T value)
+		{
+			//If the new value is the default value remove this from the modified values list, otherwise add/update it.
+			if (Equals(value, de.DefaultValue))
+			{
+				//Remove the value from the list, which sets it to the default value.
+				object temp;
+				if (!values.TryRemove(de.ID, out temp)) return;
+
+				//Clear the changed event handlers
+				var tt = temp as DeltaCollectionBase;
+				if (tt != null) tt.ClearChangedHandlers();
+
+				//Call the property updated callback
+				if (temp != null && de.DREPropertyUpdatedCallback != null && baseXAMLObject != null) de.DREPropertyUpdatedCallback(this, (T)temp, value);
+			}
+			else
+			{
+				//Setup the change event handler
+				var tt = value as DeltaCollectionBase;
+				if (tt != null) tt.Changed += (Sender, Args) => IncrementChangeCount();
+
+				//Update the values
+				var temp = (T)values.AddOrUpdate(de.ID, value, (p, v) => value);
+
+				//Call the property updated callback
+				if (temp != null && de.DREPropertyUpdatedCallback != null && baseXAMLObject != null) de.DREPropertyUpdatedCallback(this, (T)temp, value);
+			}
+		}
+
 		public void ClearValue<T>(DREProperty<T> de)
 		{
 			object temp;
