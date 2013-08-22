@@ -74,8 +74,6 @@
     <Compile Include="DeltaDictionary.cs" />
     <Compile Include="DeltaList.cs" />
     <Compile Include="DependencyObjectEx.cs" />
-    <Compile Include="DeltaQueue.cs" />
-    <Compile Include="DeltaStack.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

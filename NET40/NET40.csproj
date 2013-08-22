@@ -64,13 +64,11 @@
     <Compile Include="DeltaCollectionBase.cs" />
     <Compile Include="DeltaObject.cs" />
     <Compile Include="DeltaProperty.cs" />
-    <Compile Include="DeltaQueue.cs" />
     <Compile Include="DeltaDictionary.cs" />
     <Compile Include="DeltaList.cs" />
     <Compile Include="DependencyDictionary.cs" />
     <Compile Include="DependencyList.cs" />
     <Compile Include="DependencyObjectEx.cs" />
-    <Compile Include="DeltaStack.cs" />
     <Compile Include="DependencyQueue.cs" />
     <Compile Include="DependencyStack.cs" />
     <Compile Include="DREObject.cs" />
