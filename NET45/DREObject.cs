@@ -104,7 +104,6 @@ namespace System
 				//Remove the value from the list, which sets it to the default value.
 				object temp;
 				if (!values.TryRemove(de.ID, out temp)) return;
-
 				if (EnableBatching && BatchInterval > 0)
 				{
 					modifications.Enqueue(new CMDItemValue<T>(true, de.ID));
@@ -183,6 +182,11 @@ namespace System
 				//Remove the value from the list, which sets it to the default value.
 				object temp;
 				if (!values.TryRemove(de.ID, out temp)) return;
+				if (EnableBatching && BatchInterval > 0)
+				{
+					modifications.Enqueue(new CMDItemValue<T>(true, de.ID));
+					IncrementChangeCount();
+				}
 
 				//Clear the changed event handlers
 				var tt = temp as DeltaCollectionBase;
@@ -199,6 +203,11 @@ namespace System
 
 				//Update the values
 				var temp = (T)values.AddOrUpdate(de.ID, value, (p, v) => value);
+				if (EnableBatching && BatchInterval > 0)
+				{
+					modifications.Enqueue(new CMDItemValue<T>(false, de.ID, value));
+					IncrementChangeCount();
+				}
 
 				//Call the property updated callback
 				if (temp != null && de.DREPropertyUpdatedCallback != null && baseXAMLObject != null) de.DREPropertyUpdatedCallback(this, (T)temp, value);
