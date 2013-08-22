@@ -28,6 +28,13 @@ namespace System
 			return t;
 		}
 
+		public static void UpdateValueServer<TType>(Guid ID, DeltaProperty<TType> prop, TType value)
+		{
+			T t;
+			__dcm.TryGetValue(ID, out t);
+			if (t != null) t.UpdateValue(prop, value);
+		}
+
 		public static void UpdateValue<TType>(Guid ID, DeltaProperty<TType> prop, TType value)
 		{
 			T t;
