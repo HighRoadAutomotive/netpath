@@ -161,16 +161,6 @@ namespace System
 				//Clear the changed event handlers
 				var tt = temp as DeltaCollectionBase;
 				if (tt != null) tt.ClearChangedHandlers();
-
-				//Trigger batch updates if needed
-				if (EnableBatching && tt == null && BatchInterval > 0)
-				{
-					modifications.Enqueue(new CMDItemValue<T>(true, de.ID));
-					IncrementChangeCount();
-				}
-
-				//Call the property updated callback
-				if (temp != null && de.DREPropertyUpdatedCallback != null) de.DREPropertyUpdatedCallback(this, (T)temp, de.DefaultValue);
 			}
 			else
 			{
@@ -180,17 +170,9 @@ namespace System
 
 				//Update the values
 				var temp = (T)values.AddOrUpdate(de.ID, value, (p, v) => value);
-
-				//Trigger batch updates if needed
-				if (EnableBatching && tt == null && BatchInterval > 0)
-				{
-					modifications.Enqueue(new CMDItemValue<T>(false, de.ID, value));
-					IncrementChangeCount();
-				}
-
-				//Call the property updated callback
-				if (de.DREPropertyUpdatedCallback != null) de.DREPropertyUpdatedCallback(this, temp, value);
 			}
+			if (de.XAMLProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLProperty, value);
+			if (de.XAMLPropertyKey != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLPropertyKey, value);
 		}
 
 		public void ClearValue<T>(DREProperty<T> de)
