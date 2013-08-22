@@ -2054,7 +2054,7 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine(string.Format("\t\t\tvar temp = {0}.GetDataFromID(UpdateID);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType)));
 				code.AppendLine(string.Format("\t\t\tif (temp != null) temp.{0}.ApplyDelta(ChangedItem);", ElementName));
 			}
-			else code.AppendLine(string.Format("\t\t\t{0}.UpdateValue(UpdateID, {0}.{1}Property, ChangedValue);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType), ElementName));
+			else code.AppendLine(string.Format("\t\t\t{0}.UpdateValueServer(UpdateID, {0}.{1}Property, ChangedValue);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType), ElementName));
 			code.Append(string.Format("\t\t\t\t\tCallback{0}(ClientID, ", o.ServerName));
 			foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
 			code.AppendLine(");");
@@ -2352,7 +2352,7 @@ namespace NETPath.Generators.NET.CS
 					code.AppendLine(string.Format("\t\t\tvar temp = {0}.GetDataFromID(UpdateID);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType)));
 					code.AppendLine(string.Format("\t\t\tif (temp != null) temp.{0}.ApplyDelta(ChangedItem);", ElementName));
 				}
-				else code.AppendLine(string.Format("\t\t\t{0}.UpdateValue(UpdateID, {0}.{1}Property, ChangedValue);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType), ElementName));
+				else code.AppendLine(string.Format("\t\t\t{0}.UpdateValueServer(UpdateID, {0}.{1}Property, ChangedValue);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType), ElementName));
 				code.Append(string.Format("\t\t\t\t\tawait Callback{0}Async(ClientID, ", o.ServerName));
 				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
 				code.AppendLine(");");
@@ -2393,7 +2393,7 @@ namespace NETPath.Generators.NET.CS
 					code.AppendLine(string.Format("\t\t\tvar temp = {0}.GetDataFromID(UpdateID);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType)));
 					code.AppendLine(string.Format("\t\t\tif (temp != null) temp.{0}.ApplyDelta(ChangedItem);", ElementName));
 				}
-				else code.AppendLine(string.Format("\t\t\t{0}.UpdateValue(UpdateID, {0}.{1}Property, ChangedValue);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType), ElementName));
+				else code.AppendLine(string.Format("\t\t\t{0}.UpdateValueServer(UpdateID, {0}.{1}Property, ChangedValue);", DataTypeGenerator.GenerateType(DCMType.HasClientType ? DCMType.ClientType : DCMType), ElementName));
 				code.Append(string.Format("\t\t\t\t\tCallback{0}(ClientID, ", o.ServerName));
 				foreach (MethodParameter mp in o.Parameters) code.Append(string.Format("{0}{1}", mp.Name, o.Parameters.IndexOf(mp) < o.Parameters.Count - 1 ? ", " : ""));
 				code.AppendLine(");");
