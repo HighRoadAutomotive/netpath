@@ -28,8 +28,8 @@ namespace System.Windows
 	public abstract class DependencyObjectEx : DependencyObject
 	{
 		private readonly ConcurrentDictionary<int, object> values;
-		private DeltaObject baseDataObject;
-		protected DeltaObject BaseDataObject { get { return baseDataObject; } set { if (baseDataObject == null) baseDataObject = value; } }
+		private DREObjectBase baseDataObject;
+		protected DREObjectBase BaseDataObject { get { return baseDataObject; } set { if (baseDataObject == null) baseDataObject = value; } }
 		protected bool IsExternalUpdate { get; set; }
 
 		protected DependencyObjectEx()
@@ -38,7 +38,7 @@ namespace System.Windows
 			baseDataObject = null;
 		}
 
-		protected DependencyObjectEx(DeltaObject baseDataObject)
+		protected DependencyObjectEx(DREObjectBase baseDataObject)
 		{
 			values = new ConcurrentDictionary<int, object>();
 			this.baseDataObject = baseDataObject;

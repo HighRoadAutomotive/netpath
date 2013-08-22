@@ -61,13 +61,12 @@
     <Compile Include="CMDObject.cs" />
     <Compile Include="CMDProperty.cs" />
     <Compile Include="DeltaCollectionBase.cs" />
-    <Compile Include="DeltaObject.cs" />
-    <Compile Include="DeltaProperty.cs" />
     <Compile Include="DependencyDictionary.cs" />
     <Compile Include="DependencyList.cs" />
     <Compile Include="DependencyQueue.cs" />
     <Compile Include="DependencyStack.cs" />
     <Compile Include="DREObject.cs" />
+    <Compile Include="DREProperty.cs" />
     <Compile Include="RESTClientBase.cs" />
     <Compile Include="RESTServerBase.cs" />
     <Compile Include="ServerBase.cs" />
