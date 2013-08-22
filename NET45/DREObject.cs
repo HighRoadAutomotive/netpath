@@ -312,7 +312,7 @@ namespace System
 		{
 			T t;
 			__dcm.TryGetValue(ID, out t);
-			if (t != null) t.SetValue(prop, value);
+			if (t != null) t.UpdateValue(prop, value);
 		}
 
 		public static bool HasData(Guid DataID)
