@@ -28,20 +28,31 @@ namespace System.Windows
 	public abstract class DependencyObjectEx : DependencyObject
 	{
 		private readonly ConcurrentDictionary<int, object> values;
-		private DREObjectBase baseDataObject;
-		protected DREObjectBase BaseDataObject { get { return baseDataObject; } set { if (baseDataObject == null) baseDataObject = value; } }
+		private DREObjectBase baseDREObject;
+		protected DREObjectBase DREObject { get { return baseDREObject; } set { if (baseDREObject == null) baseDREObject = value; } }
+		private CMDObject baseCMDObject;
+		protected CMDObject CMDObject { get { return baseCMDObject; } set { if (baseCMDObject == null) baseCMDObject = value; } }
 		protected bool IsExternalUpdate { get; set; }
 
 		protected DependencyObjectEx()
 		{
 			values = new ConcurrentDictionary<int, object>();
-			baseDataObject = null;
+			baseDREObject = null;
+			baseCMDObject = null;
 		}
 
 		protected DependencyObjectEx(DREObjectBase baseDataObject)
 		{
 			values = new ConcurrentDictionary<int, object>();
-			this.baseDataObject = baseDataObject;
+			baseDREObject = baseDataObject;
+			baseCMDObject = null;
+		}
+
+		protected DependencyObjectEx(CMDObject baseDataObject)
+		{
+			values = new ConcurrentDictionary<int, object>();
+			baseCMDObject = baseDataObject;
+			baseDREObject = null;
 		}
 
 		public T GetValueThreaded<T>(DependencyProperty dp)

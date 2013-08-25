@@ -7,16 +7,26 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Xml.Serialization;
+using Windows.UI.Xaml;
 
 namespace System
 {
 	public abstract class CMDObject
 	{
 		[IgnoreDataMember, XmlIgnore] private ConcurrentDictionary<HashID, object> values;
+		[IgnoreDataMember, XmlIgnore] private DependencyObjectEx baseXAMLObject;
+		[IgnoreDataMember, XmlIgnore] public DependencyObjectEx BaseXAMLObject { get { return baseXAMLObject; } set { if (baseXAMLObject == null) baseXAMLObject = value; } }
 
 		protected CMDObject()
 		{
 			values = new ConcurrentDictionary<HashID, object>();
+			BaseXAMLObject = null;
+		}
+
+		protected CMDObject(DependencyObjectEx baseXAMLObject)
+		{
+			values = new ConcurrentDictionary<HashID, object>();
+			BaseXAMLObject = baseXAMLObject;
 		}
 
 		public T GetValue<T>(CMDProperty<T> de)
@@ -43,8 +53,7 @@ namespace System
 				object temp;
 				if (!values.TryRemove(de.ID, out temp)) return;
 
-				//Call the property updated callback
-				if (temp != null && de.CMDPropertyUpdatedCallback != null) de.CMDPropertyUpdatedCallback(this, (T)temp, de.DefaultValue);
+				if (de.XAMLProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLProperty, value);
 
 				//Call the property changed callback
 				if (temp != null && de.CMDPropertyChangedCallback != null) de.CMDPropertyChangedCallback(this, (T)temp, de.DefaultValue);
@@ -54,8 +63,7 @@ namespace System
 				//Update the value
 				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
 
-				//Call the property updated callback
-				if (temp != null && de.CMDPropertyUpdatedCallback != null) de.CMDPropertyUpdatedCallback(this, (T)temp, value);
+				if (de.XAMLProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLProperty, value);
 
 				//Call the property changed callback
 				if (temp != null && de.CMDPropertyChangedCallback != null) de.CMDPropertyChangedCallback(this, (T)temp, value);
@@ -71,16 +79,14 @@ namespace System
 				object temp;
 				if (!values.TryRemove(de.ID, out temp)) return;
 
-				//Call the property updated callback
-				if (temp != null && de.CMDPropertyUpdatedCallback != null) de.CMDPropertyUpdatedCallback(this, (T)temp, de.DefaultValue);
+				if (de.XAMLProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLProperty, value);
 			}
 			else
 			{
 				//Update the values
 				var temp = (T)values.AddOrUpdate(de.ID, value, (p, v) => value);
 
-				//Call the property updated callback
-				if (de.CMDPropertyUpdatedCallback != null) de.CMDPropertyUpdatedCallback(this, temp, value);
+				if (de.XAMLProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLProperty, value);
 			}
 		}
 

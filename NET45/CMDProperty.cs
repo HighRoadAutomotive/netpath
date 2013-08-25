@@ -36,6 +36,8 @@ namespace System
 		public Type OwnerType { get; protected set; }
 		public Type PropertyType { get; protected set; }
 		internal object defaultValue { get; set; }
+		public DependencyProperty XAMLProperty { get; protected set; }
+		public DependencyPropertyKey XAMLPropertyKey { get; protected set; }
 
 		internal static CMDPropertyBase FromID(HashID ID)
 		{
@@ -50,7 +52,6 @@ namespace System
 		public T DefaultValue { get { return (T)defaultValue; } private set { defaultValue = value; } }
 
 		internal Action<CMDObject, T, T> CMDPropertyChangedCallback { get; private set; }
-		internal Action<CMDObject, T, T> CMDPropertyUpdatedCallback { get; private set; }
 		internal Func<CMDObject, T, bool> CMDValidateValueCallback { get; private set; }
 
 		private CMDProperty(HashID ID, HashID OwnerID, Type OwnerType)
@@ -75,7 +76,7 @@ namespace System
 			CMDValidateValueCallback = null;
 		}
 
-		private CMDProperty(HashID ID, HashID OwnerID, Type OwnerType, T DefaultValue, Action<CMDObject, T, T> CMDPropertyChangedCallback, Action<CMDObject, T, T> CMDPropertyUpdatedCallback = null, Func<CMDObject, T, bool> CMDValidateValueCallback = null)
+		private CMDProperty(HashID ID, HashID OwnerID, Type OwnerType, T DefaultValue, Action<CMDObject, T, T> CMDPropertyChangedCallback, Func<CMDObject, T, bool> CMDValidateValueCallback = null)
 		{
 			this.ID = ID;
 			this.OwnerID = OwnerID;
@@ -83,7 +84,6 @@ namespace System
 			PropertyType = typeof (T);
 			this.DefaultValue = DefaultValue;
 			this.CMDPropertyChangedCallback = CMDPropertyChangedCallback;
-			this.CMDPropertyUpdatedCallback = CMDPropertyUpdatedCallback;
 			this.CMDValidateValueCallback = CMDValidateValueCallback;
 		}
 
@@ -114,9 +114,9 @@ namespace System
 			return np;
 		}
 
-		public static CMDProperty<TType> Register<TType>(string Name, Type OwnerType, TType defaultValue, Action<CMDObject, TType, TType> CMDPropertyChangedCallback, Action<CMDObject, TType, TType> CMDPropertyUpdatedCallback = null, Func<CMDObject, TType, bool> CMDValidateValueCallback = null)
+		public static CMDProperty<TType> Register<TType>(string Name, Type OwnerType, TType defaultValue, Action<CMDObject, TType, TType> CMDPropertyChangedCallback, Func<CMDObject, TType, bool> CMDValidateValueCallback = null)
 		{
-			var np = new CMDProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType, defaultValue, CMDPropertyChangedCallback, CMDPropertyUpdatedCallback, CMDValidateValueCallback);
+			var np = new CMDProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType, defaultValue, CMDPropertyChangedCallback, CMDValidateValueCallback);
 			if (!registered.TryAdd(np.ID, np))
 				throw new ArgumentException(string.Format("Unable to register the CMDProperty '{0}' on type '{1}'. A CMDProperty with the same Name and OwnerType has already been registered.", Name, np.OwnerType));
 			return np;

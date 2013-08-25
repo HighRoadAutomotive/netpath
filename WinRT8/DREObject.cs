@@ -87,7 +87,7 @@ namespace System
 			return values.TryGetValue(de.ID, out value) == false ? de.DefaultValue : (T)value;
 		}
 
-		internal object GetValue(DREPropertyBase de)
+		internal object GetValue(CMDPropertyBase de)
 		{
 			object value;
 			return values.TryGetValue(de.ID, out value) == false ? de.defaultValue : value;
@@ -147,7 +147,7 @@ namespace System
 			}
 		}
 
-		public void UpdateValue<T>(DREProperty<T> de, T value)
+		public void UpdateValueExternal<T>(DREProperty<T> de, T value)
 		{
 			//If the new value is the default value remove this from the modified values list, otherwise add/update it.
 			if (Equals(value, de.DefaultValue))
@@ -172,7 +172,7 @@ namespace System
 			if (de.XAMLProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLProperty, value);
 		}
 
-		public void UpdateValueNoXAML<T>(DREProperty<T> de, T value)
+		public void UpdateValueInternal<T>(DREProperty<T> de, T value)
 		{
 			//If the new value is the default value remove this from the modified values list, otherwise add/update it.
 			if (Equals(value, de.DefaultValue))
@@ -233,13 +233,13 @@ namespace System
 			{
 				object temp;
 				values.TryRemove(v.Key, out temp);
-				var de = DREPropertyBase.FromID(v.Key) as DREProperty<T>;
+				var de = CMDPropertyBase.FromID(v.Key) as DREProperty<T>;
 				if (de != null && de.XAMLProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLProperty, de.DefaultValue);
 			}
 			else
 			{
 				var temp = values.AddOrUpdate(v.Key, v.Value, (p, a) => v.Value);
-				var de = DREPropertyBase.FromID(v.Key) as DREProperty<T>;
+				var de = CMDPropertyBase.FromID(v.Key) as DREProperty<T>;
 				if (de != null && de.XAMLProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLProperty, v.Value);
 			}
 		}
@@ -317,7 +317,7 @@ namespace System
 		{
 			T t;
 			__dcm.TryGetValue(ID, out t);
-			if (t != null) t.SetValue(prop, value);
+			if (t != null) t.UpdateValueExternal(prop, value);
 		}
 
 		public static bool HasData(Guid DataID)

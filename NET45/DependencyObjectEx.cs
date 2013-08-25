@@ -28,20 +28,31 @@ namespace System.Windows
 	public abstract class DependencyObjectEx : DependencyObject
 	{
 		private readonly ConcurrentDictionary<int, object> values;
-		private DREObjectBase baseDataObject;
-		internal protected DREObjectBase BaseDataObject { get { return baseDataObject; } set { if (baseDataObject == null) baseDataObject = value; } }
+		private DREObjectBase baseDREObject;
+		protected DREObjectBase DREObject { get { return baseDREObject; } set { if (baseDREObject == null) baseDREObject = value; } }
+		private CMDObject baseCMDObject;
+		protected CMDObject CMDObject { get { return baseCMDObject; } set { if (baseCMDObject == null) baseCMDObject = value; } }
 		protected bool IsExternalUpdate { get; set; }
 
 		protected DependencyObjectEx()
 		{
 			values = new ConcurrentDictionary<int, object>();
-			baseDataObject = null;
+			baseDREObject = null;
+			baseCMDObject = null;
 		}
 
 		protected DependencyObjectEx(DREObjectBase baseDataObject)
 		{
 			values = new ConcurrentDictionary<int, object>();
-			this.baseDataObject = baseDataObject;
+			baseDREObject = baseDataObject;
+			baseCMDObject = null;
+		}
+
+		protected DependencyObjectEx(CMDObject baseDataObject)
+		{
+			values = new ConcurrentDictionary<int, object>();
+			baseCMDObject = baseDataObject;
+			baseDREObject = null;
 		}
 
 		public T GetValueThreaded<T>(DependencyProperty dp)
@@ -55,25 +66,25 @@ namespace System.Windows
 		public void SetValueThreaded<T>(DependencyProperty dp, T value)
 		{
 			if (Application.Current.Dispatcher.CheckAccess()) { SetValue(dp, value); }
-			else Application.Current.Dispatcher.Invoke(() => { SetValue(dp, value); }, DispatcherPriority.Normal);
+			else Application.Current.Dispatcher.InvokeAsync(() => { SetValue(dp, value); }, DispatcherPriority.Normal);
 		}
 
 		public void SetValueThreaded<T>(DependencyPropertyKey dp, T value)
 		{
 			if (Application.Current.Dispatcher.CheckAccess()) { SetValue(dp, value); }
-			else Application.Current.Dispatcher.Invoke(() => { SetValue(dp, value); }, DispatcherPriority.Normal);
+			else Application.Current.Dispatcher.InvokeAsync(() => { SetValue(dp, value); }, DispatcherPriority.Normal);
 		}
 
 		public void UpdateValueThreaded<T>(DependencyProperty dp, T value)
 		{
-			if (Application.Current.Dispatcher.CheckAccess()) { IsExternalUpdate = true; T a = (T)GetValue(dp); SetValue(dp, value); T b = (T)GetValue(dp); IsExternalUpdate = false; }
-			else Application.Current.Dispatcher.Invoke(() => { IsExternalUpdate = true; SetValue(dp, value); IsExternalUpdate = false; }, DispatcherPriority.Normal);
+			if (Application.Current.Dispatcher.CheckAccess()) { IsExternalUpdate = true; SetValue(dp, value); IsExternalUpdate = false; }
+			else Application.Current.Dispatcher.InvokeAsync(() => { IsExternalUpdate = true; SetValue(dp, value); IsExternalUpdate = false; }, DispatcherPriority.Normal);
 		}
 
 		public void UpdateValueThreaded<T>(DependencyPropertyKey dp, T value)
 		{
 			if (Application.Current.Dispatcher.CheckAccess()) { IsExternalUpdate = true; SetValue(dp, value); IsExternalUpdate = false; }
-			else Application.Current.Dispatcher.Invoke(() => { IsExternalUpdate = true; SetValue(dp, value); IsExternalUpdate = false; }, DispatcherPriority.Normal);
+			else Application.Current.Dispatcher.InvokeAsync(() => { IsExternalUpdate = true; SetValue(dp, value); IsExternalUpdate = false; }, DispatcherPriority.Normal);
 		}
 
 		public T GetValueExternal<T>(DependencyExternal<T> de)

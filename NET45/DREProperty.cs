@@ -31,32 +31,7 @@ namespace System
 		Queue
 	}
 
-	public abstract class DREPropertyBase
-	{
-		protected static readonly ConcurrentDictionary<HashID, DREPropertyBase> registered;
-
-		static DREPropertyBase()
-		{
-			registered = new ConcurrentDictionary<HashID, DREPropertyBase>();
-		}
-
-		public HashID ID { get; protected set; }
-		public HashID OwnerID { get; protected set; }
-		public Type OwnerType { get; protected set; }
-		public Type PropertyType { get; protected set; }
-		internal object defaultValue { get; set; }
-		public DependencyProperty XAMLProperty { get; protected set; }
-		public DependencyPropertyKey XAMLPropertyKey { get; protected set; }
-
-		internal static DREPropertyBase FromID(HashID ID)
-		{
-			DREPropertyBase ret;
-			registered.TryGetValue(ID, out ret);
-			return ret;
-		}
-	}
-
-	public sealed class DREProperty<T> : DREPropertyBase
+	public sealed class DREProperty<T> : CMDPropertyBase
 	{
 		public T DefaultValue { get { return (T)defaultValue; } private set { defaultValue = value; } }
 		public PropertyMode Mode { get; private set; }
@@ -64,6 +39,8 @@ namespace System
 		internal Action<DREObjectBase, T, T> DREPropertyChangedCallback { get; private set; }
 		internal Action<DREObjectBase, T, T> DREPropertyUpdatedCallback { get; private set; }
 		internal Func<DREObjectBase, T, bool> DeltaValidateValueCallback { get; private set; }
+
+		internal bool IsImmediate { get; private set; }
 
 		private DREProperty(HashID ID, HashID OwnerID, Type OwnerType, DependencyProperty XAMLProperty = null, DependencyPropertyKey XAMLPropertyKey = null)
 		{
