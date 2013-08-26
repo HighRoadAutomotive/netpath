@@ -38,8 +38,6 @@ namespace System
 		[IgnoreDataMember, XmlIgnore] public long BatchInterval { get { return batchInterval; } protected set { batchInterval = value; } }
 		[IgnoreDataMember, XmlIgnore] private DependencyObjectEx baseXAMLObject; 
 		[IgnoreDataMember, XmlIgnore] protected DependencyObjectEx BaseXAMLObject { get { return baseXAMLObject; } set { if (baseXAMLObject == null) baseXAMLObject = value; } }
-		[IgnoreDataMember, XmlIgnore] private int enableBatching;
-		[IgnoreDataMember, XmlIgnore] protected bool EnableBatching { get { return enableBatching != 0; } set { Threading.Interlocked.Exchange(ref enableBatching, value ? 1 : 0); } }
 
 		protected DREObjectBase()
 		{
@@ -47,7 +45,6 @@ namespace System
 			values = new ConcurrentDictionary<HashID, object>();
 			changeCount = 0;
 			BatchInterval = 0;
-			EnableBatching = false;
 			baseXAMLObject = null;
 		}
 
@@ -57,7 +54,6 @@ namespace System
 			values = new ConcurrentDictionary<HashID, object>();
 			changeCount = 0;
 			BatchInterval = 0;
-			EnableBatching = false;
 			this.baseXAMLObject = baseXAMLObject;
 		}
 
@@ -67,7 +63,6 @@ namespace System
 			values = new ConcurrentDictionary<HashID, object>();
 			changeCount = 0;
 			this.BatchInterval = BatchInterval;
-			EnableBatching = false;
 			baseXAMLObject = null;
 		}
 
@@ -77,7 +72,6 @@ namespace System
 			values = new ConcurrentDictionary<HashID, object>();
 			changeCount = 0;
 			this.BatchInterval = BatchInterval;
-			EnableBatching = false;
 			this.baseXAMLObject = baseXAMLObject;
 		}
 
@@ -105,15 +99,18 @@ namespace System
 				object temp;
 				if (!values.TryRemove(de.ID, out temp)) return;
 
-				if (EnableBatching && BatchInterval > 0)
+				if (de.EnableBatching && BatchInterval > 0)
 				{
 					modifications.Enqueue(new CMDItemValue<T>(true, de.ID));
 					IncrementChangeCount();
 				}
 
 				//Clear the changed event handlers
-				var tt = temp as DeltaCollectionBase;
-				if (tt != null) tt.ClearChangedHandlers();
+				if (de.IsDictionary || de.IsList)
+				{
+					var tt = temp as DeltaCollectionBase;
+					if (tt != null) tt.ClearChangedHandlers();
+				}
 
 				if (de.XAMLProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLProperty, de.defaultValue);
 
@@ -126,12 +123,15 @@ namespace System
 			else
 			{
 				//Setup the change event handler
-				var tt = value as DeltaCollectionBase;
-				if (tt != null) tt.Changed += (Sender, Args) => IncrementChangeCount();
+				if (de.IsDictionary || de.IsList)
+				{
+					var tt = value as DeltaCollectionBase;
+					if (tt != null) tt.Changed += (Sender, Args) => IncrementChangeCount();
+				}
 
 				//Update the value
 				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
-				if (EnableBatching && BatchInterval > 0)
+				if (de.EnableBatching && BatchInterval > 0)
 				{
 					modifications.Enqueue(new CMDItemValue<T>(false, de.ID, value));
 					IncrementChangeCount();
@@ -157,14 +157,20 @@ namespace System
 				if (!values.TryRemove(de.ID, out temp)) return;
 
 				//Clear the changed event handlers
-				var tt = temp as DeltaCollectionBase;
-				if (tt != null) tt.ClearChangedHandlers();
+				if (de.IsDictionary || de.IsList)
+				{
+					var tt = temp as DeltaCollectionBase;
+					if (tt != null) tt.ClearChangedHandlers();
+				}
 			}
 			else
 			{
 				//Setup the change event handler
-				var tt = value as DeltaCollectionBase;
-				if (tt != null) tt.Changed += (Sender, Args) => IncrementChangeCount();
+				if (de.IsDictionary || de.IsList)
+				{
+					var tt = value as DeltaCollectionBase;
+					if (tt != null) tt.Changed += (Sender, Args) => IncrementChangeCount();
+				}
 
 				//Update the values
 				var temp = (T)values.AddOrUpdate(de.ID, value, (p, v) => value);
@@ -180,15 +186,18 @@ namespace System
 				//Remove the value from the list, which sets it to the default value.
 				object temp;
 				if (!values.TryRemove(de.ID, out temp)) return;
-				if (EnableBatching && BatchInterval > 0)
+				if (de.EnableBatching && BatchInterval > 0)
 				{
 					modifications.Enqueue(new CMDItemValue<T>(true, de.ID));
 					IncrementChangeCount();
 				}
 
 				//Clear the changed event handlers
-				var tt = temp as DeltaCollectionBase;
-				if (tt != null) tt.ClearChangedHandlers();
+				if (de.IsDictionary || de.IsList)
+				{
+					var tt = temp as DeltaCollectionBase;
+					if (tt != null) tt.ClearChangedHandlers();
+				}
 
 				//Call the property updated callback
 				if (temp != null && de.DREPropertyUpdatedCallback != null && baseXAMLObject != null) de.DREPropertyUpdatedCallback(this, (T)temp, value);
@@ -196,12 +205,15 @@ namespace System
 			else
 			{
 				//Setup the change event handler
-				var tt = value as DeltaCollectionBase;
-				if (tt != null) tt.Changed += (Sender, Args) => IncrementChangeCount();
+				if (de.IsDictionary || de.IsList)
+				{
+					var tt = value as DeltaCollectionBase;
+					if (tt != null) tt.Changed += (Sender, Args) => IncrementChangeCount();
+				}
 
 				//Update the values
 				var temp = (T)values.AddOrUpdate(de.ID, value, (p, v) => value);
-				if (EnableBatching && BatchInterval > 0)
+				if (de.EnableBatching && BatchInterval > 0)
 				{
 					modifications.Enqueue(new CMDItemValue<T>(false, de.ID, value));
 					IncrementChangeCount();
@@ -217,10 +229,17 @@ namespace System
 			object temp;
 			if (!values.TryRemove(de.ID, out temp))
 			{
-				modifications.Enqueue(new CMDItemValue<T>(true, de.ID));
-				IncrementChangeCount();
-				var tt = temp as DeltaCollectionBase;
-				if (tt != null) tt.ClearChangedHandlers();
+				if (de.EnableBatching && BatchInterval > 0)
+				{
+					modifications.Enqueue(new CMDItemValue<T>(false, de.ID));
+					IncrementChangeCount();
+				}
+				//Clear the changed event handlers
+				if (de.IsDictionary || de.IsList)
+				{
+					var tt = temp as DeltaCollectionBase;
+					if (tt != null) tt.ClearChangedHandlers();
+				}
 			}
 			if (de.DREPropertyChangedCallback != null)
 				de.DREPropertyChangedCallback(this, (T) temp, de.DefaultValue);
