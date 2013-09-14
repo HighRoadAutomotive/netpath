@@ -12,9 +12,9 @@
 		mc:Ignorable="d" d:DesignHeight="980" d:DesignWidth="1280"
 		Title="NETPath" MinHeight="980" MinWidth="1280" DataContext="{Binding RelativeSource={RelativeSource Self}}" Style="{StaticResource MainWindowStyle}"
 		SourceInitialized="Main_SourceInitialized" StateChanged="Main_StateChanged" Closing="Main_Closing" KeyUp="Main_KeyUp" >
-	<pc:WindowChrome.WindowChrome>
-		<pc:WindowChrome CaptionHeight="34" ResizeBorderThickness="4" CornerRadius="0" GlassFrameThickness="0" />
-	</pc:WindowChrome.WindowChrome>
+	<WindowChrome.WindowChrome>
+		<WindowChrome CaptionHeight="34" ResizeBorderThickness="4" CornerRadius="0" GlassFrameThickness="0" UseAeroCaptionButtons="False" />
+	</WindowChrome.WindowChrome>
 	<Window.Resources>
 		<ResourceDictionary>
 			<apm:SlideTransition Mode="Out" IsFromContentPushed="True" x:Key="HeaderTransition" />
@@ -79,9 +79,9 @@
 				<Setter Property="Template">
 					<Setter.Value>
 						<ControlTemplate TargetType="{x:Type local:SolutionItem}">
-							<Border x:Name="Border" CornerRadius="0" BorderThickness="0" Background="Transparent" BorderBrush="{TemplateBinding BorderBrush}" Padding="{TemplateBinding Padding}" pc:WindowChrome.IsHitTestVisibleInChrome="True" >
+							<Border x:Name="Border" CornerRadius="0" BorderThickness="0" Background="Transparent" BorderBrush="{TemplateBinding BorderBrush}" Padding="{TemplateBinding Padding}" WindowChrome.IsHitTestVisibleInChrome="True" >
 								<StackPanel Orientation="Horizontal" Margin="{TemplateBinding Padding}">
-									<ContentPresenter Content="{TemplateBinding Header}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" pc:WindowChrome.IsHitTestVisibleInChrome="True"  />
+									<ContentPresenter Content="{TemplateBinding Header}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" WindowChrome.IsHitTestVisibleInChrome="True"  />
 									<TextBlock x:Name="NotifyCount" Text="{Binding Path=NotificationCount}" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" FontSize="10pt" FontWeight="Bold" VerticalAlignment="Top" Margin="3,4,0,0" />
 								</StackPanel>
 							</Border>
@@ -224,7 +224,7 @@
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="*"/>
 								</Grid.ColumnDefinitions>
-								<ScrollContentPresenter Grid.Column="0" pc:WindowChrome.IsHitTestVisibleInChrome="True" />
+								<ScrollContentPresenter Grid.Column="0" WindowChrome.IsHitTestVisibleInChrome="True" />
 							</Grid>
 						</ControlTemplate>
 					</Setter.Value>
@@ -253,24 +253,24 @@
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
-				<Button x:Name="SystemMenuHome" Grid.Column="0" Style="{StaticResource WindowSystemButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuHome_Click" ToolTip="NETPath Home" >
+				<Button x:Name="SystemMenuHome" Grid.Column="0" Style="{StaticResource WindowSystemButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuHome_Click" ToolTip="NETPath Home" >
 					<Image Source="pack://application:,,,/NETPath;component/Icons/X32/LogoIcon.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="1" />
 				</Button>
-				<Button Grid.Column="1" Style="{StaticResource WindowSystemButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuOptions_Click" ToolTip="NETPath Options" >
+				<Button Grid.Column="1" Style="{StaticResource WindowSystemButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuOptions_Click" ToolTip="NETPath Options" >
 					<Image Source="pack://application:,,,/NETPath;component/Icons/X32/Options.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,1" />
 				</Button>
 				<StackPanel x:Name="SystemProjectMenu" Grid.Column="2" Margin="20,0,0,0" Orientation="Horizontal" Visibility="Collapsed" >
-					<Button Style="{StaticResource WindowSystemButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuBuild_Click" ToolTip="Build Solution" >
+					<Button Style="{StaticResource WindowSystemButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuBuild_Click" ToolTip="Build Solution" >
 						<Image Source="pack://application:,,,/NETPath;component/Icons/X32/BuildProject.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,1" />
 					</Button>
-					<Button Style="{StaticResource WindowSystemButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuSave_Click" ToolTip="Save Solution" >
+					<Button Style="{StaticResource WindowSystemButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuSave_Click" ToolTip="Save Solution" >
 						<Image Source="pack://application:,,,/NETPath;component/Icons/X32/Save.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,1" />
 					</Button>
-					<Button Style="{StaticResource WindowSystemButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuClose_Click" ToolTip="Close Solution" >
+					<Button Style="{StaticResource WindowSystemButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuClose_Click" ToolTip="Close Solution" >
 						<Image Source="pack://application:,,,/NETPath;component/Icons/X32/Close.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,1" />
 					</Button>
 				</StackPanel>
-				<Button x:Name="SystemUpdates" Grid.Column="3" Style="{StaticResource WindowSystemButtonStyle}" Margin="20,0,0,0" pc:WindowChrome.IsHitTestVisibleInChrome="True" Visibility="Collapsed" Click="SystemUpdates_Click" ToolTip="NETPath Updates are available!" >
+				<Button x:Name="SystemUpdates" Grid.Column="3" Style="{StaticResource WindowSystemButtonStyle}" Margin="20,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True" Visibility="Collapsed" Click="SystemUpdates_Click" ToolTip="NETPath Updates are available!" >
 					<StackPanel Orientation="Horizontal" Margin="0,0,5,0">
 						<Image Source="pack://application:,,,/NETPath;component/Icons/X32/Update.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,1" />
 						<TextBlock VerticalAlignment="Center" Margin="5,0,0,0">Updates Available</TextBlock>
@@ -282,27 +282,27 @@
 						<TextBlock Text="Building..." FontSize="14pt" HorizontalAlignment="Center" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
 					</apm:ToggleTransitionPresenter.AlternateContent>
 				</apm:ToggleTransitionPresenter>
-				<Button x:Name="MinimizeWindow" Grid.Column="5" Style="{StaticResource WindowControlButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="MinimizeWindow_Click">
+				<Button x:Name="MinimizeWindow" Grid.Column="5" Style="{StaticResource WindowControlButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" Click="MinimizeWindow_Click">
 					<Image Source="pack://application:,,,/NETPath;component/Icons/WindowMinimize.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
 				</Button>
-				<Button x:Name="MaximizeWindow" Grid.Column="6" Visibility="Collapsed" Style="{StaticResource WindowControlButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="MaximizeWindow_Click">
+				<Button x:Name="MaximizeWindow" Grid.Column="6" Visibility="Collapsed" Style="{StaticResource WindowControlButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" Click="MaximizeWindow_Click">
 					<Image Source="pack://application:,,,/NETPath;component/Icons/WindowMaximize.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
 				</Button>
-				<Button x:Name="RestoreWindow" Grid.Column="6" Style="{StaticResource WindowControlButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="RestoreWindow_Click">
+				<Button x:Name="RestoreWindow" Grid.Column="6" Style="{StaticResource WindowControlButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" Click="RestoreWindow_Click">
 					<Image Source="pack://application:,,,/NETPath;component/Icons/WindowRestore.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
 				</Button>
-				<Button x:Name="CloseWindow" Grid.Column="7" Style="{StaticResource WindowControlButtonStyle}" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="CloseWindow_Click">
+				<Button x:Name="CloseWindow" Grid.Column="7" Style="{StaticResource WindowControlButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" Click="CloseWindow_Click">
 					<Image Source="pack://application:,,,/NETPath;component/Icons/WindowClose.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
 				</Button>
 				<Border x:Name="ScreenButtonsPanel" Height="34" Visibility="Collapsed" Grid.Row="1" Grid.ColumnSpan="8" BorderBrush="{StaticResource WindowBorderColor}" BorderThickness="0,1,0,0">
-					<Grid pc:WindowChrome.IsHitTestVisibleInChrome="True" >
+					<Grid WindowChrome.IsHitTestVisibleInChrome="True" >
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="*" />
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="24" />
 						</Grid.ColumnDefinitions>
-						<RepeatButton x:Name="ScrollScreenButtonsLeft" Style="{StaticResource ScrollBarLineButtonLeft}" IsEnabled="False" Width="24" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="ScrollScreenButtonsLeft_Click" />
+						<RepeatButton x:Name="ScrollScreenButtonsLeft" Style="{StaticResource ScrollBarLineButtonLeft}" IsEnabled="False" Width="24" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed" WindowChrome.IsHitTestVisibleInChrome="True" Click="ScrollScreenButtonsLeft_Click" />
 						<ScrollViewer x:Name="ScrollButtonsViewer" Grid.Column="1" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden" CanContentScroll="True" ScrollChanged="ScrollButtonsViewer_ScrollChanged">
 							<ItemsControl x:Name="ScrollButtonItems" ItemsSource="{Binding ProjectScreens}" >
 								<ItemsControl.ItemsPanel>
@@ -312,8 +312,8 @@
 								</ItemsControl.ItemsPanel>
 							</ItemsControl>
 						</ScrollViewer>
-						<RepeatButton x:Name="ScrollScreenButtonsRight" Style="{StaticResource ScrollBarLineButtonRight}" IsEnabled="False" Width="24" Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="ScrollScreenButtonsRight_Click" />
-						<Button x:Name="ScreenButtonsList" Style="{StaticResource ScreenButtonsListButton}" Grid.Column="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" pc:WindowChrome.IsHitTestVisibleInChrome="True" Click="ScreenButtonsList_OnClick" />
+						<RepeatButton x:Name="ScrollScreenButtonsRight" Style="{StaticResource ScrollBarLineButtonRight}" IsEnabled="False" Width="24" Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed" WindowChrome.IsHitTestVisibleInChrome="True" Click="ScrollScreenButtonsRight_Click" />
+						<Button x:Name="ScreenButtonsList" Style="{StaticResource ScreenButtonsListButton}" Grid.Column="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" WindowChrome.IsHitTestVisibleInChrome="True" Click="ScreenButtonsList_OnClick" />
 					</Grid>
 				</Border>
 			</Grid>
