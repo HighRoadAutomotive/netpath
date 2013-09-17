@@ -2588,17 +2588,6 @@ namespace NETPath.Generators.NET.CS
 			if (dcmtype == null) dcmtype = Generator.ReferenceRetrieve(o.Owner.Parent.Owner, o.Owner.Parent.Owner.Namespace, o.ReturnType.ID) as Data;
 			if (dcmtype == null) return "";
 
-			if (o.GenerateGetFunction)
-			{
-				if (o.GetDocumentation != null)
-				{
-					code.Append(DocumentationGenerator.GenerateDocumentation(o.GetDocumentation));
-					foreach (MethodParameter mp in o.GetParameters.Where(mp => mp.Documentation != null))
-						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
-				}
-				var x = new Method(string.Format("Get{0}DRECallback", dcmtype.Name), o.Owner) { Parameters = o.GetParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = o.ReturnType };
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode40(x, true) : GenerateClientInterfaceMethodCode40(x, true));
-			}
 			if (o.GenerateNewDeleteFunction)
 			{
 				if (o.NewDocumentation != null)
@@ -2698,17 +2687,6 @@ namespace NETPath.Generators.NET.CS
 			if (dcmtype == null) dcmtype = Generator.ReferenceRetrieve(o.Owner.Parent.Owner, o.Owner.Parent.Owner.Namespace, o.ReturnType.ID) as Data;
 			if (dcmtype == null) return "";
 
-			if (o.GenerateGetFunction)
-			{
-				if (o.GetDocumentation != null)
-				{
-					code.Append(DocumentationGenerator.GenerateDocumentation(o.GetDocumentation));
-					foreach (MethodParameter mp in o.GetParameters.Where(mp => mp.Documentation != null))
-						code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
-				}
-				var x = new Method(string.Format("Get{0}DRECallback", dcmtype.Name), o.Owner) { Parameters = o.GetParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = o.ReturnType };
-				code.Append(IsServer ? GenerateServiceInterfaceMethodCode45(x, true) : GenerateClientInterfaceMethodCode45(x, true));
-			}
 			if (o.GenerateNewDeleteFunction)
 			{
 				if (o.NewDocumentation != null)
@@ -2810,12 +2788,6 @@ namespace NETPath.Generators.NET.CS
 
 			if (!IsServer)
 			{
-				if (o.GenerateGetFunction)
-				{
-					code.Append(string.Format("\t\tpublic abstract {1} Get{0}DRECallback(", dcmtype.Name, o.ReturnType.HasClientType ? o.ReturnType.ClientType : o.ReturnType));
-					foreach (MethodParameter mp in o.GetParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.GetParameters.IndexOf(mp) < o.GetParameters.Count - 1 ? ", " : ""));
-					code.AppendLine(");");
-				}
 				if (o.GenerateNewDeleteFunction)
 				{
 					code.Append(string.Format("\t\tpublic abstract void New{0}DRECallback({1} DREData{2}", dcmtype.Name, DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype), o.NewParameters.Count != 0 ? ", " : ""));
@@ -2837,11 +2809,6 @@ namespace NETPath.Generators.NET.CS
 			}
 			else
 			{
-				if (o.GenerateGetFunction)
-				{
-					var x = new Method(string.Format("Get{0}DRECallback", dcmtype.Name), o.Owner) { Parameters = o.GetParameters, UseSyncPattern = o.UseSyncPattern, UseAsyncPattern = false, UseAwaitPattern = false, ReturnType = o.ReturnType };
-					code.Append(GenerateCallbackServerMethodDCM40(x, o.UseTPLForCallbacks));
-				}
 				if (o.GenerateNewDeleteFunction)
 				{
 					var xp = new ObservableCollection<MethodParameter>(o.NewParameters);
@@ -2998,21 +2965,6 @@ namespace NETPath.Generators.NET.CS
 
 			if (!IsServer)
 			{
-				if (o.GenerateGetFunction)
-				{
-					if (uap)
-					{
-						code.Append(string.Format("\t\tpublic abstract System.Threading.Tasks.Task<{1}> Get{0}DRECallbackAsync(", dcmtype.Name, o.ReturnType.HasClientType ? o.ReturnType.ClientType : o.ReturnType));
-						foreach (MethodParameter mp in o.GetParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.GetParameters.IndexOf(mp) < o.GetParameters.Count - 1 ? ", " : ""));
-						code.AppendLine(");");
-					}
-					if (o.UseSyncPattern || !uap)
-					{
-						code.Append(string.Format("\t\tpublic abstract {1} Get{0}DRECallback(", dcmtype.Name, o.ReturnType.HasClientType ? o.ReturnType.ClientType : o.ReturnType));
-						foreach (MethodParameter mp in o.GetParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.GetParameters.IndexOf(mp) < o.GetParameters.Count - 1 ? ", " : ""));
-						code.AppendLine(");");
-					}
-				}
 				if (o.GenerateNewDeleteFunction)
 				{
 					if (uap)
@@ -3058,11 +3010,6 @@ namespace NETPath.Generators.NET.CS
 			}
 			else
 			{
-				if (o.GenerateGetFunction)
-				{
-					var x = new Method(string.Format("Get{0}DRECallback", dcmtype.Name), o.Owner) { Parameters = o.GetParameters, UseSyncPattern = o.UseSyncPattern || !uap, UseAsyncPattern = false, UseAwaitPattern = o.UseAwaitPattern, ReturnType = o.ReturnType };
-					code.Append(GenerateCallbackServerMethodDCM45(x, o.UseTPLForCallbacks));
-				}
 				if (o.GenerateNewDeleteFunction)
 				{
 					var xp = new ObservableCollection<MethodParameter>(o.NewParameters);
