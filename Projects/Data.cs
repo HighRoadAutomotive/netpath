@@ -369,7 +369,6 @@ namespace NETPath.Projects
 					if (tct.TypeMode == DataTypeMode.Primitive && tct.Primitive == PrimitiveTypes.DateTimeOffset) t.Owner.RemoveKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
 				}
 				t.ClientName = "";
-				t.IsAttached = false;
 			}
 		}
 
@@ -391,7 +390,6 @@ namespace NETPath.Projects
 			else
 			{
 				t.XAMLName = "";
-				t.IsAttached = false;
 			}
 		}
 
@@ -422,7 +420,6 @@ namespace NETPath.Projects
 			t.HasClientType = false;
 			t.GenerateWinFormsSupport = false;
 			t.HasXAMLType = false;
-			t.IsAttached = false;
 		}
 
 		public bool EmitDefaultValue { get { return (bool)GetValue(EmitDefaultValueProperty); } set { SetValue(EmitDefaultValueProperty, value); } }
@@ -453,9 +450,6 @@ namespace NETPath.Projects
 		public static readonly DependencyProperty PropertyValidationCallbackProperty = DependencyProperty.Register("PropertyValidationCallback", typeof(bool), typeof(Data), new PropertyMetadata(false));
 
 		//XAML Class Settings
-		public bool IsAttached { get { return (bool)GetValue(IsAttachedProperty); } set { SetValue(IsAttachedProperty, value); } }
-		public static readonly DependencyProperty IsAttachedProperty = DependencyProperty.Register("IsAttached", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
-
 		public bool AttachedBrowsable { get { return (bool)GetValue(AttachedBrowsableProperty); } set { SetValue(AttachedBrowsableProperty, value); } }
 		public static readonly DependencyProperty AttachedBrowsableProperty = DependencyProperty.Register("AttachedBrowsable", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
 

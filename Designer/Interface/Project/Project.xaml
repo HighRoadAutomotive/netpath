@@ -61,9 +61,98 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
-		<Label Content="References" FontSize="12pt" Margin="0,5,0,0" />
+		<Label Content="Generation Targets" FontSize="12pt" Margin="0,5,0,0" />
+		<Label Content="Path:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
+		<Button Content="Browse..." Height="23" HorizontalAlignment="Left" Margin="55,5,90,5" Name="OutputBrowse" VerticalAlignment="Top" Width="75" Grid.Row="1" Click="ServerOutputBrowse_Click"/>
+		<TextBox Height="23" Margin="140,5,175,5" Name="OutputPath" VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="{Binding ElementName=ServerOutputPath, Path=Text}" Grid.Row="1" />
+		<Button Content="Server" Height="23" HorizontalAlignment="Right" Margin="90,5" Name="ServerOutputAdd" VerticalAlignment="Top" Width="75" Grid.Row="1" Click="ServerOutputAdd_Click"/>
+		<Button Content="Client" Height="23" HorizontalAlignment="Right" Margin="5" Name="ClientOutputAdd" VerticalAlignment="Top" Width="75" Grid.Row="1" Click="ClientOutputAdd_Click"/>
+		<Label Content="Server Paths" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" FontSize="11pt" Grid.Column="0" Grid.Row="2" />
+		<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="3" Margin="5,0">
+			<StackPanel Name="ServerOutputPathsList" Orientation="Vertical" />
+		</ScrollViewer>
+		<Label Content="Client Paths" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" FontSize="11pt" Grid.Column="0" Grid.Row="4" />
+		<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="5" Margin="5,0,5,5">
+			<StackPanel Name="ClientOutputPathsList" Orientation="Vertical" />
+		</ScrollViewer>
+	</Grid>
+	<Grid Grid.Column="1" Grid.Row="4">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<Label Content="Namespaces" FontSize="12pt" Margin="0,5,0,0" />
+		<Label Content="New:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
+		<TextBox Name="UsingNamespace" Height="23" Margin="50,5,66,5" VerticalContentAlignment="Center" KeyUp="UsingNamespace_KeyUp" Grid.Row="1"/>
+		<Button Grid.Row="1" Content="Add" Height="23" Margin="5" Name="AddUsingNamespace" VerticalContentAlignment="Center" HorizontalAlignment="Right" Width="55" Click="AddUsingNamespace_Click" />
+		<ListBox ItemsSource="{Binding Path=Settings.UsingNamespaces}" Grid.Row="2" Margin="5" SelectionMode="Single" ItemContainerStyle="{StaticResource StretchedContainerStyle}" BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+			<ListBox.Resources>
+				<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+			</ListBox.Resources>
+			<ListBox.ItemTemplate>
+				<DataTemplate DataType="{x:Type Projects:ProjectGenerationTarget}">
+					<Border Name="BG" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="0">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" MinWidth="230" />
+								<ColumnDefinition Width="20" />
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="22" />
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
+							<TextBlock Text="{Binding Path=Namespace}" Grid.Column="0" Margin="3,0,0,0" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" />
+							<Button Name="DeleteSelectedUsingItem" Grid.Column="1" Grid.RowSpan="2" Margin="0" Click="DeleteSelectedUsingItem_Click" Padding="0" Visibility="Hidden" Background="Transparent">
+								<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+							</Button>
+							<Border x:Name="UsingDetails" Margin="5" Grid.Row="1" Grid.Column="0" Visibility="Collapsed">
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+									</Grid.RowDefinitions>
+									<CheckBox Grid.Column="0" Grid.Row="0" Margin="2" Content="Server" VerticalAlignment="Center" IsChecked="{Binding Path=Server}" />
+									<CheckBox Grid.Column="1" Grid.Row="0" Margin="2" Content="Client" VerticalAlignment="Center" IsChecked="{Binding Path=Client}" />
+									<CheckBox Grid.Column="2" Grid.Row="0" Margin="2" Content="Requires Full Framework" VerticalAlignment="Center" IsChecked="{Binding Path=IsFullFrameworkOnly}" />
+									<CheckBox Grid.Column="0" Grid.Row="1" Margin="2" Content=".NET Framework" VerticalAlignment="Center" IsChecked="{Binding Path=NET}" />
+									<CheckBox Grid.Column="1" Grid.Row="1" Margin="2" Content="Windows Runtime" VerticalAlignment="Center" IsChecked="{Binding Path=RT}" />
+								</Grid>
+							</Border>
+						</Grid>
+					</Border>
+					<DataTemplate.Triggers>
+						<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
+							<Setter TargetName="BG" Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
+							<Setter TargetName="DeleteSelectedUsingItem" Property="Visibility" Value="Visible" />
+						</DataTrigger>
+						<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
+							<Setter TargetName="BG" Property="Background" Value="{StaticResource DefaultSelectionColor}" />
+							<Setter TargetName="DeleteSelectedUsingItem" Property="Visibility" Value="Visible" />
+							<Setter TargetName="UsingDetails" Property="Visibility" Value="Visible" />
+						</DataTrigger>
+					</DataTemplate.Triggers>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</Grid>
+	<Grid Grid.Column="0" Grid.Row="5">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<Label Content="Project References" FontSize="12pt" Margin="0,5,0,0" />
 		<Button Content="Add Reference" Height="23" Margin="5" Name="DependencyAdd" Grid.Row="1" Click="DependencyAdd_Click" />
 		<ListBox ItemsSource="{Binding Path=Settings.DependencyProjects}" Grid.Row="2" Margin="5" SelectionMode="Single" ItemContainerStyle="{StaticResource StretchedContainerStyle}" BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
 			<ListBox.Resources>
@@ -104,7 +193,7 @@
 			</ListBox.ItemTemplate>
 		</ListBox>
 	</Grid>
-	<Grid Grid.Column="1" Grid.Row="4">
+	<Grid Grid.Column="1" Grid.Row="5">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
@@ -167,95 +256,6 @@
 							<Setter TargetName="BG" Property="Background" Value="{StaticResource DefaultSelectionColor}" />
 							<Setter TargetName="DeleteSelectedExternalType" Property="Visibility" Value="Visible" />
 							<Setter TargetName="ExternalTypeDetails" Property="Visibility" Value="Visible" />
-						</DataTrigger>
-					</DataTemplate.Triggers>
-				</DataTemplate>
-			</ListBox.ItemTemplate>
-		</ListBox>
-	</Grid>
-	<Grid Grid.Column="0" Grid.Row="5">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
-		<Label Content="Generation Targets" FontSize="12pt" Margin="0,5,0,0" />
-		<Label Content="Path:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
-		<Button Content="Browse..." Height="23" HorizontalAlignment="Left" Margin="55,5,90,5" Name="OutputBrowse" VerticalAlignment="Top" Width="75" Grid.Row="1" Click="ServerOutputBrowse_Click"/>
-		<TextBox Height="23" Margin="140,5,175,5" Name="OutputPath" VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="{Binding ElementName=ServerOutputPath, Path=Text}" Grid.Row="1" />
-		<Button Content="Server" Height="23" HorizontalAlignment="Right" Margin="90,5" Name="ServerOutputAdd" VerticalAlignment="Top" Width="75" Grid.Row="1" Click="ServerOutputAdd_Click"/>
-		<Button Content="Client" Height="23" HorizontalAlignment="Right" Margin="5" Name="ClientOutputAdd" VerticalAlignment="Top" Width="75" Grid.Row="1" Click="ClientOutputAdd_Click"/>
-		<Label Content="Server Paths" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" FontSize="11pt" Grid.Column="0" Grid.Row="2" />
-		<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="3" Margin="5,0">
-			<StackPanel Name="ServerOutputPathsList" Orientation="Vertical" />
-		</ScrollViewer>
-		<Label Content="Client Paths" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" FontSize="11pt" Grid.Column="0" Grid.Row="4" />
-		<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="5" Margin="5,0,5,5">
-			<StackPanel Name="ClientOutputPathsList" Orientation="Vertical" />
-		</ScrollViewer>
-	</Grid>
-	<Grid Grid.Column="1" Grid.Row="5">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
-		<Label Content="Namespaces" FontSize="12pt" Margin="0,5,0,0" />
-		<Label Content="New:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
-		<TextBox Name="UsingNamespace" Height="23" Margin="50,5,66,5" VerticalContentAlignment="Center" KeyUp="UsingNamespace_KeyUp" Grid.Row="1"/>
-		<Button Grid.Row="1" Content="Add" Height="23" Margin="5" Name="AddUsingNamespace" VerticalContentAlignment="Center" HorizontalAlignment="Right" Width="55" Click="AddUsingNamespace_Click" />
-		<ListBox ItemsSource="{Binding Path=Settings.UsingNamespaces}" Grid.Row="2" Margin="5" SelectionMode="Single" ItemContainerStyle="{StaticResource StretchedContainerStyle}" BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
-			<ListBox.Resources>
-				<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
-			</ListBox.Resources>
-			<ListBox.ItemTemplate>
-				<DataTemplate DataType="{x:Type Projects:ProjectGenerationTarget}">
-					<Border Name="BG" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="0">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*" MinWidth="230" />
-								<ColumnDefinition Width="20" />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="22" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
-							<TextBlock Text="{Binding Path=Namespace}" Grid.Column="0" Margin="3,0,0,0" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" />
-							<Button Name="DeleteSelectedUsingItem" Grid.Column="1" Grid.RowSpan="2" Margin="0" Click="DeleteSelectedUsingItem_Click" Padding="0" Visibility="Hidden" Background="Transparent">
-								<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
-							</Button>
-							<Border x:Name="UsingDetails" Margin="5" Grid.Row="1" Grid.Column="0" Visibility="Collapsed">
-								<Grid>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="*" />
-										<ColumnDefinition Width="*" />
-										<ColumnDefinition Width="*" />
-									</Grid.ColumnDefinitions>
-									<Grid.RowDefinitions>
-										<RowDefinition Height="Auto" />
-										<RowDefinition Height="Auto" />
-									</Grid.RowDefinitions>
-									<CheckBox Grid.Column="0" Grid.Row="0" Margin="2" Content="Server" VerticalAlignment="Center" IsChecked="{Binding Path=Server}" />
-									<CheckBox Grid.Column="1" Grid.Row="0" Margin="2" Content="Client" VerticalAlignment="Center" IsChecked="{Binding Path=Client}" />
-									<CheckBox Grid.Column="2" Grid.Row="0" Margin="2" Content="Requires Full Framework" VerticalAlignment="Center" IsChecked="{Binding Path=IsFullFrameworkOnly}" />
-									<CheckBox Grid.Column="0" Grid.Row="1" Margin="2" Content=".NET Framework" VerticalAlignment="Center" IsChecked="{Binding Path=NET}" />
-									<CheckBox Grid.Column="1" Grid.Row="1" Margin="2" Content="Windows Runtime" VerticalAlignment="Center" IsChecked="{Binding Path=RT}" />
-								</Grid>
-							</Border>
-						</Grid>
-					</Border>
-					<DataTemplate.Triggers>
-						<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
-							<Setter TargetName="BG" Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
-							<Setter TargetName="DeleteSelectedUsingItem" Property="Visibility" Value="Visible" />
-						</DataTrigger>
-						<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
-							<Setter TargetName="BG" Property="Background" Value="{StaticResource DefaultSelectionColor}" />
-							<Setter TargetName="DeleteSelectedUsingItem" Property="Visibility" Value="Visible" />
-							<Setter TargetName="UsingDetails" Property="Visibility" Value="Visible" />
 						</DataTrigger>
 					</DataTemplate.Triggers>
 				</DataTemplate>
