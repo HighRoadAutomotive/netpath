@@ -191,8 +191,15 @@ namespace NETPath
 
 		public static bool CheckForInternetConnection()
 		{
-			var client = new HttpClient() {Timeout = new TimeSpan(0, 0, 3)};
-			return client.GetAsync("http://www.google.com").Result.IsSuccessStatusCode;
+			try
+			{
+				var client = new HttpClient() { Timeout = new TimeSpan(0, 0, 10) };
+				return client.GetAsync("http://www.google.com").Result.IsSuccessStatusCode;
+			}
+			catch (Exception)
+			{
+				return false;
+			}
 		}
 
 		private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
