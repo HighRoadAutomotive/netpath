@@ -242,7 +242,7 @@ namespace NETPath.Interface
 				else
 					DialogService.ShowMessageDialog("NETPath", "Expired Trial Notice", "Your trial has expired and you will be unable to generate any code based on the changes made to your project files. If you would like to continue using NETPath please purchase a license by clicking the purchase license button.", new DialogAction("Continue"), new DialogAction("Install License", RetrieveLicense), new DialogAction("Purchase License", PurchaseLicense, false, false, true));
 			}
-			else if (!App.CheckForInternetConnection()) return;
+			else if (!await App.CheckForInternetConnection()) return;
 #endif
 		}
 
