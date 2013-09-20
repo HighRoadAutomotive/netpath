@@ -33,32 +33,37 @@
 	<Label Grid.Row="4" Content="Options" FontSize="12pt" Margin="0,5,0,0" />
 	<Grid Grid.Row="5">
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="125"/>
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
+			<RowDefinition Height="15" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="15" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
-		<ToggleButton Content="Synchronous" IsChecked="{Binding Path=MethodData.UseSyncPattern}" Margin="5" Grid.Column="0" Grid.Row="0" />
-		<ToggleButton Content="Awaitable" IsChecked="{Binding Path=MethodData.UseAwaitPattern}" Margin="5" Grid.Column="1" Grid.Row="0" />
-		<ToggleButton Content="Data Is Read-Only" IsChecked="{Binding Path=MethodData.IsReadOnly}" Margin="5" Grid.Column="2" Grid.Row="0" />
-		<Label Content="Protection:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="0" />
-		<ComboBox Height="23" Margin="80,5,5,5" SelectedIndex="{Binding Path=MethodData.ProtectionLevel, Converter={StaticResource ProtectionLevelConverter}}" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="0" >
+		<Label Content="Calling Convention:" Height="Auto" HorizontalAlignment="Right" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="0" />
+		<ToggleButton Content="Synchronous" IsChecked="{Binding Path=MethodData.UseSyncPattern}" Margin="5" Grid.Column="1" Grid.Row="0" />
+		<ToggleButton Content="Awaitable" IsChecked="{Binding Path=MethodData.UseAwaitPattern}" Margin="5" Grid.Column="2" Grid.Row="0" />
+		<Label Content="Configuration:" Height="Auto" HorizontalAlignment="Right" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" />
+		<ToggleButton Content="Call Asynchronously" IsChecked="{Binding Path=MethodData.UseTPLForCallbacks}" Margin="5" Grid.Column="3" Grid.Row="0" Name="UseTPL" />
+		<ToggleButton Content="Data Is Read-Only" IsChecked="{Binding Path=MethodData.IsReadOnly}" Margin="5" Grid.Column="1" Grid.Row="2" />
+		<ToggleButton Content="Hidden" IsChecked="{Binding Path=MethodData.IsHidden}" Margin="5" Grid.Column="2" Grid.Row="2" />
+		<Label Content="Protection:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="2" />
+		<ComboBox Height="23" Margin="80,5,5,5" SelectedIndex="{Binding Path=MethodData.ProtectionLevel, Converter={StaticResource ProtectionLevelConverter}}" Grid.Column="3" Grid.Row="2" >
 			<ComboBoxItem Content="None" />
 			<ComboBoxItem Content="Sign" />
 			<ComboBoxItem Content="Encrypt and Sign" />
 		</ComboBox>
-		<ToggleButton Content="Get" IsChecked="{Binding Path=MethodData.GenerateGetFunction}" Margin="5" Grid.Column="0" Grid.Row="1" Name="EnableGetFunction" Unchecked="EnableFunctions_Unchecked" />
-		<ToggleButton Content="Open/Close" IsChecked="{Binding Path=MethodData.GenerateOpenCloseFunction}" Margin="5" Grid.Column="1" Grid.Row="1" Name="EnableOpenCloseFunctions" Unchecked="EnableFunctions_Unchecked" />
-		<ToggleButton Content="New/Delete" IsChecked="{Binding Path=MethodData.GenerateNewDeleteFunction}" IsEnabled="{Binding Path=MethodData.IsReadOnly, Converter={StaticResource NotBoolConverter}}" Margin="5" Grid.Column="2" Grid.Row="1" Name="EnableNewDeleteFunctions" Unchecked="EnableFunctions_Unchecked" />
-		<ToggleButton Content="Call Asynchronously" IsChecked="{Binding Path=MethodData.UseTPLForCallbacks}" Margin="5" Grid.Column="3" Grid.Row="1" Name="UseTPL" />
-		<ToggleButton Content="Hidden" IsChecked="{Binding Path=MethodData.IsHidden}" Margin="5" Grid.Column="4" Grid.Row="1" />
+		<Label Content="Special Methods:" Height="Auto" HorizontalAlignment="Right" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="4" />
+		<ToggleButton Content="Get" IsChecked="{Binding Path=MethodData.GenerateGetFunction}" Margin="5" Grid.Column="1" Grid.Row="4" Name="EnableGetFunction" Unchecked="EnableFunctions_Unchecked" />
+		<ToggleButton Content="Open/Close" IsChecked="{Binding Path=MethodData.GenerateOpenCloseFunction}" Margin="5" Grid.Column="2" Grid.Row="4" Name="EnableOpenCloseFunctions" Unchecked="EnableFunctions_Unchecked" />
+		<ToggleButton Content="New/Delete" IsChecked="{Binding Path=MethodData.GenerateNewDeleteFunction}" IsEnabled="{Binding Path=MethodData.IsReadOnly, Converter={StaticResource NotBoolConverter}}" Margin="5" Grid.Column="3" Grid.Row="4" Name="EnableNewDeleteFunctions" Unchecked="EnableFunctions_Unchecked" />
 	</Grid>
-	<TabControl Grid.Row="6">
+	<TabControl Grid.Row="6" Margin="0,15,0,0">
 		<TabItem Header="Get Function" FontSize="12pt" Padding="10,5" IsSelected="{Binding Path=GetFunctionSelected}" IsEnabled="{Binding Path=MethodData.GenerateGetFunction}" />
 		<TabItem Header="Open Function" FontSize="12pt" Padding="10,5" IsSelected="{Binding Path=OpenFunctionSelected}" IsEnabled="{Binding Path=MethodData.GenerateOpenCloseFunction}" />
 		<TabItem Header="Close Function" FontSize="12pt" Padding="10,5" IsSelected="{Binding Path=CloseFunctionSelected}" IsEnabled="{Binding Path=MethodData.GenerateOpenCloseFunction}" />

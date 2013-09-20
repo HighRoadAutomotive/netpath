@@ -241,13 +241,13 @@
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="*" />
 						</Grid.RowDefinitions>
-						<Label Grid.Row="0" Grid.Column="0" Margin="0,5,0,5" Padding="8,2,0,2" Content="Add Operation:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="100" />
-						<Data:TypeSelector Project="{Binding ServiceProject}" AllowVoid="True" x:Name="AddServiceMemberType" LabelText="Type" Grid.Row="0" Grid.Column="1" Margin="5" ValidationChanged="AddServiceMemberType_ValidationChanged" />
-						<pc:TextBox x:Name="AddServiceMemberName" LabelText="Name" Grid.Row="0" Grid.Column="2" Margin="5" Validate="AddServiceMemberName_Validate" TextChanged="AddServiceMemberName_TextChanged" KeyUp="AddServiceMemberName_KeyUp" />
-						<Button x:Name="AddServiceMethod" Grid.Row="0" Grid.Column="3" Margin="5" Content="Method" HorizontalAlignment="Right" IsEnabled="False" Click="AddServiceMethod_Click" />
-						<Button x:Name="AddServiceDCMethod" Grid.Row="0" Grid.Column="4" Margin="5" Content="Data Revision Method" HorizontalAlignment="Right" IsEnabled="False" Click="AddServiceDCMethod_Click" />
-						<Button x:Name="AddServiceProperty" Grid.Row="0" Grid.Column="5" Margin="5" Content="Property" HorizontalAlignment="Right" IsEnabled="False" Click="AddServiceProperty_Click" />
-						<Grid Grid.Row="1" Margin="0,5,0,0" Grid.ColumnSpan="6">
+						<Label Grid.Row="0" Grid.Column="0" Margin="0,5,5,5" Padding="8,2,0,2" FontSize="11pt" Content="Add Operation:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" />
+						<Data:TypeSelector Project="{Binding ServiceProject}" AllowVoid="True" x:Name="AddServiceMemberType" LabelText="Type" Grid.Row="0" Grid.Column="1" FontSize="11pt" Margin="5" ValidationChanged="AddServiceMemberType_ValidationChanged" />
+						<pc:TextBox x:Name="AddServiceMemberName" LabelText="Name" Grid.Row="0" Grid.Column="2" FontSize="11pt" Margin="5" Validate="AddServiceMemberName_Validate" TextChanged="AddServiceMemberName_TextChanged" KeyUp="AddServiceMemberName_KeyUp" />
+						<Button x:Name="AddServiceMethod" Grid.Row="0" Grid.Column="3" Margin="5" FontSize="11pt" Content="Method" HorizontalAlignment="Right" IsEnabled="False" Click="AddServiceMethod_Click" />
+						<Button x:Name="AddServiceDCMethod" Grid.Row="0" Grid.Column="4" Margin="5" FontSize="11pt" Content="Data Revision Method" HorizontalAlignment="Right" IsEnabled="False" Click="AddServiceDCMethod_Click" />
+						<Button x:Name="AddServiceProperty" Grid.Row="0" Grid.Column="5" Margin="5" FontSize="11pt" Content="Property" HorizontalAlignment="Right" IsEnabled="False" Click="AddServiceProperty_Click" />
+						<Grid Grid.Row="1" Margin="0,15,0,0" Grid.ColumnSpan="6">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="230" />
 								<ColumnDefinition Width="*" />
@@ -293,8 +293,8 @@
 							<ComboBoxItem Content="Reentrant" />
 							<ComboBoxItem Content="Multiple" />
 						</ComboBox>
-						<Label Content="Transaction Isolation Level:" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="0" Width="Auto" />
-						<ComboBox Height="23" Margin="175,5,5,5" SelectedIndex="{Binding Path=ServiceType.SBTransactionIsolationLevel, Converter={StaticResource IsolationLevelConverter}}" Grid.Row="1" Grid.Column="1" >
+						<Label Content="Transaction Isolation Level:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" Margin="0" Width="Auto" />
+						<ComboBox Height="23" Margin="175,5,5,5" SelectedIndex="{Binding Path=ServiceType.SBTransactionIsolationLevel, Converter={StaticResource IsolationLevelConverter}}" Grid.Row="2" Grid.Column="0" >
 							<ComboBoxItem Content="Serializable" />
 							<ComboBoxItem Content="RepeatableRead" />
 							<ComboBoxItem Content="ReadCommitted" />
@@ -303,8 +303,8 @@
 							<ComboBoxItem Content="Chaos" />
 							<ComboBoxItem Content="Unspecified" />
 						</ComboBox>
-						<Label Content="Max Items In Object Graph:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" Margin="0" Width="Auto" />
-						<sf:IntegerTextBox Value="{Binding Path=ServiceType.SBMaxItemsInObjectGraph}" Margin="175,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Name="SBMaxItemsInObjectGraph" Grid.Row="2" Grid.Column="0" FontSize="10pt" ToolTip="Specify the number of Items in the Serialization Object Graph (0 is Int32.MaxValue)." />
+						<Label Content="Max Items In Object Graph:" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="0" Width="Auto" />
+						<sf:IntegerTextBox Value="{Binding Path=ServiceType.SBMaxItemsInObjectGraph}" Margin="175,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Name="SBMaxItemsInObjectGraph" Grid.Row="1" Grid.Column="1" FontSize="10pt" ToolTip="Specify the number of Items in the Serialization Object Graph (0 is Int32.MaxValue)." />
 						<Label Content="Transaction Timeout:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" Margin="0" Width="Auto" />
 						<sf:TimeSpanEdit Value="{Binding Path=ServiceType.SBTransactionTimeout, Mode=TwoWay}" Margin="175,5,5,5" Format="hh:mm:ss" ShowArrowButtons="False" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="2" FontSize="10pt" />
 						<ToggleButton Content="Automatic Session Shutdown" IsChecked="{Binding Path=ServiceType.SBAutomaticSessionShutdown}" Margin="5" Grid.Column="0" Grid.Row="3" />
