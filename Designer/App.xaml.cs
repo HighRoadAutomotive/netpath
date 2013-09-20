@@ -4,7 +4,9 @@ using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.NetworkInformation;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using System.Windows;
 using System.IO;
 using System.Windows.Media;
@@ -62,7 +64,7 @@ namespace NETPath
 			}
 
 #if LICENSE
-			if (CheckForInternetConnection())
+			if (await CheckForInternetConnection())
 			{
 				DateTime servertime = LicensingClient.GetDateTime();
 				DateTime localtime = DateTime.UtcNow;
@@ -148,7 +150,7 @@ namespace NETPath
 			Globals.UserProfile.Serial = "DEVELOPER";
 			try
 			{
-				if (CheckForInternetConnection())
+				if (await CheckForInternetConnection())
 				{
 					LicenseData LD = await LicensingClient.Retrieve(Globals.UserProfile.Serial, Globals.ApplicationVersion);
 					if (LD != null && LD.AvailableUpdates.Count > 0) Globals.AvailableUpdates = new List<AvailableUpdateXAML>(LD.XAMLObject.AvailableUpdates);
@@ -189,12 +191,13 @@ namespace NETPath
 			Options.UserProfile.Save(Globals.UserProfilePath, Globals.UserProfile);
 		}
 
-		public static bool CheckForInternetConnection()
+		public static async Task<bool> CheckForInternetConnection()
 		{
 			try
 			{
-				var client = new HttpClient() { Timeout = new TimeSpan(0, 0, 10) };
-				return client.GetAsync("http://www.google.com").Result.IsSuccessStatusCode;
+				var p = new Ping();
+				PingReply pr = await p.SendPingAsync("http://www.google.com", 10000);
+				return pr.Status == IPStatus.Success;
 			}
 			catch (Exception)
 			{

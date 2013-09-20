@@ -110,7 +110,7 @@ namespace NETPath.Interface
 		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
 		private async void InstallLicense(Dialogs.SetLicense lic)
 		{
-			if (App.CheckForInternetConnection())
+			if (await App.CheckForInternetConnection())
 			{
 				try
 				{
@@ -195,7 +195,7 @@ namespace NETPath.Interface
 		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
 		private async void ConfigTrial(Dialogs.SetTrial lic)
 		{
-			if (App.CheckForInternetConnection())
+			if (await App.CheckForInternetConnection())
 			{
 				try
 				{
