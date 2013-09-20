@@ -199,10 +199,10 @@ namespace NETPath
 		{
 			// For use in debugging.
 			//DialogService.ShowMessageDialog(null, "We've Encountered an Unknown Problem.", e.Exception.ToString(), new DialogAction("Dismiss", false, true));
+			Clipboard.SetText(e.Exception.ToString());
+			System.IO.File.WriteAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Prospective Software", "NETPath", "NPError.txt"), e.Exception.ToString());
 
-			System.IO.File.WriteAllText(Path.Combine("C:\\", "NPError.txt"), e.Exception.ToString());
-
-			if (!Globals.MainScreen.IsLoaded) return;
+			if (Globals.MainScreen == null || !Globals.MainScreen.IsLoaded) return;
 
 			//Take a screenshot
 			var targetBitmap = new RenderTargetBitmap((int)Globals.MainScreen.ActualWidth, (int)Globals.MainScreen.ActualHeight, 96d, 96d, PixelFormats.Default);
