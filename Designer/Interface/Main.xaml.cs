@@ -66,6 +66,7 @@ namespace NETPath.Interface
 			if (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor == 0) Globals.WindowsLevel = Globals.WindowsVersion.WinVista;
 			if (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor == 1) Globals.WindowsLevel = Globals.WindowsVersion.WinSeven;
 			if (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor == 2) Globals.WindowsLevel = Globals.WindowsVersion.WinEight;
+			if (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor == 3) Globals.WindowsLevel = Globals.WindowsVersion.WinEightOne;
 
 			ProjectScreens = new ObservableCollection<SolutionItem>();
 
@@ -254,7 +255,7 @@ namespace NETPath.Interface
 				{
 					WindowBorder.Margin = new Thickness(5, 4, 5, 5);
 				}
-				else if (Globals.WindowsLevel == Globals.WindowsVersion.WinEight)
+				else if (Globals.WindowsLevel == Globals.WindowsVersion.WinEight || Globals.WindowsLevel == Globals.WindowsVersion.WinEightOne)
 				{
 					WindowBorder.Margin = new Thickness(8);
 				}
@@ -293,7 +294,6 @@ namespace NETPath.Interface
 
 		private void CloseWindow_Click(object sender, RoutedEventArgs e)
 		{
-			HelpBrowser.Visibility = Visibility.Hidden;
 			Close();
 		}
 
@@ -513,8 +513,8 @@ namespace NETPath.Interface
 			var hlink = sender as Hyperlink;
 			if (hlink != null)
 			{
-				HelpBrowser.Navigate(hlink.NavigateUri);
-				HelpBrowser.Visibility = Visibility.Visible;
+				string navigateUri = hlink.NavigateUri.ToString();
+				Process.Start(new ProcessStartInfo(navigateUri));
 			}
 			e.Handled = true;
 		}

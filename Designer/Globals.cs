@@ -43,6 +43,7 @@ namespace NETPath
 			WinVista = 60,
 			WinSeven = 61,
 			WinEight = 62,
+			WinEightOne = 63,
 		}
 		public static WindowsVersion WindowsLevel { get; set; }
 
