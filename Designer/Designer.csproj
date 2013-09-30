@@ -890,9 +890,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\Odd\FullLogoWinRT.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Icons\X32\FlagImportant.png" />
     <Resource Include="Icons\X32\FlagRecent.png" />
   </ItemGroup>
@@ -959,6 +956,11 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\X16\Download.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\Odd\FullLogoAcademic.png" />
+    <Resource Include="Icons\Odd\FullLogoFOSS.png" />
+    <Resource Include="Icons\Odd\FullLogoMVP.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

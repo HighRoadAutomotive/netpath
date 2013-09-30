@@ -159,7 +159,6 @@ namespace NETPath.Interface
 		{
 			var logo = new BitmapImage();
 			logo.BeginInit();
-#if LICENSE
 			if (Globals.UserProfile.IsTrial || Globals.UserProfile.Serial == "TRIAL" || Globals.UserProfile.License == "")
 			{
 				logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoTrial.png");
@@ -167,21 +166,47 @@ namespace NETPath.Interface
 			}
 			else
 			{
+#if LICENSE
 				var lic = new CryptoLicense(Globals.UserProfile.License, Globals.LicenseVerification);
 				if (lic.Status == LicenseStatus.Valid)
 				{
-					logo.UriSource = lic.IsFeaturePresentEx(1) ? new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoProfessional.png") : new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoWinRT.png");
-					ProductTitle.Content = lic.IsFeaturePresentEx(1) ? "Prospective Software NETPath Professional" : "Prospective Software NETPath for Windows Runtime";
+					switch (Globals.UserProfile.SKU)
+					{
+						case "PSNP10PROF":
+							logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoProfessional.png");
+							ProductTitle.Content = "Prospective Software NETPath Professional Edition";
+							break;
+						case "PSNP10ACAD":
+							logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoAcademic.png");
+							ProductTitle.Content = "Prospective Software NETPath Academic Edition";
+							break;
+						case "PSNP10CLAS":
+							logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoAcademic.png");
+							ProductTitle.Content = "Prospective Software NETPath Classroom Edition";
+							break;
+						case "PSNP10MVPL":
+							logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoMVP.png");
+							ProductTitle.Content = "Prospective Software NETPath MVP Edition";
+							break;
+						case "PSNP10FOSS":
+							logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoFOSS.png");
+							ProductTitle.Content = "Prospective Software NETPath Open Source Edition";
+							break;
+						default:
+							ProductTitle.Content = "Prospective Software NETPath Trial";
+							logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoTrial.png");
+							break;
+					}	
 				}
 				else
 				{
 					ProductTitle.Content = "Prospective Software NETPath Trial";
 					logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoTrial.png");
 				}
-			}
 #else
-			logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoDeveloper.png");
-			ProductTitle.Content = "Prospective Software NETPath Internal Developer";
+				logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoDeveloper.png");
+				ProductTitle.Content = "Prospective Software NETPath Internal Developer";
+			}
 #endif
 			logo.EndInit();
 			SKULevel.Source = logo;
