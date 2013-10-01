@@ -11,6 +11,8 @@ using Windows.UI.Xaml;
 
 namespace System
 {
+	[DataContract]
+	[ProtoBuf.ProtoContract]
 	public abstract class CMDObject
 	{
 		[IgnoreDataMember, XmlIgnore] private ConcurrentDictionary<HashID, object> values;

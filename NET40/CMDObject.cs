@@ -10,6 +10,9 @@ using System.Xml.Serialization;
 
 namespace System
 {
+	[Serializable]
+	[DataContract]
+	[ProtoBuf.ProtoContract]
 	public abstract class CMDObject
 	{
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private ConcurrentDictionary<HashID, object> values;
