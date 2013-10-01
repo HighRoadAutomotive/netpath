@@ -203,6 +203,7 @@ namespace NETPath.Interface
 					ProductTitle.Content = "Prospective Software NETPath Trial";
 					logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoTrial.png");
 				}
+			}
 #else
 				logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoDeveloper.png");
 				ProductTitle.Content = "Prospective Software NETPath Internal Developer";
