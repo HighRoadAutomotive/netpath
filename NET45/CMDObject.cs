@@ -93,6 +93,31 @@ namespace System
 			}
 		}
 
+		public void UpdateValueFromXAML<T>(CMDProperty<T> de, T value)
+		{
+			//Call the validator to see if this value is acceptable
+			if (de.CMDValidateValueCallback != null && !de.CMDValidateValueCallback(this, value)) return;
+
+			//If the new value is the default value remove this from the modified values list, otherwise add/update it.
+			if (EqualityComparer<T>.Default.Equals(value, de.DefaultValue))
+			{
+				//Remove the value from the list, which sets it to the default value.
+				object temp;
+				if (!values.TryRemove(de.ID, out temp)) return;
+
+				//Call the property changed callback
+				if (temp != null && de.CMDPropertyChangedCallback != null) de.CMDPropertyChangedCallback(this, (T)temp, de.DefaultValue);
+			}
+			else
+			{
+				//Update the value
+				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
+
+				//Call the property changed callback
+				if (temp != null && de.CMDPropertyChangedCallback != null) de.CMDPropertyChangedCallback(this, (T)temp, value);
+			}
+		}
+
 		public void ClearValue<T>(CMDProperty<T> de)
 		{
 			object temp;
