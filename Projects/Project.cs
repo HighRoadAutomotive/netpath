@@ -128,6 +128,9 @@ namespace NETPath.Projects
 		public ObservableCollection<ProjectUsingNamespace> UsingNamespaces { get { return (ObservableCollection<ProjectUsingNamespace>)GetValue(UsingNamespacesProperty); } set { SetValue(UsingNamespacesProperty, value); } }
 		public static readonly DependencyProperty UsingNamespacesProperty = DependencyProperty.Register("UsingNamespaces", typeof(ObservableCollection<ProjectUsingNamespace>), typeof(Project));
 
+		public bool EnableEntityFramework { get { return (bool)GetValue(EnableEntityFrameworkProperty); } set { SetValue(EnableEntityFrameworkProperty, value); } }
+		public static readonly DependencyProperty EnableEntityFrameworkProperty = DependencyProperty.Register("EnableEntityFramework", typeof(bool), typeof(Project), new PropertyMetadata(true));
+
 		[IgnoreDataMember] public List<DataType> DefaultTypes { get; private set; }
 		[IgnoreDataMember] public List<DataType> InheritableTypes { get; private set; }
 		[IgnoreDataMember] public DataType VoidType { get; private set; }

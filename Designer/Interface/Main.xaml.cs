@@ -86,11 +86,11 @@ namespace NETPath.Interface
 
 			SetLogo();
 
-			using (XmlReader reader = XmlReader.Create("http://www.prospectivesoftware.com/blogs/netpathlink.atom"))
-			{
-				SyndicationFeed feed = SyndicationFeed.Load(reader);
-				NewsList.ItemsSource = feed.Items;
-			}
+			//using (XmlReader reader = XmlReader.Create("http://www.prospectivesoftware.com/blogs/netpathlink.atom"))
+			//{
+			//	SyndicationFeed feed = SyndicationFeed.Load(reader);
+			//	NewsList.ItemsSource = feed.Items;
+			//}
 
 			if (Globals.AvailableUpdates != null)
 			{

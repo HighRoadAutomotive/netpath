@@ -26,6 +26,7 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 		<Label Grid.Row="0" Margin="5" Padding="10,2,0,2" Content="Server Type:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="90" />
@@ -34,7 +35,9 @@
 		<Data:TypeEditor OpenType="{Binding Path=OpenType.ClientType}" x:Name="ClientTypeEditor" SupportInheritedTypes="True" SupportKnownTypes="True" Grid.Row="1" Margin="100,0,0,0" />
 		<ToggleButton Grid.Row="2" Margin="5" IsChecked="{Binding Path=OpenType.HasXAMLType}" Content="XAML Type:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="90" />
 		<Data:TypeEditor OpenType="{Binding Path=OpenType.XAMLType}" x:Name="XAMLTypeEditor" CanSetType="False" SupportInheritedTypes="True" Grid.Row="2" Margin="100,0,0,0" />
-		<Grid Grid.Row="3">
+		<ToggleButton Grid.Row="3" Margin="5" IsChecked="{Binding Path=OpenType.HasEntity}" Content="Entity Type:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="90" />
+		<pc:TextBox Text="{Binding Path=OpenType.EntityName, UpdateSourceTrigger=PropertyChanged}" x:Name="EntityName" Grid.Row="3" Margin="100,5,5,5" IsEnabled="{Binding Path=OpenType.HasEntity}" LabelText="Entity Type Name" />
+		<Grid Grid.Row="4">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="*" />
 				<ColumnDefinition Width="*" />
@@ -45,7 +48,7 @@
 			<Label Content="Revision Message Batch Interval:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Column="2" />
 			<sf:IntegerTextBox Value="{Binding Path=OpenType.DREBatchCount}" IsEnabled="{Binding Path=OpenType.DREEnabled}" Margin="202,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Name="UpdateBatchSize" Grid.Column="2" FontSize="10pt" ToolTip="Specify the number of changes to the this object before a change message is sent." />
 		</Grid>
-		<Grid Name="OptionsGrid" Grid.Row="4" Margin="0,5,0,0" >
+		<Grid Name="OptionsGrid" Grid.Row="5" Margin="0,5,0,0" >
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="*" />
 				<ColumnDefinition Width="*" />
@@ -60,7 +63,7 @@
 			<ToggleButton Grid.Column="2" Grid.Row="1" Content="Use Protocol Members Only" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=OpenType.ProtoMembersOnly}" IsEnabled="{Binding Path=OpenType.EnableProtocolBuffers}" ToolTip="If the contract is marked with multiple attributes, use only members explicitly marked for protocol buffers." />
 			<ToggleButton Grid.Column="3" Grid.Row="1" Content="Ignore List Handling" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=OpenType.ProtoIgnoreListHandling}" IsEnabled="{Binding Path=OpenType.EnableProtocolBuffers}" ToolTip="Use instance rules, list interfaces are ignored." />
 		</Grid>
-		<TabControl Grid.Row="5" Margin="0,10,0,0">
+		<TabControl Grid.Row="6" Margin="0,10,0,0">
 			<TabItem IsSelected="True">
 				<TabItem.Header>
 					<TextBlock Text="Members" FontSize="12pt"/>

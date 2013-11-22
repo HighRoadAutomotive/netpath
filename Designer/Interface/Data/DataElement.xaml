@@ -33,6 +33,7 @@
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
 		<RowDefinition Height="*" />
 	</Grid.RowDefinitions>
 	<TextBlock Grid.Row="0" FontSize="14pt" FontFamily="{StaticResource CodeFontFamily}" >
@@ -83,7 +84,15 @@
 		<ToggleButton Grid.Column="0" Margin="0,5,5,5" Content="XAML:" Padding="2,0" IsChecked="{Binding Path=Element.HasXAMLType}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="GenerateXAMLBinding" ToolTip="Tells NETPath to generate a XAML binding for this member." Unchecked="GenerateXAMLBinding_Unchecked" />
 		<pc:TextBox Grid.Column="1" Margin="5,5,0,5" MinHeight="24" Name="XAMLName" Text="{Binding Path=Element.XAMLName, UpdateSourceTrigger=PropertyChanged}" LabelText="XAML Name" IsEnabled="{Binding Path=Element.HasXAMLType}" VerticalContentAlignment="Center" Validate="ElementName_Validate" />
 	</Grid>
-	<TabControl Grid.Row="6" Margin="0,5,0,0" >
+	<Grid Name="EntityGrid" Grid.Row="6" >
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="75" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+		<ToggleButton Grid.Column="0" Margin="0,5,5,5" Content="Entity:" Padding="2,0" IsChecked="{Binding Path=Element.HasXAMLType}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="GenerateEntityName" ToolTip="Tells NETPath to generate a XAML binding for this member." Unchecked="GenerateXAMLBinding_Unchecked" />
+		<pc:TextBox Grid.Column="1" Margin="5,5,0,5" MinHeight="24" Name="EntityName" Text="{Binding Path=Element.EntityName, UpdateSourceTrigger=PropertyChanged}" LabelText="Entity Member Name" IsEnabled="{Binding Path=Element.HasEntity}" VerticalContentAlignment="Center" Validate="ElementName_Validate" />
+	</Grid>
+	<TabControl Grid.Row="7" Margin="0,5,0,0" >
 		<TabItem Padding="10,5" IsSelected="True">
 			<TabItem.Header>
 				<TextBlock Text="Options" FontSize="12pt"/>

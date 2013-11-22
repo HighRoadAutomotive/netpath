@@ -41,6 +41,7 @@
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
@@ -56,6 +57,7 @@
 				<ComboBoxItem>XML</ComboBoxItem>
 			</ComboBox.Items>
 		</ComboBox>
+		<CheckBox Grid.Column="2" Grid.Row="1" VerticalAlignment="Center" Margin="5" Content="Enable EntityFramework 6" IsChecked="{Binding Path=Settings.EnableEntityFramework}" />
 	</Grid>
 	<Grid Grid.Column="0" Grid.Row="4">
 		<Grid.RowDefinitions>
