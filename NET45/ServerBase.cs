@@ -14,12 +14,16 @@
 ******************************************************************************/
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data.Common;
+using System.Data.Entity.Core;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.ServiceModel.Configuration;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using System.ServiceModel;
 
 namespace System.ServiceModel
 {
@@ -28,7 +32,7 @@ namespace System.ServiceModel
 		public Guid ClientID { get; protected set; }
 		public bool IsTerminated { get; protected set; }
 
-		public ServerBase()
+		protected ServerBase()
 		{
 			ClientID = Guid.NewGuid();
 		}
@@ -128,13 +132,13 @@ namespace System.ServiceModel
 		internal Func<bool> Disconnected { get; set; }
 		internal Action Reconnected { get; set; }
 
-		public ServerDuplexBase()
+		protected ServerDuplexBase()
 		{
 			MaxReconnectionAttempts = 0;
 			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 
-		public ServerDuplexBase(ushort MaxReconnectionAttempts, Func<bool> Disconnected = null, Action Reconnected = null)
+		protected ServerDuplexBase(ushort MaxReconnectionAttempts, Func<bool> Disconnected = null, Action Reconnected = null)
 		{
 			this.MaxReconnectionAttempts = MaxReconnectionAttempts;
 			this.Disconnected = Disconnected ?? (() => false);
@@ -192,6 +196,79 @@ namespace System.ServiceModel
 			if (!IsTerminated)
 				Reconnected();
 		}
+	}
+
+	public abstract class EFServerDuplexBase<T, TCallback, TCallbackInterface, TDataContext> : ServerDuplexBase<T, TCallback, TCallbackInterface> where T : EFServerDuplexBase<T, TCallback, TCallbackInterface, TDataContext> where TCallback : ServerCallbackBase<TCallbackInterface>, new() where TCallbackInterface : class where TDataContext : ObjectContext, new()
+	{
+		private ConcurrentDictionary<Guid, DREObjectBase> EFObjects;
+		protected TDataContext Database { get; private set; }
+		private Task _dbtask;
+		private readonly CancellationTokenSource _dbtaskct = new CancellationTokenSource();
+		private int updateInterval = 15000;
+		public int DBUpdateInterval { get { return updateInterval; } set { Interlocked.Exchange(ref updateInterval, value); } }
+
+		protected EFServerDuplexBase()
+		{
+			Database = new TDataContext();
+		}
+
+		protected EFServerDuplexBase(TDataContext DataContext, ushort MaxReconnectionAttempts = 0, Func<bool> Disconnected = null, Action Reconnected = null) : base(MaxReconnectionAttempts, Disconnected, Reconnected)
+		{
+			Database = DataContext;
+		}
+
+		protected override bool Initialize(Func<Guid> ClientID = null)
+		{
+			Database.Connection.Open();
+			StartEFUpdates();
+			return base.Initialize(ClientID);
+		}
+
+		protected bool Initalize(string Connection, Func<Guid> ClientID = null)
+		{
+			Database.Connection.ConnectionString = Connection;
+			Database.Connection.Open();
+			StartEFUpdates();
+			return base.Initialize(ClientID);
+		}
+
+		protected override void Terminate()
+		{
+			base.Terminate();
+			_dbtaskct.Cancel();
+			try { _dbtask.Wait(); }
+			catch (AggregateException ex) { ex.Flatten(); }
+			Database.Connection.Close();
+		}
+
+		protected TDO RegisterDataObject<TDO>(TDO DataObject) where TDO : DREObjectBase
+		{
+			return (TDO)EFObjects.AddOrUpdate(DataObject._DREID, DataObject, (p, v) => DataObject);
+		}
+
+		protected TDO UnregisterDataObject<TDO>(TDO DataObject) where TDO : DREObjectBase
+		{
+			DREObjectBase temp;
+			EFObjects.TryRemove(DataObject._DREID, out temp);
+			return (TDO)temp;
+		}
+
+		private void StartEFUpdates()
+		{
+			if (_dbtask != null) return;
+			_dbtask = Task.Factory.StartNew(() =>
+			{
+				while (!_dbtaskct.Token.IsCancellationRequested)
+				{
+					Thread.Sleep(DBUpdateInterval);
+					var efol = EFObjects.ToArray().Where(a => a.Value.IsDirty).Select(b => b.Value).ToList();
+					foreach (var efo in efol) UpdateDataObject(efo);
+				}
+				_dbtaskct.Token.ThrowIfCancellationRequested();
+			}, _dbtaskct.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+		}
+
+		protected abstract void UpdateDataObject(DREObjectBase DataObject);
 	}
 
 	public abstract class ServerCallbackBase<TCallback> where TCallback : class

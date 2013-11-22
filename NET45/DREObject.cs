@@ -19,6 +19,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Xml.Serialization;
 using ProtoBuf;
@@ -38,6 +39,8 @@ namespace System
 		[IgnoreDataMember, XmlIgnore] public long BatchInterval { get { return batchInterval; } protected set { batchInterval = value; } }
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private DependencyObjectEx baseXAMLObject; 
 		[IgnoreDataMember, XmlIgnore] protected DependencyObjectEx BaseXAMLObject { get { return baseXAMLObject; } set { if (baseXAMLObject == null) baseXAMLObject = value; } }
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private int isDirty = 0;
+		[IgnoreDataMember, XmlIgnore] public bool IsDirty { get { if (isDirty == 0) { return false; } return true; } private set { if (value) { Interlocked.Exchange(ref isDirty, 1); } } }
 
 		protected DREObjectBase()
 		{
@@ -98,6 +101,7 @@ namespace System
 				//Remove the value from the list, which sets it to the default value.
 				object temp;
 				if (!values.TryRemove(de.ID, out temp)) return;
+				IsDirty = true;
 				if (de.EnableBatching && BatchInterval > 0)
 				{
 					modifications.Enqueue(new CMDItemValue<T>(true, de.ID));
@@ -131,6 +135,7 @@ namespace System
 
 				//Update the value
 				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
+				IsDirty = true;
 				if (de.EnableBatching && BatchInterval > 0)
 				{
 					modifications.Enqueue(new CMDItemValue<T>(false, de.ID, value));
@@ -156,6 +161,7 @@ namespace System
 				//Remove the value from the list, which sets it to the default value.
 				object temp;
 				if (!values.TryRemove(de.ID, out temp)) return;
+				IsDirty = true;
 
 				//Clear the changed event handlers
 				if (de.IsDictionary || de.IsList)
@@ -175,6 +181,7 @@ namespace System
 
 				//Update the values
 				var temp = (T)values.AddOrUpdate(de.ID, value, (p, v) => value);
+				IsDirty = true;
 			}
 			if (de.XAMLProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLProperty, value);
 			if (de.XAMLPropertyKey != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLPropertyKey, value);
@@ -189,6 +196,7 @@ namespace System
 				object temp;
 				if (!values.TryRemove(de.ID, out temp)) return;
 				if (de.EnableBatching && BatchInterval > 0)
+				IsDirty = true;
 				{
 					modifications.Enqueue(new CMDItemValue<T>(true, de.ID));
 					IncrementChangeCount();
@@ -215,6 +223,7 @@ namespace System
 
 				//Update the values
 				var temp = (T)values.AddOrUpdate(de.ID, value, (p, v) => value);
+				IsDirty = true;
 				if (de.EnableBatching && BatchInterval > 0)
 				{
 					modifications.Enqueue(new CMDItemValue<T>(false, de.ID, value));
@@ -231,6 +240,7 @@ namespace System
 			object temp;
 			if (!values.TryRemove(de.ID, out temp))
 			{
+				IsDirty = true;
 				if (de.EnableBatching && BatchInterval > 0)
 				{
 					modifications.Enqueue(new CMDItemValue<T>(false, de.ID));
@@ -254,6 +264,7 @@ namespace System
 			{
 				object temp;
 				values.TryRemove(v.Key, out temp);
+				IsDirty = true;
 				var de = CMDPropertyBase.FromID(v.Key) as DREProperty<T>;
 				if (de != null && de.XAMLProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLProperty, de.DefaultValue);
 				if (de != null && de.XAMLPropertyKey != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLPropertyKey, de.DefaultValue);
@@ -261,6 +272,7 @@ namespace System
 			else
 			{
 				var temp = values.AddOrUpdate(v.Key, v.Value, (p, a) => v.Value);
+				IsDirty = true;
 				var de = CMDPropertyBase.FromID(v.Key) as DREProperty<T>;
 				if (de != null && de.XAMLProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLProperty, v.Value);
 				if (de != null && de.XAMLPropertyKey != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLPropertyKey, v.Value);
@@ -306,6 +318,7 @@ namespace System
 		[DataMember] [ProtoMember(1)] public Guid _DREID { get; set; }
 
 		protected void SetDREID(string PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(PrimaryKey).ToGUID(); }
+		protected void SetDREID(byte[] PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(PrimaryKey).ToGUID(); }
 		protected void SetDREID(byte PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(new byte[] { PrimaryKey }).ToGUID(); }
 		protected void SetDREID(sbyte PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(BitConverter.GetBytes(PrimaryKey)).ToGUID(); }
 		protected void SetDREID(short PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(BitConverter.GetBytes(PrimaryKey)).ToGUID(); }
