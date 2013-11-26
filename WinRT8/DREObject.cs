@@ -19,6 +19,8 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Xml.Serialization;
 using Windows.UI.Xaml;
@@ -35,7 +37,7 @@ namespace System
 		[IgnoreDataMember, XmlIgnore] private long changeCount;
 		[IgnoreDataMember, XmlIgnore] protected long ChangeCount { get { return changeCount; } }
 		[IgnoreDataMember, XmlIgnore] private long batchInterval;
-		[IgnoreDataMember, XmlIgnore] public long BatchInterval { get { return batchInterval; } protected set { batchInterval = value; } }
+		[IgnoreDataMember, XmlIgnore] public long BatchInterval { get { return batchInterval; } protected set { Interlocked.Exchange(ref batchInterval, value); } }
 		[IgnoreDataMember, XmlIgnore] private DependencyObjectEx baseXAMLObject; 
 		[IgnoreDataMember, XmlIgnore] protected DependencyObjectEx BaseXAMLObject { get { return baseXAMLObject; } set { if (baseXAMLObject == null) baseXAMLObject = value; } }
 
@@ -98,18 +100,10 @@ namespace System
 				//Remove the value from the list, which sets it to the default value.
 				object temp;
 				if (!values.TryRemove(de.ID, out temp)) return;
-
 				if (de.EnableBatching && BatchInterval > 0)
 				{
 					modifications.Enqueue(new CMDItemValue<T>(true, de.ID));
 					IncrementChangeCount();
-				}
-
-				//Clear the changed event handlers
-				if (de.IsDictionary || de.IsList)
-				{
-					var tt = temp as DeltaCollectionBase;
-					if (tt != null) tt.ClearChangedHandlers();
 				}
 
 				if (de.XAMLProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLProperty, de.defaultValue);
@@ -122,13 +116,6 @@ namespace System
 			}
 			else
 			{
-				//Setup the change event handler
-				if (de.IsDictionary || de.IsList)
-				{
-					var tt = value as DeltaCollectionBase;
-					if (tt != null) tt.Changed += (Sender, Args) => IncrementChangeCount();
-				}
-
 				//Update the value
 				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
 				if (de.EnableBatching && BatchInterval > 0)
@@ -155,23 +142,9 @@ namespace System
 				//Remove the value from the list, which sets it to the default value.
 				object temp;
 				if (!values.TryRemove(de.ID, out temp)) return;
-
-				//Clear the changed event handlers
-				if (de.IsDictionary || de.IsList)
-				{
-					var tt = temp as DeltaCollectionBase;
-					if (tt != null) tt.ClearChangedHandlers();
-				}
 			}
 			else
 			{
-				//Setup the change event handler
-				if (de.IsDictionary || de.IsList)
-				{
-					var tt = value as DeltaCollectionBase;
-					if (tt != null) tt.Changed += (Sender, Args) => IncrementChangeCount();
-				}
-
 				//Update the values
 				var temp = (T)values.AddOrUpdate(de.ID, value, (p, v) => value);
 			}
@@ -192,25 +165,11 @@ namespace System
 					IncrementChangeCount();
 				}
 
-				//Clear the changed event handlers
-				if (de.IsDictionary || de.IsList)
-				{
-					var tt = temp as DeltaCollectionBase;
-					if (tt != null) tt.ClearChangedHandlers();
-				}
-
 				//Call the property updated callback
 				if (temp != null && de.DREPropertyUpdatedCallback != null && baseXAMLObject != null) de.DREPropertyUpdatedCallback(this, (T)temp, value);
 			}
 			else
 			{
-				//Setup the change event handler
-				if (de.IsDictionary || de.IsList)
-				{
-					var tt = value as DeltaCollectionBase;
-					if (tt != null) tt.Changed += (Sender, Args) => IncrementChangeCount();
-				}
-
 				//Update the values
 				var temp = (T)values.AddOrUpdate(de.ID, value, (p, v) => value);
 				if (de.EnableBatching && BatchInterval > 0)
@@ -231,14 +190,8 @@ namespace System
 			{
 				if (de.EnableBatching && BatchInterval > 0)
 				{
-					modifications.Enqueue(new CMDItemValue<T>(false, de.ID));
+					modifications.Enqueue(new CMDItemValue<T>(true, de.ID));
 					IncrementChangeCount();
-				}
-				//Clear the changed event handlers
-				if (de.IsDictionary || de.IsList)
-				{
-					var tt = temp as DeltaCollectionBase;
-					if (tt != null) tt.ClearChangedHandlers();
 				}
 			}
 			if (de.DREPropertyChangedCallback != null)
@@ -302,6 +255,7 @@ namespace System
 		[DataMember] [ProtoMember(1)] public Guid _DREID { get; set; }
 
 		protected void SetDREID(string PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(PrimaryKey).ToGUID(); }
+		protected void SetDREID(byte[] PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(PrimaryKey).ToGUID(); }
 		protected void SetDREID(byte PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(new byte[] { PrimaryKey }).ToGUID(); }
 		protected void SetDREID(sbyte PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(BitConverter.GetBytes(PrimaryKey)).ToGUID(); }
 		protected void SetDREID(short PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(BitConverter.GetBytes(PrimaryKey)).ToGUID(); }
@@ -344,13 +298,13 @@ namespace System
 			return __dcm.ContainsKey(DataID);
 		}
 
-		public static T RegisterData(Guid ClientID, T Data)
+		public T Register(Guid ClientID)
 		{
-			Data.__crl.GetOrAdd(ClientID, Data._DREID);
-			return __dcm.GetOrAdd(Data._DREID, Data);
+			__crl.GetOrAdd(ClientID, _DREID);
+			return __dcm.GetOrAdd(_DREID, (T)this);
 		}
 
-		public static T RegisterData(Guid ClientID, Guid DataID)
+		public static T Register(Guid ClientID, Guid DataID)
 		{
 			T Data;
 			__dcm.TryGetValue(DataID, out Data);
@@ -359,14 +313,14 @@ namespace System
 			return __dcm.GetOrAdd(Data._DREID, Data);
 		}
 
-		public static bool UnregisterData(Guid ClientID, Guid DataID)
+		public bool Unregister(Guid ClientID)
 		{
 			T data;
-			__dcm.TryGetValue(DataID, out data);
+			__dcm.TryGetValue(_DREID, out data);
 			if (data == null) return true;
 			Guid dreid;
 			data.__crl.TryRemove(ClientID, out dreid);
-			return !data.__crl.IsEmpty || __dcm.TryRemove(DataID, out data);
+			return !data.__crl.IsEmpty || __dcm.TryRemove(_DREID, out data);
 		}
 
 		//Constructors

@@ -21,11 +21,15 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Xml.Serialization;
 
 namespace System.Collections.Generic
 {
+	[DataContract]
 	public class DeltaList<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
 	{
 		public delegate void AddRemoveClearedEventHandler(IEnumerable<T> Values);
@@ -39,10 +43,15 @@ namespace System.Collections.Generic
 		public event MovedEventHandler Moved;
 		public delegate void ReplacedEventHandler(T OldValue, T NewValue);
 		public event ReplacedEventHandler Replaced;
+		public delegate void SendChangesHandler(IEnumerable<ChangeListItem<T>> delta);
+		public event SendChangesHandler SendChanges;
 
-		private List<T> il;
-		private readonly ReaderWriterLockSlim ocl;
-		private ConcurrentQueue<ChangeListItem<T>> dl;
+		[IgnoreDataMember, XmlIgnore] private List<T> il;
+		[IgnoreDataMember, XmlIgnore] private readonly ReaderWriterLockSlim ocl;
+		[IgnoreDataMember, XmlIgnore] private ConcurrentQueue<ChangeListItem<T>> dl;
+		[IgnoreDataMember, XmlIgnore] private long changeCount;
+		[IgnoreDataMember, XmlIgnore] private long batchInterval; 
+		[IgnoreDataMember, XmlIgnore] public long BatchInterval { get { return batchInterval; } protected set { Interlocked.Exchange(ref batchInterval, value); } }
 
 		~DeltaList()
 		{
@@ -53,25 +62,28 @@ namespace System.Collections.Generic
 			catch { }
 		}
 
-		public DeltaList()
+		public DeltaList(long BatchInterval = 0)
 		{
 			il = new List<T>();
 			ocl = new ReaderWriterLockSlim();
 			dl = new ConcurrentQueue<ChangeListItem<T>>();
+			this.BatchInterval = BatchInterval;
 		}
 
-		public DeltaList(int Capacity)
+		private DeltaList(long BatchInterval, int Capacity)
 		{
 			il = new List<T>(Capacity);
 			ocl = new ReaderWriterLockSlim();
 			dl = new ConcurrentQueue<ChangeListItem<T>>();
+			this.BatchInterval = BatchInterval;
 		}
 
-		public DeltaList(IEnumerable<T> Items)
+		private DeltaList(long BatchInterval, IEnumerable<T> Items)
 		{
 			il = new List<T>(Items);
 			ocl = new ReaderWriterLockSlim();
 			dl = new ConcurrentQueue<ChangeListItem<T>>();
+			this.BatchInterval = BatchInterval;
 		}
 
 		public void ApplyDelta(ChangeListItem<T> delta)
@@ -100,13 +112,13 @@ namespace System.Collections.Generic
 					case ListItemChangeMode.Replace:
 						{
 							int idx = il.IndexOf(delta.OldItem);
-							if (idx == -1) il.Add(delta.Item);
+							if(idx == -1) il.Add(delta.Item);
 							else il[idx] = delta.Item;
 							break;
 						}
 				}
 			}
-			finally
+			finally 
 			{
 				ocl.ExitWriteLock();
 			}
@@ -177,7 +189,32 @@ namespace System.Collections.Generic
 			Threading.Interlocked.Exchange(ref dl, new ConcurrentQueue<ChangeListItem<T>>());
 		}
 
-		public void SetEvents(AddRemoveClearedEventHandler Added, AddRemoveClearedEventHandler Removed, AddRemoveClearedEventHandler Cleared, InsertRemoveAtEventHandler RemovedAt, InsertRemoveAtEventHandler Inserted, MovedEventHandler Moved, ReplacedEventHandler Replaced)
+		private void EnqueueChange(ChangeListItem<T> change)
+		{
+			if (BatchInterval < 1) return;
+			if (BatchInterval == 1) SendChanges(new[] { change });
+			else
+			{
+				dl.Enqueue(change);
+				Interlocked.Increment(ref changeCount);
+
+				if (changeCount < BatchInterval) return;
+
+				Task.Factory.StartNew(() =>
+				{
+					var tdl = new List<ChangeListItem<T>>();
+					ChangeListItem<T> td;
+					while (dl.TryDequeue(out td))
+						tdl.Add(td);
+					Interlocked.Exchange(ref changeCount, 0);
+
+					try { SendChanges(tdl); }
+					catch { }
+				}, TaskCreationOptions.None);
+			}
+		}
+
+		public void SetEvents(AddRemoveClearedEventHandler Added, AddRemoveClearedEventHandler Removed, AddRemoveClearedEventHandler Cleared, InsertRemoveAtEventHandler RemovedAt, InsertRemoveAtEventHandler Inserted, MovedEventHandler Moved, ReplacedEventHandler Replaced, SendChangesHandler SendChanges)
 		{
 			this.Added = Added;
 			this.Removed = Removed;
@@ -186,6 +223,7 @@ namespace System.Collections.Generic
 			this.Inserted = Inserted;
 			this.Moved = Moved;
 			this.Replaced = Replaced;
+			this.SendChanges = SendChanges;
 		}
 
 		public void ClearEvents()
@@ -197,6 +235,7 @@ namespace System.Collections.Generic
 			Inserted = null;
 			Moved = null;
 			Replaced = null;
+			SendChanges = null;
 		}
 
 		public void Add(T item)
@@ -210,8 +249,8 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
-			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Add, item));
-			if (Added != null) Added(new[] { item });
+			EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Add, item));
+			if (Added != null) Added(new[] {item});
 		}
 
 		public void AddRange(IEnumerable<T> items)
@@ -225,7 +264,7 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
-			foreach (var t in items) dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Add, t));
+			foreach (var t in items) EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Add, t));
 			if (Added != null) Added(items);
 		}
 
@@ -240,7 +279,7 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
-			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Add, item));
+			EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Add, item));
 		}
 
 		public void AddRangeNoUpdate(IEnumerable<T> items)
@@ -254,7 +293,7 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
-			foreach (var t in items) dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Add, t));
+			foreach (var t in items) EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Add, t));
 		}
 
 		public int BinarySearch(T item)
@@ -309,7 +348,7 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
-			foreach (var t in tl) dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Remove, t));
+			foreach (var t in tl) EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Remove, t));
 			if (Cleared != null) Cleared(tl);
 		}
 
@@ -326,7 +365,7 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
-			foreach (var t in tl) dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Remove, t));
+			foreach (var t in tl) EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Remove, t));
 		}
 
 		public bool Contains(T item)
@@ -590,7 +629,7 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
-			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Insert, item, index));
+			EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Insert, item, index));
 			if (Inserted != null) Inserted(index, new[]{item});
 		}
 
@@ -606,7 +645,7 @@ namespace System.Collections.Generic
 				ocl.ExitWriteLock();
 			}
 			int c = index;
-			foreach (var t in items) dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Insert, t, c++));
+			foreach (var t in items) EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Insert, t, c++));
 			if (Inserted != null) Inserted(index, items);
 		}
 
@@ -621,7 +660,7 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
-			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Insert, item, index));
+			EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Insert, item, index));
 		}
 
 		public void InsertRangeNoUpdate(int index, IEnumerable<T> items)
@@ -636,7 +675,7 @@ namespace System.Collections.Generic
 				ocl.ExitWriteLock();
 			}
 			int c = index;
-			foreach (var t in items) dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Insert, t, c++));
+			foreach (var t in items) EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Insert, t, c++));
 		}
 
 		public int LastIndexOf(T item)
@@ -691,7 +730,7 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
-			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Move, value, newindex));
+			EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Move, value, newindex));
 			if (Moved != null) Moved(value, newindex);
 		}
 
@@ -707,8 +746,8 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
-			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Remove, item));
-			if (Removed != null) Removed(new[] { item });
+			EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Remove, item));
+			Removed(new[] { item });
 			return rt;
 		}
 
@@ -725,8 +764,8 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
-			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Remove, ti, index));
-			if (RemovedAt != null) RemovedAt(index, new[] { ti });
+			EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Remove, ti, index));
+			RemovedAt(index, new[]{ti});
 		}
 
 		public void RemoveRange(int index, int count)
@@ -743,8 +782,8 @@ namespace System.Collections.Generic
 				ocl.ExitWriteLock();
 			}
 			int c = index;
-			foreach(var t in tl) dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Remove, t, c++));
-			if (Removed != null) Removed(tl);
+			foreach(var t in tl) EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Remove, t, c++));
+			Removed(tl);
 		}
 
 		public void MoveNoUpdate(T value, int newindex)
@@ -760,7 +799,7 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
-			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Move, value, newindex));
+			EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Move, value, newindex));
 		}
 
 		public bool RemoveNoUpdate(T item)
@@ -775,7 +814,7 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
-			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Remove, item));
+			EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Remove, item));
 			return rt;
 		}
 
@@ -792,7 +831,7 @@ namespace System.Collections.Generic
 			{
 				ocl.ExitWriteLock();
 			}
-			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Remove, ti, index));
+			EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Remove, ti, index));
 		}
 
 		public void RemoveRangeNoUpdate(int index, int count)
@@ -809,7 +848,7 @@ namespace System.Collections.Generic
 				ocl.ExitWriteLock();
 			}
 			int c = index;
-			foreach (var t in tl) dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Remove, t, c++));
+			foreach (var t in tl) EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Remove, t, c++));
 		}
 
 		public void ReplaceNoUpdate(T NewValue, T OldValue)
@@ -817,14 +856,14 @@ namespace System.Collections.Generic
 			ocl.EnterWriteLock();
 			try
 			{
-				for (int i = 0; i < il.Count; i++)
+				for(int i=0;i<il.Count;i++)
 					if (EqualityComparer<T>.Default.Equals(il[i], OldValue)) il[i] = NewValue;
 			}
 			finally
 			{
 				ocl.ExitWriteLock();
 			}
-			dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Replace, NewValue, OldValue));
+			EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Replace, NewValue, OldValue));
 		}
 
 		public T[] ToArray()
@@ -919,7 +958,7 @@ namespace System.Collections.Generic
 				{
 					ocl.ExitWriteLock();
 				}
-				dl.Enqueue(new ChangeListItem<T>(ListItemChangeMode.Replace, ti));
+				EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Replace, ti));
 				if (Replaced != null) Replaced(ti, value);
 			}
 		}

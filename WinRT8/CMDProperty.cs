@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
-using System.Windows;
 using Windows.UI.Xaml;
 
 namespace System
@@ -33,6 +32,7 @@ namespace System
 		}
 
 		public HashID ID { get; protected set; }
+		public string Name { get; protected set; }
 		public HashID OwnerID { get; protected set; }
 		public Type OwnerType { get; protected set; }
 		public Type PropertyType { get; protected set; }
@@ -54,9 +54,10 @@ namespace System
 		internal Action<CMDObject, T, T> CMDPropertyChangedCallback { get; private set; }
 		internal Func<CMDObject, T, bool> CMDValidateValueCallback { get; private set; }
 
-		private CMDProperty(HashID ID, HashID OwnerID, Type OwnerType)
+		private CMDProperty(HashID ID, string Name, HashID OwnerID, Type OwnerType)
 		{
 			this.ID = ID;
+			this.Name = Name;
 			this.OwnerID = OwnerID;
 			this.OwnerType = OwnerType;
 			PropertyType = typeof(T);
@@ -65,9 +66,10 @@ namespace System
 			CMDValidateValueCallback = null;
 		}
 
-		private CMDProperty(HashID ID, HashID OwnerID, Type OwnerType, T DefaultValue)
+		private CMDProperty(HashID ID, string Name, HashID OwnerID, Type OwnerType, T DefaultValue)
 		{
 			this.ID = ID;
+			this.Name = Name;
 			this.OwnerID = OwnerID;
 			this.OwnerType = OwnerType;
 			PropertyType = typeof(T);
@@ -76,9 +78,10 @@ namespace System
 			CMDValidateValueCallback = null;
 		}
 
-		private CMDProperty(HashID ID, HashID OwnerID, Type OwnerType, T DefaultValue, Action<CMDObject, T, T> CMDPropertyChangedCallback, Func<CMDObject, T, bool> CMDValidateValueCallback = null)
+		private CMDProperty(HashID ID, string Name, HashID OwnerID, Type OwnerType, T DefaultValue, Action<CMDObject, T, T> CMDPropertyChangedCallback, Func<CMDObject, T, bool> CMDValidateValueCallback = null)
 		{
 			this.ID = ID;
+			this.Name = Name;
 			this.OwnerID = OwnerID;
 			this.OwnerType = OwnerType;
 			PropertyType = typeof (T);
@@ -89,7 +92,7 @@ namespace System
 
 		public static CMDProperty<TType> Register<TType>(string Name, Type OwnerType)
 		{
-			var np = new CMDProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType);
+			var np = new CMDProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), Name, HashID.GenerateHashID(OwnerType.FullName), OwnerType);
 			if (!registered.TryAdd(np.ID, np))
 				throw new ArgumentException(string.Format("Unable to register the CMDProperty '{0}' on type '{1}'. A CMDProperty with the same Name and OwnerType has already been registered.", Name, np.OwnerType));
 			return np;
@@ -97,7 +100,7 @@ namespace System
 
 		public static CMDProperty<TType> Register<TType>(string Name, Type OwnerType, TType defaultValue)
 		{
-			var np = new CMDProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType, defaultValue);
+			var np = new CMDProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), Name, HashID.GenerateHashID(OwnerType.FullName), OwnerType, defaultValue);
 			if (!registered.TryAdd(np.ID, np))
 				throw new ArgumentException(string.Format("Unable to register the CMDProperty '{0}' on type '{1}'. A CMDProperty with the same Name and OwnerType has already been registered.", Name, np.OwnerType));
 			return np;
@@ -105,7 +108,7 @@ namespace System
 
 		public static CMDProperty<TType> Register<TType>(string Name, Type OwnerType, TType defaultValue, Action<CMDObject, TType, TType> CMDPropertyChangedCallback, Func<CMDObject, TType, bool> CMDValidateValueCallback = null)
 		{
-			var np = new CMDProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), HashID.GenerateHashID(OwnerType.FullName), OwnerType, defaultValue, CMDPropertyChangedCallback, CMDValidateValueCallback);
+			var np = new CMDProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), Name, HashID.GenerateHashID(OwnerType.FullName), OwnerType, defaultValue, CMDPropertyChangedCallback, CMDValidateValueCallback);
 			if (!registered.TryAdd(np.ID, np))
 				throw new ArgumentException(string.Format("Unable to register the CMDProperty '{0}' on type '{1}'. A CMDProperty with the same Name and OwnerType has already been registered.", Name, np.OwnerType));
 			return np;

@@ -101,7 +101,6 @@
     <Compile Include="ClientBase.cs" />
     <Compile Include="CMDObject.cs" />
     <Compile Include="CMDProperty.cs" />
-    <Compile Include="DeltaCollectionBase.cs" />
     <Compile Include="DeltaDictionary.cs" />
     <Compile Include="DeltaList.cs" />
     <Compile Include="DependencyDictionary.cs" />
