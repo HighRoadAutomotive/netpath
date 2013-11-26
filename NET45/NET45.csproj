@@ -68,7 +68,6 @@
     <Compile Include="ClientBase.cs" />
     <Compile Include="CMDObject.cs" />
     <Compile Include="CMDProperty.cs" />
-    <Compile Include="DeltaCollectionBase.cs" />
     <Compile Include="DependencyDictionary.cs" />
     <Compile Include="DependencyList.cs" />
     <Compile Include="DependencyQueue.cs" />

@@ -18,16 +18,19 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Security.Permissions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Xml.Serialization;
 
 namespace System.Collections.Generic
 {
 	[Serializable]
 	[HostProtectionAttribute(SecurityAction.LinkDemand, Synchronization = true, ExternalThreading = true)]
-	public class DeltaDictionary<TKey, TValue> : DeltaCollectionBase, IDictionary<TKey, TValue>
+	public class DeltaDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	{
 		public delegate void AddRemoveEventHandler(TKey Key, TValue Value);
 		public event AddRemoveEventHandler Added;
@@ -36,26 +39,34 @@ namespace System.Collections.Generic
 		public event ClearedEventHandler Cleared;
 		public delegate void UpdatedRemoveEventHandler(TKey Key, TValue NewValue, TValue OldValue);
 		public event UpdatedRemoveEventHandler Updated;
+		public delegate void SendChangesHandler(IEnumerable<ChangeDictionaryItem<TKey, TValue>> delta);
+		public event SendChangesHandler SendChanges;
 
-		private ConcurrentDictionary<TKey, TValue> il;
-		[NonSerialized] private ConcurrentQueue<ChangeDictionaryItem<TKey, TValue>> dl;
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private ConcurrentDictionary<TKey, TValue> il;
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private ConcurrentQueue<ChangeDictionaryItem<TKey, TValue>> dl;
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private long changeCount;
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private long batchInterval;
+		[IgnoreDataMember, XmlIgnore] public long BatchInterval { get { return batchInterval; } protected set { Interlocked.Exchange(ref batchInterval, value); } }
 
-		public DeltaDictionary()
+		public DeltaDictionary(long BatchInterval = 0)
 		{
 			il = new ConcurrentDictionary<TKey, TValue>();
 			dl = new ConcurrentQueue<ChangeDictionaryItem<TKey, TValue>>();
+			this.BatchInterval = BatchInterval;
 		}
 
-		public DeltaDictionary(int ConcurrencyLevel, int Capacity)
+		private DeltaDictionary(long BatchInterval, int ConcurrencyLevel, int Capacity)
 		{
 			il = new ConcurrentDictionary<TKey, TValue>(ConcurrencyLevel, Capacity);
 			dl = new ConcurrentQueue<ChangeDictionaryItem<TKey, TValue>>();
+			this.BatchInterval = BatchInterval;
 		}
 
-		public DeltaDictionary(IEnumerable<KeyValuePair<TKey, TValue>> Items)
+		private DeltaDictionary(long BatchInterval, IEnumerable<KeyValuePair<TKey, TValue>> Items)
 		{
 			il = new ConcurrentDictionary<TKey, TValue>(Items);
 			dl = new ConcurrentQueue<ChangeDictionaryItem<TKey, TValue>>();
+			this.BatchInterval = BatchInterval;
 		}
 
 		public void ApplyDelta(ChangeDictionaryItem<TKey, TValue> delta)
@@ -100,13 +111,38 @@ namespace System.Collections.Generic
 			Threading.Interlocked.Exchange(ref dl, new ConcurrentQueue<ChangeDictionaryItem<TKey, TValue>>());
 		}
 
+		private void EnqueueChange(ChangeDictionaryItem<TKey, TValue> change)
+		{
+			if (BatchInterval < 1) return;
+			if (BatchInterval == 1) SendChanges(new[] {change});
+			else
+			{
+				dl.Enqueue(change);
+				Interlocked.Increment(ref changeCount);
+
+				if (changeCount < BatchInterval) return;
+
+				Task.Factory.StartNew(() =>
+				{
+					var tdl = new List<ChangeDictionaryItem<TKey, TValue>>();
+					ChangeDictionaryItem<TKey, TValue> td;
+					while (dl.TryDequeue(out td))
+						tdl.Add(td);
+					Interlocked.Exchange(ref changeCount, 0);
+
+					try { SendChanges(tdl); }
+					catch { }
+				}, TaskCreationOptions.None);
+			}
+		}
+
 		public TValue AddOrUpdate(TKey key, Func<TKey, TValue> addValueFactory, Func<TKey, TValue, TValue> updateValueFactory)
 		{
 			TValue ov = default(TValue);
 			bool update = TryGetValue(key, out ov);
 			TValue rt = il.AddOrUpdate(key, addValueFactory, updateValueFactory);
-			if (update) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Replace, key, rt)); if (Updated != null) Updated(key, ov, rt); }
-			else { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); if (Added != null) Added(key, rt); }
+			if (update) { EnqueueChange(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Replace, key, rt)); if (Updated != null) Updated(key, ov, rt); }
+			else { EnqueueChange(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); if (Added != null) Added(key, rt); }
 			return rt;
 		}
 
@@ -115,8 +151,8 @@ namespace System.Collections.Generic
 			TValue ov = default(TValue);
 			bool update = TryGetValue(key, out ov);
 			TValue rt = il.AddOrUpdate(key, addValue, updateValueFactory);
-			if (update) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Replace, key, rt)); if (Updated != null) Updated(key, ov, rt); }
-			else { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); if (Added != null) Added(key, rt); }
+			if (update) { EnqueueChange(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Replace, key, rt)); if (Updated != null) Updated(key, ov, rt); }
+			else { EnqueueChange(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); if (Added != null) Added(key, rt); }
 			return rt;
 		}
 
@@ -125,8 +161,8 @@ namespace System.Collections.Generic
 			TValue ov = default(TValue);
 			bool update = TryGetValue(key, out ov);
 			TValue rt = il.AddOrUpdate(key, addValueFactory, updateValueFactory);
-			if (update) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Replace, key, rt)); }
-			else { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); }
+			if (update) { EnqueueChange(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Replace, key, rt)); }
+			else { EnqueueChange(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); }
 			return rt;
 		}
 
@@ -135,8 +171,8 @@ namespace System.Collections.Generic
 			TValue ov = default(TValue);
 			bool update = TryGetValue(key, out ov);
 			TValue rt = il.AddOrUpdate(key, addValue, updateValueFactory);
-			if (update) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Replace, key, rt)); }
-			else { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); }
+			if (update) { EnqueueChange(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Replace, key, rt)); }
+			else { EnqueueChange(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); }
 			return rt;
 		}
 
@@ -145,7 +181,7 @@ namespace System.Collections.Generic
 			KeyValuePair<TKey, TValue>[] tl = il.ToArray();
 			il.Clear();
 			foreach (var t in tl)
-				dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Remove, t.Key, t.Value));
+				EnqueueChange(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Remove, t.Key, t.Value));
 			Cleared(tl);
 		}
 
@@ -154,7 +190,7 @@ namespace System.Collections.Generic
 			KeyValuePair<TKey, TValue>[] tl = il.ToArray();
 			il.Clear();
 			foreach (var t in tl)
-				dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Remove, t.Key, t.Value));
+				EnqueueChange(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Remove, t.Key, t.Value));
 		}
 
 		public bool ContainsKey(TKey key)
@@ -171,7 +207,7 @@ namespace System.Collections.Generic
 		{
 			bool add = !ContainsKey(key);
 			TValue rt = il.GetOrAdd(key, valueFactory);
-			if (add) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); if (Added != null) Added(key, rt); }
+			if (add) { EnqueueChange(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); if (Added != null) Added(key, rt); }
 			return rt;
 		}
 
@@ -179,7 +215,7 @@ namespace System.Collections.Generic
 		{
 			bool add = !ContainsKey(key);
 			TValue rt = il.GetOrAdd(key, value);
-			if (add) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); if (Added != null) Added(key, rt); }
+			if (add) { EnqueueChange(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); if (Added != null) Added(key, rt); }
 			return rt;
 		}
 
@@ -187,7 +223,7 @@ namespace System.Collections.Generic
 		{
 			bool add = !ContainsKey(key);
 			TValue rt = il.GetOrAdd(key, valueFactory);
-			if (add) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); }
+			if (add) { EnqueueChange(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); }
 			return rt;
 		}
 
@@ -195,7 +231,7 @@ namespace System.Collections.Generic
 		{
 			bool add = !ContainsKey(key);
 			TValue rt = il.GetOrAdd(key, value);
-			if (add) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); }
+			if (add) { EnqueueChange(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, key, rt)); }
 			return rt;
 		}
 
@@ -212,14 +248,14 @@ namespace System.Collections.Generic
 		public bool TryAdd(TKey Key, TValue Value)
 		{
 			bool rt = il.TryAdd(Key, Value);
-			if (rt) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, Key, Value)); if (Added != null) Added(Key, Value); }
+			if (rt) { EnqueueChange(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, Key, Value)); if (Added != null) Added(Key, Value); }
 			return rt;
 		}
 
 		public bool TryAddNoUpdate(TKey Key, TValue Value)
 		{
 			bool rt = il.TryAdd(Key, Value);
-			if (rt) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, Key, Value)); }
+			if (rt) { EnqueueChange(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, Key, Value)); }
 			return rt;
 		}
 
@@ -231,14 +267,14 @@ namespace System.Collections.Generic
 		public bool TryRemove(TKey Key, out TValue Value)
 		{
 			bool rt = il.TryRemove(Key, out Value);
-			if (rt) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Remove, Key, Value)); if (Removed != null) Removed(Key, Value); }
+			if (rt) { EnqueueChange(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Remove, Key, Value)); if (Removed != null) Removed(Key, Value); }
 			return rt;
 		}
 
 		public bool TryRemoveNoUpdate(TKey Key, out TValue Value)
 		{
 			bool rt = il.TryRemove(Key, out Value);
-			if (rt) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Remove, Key, Value)); }
+			if (rt) { EnqueueChange(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Remove, Key, Value)); }
 			return rt;
 		}
 
@@ -247,7 +283,7 @@ namespace System.Collections.Generic
 			TValue ov;
 			if (!il.TryGetValue(Key, out ov)) return false;
 			bool rt = il.TryUpdate(Key, Value, Comparison);
-			if (rt) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Replace, Key, Value)); if (Updated != null) Updated(Key, ov, Value); }
+			if (rt) { EnqueueChange(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Replace, Key, Value)); if (Updated != null) Updated(Key, ov, Value); }
 			return rt;
 		}
 
@@ -256,7 +292,7 @@ namespace System.Collections.Generic
 			TValue ov;
 			if (!il.TryGetValue(Key, out ov)) return false;
 			bool rt = il.TryUpdate(Key, Value, Comparison);
-			if (rt) { dl.Enqueue(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Replace, Key, Value)); }
+			if (rt) { EnqueueChange(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Replace, Key, Value)); }
 			return rt;
 		}
 
@@ -271,12 +307,13 @@ namespace System.Collections.Generic
 			return il.ToArray();
 		}
 
-		public void SetEvents(AddRemoveEventHandler Added, AddRemoveEventHandler Removed, ClearedEventHandler Cleared, UpdatedRemoveEventHandler Updated)
+		public void SetEvents(AddRemoveEventHandler Added, AddRemoveEventHandler Removed, ClearedEventHandler Cleared, UpdatedRemoveEventHandler Updated, SendChangesHandler SendChanges)
 		{
 			this.Added = Added;
 			this.Removed = Removed;
 			this.Cleared = Cleared;
 			this.Updated = Updated;
+			this.SendChanges = SendChanges;
 		}
 
 		public void ClearEvents()
@@ -285,6 +322,7 @@ namespace System.Collections.Generic
 			Removed = null;
 			Cleared = null;
 			Updated = null;
+			SendChanges = null;
 		}
 
 		#region - Interface Implementation -

@@ -37,8 +37,9 @@ namespace System
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private static readonly SynchronizedCollection<Action> efactions;
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private static Task eftask;
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private static readonly CancellationTokenSource eftaskct = new CancellationTokenSource();
-		[NonSerialized, IgnoreDataMember, XmlIgnore] private static int updateInterval = 15000;
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private static int updateInterval = 1000;
 		[IgnoreDataMember, XmlIgnore] public static int EFUpdateInterval { get { return updateInterval; } set { Interlocked.Exchange(ref updateInterval, value); } }
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private readonly ConcurrentQueue<CMDItemBase> efchanges;
 
 		static DREObjectBase()
 		{
@@ -70,7 +71,7 @@ namespace System
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private long changeCount;
 		[IgnoreDataMember, XmlIgnore] protected long ChangeCount { get { return changeCount; } }
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private long batchInterval;
-		[IgnoreDataMember, XmlIgnore] public long BatchInterval { get { return batchInterval; } protected set { batchInterval = value; } }
+		[IgnoreDataMember, XmlIgnore] public long BatchInterval { get { return batchInterval; } protected set { Interlocked.Exchange(ref batchInterval, value); } }
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private DependencyObjectEx baseXAMLObject; 
 		[IgnoreDataMember, XmlIgnore] protected DependencyObjectEx BaseXAMLObject { get { return baseXAMLObject; } set { if (baseXAMLObject == null) baseXAMLObject = value; } }
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private int isDirty = 0;
@@ -79,6 +80,7 @@ namespace System
 		protected DREObjectBase()
 		{
 			modifications = new ConcurrentQueue<CMDItemBase>();
+			efchanges = new ConcurrentQueue<CMDItemBase>();
 			values = new ConcurrentDictionary<HashID, object>();
 			changeCount = 0;
 			BatchInterval = 0;
@@ -88,6 +90,7 @@ namespace System
 		protected DREObjectBase(DependencyObjectEx baseXAMLObject)
 		{
 			modifications = new ConcurrentQueue<CMDItemBase>();
+			efchanges = new ConcurrentQueue<CMDItemBase>();
 			values = new ConcurrentDictionary<HashID, object>();
 			changeCount = 0;
 			BatchInterval = 0;
@@ -97,6 +100,7 @@ namespace System
 		protected DREObjectBase(long BatchInterval)
 		{
 			modifications = new ConcurrentQueue<CMDItemBase>();
+			efchanges = new ConcurrentQueue<CMDItemBase>();
 			values = new ConcurrentDictionary<HashID, object>();
 			changeCount = 0;
 			this.BatchInterval = BatchInterval;
@@ -106,6 +110,7 @@ namespace System
 		protected DREObjectBase(DependencyObjectEx baseXAMLObject, long BatchInterval)
 		{
 			modifications = new ConcurrentQueue<CMDItemBase>();
+			efchanges = new ConcurrentQueue<CMDItemBase>();
 			values = new ConcurrentDictionary<HashID, object>();
 			changeCount = 0;
 			this.BatchInterval = BatchInterval;
@@ -135,18 +140,12 @@ namespace System
 				//Remove the value from the list, which sets it to the default value.
 				object temp;
 				if (!values.TryRemove(de.ID, out temp)) return;
+				if (de.EnableEF) efchanges.Enqueue(new CMDItemValue<T>(true, de.ID));
 				IsDirty = true;
 				if (de.EnableBatching && BatchInterval > 0)
 				{
 					modifications.Enqueue(new CMDItemValue<T>(true, de.ID));
 					IncrementChangeCount();
-				}
-
-				//Clear the changed event handlers
-				if (de.IsDictionary || de.IsList)
-				{
-					var tt = temp as DeltaCollectionBase;
-					if (tt != null) tt.ClearChangedHandlers();
 				}
 
 				if (de.XAMLProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLProperty, de.defaultValue);
@@ -160,13 +159,6 @@ namespace System
 			}
 			else
 			{
-				//Setup the change event handler
-				if (de.IsDictionary || de.IsList)
-				{
-					var tt = value as DeltaCollectionBase;
-					if (tt != null) tt.Changed += (Sender, Args) => IncrementChangeCount();
-				}
-
 				//Update the value
 				object temp = values.AddOrUpdate(de.ID, value, (p, v) => value);
 				IsDirty = true;
@@ -195,26 +187,14 @@ namespace System
 				//Remove the value from the list, which sets it to the default value.
 				object temp;
 				if (!values.TryRemove(de.ID, out temp)) return;
+				if (de.EnableEF) efchanges.Enqueue(new CMDItemValue<T>(true, de.ID));
 				IsDirty = true;
-
-				//Clear the changed event handlers
-				if (de.IsDictionary || de.IsList)
-				{
-					var tt = temp as DeltaCollectionBase;
-					if (tt != null) tt.ClearChangedHandlers();
-				}
 			}
 			else
 			{
-				//Setup the change event handler
-				if (de.IsDictionary || de.IsList)
-				{
-					var tt = value as DeltaCollectionBase;
-					if (tt != null) tt.Changed += (Sender, Args) => IncrementChangeCount();
-				}
-
 				//Update the values
 				var temp = (T)values.AddOrUpdate(de.ID, value, (p, v) => value);
+				if (de.EnableEF) efchanges.Enqueue(new CMDItemValue<T>(false, de.ID, value));
 				IsDirty = true;
 			}
 			if (de.XAMLProperty != null && baseXAMLObject != null) baseXAMLObject.UpdateValueThreaded(de.XAMLProperty, value);
@@ -229,18 +209,12 @@ namespace System
 				//Remove the value from the list, which sets it to the default value.
 				object temp;
 				if (!values.TryRemove(de.ID, out temp)) return;
-				if (de.EnableBatching && BatchInterval > 0)
+				if (de.EnableEF) efchanges.Enqueue(new CMDItemValue<T>(true, de.ID));
 				IsDirty = true;
+				if (de.EnableBatching && BatchInterval > 0)
 				{
 					modifications.Enqueue(new CMDItemValue<T>(true, de.ID));
 					IncrementChangeCount();
-				}
-
-				//Clear the changed event handlers
-				if (de.IsDictionary || de.IsList)
-				{
-					var tt = temp as DeltaCollectionBase;
-					if (tt != null) tt.ClearChangedHandlers();
 				}
 
 				//Call the property updated callback
@@ -248,15 +222,9 @@ namespace System
 			}
 			else
 			{
-				//Setup the change event handler
-				if (de.IsDictionary || de.IsList)
-				{
-					var tt = value as DeltaCollectionBase;
-					if (tt != null) tt.Changed += (Sender, Args) => IncrementChangeCount();
-				}
-
 				//Update the values
 				var temp = (T)values.AddOrUpdate(de.ID, value, (p, v) => value);
+				if (de.EnableEF) efchanges.Enqueue(new CMDItemValue<T>(false, de.ID, value));
 				IsDirty = true;
 				if (de.EnableBatching && BatchInterval > 0)
 				{
@@ -274,17 +242,12 @@ namespace System
 			object temp;
 			if (!values.TryRemove(de.ID, out temp))
 			{
+				if (de.EnableEF) efchanges.Enqueue(new CMDItemValue<T>(true, de.ID));
 				IsDirty = true;
 				if (de.EnableBatching && BatchInterval > 0)
 				{
-					modifications.Enqueue(new CMDItemValue<T>(false, de.ID));
+					modifications.Enqueue(new CMDItemValue<T>(true, de.ID));
 					IncrementChangeCount();
-				}
-				//Clear the changed event handlers
-				if (de.IsDictionary || de.IsList)
-				{
-					var tt = temp as DeltaCollectionBase;
-					if (tt != null) tt.ClearChangedHandlers();
 				}
 			}
 			if (de.DREPropertyChangedCallback != null)
