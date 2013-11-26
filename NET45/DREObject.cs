@@ -16,10 +16,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Xml.Serialization;
 using ProtoBuf;
@@ -31,6 +33,38 @@ namespace System
 	[ProtoBuf.ProtoContract]
 	public abstract class DREObjectBase
 	{
+		//EntityFramework Support
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private static readonly SynchronizedCollection<Action> efactions;
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private static Task eftask;
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private static readonly CancellationTokenSource eftaskct = new CancellationTokenSource();
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private static int updateInterval = 15000;
+		[IgnoreDataMember, XmlIgnore] public static int EFUpdateInterval { get { return updateInterval; } set { Interlocked.Exchange(ref updateInterval, value); } }
+
+		static DREObjectBase()
+		{
+			efactions = new SynchronizedCollection<Action>();
+		}
+
+		public static void StartEF()
+		{
+			eftask = Task.Factory.StartNew(() =>
+			{
+				while (!eftaskct.Token.IsCancellationRequested)
+				{
+					Thread.Sleep(EFUpdateInterval);
+					foreach (var efa in efactions) efa();
+				}
+				eftaskct.Token.ThrowIfCancellationRequested();
+			}, eftaskct.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+		}
+
+		public static void StopEF()
+		{
+			eftaskct.Cancel();
+			try { eftask.Wait(); }
+			catch (AggregateException ex) { ex.Flatten(); }
+		}
+
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private ConcurrentDictionary<HashID, object> values;
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private ConcurrentQueue<CMDItemBase> modifications;
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private long changeCount;
@@ -40,7 +74,7 @@ namespace System
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private DependencyObjectEx baseXAMLObject; 
 		[IgnoreDataMember, XmlIgnore] protected DependencyObjectEx BaseXAMLObject { get { return baseXAMLObject; } set { if (baseXAMLObject == null) baseXAMLObject = value; } }
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private int isDirty = 0;
-		[IgnoreDataMember, XmlIgnore] public bool IsDirty { get { if (isDirty == 0) { return false; } return true; } private set { if (value) { Interlocked.Exchange(ref isDirty, 1); } } }
+		[IgnoreDataMember, XmlIgnore] public bool IsDirty { get { if (isDirty == 0) { return false; } return true; } internal set { if (value) { Interlocked.Exchange(ref isDirty, 1); } else { Interlocked.Exchange(ref isDirty, 0); } } }
 
 		protected DREObjectBase()
 		{
@@ -361,13 +395,13 @@ namespace System
 			return __dcm.ContainsKey(DataID);
 		}
 
-		public static T RegisterData(Guid ClientID, T Data)
+		public T Register(Guid ClientID)
 		{
-			Data.__crl.GetOrAdd(ClientID, Data._DREID);
-			return __dcm.GetOrAdd(Data._DREID, Data);
+			__crl.GetOrAdd(ClientID, _DREID);
+			return __dcm.GetOrAdd(_DREID, (T)this);
 		}
 
-		public static T RegisterData(Guid ClientID, Guid DataID)
+		public static T Register(Guid ClientID, Guid DataID)
 		{
 			T Data;
 			__dcm.TryGetValue(DataID, out Data);
@@ -376,14 +410,14 @@ namespace System
 			return __dcm.GetOrAdd(Data._DREID, Data);
 		}
 
-		public static bool UnregisterData(Guid ClientID, Guid DataID)
+		public bool Unregister(Guid ClientID)
 		{
 			T data;
-			__dcm.TryGetValue(DataID, out data);
+			__dcm.TryGetValue(_DREID, out data);
 			if (data == null) return true;
 			Guid dreid;
 			data.__crl.TryRemove(ClientID, out dreid);
-			return !data.__crl.IsEmpty || __dcm.TryRemove(DataID, out data);
+			return !data.__crl.IsEmpty || __dcm.TryRemove(_DREID, out data);
 		}
 
 		//Constructors
@@ -424,4 +458,73 @@ namespace System
 		[IgnoreDataMember, XmlIgnore] public IEnumerable<Guid> ClientList { get { return __crl.Keys; } }
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private ConcurrentDictionary<Guid, Guid> __crl = new ConcurrentDictionary<Guid, Guid>();
 	}
+
+
+	[DataContract]
+	[ProtoBuf.ProtoContract]
+	public abstract class EFDREObject<T, TDataContext> : DREObject<T> where T : EFDREObject<T, TDataContext> where TDataContext : ObjectContext, new()
+	{
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private static readonly ConcurrentDictionary<Guid, T> efobjects;
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private static string efconnection;
+		[IgnoreDataMember, XmlIgnore] public static string EFConnection { get { return efconnection; } set { Interlocked.Exchange(ref efconnection, value); } }
+
+		static EFDREObject()
+		{
+			efobjects = new ConcurrentDictionary<Guid, T>();
+		}
+
+		private static void DoEFUpdates()
+		{
+			var db = new TDataContext();
+			if (!string.IsNullOrEmpty(efconnection)) db.Connection.ConnectionString = efconnection;
+			db.Connection.Open();
+
+			var efol = efobjects.ToArray().Where(a => a.Value.IsDirty).Select(b => b.Value).ToList();
+			foreach (var efo in efol) efo.UpdateDataObject(db);
+
+			db.Connection.Close();
+		}
+
+		protected EFDREObject()
+		{
+		}
+
+		protected EFDREObject(string Connection)
+		{
+			EFConnection = Connection;
+		}
+
+		protected EFDREObject(string Connection, DependencyObjectEx baseXAMLObject)
+			: base(baseXAMLObject)
+		{
+			EFConnection = Connection;
+		}
+
+		protected EFDREObject(string Connection, long BatchInterval)
+			: base(BatchInterval)
+		{
+			EFConnection = Connection;
+		}
+
+		protected EFDREObject(string Connection, DependencyObjectEx baseXAMLObject, long BatchInterval)
+			: base(baseXAMLObject, BatchInterval)
+		{
+			EFConnection = Connection;
+		}
+
+		public T Register()
+		{
+			return (T)efobjects.GetOrAdd(_DREID, (T)this);
+		}
+
+		public T Unregister()
+		{
+			T temp;
+			efobjects.TryRemove(_DREID, out temp);
+			return temp;
+		}
+
+		protected abstract void UpdateDataObject(TDataContext Database);
+	}
+
 }
