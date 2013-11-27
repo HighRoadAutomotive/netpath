@@ -120,7 +120,7 @@ namespace System.ServiceModel
 		protected static bool RemoveClient(Guid ClientID)
 		{
 			T val;
-			return Clients.TryRemoveNoUpdate(ClientID, out val);
+			return Clients.TryRemoveNoChange(ClientID, out val);
 		}
 
 		public TCallback Callback { get; private set; }
