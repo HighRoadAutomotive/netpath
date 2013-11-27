@@ -88,13 +88,13 @@ namespace System.Collections.Generic
 			return rt;
 		}
 
-		public TValue AddOrUpdateNoUpdate(TKey key, Func<TKey, TValue> addValueFactory, Func<TKey, TValue, TValue> updateValueFactory)
+		public TValue AddOrUpdateNoChange(TKey key, Func<TKey, TValue> addValueFactory, Func<TKey, TValue, TValue> updateValueFactory)
 		{
 			TValue rt = il.AddOrUpdate(key, addValueFactory, updateValueFactory);
 			return rt;
 		}
 
-		public TValue AddOrUpdateNoUpdate(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory)
+		public TValue AddOrUpdateNoChange(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory)
 		{
 			TValue rt = il.AddOrUpdate(key, addValue, updateValueFactory);
 			return rt;
@@ -107,7 +107,7 @@ namespace System.Collections.Generic
 			CallCleared(c); 
 		}
 
-		public void ClearNoUpdate()
+		public void ClearNoChange()
 		{
 			KeyValuePair<TKey, TValue>[] c = il.ToArray();
 			il.Clear();
@@ -139,12 +139,12 @@ namespace System.Collections.Generic
 			return rt;
 		}
 
-		public TValue GetOrAddNoUpdate(TKey key, Func<TKey, TValue> valueFactory)
+		public TValue GetOrAddNoChange(TKey key, Func<TKey, TValue> valueFactory)
 		{
 			return il.GetOrAdd(key, valueFactory);
 		}
 
-		public TValue GetOrAddNoUpdate(TKey key, TValue value)
+		public TValue GetOrAddNoChange(TKey key, TValue value)
 		{
 			return il.GetOrAdd(key, value);
 		}
@@ -187,17 +187,17 @@ namespace System.Collections.Generic
 			return rt;
 		}
 
-		public bool TryAddNoUpdate(TKey Key, TValue Value)
+		public bool TryAddNoChange(TKey Key, TValue Value)
 		{
 			return il.TryAdd(Key, Value);
 		}
 
-		public bool TryRemoveNoUpdate(TKey Key, out TValue Value)
+		public bool TryRemoveNoChange(TKey Key, out TValue Value)
 		{
 			return il.TryRemove(Key, out Value);
 		}
 
-		public bool TryUpdateNoUpdate(TKey Key, TValue Value, TValue Comparison)
+		public bool TryUpdateNoChange(TKey Key, TValue Value, TValue Comparison)
 		{
 			return il.TryUpdate(Key, Value, Comparison);
 		}

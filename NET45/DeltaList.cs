@@ -268,7 +268,7 @@ namespace System.Collections.Generic
 			if (Added != null) Added(items);
 		}
 
-		public void AddNoUpdate(T item)
+		public void AddNoChange(T item)
 		{
 			ocl.EnterWriteLock();
 			try
@@ -282,7 +282,7 @@ namespace System.Collections.Generic
 			EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Add, item));
 		}
 
-		public void AddRangeNoUpdate(IEnumerable<T> items)
+		public void AddRangeNoChange(IEnumerable<T> items)
 		{
 			ocl.EnterWriteLock();
 			try
@@ -352,7 +352,7 @@ namespace System.Collections.Generic
 			if (Cleared != null) Cleared(tl);
 		}
 
-		public void ClearNoUpdate()
+		public void ClearNoChange()
 		{
 			T[] tl;
 			ocl.EnterWriteLock();
@@ -649,7 +649,7 @@ namespace System.Collections.Generic
 			if (Inserted != null) Inserted(index, items);
 		}
 
-		public void InsertNoUpdate(int index, T item)
+		public void InsertNoChange(int index, T item)
 		{
 			ocl.EnterWriteLock();
 			try
@@ -663,7 +663,7 @@ namespace System.Collections.Generic
 			EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Insert, item, index));
 		}
 
-		public void InsertRangeNoUpdate(int index, IEnumerable<T> items)
+		public void InsertRangeNoChange(int index, IEnumerable<T> items)
 		{
 			ocl.EnterWriteLock();
 			try
@@ -786,7 +786,7 @@ namespace System.Collections.Generic
 			Removed(tl);
 		}
 
-		public void MoveNoUpdate(T value, int newindex)
+		public void MoveNoChange(T value, int newindex)
 		{
 			ocl.EnterWriteLock();
 			try
@@ -802,7 +802,7 @@ namespace System.Collections.Generic
 			EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Move, value, newindex));
 		}
 
-		public bool RemoveNoUpdate(T item)
+		public bool RemoveNoChange(T item)
 		{
 			ocl.EnterWriteLock();
 			bool rt;
@@ -818,7 +818,7 @@ namespace System.Collections.Generic
 			return rt;
 		}
 
-		public void RemoveAtNoUpdate(int index)
+		public void RemoveAtNoChange(int index)
 		{
 			T ti = default(T);
 			ocl.EnterWriteLock();
@@ -834,7 +834,7 @@ namespace System.Collections.Generic
 			EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Remove, ti, index));
 		}
 
-		public void RemoveRangeNoUpdate(int index, int count)
+		public void RemoveRangeNoChange(int index, int count)
 		{
 			T[] tl;
 			ocl.EnterWriteLock();
@@ -851,7 +851,7 @@ namespace System.Collections.Generic
 			foreach (var t in tl) EnqueueChange(new ChangeListItem<T>(ListItemChangeMode.Remove, t, c++));
 		}
 
-		public void ReplaceNoUpdate(T NewValue, T OldValue)
+		public void ReplaceNoChange(T NewValue, T OldValue)
 		{
 			ocl.EnterWriteLock();
 			try

@@ -156,7 +156,7 @@ namespace System.Collections.Generic
 			return rt;
 		}
 
-		public TValue AddOrUpdateNoUpdate(TKey key, Func<TKey, TValue> addValueFactory, Func<TKey, TValue, TValue> updateValueFactory)
+		public TValue AddOrUpdateNoChange(TKey key, Func<TKey, TValue> addValueFactory, Func<TKey, TValue, TValue> updateValueFactory)
 		{
 			TValue ov = default(TValue);
 			bool update = TryGetValue(key, out ov);
@@ -166,7 +166,7 @@ namespace System.Collections.Generic
 			return rt;
 		}
 
-		public TValue AddOrUpdateNoUpdate(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory)
+		public TValue AddOrUpdateNoChange(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory)
 		{
 			TValue ov = default(TValue);
 			bool update = TryGetValue(key, out ov);
@@ -185,7 +185,7 @@ namespace System.Collections.Generic
 			Cleared(tl);
 		}
 
-		public void ClearNoUpdate()
+		public void ClearNoChange()
 		{
 			KeyValuePair<TKey, TValue>[] tl = il.ToArray();
 			il.Clear();
@@ -219,7 +219,7 @@ namespace System.Collections.Generic
 			return rt;
 		}
 
-		public TValue GetOrAddNoUpdate(TKey key, Func<TKey, TValue> valueFactory)
+		public TValue GetOrAddNoChange(TKey key, Func<TKey, TValue> valueFactory)
 		{
 			bool add = !ContainsKey(key);
 			TValue rt = il.GetOrAdd(key, valueFactory);
@@ -227,7 +227,7 @@ namespace System.Collections.Generic
 			return rt;
 		}
 
-		public TValue GetOrAddNoUpdate(TKey key, TValue value)
+		public TValue GetOrAddNoChange(TKey key, TValue value)
 		{
 			bool add = !ContainsKey(key);
 			TValue rt = il.GetOrAdd(key, value);
@@ -252,7 +252,7 @@ namespace System.Collections.Generic
 			return rt;
 		}
 
-		public bool TryAddNoUpdate(TKey Key, TValue Value)
+		public bool TryAddNoChange(TKey Key, TValue Value)
 		{
 			bool rt = il.TryAdd(Key, Value);
 			if (rt) { EnqueueChange(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Add, Key, Value)); }
@@ -271,7 +271,7 @@ namespace System.Collections.Generic
 			return rt;
 		}
 
-		public bool TryRemoveNoUpdate(TKey Key, out TValue Value)
+		public bool TryRemoveNoChange(TKey Key, out TValue Value)
 		{
 			bool rt = il.TryRemove(Key, out Value);
 			if (rt) { EnqueueChange(new ChangeDictionaryItem<TKey, TValue>(ListItemChangeMode.Remove, Key, Value)); }
@@ -287,7 +287,7 @@ namespace System.Collections.Generic
 			return rt;
 		}
 
-		public bool TryUpdateNoUpdate(TKey Key, TValue Value, TValue Comparison)
+		public bool TryUpdateNoChange(TKey Key, TValue Value, TValue Comparison)
 		{
 			TValue ov;
 			if (!il.TryGetValue(Key, out ov)) return false;

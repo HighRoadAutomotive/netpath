@@ -106,8 +106,6 @@
     <Compile Include="DependencyDictionary.cs" />
     <Compile Include="DependencyList.cs" />
     <Compile Include="DependencyObjectEx.cs" />
-    <Compile Include="DependencyQueue.cs" />
-    <Compile Include="DependencyStack.cs" />
     <Compile Include="DREObject.cs" />
     <Compile Include="DREProperty.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
