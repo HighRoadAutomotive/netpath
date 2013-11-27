@@ -35,18 +35,19 @@
 		<Data:TypeEditor OpenType="{Binding Path=OpenType.ClientType}" x:Name="ClientTypeEditor" SupportInheritedTypes="True" SupportKnownTypes="True" Grid.Row="1" Margin="100,0,0,0" />
 		<ToggleButton Grid.Row="2" Margin="5" IsChecked="{Binding Path=OpenType.HasXAMLType}" Content="XAML Type:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="90" />
 		<Data:TypeEditor OpenType="{Binding Path=OpenType.XAMLType}" x:Name="XAMLTypeEditor" CanSetType="False" SupportInheritedTypes="True" Grid.Row="2" Margin="100,0,0,0" />
-		<ToggleButton Grid.Row="3" Margin="5" IsChecked="{Binding Path=OpenType.HasEntity}" Content="Entity Type:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="90" />
 		<pc:TextBox Text="{Binding Path=OpenType.EntityName, UpdateSourceTrigger=PropertyChanged}" x:Name="EntityName" Grid.Row="3" Margin="100,5,5,5" IsEnabled="{Binding Path=OpenType.HasEntity}" LabelText="Entity Type Name" />
-		<Grid Grid.Row="4">
+		<Grid Grid.Row="4" Margin="0,5,0,0" >
 			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
 				<ColumnDefinition Width="*" />
 				<ColumnDefinition Width="*" />
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
 			<ToggleButton Content="Enable Concurrently Mutable Data" IsChecked="{Binding Path=OpenType.CMDEnabled}" Margin="5" Grid.Column="0" Grid.Row="0" />
 			<ToggleButton Content="Enable Data Revision Exchange" IsChecked="{Binding Path=OpenType.DREEnabled}" IsEnabled="{Binding Path=OpenType.CMDEnabled}" Margin="5" Grid.Column="1" Grid.Row="0" />
-			<Label Content="Revision Message Batch Interval:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Column="2" />
-			<sf:IntegerTextBox Value="{Binding Path=OpenType.DREBatchCount}" IsEnabled="{Binding Path=OpenType.DREEnabled}" Margin="202,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Name="UpdateBatchSize" Grid.Column="2" FontSize="10pt" ToolTip="Specify the number of changes to the this object before a change message is sent." />
+			<ToggleButton Grid.Column="2" Margin="5" IsChecked="{Binding Path=OpenType.HasEntity}" IsEnabled="{Binding Path=OpenType.DREEnabled}"  Content="Enable Entity Framework" VerticalContentAlignment="Center" />
+			<Label Content="Revision Batch Size:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Column="3" />
+			<sf:IntegerTextBox Value="{Binding Path=OpenType.DREBatchCount}" IsEnabled="{Binding Path=OpenType.DREEnabled}" Margin="125,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Name="UpdateBatchSize" Grid.Column="3" FontSize="10pt" ToolTip="Specify the number of changes to the this object before a change message is sent." />
 		</Grid>
 		<Grid Name="OptionsGrid" Grid.Row="5" Margin="0,5,0,0" >
 			<Grid.ColumnDefinitions>
