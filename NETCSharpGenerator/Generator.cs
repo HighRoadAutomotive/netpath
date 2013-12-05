@@ -191,7 +191,7 @@ namespace NETPath.Generators.NET.CS
 				if (pun.SL && (Framework == ProjectGenerationFramework.SL40 || Framework == ProjectGenerationFramework.SL50))
 					code.AppendFormat("using {0};{1}", pun.Namespace, Environment.NewLine);
 			}
-			if (Data.EnableEntityFramework) code.AppendLine("using System.Data.Entity.Core.Objects;");
+			if (Data.EnableEntityFramework && Server) code.AppendLine("using System.Data.Entity.Core.Objects;");
 			code.AppendLine();
 
 			//Generate ContractNamespace Attributes

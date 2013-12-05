@@ -177,6 +177,7 @@ namespace NETPath.Generators.WinRT.CS
 				else if (pun.RT && Framework == ProjectGenerationFramework.WIN8)
 					code.AppendFormat("using {0};{1}", pun.Namespace, Environment.NewLine);
 			}
+			if (Data.EnableEntityFramework && Server) code.AppendLine("using System.Data.Entity.Core.Objects;");
 			code.AppendLine();
 
 			//Generate ContractNamespace Attributes

@@ -1136,13 +1136,13 @@ namespace NETPath.Generators.WinRT.CS
 						foreach (MethodParameter mp in o.NewParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.NewParameters.IndexOf(mp) < o.NewParameters.Count - 1 ? ", " : ""));
 						code.AppendLine(")");
 						code.AppendLine("\t\t{");
-						code.AppendLine(string.Format("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(() => {{ {0}.RegisterData(ClientID, DREData); }}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
+						code.AppendLine(string.Format("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(() => {{ {0}.Register(ClientID, DREData); }}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
 						code.AppendLine("\t\t}");
 						code.Append(string.Format("\t\tpublic virtual System.Threading.Tasks.Task Delete{0}DREAsync(Guid DREDataID{1}", dcmtype.Name, o.NewParameters.Count != 0 ? ", " : ""));
 						foreach (MethodParameter mp in o.DeleteParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.DeleteParameters.IndexOf(mp) < o.DeleteParameters.Count - 1 ? ", " : ""));
 						code.AppendLine(")");
 						code.AppendLine("\t\t{");
-						code.AppendLine(string.Format("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(() => {{ {0}.UnregisterData(ClientID, DREDataID); }}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
+						code.AppendLine(string.Format("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(() => {{ {0}.Unregister(ClientID, DREDataID); }}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
 						code.AppendLine("\t\t}");
 					}
 					if (o.UseSyncPattern || !uap)
@@ -1151,13 +1151,13 @@ namespace NETPath.Generators.WinRT.CS
 						foreach (MethodParameter mp in o.NewParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.NewParameters.IndexOf(mp) < o.NewParameters.Count - 1 ? ", " : ""));
 						code.AppendLine(")");
 						code.AppendLine("\t\t{");
-						code.AppendLine(string.Format("\t\t\t{0}.RegisterData(ClientID, DREData);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
+						code.AppendLine(string.Format("\t\t\t{0}.Register(ClientID, DREData);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
 						code.AppendLine("\t\t}");
 						code.Append(string.Format("\t\tpublic virtual void Delete{0}DRE(Guid DREDataID{1}", dcmtype.Name, o.DeleteParameters.Count != 0 ? ", " : ""));
 						foreach (MethodParameter mp in o.DeleteParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.DeleteParameters.IndexOf(mp) < o.DeleteParameters.Count - 1 ? ", " : ""));
 						code.AppendLine(")");
 						code.AppendLine("\t\t{");
-						code.AppendLine(string.Format("\t\t\t{0}.UnregisterData(ClientID, DREDataID);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
+						code.AppendLine(string.Format("\t\t\t{0}.Unregister(ClientID, DREDataID);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
 						code.AppendLine("\t\t}");
 					}
 				}
@@ -1172,7 +1172,7 @@ namespace NETPath.Generators.WinRT.CS
 						foreach (MethodParameter mp in o.CloseParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.CloseParameters.IndexOf(mp) < o.CloseParameters.Count - 1 ? ", " : ""));
 						code.AppendLine(")");
 						code.AppendLine("\t\t{");
-						code.AppendLine(string.Format("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(() => {{ {0}.UnregisterData(ClientID, DREDataID); }}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
+						code.AppendLine(string.Format("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(() => {{ {0}.Unregister(ClientID, DREDataID); }}, System.Threading.Tasks.TaskCreationOptions.PreferFairness);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
 						code.AppendLine("\t\t}");
 					}
 					if (o.UseSyncPattern || !uap)
@@ -1184,7 +1184,7 @@ namespace NETPath.Generators.WinRT.CS
 						foreach (MethodParameter mp in o.CloseParameters) code.Append(string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(mp.Type.HasClientType ? mp.Type.ClientType : mp.Type), mp.Name, o.CloseParameters.IndexOf(mp) < o.CloseParameters.Count - 1 ? ", " : ""));
 						code.AppendLine(")");
 						code.AppendLine("\t\t{");
-						code.AppendLine(string.Format("\t\t\t{0}.UnregisterData(ClientID, DREDataID);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
+						code.AppendLine(string.Format("\t\t\t{0}.Unregister(ClientID, DREDataID);", DataTypeGenerator.GenerateType(dcmtype.HasClientType ? dcmtype.ClientType : dcmtype)));
 						code.AppendLine("\t\t}");
 					}
 				}
