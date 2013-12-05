@@ -33,7 +33,7 @@ namespace System
 
 		internal bool EnableBatching { get; private set; }
 
-		private DREProperty(HashID ID, string Name, HashID OwnerID, Type OwnerType, bool EnableBatching, bool EnableEF, DependencyProperty XAMLProperty = null)
+		private DREProperty(HashID ID, string Name, HashID OwnerID, Type OwnerType, bool EnableBatching, DependencyProperty XAMLProperty = null)
 		{
 			this.ID = ID;
 			this.Name = Name;
@@ -47,7 +47,7 @@ namespace System
 			this.EnableBatching = EnableBatching;
 		}
 
-		private DREProperty(HashID ID, string Name, HashID OwnerID, Type OwnerType, bool EnableBatching, bool EnableEF, T DefaultValue, DependencyProperty XAMLProperty = null)
+		private DREProperty(HashID ID, string Name, HashID OwnerID, Type OwnerType, bool EnableBatching, T DefaultValue, DependencyProperty XAMLProperty = null)
 		{
 			this.ID = ID;
 			this.Name = Name;
@@ -61,7 +61,7 @@ namespace System
 			this.EnableBatching = EnableBatching;
 		}
 
-		private DREProperty(HashID ID, string Name, HashID OwnerID, Type OwnerType, bool EnableBatching, bool EnableEF, T DefaultValue, Action<DREObjectBase, T, T> DREPropertyChangedCallback, Action<DREObjectBase, T, T> DREPropertyUpdatedCallback = null, Func<DREObjectBase, T, bool> DeltaValidateValueCallback = null, DependencyProperty XAMLProperty = null)
+		private DREProperty(HashID ID, string Name, HashID OwnerID, Type OwnerType, bool EnableBatching, T DefaultValue, Action<DREObjectBase, T, T> DREPropertyChangedCallback, Action<DREObjectBase, T, T> DREPropertyUpdatedCallback = null, Func<DREObjectBase, T, bool> DeltaValidateValueCallback = null, DependencyProperty XAMLProperty = null)
 		{
 			this.ID = ID;
 			this.Name = Name;
@@ -76,25 +76,25 @@ namespace System
 			this.EnableBatching = EnableBatching;
 		}
 
-		public static DREProperty<TType> Register<TType>(string Name, Type OwnerType, bool EnableBatching, bool EnableEF, DependencyProperty XAMLProperty = null)
+		public static DREProperty<TType> Register<TType>(string Name, Type OwnerType, bool EnableBatching, DependencyProperty XAMLProperty = null)
 		{
-			var np = new DREProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), Name, HashID.GenerateHashID(OwnerType.FullName), OwnerType, EnableBatching, EnableEF, XAMLProperty);
+			var np = new DREProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), Name, HashID.GenerateHashID(OwnerType.FullName), OwnerType, EnableBatching, XAMLProperty);
 			if (!registered.TryAdd(np.ID, np))
 				throw new ArgumentException(string.Format("Unable to register the DREProperty '{0}' on type '{1}'. A DREProperty with the same Name and OwnerType has already been registered.", Name, np.OwnerType));
 			return np;
 		}
 
-		public static DREProperty<TType> Register<TType>(string Name, Type OwnerType, bool EnableBatching, bool EnableEF, TType DefaultValue, DependencyProperty XAMLProperty = null)
+		public static DREProperty<TType> Register<TType>(string Name, Type OwnerType, bool EnableBatching, TType DefaultValue, DependencyProperty XAMLProperty = null)
 		{
-			var np = new DREProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), Name, HashID.GenerateHashID(OwnerType.FullName), OwnerType, EnableBatching, EnableEF, DefaultValue, XAMLProperty);
+			var np = new DREProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), Name, HashID.GenerateHashID(OwnerType.FullName), OwnerType, EnableBatching, DefaultValue, XAMLProperty);
 			if (!registered.TryAdd(np.ID, np))
 				throw new ArgumentException(string.Format("Unable to register the DREProperty '{0}' on type '{1}'. A DREProperty with the same Name and OwnerType has already been registered.", Name, np.OwnerType));
 			return np;
 		}
 
-		public static DREProperty<TType> Register<TType>(string Name, Type OwnerType, bool EnableBatching, bool EnableEF, TType DefaultValue, Action<DREObjectBase, TType, TType> DREPropertyChangedCallback, Action<DREObjectBase, TType, TType> DREPropertyUpdatedCallback = null, Func<DREObjectBase, TType, bool> DeltaValidateValueCallback = null, DependencyProperty XAMLProperty = null)
+		public static DREProperty<TType> Register<TType>(string Name, Type OwnerType, bool EnableBatching, TType DefaultValue, Action<DREObjectBase, TType, TType> DREPropertyChangedCallback, Action<DREObjectBase, TType, TType> DREPropertyUpdatedCallback = null, Func<DREObjectBase, TType, bool> DeltaValidateValueCallback = null, DependencyProperty XAMLProperty = null)
 		{
-			var np = new DREProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), Name, HashID.GenerateHashID(OwnerType.FullName), OwnerType, EnableBatching, EnableEF, DefaultValue, DREPropertyChangedCallback, DREPropertyUpdatedCallback, DeltaValidateValueCallback, XAMLProperty);
+			var np = new DREProperty<TType>(HashID.GenerateHashID(OwnerType.FullName + "." + Name), Name, HashID.GenerateHashID(OwnerType.FullName), OwnerType, EnableBatching, DefaultValue, DREPropertyChangedCallback, DREPropertyUpdatedCallback, DeltaValidateValueCallback, XAMLProperty);
 			if (!registered.TryAdd(np.ID, np))
 				throw new ArgumentException(string.Format("Unable to register the DREProperty '{0}' on type '{1}'. A DREProperty with the same Name and OwnerType has already been registered.", Name, np.OwnerType));
 			return np;

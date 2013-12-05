@@ -358,10 +358,10 @@ namespace System
 			return __dcm.ContainsKey(DataID);
 		}
 
-		public T Register(Guid ClientID)
+		public static T Register(Guid ClientID, T Data)
 		{
-			__crl.GetOrAdd(ClientID, _DREID);
-			return __dcm.GetOrAdd(_DREID, (T)this);
+			Data.__crl.GetOrAdd(ClientID, Data._DREID);
+			return __dcm.GetOrAdd(Data._DREID, Data);
 		}
 
 		public static T Register(Guid ClientID, Guid DataID)
@@ -373,14 +373,14 @@ namespace System
 			return __dcm.GetOrAdd(Data._DREID, Data);
 		}
 
-		public bool Unregister(Guid ClientID)
+		public static bool Unregister(Guid ClientID, Guid DataID)
 		{
 			T data;
-			__dcm.TryGetValue(_DREID, out data);
+			__dcm.TryGetValue(DataID, out data);
 			if (data == null) return true;
 			Guid dreid;
 			data.__crl.TryRemove(ClientID, out dreid);
-			return !data.__crl.IsEmpty || __dcm.TryRemove(_DREID, out data);
+			return !data.__crl.IsEmpty || __dcm.TryRemove(DataID, out data);
 		}
 
 		//Constructors
