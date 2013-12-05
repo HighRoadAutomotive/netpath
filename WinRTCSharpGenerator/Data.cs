@@ -107,9 +107,9 @@ namespace NETPath.Generators.WinRT.CS
 				foreach (DataElement de in o.Elements)
 				{
 					if (de.DataType.TypeMode == DataTypeMode.Collection)
-						code.AppendLine(string.Format("\t\t\t{0}.SetEvents((x) => {0}Added(x), (x) => {0}Removed(x), (x) => {0}Cleared(x), (idx, x) => {0}Inserted(idx, x), (idx, x) => {0}RemovedAt(idx, x), (x, nidx) => {0}Moved(x, nidx), (ox, nx) => {0}Replaced(ox, nx), (x) => {0}SendChanges(x));", de.HasClientType ? de.ClientName : de.DataName));
+						code.AppendLine(string.Format("\t\t\t{0}.SetEvents((x) => {0}Added(x), (x) => {0}Removed(x), (x) => {0}Cleared(x), (idx, x) => {0}Inserted(idx, x), (idx, x) => {0}RemovedAt(idx, x), (x, nidx) => {0}Moved(x, nidx), (ox, nx) => {0}Replaced(ox, nx), (x) => Internal{0}SendChanges(x));", de.HasClientType ? de.ClientName : de.DataName));
 					if (de.DataType.TypeMode == DataTypeMode.Dictionary)
-						code.AppendLine(string.Format("\t\t\t{0}.SetEvents((xk, xv) => {0}Added(xk, xv), (xk, xv) => {0}Removed(xk, xv), (x) => {0}Cleared(x), (xk, ox, nx) => {0}Updated(xk, ox, nx), (x) => {0}SendChanges(x));", de.HasClientType ? de.ClientName : de.DataName));
+						code.AppendLine(string.Format("\t\t\t{0}.SetEvents((xk, xv) => {0}Added(xk, xv), (xk, xv) => {0}Removed(xk, xv), (x) => {0}Cleared(x), (xk, ox, nx) => {0}Updated(xk, ox, nx), (x) => Internal{0}SendChanges(x));", de.HasClientType ? de.ClientName : de.DataName));
 				}
 			code.AppendLine("\t\t}");
 
@@ -198,9 +198,9 @@ namespace NETPath.Generators.WinRT.CS
 				foreach (DataElement de in o.Elements)
 				{
 					if (de.DataType.TypeMode == DataTypeMode.Collection && de.HasXAMLType)
-						code.AppendLine(string.Format("\t\t\t{0}.SetEvents((x) => {{ foreach (var z in x) XAMLObject.{1}.AddNoChange(z); {0}Added(x); }}, (x) => {{ foreach (var z in x) XAMLObject.{1}.RemoveNoChange(z); {0}Removed(x); }}, (x) => {{ XAMLObject.{1}.ClearNoChange(); {0}Cleared(x); }}, (idx, x) => {{ int c = idx; foreach (var z in x) XAMLObject.{1}.InsertNoChange(c++, z); {0}Inserted(idx, x); }}, (idx, x) => {{ foreach (var z in x) XAMLObject.{1}.RemoveNoChange(z); {0}RemovedAt(idx, x); }}, (x, nidx) => {{ XAMLObject.{1}.MoveNoChange(x, nidx); {0}Moved(x, nidx); }}, (ox, nx) => {{ XAMLObject.{1}.ReplaceNoChange(nx, ox); {0}Replaced(ox, nx); }}, (x) => {{ {0}SendChanges(x); }});", de.HasClientType ? de.ClientName : de.DataName, de.XAMLName));
+						code.AppendLine(string.Format("\t\t\t{0}.SetEvents((x) => {{ foreach (var z in x) XAMLObject.{1}.AddNoChange(z); {0}Added(x); }}, (x) => {{ foreach (var z in x) XAMLObject.{1}.RemoveNoChange(z); {0}Removed(x); }}, (x) => {{ XAMLObject.{1}.ClearNoChange(); {0}Cleared(x); }}, (idx, x) => {{ int c = idx; foreach (var z in x) XAMLObject.{1}.InsertNoChange(c++, z); {0}Inserted(idx, x); }}, (idx, x) => {{ foreach (var z in x) XAMLObject.{1}.RemoveNoChange(z); {0}RemovedAt(idx, x); }}, (x, nidx) => {{ XAMLObject.{1}.MoveNoChange(x, nidx); {0}Moved(x, nidx); }}, (ox, nx) => {{ XAMLObject.{1}.ReplaceNoChange(nx, ox); {0}Replaced(ox, nx); }}, (x) => {{ Internal{0}SendChanges(x); }});", de.HasClientType ? de.ClientName : de.DataName, de.XAMLName));
 					if (de.DataType.TypeMode == DataTypeMode.Dictionary && de.HasXAMLType)
-						code.AppendLine(string.Format("\t\t\t{0}.SetEvents((xk, xv) => {{ XAMLObject.{1}.AddOrUpdateNoChange(xk, xv, (k,v) => xv); {0}Added(xk, xv); }}, (xk, xv) => {{ {2} result; XAMLObject.{1}.TryRemoveNoChange(xk, out result); {0}Removed(xk, xv); }}, (x) => {{ XAMLObject.{1}.ClearNoChange(); {0}Cleared(x); }}, (xk, ox, nx) => {{ XAMLObject.{1}.AddOrUpdateNoChange(xk, nx, (k,v) => nx); {0}Updated(xk, ox, nx); }}, (x) => {{ {0}SendChanges(x); }});", de.HasClientType ? de.ClientName : de.DataName, de.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(de.DataType.DictionaryValueGenericType))));
+						code.AppendLine(string.Format("\t\t\t{0}.SetEvents((xk, xv) => {{ XAMLObject.{1}.AddOrUpdateNoChange(xk, xv, (k,v) => xv); {0}Added(xk, xv); }}, (xk, xv) => {{ {2} result; XAMLObject.{1}.TryRemoveNoChange(xk, out result); {0}Removed(xk, xv); }}, (x) => {{ XAMLObject.{1}.ClearNoChange(); {0}Cleared(x); }}, (xk, ox, nx) => {{ XAMLObject.{1}.AddOrUpdateNoChange(xk, nx, (k,v) => nx); {0}Updated(xk, ox, nx); }}, (x) => {{ Internal{0}SendChanges(x); }});", de.HasClientType ? de.ClientName : de.DataName, de.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(de.DataType.DictionaryValueGenericType))));
 				}
 			code.AppendLine("\t\t}");
 			if (o.HasXAMLType)
@@ -213,9 +213,9 @@ namespace NETPath.Generators.WinRT.CS
 					foreach (DataElement de in o.Elements)
 					{
 						if (de.DataType.TypeMode == DataTypeMode.Collection && de.HasXAMLType)
-							code.AppendLine(string.Format("\t\t\t{0}.SetEvents((x) => {{ foreach (var z in x) XAMLObject.{1}.AddNoChange(z); {0}Added(x); }}, (x) => {{ foreach (var z in x) XAMLObject.{1}.RemoveNoChange(z); {0}Removed(x); }}, (x) => {{ XAMLObject.{1}.ClearNoChange(); {0}Cleared(x); }}, (idx, x) => {{ int c = idx; foreach (var z in x) XAMLObject.{1}.InsertNoChange(c++, z); {0}Inserted(idx, x); }}, (idx, x) => {{ foreach (var z in x) XAMLObject.{1}.RemoveNoChange(z); {0}RemovedAt(idx, x); }}, (x, nidx) => {{ XAMLObject.{1}.MoveNoChange(x, nidx); {0}Moved(x, nidx); }}, (ox, nx) => {{ XAMLObject.{1}.ReplaceNoChange(nx, ox); {0}Replaced(ox, nx); }}, (x) => {{ {0}SendChanges(x); }});", de.HasClientType ? de.ClientName : de.DataName, de.XAMLName));
+							code.AppendLine(string.Format("\t\t\t{0}.SetEvents((x) => {{ foreach (var z in x) XAMLObject.{1}.AddNoChange(z); {0}Added(x); }}, (x) => {{ foreach (var z in x) XAMLObject.{1}.RemoveNoChange(z); {0}Removed(x); }}, (x) => {{ XAMLObject.{1}.ClearNoChange(); {0}Cleared(x); }}, (idx, x) => {{ int c = idx; foreach (var z in x) XAMLObject.{1}.InsertNoChange(c++, z); {0}Inserted(idx, x); }}, (idx, x) => {{ foreach (var z in x) XAMLObject.{1}.RemoveNoChange(z); {0}RemovedAt(idx, x); }}, (x, nidx) => {{ XAMLObject.{1}.MoveNoChange(x, nidx); {0}Moved(x, nidx); }}, (ox, nx) => {{ XAMLObject.{1}.ReplaceNoChange(nx, ox); {0}Replaced(ox, nx); }}, (x) => {{ Internal{0}SendChanges(x); }});", de.HasClientType ? de.ClientName : de.DataName, de.XAMLName));
 						if (de.DataType.TypeMode == DataTypeMode.Dictionary && de.HasXAMLType)
-							code.AppendLine(string.Format("\t\t\t{0}.SetEvents((xk, xv) => {{ XAMLObject.{1}.AddOrUpdateNoChange(xk, xv, (k,v) => xv); {0}Added(xk, xv); }}, (xk, xv) => {{ {2} result; XAMLObject.{1}.TryRemoveNoChange(xk, out result); {0}Removed(xk, xv); }}, (x) => {{ XAMLObject.{1}.ClearNoChange(); {0}Cleared(x); }}, (xk, ox, nx) => {{ XAMLObject.{1}.AddOrUpdateNoChange(xk, nx, (k,v) => nx); {0}Updated(xk, ox, nx); }}, (x) => {{ {0}SendChanges(x); }});", de.HasClientType ? de.ClientName : de.DataName, de.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(de.DataType.DictionaryValueGenericType))));
+							code.AppendLine(string.Format("\t\t\t{0}.SetEvents((xk, xv) => {{ XAMLObject.{1}.AddOrUpdateNoChange(xk, xv, (k,v) => xv); {0}Added(xk, xv); }}, (xk, xv) => {{ {2} result; XAMLObject.{1}.TryRemoveNoChange(xk, out result); {0}Removed(xk, xv); }}, (x) => {{ XAMLObject.{1}.ClearNoChange(); {0}Cleared(x); }}, (xk, ox, nx) => {{ XAMLObject.{1}.AddOrUpdateNoChange(xk, nx, (k,v) => nx); {0}Updated(xk, ox, nx); }}, (x) => {{ Internal{0}SendChanges(x); }});", de.HasClientType ? de.ClientName : de.DataName, de.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(de.DataType.DictionaryValueGenericType))));
 					}
 				code.AppendLine("\t\t}");
 			}
@@ -259,17 +259,17 @@ namespace NETPath.Generators.WinRT.CS
 				foreach (DataElement de in o.Elements)
 				{
 					if (de.DataType.TypeMode == DataTypeMode.Collection && de.HasXAMLType)
-						code.AppendLine(string.Format("\t\t\t{0}.SetEvents((x) => {{ foreach (var z in x) XAMLObject.{1}.AddNoChange(z); {0}Added(x); }}, (x) => {{ foreach (var z in x) XAMLObject.{1}.RemoveNoChange(z); {0}Removed(x); }}, (x) => {{ XAMLObject.{1}.ClearNoChange(); {0}Cleared(x); }}, (idx, x) => {{ int c = idx; foreach (var z in x) XAMLObject.{1}.InsertNoChange(c++, z); {0}Inserted(idx, x); }}, (idx, x) => {{ foreach (var z in x) XAMLObject.{1}.RemoveNoChange(z); {0}RemovedAt(idx, x); }}, (x, nidx) => {{ XAMLObject.{1}.MoveNoChange(x, nidx); {0}Moved(x, nidx); }}, (ox, nx) => {{ XAMLObject.{1}.ReplaceNoChange(nx, ox); {0}Replaced(ox, nx); }}, (x) => {{ {0}SendChanges(x); }});", de.HasClientType ? de.ClientName : de.DataName, de.XAMLName));
+						code.AppendLine(string.Format("\t\t\t{0}.SetEvents((x) => {{ foreach (var z in x) XAMLObject.{1}.AddNoChange(z); {0}Added(x); }}, (x) => {{ foreach (var z in x) XAMLObject.{1}.RemoveNoChange(z); {0}Removed(x); }}, (x) => {{ XAMLObject.{1}.ClearNoChange(); {0}Cleared(x); }}, (idx, x) => {{ int c = idx; foreach (var z in x) XAMLObject.{1}.InsertNoChange(c++, z); {0}Inserted(idx, x); }}, (idx, x) => {{ foreach (var z in x) XAMLObject.{1}.RemoveNoChange(z); {0}RemovedAt(idx, x); }}, (x, nidx) => {{ XAMLObject.{1}.MoveNoChange(x, nidx); {0}Moved(x, nidx); }}, (ox, nx) => {{ XAMLObject.{1}.ReplaceNoChange(nx, ox); {0}Replaced(ox, nx); }}, (x) => {{ Internal{0}SendChanges(x); }});", de.HasClientType ? de.ClientName : de.DataName, de.XAMLName));
 					if (de.DataType.TypeMode == DataTypeMode.Dictionary && de.HasXAMLType)
-						code.AppendLine(string.Format("\t\t\t{0}.SetEvents((xk, xv) => {{ XAMLObject.{1}.AddOrUpdateNoChange(xk, xv, (k,v) => xv);  {0}Added(xk, xv); }}, (xk, xv) => {{ {2} result; XAMLObject.{1}.TryRemoveNoChange(xk, out result); {0}Removed(xk, xv); }}, (x) => {{ XAMLObject.{1}.ClearNoChange(); {0}Cleared(x); }}, (xk, ox, nx) => {{ XAMLObject.{1}.AddOrUpdateNoChange(xk, nx, (k,v) => nx); {0}Updated(xk, ox, nx); }}, (x) => {{ {0}SendChanges(x); }});", de.HasClientType ? de.ClientName : de.DataName, de.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(de.DataType.DictionaryValueGenericType))));
+						code.AppendLine(string.Format("\t\t\t{0}.SetEvents((xk, xv) => {{ XAMLObject.{1}.AddOrUpdateNoChange(xk, xv, (k,v) => xv);  {0}Added(xk, xv); }}, (xk, xv) => {{ {2} result; XAMLObject.{1}.TryRemoveNoChange(xk, out result); {0}Removed(xk, xv); }}, (x) => {{ XAMLObject.{1}.ClearNoChange(); {0}Cleared(x); }}, (xk, ox, nx) => {{ XAMLObject.{1}.AddOrUpdateNoChange(xk, nx, (k,v) => nx); {0}Updated(xk, ox, nx); }}, (x) => {{ Internal{0}SendChanges(x); }});", de.HasClientType ? de.ClientName : de.DataName, de.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(de.DataType.DictionaryValueGenericType))));
 				}
 			else
 				foreach (DataElement de in o.Elements)
 				{
 					if (de.DataType.TypeMode == DataTypeMode.Collection)
-						code.AppendLine(string.Format("\t\t\t{0}.SetEvents((x) => {{ {0}Added(x); }}, (x) => {{ {0}Removed(x); }}, (x) => {{ {0}Cleared(x); }}, (idx, x) => {{ {0}Inserted(idx, x); }}, (idx, x) => {{ {0}RemovedAt(idx, x); }}, (x, nidx) => {{ {0}Moved(x, nidx); }}, (ox, nx) => {{ {0}Replaced(ox, nx); }}, (x) => {{ {0}SendChanges(x); }});", de.HasClientType ? de.ClientName : de.DataName));
+						code.AppendLine(string.Format("\t\t\t{0}.SetEvents((x) => {{ {0}Added(x); }}, (x) => {{ {0}Removed(x); }}, (x) => {{ {0}Cleared(x); }}, (idx, x) => {{ {0}Inserted(idx, x); }}, (idx, x) => {{ {0}RemovedAt(idx, x); }}, (x, nidx) => {{ {0}Moved(x, nidx); }}, (ox, nx) => {{ {0}Replaced(ox, nx); }}, (x) => {{ Internal{0}SendChanges(x); }});", de.HasClientType ? de.ClientName : de.DataName));
 					if (de.DataType.TypeMode == DataTypeMode.Dictionary)
-						code.AppendLine(string.Format("\t\t\t{0}.SetEvents((xk, xv) => {{ {0}Added(xk, xv); }}, (xk, xv) => {{ {0}Removed(xk, xv); }}, (x) => {{ {0}Cleared(x); }}, (xk, ox, nx) => {{ {0}Updated(xk, ox, nx); }}, (x) => {{ {0}SendChanges(x); }});", de.HasClientType ? de.ClientName : de.DataName));
+						code.AppendLine(string.Format("\t\t\t{0}.SetEvents((xk, xv) => {{ {0}Added(xk, xv); }}, (xk, xv) => {{ {0}Removed(xk, xv); }}, (x) => {{ {0}Cleared(x); }}, (xk, ox, nx) => {{ {0}Updated(xk, ox, nx); }}, (x) => {{ Internal{0}SendChanges(x); }});", de.HasClientType ? de.ClientName : de.DataName));
 				}
 			code.AppendLine("\t\t}");
 			if (o.DREEnabled)
@@ -432,9 +432,11 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendLine(string.Format("\t\tpartial void {0}RemovedAt(int Index, IEnumerable<{1}> Values);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.CollectionGenericType))));
 					code.AppendLine(string.Format("\t\tpartial void {0}Moved({1} Value, int Index);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.CollectionGenericType))));
 					code.AppendLine(string.Format("\t\tpartial void {0}Replaced({1} OldValue, {1} NewValue);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.CollectionGenericType))));
-					code.AppendLine(string.Format("\t\tprotected virtual void {0}SendChanges(IEnumerable<ChangeListItem<{1}>> Changes)", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.CollectionGenericType))));
+					code.AppendLine(string.Format("\t\tpartial void {0}SendChanges(IEnumerable<ChangeListItem<{1}>> Changes);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.CollectionGenericType))));
+					code.AppendLine(string.Format("\t\tprivate void Internal{0}SendChanges(IEnumerable<ChangeListItem<{1}>> Changes)", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.CollectionGenericType))));
 					code.AppendLine("\t\t{");
 					code.Append(GenerateImmediateDREValueCallbacks(o.Owner.DataRevisionServiceNames, o.Owner.Name, o.DataName, true, true));
+					code.AppendLine(string.Format("\t\t\t{0}SendChanges(Changes);", o.HasClientType ? o.ClientName : o.DataName));
 					code.AppendLine("\t\t}");
 				}
 				else if (o.DataType.TypeMode == DataTypeMode.Dictionary)
@@ -445,9 +447,11 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendLine(string.Format("\t\tpartial void {0}Removed({1} Key, {2} Value);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryValueGenericType))));
 					code.AppendLine(string.Format("\t\tpartial void {0}Cleared(IEnumerable<KeyValuePair<{1}, {2}>> Values);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryValueGenericType))));
 					code.AppendLine(string.Format("\t\tpartial void {0}Updated({1} Key, {2} OldValue, {2} NewValue);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryValueGenericType))));
-					code.AppendLine(string.Format("\t\tprotected virtual void {0}SendChanges(IEnumerable<ChangeDictionaryItem<{1}, {2}>> Changes)", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryValueGenericType))));
+					code.AppendLine(string.Format("\t\tpartial void {0}SendChanges(IEnumerable<ChangeDictionaryItem<{1}, {2}>> Changes);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryValueGenericType))));
+					code.AppendLine(string.Format("\t\tprivate void Internal{0}SendChanges(IEnumerable<ChangeDictionaryItem<{1}, {2}>> Changes)", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryValueGenericType))));
 					code.AppendLine("\t\t{");
 					code.Append(GenerateImmediateDREValueCallbacks(o.Owner.DataRevisionServiceNames, o.Owner.Name, o.DataName, true, true));
+					code.AppendLine(string.Format("\t\t\t{0}SendChanges(Changes);", o.HasClientType ? o.ClientName : o.DataName));
 					code.AppendLine("\t\t}");
 				}
 				else if (o.DataType.TypeMode == DataTypeMode.Array)
@@ -508,9 +512,11 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendLine(string.Format("\t\tpartial void {0}RemovedAt(int Index, IEnumerable<{1}> Values);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.CollectionGenericType))));
 					code.AppendLine(string.Format("\t\tpartial void {0}Moved({1} Value, int Index);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.CollectionGenericType))));
 					code.AppendLine(string.Format("\t\tpartial void {0}Replaced({1} OldValue, {1} NewValue);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.CollectionGenericType))));
-					code.AppendLine(string.Format("\t\tprotected virtual void {0}SendChanges(IEnumerable<ChangeListItem<{1}>> Changes)", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.CollectionGenericType))));
+					code.AppendLine(string.Format("\t\tpartial void {0}SendChanges(IEnumerable<ChangeListItem<{1}>> Changes);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.CollectionGenericType))));
+					code.AppendLine(string.Format("\t\tprivate void Internal{0}SendChanges(IEnumerable<ChangeListItem<{1}>> Changes)", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.CollectionGenericType))));
 					code.AppendLine("\t\t{");
 					code.Append(GenerateImmediateDREValueCallbacks(o.Owner.DataRevisionServiceNames, o.Owner.Name, o.DataName, false, true));
+					code.AppendLine(string.Format("\t\t\t{0}SendChanges(Changes);", o.HasClientType ? o.ClientName : o.DataName));
 					code.AppendLine("\t\t}");
 				}
 				else if (o.DataType.TypeMode == DataTypeMode.Dictionary)
@@ -521,9 +527,11 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendLine(string.Format("\t\tpartial void {0}Removed({1} Key, {2} Value);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryValueGenericType))));
 					code.AppendLine(string.Format("\t\tpartial void {0}Cleared(IEnumerable<KeyValuePair<{1}, {2}>> Values);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryValueGenericType))));
 					code.AppendLine(string.Format("\t\tpartial void {0}Updated({1} Key, {2} OldValue, {2} NewValue);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryValueGenericType))));
-					code.AppendLine(string.Format("\t\tprotected virtual void {0}SendChanges(IEnumerable<ChangeDictionaryItem<{1}, {2}>> Changes)", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryValueGenericType))));
+					code.AppendLine(string.Format("\t\tpartial void {0}SendChanges(IEnumerable<ChangeDictionaryItem<{1}, {2}>> Changes);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryValueGenericType))));
+					code.AppendLine(string.Format("\t\tprivate void Internal{0}SendChanges(IEnumerable<ChangeDictionaryItem<{1}, {2}>> Changes)", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryValueGenericType))));
 					code.AppendLine("\t\t{");
 					code.Append(GenerateImmediateDREValueCallbacks(o.Owner.DataRevisionServiceNames, o.Owner.Name, o.DataName, false, true));
+					code.AppendLine(string.Format("\t\t\t{0}SendChanges(Changes);", o.HasClientType ? o.ClientName : o.DataName));
 					code.AppendLine("\t\t}");
 				}
 				else if (o.DataType.TypeMode == DataTypeMode.Array)
