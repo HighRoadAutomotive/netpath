@@ -6,6 +6,7 @@
 	  xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+	  xmlns:sf="http://schemas.syncfusion.com/wpf"
 	  DataContext="{Binding RelativeSource={RelativeSource Self}}" 
 	  mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="750">
 	<Grid.Resources>
@@ -145,12 +146,21 @@
 					</Grid.RowDefinitions>
 					<Label Grid.ColumnSpan="1" Grid.Row="0" Content="Data Revision Exchange" FontSize="12pt" />
 					<ToggleButton Grid.Row="1" Grid.Column="0" Content="Is Primary Key" Margin="0,5,5,5" VerticalAlignment="Top" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.DREPrimaryKey}" IsEnabled="{Binding Path=Element.DRECanPrimaryKey}"  ToolTip="Determines if the current member is the primary key for the object." />
-					<Label Content="Update Mode:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="1" Grid.Column="1" />
-					<ComboBox Margin="95,5,5,5" VerticalContentAlignment="Center" SelectedIndex="{Binding Path=Element.DREUpdateMode, Converter={StaticResource DCMUpdateModeConverter}}" IsEnabled="{Binding Path=Element.DREPrimaryKey, Converter={StaticResource NotBoolConverter}}"  Grid.Column="1" Grid.Row="1" >
-						<ComboBoxItem Content="Immediate" />
-						<ComboBoxItem Content="Batch" />
-					</ComboBox>
-				</Grid>
+					<Border Grid.Column="1" Grid.Row="1" Visibility="{Binding Path=Element.DRECanBatch, Converter={StaticResource NotBoolVisibilityConverter}}">
+						<Grid>
+							<Label Content="Update Mode:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" />
+							<ComboBox Margin="95,5,5,5" VerticalContentAlignment="Center" SelectedIndex="{Binding Path=Element.DREUpdateMode, Converter={StaticResource DCMUpdateModeConverter}}" IsEnabled="{Binding Path=Element.DREPrimaryKey, Converter={StaticResource NotBoolConverter}}" >
+								<ComboBoxItem Content="Immediate" />
+								<ComboBoxItem Content="Batch" />
+							</ComboBox>
+						</Grid>
+					</Border>
+					<Border Grid.Column="1" Grid.Row="1" Visibility="{Binding Path=Element.DRECanBatch, Converter={StaticResource BoolVisibilityConverter}}">
+						<Grid>
+							<Label Content="Batch Interval:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" />
+							<sf:IntegerTextBox Value="{Binding Path=Element.DREBatchCount}" Margin="95,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Name="UpdateBatchSize" FontSize="10pt" ToolTip="Specify the number of changes to this collection before a change message is sent." />
+						</Grid>
+					</Border>				</Grid>
 				<Grid Name="ProtoBufGrid" Grid.Row="2" Margin="0,5,0,0" Visibility="{Binding Path=Element.ProtocolBufferEnabled, Converter={StaticResource BoolVisibilityConverter}}" >
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*" />

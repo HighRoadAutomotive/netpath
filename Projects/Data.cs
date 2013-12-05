@@ -309,6 +309,8 @@ namespace NETPath.Projects
 				de.CanPropertyUpdated = false;
 				de.PropertyUpdatedCallback = false;
 			}
+			de.DRECanBatch = (de.DataType.TypeMode == DataTypeMode.Collection || de.DataType.TypeMode == DataTypeMode.Dictionary);
+
 			
 			if (de.DataType.TypeMode == DataTypeMode.Primitive && (de.DataType.Primitive == PrimitiveTypes.Byte || de.DataType.Primitive == PrimitiveTypes.SByte || de.DataType.Primitive == PrimitiveTypes.Short || de.DataType.Primitive == PrimitiveTypes.Int || de.DataType.Primitive == PrimitiveTypes.Long || de.DataType.Primitive == PrimitiveTypes.UShort || de.DataType.Primitive == PrimitiveTypes.UInt || de.DataType.Primitive == PrimitiveTypes.ULong || de.DataType.Primitive == PrimitiveTypes.String || de.DataType.Primitive == PrimitiveTypes.GUID))
 				de.DRECanPrimaryKey = true;
@@ -445,21 +447,21 @@ namespace NETPath.Projects
 
 		//Callbacks
 		[IgnoreDataMember] public bool CanPropertyChanged { get { return (bool)GetValue(CanPropertyChangedProperty); } protected set { SetValue(CanPropertyChangedPropertyKey, value); } }
-		private static readonly DependencyPropertyKey CanPropertyChangedPropertyKey = DependencyProperty.RegisterReadOnly("CanPropertyChanged", typeof(bool), typeof(Operation), new PropertyMetadata(false));
+		private static readonly DependencyPropertyKey CanPropertyChangedPropertyKey = DependencyProperty.RegisterReadOnly("CanPropertyChanged", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
 		public static readonly DependencyProperty CanPropertyChangedProperty = CanPropertyChangedPropertyKey.DependencyProperty;
 
 		[IgnoreDataMember] public bool CanPropertyUpdated { get { return (bool)GetValue(CanPropertyUpdatedProperty); } protected set { SetValue(CanPropertyUpdatedPropertyKey, value); } }
-		private static readonly DependencyPropertyKey CanPropertyUpdatedPropertyKey = DependencyProperty.RegisterReadOnly("CanPropertyUpdated", typeof(bool), typeof(Operation), new PropertyMetadata(false));
+		private static readonly DependencyPropertyKey CanPropertyUpdatedPropertyKey = DependencyProperty.RegisterReadOnly("CanPropertyUpdated", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
 		public static readonly DependencyProperty CanPropertyUpdatedProperty = CanPropertyUpdatedPropertyKey.DependencyProperty;
 
 		public bool PropertyChangedCallback { get { return (bool)GetValue(PropertyChangedCallbackProperty); } set { SetValue(PropertyChangedCallbackProperty, value); } }
-		public static readonly DependencyProperty PropertyChangedCallbackProperty = DependencyProperty.Register("PropertyChangedCallback", typeof(bool), typeof(Data), new PropertyMetadata(false));
+		public static readonly DependencyProperty PropertyChangedCallbackProperty = DependencyProperty.Register("PropertyChangedCallback", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
 
 		public bool PropertyUpdatedCallback { get { return (bool)GetValue(PropertyUpdatedCallbackProperty); } set { SetValue(PropertyUpdatedCallbackProperty, value); } }
-		public static readonly DependencyProperty PropertyUpdatedCallbackProperty = DependencyProperty.Register("PropertyUpdatedCallback", typeof(bool), typeof(Data), new PropertyMetadata(false));
+		public static readonly DependencyProperty PropertyUpdatedCallbackProperty = DependencyProperty.Register("PropertyUpdatedCallback", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
 
 		public bool PropertyValidationCallback { get { return (bool)GetValue(PropertyValidationCallbackProperty); } set { SetValue(PropertyValidationCallbackProperty, value); } }
-		public static readonly DependencyProperty PropertyValidationCallbackProperty = DependencyProperty.Register("PropertyValidationCallback", typeof(bool), typeof(Data), new PropertyMetadata(false));
+		public static readonly DependencyProperty PropertyValidationCallbackProperty = DependencyProperty.Register("PropertyValidationCallback", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
 
 		//XAML Class Settings
 		public bool AttachedBrowsable { get { return (bool)GetValue(AttachedBrowsableProperty); } set { SetValue(AttachedBrowsableProperty, value); } }
@@ -497,11 +499,11 @@ namespace NETPath.Projects
 		}
 
 		[IgnoreDataMember] public bool DRECanPrimaryKey { get { return (bool)GetValue(DRECanPrimaryKeyProperty); } protected set { SetValue(DRECanPrimaryKeyPropertyKey, value); } }
-		private static readonly DependencyPropertyKey DRECanPrimaryKeyPropertyKey = DependencyProperty.RegisterReadOnly("DRECanPrimaryKey", typeof(bool), typeof(Operation), new PropertyMetadata(false));
+		private static readonly DependencyPropertyKey DRECanPrimaryKeyPropertyKey = DependencyProperty.RegisterReadOnly("DRECanPrimaryKey", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
 		public static readonly DependencyProperty DRECanPrimaryKeyProperty = DRECanPrimaryKeyPropertyKey.DependencyProperty;
 
 		public bool DREPrimaryKey { get { return (bool)GetValue(DREPrimaryKeyProperty); } set { SetValue(DREPrimaryKeyProperty, value); } }
-		public static readonly DependencyProperty DREPrimaryKeyProperty = DependencyProperty.Register("DREPrimaryKey", typeof(bool), typeof(DataElement ), new PropertyMetadata(false, DREPrimaryKeyChangedCallback));
+		public static readonly DependencyProperty DREPrimaryKeyProperty = DependencyProperty.Register("DREPrimaryKey", typeof(bool), typeof(DataElement), new PropertyMetadata(false, DREPrimaryKeyChangedCallback));
 
 		private static void DREPrimaryKeyChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
 		{
@@ -516,6 +518,13 @@ namespace NETPath.Projects
 
 		public DataUpdateMode DREUpdateMode { get { return (DataUpdateMode)GetValue(DREUpdateModeProperty); } set { SetValue(DREUpdateModeProperty, value); } }
 		public static readonly DependencyProperty DREUpdateModeProperty = DependencyProperty.Register("DREUpdateMode", typeof(DataUpdateMode), typeof(DataElement), new PropertyMetadata(DataUpdateMode.Immediate));
+
+		[IgnoreDataMember] public bool DRECanBatch { get { return (bool)GetValue(DRECanBatchProperty); } protected set { SetValue(DRECanBatchPropertyKey, value); } }
+		private static readonly DependencyPropertyKey DRECanBatchPropertyKey = DependencyProperty.RegisterReadOnly("DRECanBatch", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
+		public static readonly DependencyProperty DRECanBatchProperty = DRECanBatchPropertyKey.DependencyProperty;
+
+		public int DREBatchCount { get { return (int)GetValue(DREBatchCountProperty); } set { SetValue(DREBatchCountProperty, value); } }
+		public static readonly DependencyProperty DREBatchCountProperty = DependencyProperty.Register("DREBatchCount", typeof(int), typeof(DataElement), new PropertyMetadata(1));
 
 		//Protocol Buffers 
 		public bool ProtocolBufferEnabled { get { return (bool)GetValue(ProtocolBufferEnabledProperty); } set { SetValue(ProtocolBufferEnabledProperty, value); } }

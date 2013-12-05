@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -56,13 +57,21 @@ namespace NETPath.Generators.WinRT.CS
 				AddMessage(new CompileMessage("GS3008", "The client data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace is unable to inherit from DependencyObject.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 		}
 
-		public static string GenerateImmediateDREValueCallbacks(IEnumerable<DataRevisionName> DRS, string Class, string Property, bool IsServer)
+		public static string GenerateImmediateDREValueCallbacks(IEnumerable<DataRevisionName> DRS, string Class, string Property, bool IsServer, bool IsCollection = false)
 		{
 			if (DRS == null || !DRS.Any()) return "";
 			var code = new StringBuilder();
 			foreach (var drs in DRS.Where(d => d.IsServer == IsServer))
-				if (!IsServer && Globals.CurrentProjectID == drs.ProjectID) code.Append(string.Format("{0}Proxy.Current.Update{1}{2}DRE{4}(t.{3}, n); ", drs.Path, Class, Property, "_DREID", drs.IsAwaitable ? "Async" : ""));
-				else if (IsServer) code.Append(string.Format("{0}Base.CallbackUpdate{1}{2}DRE{4}(null, t.{3}, n); ", drs.Path, Class, Property, "_DREID", drs.IsAwaitable ? "Async" : ""));
+				if (!IsCollection)
+				{
+					if (!IsServer && Globals.CurrentProjectID == drs.ProjectID) code.Append(string.Format("{0}Proxy.Current.Update{1}{2}DRE{3}(t._DREID, n); ", drs.Path, Class, Property, drs.IsAwaitable ? "Async" : ""));
+					else if (IsServer) code.Append(string.Format("{0}Base.CallbackUpdate{1}{2}DRE{3}(null, t._DREID, n); ", drs.Path, Class, Property, drs.IsAwaitable ? "Async" : ""));
+				}
+				else
+				{
+					if (!IsServer && Globals.CurrentProjectID == drs.ProjectID) code.AppendLine(string.Format("\t\t\t{0}Proxy.Current.Update{1}{2}DRE{3}(_DREID, Changes);", drs.Path, Class, Property, drs.IsAwaitable ? "Async" : ""));
+					else if (IsServer) code.AppendLine(string.Format("\t\t\t{0}Base.CallbackUpdate{1}{2}DRE{3}(null, _DREID, Changes);", drs.Path, Class, Property, drs.IsAwaitable ? "Async" : ""));
+				}
 			return code.ToString();
 		}
 
@@ -83,6 +92,26 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine("\t\tpublic System.Runtime.Serialization.ExtensionDataObject ExtensionData { get; set; }");
 				code.AppendLine();
 			}
+
+			code.AppendLine("\t\t//Constuctors");
+			code.AppendLine(string.Format("\t\tpublic {0}(){1}", o.HasClientType ? o.ClientType.Name : o.Name, o.DREBatchCount > 0 ? string.Format(" : base({0})", o.DREBatchCount) : ""));
+			code.AppendLine("\t\t{");
+			foreach (DataElement de in o.Elements)
+				if (de.DataType.TypeMode == DataTypeMode.Collection || de.DataType.TypeMode == DataTypeMode.Dictionary)
+					code.AppendLine(string.Format("\t\t\tm{1} = new {0}({2});", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.DataType, o.CMDEnabled)), de.XAMLName, de.DRECanBatch && de.DREBatchCount > 0 ? de.DREBatchCount.ToString(CultureInfo.InvariantCulture) : ""));
+				else if (de.DataType.TypeMode == DataTypeMode.Queue || de.DataType.TypeMode == DataTypeMode.Stack)
+					code.AppendLine(string.Format("\t\t\t{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.DataType, o.CMDEnabled)), de.XAMLName));
+				else if (de.DataType.TypeMode == DataTypeMode.Array)
+					code.AppendLine(string.Format("\t\t\t{1} = new {0}[0];", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.DataType.CollectionGenericType, o.DREEnabled)), de.HasClientType ? de.ClientName : de.DataName));
+			if (o.DREEnabled)
+				foreach (DataElement de in o.Elements)
+				{
+					if (de.DataType.TypeMode == DataTypeMode.Collection)
+						code.AppendLine(string.Format("\t\t\t{0}.SetEvents((x) => {0}Added(x), (x) => {0}Removed(x), (x) => {0}Cleared(x), (idx, x) => {0}Inserted(idx, x), (idx, x) => {0}RemovedAt(idx, x), (x, nidx) => {0}Moved(x, nidx), (ox, nx) => {0}Replaced(ox, nx), (x) => {0}SendChanges(x));", de.HasClientType ? de.ClientName : de.DataName));
+					if (de.DataType.TypeMode == DataTypeMode.Dictionary)
+						code.AppendLine(string.Format("\t\t\t{0}.SetEvents((xk, xv) => {0}Added(xk, xv), (xk, xv) => {0}Removed(xk, xv), (x) => {0}Cleared(x), (xk, ox, nx) => {0}Updated(xk, ox, nx), (x) => {0}SendChanges(x));", de.HasClientType ? de.ClientName : de.DataName));
+				}
+			code.AppendLine("\t\t}");
 
 			code.Append(GenerateProxyDCMCode(o, true));
 
@@ -159,7 +188,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine("\t\t{");
 			foreach (DataElement de in o.Elements)
 				if (de.DataType.TypeMode == DataTypeMode.Collection || de.DataType.TypeMode == DataTypeMode.Dictionary)
-					code.AppendLine(string.Format("\t\t\tm{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.DataType, o.CMDEnabled)), de.XAMLName));
+					code.AppendLine(string.Format("\t\t\tm{1} = new {0}({2});", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.DataType, o.CMDEnabled)), de.XAMLName, de.DRECanBatch && de.DREBatchCount > 0 ? de.DREBatchCount.ToString(CultureInfo.InvariantCulture) : ""));
 				else if (de.DataType.TypeMode == DataTypeMode.Queue || de.DataType.TypeMode == DataTypeMode.Stack)
 					code.AppendLine(string.Format("\t\t\t{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.DataType, o.CMDEnabled)), de.XAMLName));
 				else if (de.DataType.TypeMode == DataTypeMode.Array)
@@ -178,6 +207,8 @@ namespace NETPath.Generators.WinRT.CS
 			{
 				code.AppendLine(string.Format("\t\tpublic {0}({1} Data){2}", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name, o.DREEnabled ? string.Format(" : base(Data{0})", o.DREBatchCount > 0 ? string.Format(", {0}", o.DREBatchCount) : "") : o.DREBatchCount > 0 ? string.Format(" : base({0})", o.DREBatchCount) : ""));
 				code.AppendLine("\t\t{");
+				foreach (DataElement de in o.Elements)
+					code.Append(GenerateElementProxyConstructorCode45(de, o));
 				if (o.CMDEnabled)
 					foreach (DataElement de in o.Elements)
 					{
@@ -186,8 +217,6 @@ namespace NETPath.Generators.WinRT.CS
 						if (de.DataType.TypeMode == DataTypeMode.Dictionary && de.HasXAMLType)
 							code.AppendLine(string.Format("\t\t\t{0}.SetEvents((xk, xv) => {{ XAMLObject.{1}.AddOrUpdateNoChange(xk, xv, (k,v) => xv); {0}Added(xk, xv); }}, (xk, xv) => {{ {2} result; XAMLObject.{1}.TryRemoveNoChange(xk, out result); {0}Removed(xk, xv); }}, (x) => {{ XAMLObject.{1}.ClearNoChange(); {0}Cleared(x); }}, (xk, ox, nx) => {{ XAMLObject.{1}.AddOrUpdateNoChange(xk, nx, (k,v) => nx); {0}Updated(xk, ox, nx); }}, (x) => {{ {0}SendChanges(x); }});", de.HasClientType ? de.ClientName : de.DataName, de.XAMLName, DataTypeGenerator.GenerateType(GetPreferredXAMLType(de.DataType.DictionaryValueGenericType))));
 					}
-				foreach (DataElement de in o.Elements)
-					code.Append(GenerateElementProxyConstructorCode45(de, o));
 				code.AppendLine("\t\t}");
 			}
 			code.AppendLine();
@@ -260,8 +289,8 @@ namespace NETPath.Generators.WinRT.CS
 						else continue;
 						foreach (var t in o.Elements.Where(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch && !a.DREPrimaryKey && !(a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
 							code.AppendLine(string.Format("\t\t\t\tdelta.FirstOrDefault(a => a.Key == {0}Property.ID) != null ? delta.First(a => a.Key == {0}Property.ID) as CMDItemValue<{1}> : null,", t.HasClientType ? t.ClientName : t.DataName, DataTypeGenerator.GenerateType(t.DataType)));
-						foreach (var t in o.Elements.Where(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch && !a.DREPrimaryKey && (a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
-							code.AppendLine(string.Format("\t\t\t\t{0}.GetDelta(),", t.HasClientType ? t.ClientName : t.DataName));
+						//foreach (var t in o.Elements.Where(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch && !a.DREPrimaryKey && (a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
+						//	code.AppendLine(string.Format("\t\t\t\t{0}.GetDelta(),", t.HasClientType ? t.ClientName : t.DataName));
 						code.Remove(code.Length - 3, 3);
 						code.AppendLine(");");
 					}
@@ -394,7 +423,7 @@ namespace NETPath.Generators.WinRT.CS
 			{
 				if (o.DataType.TypeMode == DataTypeMode.Collection)
 				{
-					code.AppendLine(string.Format("\t\tprivate readonly {0} m{1};", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType, o.Owner.DREEnabled)), o.HasClientType ? o.ClientName : o.DataName));
+					code.AppendLine(string.Format("private readonly {0} m{1};", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType, o.Owner.DREEnabled)), o.HasClientType ? o.ClientName : o.DataName));
 					code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return m{1}; }} }}", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType, o.Owner.DREEnabled)), o.HasClientType ? o.ClientName : o.DataName));
 					code.AppendLine(string.Format("\t\tpartial void {0}Added(IEnumerable<{1}> Values);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.CollectionGenericType))));
 					code.AppendLine(string.Format("\t\tpartial void {0}Removed(IEnumerable<{1}> Values);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.CollectionGenericType))));
@@ -405,11 +434,12 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendLine(string.Format("\t\tpartial void {0}Replaced({1} OldValue, {1} NewValue);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.CollectionGenericType))));
 					code.AppendLine(string.Format("\t\tprotected virtual void {0}SendChanges(IEnumerable<ChangeListItem<{1}>> Changes)", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.CollectionGenericType))));
 					code.AppendLine("\t\t{");
+					code.Append(GenerateImmediateDREValueCallbacks(o.Owner.DataRevisionServiceNames, o.Owner.Name, o.DataName, true, true));
 					code.AppendLine("\t\t}");
 				}
 				else if (o.DataType.TypeMode == DataTypeMode.Dictionary)
 				{
-					code.AppendLine(string.Format("\t\tprivate readonly {0} m{1};", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType, o.Owner.DREEnabled)), o.HasClientType ? o.ClientName : o.DataName));
+					code.AppendLine(string.Format("private readonly {0} m{1};", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType, o.Owner.DREEnabled)), o.HasClientType ? o.ClientName : o.DataName));
 					code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return m{1}; }} }}", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType, o.Owner.DREEnabled)), o.HasClientType ? o.ClientName : o.DataName));
 					code.AppendLine(string.Format("\t\tpartial void {0}Added({1} Key, {2} Value);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryValueGenericType))));
 					code.AppendLine(string.Format("\t\tpartial void {0}Removed({1} Key, {2} Value);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryValueGenericType))));
@@ -417,6 +447,7 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendLine(string.Format("\t\tpartial void {0}Updated({1} Key, {2} OldValue, {2} NewValue);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryValueGenericType))));
 					code.AppendLine(string.Format("\t\tprotected virtual void {0}SendChanges(IEnumerable<ChangeDictionaryItem<{1}, {2}>> Changes)", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryValueGenericType))));
 					code.AppendLine("\t\t{");
+					code.Append(GenerateImmediateDREValueCallbacks(o.Owner.DataRevisionServiceNames, o.Owner.Name, o.DataName, true, true));
 					code.AppendLine("\t\t}");
 				}
 				else if (o.DataType.TypeMode == DataTypeMode.Array)
@@ -468,7 +499,7 @@ namespace NETPath.Generators.WinRT.CS
 			{
 				if (o.DataType.TypeMode == DataTypeMode.Collection)
 				{
-					code.AppendLine(string.Format("\t\tprivate readonly {0} m{1};", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType, o.Owner.DREEnabled)), o.HasClientType ? o.ClientName : o.DataName));
+					code.AppendLine(string.Format("private readonly {0} m{1};", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType, o.Owner.DREEnabled)), o.HasClientType ? o.ClientName : o.DataName));
 					code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return m{1}; }} }}", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType, o.Owner.DREEnabled)), o.HasClientType ? o.ClientName : o.DataName));
 					code.AppendLine(string.Format("\t\tpartial void {0}Added(IEnumerable<{1}> Values);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.CollectionGenericType))));
 					code.AppendLine(string.Format("\t\tpartial void {0}Removed(IEnumerable<{1}> Values);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.CollectionGenericType))));
@@ -479,11 +510,12 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendLine(string.Format("\t\tpartial void {0}Replaced({1} OldValue, {1} NewValue);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.CollectionGenericType))));
 					code.AppendLine(string.Format("\t\tprotected virtual void {0}SendChanges(IEnumerable<ChangeListItem<{1}>> Changes)", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.CollectionGenericType))));
 					code.AppendLine("\t\t{");
+					code.Append(GenerateImmediateDREValueCallbacks(o.Owner.DataRevisionServiceNames, o.Owner.Name, o.DataName, false, true));
 					code.AppendLine("\t\t}");
 				}
 				else if (o.DataType.TypeMode == DataTypeMode.Dictionary)
 				{
-					code.AppendLine(string.Format("\t\tprivate readonly {0} m{1};", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType, o.Owner.DREEnabled)), o.HasClientType ? o.ClientName : o.DataName));
+					code.AppendLine(string.Format("private readonly {0} m{1};", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType, o.Owner.DREEnabled)), o.HasClientType ? o.ClientName : o.DataName));
 					code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return m{1}; }} }}", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType, o.Owner.DREEnabled)), o.HasClientType ? o.ClientName : o.DataName));
 					code.AppendLine(string.Format("\t\tpartial void {0}Added({1} Key, {2} Value);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryValueGenericType))));
 					code.AppendLine(string.Format("\t\tpartial void {0}Removed({1} Key, {2} Value);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryValueGenericType))));
@@ -491,6 +523,7 @@ namespace NETPath.Generators.WinRT.CS
 					code.AppendLine(string.Format("\t\tpartial void {0}Updated({1} Key, {2} OldValue, {2} NewValue);", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryValueGenericType))));
 					code.AppendLine(string.Format("\t\tprotected virtual void {0}SendChanges(IEnumerable<ChangeDictionaryItem<{1}, {2}>> Changes)", o.HasClientType ? o.ClientName : o.DataName, DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryKeyGenericType)), DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType.DictionaryValueGenericType))));
 					code.AppendLine("\t\t{");
+					code.Append(GenerateImmediateDREValueCallbacks(o.Owner.DataRevisionServiceNames, o.Owner.Name, o.DataName, false, true));
 					code.AppendLine("\t\t}");
 				}
 				else if (o.DataType.TypeMode == DataTypeMode.Array)
@@ -713,7 +746,7 @@ namespace NETPath.Generators.WinRT.CS
 			}
 			else if (o.DataType.TypeMode == DataTypeMode.Collection)
 			{
-				code.AppendLine(string.Format("\t\t\tvar v{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType, o.Owner.DREEnabled)), o.HasClientType ? o.ClientName : o.DataName));
+				code.AppendLine(string.Format("\t\t\tvar v{1} = new {0}({2});", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType, o.Owner.DREEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.DRECanBatch && o.DREBatchCount > 0 ? o.DREBatchCount.ToString(CultureInfo.InvariantCulture) : ""));
 				code.AppendLine(string.Format("\t\t\tif (Data.{1} != null) foreach({0} a in Data.{1}) {{ v{2}.Add(a); }}", DataTypeGenerator.GenerateTypeGenerics(GetPreferredXAMLType(o.DataType)), o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
 				code.AppendLine(string.Format("\t\t\tm{0} = v{0};", o.HasClientType ? o.ClientName : o.DataName));
 			}
@@ -731,7 +764,7 @@ namespace NETPath.Generators.WinRT.CS
 			}
 			else if (o.DataType.TypeMode == DataTypeMode.Dictionary)
 			{
-				code.AppendLine(string.Format("\t\t\tvar v{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType, o.Owner.DREEnabled)), o.HasClientType ? o.ClientName : o.DataName));
+				code.AppendLine(string.Format("\t\t\tvar v{1} = new {0}({2});", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType, o.Owner.DREEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.DRECanBatch && o.DREBatchCount > 0 ? o.DREBatchCount.ToString(CultureInfo.InvariantCulture) : ""));
 				code.AppendLine(o.DataType.Name == "System.Collections.Concurrent.ConcurrentDictionary" ? string.Format("\t\t\tif (Data.{1} != null) foreach(KeyValuePair<{0}> a in Data.{1}) {{ v{2}.TryAdd(a.Key, a.Value); }}", DataTypeGenerator.GenerateTypeGenerics(GetPreferredXAMLType(o.DataType)), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName) : string.Format("\t\t\tif (Data.{1} != null) foreach(KeyValuePair<{0}> a in Data.{1}) {{ v{2}.Add(a.Key, a.Value); }}", DataTypeGenerator.GenerateTypeGenerics(GetPreferredXAMLType(o.DataType)), o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
 				code.AppendLine(string.Format("\t\t\tm{0} = v{0};", o.HasClientType ? o.ClientName : o.DataName));
 			}
@@ -757,7 +790,7 @@ namespace NETPath.Generators.WinRT.CS
 			}
 			else if (o.DataType.TypeMode == DataTypeMode.Collection)
 			{
-				code.AppendLine(string.Format("\t\t\tvar v{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType, o.Owner.DREEnabled)), o.HasClientType ? o.ClientName : o.DataName));
+				code.AppendLine(string.Format("\t\t\tvar v{1} = new {0}({2});", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType, o.Owner.DREEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.DRECanBatch && o.DREBatchCount > 0 ? o.DREBatchCount.ToString(CultureInfo.InvariantCulture) : ""));
 				code.AppendLine(string.Format("\t\t\tif (XAMLObject.{1} != null) foreach({0} a in XAMLObject.{1}) {{ v{2}.Add(a); }}", DataTypeGenerator.GenerateTypeGenerics(GetPreferredXAMLType(o.DataType)), o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
 				code.AppendLine(string.Format("\t\t\tm{0} = v{0};", o.HasClientType ? o.ClientName : o.DataName));
 			}
@@ -775,7 +808,7 @@ namespace NETPath.Generators.WinRT.CS
 			}
 			else if (o.DataType.TypeMode == DataTypeMode.Dictionary)
 			{
-				code.AppendLine(string.Format("\t\t\tvar v{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType, o.Owner.DREEnabled)), o.HasClientType ? o.ClientName : o.DataName));
+				code.AppendLine(string.Format("\t\t\tvar v{1} = new {0}({2});", DataTypeGenerator.GenerateType(GetPreferredDTOType(o.DataType, o.Owner.DREEnabled)), o.HasClientType ? o.ClientName : o.DataName, o.DRECanBatch && o.DREBatchCount > 0 ? o.DREBatchCount.ToString(CultureInfo.InvariantCulture) : ""));
 				code.AppendLine(o.DataType.Name == "System.Collections.Concurrent.ConcurrentDictionary" ? string.Format("\t\t\tif (XAMLObject.{1} != null) foreach(KeyValuePair<{0}> a in XAMLObject.{1}) {{ v{2}.TryAdd(a.Key, a.Value); }}", DataTypeGenerator.GenerateTypeGenerics(GetPreferredXAMLType(o.DataType)), o.HasClientType ? o.ClientName : o.DataName, o.XAMLName) : string.Format("\t\t\tif (XAMLObject.{1} != null) foreach(KeyValuePair<{0}> a in XAMLObject.{1}) {{ v{2}.Add(a.Key, a.Value); }}", DataTypeGenerator.GenerateTypeGenerics(GetPreferredXAMLType(o.DataType)), o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
 				code.AppendLine(string.Format("\t\t\tm{0} = v{0};", o.HasClientType ? o.ClientName : o.DataName));
 			}
