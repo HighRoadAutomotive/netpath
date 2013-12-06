@@ -405,7 +405,22 @@ namespace NETPath.Projects
 		public static readonly DependencyProperty XAMLNameProperty = DependencyProperty.Register("XAMLName", typeof(string), typeof(DataElement), new PropertyMetadata(""));
 
 		public bool HasEntity { get { return (bool)GetValue(HasEntityProperty); } set { SetValue(HasEntityProperty, value); } }
-		public static readonly DependencyProperty HasEntityProperty = DependencyProperty.Register("HasEntity", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
+		public static readonly DependencyProperty HasEntityProperty = DependencyProperty.Register("HasEntity", typeof(bool), typeof(DataElement), new PropertyMetadata(false, HasEntityChangedCallback));
+
+		private static void HasEntityChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as DataElement;
+			if (t == null) return;
+
+			if (Convert.ToBoolean(e.NewValue))
+			{
+				if (t.EntityName == "") t.EntityName = t.DataName;
+			}
+			else
+			{
+				t.EntityName = "";
+			}
+		}
 
 		public string EntityName { get { return (string)GetValue(EntityNameProperty); } set { SetValue(EntityNameProperty, value); } }
 		public static readonly DependencyProperty EntityNameProperty = DependencyProperty.Register("EntityName", typeof(string), typeof(DataElement), new PropertyMetadata(""));

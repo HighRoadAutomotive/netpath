@@ -91,7 +91,7 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 			if (o.EnableProtocolBuffers) code.AppendLine(string.Format("\t[ProtoBuf.ProtoContract({0}{1}{2})]", o.ProtoSkipConstructor ? "SkipConstructor = true" : "SkipConstructor = false", o.ProtoMembersOnly ? ", UseProtoMembersOnly = true" : "", o.ProtoIgnoreListHandling ? ", IgnoreListHandling = true" : ""));
 			else code.AppendLine(string.Format("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI));
-			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o, false, false, o.CMDEnabled, o.CMDEnabled, o.DREEnabled)));
+			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o, false, false, o.CMDEnabled, o.CMDEnabled, o.DREEnabled, o.HasEntity, o.Parent.Owner.EnitityDatabaseType)));
 			code.AppendLine("\t{");
 	
 			if (o.DataHasExtensionData)
@@ -121,6 +121,25 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine("\t\t}");
 
 			code.Append(GenerateProxyDCMCode(o, true));
+
+			var idv = o.Elements.FirstOrDefault(a => a.DREPrimaryKey);
+			if (o.HasEntity && idv != null)
+			{
+				var eps = new System.Data.Entity.Infrastructure.Pluralization.EnglishPluralizationService();
+				code.AppendLine(string.Format("\t\tprotected override void UpdateDataObject({0} Database)", o.Parent.Owner.EnitityDatabaseType));
+				code.AppendLine("\t\t{");
+				code.AppendLine(string.Format("\t\t\tvar efo = (from a in Database.{0} where a.{1} == {2} select a).FirstOrDefault();", eps.Pluralize(o.EntityName), idv.EntityName, idv.DataName));
+				code.AppendLine("\t\t\tif (efo == null) return;");
+				code.AppendLine("\t\t\tvar efcl = GetEFChanges();");
+
+				code.AppendLine("\t\t\tforeach (var efc in efcl)");
+				code.AppendLine("\t\t\t{");
+				foreach (var efe in o.Elements.Where(a => a.HasEntity && !a.DREPrimaryKey && !(a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
+					code.AppendLine(string.Format("\t\t\t\tif (efc.Key == {0}Property.ID) efo.{1} = ({2})efc.GetValue();", efe.DataName, efe.EntityName, GetPreferredDTOType(efe.DataType, o.CMDEnabled)));
+				code.AppendLine("\t\t\t}");
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+			}
 
 			int protoCount = 1;
 			foreach (DataElement de in o.Elements.Where(a => !a.IsHidden))

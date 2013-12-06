@@ -90,7 +90,7 @@
 			<ColumnDefinition Width="75" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
-		<ToggleButton Grid.Column="0" Margin="0,5,5,5" Content="Entity:" Padding="2,0" IsChecked="{Binding Path=Element.HasXAMLType}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="GenerateEntityName" ToolTip="Tells NETPath to generate a XAML binding for this member." Unchecked="GenerateXAMLBinding_Unchecked" />
+		<ToggleButton Grid.Column="0" Margin="0,5,5,5" Content="Entity:" Padding="2,0" IsChecked="{Binding Path=Element.HasEntity}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="GenerateEntityName" ToolTip="Tells NETPath to generate a XAML binding for this member." />
 		<pc:TextBox Grid.Column="1" Margin="5,5,0,5" MinHeight="24" Name="EntityName" Text="{Binding Path=Element.EntityName, UpdateSourceTrigger=PropertyChanged}" LabelText="Entity Member Name" IsEnabled="{Binding Path=Element.HasEntity}" VerticalContentAlignment="Center" Validate="ElementName_Validate" />
 	</Grid>
 	<TabControl Grid.Row="7" Margin="0,5,0,0" >

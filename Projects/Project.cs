@@ -131,6 +131,9 @@ namespace NETPath.Projects
 		public bool EnableEntityFramework { get { return (bool)GetValue(EnableEntityFrameworkProperty); } set { SetValue(EnableEntityFrameworkProperty, value); } }
 		public static readonly DependencyProperty EnableEntityFrameworkProperty = DependencyProperty.Register("EnableEntityFramework", typeof(bool), typeof(Project), new PropertyMetadata(true));
 
+		public string EnitityDatabaseType { get { return (string)GetValue(EnitityDatabaseTypeProperty); } set { SetValue(EnitityDatabaseTypeProperty, value); } }
+		public static readonly DependencyProperty EnitityDatabaseTypeProperty = DependencyProperty.Register("EnitityDatabaseType", typeof(string), typeof(Project), new PropertyMetadata(""));
+
 		[IgnoreDataMember] public List<DataType> DefaultTypes { get; private set; }
 		[IgnoreDataMember] public List<DataType> InheritableTypes { get; private set; }
 		[IgnoreDataMember] public DataType VoidType { get; private set; }
