@@ -34,7 +34,7 @@ namespace System
 	public abstract class DREObjectBase
 	{
 		//EntityFramework Support
-		[NonSerialized, IgnoreDataMember, XmlIgnore] private static readonly SynchronizedCollection<Action> efactions;
+		[NonSerialized, IgnoreDataMember, XmlIgnore] protected static readonly SynchronizedCollection<Action> efactions;
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private static Task eftask;
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private static readonly CancellationTokenSource eftaskct = new CancellationTokenSource();
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private static int updateInterval = 1000;
@@ -66,6 +66,15 @@ namespace System
 			catch (AggregateException ex) { ex.Flatten(); }
 		}
 
+		public IEnumerable<CMDItemBase> GetEFChanges()
+		{
+			var til = new List<CMDItemBase>();
+			CMDItemBase t;
+			while (efchanges.TryDequeue(out t))
+				if (t != null) til.Add(t);
+			return til.GroupBy(a => a.Key).Select(a => a.Last()).ToArray();
+		}
+	
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private ConcurrentDictionary<HashID, object> values;
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private ConcurrentQueue<CMDItemBase> modifications;
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private long changeCount;
@@ -434,6 +443,7 @@ namespace System
 		static EFDREObject()
 		{
 			efobjects = new ConcurrentDictionary<Guid, T>();
+			efactions.Add(DoEFUpdates);
 		}
 
 		private static void DoEFUpdates()
@@ -445,6 +455,7 @@ namespace System
 			var efol = efobjects.ToArray().Where(a => a.Value.IsDirty).Select(b => b.Value).ToList();
 			foreach (var efo in efol) efo.UpdateDataObject(db);
 
+			db.SaveChanges();
 			db.Connection.Close();
 		}
 
@@ -485,6 +496,18 @@ namespace System
 			T temp;
 			efobjects.TryRemove(_DREID, out temp);
 			return temp;
+		}
+
+		public void ExecuteEF(Action<TDataContext> execute)
+		{
+			var db = new TDataContext();
+			if (!string.IsNullOrEmpty(efconnection)) db.Connection.ConnectionString = efconnection;
+			db.Connection.Open();
+
+			execute(db);
+
+			db.SaveChanges();
+			db.Connection.Close();
 		}
 
 		protected abstract void UpdateDataObject(TDataContext Database);
