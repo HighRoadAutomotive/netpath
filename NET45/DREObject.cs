@@ -382,14 +382,15 @@ namespace System
 			return __dcm.GetOrAdd(Data._DREID, Data);
 		}
 
-		public static bool Unregister(Guid ClientID, Guid DataID)
+		public static T Unregister(Guid ClientID, Guid DataID)
 		{
 			T data;
 			__dcm.TryGetValue(DataID, out data);
-			if (data == null) return true;
+			if (data == null) return null;
 			Guid dreid;
 			data.__crl.TryRemove(ClientID, out dreid);
-			return !data.__crl.IsEmpty || __dcm.TryRemove(DataID, out data);
+			__dcm.TryRemove(DataID, out data);
+			return data;
 		}
 
 		//Constructors
