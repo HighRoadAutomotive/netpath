@@ -71,7 +71,7 @@ namespace System
 
 		#region - Operators -
 
-		public bool Equals(MultiUpdateValue<TID, TValue> other)
+		public bool Equals(MultiUserValue<TID, TValue> other)
 		{
 			return EqualityComparer<TValue>.Default.Equals(Current, other.Current);
 		}
@@ -79,7 +79,7 @@ namespace System
 		public override bool Equals(object obj)
 		{
 			if (ReferenceEquals(null, obj)) return false;
-			return obj is MultiUpdateValue<TID, TValue> && Equals((MultiUpdateValue<TID, TValue>) obj);
+			return obj is MultiUserValue<TID, TValue> && Equals((MultiUserValue<TID, TValue>) obj);
 		}
 
 		public override int GetHashCode()
@@ -87,44 +87,44 @@ namespace System
 			return EqualityComparer<TValue>.Default.GetHashCode(Current);
 		}
 
-		public static bool operator ==(MultiUpdateValue<TID, TValue> x, MultiUpdateValue<TID, TValue> y)
+		public static bool operator ==(MultiUserValue<TID, TValue> x, MultiUserValue<TID, TValue> y)
 		{
 			return x.Current.Equals(y.Current);
 		}
 
-		public static bool operator !=(MultiUpdateValue<TID, TValue> x, MultiUpdateValue<TID, TValue> y)
+		public static bool operator !=(MultiUserValue<TID, TValue> x, MultiUserValue<TID, TValue> y)
 		{
 			return !x.Current.Equals(y.Current);
 		}
 
-		public static bool operator ==(MultiUpdateValue<TID, TValue> x,  TValue y)
+		public static bool operator ==(MultiUserValue<TID, TValue> x,  TValue y)
 		{
 			return x.Current.Equals(y);
 		}
 
-		public static bool operator !=(MultiUpdateValue<TID, TValue> x, TValue y)
+		public static bool operator !=(MultiUserValue<TID, TValue> x, TValue y)
 		{
 			return !x.Current.Equals(y);
 		}
 
-		public static bool operator ==(TValue x, MultiUpdateValue<TID, TValue> y)
+		public static bool operator ==(TValue x, MultiUserValue<TID, TValue> y)
 		{
 			return x.Equals(y.Current);
 		}
 
-		public static bool operator !=(TValue x, MultiUpdateValue<TID, TValue> y)
+		public static bool operator !=(TValue x, MultiUserValue<TID, TValue> y)
 		{
 			return !x.Equals(y.Current);
 		}
 
-		public static implicit operator TValue(MultiUpdateValue<TID, TValue> x)
+		public static implicit operator TValue(MultiUserValue<TID, TValue> x)
 		{
 			return x.Current;
 		}
 
-		public static implicit operator MultiUpdateValue<TID, TValue>(TValue x)
+		public static implicit operator MultiUserValue<TID, TValue>(TValue x)
 		{
-			return new MultiUpdateValue<TID, TValue>(x);
+			return new MultiUserValue<TID, TValue>(x);
 		}
 
 		#endregion
