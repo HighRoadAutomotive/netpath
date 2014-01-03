@@ -48,7 +48,7 @@ namespace NETPath.Generators.NET.CS
 			code.AppendFormat("Namespace = \"{0}\"", o.Parent.FullURI);
 			code.AppendLine(")]");
 			if (o.IsFlags) code.AppendLine("\t[Flags]");
-			code.AppendLine(string.Format("\t{0} enum {1} : {2}", DataTypeGenerator.GenerateScope(o.Scope), o.Name, o.IsFlags ? "ulong" : "long"));
+			code.AppendLine(string.Format("\t{0} enum {1} : {2}", DataTypeGenerator.GenerateScope(o.Scope), o.Name, o.IsFlags ? "ulong" : "short"));
 			code.AppendLine("\t{");
 			int fv = 0;
 			foreach (EnumElement ee in o.Elements.Where(ee => !ee.IsHidden))
@@ -120,7 +120,7 @@ namespace NETPath.Generators.NET.CS
 			code.AppendFormat("Namespace = \"{0}\"", o.Parent.FullURI);
 			code.AppendLine(")]");
 			if (o.IsFlags) code.AppendLine("\t[Flags]");
-			code.AppendLine(string.Format("\t{0} enum {1} : {2}", DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.IsFlags ? "ulong" : "long"));
+			code.AppendLine(string.Format("\t{0} enum {1} : {2}", DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.IsFlags ? "ulong" : "short"));
 			code.AppendLine("\t{");
 			int fv = 0;
 			foreach (EnumElement ee in o.Elements.Where(ee => !ee.IsHidden))
