@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Data.Entity;
 using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -435,7 +436,7 @@ namespace System
 
 	[DataContract]
 	[ProtoBuf.ProtoContract]
-	public abstract class EFDREObject<T, TDataContext> : DREObject<T> where T : EFDREObject<T, TDataContext> where TDataContext : ObjectContext, new()
+	public abstract class EFDREObject<T, TDataContext> : DREObject<T> where T : EFDREObject<T, TDataContext> where TDataContext : DbContext, new()
 	{
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private static readonly ConcurrentDictionary<Guid, T> efobjects;
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private static string efconnection;
@@ -450,14 +451,14 @@ namespace System
 		private static void DoEFUpdates()
 		{
 			var db = new TDataContext();
-			if (!string.IsNullOrEmpty(efconnection)) db.Connection.ConnectionString = efconnection;
-			db.Connection.Open();
+			if (!string.IsNullOrEmpty(efconnection)) db.Database.Connection.ConnectionString = efconnection;
+			db.Database.Connection.Open();
 
 			var efol = efobjects.ToArray().Where(a => a.Value.IsDirty).Select(b => b.Value).ToList();
 			foreach (var efo in efol) efo.UpdateDataObject(db);
 
 			db.SaveChanges();
-			db.Connection.Close();
+			db.Database.Connection.Close();
 		}
 
 		protected EFDREObject()
@@ -502,13 +503,13 @@ namespace System
 		public void ExecuteEF(Action<TDataContext> execute)
 		{
 			var db = new TDataContext();
-			if (!string.IsNullOrEmpty(efconnection)) db.Connection.ConnectionString = efconnection;
-			db.Connection.Open();
+			if (!string.IsNullOrEmpty(efconnection)) db.Database.Connection.ConnectionString = efconnection;
+			db.Database.Connection.Open();
 
 			execute(db);
 
 			db.SaveChanges();
-			db.Connection.Close();
+			db.Database.Connection.Close();
 		}
 
 		protected abstract void UpdateDataObject(TDataContext Database);
