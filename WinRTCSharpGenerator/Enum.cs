@@ -43,7 +43,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendFormat("Namespace = \"{0}\"", o.Parent.FullURI);
 			code.AppendLine(")]");
 			if (o.IsFlags) code.AppendLine("\t[Flags]");
-			code.AppendLine(string.Format("\t{0} enum {1} : {2}", DataTypeGenerator.GenerateScope(o.Scope), o.Name, o.IsFlags ? "ulong" : "short"));
+			code.AppendLine(string.Format("\t{0} enum {1} : {2}", DataTypeGenerator.GenerateScope(o.Scope), o.Name, o.IsFlags ? "long" : "short"));
 			code.AppendLine("\t{");
 			int fv = 0;
 			foreach (EnumElement ee in o.Elements.Where(ee => !ee.IsHidden))
@@ -75,7 +75,7 @@ namespace NETPath.Generators.WinRT.CS
 
 		private static string GenerateElementServerCode(EnumElement o, int ElementIndex)
 		{
-			if (ElementIndex > 62) return "";
+			if (ElementIndex > 61) return "";
 
 			var code = new StringBuilder();
 			if (!string.IsNullOrEmpty(o.Documentation)) code.AppendLine(string.Format("\t\t<summary>{0}</summary>", o.Documentation));
@@ -110,7 +110,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendFormat("Namespace = \"{0}\"", o.Parent.FullURI);
 			code.AppendLine(")]");
 			if (o.IsFlags) code.AppendLine("\t[Flags]");
-			code.AppendLine(string.Format("\t{0} enum {1} : {2}", DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.IsFlags ? "ulong" : "short"));
+			code.AppendLine(string.Format("\t{0} enum {1} : {2}", DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.IsFlags ? "long" : "short"));
 			code.AppendLine("\t{");
 			int fv = 0;
 			foreach (EnumElement ee in o.Elements.Where(ee => !ee.IsHidden))
@@ -141,7 +141,7 @@ namespace NETPath.Generators.WinRT.CS
 		private static string GenerateElementProxyCode(EnumElement o, int ElementIndex)
 		{
 			if (o.IsExcluded) return "";
-			if (ElementIndex > 62) return "";
+			if (ElementIndex > 61) return "";
 
 			var code = new StringBuilder();
 			if (!string.IsNullOrEmpty(o.Documentation)) code.AppendLine(string.Format("\t\t<summary>{0}</summary>", o.Documentation));
