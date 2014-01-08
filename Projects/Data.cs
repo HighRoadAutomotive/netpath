@@ -116,36 +116,6 @@ namespace NETPath.Projects
 
 		[IgnoreDataMember] public List<DataRevisionName> DataRevisionServiceNames { get; set; }
 
-		//Protocol Buffers
-		public bool EnableProtocolBuffers { get { return (bool)GetValue(EnableProtocolBuffersProperty); } set { SetValue(EnableProtocolBuffersProperty, value); } }
-		public static readonly DependencyProperty EnableProtocolBuffersProperty = DependencyProperty.Register("EnableProtocolBuffers", typeof(bool), typeof(Data), new PropertyMetadata(false, EnableProtocolBuffersChangedCallback));
-
-		private static void EnableProtocolBuffersChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
-		{
-			var t = o as Data;
-			if (t == null) return;
-
-			if (Convert.ToBoolean(e.NewValue) == false)
-			{
-				t.ProtoSkipConstructor = false;
-				t.ProtoMembersOnly = false;
-				t.ProtoIgnoreListHandling = false;
-			}
-			else
-			{
-				t.ProtoMembersOnly = true;
-			}
-		}
-
-		public bool ProtoSkipConstructor { get { return (bool)GetValue(ProtoSkipConstructorProperty); } set { SetValue(ProtoSkipConstructorProperty, value); } }
-		public static readonly DependencyProperty ProtoSkipConstructorProperty = DependencyProperty.Register("ProtoSkipConstructor", typeof(bool), typeof(Data), new PropertyMetadata(false));
-
-		public bool ProtoMembersOnly { get { return (bool)GetValue(ProtoMembersOnlyProperty); } set { SetValue(ProtoMembersOnlyProperty, value); } }
-		public static readonly DependencyProperty ProtoMembersOnlyProperty = DependencyProperty.Register("ProtoMembersOnly", typeof(bool), typeof(Data), new PropertyMetadata(false));
-
-		public bool ProtoIgnoreListHandling { get { return (bool)GetValue(ProtoIgnoreListHandlingProperty); } set { SetValue(ProtoIgnoreListHandlingProperty, value); } }
-		public static readonly DependencyProperty ProtoIgnoreListHandlingProperty = DependencyProperty.Register("ProtoIgnoreListHandling", typeof(bool), typeof(Data), new PropertyMetadata(false));
-
 		//System
 		[IgnoreDataMember] public bool HasWinFormsBindings { get { return Elements.Any(a => a.GenerateWinFormsSupport); } }
 		[IgnoreDataMember] public bool XAMLHasExtensionData { get { return HasXAMLType && (XAMLType.InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0)); } }
@@ -541,25 +511,6 @@ namespace NETPath.Projects
 		public int DREBatchCount { get { return (int)GetValue(DREBatchCountProperty); } set { SetValue(DREBatchCountProperty, value); } }
 		public static readonly DependencyProperty DREBatchCountProperty = DependencyProperty.Register("DREBatchCount", typeof(int), typeof(DataElement), new PropertyMetadata(1));
 
-		//Protocol Buffers 
-		public bool ProtocolBufferEnabled { get { return (bool)GetValue(ProtocolBufferEnabledProperty); } set { SetValue(ProtocolBufferEnabledProperty, value); } }
-		public static readonly DependencyProperty ProtocolBufferEnabledProperty = DependencyProperty.Register("ProtocolBufferEnabled", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
-
-		public ProtoBufDataFormat ProtoDataFormat { get { return (ProtoBufDataFormat)GetValue(ProtoDataFormatProperty); } set { SetValue(ProtoDataFormatProperty, value); } }
-		public static readonly DependencyProperty ProtoDataFormatProperty = DependencyProperty.Register("ProtoDataFormat", typeof(ProtoBufDataFormat), typeof(DataElement), new PropertyMetadata(ProtoBufDataFormat.Default));
-
-		public bool ProtoIsPacked { get { return (bool)GetValue(ProtoIsPackedProperty); } set { SetValue(ProtoIsPackedProperty, value); } }
-		public static readonly DependencyProperty ProtoIsPackedProperty = DependencyProperty.Register("ProtoIsPacked", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
-
-		public bool ProtoOverwriteList { get { return (bool)GetValue(ProtoOverwriteListProperty); } set { SetValue(ProtoOverwriteListProperty, value); } }
-		public static readonly DependencyProperty ProtoOverwriteListProperty = DependencyProperty.Register("ProtoOverwriteList", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
-
-		public bool ProtoAsReference { get { return (bool)GetValue(ProtoAsReferenceProperty); } set { SetValue(ProtoAsReferenceProperty, value); } }
-		public static readonly DependencyProperty ProtoAsReferenceProperty = DependencyProperty.Register("ProtoAsReference", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
-
-		public bool ProtoDynamicType { get { return (bool)GetValue(ProtoDynamicTypeProperty); } set { SetValue(ProtoDynamicTypeProperty, value); } }
-		public static readonly DependencyProperty ProtoDynamicTypeProperty = DependencyProperty.Register("ProtoDynamicType", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
-
 		//System
 		public bool IsSelected { get { return (bool)GetValue(IsSelectedProperty); } set { SetValue(IsSelectedProperty, value); } }
 		public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.Register("IsSelected", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
@@ -592,7 +543,6 @@ namespace NETPath.Projects
 			Documentation = new Documentation { IsProperty = true };
 			HasClientType = false;
 			HasXAMLType = true;
-			if (DataType.TypeMode == DataTypeMode.Collection || DataType.TypeMode == DataTypeMode.Dictionary || DataType.TypeMode == DataTypeMode.Queue || DataType.TypeMode == DataTypeMode.Stack) ProtoOverwriteList = true;
 		}
 
 		public override string ToString()

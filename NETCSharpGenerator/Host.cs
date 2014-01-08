@@ -856,7 +856,6 @@ namespace NETPath.Generators.NET.CS
 		{
 			var code = new StringBuilder();
 			code.AppendLine(string.Format("\t\t\tvar {3}Endpoint = this.AddServiceEndpoint(typeof({0}.I{1}), new {2}(), {3}URI);", o.Parent.Service.Parent.FullName, o.Parent.Service.Name, DataTypeGenerator.GenerateType(o.Binding), o.Name));
-			if (o.UseProtocolBufferSerialization) code.AppendLine(string.Format("\t\t\t{0}Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());", o.Name));
 			return code.ToString();
 		}
 
@@ -899,7 +898,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {4}Proxy({5}new {3}(), new System.ServiceModel.EndpointAddress(new Uri({0}){1}{2}));", GenerateClientEndpointURI(o, false, false), identity, ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -912,7 +910,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {4}Proxy({5}new {3}(), new System.ServiceModel.EndpointAddress(new Uri({0}){1}{2}));", GenerateClientEndpointURI(o, true, false), identity, ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -925,7 +922,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {4}Proxy({5}new {3}(), new System.ServiceModel.EndpointAddress(new Uri({0}){1}{2}));", GenerateClientEndpointURI(o, false, true), identity, ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -938,7 +934,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {4}Proxy({5}new {3}(), new System.ServiceModel.EndpointAddress(new Uri({0}){1}{2}));", GenerateClientEndpointURI(o, true, true), identity, ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -955,7 +950,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {3}Proxy({4}new {2}(), new System.ServiceModel.EndpointAddress(new Uri({0}), Identity{1}));", GenerateClientEndpointURI(o, false, false), ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -968,7 +962,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {3}Proxy({4}new {2}(), new System.ServiceModel.EndpointAddress(new Uri({0}), Identity{1}));", GenerateClientEndpointURI(o, true, false), ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -981,7 +974,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {3}Proxy({4}new {2}(), new System.ServiceModel.EndpointAddress(new Uri({0}), Identity{1}));", GenerateClientEndpointURI(o, false, true), ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -994,7 +986,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {3}Proxy({4}new {2}(), new System.ServiceModel.EndpointAddress(new Uri({0}), Identity{1}));", GenerateClientEndpointURI(o, true, true), ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 				#endregion
@@ -1011,7 +1002,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {4}Proxy({5}new {3}(), new System.ServiceModel.EndpointAddress(new Uri({0}){1}{2}));", GenerateClientEndpointURI(o, false, false), identity, ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -1024,7 +1014,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {4}Proxy({5}new {3}(), new System.ServiceModel.EndpointAddress(new Uri({0}){1}{2}));", GenerateClientEndpointURI(o, true, false), identity, ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -1037,7 +1026,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {4}Proxy({5}new {3}(), new System.ServiceModel.EndpointAddress(new Uri({0}){1}{2}));", GenerateClientEndpointURI(o, false, true), identity, ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -1050,7 +1038,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {4}Proxy({5}new {3}(), new System.ServiceModel.EndpointAddress(new Uri({0}){1}{2}));", GenerateClientEndpointURI(o, true, true), identity, ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 				#endregion
@@ -1065,7 +1052,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {3}Proxy({4}new {2}(), new System.ServiceModel.EndpointAddress(new Uri({0}), Identity{1}));", GenerateClientEndpointURI(o, false, false), ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -1078,7 +1064,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {3}Proxy({4}new {2}(), new System.ServiceModel.EndpointAddress(new Uri({0}), Identity{1}));", GenerateClientEndpointURI(o, true, false), ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -1091,7 +1076,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {3}Proxy({4}new {2}(), new System.ServiceModel.EndpointAddress(new Uri({0}), Identity{1}));", GenerateClientEndpointURI(o, false, true), ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -1104,7 +1088,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {3}Proxy({4}new {2}(), new System.ServiceModel.EndpointAddress(new Uri({0}), Identity{1}));", GenerateClientEndpointURI(o, true, true), ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 				#endregion
@@ -1123,7 +1106,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {4}Proxy({5}new TCallback(), new {3}(), new System.ServiceModel.EndpointAddress(new Uri({0}){1}{2}));", GenerateClientEndpointURI(o, false, false), identity, ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -1136,7 +1118,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {4}Proxy({5}new TCallback(), new {3}(), new System.ServiceModel.EndpointAddress(new Uri({0}){1}{2}));", GenerateClientEndpointURI(o, true, false), identity, ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -1149,7 +1130,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {4}Proxy({5}new TCallback(), new {3}(), new System.ServiceModel.EndpointAddress(new Uri({0}){1}{2}));", GenerateClientEndpointURI(o, false, true), identity, ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -1162,7 +1142,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {4}Proxy({5}new TCallback(), new {3}(), new System.ServiceModel.EndpointAddress(new Uri({0}){1}{2}));", GenerateClientEndpointURI(o, true, true), identity, ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 				#endregion
@@ -1177,7 +1156,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {3}Proxy({4}new TCallback(), new {2}(), new System.ServiceModel.EndpointAddress(new Uri({0}), Identity{1}));", GenerateClientEndpointURI(o, false, false), ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -1190,7 +1168,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {3}Proxy({4}new TCallback(), new {2}(), new System.ServiceModel.EndpointAddress(new Uri({0}), Identity{1}));", GenerateClientEndpointURI(o, true, false), ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -1203,7 +1180,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {3}Proxy({4}new TCallback(), new {2}(), new System.ServiceModel.EndpointAddress(new Uri({0}), Identity{1}));", GenerateClientEndpointURI(o, false, true), ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -1216,7 +1192,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {3}Proxy({4}new TCallback(), new {2}(), new System.ServiceModel.EndpointAddress(new Uri({0}), Identity{1}));", GenerateClientEndpointURI(o, true, true), ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 				#endregion
@@ -1233,7 +1208,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {4}Proxy({5}new TCallback(), EndpointConfig, new System.ServiceModel.EndpointAddress(new Uri({0}){1}{2}));", GenerateClientEndpointURI(o, false, false), identity, ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -1246,7 +1220,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {4}Proxy({5}new TCallback(), EndpointConfig, new System.ServiceModel.EndpointAddress(new Uri({0}){1}{2}));", GenerateClientEndpointURI(o, true, false), identity, ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -1259,7 +1232,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {4}Proxy({5}new TCallback(), EndpointConfig, new System.ServiceModel.EndpointAddress(new Uri({0}){1}{2}));", GenerateClientEndpointURI(o, false, true), identity, ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -1272,7 +1244,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {4}Proxy({5}new TCallback(), EndpointConfig, new System.ServiceModel.EndpointAddress(new Uri({0}){1}{2}));", GenerateClientEndpointURI(o, true, true), identity, ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 				#endregion
@@ -1287,7 +1258,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {3}Proxy({4}new TCallback(), EndpointConfig, new System.ServiceModel.EndpointAddress(new Uri({0}), Identity{1}));", GenerateClientEndpointURI(o, false, false), ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -1300,7 +1270,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {3}Proxy({4}new TCallback(), EndpointConfig, new System.ServiceModel.EndpointAddress(new Uri({0}), Identity{1}));", GenerateClientEndpointURI(o, true, false), ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -1313,7 +1282,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {3}Proxy({4}new TCallback(), EndpointConfig, new System.ServiceModel.EndpointAddress(new Uri({0}), Identity{1}));", GenerateClientEndpointURI(o, false, true), ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 
@@ -1326,7 +1294,6 @@ namespace NETPath.Generators.NET.CS
 					ahlist += (", ah" + i);
 				}
 				code.AppendLine(string.Format("\t\t\tvar t = new {3}Proxy({4}new TCallback(), EndpointConfig, new System.ServiceModel.EndpointAddress(new Uri({0}), Identity{1}));", GenerateClientEndpointURI(o, true, true), ahlist, DataTypeGenerator.GenerateType(o.Binding.HasClientType ? o.Binding.ClientType : o.Binding), DataTypeGenerator.GenerateType(o.Parent.Service.HasClientType ? o.Parent.Service.ClientType : o.Parent.Service), IsDCMEnabled ? "ClientID, " : ""));
-				if (o.UseProtocolBufferSerialization) code.AppendLine("\t\t\tt.Endpoint.Behaviors.Add(new ProtoBuf.ServiceModel.ProtoEndpointBehavior());");
 				code.AppendLine(string.Format("\t\t\treturn t;"));
 				code.AppendLine("\t\t}");
 				#endregion

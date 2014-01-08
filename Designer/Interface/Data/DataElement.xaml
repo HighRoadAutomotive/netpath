@@ -102,7 +102,7 @@
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*" />
 				</Grid.RowDefinitions>
 				<Grid Name="OptionsGrid" Grid.Row="0" Margin="0,5,0,0" >
 					<Grid.ColumnDefinitions>
@@ -129,7 +129,6 @@
 					<Label Content="Advanced:" Height="Auto" HorizontalAlignment="Right" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="3" />
 					<ToggleButton Grid.Column="1" Grid.Row="3" Content="WinForms Binding" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.GenerateWinFormsSupport}" IsEnabled="{Binding Path=Element.IsDataMember}" Name="GenerateWinFormsSupport" ToolTip="Generates support for Windows Forms INotifyPropertyChanged databinding." />
 					<ToggleButton Grid.Column="2" Grid.Row="3" Content="Data Revisions" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.DREEnabled}" IsEnabled="{Binding Path=Element.IsDataMember}" Visibility="{Binding Path=Element.Owner.DREEnabled, Converter={StaticResource BoolVisibilityConverter}}" Name="AutomaticUpdates" ToolTip="The member is included in Automatic Data Updates." />
-					<ToggleButton Grid.Column="3" Grid.Row="3" Content="Protocol Buffers" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.ProtocolBufferEnabled}" IsEnabled="{Binding Path=Element.IsDataMember}" Visibility="{Binding Path=Element.Owner.EnableProtocolBuffers, Converter={StaticResource BoolVisibilityConverter}}" Name="ProtocolBuffers" ToolTip="The member is included in Protocol Buffer serialization." />
 					<Label Content="Callbacks:" Height="Auto" HorizontalAlignment="Right" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="5" Visibility="{Binding Path=Element.Owner.CMDEnabled, Converter={StaticResource BoolVisibilityConverter}}"  />
 					<ToggleButton Grid.Column="1" Grid.Row="5" Content="PropertyChanged Callback" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.PropertyChangedCallback}" IsEnabled="{Binding Path=Element.CanPropertyChanged}" Visibility="{Binding Path=Element.Owner.CMDEnabled, Converter={StaticResource BoolVisibilityConverter}}" ToolTip="Determines whether or not support for the PropertyChangedCallback is generated." />
 					<ToggleButton Grid.Column="2" Grid.Row="5" Content="PropertyUpdated Callback" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.PropertyUpdatedCallback}" IsEnabled="{Binding Path=Element.CanPropertyUpdated}" Visibility="{Binding Path=Element.Owner.CMDEnabled, Converter={StaticResource BoolVisibilityConverter}}" ToolTip="Determines whether or not support for the PropertyUpdatedCallback is generated." />
@@ -160,31 +159,7 @@
 							<Label Content="Batch Interval:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" />
 							<sf:IntegerTextBox Value="{Binding Path=Element.DREBatchCount}" Margin="95,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Name="UpdateBatchSize" FontSize="10pt" ToolTip="Specify the number of changes to this collection before a change message is sent." />
 						</Grid>
-					</Border>				</Grid>
-				<Grid Name="ProtoBufGrid" Grid.Row="2" Margin="0,5,0,0" Visibility="{Binding Path=Element.ProtocolBufferEnabled, Converter={StaticResource BoolVisibilityConverter}}" >
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="*" />
-					</Grid.ColumnDefinitions>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
-					<Label Grid.ColumnSpan="2" Grid.Row="0" Content="Protocol Buffers" FontSize="12pt" />
-					<Label Content="Data Format:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="1" Grid.Column="0" />
-					<ComboBox Margin="95,5,5,5" VerticalContentAlignment="Center" Height="23" SelectedIndex="{Binding Path=Element.DREUpdateMode, Converter={StaticResource DCMUpdateModeConverter}}" Grid.Column="0" Grid.Row="1" >
-						<ComboBoxItem Content="Default" IsSelected="True" />
-						<ComboBoxItem Content="FixedSize" />
-						<ComboBoxItem Content="Group" />
-						<ComboBoxItem Content="TwosComplment" />
-						<ComboBoxItem Content="ZigZag" />
-					</ComboBox>
-					<ToggleButton Grid.Row="1" Grid.Column="1" Content="Is Packed" VerticalContentAlignment="Center" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.ProtoIsPacked}" ToolTip="Specifies packed encoding layout. Especially useful for Arrays or Lists of primitives." />
-					<ToggleButton Grid.Row="1" Grid.Column="2" Content="Overwrite List" VerticalContentAlignment="Center" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.ProtoOverwriteList}" ToolTip="Specifies that the list to to be reinitialized during deserialization." />
-					<ToggleButton Grid.Row="2" Grid.Column="0" Content="As Reference" VerticalContentAlignment="Center" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.ProtoAsReference}" ToolTip="Specifies reference tracking of sub-objects. Can siginificantly reduce message size in object graphs that have many common references." />
-					<ToggleButton Grid.Row="2" Grid.Column="1" Content="Dynamic Type" VerticalContentAlignment="Center" Margin="5" Padding="2,0" Height="23" IsChecked="{Binding Path=Element.ProtoDynamicType}" ToolTip="Enables dymanic typing. Allows the use of object as long as only non-inherited contract types are used." />
+					</Border>
 				</Grid>
 			</Grid>
 		</TabItem>
