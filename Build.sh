@@ -9,4 +9,5 @@ git pull origin master
 cd ..
 
 #Build the NETPath SDK
+./Tools/Nuget.exe install ./NET45/packages.config -NonInteractive -SolutionDirectory ./
 "/C/Program Files (x86)/MSBuild/12.0/Bin/MSBuild.exe" SDK.sln -nologo -p:Configuration=Release -t:Clean\;Build -p:TrackFileAccess=false
