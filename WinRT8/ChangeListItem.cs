@@ -32,7 +32,6 @@ namespace System.Collections.Generic
 	}
 
 	[DataContract(Namespace = "http://www.prospectivesoftware.com/")]
-	[ProtoBuf.ProtoContract(SkipConstructor = true, UseProtoMembersOnly = false, InferTagFromName = true, DataMemberOffset = 1)]
 	public struct ChangeListItem<T>
 	{
 		[DataMember(Order = 0)] public ListItemChangeMode Mode { get; private set; }
@@ -56,7 +55,6 @@ namespace System.Collections.Generic
 	}
 
 	[DataContract(Namespace = "http://www.prospectivesoftware.com/")]
-	[ProtoBuf.ProtoContract(SkipConstructor = true, UseProtoMembersOnly = false, InferTagFromName = true, DataMemberOffset = 1)]
 	public struct ChangeDictionaryItem<TKey, T>
 	{
 		[DataMember(Order = 0)] public ListItemChangeMode Mode { get; private set; }
@@ -72,7 +70,6 @@ namespace System.Collections.Generic
 	}
 
 	[DataContract(Namespace = "http://www.prospectivesoftware.com/")]
-	[ProtoBuf.ProtoContract(SkipConstructor = true, UseProtoMembersOnly = false, InferTagFromName = true, DataMemberOffset = 1)]
 	public abstract class CMDItemBase
 	{
 		[DataMember(Order = 0)] public bool UseDefault { get; protected set; }
@@ -82,7 +79,6 @@ namespace System.Collections.Generic
 	}
 
 	[DataContract(Namespace = "http://www.prospectivesoftware.com/")]
-	[ProtoBuf.ProtoContract(SkipConstructor = true, UseProtoMembersOnly = false, InferTagFromName = true, DataMemberOffset = 1)]
 	public class CMDItemValue<T> : CMDItemBase
 	{
 		[DataMember(Order = 3)] public T Value { get; private set; }

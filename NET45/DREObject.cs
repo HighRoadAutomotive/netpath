@@ -25,13 +25,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Xml.Serialization;
-using ProtoBuf;
 
 namespace System
 {
 	[Serializable]
 	[DataContract]
-	[ProtoBuf.ProtoContract]
 	public abstract class DREObjectBase
 	{
 		//EntityFramework Support
@@ -322,7 +320,7 @@ namespace System
 			BatchInterval = 0;
 		}
 
-		[DataMember] [ProtoMember(1)] public Guid _DREID { get; set; }
+		[DataMember] public Guid _DREID { get; set; }
 
 		protected void SetDREID(string PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(PrimaryKey).ToGUID(); }
 		protected void SetDREID(byte[] PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(PrimaryKey).ToGUID(); }
@@ -340,7 +338,6 @@ namespace System
 	}
 
 	[DataContract]
-	[ProtoBuf.ProtoContract]
 	public abstract class DREObject<T> : DREObjectBase where T : DREObject<T>
 	{
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, T> __dcm;
@@ -435,7 +432,6 @@ namespace System
 
 
 	[DataContract]
-	[ProtoBuf.ProtoContract]
 	public abstract class EFDREObject<T, TDataContext> : DREObject<T> where T : EFDREObject<T, TDataContext> where TDataContext : DbContext, new()
 	{
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private static readonly ConcurrentDictionary<Guid, T> efobjects;

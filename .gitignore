@@ -112,5 +112,4 @@ UpgradeLog*.XML
 *.pri
 *.xml
 *.bak
-ProtoBufNet/
-System.Utilities/
+Build/

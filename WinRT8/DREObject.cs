@@ -24,12 +24,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Xml.Serialization;
 using Windows.UI.Xaml;
-using ProtoBuf;
 
 namespace System
 {
 	[DataContract]
-	[ProtoBuf.ProtoContract]
 	public abstract class DREObjectBase
 	{
 		[IgnoreDataMember, XmlIgnore] private ConcurrentDictionary<HashID, object> values;
@@ -252,7 +250,7 @@ namespace System
 			BatchInterval = 0;
 		}
 
-		[DataMember] [ProtoMember(1)] public Guid _DREID { get; set; }
+		[DataMember] public Guid _DREID { get; set; }
 
 		protected void SetDREID(string PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(PrimaryKey).ToGUID(); }
 		protected void SetDREID(byte[] PrimaryKey) { if (_DREID == Guid.Empty) _DREID = HashID.GenerateHashID(PrimaryKey).ToGUID(); }
@@ -270,7 +268,6 @@ namespace System
 	}
 
 	[DataContract]
-	[ProtoBuf.ProtoContract]
 	public abstract class DREObject<T> : DREObjectBase where T : DREObject<T>
 	{
 		[IgnoreDataMember, XmlIgnore] private static readonly System.Collections.Concurrent.ConcurrentDictionary<Guid, T> __dcm;

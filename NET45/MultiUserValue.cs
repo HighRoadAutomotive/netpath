@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using ProtoBuf;
 
 namespace System
 {
 	[DataContract]
-	[ProtoContract]
 	public class MultiUserValueData<TID, TValue> where TID : struct
 	{
 		private readonly DateTime timestamp;
@@ -27,11 +25,10 @@ namespace System
 	}
 
 	[DataContract]
-	[ProtoContract]
 	public struct MultiUserValue<TID, TValue> where TID : struct
 	{
-		[DataMember] [ProtoMember(1, AsReference = true, OverwriteList = true)] private ConcurrentDictionary<TID, MultiUserValueData<TID, TValue>> Values;
-		[DataMember] [ProtoMember(2)] private TValue Current;
+		[DataMember] private ConcurrentDictionary<TID, MultiUserValueData<TID, TValue>> Values;
+		[DataMember] private TValue Current;
 
 		public TValue Value { get { return Current; } set { lock (Values) Current = value; } }
 
