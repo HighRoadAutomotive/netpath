@@ -38,7 +38,7 @@ namespace System
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private static readonly CancellationTokenSource eftaskct = new CancellationTokenSource();
 		[NonSerialized, IgnoreDataMember, XmlIgnore] private static int updateInterval = 1000;
 		[IgnoreDataMember, XmlIgnore] public static int EFUpdateInterval { get { return updateInterval; } set { Interlocked.Exchange(ref updateInterval, value); } }
-		[NonSerialized, IgnoreDataMember, XmlIgnore] private readonly ConcurrentQueue<CMDItemBase> efchanges;
+		[NonSerialized, IgnoreDataMember, XmlIgnore] private ConcurrentQueue<CMDItemBase> efchanges;
 
 		static DREObjectBase()
 		{
@@ -315,6 +315,7 @@ namespace System
 		protected virtual void OnDeserializingBase(StreamingContext context)
 		{
 			modifications = new ConcurrentQueue<CMDItemBase>();
+			efchanges = new ConcurrentQueue<CMDItemBase>();
 			values = new ConcurrentDictionary<HashID, object>();
 			changeCount = 0;
 			BatchInterval = 0;
