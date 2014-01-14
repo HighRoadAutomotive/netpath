@@ -139,6 +139,35 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine();
 			}
 
+			if (o.HasEntity)
+			{
+				code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} DBType)", o.Name, o.EntityName));
+				code.AppendLine("\t\t{");
+				code.AppendLine(string.Format("\t\t\tvar t = new {0}();", o.Name));
+				foreach (var efe in o.Elements.Where(a => a.HasEntity && !(a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
+					code.AppendLine(string.Format("\t\t\tt.{0} = DBType.{1};", efe.DataName, efe.EntityName));
+				foreach (var efe in o.Elements.Where(a => a.HasEntity && a.DataType.TypeMode == DataTypeMode.Collection))
+					code.AppendLine(string.Format("\t\t\tforeach(var x in DBType.{0}) t.{1}.Add(x);", efe.EntityName, efe.DataName));
+				code.AppendLine("\t\t\tFinishCastToNetwork(ref t);");
+				code.AppendLine("\t\t\treturn t;");
+				code.AppendLine("\t\t}");
+				code.AppendLine(string.Format("\t\tpartial static void FinishCastToNetwork(ref {0} NetworkType);", o.Name));
+				code.AppendLine();
+
+				code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} NetworkType)", o.EntityName, o.Name));
+				code.AppendLine("\t\t{");
+				code.AppendLine(string.Format("\t\t\tvar t = new {0}();", o.EntityName));
+				foreach (var efe in o.Elements.Where(a => a.HasEntity && !(a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
+					code.AppendLine(string.Format("\t\t\tt.{0} = NetworkType.{1};", efe.EntityName, efe.DataName));
+				foreach (var efe in o.Elements.Where(a => a.HasEntity && a.DataType.TypeMode == DataTypeMode.Collection))
+					code.AppendLine(string.Format("\t\t\tforeach(var x in NetworkType.{0}) t.{1}.Add(x);", efe.DataName, efe.EntityName));
+				code.AppendLine("\t\t\tFinishCastToDatabase(ref t);");
+				code.AppendLine("\t\t\treturn t;");
+				code.AppendLine("\t\t}");
+				code.AppendLine(string.Format("\t\tpartial static void FinishCastToDatabase(ref {0} DBType);", o.EntityName));
+				code.AppendLine();
+			}
+
 			foreach (DataElement de in o.Elements.Where(a => !a.IsHidden))
 				code.AppendLine(o.CMDEnabled ? GenerateElementDCMServerCode45(de) : GenerateElementServerCode45(de));
 			code.AppendLine("\t}");
