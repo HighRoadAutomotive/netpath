@@ -8,7 +8,7 @@
 	xmlns:Projects="clr-namespace:NETPath.Projects;assembly=NETPath.Projects"
 	xmlns:Docs="clr-namespace:NETPath.Interface.Documentation"
 	xmlns:pc="http://schemas.propsectivesoftware.com/pc"
-	d:DesignHeight="950" d:DesignWidth="1000" DataContext="{Binding RelativeSource={RelativeSource Self}}" FontSize="10pt" >
+	d:DesignHeight="970" d:DesignWidth="1640" DataContext="{Binding RelativeSource={RelativeSource Self}}" FontSize="10pt" >
 	<ContentControl.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>

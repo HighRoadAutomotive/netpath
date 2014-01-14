@@ -8,7 +8,7 @@
 	xmlns:Projects="clr-namespace:NETPath.Projects;assembly=NETPath.Projects"
 	xmlns:Docs="clr-namespace:NETPath.Interface.Documentation"
 	xmlns:pc="http://schemas.propsectivesoftware.com/pc"
-	d:DesignHeight="600" d:DesignWidth="750" UseLayoutRounding="True" >
+	d:DesignHeight="620" d:DesignWidth="1390" UseLayoutRounding="True" >
 	<Grid.Resources>
 		<Service:ProtectionLevelConverter x:Key="ProtectionLevelConverter" />
 		<pc:NotBoolConverter x:Key="NotBoolConverter" />

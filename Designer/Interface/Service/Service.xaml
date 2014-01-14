@@ -9,7 +9,7 @@
 	xmlns:Docs="clr-namespace:NETPath.Interface.Documentation"
 	xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 	xmlns:sf="http://schemas.syncfusion.com/wpf"
-	d:DesignHeight="950" d:DesignWidth="1000" DataContext="{Binding RelativeSource={RelativeSource Self}}" UseLayoutRounding="True" >
+	d:DesignHeight="970" d:DesignWidth="1640" DataContext="{Binding RelativeSource={RelativeSource Self}}" UseLayoutRounding="True" >
 	<Grid.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>

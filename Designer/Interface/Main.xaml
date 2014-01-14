@@ -9,8 +9,8 @@
 		xmlns:sf="http://schemas.syncfusion.com/wpf"
 		xmlns:lic="clr-namespace:Prospective.Server.Licensing;assembly=Licensing"
 		Icon="pack://application:,,,/NETPath;component/Icons/DesignStudio.ico" 
-		mc:Ignorable="d" d:DesignHeight="980" d:DesignWidth="1280"
-		Title="NETPath" MinHeight="980" MinWidth="1280" DataContext="{Binding RelativeSource={RelativeSource Self}}" Style="{StaticResource MainWindowStyle}"
+		mc:Ignorable="d" d:DesignHeight="1040" d:DesignWidth="1980"
+		Title="NETPath" MinHeight="1040" MinWidth="1920" DataContext="{Binding RelativeSource={RelativeSource Self}}" Style="{StaticResource MainWindowStyle}"
 		SourceInitialized="Main_SourceInitialized" StateChanged="Main_StateChanged" Closing="Main_Closing" KeyUp="Main_KeyUp" >
 	<WindowChrome.WindowChrome>
 		<WindowChrome CaptionHeight="34" ResizeBorderThickness="4" CornerRadius="0" GlassFrameThickness="0" UseAeroCaptionButtons="False" />
@@ -458,38 +458,7 @@
 										</TextBlock>
 									</StackPanel>
 								</StackPanel>
-							</TabItem>
-							<TabItem>
-								<TabItem.Header>
-									<TextBlock Text="LATEST NEWS" FontSize="12pt"/>
-								</TabItem.Header>
-								<TabItem.Resources>
-									<XmlDataProvider x:Key="Blog" Source="http://www.prospectivesoftware.com/blogs/netpathlink.atom"/>
-									<pc:XmlDateConverter x:Key="XmlDateConverter" />
-								</TabItem.Resources>
-								<ListBox x:Name="NewsList" BorderThickness="0" Margin="0,5" Padding="-1" SelectionMode="Single" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.IsVirtualizing="False" ItemContainerStyle="{StaticResource StretchedContainerStyle}" >
-									<ListBox.Resources>
-										<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
-									</ListBox.Resources>
-									<ListBox.ItemTemplate>
-										<DataTemplate>
-											<StackPanel Margin="0,0,0,10">
-												<Grid>
-													<Grid.ColumnDefinitions>
-														<ColumnDefinition Width="*" />
-														<ColumnDefinition Width="Auto" />
-													</Grid.ColumnDefinitions>
-													<TextBlock Grid.Column="0">
-														<Hyperlink NavigateUri="{Binding Path=Id}" RequestNavigate="Hyperlink_RequestNavigate" ><TextBlock Text="{Binding Path=Title.Text}" FontSize="16pt" Style="{StaticResource HyperlinkTextBlock}"/></Hyperlink>
-													</TextBlock>
-													<TextBlock Text="{Binding Path=PublishDate, StringFormat={}{0: MMMM dd, yyyy HH:mm}}" Foreground="{StaticResource DefaultFontColor}" FontSize="10pt" TextWrapping="NoWrap" Grid.Column="1"/>
-												</Grid>
-												<!--<TextBlock Margin="40,0,20,10" Text="{Binding Path=Summary.Text, Converter={StaticResource StripHTMLConverter}}" Foreground="{StaticResource DefaultFontColor}" FontSize="12pt" TextWrapping="Wrap"/>-->
-											</StackPanel>
-										</DataTemplate>
-									</ListBox.ItemTemplate>
-								</ListBox>
-							</TabItem>
+							</TabItem>E
 						</TabControl>
 					</Grid>
 					<Grid x:Name="OptionsScreen" Visibility="Collapsed" >

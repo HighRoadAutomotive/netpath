@@ -118,6 +118,7 @@ namespace NETPath.Generators.NET.CS
 						code.AppendLine(string.Format("\t\t\t{0}.SetEvents((xk, xv) => {0}Added(xk, xv), (xk, xv) => {0}Removed(xk, xv), (x) => {0}Cleared(x), (xk, ox, nx) => {0}Updated(xk, ox, nx), (x) => Internal{0}SendChanges(x));", de.HasClientType ? de.ClientName : de.DataName));
 				}
 			code.AppendLine("\t\t}");
+			code.AppendLine();
 
 			code.Append(GenerateProxyDCMCode(o, true));
 
