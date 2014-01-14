@@ -48,6 +48,8 @@ namespace NETPath.Generators.WinRT.CS
 						AddMessage(new CompileMessage("GS5007", "The binding specified for the host endpoint'" + he.Name + "' in the '" + he.Parent.Name + "' Service Host does not support callback interfaces. Please specify a Binding that supports callbacks.", CompileMessageSeverity.ERROR, he.Parent, he, he.GetType(), he.Parent.Parent.Owner.ID));
 					}
 				}
+				if (string.IsNullOrEmpty(he.ServerAddress) && he.ServerAddressIsVariable)
+					AddMessage(new CompileMessage("GS50015", "A host in the endpoint '" + he.Parent.Name + "' Service Host has specified a code variable for the Server Address but has provided no variable. A Server Address Variable MUST be specified.", CompileMessageSeverity.ERROR, he.Parent, he, he.GetType(), he.Parent.Parent.Owner.ID));
 			}
 
 			foreach (HostBehavior hb in o.Behaviors)
@@ -827,6 +829,40 @@ namespace NETPath.Generators.WinRT.CS
 				else if (o.Binding.GetType() == typeof(ServiceBindingNamedPipe))
 				{
 					uri = string.Format("net.pipe://\" + Environment.MachineName + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
+				}
+			}
+			else if (o.ServerAddressIsVariable)
+			{
+				if (o.Binding.GetType() == typeof(ServiceBindingBasicHTTP) || o.Binding.GetType() == typeof(ServiceBindingNetHTTP) || o.Binding.GetType() == typeof(ServiceBindingWebHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007HTTP) || o.Binding.GetType() == typeof(ServiceBindingWSDualHTTP) || o.Binding.GetType() == typeof(ServiceBindingWSFederationHTTP) || o.Binding.GetType() == typeof(ServiceBindingWS2007FederationHTTP))
+				{
+					if (o.ServerUseHTTPS == false)
+					{
+						uri = string.Format("http://\" + {2} + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name, o.ServerAddress);
+					}
+					else
+					{
+						uri = string.Format("https://\" + {2} + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name, o.ServerAddress);
+					}
+				}
+				else if (o.Binding.GetType() == typeof(ServiceBindingBasicHTTPS) || o.Binding.GetType() == typeof(ServiceBindingNetHTTPS))
+				{
+					uri = string.Format("https://\" + {2} + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name, o.ServerAddress);
+				}
+				else if (o.Binding.GetType() == typeof(ServiceBindingTCP))
+				{
+					uri = string.Format("net.tcp://\" + {2} + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name, o.ServerAddress);
+				}
+				else if (o.Binding.GetType() == typeof(ServiceBindingPeerTCP))
+				{
+					uri = string.Format("net.p2p://\" + {2} + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name, o.ServerAddress);
+				}
+				else if (o.Binding.GetType() == typeof(ServiceBindingMSMQ) || o.Binding.GetType() == typeof(ServiceBindingMSMQIntegration))
+				{
+					uri = string.Format("net.msmq://\" + {2} + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name, o.ServerAddress);
+				}
+				else if (o.Binding.GetType() == typeof(ServiceBindingNamedPipe))
+				{
+					uri = string.Format("net.pipe://\" + {2} + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name, o.ServerAddress);
 				}
 			}
 			else

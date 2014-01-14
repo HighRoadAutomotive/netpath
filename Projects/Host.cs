@@ -174,6 +174,9 @@ namespace NETPath.Projects
 		public string ServerAddress { get { return (string)GetValue(ServerAddressProperty); } set { SetValue(ServerAddressProperty, value); } }
 		public static readonly DependencyProperty ServerAddressProperty = DependencyProperty.Register("ServerAddress", typeof(string), typeof(HostEndpoint));
 
+		public bool ServerAddressIsVariable { get { return (bool)GetValue(ServerAddressIsVariableProperty); } set { SetValue(ServerAddressIsVariableProperty, value); } }
+		public static readonly DependencyProperty ServerAddressIsVariableProperty = DependencyProperty.Register("ServerAddressIsVariable", typeof(bool), typeof(HostEndpoint), new PropertyMetadata(false));
+
 		public int ServerPort { get { return (int)GetValue(ServerPortProperty); } set { SetValue(ServerPortProperty, value); } }
 		public static readonly DependencyProperty ServerPortProperty = DependencyProperty.Register("ServerPort", typeof(int), typeof(HostEndpoint));
 

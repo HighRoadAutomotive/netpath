@@ -46,7 +46,8 @@
 	<Grid Grid.Row="2">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width=".5*" />
+			<ColumnDefinition Width="Auto" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
@@ -56,9 +57,10 @@
 		<Label Grid.Row="0" Grid.ColumnSpan="2" Content="Server Options" FontSize="12pt" Margin="0,5,0,0" />
 		<Label Content="Address:" Height="Auto" HorizontalAlignment="Left" Margin="0,1,0,0" VerticalContentAlignment="Center" Grid.Row="1" />
 		<pc:TextBox Text="{Binding Path=Data.ServerAddress}" Name="ServerAddress" Height="23" Margin="65,5,5,5" VerticalAlignment="Top" LabelText="Use Machine Name" Grid.Row="1" Grid.ColumnSpan="2" ToolTip="{Binding Path=Data.ServerAddress}" />
+		<ToggleButton IsChecked="{Binding Path=Data.ServerAddressIsVariable}" Content="Server Address Is Variable" Margin="5" Grid.Column="2" Grid.Row="1" />
 		<Label Content="Port:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Column="0" Grid.Row="2" />
 		<sf:IntegerTextBox Margin="65,5,5,5" Value="{Binding Path=Data.ServerPort}" Grid.Row="2" Name="ServerPort" HorizontalContentAlignment="Left" />
-		<ToggleButton IsChecked="{Binding Path=Data.ServerUseHTTPS}" Content="Use HTTPS" Margin="5" Grid.Column="1" Grid.Row="2" />
+		<ToggleButton IsChecked="{Binding Path=Data.ServerUseHTTPS}" Content="Use HTTPS" Margin="5" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" />
 	</Grid>
 	<Grid Grid.Row="3" >
 		<Grid.ColumnDefinitions>
