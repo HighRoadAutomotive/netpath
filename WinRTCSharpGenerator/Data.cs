@@ -146,7 +146,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine("\t\t\tFinishCastToNetwork(ref t);");
 				code.AppendLine("\t\t\treturn t;");
 				code.AppendLine("\t\t}");
-				code.AppendLine(string.Format("\t\tpartial static void FinishCastToNetwork(ref {0} NetworkType);", o.Name));
+				code.AppendLine(string.Format("\t\tstatic partial void FinishCastToNetwork(ref {0} NetworkType);", o.Name));
 				code.AppendLine();
 
 				code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} NetworkType)", o.EntityName, o.Name));
@@ -159,7 +159,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine("\t\t\tFinishCastToDatabase(ref t);");
 				code.AppendLine("\t\t\treturn t;");
 				code.AppendLine("\t\t}");
-				code.AppendLine(string.Format("\t\tpartial static void FinishCastToDatabase(ref {0} DBType);", o.EntityName));
+				code.AppendLine(string.Format("\t\tstatic partial void FinishCastToDatabase(ref {0} DBType);", o.EntityName));
 				code.AppendLine();
 			}
 
