@@ -33,11 +33,6 @@ namespace NETPath.Generators.NET.CS
 				if (o.Elements.Count() > 62) AddMessage(new CompileMessage("GS4005", "The number of elements in the Enumeration '" + o.Name + "' exceeds the maximum number of elements (62) supported by a flags enumerations. Any elements above this limit will not be generated.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 		}
 
-		public static string GenerateServerCode40(Projects.Enum o)
-		{
-			return GenerateServerCode45(o);
-		}
-
 		public static string GenerateServerCode45(Projects.Enum o)
 		{
 			var code = new StringBuilder();
@@ -103,11 +98,6 @@ namespace NETPath.Generators.NET.CS
 				}
 			code.AppendLine(",");
 			return code.ToString();
-		}
-
-		public static string GenerateProxyCode40(Projects.Enum o)
-		{
-			return GenerateProxyCode45(o);
 		}
 
 		public static string GenerateProxyCode45(Projects.Enum o)

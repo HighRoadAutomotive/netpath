@@ -77,11 +77,6 @@ namespace NETPath.Generators.NET.CS
 			return code.ToString();
 		}
 
-		public static string GenerateServerCode40(Data o)
-		{
-			return GenerateServerCode45(o);
-		}
-
 		public static string GenerateServerCode45(Data o)
 		{
 			var code = new StringBuilder();
@@ -171,107 +166,6 @@ namespace NETPath.Generators.NET.CS
 
 			foreach (DataElement de in o.Elements.Where(a => !a.IsHidden))
 				code.AppendLine(o.CMDEnabled ? GenerateElementDCMServerCode45(de) : GenerateElementServerCode45(de));
-			code.AppendLine("\t}");
-			return code.ToString();
-		}
-
-		public static string GenerateProxyCode40(Data o)
-		{
-			var code = new StringBuilder();
-			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-			foreach (DataType dt in o.ClientType != null ? o.ClientType.KnownTypes : o.KnownTypes)
-				code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
-			code.AppendLine("\t[System.Diagnostics.DebuggerStepThroughAttribute]");
-			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI));
-			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, o.ClientHasImpliedExtensionData, o.HasWinFormsBindings, o.CMDEnabled, o.CMDEnabled, o.DREEnabled)));
-			code.AppendLine("\t{");
-			if (o.HasXAMLType)
-			{
-				if (!o.CMDEnabled) code.AppendLine(string.Format("\t\tprivate DependencyObject BaseXAMLObject {{ get; set; }}"));
-				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get {{ if(BaseXAMLObject == null) Application.Current.Dispatcher.Invoke(() => {{ BaseXAMLObject = new {0}(this); }}, System.Windows.Threading.DispatcherPriority.Normal); return BaseXAMLObject as {0}; }} {1}}}", o.XAMLType.Name, !o.CMDEnabled ? "set { BaseXAMLObject = value; } " : ""));
-				code.AppendLine();
-			}
-			code.AppendLine(GenerateProxyDCMCode(o));
-			if (o.ClientHasExtensionData || o.ClientHasImpliedExtensionData)
-			{
-				code.AppendLine("\t\tpublic System.Runtime.Serialization.ExtensionDataObject ExtensionData { get; set; }");
-				code.AppendLine();
-			}
-			if (o.HasWinFormsBindings)
-			{
-				code.AppendLine("\t\tpublic event PropertyChangedEventHandler PropertyChanged;");
-				code.AppendLine("\t\tprivate void NotifyPropertyChanged(string propertyName)");
-				code.AppendLine("\t\t{");
-				code.AppendLine("\t\t\tif (PropertyChanged != null)");
-				code.AppendLine("\t\t\t\tPropertyChanged(this, new PropertyChangedEventArgs(propertyName));");
-				code.AppendLine("\t\t}");
-				code.AppendLine();
-			}
-
-			if (o.HasXAMLType)
-			{
-				code.AppendLine("\t\t//Implicit Conversion");
-				code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
-				code.AppendLine("\t\t{");
-				if (o.CMDEnabled)
-				{
-					code.AppendLine("\t\t\tif (Data == null) return null;");
-					code.AppendLine(string.Format("\t\t\t{0} v = null;", o.HasClientType ? o.ClientType.Name : o.Name));
-					code.AppendLine("\t\t\tif (Application.Current.Dispatcher.CheckAccess()) v = ConvertFromXAMLObject(Data);");
-					code.AppendLine("\t\t\telse Application.Current.Dispatcher.Invoke(() => { v = ConvertFromXAMLObject(Data); }, System.Windows.Threading.DispatcherPriority.Normal);");
-					code.AppendLine("\t\t\treturn v;");
-				}
-				else
-				{
-					code.AppendLine("\t\t\tData.DataObject.UpdateFromXAML();");
-					code.AppendLine("\t\t\treturn Data.DataObject;");
-				}
-				code.AppendLine("\t\t}");
-				code.AppendLine();
-				if (!o.CMDEnabled)
-				{
-					code.AppendLine("\t\tprivate void UpdateFromXAML()");
-					code.AppendLine("\t\t{");
-					foreach (DataElement de in o.Elements)
-						code.Append(GenerateElementProxyUpdateCode45(de, o));
-					code.AppendLine("\t\t}");
-				}
-			}
-
-			code.AppendLine("\t\t//Constuctors");
-			code.AppendLine(string.Format("\t\tpublic {0}(){1}", o.HasClientType ? o.ClientType.Name : o.Name, o.DREBatchCount > 0 ? string.Format(" : base({0})", o.DREBatchCount) : ""));
-			code.AppendLine("\t\t{");
-			foreach (DataElement de in o.Elements)
-				if (de.DataType.TypeMode == DataTypeMode.Collection || de.DataType.TypeMode == DataTypeMode.Dictionary)
-					code.AppendLine(string.Format("\t\t\t{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.DataType, de.DREEnabled)), de.HasClientType ? de.ClientName : de.DataName));
-				else if (de.DataType.TypeMode == DataTypeMode.Array)
-					code.AppendLine(string.Format("\t\t\t{1} = new {0}[0];", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.DataType.CollectionGenericType,  de.DREEnabled)), de.HasClientType ? de.ClientName : de.DataName));
-			if (o.HasXAMLType) code.AppendLine(string.Format("\t\t\tApplication.Current.Dispatcher.Invoke(() => {{ XAMLObject = new {0}(this); }}, System.Windows.Threading.DispatcherPriority.Normal);", o.XAMLType.Name));
-			code.AppendLine("\t\t}");
-			if (o.HasXAMLType)
-			{
-				code.AppendLine(string.Format("\t\tpublic {0}({1} Data){2}", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name, o.DREEnabled ? string.Format(" : base(Data{0})", o.DREBatchCount > 0 ? string.Format(", {0}", o.DREBatchCount) : "") : o.DREBatchCount > 0 ? string.Format(" : base({0})", o.DREBatchCount) : ""));
-				code.AppendLine("\t\t{");
-				foreach (DataElement de in o.Elements)
-					code.Append(GenerateElementProxyConstructorCode45(de, o));
-				code.AppendLine("\t\t}");
-			}
-			code.AppendLine();
-
-			if (o.HasXAMLType)
-			{
-				code.AppendLine("\t\t//DTO->XMAL Conversion Function");
-				code.AppendLine(string.Format("\t\tpublic static {0} ConvertFromXAMLObject({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
-				code.AppendLine("\t\t{");
-				code.AppendLine("\t\t\tif (Data.DataObject != null) return Data.DataObject;");
-				code.AppendLine(string.Format("\t\t\treturn new {0}(Data);", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t}");
-				code.AppendLine();
-			}
-
-			foreach (DataElement de in o.Elements.Where(a => !a.IsHidden && a.IsDataMember))
-				code.AppendLine(o.CMDEnabled ? GenerateElementDCMProxyCode45(de) : GenerateElementProxyCode45(de));
 			code.AppendLine("\t}");
 			return code.ToString();
 		}
@@ -457,11 +351,6 @@ namespace NETPath.Generators.NET.CS
 			return code.ToString();
 		}
 
-		public static string GenerateXAMLCode40(Data o)
-		{
-			return GenerateXAMLCode45(o);
-		}
-
 		public static string GenerateXAMLCode45(Data o)
 		{
 			if (o.HasXAMLType == false) return "";
@@ -562,11 +451,6 @@ namespace NETPath.Generators.NET.CS
 			code.AppendLine("\t}");
 
 			return code.ToString();
-		}
-
-		private static string GenerateElementServerCode40(DataElement o)
-		{
-			return GenerateElementServerCode45(o);
 		}
 
 		private static string GenerateElementServerCode45(DataElement o)
@@ -833,11 +717,6 @@ namespace NETPath.Generators.NET.CS
 			return value;
 		}
 
-		private static string GenerateElementXAMLCode40(DataElement o)
-		{
-			return GenerateElementXAMLCode45(o);
-		}
-
 		private static string GenerateElementXAMLCode45(DataElement o)
 		{
 			if (o.IsHidden) return "";
@@ -918,11 +797,6 @@ namespace NETPath.Generators.NET.CS
 			if (o.IsReadOnly) code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty {0}Property = {0}PropertyKey.DependencyProperty;", o.XAMLName));
 
 			return code.ToString();
-		}
-
-		private static string GenerateElementProxyConstructorCode40(DataElement o, Data c)
-		{
-			return GenerateElementProxyConstructorCode45(o, c);
 		}
 
 		private static string GenerateElementProxyConstructorCode45(DataElement o, Data c)
@@ -1010,11 +884,6 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine(string.Format("\t\t\t{1} = XAMLObject.{0};", o.XAMLName, o.HasClientType ? o.ClientName : o.DataName));
 
 			return code.ToString();
-		}
-
-		private static string GenerateElementXAMLConstructorCode40(DataElement o, Data c)
-		{
-			return GenerateElementXAMLConstructorCode45(o, c);
 		}
 
 		private static string GenerateElementXAMLConstructorCode45(DataElement o, Data c)

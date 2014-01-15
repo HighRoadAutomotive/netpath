@@ -127,8 +127,6 @@ namespace NETPath.Projects
 
 		//System
 		[IgnoreDataMember] public bool HasCallback { get { return CallbackOperations.Count > 0; } }
-		[IgnoreDataMember] public bool HasAsyncServiceOperations { get { return ServiceOperations.Where(a => a.GetType() == typeof (Method)).Any(a => ((Method) a).UseAsyncPattern); } }
-		[IgnoreDataMember] public bool HasAsyncCallbackOperations { get { return CallbackOperations.Where(a => a.GetType() == typeof (Method)).Any(a => ((Method) a).UseAsyncPattern); } }
 		[IgnoreDataMember] public bool HasCallbackOperations { get { return CallbackOperations.Count > 0 || ServiceOperations.Count(a => a.GetType() == typeof(DataChangeMethod)) > 0; } }
 		[IgnoreDataMember] public bool HasDCMOperations { get { return ServiceOperations.Count(a => a.GetType() == typeof(DataChangeMethod)) > 0; } }
 
@@ -442,9 +440,6 @@ namespace NETPath.Projects
 	{
 		public bool UseSyncPattern { get { return (bool)GetValue(UseSyncPatternProperty); } set { SetValue(UseSyncPatternProperty, value); } }
 		public static readonly DependencyProperty UseSyncPatternProperty = DependencyProperty.Register("UseSyncPattern", typeof(bool), typeof(Method), new PropertyMetadata(true));
-
-		public bool UseAsyncPattern { get { return (bool)GetValue(UseAsyncPatternProperty); } set { SetValue(UseAsyncPatternProperty, value); } }
-		public static readonly DependencyProperty UseAsyncPatternProperty = DependencyProperty.Register("UseAsyncPattern", typeof(bool), typeof(Method), new PropertyMetadata(false));
 
 		public bool UseAwaitPattern { get { return (bool)GetValue(UseAwaitPatternProperty); } set { SetValue(UseAwaitPatternProperty, value); } }
 		public static readonly DependencyProperty UseAwaitPatternProperty = DependencyProperty.Register("UseAwaitPattern", typeof(bool), typeof(Method), new PropertyMetadata(false));

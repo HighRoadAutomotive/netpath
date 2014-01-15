@@ -100,7 +100,7 @@
 				</ListBox>
 			</Grid>
 		</TabItem>
-		<TabItem Padding="10,5" IsSelected="True">
+		<TabItem Padding="10,5">
 			<TabItem.Header>
 				<TextBlock Text="Options" FontSize="12pt"/>
 			</TabItem.Header>
@@ -129,11 +129,10 @@
 					<Label Grid.Row="0" Content="Options" FontSize="12pt" Margin="0,5,0,0" />
 					<Label Content="Calling Convention:" Height="Auto" HorizontalAlignment="Right" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
 					<ToggleButton Content="Synchronous" IsChecked="{Binding Path=MethodData.UseSyncPattern}" Margin="5" Grid.Column="1" Grid.Row="1" />
-					<ToggleButton Content="Asynchronous" IsChecked="{Binding Path=MethodData.UseAsyncPattern}" Margin="5" Grid.Column="2" Grid.Row="1" />
-					<ToggleButton Content="Awaitable" IsChecked="{Binding Path=MethodData.UseAwaitPattern}" Margin="5" Grid.Column="3" Grid.Row="1" />
-					<ToggleButton Content="One Way" IsChecked="{Binding Path=MethodData.IsOneWay}" Margin="5" Grid.Column="1" Grid.Row="2" />
-					<ToggleButton Content="Initiating" IsChecked="{Binding Path=MethodData.IsInitiating}" Margin="5" Grid.Column="2" Grid.Row="2" Checked="Initiating_Checked" />
-					<ToggleButton Content="Terminating" IsChecked="{Binding Path=MethodData.IsTerminating}" Margin="5" Grid.Column="3" Grid.Row="2" Checked="Terminating_Checked" />
+					<ToggleButton Content="Awaitable" IsChecked="{Binding Path=MethodData.UseAwaitPattern}" Margin="5" Grid.Column="2" Grid.Row="1" />
+					<ToggleButton Content="One Way" IsChecked="{Binding Path=MethodData.IsOneWay}" Margin="5" Grid.Column="3" Grid.Row="1" />
+					<ToggleButton Content="Initiating" IsChecked="{Binding Path=MethodData.IsInitiating}" Margin="5" Grid.Column="1" Grid.Row="2" Checked="Initiating_Checked" />
+					<ToggleButton Content="Terminating" IsChecked="{Binding Path=MethodData.IsTerminating}" Margin="5" Grid.Column="2" Grid.Row="2" Checked="Terminating_Checked" />
 					<Label Content="Contract Options:" Height="Auto" HorizontalAlignment="Right" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="4" />
 					<ToggleButton Content="Operation Behavior" IsChecked="{Binding Path=MethodData.HasOperationBehavior}" Margin="5" Grid.Column="1" Grid.Row="4" />
 					<ToggleButton Content="REST Method" IsChecked="{Binding Path=MethodData.IsRESTMethod}" Margin="5" Grid.Column="2" Grid.Row="4" />
