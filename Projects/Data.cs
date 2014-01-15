@@ -84,8 +84,11 @@ namespace NETPath.Projects
 		public bool HasEntity { get { return (bool)GetValue(HasEntityProperty); } set { SetValue(HasEntityProperty, value); } }
 		public static readonly DependencyProperty HasEntityProperty = DependencyProperty.Register("HasEntity", typeof(bool), typeof(Data), new PropertyMetadata(false));
 
-		public string EntityName { get { return (string)GetValue(EntityNameProperty); } set { SetValue(EntityNameProperty, value); } }
-		public static readonly DependencyProperty EntityNameProperty = DependencyProperty.Register("EntityName", typeof(string), typeof(Data), new PropertyMetadata(""));
+		public string EntityType { get { return (string)GetValue(EntityTypeProperty); } set { SetValue(EntityTypeProperty, value); } }
+		public static readonly DependencyProperty EntityTypeProperty = DependencyProperty.Register("EntityType", typeof(string), typeof(Data), new PropertyMetadata(""));
+
+		public string EntityContext { get { return (string)GetValue(EntityContextProperty); } set { SetValue(EntityContextProperty, value); } }
+		public static readonly DependencyProperty EntityContextProperty = DependencyProperty.Register("EntityContext", typeof(string), typeof(Data), new PropertyMetadata(""));
 
 		//Concurrently Mutable Data
 		public bool CMDEnabled { get { return (bool)GetValue(CMDEnabledProperty); } set { SetValue(CMDEnabledProperty, value); } }

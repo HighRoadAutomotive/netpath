@@ -121,7 +121,7 @@ namespace NETPath.Generators.WinRT.CS
 			{
 				code.AppendLine(string.Format("\t\tprotected override void UpdateDataObject({0} Database)", o.Parent.Owner.EnitityDatabaseType));
 				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\tvar efo = (from a in Database.{0} where a.{1} == {2} select a).FirstOrDefault();", o.EntityName, idv.EntityName, idv.DataName));
+				code.AppendLine(string.Format("\t\t\tvar efo = (from a in Database.{0} where a.{1} == {2} select a).FirstOrDefault();", o.EntityContext, idv.EntityName, idv.DataName));
 				code.AppendLine("\t\t\tif (efo == null) return;");
 				code.AppendLine("\t\t\tvar efcl = GetEFChanges();");
 
@@ -136,7 +136,7 @@ namespace NETPath.Generators.WinRT.CS
 
 			if (o.HasEntity)
 			{
-				code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} DBType)", o.Name, o.EntityName));
+				code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} DBType)", o.Name, o.EntityType));
 				code.AppendLine("\t\t{");
 				code.AppendLine(string.Format("\t\t\tvar t = new {0}();", o.Name));
 				foreach (var efe in o.Elements.Where(a => a.HasEntity && !(a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
@@ -149,9 +149,9 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine(string.Format("\t\tstatic partial void FinishCastToNetwork(ref {0} NetworkType);", o.Name));
 				code.AppendLine();
 
-				code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} NetworkType)", o.EntityName, o.Name));
+				code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} NetworkType)", o.EntityType, o.Name));
 				code.AppendLine("\t\t{");
-				code.AppendLine(string.Format("\t\t\tvar t = new {0}();", o.EntityName));
+				code.AppendLine(string.Format("\t\t\tvar t = new {0}();", o.EntityType));
 				foreach (var efe in o.Elements.Where(a => a.HasEntity && !(a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
 					code.AppendLine(string.Format("\t\t\tt.{0} = NetworkType.{1};", efe.EntityName, efe.DataName));
 				foreach (var efe in o.Elements.Where(a => a.HasEntity && a.DataType.TypeMode == DataTypeMode.Collection))
@@ -159,7 +159,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine("\t\t\tFinishCastToDatabase(ref t);");
 				code.AppendLine("\t\t\treturn t;");
 				code.AppendLine("\t\t}");
-				code.AppendLine(string.Format("\t\tstatic partial void FinishCastToDatabase(ref {0} DBType);", o.EntityName));
+				code.AppendLine(string.Format("\t\tstatic partial void FinishCastToDatabase(ref {0} DBType);", o.EntityType));
 				code.AppendLine();
 			}
 
