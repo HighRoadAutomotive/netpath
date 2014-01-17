@@ -23,7 +23,6 @@ namespace NETPath
 		private Paragraph OutputBlock { get; set; }
 
 		private readonly IGenerator NET;
-		private readonly IGenerator WinRT;
 
 		public Compiler(Interface.Navigator NavWindow)
 		{
@@ -33,7 +32,6 @@ namespace NETPath
 			this.NavWindow.OutputBox.Document.Blocks.Add(OutputBlock);
 
 			NET = Globals.NETGenerator;
-			WinRT = Globals.WinRTGenerator;
 
 			Globals.Compilers.TryAdd(NavWindow.Project.ID, this);
 		}
@@ -51,14 +49,7 @@ namespace NETPath
 			RebuildDREServiceList();
 
 			//Run project code generation
-			if (NET.IsInitialized && WinRT.IsInitialized)
-			{
-				await NET.BuildAsync(NavWindow.Project);
-				if (NavWindow.Project.ClientGenerationTargets.Any(a => a.Framework == ProjectGenerationFramework.WIN8)) await WinRT.BuildAsync(NavWindow.Project, true);
-			}
-			else if (WinRT.IsInitialized)
-				await WinRT.BuildAsync(NavWindow.Project);
-			else if (NET.IsInitialized)
+			if (NET.IsInitialized)
 				await NET.BuildAsync(NavWindow.Project);
 			else
 				GeneratorOutput("FATAL ERROR: Unable to initialize any code generators.");
@@ -67,27 +58,21 @@ namespace NETPath
 			OutputBlock.Inlines.Add(new Run(string.Format("====== Finished Project: {0} ======", NavWindow.Project.Name)));
 			Globals.MainScreen.IsBuilding = false;
 		}
-		
+
 		public async static void BuildProject(Projects.Project project)
 		{
 			IGenerator NET = Globals.NETGenerator;
-			IGenerator WinRT = Globals.WinRTGenerator;
-	
+
 			//Rebuild DRE Service name lists
 			RebuildDREServiceList();
 
 			//Run project code generation
-			if (NET.IsInitialized && WinRT.IsInitialized)
-			{
+			if (NET.IsInitialized)
 				await NET.BuildAsync(project);
-				if (project.ClientGenerationTargets.Any(a => a.Framework == ProjectGenerationFramework.WIN8)) await WinRT.BuildAsync(project, true);
-			}
-			else if (WinRT.IsInitialized)
-				await WinRT.BuildAsync(project);
 			else
 				DialogService.ShowMessageDialog("COMPILER", "FATAL ERROR: Unable to initialize any code generators.", "NETPath was unable to initialize any code generators. This is usually caused by a corrupted installation or an invalid license. Please reinstall the software to continue.");
 		}
-		
+
 		public void GeneratorOutput(string output)
 		{
 			if (string.IsNullOrEmpty(output)) return;
@@ -123,8 +108,8 @@ namespace NETPath
 				ResetDRSNames(p.Namespace);
 
 			//Rebuild DRE service name lists
-			foreach(var sv in sl)
-				foreach (var dre in sv.ServiceOperations.Where(a => a.GetType() == typeof (DataChangeMethod)).Cast<DataChangeMethod>())
+			foreach (var sv in sl)
+				foreach (var dre in sv.ServiceOperations.Where(a => a.GetType() == typeof(DataChangeMethod)).Cast<DataChangeMethod>())
 				{
 					Data t = DataReivsionReferenceRetrieve(sv.Parent.Owner, sv.Parent.Owner.Namespace, dre.ReturnType.ID);
 					if (t == null) continue;
@@ -138,7 +123,7 @@ namespace NETPath
 		{
 			List<Service> sl = Namespace.Services.Where(sv => sv.HasDCMOperations).ToList();
 
-			foreach(var n in Namespace.Children)
+			foreach (var n in Namespace.Children)
 				sl.AddRange(DataRevisionServiceScan(n));
 
 			return sl;

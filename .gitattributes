@@ -1,4 +1,3 @@
-*.sln binary
 *.png binary
 *.ico binary
 *.pfx binary
@@ -6,6 +5,7 @@
 *.rtf binary
 *.pfx binary
 *.netlicproj brinary
+*.sln text eol=crlf
 *.cs text eol=crlf
 *.xaml text eol=crlf
 *.csproj text eol=crlf

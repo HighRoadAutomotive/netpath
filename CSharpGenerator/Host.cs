@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using NETPath.Projects;
 using NETPath.Projects.Helpers;
 
-namespace NETPath.Generators.NET.CS
+namespace NETPath.Generators.CS
 {
 	internal static class HostGenerator
 	{
@@ -43,7 +43,7 @@ namespace NETPath.Generators.NET.CS
 				else
 				{
 					Type bt = he.Binding.GetType();
-					if (o.Service.HasCallbackOperations && !(bt == typeof (ServiceBindingNetHTTP) || bt == typeof (ServiceBindingNetHTTPS) || bt == typeof (ServiceBindingWSDualHTTP) || bt == typeof (ServiceBindingTCP) || bt == typeof (ServiceBindingNamedPipe) || bt == typeof (ServiceBindingPeerTCP)))
+					if (o.Service.HasCallbackOperations && !(bt == typeof(ServiceBindingNetHTTP) || bt == typeof(ServiceBindingNetHTTPS) || bt == typeof(ServiceBindingWSDualHTTP) || bt == typeof(ServiceBindingTCP) || bt == typeof(ServiceBindingNamedPipe) || bt == typeof(ServiceBindingPeerTCP)))
 					{
 						AddMessage(new CompileMessage("GS5007", "The binding specified for the host endpoint'" + he.Name + "' in the '" + he.Parent.Name + "' Service Host does not support callback interfaces. Please specify a Binding that supports callbacks.", CompileMessageSeverity.ERROR, he.Parent, he, he.GetType(), he.Parent.Parent.Owner.ID));
 					}
@@ -109,7 +109,7 @@ namespace NETPath.Generators.NET.CS
 				if (hb.GetType() == typeof(HostDebugBehavior)) code.AppendFormat("\t\tpublic ServiceDebugBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
 				if (hb.GetType() == typeof(HostMetadataBehavior)) code.AppendFormat("\t\tpublic ServiceMetadataBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
 				if (hb.GetType() == typeof(HostThrottlingBehavior)) code.AppendFormat("\t\tpublic ServiceThrottlingBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
-				if (hb.GetType() == typeof(HostWebHTTPBehavior) && (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45)) code.AppendFormat("\t\tpublic WebHttpBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
+				if (hb.GetType() == typeof(HostWebHTTPBehavior)) code.AppendFormat("\t\tpublic WebHttpBehavior {0} {{ get; private set; }}{1}", hb.Name, Environment.NewLine);
 			}
 
 			#region - Generate Default Constructors
@@ -1165,7 +1165,7 @@ namespace NETPath.Generators.NET.CS
 				code.AppendLine(string.Format("\t\t\tthis.{0}.MaxConcurrentSessions = {1};", b.Name, b.MaxConcurrentSessions));
 				if (b.IsDefaultBehavior) code.AppendLine(string.Format("\t\t\tthis.Description.Behaviors.Add({0});", b.Name));
 			}
-			if (t == typeof(HostWebHTTPBehavior) && (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35))
+			if (t == typeof(HostWebHTTPBehavior))
 			{
 				var b = o as HostWebHTTPBehavior;
 				if (b == null) return "";

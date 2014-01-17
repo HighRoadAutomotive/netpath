@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Cache;
+using System.Net.Security;
+using System.Security.Principal;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Text;
@@ -10,7 +13,7 @@ using System.Transactions;
 using NETPath.Projects;
 using NETPath.Projects.Helpers;
 
-namespace NETPath.Generators.WinRT.CS
+namespace NETPath.Generators.CS
 {
 	internal static class RESTServiceGenerator
 	{
@@ -22,7 +25,7 @@ namespace NETPath.Generators.WinRT.CS
 			else
 				if (RegExs.MatchCodeName.IsMatch(o.Name) == false)
 					AddMessage(new CompileMessage("GS2001", "The service '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
-			if (o.HasClientType) 
+			if (o.HasClientType)
 				if (RegExs.MatchCodeName.IsMatch(o.ClientType.Name) == false)
 					AddMessage(new CompileMessage("GS2002", "The service '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 
@@ -31,8 +34,6 @@ namespace NETPath.Generators.WinRT.CS
 
 			foreach (RESTMethod m in Operations)
 			{
-				if (m.RequestConfiguration.GetType() == typeof(RESTHTTPClientConfiguration) && Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40)
-					AddMessage(new CompileMessage("GS2018", "The method '" + o.Name + "' in the '" + o.Name + "' service uses an HttpClient configuration which is not supported during .NET 4.0 code generation. This method will not be generated.", CompileMessageSeverity.WARN, o, m, m.GetType(), o.Parent.Owner.ID));
 				if (string.IsNullOrEmpty(m.ServerName))
 					AddMessage(new CompileMessage("GS2004", "An method in the '" + o.Name + "' service has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
 				else
@@ -43,7 +44,7 @@ namespace NETPath.Generators.WinRT.CS
 						AddMessage(new CompileMessage("GS2015", "The name of the method '" + m.ServerName + "' in the '" + o.Name + "' service is invalid. Please rename it.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
 				}
 
-				if(m.Parameters.Count > 1 && (m.BodyStyle == WebMessageBodyStyle.Bare || m.BodyStyle == WebMessageBodyStyle.WrappedResponse))
+				if (m.Parameters.Count > 1 && (m.BodyStyle == WebMessageBodyStyle.Bare || m.BodyStyle == WebMessageBodyStyle.WrappedResponse))
 					AddMessage(new CompileMessage("GS2017", "The method '" + m.ServerName + "' in the '" + o.Name + "' service contains more than one parameter and therefore cannot use the Bare or WrappedResponse BodyStyles. Please specify a valid body style.", CompileMessageSeverity.WARN, o, m, m.GetType(), o.Parent.Owner.ID));
 
 				if (m.ReturnType == null)
@@ -56,7 +57,7 @@ namespace NETPath.Generators.WinRT.CS
 
 				foreach (RESTMethodParameter mp in m.Parameters)
 				{
-					if(string.IsNullOrEmpty(mp.Name))
+					if (string.IsNullOrEmpty(mp.Name))
 						AddMessage(new CompileMessage("GS2008", "The method parameter '" + m.ServerName + "' in the '" + o.Name + "' service has a parameter with a blank name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
 					//if (mp.IsRESTInvalid)
 					//	AddMessage(new CompileMessage("GS2009", "The method REST parameter '" + m.ServerName + "' in the '" + m.ServerName + "' method is not a valid REST parameter. Please specify a valid REST parameter.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
@@ -140,8 +141,8 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine(string.Format("\t\tprotected {0}Base(string BaseURI, CookieContainer Cookies = null, NetworkCredential Credentials = null, CredentialCache CredentialCache = null, IWebProxy Proxy = null) : base(BaseURI, Cookies, Credentials, CredentialCache, Proxy)", o.Name));
 			code.AppendLine("\t\t{");
 			foreach (RESTHTTPClientConfiguration c in o.RequestConfigurations.Where(a => a.GetType() == typeof(RESTHTTPClientConfiguration)).Select(t => t as RESTHTTPClientConfiguration).Where(c => o.ServiceOperations.Any(a => Equals(a.RequestConfiguration, c))))
-				code.AppendLine(string.Format("\t\t\t{0}Client = new System.Net.Http.HttpClient(new System.Net.Http.HttpClientHandler() {{ AllowAutoRedirect = {1}, AutomaticDecompression = System.Net.DecompressionMethods.{2}, CookieContainer = {3}, Credentials = (this.Credentials == null) ? (ICredentials)this.CredentialCache : (ICredentials)this.Credentials, MaxAutomaticRedirections = {4}, MaxRequestContentBufferSize = {5}, PreAuthenticate = {6}, Proxy = this.Proxy, UseCookies = {7}, UseDefaultCredentials = {8}, UseProxy = {9} }});",
-					RegExs.ReplaceSpaces.Replace(c.Name, ""), c.AllowAutoRedirect ? bool.TrueString.ToLower() : bool.FalseString.ToLower(), c.AutomaticDecompression, 
+				code.AppendLine(string.Format("\t\t\t{0}Client = new System.Net.Http.HttpClient(new System.Net.Http.HttpClientHandler() {{ AllowAutoRedirect = {1}, AutomaticDecompression = System.Net.DecompressionMethods.{2}, ClientCertificateOptions = System.Net.Http.ClientCertificateOption.{3}, CookieContainer = {4}, Credentials = (this.Credentials == null) ? (ICredentials)this.CredentialCache : (ICredentials)this.Credentials, MaxAutomaticRedirections = {5}, MaxRequestContentBufferSize = {6}, PreAuthenticate = {7}, Proxy = this.Proxy, UseCookies = {8}, UseDefaultCredentials = {9}, UseProxy = {10} }});",
+					RegExs.ReplaceSpaces.Replace(c.Name, ""), c.AllowAutoRedirect ? bool.TrueString.ToLower() : bool.FalseString.ToLower(), c.AutomaticDecompression, c.ClientCertificateOptions,
 					c.CookieContainerMode == CookieContainerMode.None ? "null" : c.CookieContainerMode == CookieContainerMode.Global ? "GlobalCookies" : c.CookieContainerMode == CookieContainerMode.Instance ? "Cookies" : "new CookieContainer()",
 					c.MaxAutomaticRedirections, c.MaxRequestContentBufferSize, c.PreAuthenticate ? bool.TrueString.ToLower() : bool.FalseString.ToLower(),
 					(c.CookieContainerMode == CookieContainerMode.None || c.CookieContainerMode == CookieContainerMode.Custom) ? bool.FalseString.ToLower() : bool.TrueString.ToLower(),
@@ -205,7 +206,6 @@ namespace NETPath.Generators.WinRT.CS
 
 		public static string GenerateClientMethodWeb45(RESTMethod o)
 		{
-			if (o.IsHidden) return "";
 			var conf = o.RequestConfiguration as RESTHTTPWebConfiguration;
 			var code = new StringBuilder();
 			if (o.Documentation != null)
@@ -235,8 +235,10 @@ namespace NETPath.Generators.WinRT.CS
 			if (!conf.AllowAutoRedirect) code.AppendLine("\t\t\trm.AllowAutoRedirect = false;");
 			if (!conf.AllowReadStreamBuffering) code.AppendLine("\t\t\trm.AllowReadStreamBuffering = false;");
 			if (!conf.AllowWriteStreamBuffering) code.AppendLine("\t\t\trm.AllowWriteStreamBuffering = false;");
+			if (conf.AuthenticationLevel != AuthenticationLevel.MutualAuthRequested) code.AppendLine(string.Format("\t\t\trm.AuthenticationLevel = System.Net.Security.AuthenticationLevel.{0}", conf.AuthenticationLevel));
 			code.AppendLine(conf.CanContinue ? string.Format("\t\t\trm.ContinueTimeout = new TimeSpan({0});", conf.ContinueTimeout.Ticks) : "\t\t\trm.ContinueDelegate = null;");
 			if (!(string.IsNullOrEmpty(conf.ConnectionGroupName))) code.AppendLine(string.Format("\t\t\trm.ConnectionGroupName = \"{0}\";", conf.ConnectionGroupName));
+			if (conf.ImpersonationLevel != TokenImpersonationLevel.None) code.AppendLine(string.Format("\t\t\trm.ImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.{0}", conf.ImpersonationLevel));
 			if (!conf.KeepAlive) code.AppendLine("\t\t\trm.KeepAlive = false;");
 			if (conf.MaxAutomaticRedirections != 50) code.AppendLine(string.Format("\t\t\trm.MaxAutomaticRedirections = {0};", conf.MaxAutomaticRedirections));
 			if (conf.MaximumResponseHeadersLength != -1) code.AppendLine(string.Format("\t\t\trm.MaximumResponseHeadersLength = {0};", conf.MaximumResponseHeadersLength));
@@ -244,6 +246,7 @@ namespace NETPath.Generators.WinRT.CS
 			if (!conf.Pipelined) code.AppendLine("\t\t\trm.Pipelined = false;");
 			if (conf.PreAuthenticate) code.AppendLine("\t\t\trm.PreAuthenticate = true;");
 			if (conf.ReadWriteTimeout != new TimeSpan(0, 0, 30)) code.AppendLine(string.Format("\t\t\trm.ReadWriteTimeout = new TimeSpan({0});", conf.ReadWriteTimeout.Ticks));
+			if (conf.RequestCacheLevel != HttpRequestCacheLevel.Default) code.AppendLine(string.Format("\t\t\trm.CachePolicy = HttpRequestCachePolicy(HttpRequestCacheLevel.{0});", conf.RequestCacheLevel));
 			if (conf.SendChunked) code.AppendLine("\t\t\trm.SendChunked = true;");
 			if (conf.Timeout != new TimeSpan(0, 0, 100)) code.AppendLine(string.Format("\t\t\trm.Timeout = new TimeSpan({0});", conf.Timeout.Ticks));
 			if (conf.UnsafeAuthenticatedConnectionSharing) code.AppendLine("\t\t\trm.UnsafeAuthenticatedConnectionSharing = true;");
@@ -273,7 +276,6 @@ namespace NETPath.Generators.WinRT.CS
 
 		public static string GenerateClientMethodWebAsync45(RESTMethod o)
 		{
-			if (o.IsHidden) return "";
 			var conf = o.RequestConfiguration as RESTHTTPWebConfiguration;
 			var code = new StringBuilder();
 
@@ -307,8 +309,10 @@ namespace NETPath.Generators.WinRT.CS
 			if (!conf.AllowAutoRedirect) code.AppendLine("\t\t\t\trm.AllowAutoRedirect = false;");
 			if (!conf.AllowReadStreamBuffering) code.AppendLine("\t\t\t\trm.AllowReadStreamBuffering = false;");
 			if (!conf.AllowWriteStreamBuffering) code.AppendLine("\t\t\t\trm.AllowWriteStreamBuffering = false;");
+			if (conf.AuthenticationLevel != AuthenticationLevel.MutualAuthRequested) code.AppendLine(string.Format("\t\t\t\trm.AuthenticationLevel = System.Net.Security.AuthenticationLevel.{0}", conf.AuthenticationLevel));
 			code.AppendLine(conf.CanContinue ? string.Format("\t\t\t\trm.ContinueTimeout = new TimeSpan({0});", conf.ContinueTimeout.Ticks) : "\t\t\t\trm.ContinueDelegate = null;");
 			if (!(string.IsNullOrEmpty(conf.ConnectionGroupName))) code.AppendLine(string.Format("\t\t\t\trm.ConnectionGroupName = \"{0}\";", conf.ConnectionGroupName));
+			if (conf.ImpersonationLevel != TokenImpersonationLevel.None) code.AppendLine(string.Format("\t\t\t\trm.ImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.{0}", conf.ImpersonationLevel));
 			if (!conf.KeepAlive) code.AppendLine("\t\t\t\trm.KeepAlive = false;");
 			if (conf.MaxAutomaticRedirections != 50) code.AppendLine(string.Format("\t\t\t\trm.MaxAutomaticRedirections = {0};", conf.MaxAutomaticRedirections));
 			if (conf.MaximumResponseHeadersLength != -1) code.AppendLine(string.Format("\t\t\t\trm.MaximumResponseHeadersLength = {0};", conf.MaximumResponseHeadersLength));
@@ -316,6 +320,7 @@ namespace NETPath.Generators.WinRT.CS
 			if (!conf.Pipelined) code.AppendLine("\t\t\t\trm.Pipelined = false;");
 			if (conf.PreAuthenticate) code.AppendLine("\t\t\t\trm.PreAuthenticate = true;");
 			if (conf.ReadWriteTimeout != new TimeSpan(0, 0, 30)) code.AppendLine(string.Format("\t\t\t\trm.ReadWriteTimeout = new TimeSpan({0});", conf.ReadWriteTimeout.Ticks));
+			if (conf.RequestCacheLevel != HttpRequestCacheLevel.Default) code.AppendLine(string.Format("\t\t\t\trm.CachePolicy = HttpRequestCachePolicy(HttpRequestCacheLevel.{0});", conf.RequestCacheLevel));
 			if (conf.SendChunked) code.AppendLine("\t\t\t\trm.SendChunked = true;");
 			if (conf.Timeout != new TimeSpan(0, 0, 100)) code.AppendLine(string.Format("\t\t\t\trm.Timeout = new TimeSpan({0});", conf.Timeout.Ticks));
 			if (conf.UnsafeAuthenticatedConnectionSharing) code.AppendLine("\t\t\t\trm.UnsafeAuthenticatedConnectionSharing = true;");
@@ -436,6 +441,7 @@ namespace NETPath.Generators.WinRT.CS
 				if (o.ResponseFormat == WebMessageFormat.Xml) code.AppendLine(string.Format("\t\t\t\treturn new Tuple<{0}, System.Net.Http.HttpResponseMessage>(DeserializeXML<{0}>(rs), rr);", DataTypeGenerator.GenerateType(o.ReturnType)));
 			}
 			code.AppendLine("\t\t\t}).Unwrap();");
+			code.AppendLine("\t\t}");
 
 			return code.ToString();
 		}
@@ -457,18 +463,18 @@ namespace NETPath.Generators.WinRT.CS
 			{
 				var ptype = o.Type as Data;
 				return string.Format("{0} {1}", ptype != null && ptype.HasClientType ? DataTypeGenerator.GenerateType(ptype.ClientType) : DataTypeGenerator.GenerateType(o.Type), o.Name);
-			}													    
-			if (o.Type.TypeMode == DataTypeMode.Struct)			    
-			{													    
-				var ptype = o.Type as Data;						    
-				return string.Format("{0} {1}", ptype != null && ptype.HasClientType ? DataTypeGenerator.GenerateType(ptype.ClientType) : DataTypeGenerator.GenerateType(o.Type), o.Name);
-			}													    
-			if (o.Type.TypeMode == DataTypeMode.Enum)			    
-			{													    
-				var ptype = o.Type as Projects.Enum;			    
+			}
+			if (o.Type.TypeMode == DataTypeMode.Struct)
+			{
+				var ptype = o.Type as Data;
 				return string.Format("{0} {1}", ptype != null && ptype.HasClientType ? DataTypeGenerator.GenerateType(ptype.ClientType) : DataTypeGenerator.GenerateType(o.Type), o.Name);
 			}
-			
+			if (o.Type.TypeMode == DataTypeMode.Enum)
+			{
+				var ptype = o.Type as Projects.Enum;
+				return string.Format("{0} {1}", ptype != null && ptype.HasClientType ? DataTypeGenerator.GenerateType(ptype.ClientType) : DataTypeGenerator.GenerateType(o.Type), o.Name);
+			}
+
 			return string.Format("{0} {1}", DataTypeGenerator.GenerateType(o.Type), o.Name);
 		}
 
@@ -559,7 +565,7 @@ namespace NETPath.Generators.WinRT.CS
 				if (b == null) return "";
 				if (b.HttpHelpPageEnabled)
 				{
-					code.AppendLine(string.Format("\t\t\tDebugBehavior.HttpHelpPageBinding = new {0}();", DataTypeGenerator.GenerateType(b.HttpHelpPageBinding)));
+					code.AppendLine(string.Format("\t\t\tDebugBehavior.HttpHelpPageEnabled = {0};", b.HttpHelpPageEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
 					code.AppendLine(string.Format("\t\t\tDebugBehavior.HttpHelpPageUrl = new Uri(\"{0}\");", b.HttpHelpPageUrl));
 				}
 				if (b.HttpsHelpPageEnabled)

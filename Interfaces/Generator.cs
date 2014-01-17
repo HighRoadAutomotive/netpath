@@ -23,7 +23,7 @@ namespace NETPath.Generators.Interfaces
 		Silverlight,
 		WindowsRuntime,
 	}
-	
+
 	public static class Loader
 	{
 		public static readonly ConcurrentDictionary<string, IGenerator> LoadedModules = new ConcurrentDictionary<string, IGenerator>();
@@ -33,18 +33,15 @@ namespace NETPath.Generators.Interfaces
 			//Build the module path and and determine if it is available on this system.
 			string asmfp = System.IO.Path.GetDirectoryName(new Uri(System.Reflection.Assembly.GetCallingAssembly().CodeBase).LocalPath);
 			if (asmfp == null) return null;
-			string mod = "NET";
-			if (Module == GenerationModule.Silverlight) mod = "SL";
-			if (Module == GenerationModule.WindowsRuntime) mod = "WinRT";
 			string lang = "CS";
 			if (Language == GenerationLanguage.VisualBasic) lang = "VB";
 			if (Language == GenerationLanguage.CPPCX) lang = "CPPCX";
 			if (Language == GenerationLanguage.FSharp) lang = "FS";
-			string modpath = System.IO.Path.Combine(asmfp, string.Format("NETPath.Generators.{0}.{1}.dll", mod, lang));
+			string modpath = System.IO.Path.Combine(asmfp, string.Format("NETPath.Generators.{0}.dll", lang));
 			if (!System.IO.File.Exists(modpath)) return null;
 			//Load and initialize the module
 			System.Reflection.Assembly moduleDLL = System.Reflection.Assembly.LoadFile(modpath);
-			var cm = moduleDLL.CreateInstance(string.Format("NETPath.Generators.{0}.{1}.Generator", mod, lang)) as IGenerator;
+			var cm = moduleDLL.CreateInstance(string.Format("NETPath.Generators.{0}.Generator", lang)) as IGenerator;
 			if (cm == null) return null;
 			LoadedModules.TryAdd(cm.Name, cm);
 			return cm;

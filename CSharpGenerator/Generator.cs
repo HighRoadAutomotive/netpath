@@ -10,7 +10,7 @@ using NETPath.Generators.Interfaces;
 using NETPath.Projects;
 using NETPath.Projects.Helpers;
 
-namespace NETPath.Generators.NET.CS
+namespace NETPath.Generators.CS
 {
 	public class Generator : IGenerator
 	{
@@ -33,19 +33,14 @@ namespace NETPath.Generators.NET.CS
 
 		public void Initialize(string License, Action<Guid, string> OutputHandler, Action<Guid, CompileMessage> CompileMessageHandler)
 		{
-			Globals.LicenseKey = License;
 			NewOutput = OutputHandler;
 			NewMessage = CompileMessageHandler;
-			var t = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
-			IsInitialized = (t.Status == LicenseStatus.Valid);
+			IsInitialized = true;
 		}
 
 		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
 		public void Build(Project Data, bool ClientOnly = false)
 		{
-			var l = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
-			if (l.Status != LicenseStatus.Valid) return;
-
 			HighestSeverity = CompileMessageSeverity.INFO;
 			Messages.Clear();
 			NewOutput(Data.ID, Globals.ApplicationTitle);
@@ -58,11 +53,9 @@ namespace NETPath.Generators.NET.CS
 			if (HighestSeverity == CompileMessageSeverity.ERROR)
 				return;
 
-			if(!ClientOnly)
+			if (!ClientOnly)
 				foreach (ProjectGenerationTarget t in Data.ServerGenerationTargets)
 				{
-					Globals.CurrentGenerationTarget = t.Framework;
-
 					string op = new Uri(new Uri(Data.AbsolutePath), t.Path).LocalPath;
 					op = Uri.UnescapeDataString(op);
 					NewOutput(Data.ID, string.Format("Writing Server Output: {0}", op));
@@ -86,10 +79,6 @@ namespace NETPath.Generators.NET.CS
 		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
 		public void Verify(Project Data)
 		{
-			var t = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
-			if (t.Status != LicenseStatus.Valid) return;
-			if (!t.IsFeaturePresentEx(1)) return;
-
 			if (string.IsNullOrEmpty(Data.ServerOutputFile))
 				AddMessage(new CompileMessage("GS0003", "The '" + Data.Name + "' project does not have a Server Assembly Name. You must specify a Server Assembly Name.", CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Data.ID));
 			else
@@ -120,24 +109,12 @@ namespace NETPath.Generators.NET.CS
 		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
 		public string GenerateServer(Project Data, ProjectGenerationFramework Framework, bool GenerateReferences)
 		{
-			var t = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
-			if (t.Status != LicenseStatus.Valid) return "";
-			if (!t.IsFeaturePresentEx(2)) return "";
-
-			Globals.CurrentGenerationTarget = Framework;
-
 			return Generate(Data, Framework, true, GenerateReferences);
 		}
 
 		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
 		public string GenerateClient(Project Data, ProjectGenerationFramework Framework, bool GenerateReferences)
 		{
-			var t = new CryptoLicense(Globals.LicenseKey, Globals.LicenseVerification);
-			if (t.Status != LicenseStatus.Valid) return "";
-			if (!t.IsFeaturePresentEx(2)) return "";
-
-			Globals.CurrentGenerationTarget = Framework;
-
 			return Generate(Data, Framework, false, GenerateReferences);
 		}
 
@@ -153,7 +130,6 @@ namespace NETPath.Generators.NET.CS
 
 		private string Generate(Project Data, ProjectGenerationFramework Framework, bool Server, bool GenerateReferences)
 		{
-			Globals.CurrentGenerationTarget = Framework;
 			Globals.CurrentProjectID = Data.ID;
 
 			var code = new StringBuilder();
@@ -230,6 +206,7 @@ namespace NETPath.Generators.NET.CS
 				//if (Framework == ProjectGenerationFramework.NET40) code.AppendLine(NamespaceGenerator.GenerateServerCode40(Data.Namespace));
 				//if (Framework == ProjectGenerationFramework.NET40Client) code.AppendLine(NamespaceGenerator.GenerateServerCode40Client(Data.Namespace));
 				if (Framework == ProjectGenerationFramework.NET45) code.AppendLine(NamespaceGenerator.GenerateServerCode45(Data.Namespace));
+				if (Framework == ProjectGenerationFramework.WIN8) code.AppendLine(NamespaceGenerator.GenerateServerCode45(Data.Namespace));
 			}
 			else
 			{
@@ -239,6 +216,7 @@ namespace NETPath.Generators.NET.CS
 				//if (Framework == ProjectGenerationFramework.NET40) code.AppendLine(NamespaceGenerator.GenerateClientCode40(Data.Namespace));
 				//if (Framework == ProjectGenerationFramework.NET40Client) code.AppendLine(NamespaceGenerator.GenerateClientCode40Client(Data.Namespace));
 				if (Framework == ProjectGenerationFramework.NET45) code.AppendLine(NamespaceGenerator.GenerateClientCode45(Data.Namespace));
+				if (Framework == ProjectGenerationFramework.WIN8) code.AppendLine(NamespaceGenerator.GenerateClientCodeRT8(Data.Namespace));
 			}
 
 			//Reenable XML documentation warnings
@@ -328,33 +306,33 @@ namespace NETPath.Generators.NET.CS
 				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30) code.AppendLine(DataGenerator.GenerateServerCode30(typeref as Data));
 				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client) code.AppendLine(DataGenerator.GenerateServerCode35(typeref as Data));
 				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40Client) code.AppendLine(DataGenerator.GenerateServerCode40(typeref as Data));
-				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45) code.AppendLine(DataGenerator.GenerateServerCode45(typeref as Data));
+				code.AppendLine(DataGenerator.GenerateServerCode45(typeref as Data));
 			}
 			else if (!Server && rt == typeof(Data))
 			{
 				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30) code.AppendLine(DataGenerator.GenerateProxyCode30(typeref as Data));
 				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client) code.AppendLine(DataGenerator.GenerateProxyCode35(typeref as Data));
 				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40Client) code.AppendLine(DataGenerator.GenerateProxyCode40(typeref as Data));
-				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45) code.AppendLine(DataGenerator.GenerateProxyCode45(typeref as Data));
+				code.AppendLine(DataGenerator.GenerateProxyCode45(typeref as Data));
 				code.AppendLine();
 				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30) code.AppendLine(DataGenerator.GenerateXAMLCode30(typeref as Data));
 				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client) code.AppendLine(DataGenerator.GenerateXAMLCode35(typeref as Data));
 				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40Client) code.AppendLine(DataGenerator.GenerateXAMLCode40(typeref as Data));
-				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45) code.AppendLine(DataGenerator.GenerateXAMLCode45(typeref as Data));
+				code.AppendLine(DataGenerator.GenerateXAMLCode45(typeref as Data));
 			}
 			else if (Server && rt == typeof(Projects.Enum))
 			{
 				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30) code.AppendLine(EnumGenerator.GenerateServerCode30(typeref as Projects.Enum));
 				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client) code.AppendLine(EnumGenerator.GenerateServerCode35(typeref as Projects.Enum));
 				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40Client) code.AppendLine(EnumGenerator.GenerateServerCode40(typeref as Projects.Enum));
-				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45) code.AppendLine(EnumGenerator.GenerateServerCode45(typeref as Projects.Enum));
+				code.AppendLine(EnumGenerator.GenerateServerCode45(typeref as Projects.Enum));
 			}
 			else if (!Server && rt == typeof(Projects.Enum))
 			{
 				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30) code.AppendLine(EnumGenerator.GenerateProxyCode30(typeref as Projects.Enum));
 				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client) code.AppendLine(EnumGenerator.GenerateProxyCode35(typeref as Projects.Enum));
 				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40Client) code.AppendLine(EnumGenerator.GenerateProxyCode40(typeref as Projects.Enum));
-				if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET45) code.AppendLine(EnumGenerator.GenerateProxyCode45(typeref as Projects.Enum));
+				code.AppendLine(EnumGenerator.GenerateProxyCode45(typeref as Projects.Enum));
 			}
 			code.AppendLine("}");
 
@@ -375,19 +353,15 @@ namespace NETPath.Generators.NET.CS
 	internal static class Globals
 	{
 		public static readonly Version ApplicationVersion;
-		public const string ApplicationTitle = "NETPath .NET C# Generator";
+		public const string ApplicationTitle = "NETPath C# Generator";
 
-		public static ProjectGenerationFramework CurrentGenerationTarget { get; set; }
 		public static Guid CurrentProjectID { get; set; }
-		
-		public static string LicenseKey { get; set; }
-		public const string LicenseVerification = "AAAEAAG6rTV/gUg+VZjvEZQDqWy9l63DgzkUSg0tyJOBDDS58FKoRvErRfUkvxdlgUCCTTvw5b7lXtVPFxd3HI+SFzzTi5X0neWXCNXjWX/FVnIaCBioKHG6eYwgSE86j2ybYQbGlmy+R9vpj3cA12E6a4efoQl/5yqawkUk67iQGnJi0YiA6LUAQUoCN+XipZN3pEn+EuAPGVAz1W0b8pYX99oSrWr3CQwnGCg6/2Y5radzYdPDsZgWkKkWhPU/ZGXcDo+GB4e35OaO6hp8lcq3lmxc+3Ic9eDsVK1kHaccRI/hWcgmkp39/3/zk1mnVtgiED8RI0eUniUTWXTGVTtBvBGLAwABAAE=";
 
 		static Globals()
 		{
 			string asmfp = System.IO.Path.GetDirectoryName(new Uri(System.Reflection.Assembly.GetCallingAssembly().CodeBase).LocalPath);
 			if (asmfp == null) return;
-			ApplicationVersion = new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo(System.IO.Path.Combine(asmfp, "NETPath.Generators.NET.CS.dll")).FileVersion);
+			ApplicationVersion = new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo(System.IO.Path.Combine(asmfp, "NETPath.Generators.CS.dll")).FileVersion);
 		}
 	}
 }

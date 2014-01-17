@@ -4,7 +4,7 @@ using System.Text;
 using NETPath.Projects;
 using NETPath.Projects.Helpers;
 
-namespace NETPath.Generators.WinRT.CS
+namespace NETPath.Generators.CS
 {
 	internal static class EnumGenerator
 	{

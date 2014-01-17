@@ -48,7 +48,6 @@ namespace NETPath
 		public static WindowsVersion WindowsLevel { get; set; }
 
 		public static IGenerator NETGenerator { get; private set; }
-		public static IGenerator WinRTGenerator { get; private set; }
 		public static ConcurrentDictionary<Guid, Compiler> Compilers { get; private set; }
 
 		public static string SolutionPath { get; set; }
@@ -95,14 +94,12 @@ namespace NETPath
 			Compilers = new ConcurrentDictionary<Guid, Compiler>();
 			NETGenerator = Loader.LoadModule(GenerationModule.NET, GenerationLanguage.CSharp);
 			NETGenerator.Initialize(License, GeneratorOutput, GeneratorMessage);
-			WinRTGenerator = Loader.LoadModule(GenerationModule.WindowsRuntime, GenerationLanguage.CSharp);
-			WinRTGenerator.Initialize(License, GeneratorOutput, GeneratorMessage);
 		}
 
 		private static void GeneratorOutput(Guid ID, string output)
 		{
 			Compiler t;
-			if(Compilers.TryGetValue(ID, out t))
+			if (Compilers.TryGetValue(ID, out t))
 				t.GeneratorOutput(output);
 		}
 
@@ -138,7 +135,7 @@ namespace NETPath
 				DialogService.ShowMessageDialog(null, "Solution Load Error", ex.Message, new DialogAction("Ok", () => FinishedAction(false), true, true));
 				return;
 			}
-				
+
 			//Load projects
 			Projects = new ObservableCollection<Project>();
 			Projects.CollectionChanged += MainScreen.Projects_CollectionChanged;
@@ -172,7 +169,7 @@ namespace NETPath
 			}
 			Projects.Sort(a => a.Name);
 
-			foreach(Project p in Projects)
+			foreach (Project p in Projects)
 				InitializeDependencies(p);
 
 			if (UserProfile.AutomaticBackupsEnabled)
@@ -237,7 +234,7 @@ namespace NETPath
 		public static void CloseSolution()
 		{
 			if (UserProfile.AutomaticBackupsEnabled)
-				if(BackupTimer != null)
+				if (BackupTimer != null)
 					BackupTimer.Dispose();
 
 			NETPath.Projects.Solution.Save(Solution);

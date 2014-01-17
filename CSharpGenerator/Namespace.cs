@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using NETPath.Projects;
 using NETPath.Projects.Helpers;
 
-namespace NETPath.Generators.WinRT.CS
+namespace NETPath.Generators.CS
 {
 	internal static class NamespaceGenerator
 	{
@@ -45,7 +45,7 @@ namespace NETPath.Generators.WinRT.CS
 			code.AppendLine(string.Format("[assembly: System.Runtime.Serialization.ContractNamespaceAttribute(\"{0}\", ClrNamespace=\"{1}\")]", o.FullURI, o.FullName));
 
 			foreach (Namespace tn in o.Children)
-				code.Append(GenerateContractNamespaceAttributes(tn));
+				code.AppendLine(GenerateContractNamespaceAttributes(tn));
 
 			return code.ToString();
 		}
@@ -108,7 +108,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (ServiceBinding sb in o.Bindings)
-					code.AppendLine(BindingsGenerator.GenerateCode45(sb));
+					code.AppendLine(BindingsGenerator.GenerateCode45(sb, ProjectGenerationFramework.NET45));
 				code.AppendLine();
 			}
 
@@ -157,6 +157,79 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine();
 				foreach (Data de in o.Data)
 				{
+					code.AppendLine(DataGenerator.GenerateProxyCode45(de));
+					code.AppendLine(DataGenerator.GenerateXAMLCode45(de));
+				}
+				code.AppendLine();
+			}
+
+			if (o.Services.Count > 0)
+			{
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Contracts");
+				code.AppendLine("\t**************************************************************************/");
+				code.AppendLine();
+				foreach (Service se in o.Services)
+					code.AppendLine(ServiceGenerator.GenerateClientCode45(se, ProjectGenerationFramework.NET45));
+				code.AppendLine();
+			}
+
+			if (o.RESTServices.Count > 0)
+			{
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tREST Service Contracts");
+				code.AppendLine("\t**************************************************************************/");
+				code.AppendLine();
+				foreach (RESTService se in o.RESTServices)
+					code.AppendLine(RESTServiceGenerator.GenerateClientCode45(se));
+				code.AppendLine();
+			}
+
+			if (o.Bindings.Count > 0)
+			{
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tService Bindings");
+				code.AppendLine("\t**************************************************************************/");
+				code.AppendLine();
+				foreach (ServiceBinding sb in o.Bindings)
+					code.AppendLine(BindingsGenerator.GenerateCode45(sb, ProjectGenerationFramework.NET45));
+				code.AppendLine();
+			}
+
+			code.AppendLine("}");
+
+			foreach (Namespace tn in o.Children)
+				code.AppendLine(GenerateClientCode45(tn));
+
+			return code.ToString();
+		}
+
+		public static string GenerateClientCodeRT8(Namespace o)
+		{
+			var code = new StringBuilder();
+
+			code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
+			code.AppendLine("{");
+
+			if (o.Enums.Count > 0)
+			{
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tEnumeration Contracts");
+				code.AppendLine("\t**************************************************************************/");
+				code.AppendLine();
+				foreach (Projects.Enum ee in o.Enums)
+					code.AppendLine(EnumGenerator.GenerateProxyCode45(ee));
+				code.AppendLine();
+			}
+
+			if (o.Data.Count > 0)
+			{
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tData Contracts");
+				code.AppendLine("\t**************************************************************************/");
+				code.AppendLine();
+				foreach (Data de in o.Data)
+				{
 					code.AppendLine(DataGenerator.GenerateProxyCodeRT8(de));
 					code.AppendLine(DataGenerator.GenerateXAMLCodeRT8(de));
 				}
@@ -170,7 +243,18 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (Service se in o.Services)
-					code.AppendLine(ServiceGenerator.GenerateClientCode45(se));
+					code.AppendLine(ServiceGenerator.GenerateClientCode45(se, ProjectGenerationFramework.WIN8));
+				code.AppendLine();
+			}
+
+			if (o.RESTServices.Count > 0)
+			{
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tREST Service Contracts");
+				code.AppendLine("\t**************************************************************************/");
+				code.AppendLine();
+				foreach (RESTService se in o.RESTServices)
+					code.AppendLine(RESTServiceGenerator.GenerateClientCode45(se));
 				code.AppendLine();
 			}
 
@@ -181,7 +265,7 @@ namespace NETPath.Generators.WinRT.CS
 				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
 				foreach (ServiceBinding sb in o.Bindings)
-					code.AppendLine(BindingsGenerator.GenerateCode45(sb));
+					code.AppendLine(BindingsGenerator.GenerateCodeRT8(sb));
 				code.AppendLine();
 			}
 

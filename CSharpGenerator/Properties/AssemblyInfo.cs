@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NETPath WinRT CSharp Generator")]
-[assembly: AssemblyDescription("C# code generation support for the Windows Runtime.")]
+[assembly: AssemblyTitle("NETPath .NET CSharp Generator")]
+[assembly: AssemblyDescription("C# code generation support for the .NET Framework.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Prospective Software")]
 [assembly: AssemblyProduct("NETPath")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("80ceb6dc-fac9-4a22-99db-857c9cabcd35")]
+[assembly: Guid("b3dae9bb-caa3-4f78-a358-f13a729185cb")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -33,4 +33,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.1.0.0")]
-[assembly: AssemblyFileVersion("1.1.0.1433")]
+[assembly: AssemblyFileVersion("1.1.0.1434")]

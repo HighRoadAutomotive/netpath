@@ -458,7 +458,7 @@
 										</TextBlock>
 									</StackPanel>
 								</StackPanel>
-							</TabItem>E
+							</TabItem>
 						</TabControl>
 					</Grid>
 					<Grid x:Name="OptionsScreen" Visibility="Collapsed" >

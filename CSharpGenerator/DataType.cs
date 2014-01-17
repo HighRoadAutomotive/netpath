@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NETPath.Projects;
 
-namespace NETPath.Generators.WinRT.CS
+namespace NETPath.Generators.CS
 {
 	internal static class DataTypeGenerator
 	{
@@ -34,7 +34,7 @@ namespace NETPath.Generators.WinRT.CS
 					if (!IsDeltaObject) sb.Append(" : ");
 					for (int i = 0; i < o.InheritedTypes.Count; i++)
 					{
-						if (IsDeltaObject && o.InheritedTypes[i].TypeMode != DataTypeMode.Interface) continue;
+						if(IsDeltaObject && o.InheritedTypes[i].TypeMode != DataTypeMode.Interface) continue;
 						if (IsDeltaObject) sb.Append(", ");
 						sb.Append(GenerateType(o.InheritedTypes[i]));
 						if (!IsDeltaObject && i < o.InheritedTypes.Count - 1) sb.Append(", ");

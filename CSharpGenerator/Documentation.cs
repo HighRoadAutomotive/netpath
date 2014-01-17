@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NETPath.Generators.NET.CS
+namespace NETPath.Generators.CS
 {
 	internal static class DocumentationGenerator
 	{

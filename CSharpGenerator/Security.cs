@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using NETPath.Projects;
 using NETPath.Projects.Helpers;
 
-namespace NETPath.Generators.NET.CS
+namespace NETPath.Generators.CS
 {
 	internal static class SecurityGenerator
 	{
