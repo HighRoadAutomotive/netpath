@@ -48,9 +48,6 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LogicNP.CryptoLicensing">
-      <HintPath>C:\Program Files (x86)\LogicNP Software\CryptoLicensing For .Net 2013 R2\LogicNP.CryptoLicensing.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />

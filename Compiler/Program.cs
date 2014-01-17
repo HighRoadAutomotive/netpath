@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
-using LogicNP.CryptoLicensing;
 using NETPath.Options;
 using NETPath.Projects;
 using NETPath.Generators.Interfaces;
@@ -24,8 +23,6 @@ namespace NETPath.Compiler
 		public static string ApplicationTitle { get; set; }
 		public static Version ApplicationVersion { get; set; }
 		public static UserProfile UserProfile { get; set; }
-		private const string TrialLicense = "lgKkAfExhs3Ol84BHgAxAFNLVT1QU05QMTBUUklBTCNMaWNlbnNlZU5hbWU9UHJvc3BlY3RpdmUgU29mdHdhcmUBA54NvYmd0JJeF5dLjzAes4hBCkF0BXTHVmeZC57CFl6wwSEh49hzmn+z8eRV+EEedduq1B4hkiaUS663rWPiSVBZHGnfs0yMkGX0oV6TrlG79cVChfhvWEEze3yPIEbP//5r63ghBxeZw3QDEXyc4xfO1oxIh5vGzih/8F1i8sQU7D9IczrgymXGtbTaTKKqPg2ZsrrNGvtNCw8+fcbvwB70AvUvIox4HhcEkdIvtuYw713hEHSxJRM3aGsDVUqhlqPOvL9LL2pFoYw7LxeJrWkkntGtKbAnpfZ5uiv16Oxy9SdVuZkgzYmWbCe2dT7DWbsp8M4joYuri4JNX4+3RsI=";
-		private const string LicenseVerification = "AAAEAAG6rTV/gUg+VZjvEZQDqWy9l63DgzkUSg0tyJOBDDS58FKoRvErRfUkvxdlgUCCTTvw5b7lXtVPFxd3HI+SFzzTi5X0neWXCNXjWX/FVnIaCBioKHG6eYwgSE86j2ybYQbGlmy+R9vpj3cA12E6a4efoQl/5yqawkUk67iQGnJi0YiA6LUAQUoCN+XipZN3pEn+EuAPGVAz1W0b8pYX99oSrWr3CQwnGCg6/2Y5radzYdPDsZgWkKkWhPU/ZGXcDo+GB4e35OaO6hp8lcq3lmxc+3Ic9eDsVK1kHaccRI/hWcgmkp39/3/zk1mnVtgiED8RI0eUniUTWXTGVTtBvBGLAwABAAE=";
 
 		private static List<CompileMessage> Messages { get; set; }
 		public static CompileMessageSeverity HighestSeverity { get; private set; }
@@ -39,49 +36,27 @@ namespace NETPath.Compiler
 
 			if (args.GetLongLength(0) == 0) Environment.Exit(0);
 
-			if(args.Contains("-?"))
+			if (args.Contains("-?"))
 				PrintHelp();
 
 			ParseOptions(new List<string>(args));
 
 			PrintHeader();
 
-			string lic = TrialLicense;
-#if LICENSE
-			//Check license key
-			string UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Prospective Software\\NETPath\\";
-			UserProfilePath = Path.Combine(UserProfilePath, "profile.dat");
-			if (File.Exists(UserProfilePath))
-				UserProfile = UserProfile.Open(UserProfilePath);
-			if (!(UserProfile.IsTrial || UserProfile.Serial == "TRIAL" || UserProfile.License == ""))
-				lic = UserProfile.License;
-			var t = new CryptoLicense(lic, LicenseVerification);
-			if (t.Status != LicenseStatus.Valid)
-			{
-				Console.WriteLine("This copy of NETPath is trial software and expired on {0}.", DateTime.Now.AddDays(-(t.CurrentUsageDays - t.MaxUsageDays)).ToShortDateString());
-				Console.WriteLine("Please visit us at http://www.prospectivesoftware.com to purchase a license if you wish to continue to use this software.");
-				Environment.Exit(4);
-			}
-			else if (lic == TrialLicense)
-			{
-				Console.WriteLine("This copy of NETPath is trial software and will expire on {0}.", DateTime.Now.AddDays(t.RemainingUsageDays).ToShortDateString());
-			}
-#endif
-
 			ErrorStream = Console.OpenStandardError();
 
 			OpenProject = Project.Open(Path.Combine(Directory.GetCurrentDirectory(), SolutionPath), ProjectPath);
 
 			IGenerator NET = Loader.LoadModule(GenerationModule.NET, GenerationLanguage.CSharp);
-			NET.Initialize(lic, OutputHandler, AddMessage);
+			NET.Initialize(OutputHandler, AddMessage);
 			IGenerator WinRT = Loader.LoadModule(GenerationModule.WindowsRuntime, GenerationLanguage.CSharp);
-			WinRT.Initialize(lic, OutputHandler, AddMessage);
+			WinRT.Initialize(OutputHandler, AddMessage);
 
 			//Run project code generation
 			if (NET.IsInitialized && WinRT.IsInitialized)
 			{
 				NET.Build(OpenProject);
-				if(OpenProject.ClientGenerationTargets.Any(a => a.Framework == ProjectGenerationFramework.WIN8)) WinRT.Build(OpenProject, true);
+				if (OpenProject.ClientGenerationTargets.Any(a => a.Framework == ProjectGenerationFramework.WIN8)) WinRT.Build(OpenProject, true);
 			}
 			else if (WinRT.IsInitialized)
 				WinRT.Build(OpenProject);
@@ -112,7 +87,7 @@ namespace NETPath.Compiler
 
 			//Write message to the log file and console
 			string mstr = string.Format("{0} {1}: {2} Object: {3} Owner: {4}", Message.Severity, Message.Code, Message.Description, Message.ErrorObject, Message.Owner);
-			if(LogFile != null)
+			if (LogFile != null)
 				LogFile.WriteLine(mstr);
 			Console.WriteLine(mstr);
 
@@ -176,7 +151,7 @@ namespace NETPath.Compiler
 				Environment.Exit(1);
 			}
 
-			for(int i=2;i<args.Count;i++)
+			for (int i = 2; i < args.Count; i++)
 			{
 				if (args[i] == "-q")
 					Quiet = true;

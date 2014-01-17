@@ -1,4 +1,4 @@
-﻿using System; 
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -28,12 +28,12 @@ namespace NETPath
 			//Check to see if the User Profile path exists and make a folder if it does not.
 			Globals.UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Prospective Software\\NETPath\\";
 			if (!Directory.Exists(Globals.UserProfilePath)) Directory.CreateDirectory(Globals.UserProfilePath);
-			
+
 			//Create the UpdateStore directory if it does not exist and clean it out if it does.
 			Globals.UpdateStore = Path.Combine(Globals.UserProfilePath, "UpdateStore");
 			if (!Directory.Exists(Globals.UpdateStore)) Directory.CreateDirectory(Globals.UpdateStore);
 			var ufl = new List<string>(Directory.EnumerateFiles(Globals.UpdateStore));
-			foreach(string uf in ufl)
+			foreach (string uf in ufl)
 				File.Delete(uf);
 
 			//Load the user profile if it exists or make a new one if it doesn't.
@@ -62,105 +62,6 @@ namespace NETPath
 						Globals.ArgSolutionPath = args[i + 1];
 				}
 			}
-
-#if LICENSE
-			if (await CheckForInternetConnection())
-			{
-				DateTime servertime = LicensingClient.GetDateTime();
-				DateTime localtime = DateTime.UtcNow;
-
-				if (localtime > servertime.AddHours(-2) && localtime < servertime.AddHours(2))
-				{
-					if (Globals.UserProfile.IsTrial || Globals.UserProfile.Serial == "TRIAL" || Globals.UserProfile.License == "")
-					{
-						Globals.InitializeCodeGenerators(Globals.TrialLicense);
-						var lic = new LogicNP.CryptoLicensing.CryptoLicense(Globals.TrialLicense, Globals.LicenseVerification);
-						Globals.UserProfile.SKU = lic.GetUserDataFieldValue("SKU", "#");
-						Globals.UserProfile.LicenseeName = lic.GetUserDataFieldValue("LicenseeName", "#");
-
-						Globals.UserProfile.Serial = "TRIAL";
-						Globals.UserProfile.IsTrial = true;
-						Globals.UserProfile.IsUsageEnabled = true;
-						Globals.UserProfile.License = "";
-						try
-						{
-							if (Globals.UserProfile.PriorUsage != null) await LicensingClient.PostUsage(Globals.UserProfile.PriorUsage);
-						}
-						catch (Exception)
-						{
-						}
-					}
-					else
-					{
-						Globals.InitializeCodeGenerators(Globals.UserProfile.License);
-						var lic = new LogicNP.CryptoLicensing.CryptoLicense(Globals.UserProfile.License, Globals.LicenseVerification);
-						Globals.UserProfile.SKU = lic.GetUserDataFieldValue("SKU", "#");
-						Globals.UserProfile.LicenseeName = lic.GetUserDataFieldValue("LicenseeName", "#");
-
-						try
-						{
-							LicenseData LD = await LicensingClient.Retrieve(Globals.UserProfile.Serial, Globals.ApplicationVersion);
-							if (Globals.UserProfile.PriorUsage != null) await LicensingClient.PostUsage(Globals.UserProfile.PriorUsage);
-							if (LD.AvailableUpdates.Count > 0) Globals.AvailableUpdates = new List<AvailableUpdateXAML>(LD.XAMLObject.AvailableUpdates);
-							if (LD.MaxLicensedVersion < Globals.ApplicationVersion) Current.Shutdown(-10);
-							Globals.UserProfile.UserName = LD.UserName;
-							if (LD.Revoked)
-							{
-								Globals.UserProfile.Serial = "TRIAL";
-								Globals.UserProfile.IsTrial = true;
-								Globals.UserProfile.IsUsageEnabled = true;
-								Globals.UserProfile.License = "";
-							}
-						}
-						catch (Exception)
-						{
-						}
-					}
-				}
-			}
-			else
-			{
-				if (Globals.UserProfile.IsTrial || Globals.UserProfile.Serial == "TRIAL" || Globals.UserProfile.License == "")
-				{
-					Globals.InitializeCodeGenerators(Globals.TrialLicense);
-					var lic = new LogicNP.CryptoLicensing.CryptoLicense(Globals.TrialLicense, Globals.LicenseVerification);
-					Globals.UserProfile.SKU = lic.GetUserDataFieldValue("SKU", "#");
-					Globals.UserProfile.LicenseeName = lic.GetUserDataFieldValue("LicenseeName", "#");
-
-					Globals.UserProfile.Serial = "TRIAL";
-					Globals.UserProfile.IsTrial = true;
-					Globals.UserProfile.IsUsageEnabled = true;
-					Globals.UserProfile.License = "";
-				}
-				else
-				{
-					Globals.InitializeCodeGenerators(Globals.UserProfile.License);
-					var lic = new LogicNP.CryptoLicensing.CryptoLicense(Globals.UserProfile.License, Globals.LicenseVerification);
-					Globals.UserProfile.SKU = lic.GetUserDataFieldValue("SKU", "#");
-					Globals.UserProfile.LicenseeName = lic.GetUserDataFieldValue("LicenseeName", "#");
-				}
-			}
-
-#else
-			Globals.InitializeCodeGenerators(Globals.DeveloperLicense);
-			var dlic = new LogicNP.CryptoLicensing.CryptoLicense(Globals.DeveloperLicense, Globals.LicenseVerification);
-			Globals.UserProfile.SKU = dlic.GetUserDataFieldValue("SKU", "#");
-			Globals.UserProfile.LicenseeName = dlic.GetUserDataFieldValue("LicenseeName", "#");
-			Globals.UserProfile.IsTrial = false;
-			Globals.UserProfile.Serial = "DEVELOPER";
-			try
-			{
-				if (await CheckForInternetConnection())
-				{
-					LicenseData LD = await LicensingClient.Retrieve(Globals.UserProfile.Serial, Globals.ApplicationVersion);
-					if (LD != null && LD.AvailableUpdates.Count > 0) Globals.AvailableUpdates = new List<AvailableUpdateXAML>(LD.XAMLObject.AvailableUpdates);
-					if (Globals.UserProfile.PriorUsage != null) await LicensingClient.PostUsage(Globals.UserProfile.PriorUsage);
-				}
-			}
-			catch (Exception)
-			{
-			}
-#endif
 
 			InitializeUsageData();
 		}
@@ -234,7 +135,7 @@ namespace NETPath
 			var nr = new Interface.Dialogs.ReportError(e.Exception, ms.ToArray(), pfd);
 
 			//TODO: Add reporting functionality when the JIRA integration is built.
-			DialogService.ShowContentDialog(null,"We've Encountered an Unknown Problem.", nr, new DialogAction("Send Report", nr.SendReport, true), new DialogAction("Dismiss", false, true));
+			DialogService.ShowContentDialog(null, "We've Encountered an Unknown Problem.", nr, new DialogAction("Send Report", nr.SendReport, true), new DialogAction("Dismiss", false, true));
 			e.Handled = true;
 		}
 	}

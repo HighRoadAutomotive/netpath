@@ -93,7 +93,7 @@ namespace NETPath
 		{
 			Compilers = new ConcurrentDictionary<Guid, Compiler>();
 			NETGenerator = Loader.LoadModule(GenerationModule.NET, GenerationLanguage.CSharp);
-			NETGenerator.Initialize(License, GeneratorOutput, GeneratorMessage);
+			NETGenerator.Initialize(GeneratorOutput, GeneratorMessage);
 		}
 
 		private static void GeneratorOutput(Guid ID, string output)

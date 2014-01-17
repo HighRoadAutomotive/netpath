@@ -13,7 +13,6 @@ using System.Windows.Media.Imaging;
 using System.Diagnostics;
 using System.Windows.Navigation;
 using System.Xml;
-using LogicNP.CryptoLicensing;
 using Prospective.Controls.Dialogs;
 using NETPath.Options;
 using Prospective.Server.Licensing;
@@ -32,7 +31,7 @@ namespace NETPath.Interface
 		//Project Properties
 		public object SelectedProject { get { return GetValue(SelectedProjectProperty); } set { SetValue(SelectedProjectProperty, value); } }
 		public static readonly DependencyProperty SelectedProjectProperty = DependencyProperty.Register("SelectedProject", typeof(object), typeof(Main));
-		
+
 		public UserProfile UserProfile { get { return (UserProfile)GetValue(UserProfileProperty); } set { SetValue(UserProfileProperty, value); } }
 		public static readonly DependencyProperty UserProfileProperty = DependencyProperty.Register("UserProfile", typeof(UserProfile), typeof(Main));
 
@@ -53,7 +52,8 @@ namespace NETPath.Interface
 
 		private SaveCloseMode CloseMode { get; set; }
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static readonly RoutedCommand SelectProjectCommand = new RoutedCommand();
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")]
+		public static readonly RoutedCommand SelectProjectCommand = new RoutedCommand();
 
 		static Main()
 		{
@@ -84,14 +84,6 @@ namespace NETPath.Interface
 			if (Globals.UserProfile.AutomaticBackupsEnabled) AutomaticBackupsEnabled.Content = "Yes";
 			AboutVersion.Content = string.Format("Version: {0}", FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).FileVersion);
 
-			SetLogo();
-
-			//using (XmlReader reader = XmlReader.Create("http://www.prospectivesoftware.com/blogs/netpathlink.atom"))
-			//{
-			//	SyndicationFeed feed = SyndicationFeed.Load(reader);
-			//	NewsList.ItemsSource = feed.Items;
-			//}
-
 			if (Globals.AvailableUpdates != null)
 			{
 				SystemUpdates.Visibility = Visibility.Visible;
@@ -99,153 +91,6 @@ namespace NETPath.Interface
 			}
 			UpdateDownloader = null;
 		}
-
-		#region - Licensing -
-
-		private void RetrieveLicense()
-		{
-			var t = new Dialogs.SetLicense();
-			DialogService.ShowContentDialog("NETPath", "Enter License Information", t, new DialogAction("Activate", () => InstallLicense(t)), new DialogAction("Cancel", Close, false, true));
-		}
-
-		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
-		private async void InstallLicense(Dialogs.SetLicense lic)
-		{
-			if (await App.CheckForInternetConnection())
-			{
-				try
-				{
-					await Prospective.Server.Licensing.LicensingClient.Update(lic.Serial, lic.UserName, lic.UserEmail, lic.AllowProductEmails, lic.AllowOtherEmails);
-				}
-				catch
-				{
-				}
-				Prospective.Server.Licensing.LicenseData licdata = null;
-				try
-				{
-					licdata = await Prospective.Server.Licensing.LicensingClient.Retrieve(lic.Serial, Globals.ApplicationVersion);
-				}
-				catch
-				{
-				}
-
-				if (licdata == null)
-				{
-					DialogService.ShowMessageDialog("NETPath", "Unable to Retrieve License", "We were unable to retrieve your license. Please make sure that you are connected to the internet and try again. If the problem persists please contact Prospective Software Support at support@prospectivesoftware.com", new DialogAction("Continue Trial"), new DialogAction("Install License", RetrieveLicense));
-				}
-				else
-				{
-					Globals.UserProfile.IsTrialInfoSet = false;
-					Globals.UserProfile.IsTrial = false;
-					Globals.UserProfile.License = licdata.Key;
-					var tl = new CryptoLicense(Globals.UserProfile.License, Globals.LicenseVerification);
-					Globals.UserProfile.Serial = lic.Serial;
-					Globals.UserProfile.SKU = tl.GetUserDataFieldValue("SKU", "#");
-					Globals.UserProfile.LicenseeName = tl.GetUserDataFieldValue("LicenseeName", "#");
-					Globals.UserProfile.UserName = licdata.UserName;
-					Globals.UserProfile.UserEmail = lic.UserEmail;
-					UserProfile.Save(Globals.UserProfilePath, Globals.UserProfile);
-					DialogService.ShowMessageDialog("NETPath", "License Successfully Installed", "Your license has been successfully installed and is ready for immediate use.", new DialogAction("Continue", true));
-				}
-			}
-			else
-			{
-				DialogService.ShowMessageDialog("NETPath", "Unable to Retrieve License", "We were unable to retrieve your license. Please make sure that you are connected to the internet and try again. If the problem persists please contact Prospective Software Support at support@prospectivesoftware.com", new DialogAction("Continue Trial"), new DialogAction("Install License", RetrieveLicense));
-			}
-		}
-
-		//Set the logo in the options screen.
-		private void SetLogo()
-		{
-			var logo = new BitmapImage();
-			logo.BeginInit();
-			if (Globals.UserProfile.IsTrial || Globals.UserProfile.Serial == "TRIAL" || Globals.UserProfile.License == "")
-			{
-				logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoTrial.png");
-				ProductTitle.Content = "Prospective Software NETPath Trial";
-			}
-			else
-			{
-#if LICENSE
-				var lic = new CryptoLicense(Globals.UserProfile.License, Globals.LicenseVerification);
-				if (lic.Status == LicenseStatus.Valid)
-				{
-					switch (Globals.UserProfile.SKU)
-					{
-						case "PSNP10PROF":
-							logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoProfessional.png");
-							ProductTitle.Content = "Prospective Software NETPath Professional Edition";
-							break;
-						case "PSNP10ACAD":
-							logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoAcademic.png");
-							ProductTitle.Content = "Prospective Software NETPath Academic Edition";
-							break;
-						case "PSNP10CLAS":
-							logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoAcademic.png");
-							ProductTitle.Content = "Prospective Software NETPath Classroom Edition";
-							break;
-						case "PSNP10MVPL":
-							logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoMVP.png");
-							ProductTitle.Content = "Prospective Software NETPath MVP Edition";
-							break;
-						case "PSNP10FOSS":
-							logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoFOSS.png");
-							ProductTitle.Content = "Prospective Software NETPath Open Source Edition";
-							break;
-						default:
-							ProductTitle.Content = "Prospective Software NETPath Trial";
-							logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoTrial.png");
-							break;
-					}	
-				}
-				else
-				{
-					ProductTitle.Content = "Prospective Software NETPath Trial";
-					logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoTrial.png");
-				}
-			}
-#else
-				logo.UriSource = new Uri("pack://application:,,,/NETPath;component/Icons/Odd/FullLogoDeveloper.png");
-				ProductTitle.Content = "Prospective Software NETPath Internal Developer";
-			}
-#endif
-			logo.EndInit();
-			SKULevel.Source = logo;
-		}
-
-		public void StartTrial()
-		{
-			var t = new Dialogs.SetTrial();
-			DialogService.ShowContentDialog("NETPath", "Please Enter Your Information", t, new DialogAction("Activate", () => ConfigTrial(t)), new DialogAction("Cancel", Close, false, true));
-		}
-
-		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
-		private async void ConfigTrial(Dialogs.SetTrial lic)
-		{
-			if (await App.CheckForInternetConnection())
-			{
-				try
-				{
-					await Prospective.Server.Licensing.LicensingClient.PostTrialData(lic.UserName, lic.UserEmail, lic.Company, lic.Country, lic.AllowProductEmails, lic.AllowProductEmails, Globals.UserProfile.SKU, Globals.Usage.UserID, Globals.ApplicationVersion);
-					Globals.UserProfile.IsTrialInfoSet = true;
-				}
-				catch
-				{
-					DialogService.ShowMessageDialog("NETPath", "Unable to Configure Trial", "We were unable to configure your trial. Please make sure that you are connected to the internet and try again. If the problem persists please contact Prospective Software Support at support@prospectivesoftware.com", new DialogAction("Continue Trial"), new DialogAction("Install License", RetrieveLicense));
-				}
-			}
-			else
-			{
-				DialogService.ShowMessageDialog("NETPath", "Unable to Configure Trial", "We were unable to configure your trial. Please make sure that you are connected to the internet and try again. If the problem persists please contact Prospective Software Support at support@prospectivesoftware.com", new DialogAction("Continue Trial"), new DialogAction("Install License", RetrieveLicense));
-			}
-		}
-		private void PurchaseLicense()
-		{
-			var proc = new Process { StartInfo = { UseShellExecute = true, FileName = "http://www.prospectivesoftware.com/pages/netpath" } };
-			proc.Start();
-		}
-
-		#endregion
 
 		#region - Window Events -
 
@@ -289,7 +134,7 @@ namespace NETPath.Interface
 				MaximizeWindow.Visibility = Visibility.Collapsed;
 				RestoreWindow.Visibility = Visibility.Visible;
 			}
-			
+
 			if (WindowState != WindowState.Normal) return;
 			WindowBorder.Margin = new Thickness(0);
 			WindowBorder.BorderThickness = new Thickness(1);
@@ -544,7 +389,7 @@ namespace NETPath.Interface
 			}
 			e.Handled = true;
 		}
-		
+
 		private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
 		{
 			var hlink = sender as Hyperlink;
@@ -670,7 +515,7 @@ namespace NETPath.Interface
 				CloseSolution(true, false, () => { Projects.Solution.Save(new Projects.Solution(Name), Path); Globals.OpenSolution(Path, OpenSolutionFinished); }, () => { Projects.Solution.Save(new Projects.Solution(Name), Path); Globals.OpenSolution(Path, OpenSolutionFinished); });
 			else
 			{
-				Projects.Solution.Save(new Projects.Solution(Name), Path); 
+				Projects.Solution.Save(new Projects.Solution(Name), Path);
 				Globals.OpenSolution(Path, OpenSolutionFinished);
 			}
 		}
@@ -793,7 +638,7 @@ namespace NETPath.Interface
 				ScreenButtonsList.ContextMenu.Items.Add(t);
 			}
 			ScreenButtonsList.ContextMenu.PlacementTarget = ScreenButtonsList;
-			ScreenButtonsList.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom; 
+			ScreenButtonsList.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
 			ScreenButtonsList.ContextMenu.IsOpen = true;
 		}
 
@@ -872,10 +717,14 @@ namespace NETPath.Interface
 		public string ItemFlag { get { return (string)GetValue(ItemFlagProperty); } set { SetValue(ItemFlagProperty, value); } }
 		public static readonly DependencyProperty ItemFlagProperty = DependencyProperty.Register("ItemFlag", typeof(string), typeof(RecentProjectItem), new PropertyMetadata("pack://application:,,,/NETPath;component/Icons/X32/FlagRecent.png"));
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static readonly RoutedCommand OpenCommand = new RoutedCommand();
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static readonly RoutedCommand FlagCommand = new RoutedCommand();
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static readonly RoutedCommand FolderCommand = new RoutedCommand();
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static readonly RoutedCommand RemoveCommand = new RoutedCommand();
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")]
+		public static readonly RoutedCommand OpenCommand = new RoutedCommand();
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")]
+		public static readonly RoutedCommand FlagCommand = new RoutedCommand();
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")]
+		public static readonly RoutedCommand FolderCommand = new RoutedCommand();
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")]
+		public static readonly RoutedCommand RemoveCommand = new RoutedCommand();
 
 		static RecentProjectItem()
 		{

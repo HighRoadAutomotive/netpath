@@ -108,10 +108,6 @@
     <Reference Include="Licensing">
       <HintPath>..\..\..\Licensing\Build\Licensing.dll</HintPath>
     </Reference>
-    <Reference Include="LogicNP.CryptoLicensing, Version=10.0.0.0, Culture=neutral, PublicKeyToken=4a3c0a4c668b48b4">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\LogicNP Software\CryptoLicensing For .Net 2013 R2\LogicNP.CryptoLicensing.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack">
       <HintPath>..\..\..\..\Downloads\Controls\Windows API Code Pack\binaries\Microsoft.WindowsAPICodePack.dll</HintPath>
     </Reference>

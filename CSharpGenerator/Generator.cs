@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using LogicNP.CryptoLicensing;
 using NETPath.Generators.Interfaces;
 using NETPath.Projects;
 using NETPath.Projects.Helpers;
@@ -31,7 +30,7 @@ namespace NETPath.Generators.CS
 			Module = GenerationModule.WindowsRuntime;
 		}
 
-		public void Initialize(string License, Action<Guid, string> OutputHandler, Action<Guid, CompileMessage> CompileMessageHandler)
+		public void Initialize(Action<Guid, string> OutputHandler, Action<Guid, CompileMessage> CompileMessageHandler)
 		{
 			NewOutput = OutputHandler;
 			NewMessage = CompileMessageHandler;

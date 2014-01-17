@@ -55,7 +55,7 @@ namespace NETPath.Generators.Interfaces
 
 	public interface IGenerator
 	{
-		void Initialize(string License, Action<Guid, string> OutputHandler, Action<Guid, CompileMessage> CompileMessageHandler);
+		void Initialize(Action<Guid, string> OutputHandler, Action<Guid, CompileMessage> CompileMessageHandler);
 		void Verify(Project Data);
 		Task VerifyAsync(Project Data);
 		string GenerateServer(Project Data, ProjectGenerationFramework Framework, bool GenerateReferences);
