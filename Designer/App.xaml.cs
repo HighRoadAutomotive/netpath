@@ -56,11 +56,6 @@ namespace NETPath
 						Globals.ArgSolutionPath = args[i + 1];
 				}
 			}
-
-			//Initialize the compilers
-			Globals.Compilers = new ConcurrentDictionary<Guid, Compiler>();
-			Globals.NETGenerator = Loader.LoadModule(GenerationModule.NET, GenerationLanguage.CSharp);
-			Globals.NETGenerator.Initialize(Globals.GeneratorOutput, Globals.GeneratorMessage);
 		}
 
 		private void Application_Exit(object sender, ExitEventArgs e)

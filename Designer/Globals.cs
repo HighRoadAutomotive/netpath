@@ -75,8 +75,12 @@ namespace NETPath
 			return Project.Namespace.GetBindings();
 		}
 
-		public static void InitializeCodeGenerators(string License)
+		public static void InitializeCodeGenerators()
 		{
+			//Initialize the compilers
+			Compilers = new ConcurrentDictionary<Guid, Compiler>();
+			NETGenerator = Loader.LoadModule(GenerationModule.NET, GenerationLanguage.CSharp);
+			NETGenerator.Initialize(GeneratorOutput, GeneratorMessage);
 		}
 
 		internal static void GeneratorOutput(Guid ID, string output)
@@ -124,6 +128,8 @@ namespace NETPath
 				DialogService.ShowMessageDialog(null, "Project Load Error", ex.ToString(), new DialogAction("Ok", () => FinishedAction(false), true, true));
 				return;
 			}
+
+			InitializeCodeGenerators();
 
 			if (UserProfile.AutomaticBackupsEnabled)
 				BackupTimer = new System.Threading.Timer(BackupProject, null, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds);

@@ -83,13 +83,16 @@
 					<Image Source="pack://application:,,,/NETPath;component/Icons/X32/LogoIcon.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="1" />
 				</ToggleButton>
 				<StackPanel x:Name="SystemProjectMenu" Grid.Column="1" Margin="20,0,0,0" Orientation="Horizontal" Visibility="Collapsed" >
-					<Button Style="{StaticResource WindowSystemButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuBuild_Click" ToolTip="Build Solution" >
-						<Image Source="pack://application:,,,/NETPath;component/Icons/X32/BuildProject.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,1" />
+					<Button Style="{StaticResource WindowSystemButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuAddItem_Click" ToolTip="Add Item to Project" >
+						<Image Source="pack://application:,,,/NETPath;component/Icons/X32/NewItem.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,1" />
 					</Button>
-					<Button Style="{StaticResource WindowSystemButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuSave_Click" ToolTip="Save Solution" >
+					<Button Style="{StaticResource WindowSystemButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuSave_Click" ToolTip="Save Project" >
 						<Image Source="pack://application:,,,/NETPath;component/Icons/X32/Save.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,1" />
 					</Button>
-					<Button Style="{StaticResource WindowSystemButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuClose_Click" ToolTip="Close Solution" >
+					<Button Style="{StaticResource WindowSystemButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuBuild_Click" ToolTip="Build Project" >
+						<Image Source="pack://application:,,,/NETPath;component/Icons/X32/BuildSolution.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,1" />
+					</Button>
+					<Button Style="{StaticResource WindowSystemButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" Click="SystemMenuClose_Click" ToolTip="Close Project" >
 						<Image Source="pack://application:,,,/NETPath;component/Icons/X32/Close.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,1" />
 					</Button>
 				</StackPanel>

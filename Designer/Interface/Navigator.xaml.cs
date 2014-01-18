@@ -132,17 +132,12 @@ namespace NETPath.Interface
 			OpenProjectItem(Project.Namespace.GetLastSelectedItem() ?? this.Project);
 		}
 
-		private void NewItem_Click(object sender, RoutedEventArgs e)
+		public void AddNewItem()
 		{
 			DialogService.ShowContentDialog(Project, "New Item", new Dialogs.NewItem(Project, OpenProjectItem));
 		}
 
-		private void SaveProject_Click(object sender, RoutedEventArgs e)
-		{
-			Projects.Project.Save(Project);
-		}
-
-		private void BuildProject_Click(object sender, RoutedEventArgs e)
+		public void BuildProject()
 		{
 			ShowOutput.IsChecked = true;
 			Compiler.Build();

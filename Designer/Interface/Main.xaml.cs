@@ -159,9 +159,14 @@ namespace NETPath.Interface
 			OpenProject(ofd.FileName);
 		}
 
+		private void SystemMenuAddItem_Click(object sender, RoutedEventArgs e)
+		{
+			Globals.OpenNavigator.AddNewItem();
+		}
+
 		private void SystemMenuBuild_Click(object sender, RoutedEventArgs e)
 		{
-			Globals.BuildProject();
+			Globals.OpenNavigator.BuildProject();
 		}
 
 		private void SystemMenuSave_Click(object sender, RoutedEventArgs e)
