@@ -37,8 +37,10 @@ namespace NETPath.Interface
 		public int? FindResultsCount { get { return (int?)GetValue(FindResultsCountProperty); } set { SetValue(FindResultsCountProperty, value); } }
 		public static readonly DependencyProperty FindResultsCountProperty = DependencyProperty.Register("FindResultsCount", typeof(int?), typeof(Navigator), new PropertyMetadata(0));
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static readonly RoutedCommand ChangeActivePageCommand = new RoutedCommand();
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")] public static readonly RoutedCommand DeleteCommand = new RoutedCommand();
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")]
+		public static readonly RoutedCommand ChangeActivePageCommand = new RoutedCommand();
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")]
+		public static readonly RoutedCommand DeleteCommand = new RoutedCommand();
 
 		public Compiler Compiler { get; private set; }
 
@@ -138,11 +140,6 @@ namespace NETPath.Interface
 		private void SaveProject_Click(object sender, RoutedEventArgs e)
 		{
 			Projects.Project.Save(Project);
-		}
-
-		private void DeleteProject_Click(object sender, RoutedEventArgs e)
-		{
-			DialogService.ShowMessageDialog(Project, "Permanently Delete Project?", "This project will be removed from the solution. Would you like to delete it from the disk as well?", new DialogAction("Yes", KillProject), new DialogAction("No", RemoveProject, true), new DialogAction("Cancel", false, true));
 		}
 
 		private void BuildProject_Click(object sender, RoutedEventArgs e)
@@ -273,7 +270,7 @@ namespace NETPath.Interface
 						OpenProjectItem(t.Parent.Hosts[0]);
 						return;
 					}
-					if(t.Parent != null && !Equals(t.Parent, t.Owner.Namespace)) OpenProjectItem(t.Parent);
+					if (t.Parent != null && !Equals(t.Parent, t.Owner.Namespace)) OpenProjectItem(t.Parent);
 					else OpenProjectItem(Project);
 				}
 			}
@@ -538,28 +535,6 @@ namespace NETPath.Interface
 			}
 		}
 
-		private void RemoveProject()
-		{
-			Globals.Projects.Remove(Project);
-			Globals.Solution.Projects.Remove(Globals.GetRelativePath(Globals.SolutionPath, Project.AbsolutePath));
-
-			if (Globals.Projects.Count == 0) Globals.MainScreen.ShowHomeScreen();
-			else
-			{
-				var t = Globals.MainScreen.ProjectScreens[0] as SolutionItem;
-				if (t != null)
-					Globals.MainScreen.SelectProjectScreen(t.Content as Navigator);
-			}
-		}
-
-		private void KillProject()
-		{
-			RemoveProject();
-
-			if(System.IO.File.Exists(Project.AbsolutePath))
-				System.IO.File.Delete(Project.AbsolutePath);
-		}
-
 		private void ShowProject_Click(object sender, RoutedEventArgs e)
 		{
 			ShowFindReplace.IsChecked = false;
@@ -612,11 +587,6 @@ namespace NETPath.Interface
 
 			FindReplaceResult frr = FindResults[FindList.SelectedIndex];
 			Type valueType = frr.Item.GetType();
-			if (valueType == typeof(Projects.Project) || valueType == typeof(DependencyProject))
-			{
-				var T = frr.Item as Projects.Project;
-				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
-			}
 			if (valueType == typeof(Projects.Namespace))
 			{
 				var T = frr.Item as Projects.Namespace;
@@ -694,15 +664,7 @@ namespace NETPath.Interface
 			var findInfo = new FindReplaceInfo((FindItems)FindItem.SelectedIndex, (FindLocations)FindLocation.SelectedIndex, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value);
 			var results = new List<FindReplaceResult>();
 
-			if (findInfo.Location == FindLocations.EntireSolution)
-			{
-				foreach (Projects.Project p in Globals.Projects)
-					results.AddRange(p.FindReplace(findInfo));
-			}
-			if (findInfo.Location == FindLocations.CurrentProject)
-			{
-				results.AddRange(Project.FindReplace(findInfo));
-			}
+			results.AddRange(Project.FindReplace(findInfo));
 
 			foreach (FindReplaceResult frr in results)
 				FindResults.Add(frr);
@@ -720,15 +682,7 @@ namespace NETPath.Interface
 			var findInfo = new FindReplaceInfo((FindItems)FindItem.SelectedIndex, (FindLocations)FindLocation.SelectedIndex, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value, FindReplaceValue.Text);
 			var results = new List<FindReplaceResult>();
 
-			if (findInfo.Location == FindLocations.EntireSolution)
-			{
-				foreach (Projects.Project p in Globals.Projects)
-					results.AddRange(p.FindReplace(findInfo));
-			}
-			if (findInfo.Location == FindLocations.CurrentProject)
-			{
-				results.AddRange(Project.FindReplace(findInfo));
-			}
+			results.AddRange(Project.FindReplace(findInfo));
 
 			foreach (FindReplaceResult frr in results)
 				FindResults.Add(frr);
@@ -1093,7 +1047,6 @@ namespace NETPath.Interface
 			if (value == null) return "pack://application:,,,/NETPath;component/Icons/X16/Project.png";
 			Type valueType = value.GetType();
 			if (valueType == typeof(Projects.Project)) return "pack://application:,,,/NETPath;component/Icons/X16/Project.png";
-			if (valueType == typeof(DependencyProject)) return "pack://application:,,,/NETPath;component/Icons/X16/DependencyProject.png";
 			if (valueType == typeof(Projects.Namespace)) return "pack://application:,,,/NETPath;component/Icons/X16/Namespace.png";
 			if (valueType == typeof(Projects.Service)) return "pack://application:,,,/NETPath;component/Icons/X16/Service.png";
 			if (valueType == typeof(Projects.RESTService)) return "pack://application:,,,/NETPath;component/Icons/X16/REST.png";

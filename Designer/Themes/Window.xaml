@@ -91,5 +91,44 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	
+
+	<Style x:Key="WindowSystemToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+		<Setter Property="Background" Value="{StaticResource ButtonBackgroundColor}" />
+		<Setter Property="BorderBrush" Value="{StaticResource ButtonBorderColor}" />
+		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
+		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
+		<Setter Property="FontSize" Value="10pt" />
+		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
+		<Setter Property="SnapsToDevicePixels" Value="true"/>
+		<Setter Property="UseLayoutRounding" Value="true"/>
+		<Setter Property="OverridesDefaultStyle" Value="true"/>
+		<Setter Property="MinHeight" Value="30"/>
+		<Setter Property="MinWidth" Value="32"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type ToggleButton}">
+					<Border x:Name="Border" CornerRadius="0" BorderThickness="0" Background="Transparent" BorderBrush="{TemplateBinding BorderBrush}">
+						<ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsKeyboardFocused" Value="true">
+							<Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource ButtonMouseOverColor}" />
+						</Trigger>
+						<Trigger Property="IsMouseOver" Value="true">
+							<Setter TargetName="Border" Property="Background" Value="{StaticResource ButtonMouseOverColor}" />
+						</Trigger>
+						<Trigger Property="IsChecked" Value="true">
+							<Setter TargetName="Border" Property="Background" Value="{StaticResource WindowBorderColor}" />
+						</Trigger>
+						<Trigger Property="IsPressed" Value="true">
+							<Setter TargetName="Border" Property="Background" Value="{StaticResource WindowBorderColor}" />
+						</Trigger>
+						<DataTrigger Binding="{Binding ContextMenu.IsOpen, RelativeSource={RelativeSource Self}}" Value="True">
+							<Setter TargetName="Border" Property="Background" Value="{StaticResource WindowBorderColor}" />
+						</DataTrigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 </ResourceDictionary>

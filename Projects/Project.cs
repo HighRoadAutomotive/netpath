@@ -26,7 +26,7 @@ namespace NETPath.Projects
 	public class ProjectUsingNamespace : DependencyObject
 	{
 		public Guid ID { get; set; }
-		
+
 		public string Namespace { get { return (string)GetValue(NamespaceProperty); } set { SetValue(NamespaceProperty, value); } }
 		public static readonly DependencyProperty NamespaceProperty = DependencyProperty.Register("Namespace", typeof(string), typeof(ProjectUsingNamespace));
 
@@ -77,7 +77,7 @@ namespace NETPath.Projects
 		}
 	}
 
-		//Open document handling
+	//Open document handling
 	public class OpenableDocument : DependencyObject
 	{
 		public bool IsSelected { get { return (bool)GetValue(IsSelectedProperty); } set { SetValue(IsSelectedProperty, value); } }
@@ -92,8 +92,8 @@ namespace NETPath.Projects
 	public class Project : OpenableDocument
 	{
 		public Guid ID { get; set; }
-		[IgnoreDataMember] public string AbsolutePath { get; private set; }
-		public string SolutionPath { get; set; }
+		[IgnoreDataMember]
+		public string AbsolutePath { get; private set; }
 
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(Project));
@@ -113,9 +113,6 @@ namespace NETPath.Projects
 		public ProjectServiceSerializerType ServiceSerializer { get { return (ProjectServiceSerializerType)GetValue(ServiceSerializerProperty); } set { SetValue(ServiceSerializerProperty, value); } }
 		public static readonly DependencyProperty ServiceSerializerProperty = DependencyProperty.Register("ServiceSerializer", typeof(ProjectServiceSerializerType), typeof(Project));
 
-		public ObservableCollection<DependencyProject> DependencyProjects { get { return (ObservableCollection<DependencyProject>)GetValue(DependencyProjectsProperty); } set { SetValue(DependencyProjectsProperty, value); } }
-		public static readonly DependencyProperty DependencyProjectsProperty = DependencyProperty.Register("DependencyProjects", typeof(ObservableCollection<DependencyProject>), typeof(Project));
-
 		public ObservableCollection<DataType> ExternalTypes { get { return (ObservableCollection<DataType>)GetValue(ExternalTypesProperty); } set { SetValue(ExternalTypesProperty, value); } }
 		public static readonly DependencyProperty ExternalTypesProperty = DependencyProperty.Register("ExternalTypes", typeof(ObservableCollection<DataType>), typeof(Project));
 
@@ -134,9 +131,12 @@ namespace NETPath.Projects
 		public string EnitityDatabaseType { get { return (string)GetValue(EnitityDatabaseTypeProperty); } set { SetValue(EnitityDatabaseTypeProperty, value); } }
 		public static readonly DependencyProperty EnitityDatabaseTypeProperty = DependencyProperty.Register("EnitityDatabaseType", typeof(string), typeof(Project), new PropertyMetadata(""));
 
-		[IgnoreDataMember] public List<DataType> DefaultTypes { get; private set; }
-		[IgnoreDataMember] public List<DataType> InheritableTypes { get; private set; }
-		[IgnoreDataMember] public DataType VoidType { get; private set; }
+		[IgnoreDataMember]
+		public List<DataType> DefaultTypes { get; private set; }
+		[IgnoreDataMember]
+		public List<DataType> InheritableTypes { get; private set; }
+		[IgnoreDataMember]
+		public DataType VoidType { get; private set; }
 
 		public DataType DeltaList { get; private set; }
 		public DataType DeltaDictionary { get; private set; }
@@ -146,7 +146,6 @@ namespace NETPath.Projects
 		public Project()
 		{
 			ID = Guid.NewGuid();
-			DependencyProjects = new ObservableCollection<DependencyProject>();
 			UsingNamespaces = new ObservableCollection<ProjectUsingNamespace>();
 			ExternalTypes = new ObservableCollection<DataType>();
 
@@ -214,7 +213,7 @@ namespace NETPath.Projects
 				                    };
 
 			//Add the default inheritable types.
-			InheritableTypes = new List<DataType>() {new DataType("System.Windows.DependencyObject", DataTypeMode.Class), new DataType("System.Runtime.Serialization.IExtensibleDataObject", DataTypeMode.Interface), new DataType("System.ComponentModel.INotifyPropertyChanged", DataTypeMode.Interface)};
+			InheritableTypes = new List<DataType>() { new DataType("System.Windows.DependencyObject", DataTypeMode.Class), new DataType("System.Runtime.Serialization.IExtensibleDataObject", DataTypeMode.Interface), new DataType("System.ComponentModel.INotifyPropertyChanged", DataTypeMode.Interface) };
 
 			//Add the void type
 			VoidType = new DataType(PrimitiveTypes.Void);
@@ -223,13 +222,12 @@ namespace NETPath.Projects
 		public Project(string Name)
 		{
 			ID = Guid.NewGuid();
-			DependencyProjects = new ObservableCollection<DependencyProject>();
 			ExternalTypes = new ObservableCollection<DataType>();
 
 			ServerGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
 			ClientGenerationTargets = new ObservableCollection<ProjectGenerationTarget>();
 
-			Namespace = new Namespace(Helpers.RegExs.ReplaceSpaces.Replace(Name, "."), null, this) {URI = "http://tempuri.org/"};
+			Namespace = new Namespace(Helpers.RegExs.ReplaceSpaces.Replace(Name, "."), null, this) { URI = "http://tempuri.org/" };
 			this.Name = Name;
 
 			DeltaList = new DataType("DeltaList", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8);
@@ -334,26 +332,15 @@ namespace NETPath.Projects
 			return b.MakeRelativeUri(t).ToString();
 		}
 
-		public static Project Open(string SolutionPath, string ProjectPath)
+		public static Project Open(string ProjectPath)
 		{
-			string abspath = new Uri(new Uri(SolutionPath), ProjectPath).LocalPath;
-
 			//Check the file to make sure it exists
-			if (!File.Exists(abspath))
-				throw new FileNotFoundException("Unable to locate the Project file '" + abspath + "'");
+			if (!File.Exists(ProjectPath))
+				throw new FileNotFoundException("Unable to locate the Project file '" + ProjectPath + "'");
 
 			//Open the project
-			var t = Storage.Open<Project>(abspath);
-			t.AbsolutePath = abspath;
-
-			// Open the project's dependencies
-			foreach (DependencyProject dp in t.DependencyProjects)
-			{
-				dp.SolutionPath = SolutionPath;
-				dp.Project = Open(SolutionPath, dp.Path);
-			}
-			foreach (DependencyProject dp in t.DependencyProjects)
-				dp.EnableAutoReload = true;
+			var t = Storage.Open<Project>(ProjectPath);
+			t.AbsolutePath = ProjectPath;
 
 			return t;
 		}
@@ -403,7 +390,7 @@ namespace NETPath.Projects
 				foreach (var t in ns.Bindings)
 					t.IsSelected = false;
 
-			foreach(var tn in ns.Children)
+			foreach (var tn in ns.Children)
 				SetSelected(Type, tn);
 
 			Type.IsSelected = true;
@@ -427,12 +414,9 @@ namespace NETPath.Projects
 			}
 			results.AddRange(Namespace.SearchTypes(Search));
 
-			foreach (DependencyProject dp in DependencyProjects)
-				results.AddRange(dp.Project.SearchTypes(Search, false, false, true));
+			if (IncludeInheritable) results.RemoveAll(a => a.GetType() == typeof(Enum));
 
-			if (IncludeInheritable) results.RemoveAll(a => a.GetType() == typeof (Enum));
-
-			if(IncludeVoid && VoidType.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0)  results.Add(VoidType);
+			if (IncludeVoid && VoidType.Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(VoidType);
 
 			return results;
 		}
@@ -440,15 +424,6 @@ namespace NETPath.Projects
 		public bool HasGenerationFramework(ProjectGenerationFramework Framework)
 		{
 			return ServerGenerationTargets.Any(t => t.Framework == Framework) || ClientGenerationTargets.Any(t => t.Framework == Framework);
-		}
-
-		public bool HasDependencyProject(Guid ID)
-		{
-			foreach (DependencyProject dp in DependencyProjects)
-				if (dp.ProjectID == ID) return true;
-				else if (dp.Project.HasDependencyProject(ID)) return true;
-
-			return false;
 		}
 
 		public IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
@@ -547,51 +522,6 @@ namespace NETPath.Projects
 		{
 			return Name;
 		}
-	}
-
-	public class DependencyProject : DependencyObject
-	{
-		public string Path { get { return (string)GetValue(PathProperty); } set { SetValue(PathProperty, value); } }
-		public static readonly DependencyProperty PathProperty = DependencyProperty.Register("Path", typeof(string), typeof(DependencyProject), new PropertyMetadata(""));
-
-		public Guid ProjectID { get; set; }
-
-		[IgnoreDataMember]
-		public Project Project { get { return (Project)GetValue(ProjectProperty); } set { SetValue(ProjectProperty, value); } }
-		public static readonly DependencyProperty ProjectProperty = DependencyProperty.Register("Project", typeof(Project), typeof(DependencyProject), new PropertyMetadata(null, ProjectChangedCallback));
-
-		private static void ProjectChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
-		{
-			var t = o as DependencyProject;
-			if (t == null) return;
-			var p = e.NewValue as Project;
-			if (p == null) return;
-
-			t.fsw.Path = System.IO.Path.GetDirectoryName(p.AbsolutePath);
-			t.fsw.Filter = System.IO.Path.GetFileName(p.AbsolutePath);
-			t.ProjectID = p.ID;
-		}
-
-		[IgnoreDataMember] private readonly FileSystemWatcher fsw;
-		[IgnoreDataMember] public bool EnableAutoReload { get { return fsw.EnableRaisingEvents; } set { fsw.EnableRaisingEvents = value; } }
-		[IgnoreDataMember] public string SolutionPath { get; set; }
-
-		public DependencyProject()
-		{
-			fsw = new FileSystemWatcher();
-			fsw.Changed += fsw_Changed;
-			EnableAutoReload = false;
-		}
-
-		private void fsw_Changed(object sender, FileSystemEventArgs e)
-		{
-			try
-			{
-				if (e.ChangeType != WatcherChangeTypes.Changed) return;
-				if (Dispatcher.CheckAccess()) Project = Project.Open(SolutionPath, Path);
-				else Dispatcher.Invoke(() => { Project = Project.Open(SolutionPath, Path); }, DispatcherPriority.Normal);
-			}
-			catch (Exception) { }}
 	}
 
 	public enum ProjectGenerationFramework

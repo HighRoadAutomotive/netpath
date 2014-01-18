@@ -105,9 +105,6 @@
       <HintPath>C:\Program Files (x86)\Actipro Software\WPF-Controls\v12.2.0571\Assemblies\ActiproSoftware.Shared.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Licensing">
-      <HintPath>..\..\..\Licensing\Build\Licensing.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack">
       <HintPath>..\..\..\..\Downloads\Controls\Windows API Code Pack\binaries\Microsoft.WindowsAPICodePack.dll</HintPath>
     </Reference>
@@ -238,9 +235,6 @@
     </Compile>
     <Compile Include="Interface\Dialogs\NewProject.xaml.cs">
       <DependentUpon>NewProject.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Dialogs\NewSolution.xaml.cs">
-      <DependentUpon>NewSolution.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interface\Dialogs\ReportError.xaml.cs">
       <DependentUpon>ReportError.xaml</DependentUpon>
@@ -421,10 +415,6 @@
     <Page Include="Interface\Dialogs\NewProject.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Dialogs\NewSolution.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Interface\Dialogs\ReportError.xaml">
       <SubType>Designer</SubType>

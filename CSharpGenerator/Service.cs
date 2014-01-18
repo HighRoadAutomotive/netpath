@@ -652,7 +652,6 @@ namespace NETPath.Generators.CS
 			var code = new StringBuilder();
 
 			var dcmtype = o.ReturnType as Data;
-			if (dcmtype == null) dcmtype = Generator.ReferenceRetrieve(o.Owner.Parent.Owner, o.Owner.Parent.Owner.Namespace, o.ReturnType.ID) as Data;
 			if (dcmtype == null) return "";
 
 			if (o.GenerateGetFunction)
@@ -761,7 +760,6 @@ namespace NETPath.Generators.CS
 			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 			var dcmtype = o.ReturnType as Data;
-			if (dcmtype == null) dcmtype = Generator.ReferenceRetrieve(o.Owner.Parent.Owner, o.Owner.Parent.Owner.Namespace, o.ReturnType.ID) as Data;
 			if (dcmtype == null) return "";
 			bool uap = o.UseAwaitPattern && CanGenerateAsync(o.Owner, IsServer);
 
@@ -1177,7 +1175,6 @@ namespace NETPath.Generators.CS
 			var code = new StringBuilder();
 
 			var dcmtype = o.ReturnType as Data;
-			if (dcmtype == null) dcmtype = Generator.ReferenceRetrieve(o.Owner.Parent.Owner, o.Owner.Parent.Owner.Namespace, o.ReturnType.ID) as Data;
 			if (dcmtype == null) return "";
 
 			if (o.GenerateNewDeleteFunction)
@@ -1275,7 +1272,6 @@ namespace NETPath.Generators.CS
 			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 			var dcmtype = o.ReturnType as Data;
-			if (dcmtype == null) dcmtype = Generator.ReferenceRetrieve(o.Owner.Parent.Owner, o.Owner.Parent.Owner.Namespace, o.ReturnType.ID) as Data;
 			if (dcmtype == null) return "";
 			bool uap = o.UseAwaitPattern && CanGenerateAsync(o.Owner, IsServer);
 

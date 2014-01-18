@@ -43,53 +43,6 @@ namespace NETPath.Interface.Project
 				ns.UpdateURI();
 		}
 
-		private void DependencyAdd_Click(object sender, RoutedEventArgs e)
-		{
-			string openpath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			if (!string.IsNullOrEmpty(Settings.AbsolutePath)) openpath = System.IO.Path.GetDirectoryName(Settings.AbsolutePath);
-
-			//Select the project
-			var ofd = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog("Select Project")
-				          {
-							  DefaultExtension = ".npp",
-					          AllowNonFileSystemItems = false,
-					          EnsurePathExists = true,
-					          IsFolderPicker = false,
-					          InitialDirectory = openpath,
-					          Multiselect = false,
-					          ShowPlacesList = true
-				          };
-			if (ofd.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel) return;
-
-			//Load the project and add it to the dependency projects list.
-			Projects.Project op = Projects.Project.Open(Globals.SolutionPath, Globals.GetRelativePath(Globals.SolutionPath, ofd.FileName));
-			var ndp = new DependencyProject {Path = Globals.GetRelativePath(Globals.SolutionPath, ofd.FileName), Project = op};
-
-			if (Settings.ID == ndp.ProjectID)
-			{
-				DialogService.ShowMessageDialog(Settings, "Invalid Project Selected.", "You cannot add a project as a dependency of itself.");
-				return;
-			}
-
-			if (Settings.HasDependencyProject(ndp.ProjectID))
-			{
-				DialogService.ShowMessageDialog(Settings, "Invalid Project Selected.", "The project you selected cannot be added. It is already available as a dependency project.");
-				return;
-			}
-
-			Settings.DependencyProjects.Add(ndp);
-		}
-
-		private void DeleteSelectedReference_Click(object sender, RoutedEventArgs w)
-		{
-			DependencyProject to = null;
-			var clickedListBoxItem = Globals.GetVisualParent<ListBoxItem>(sender);
-			if (clickedListBoxItem != null) { to = clickedListBoxItem.Content as DependencyProject; }
-
-			if (to == null) return;
-			DialogService.ShowMessageDialog(Settings, "Delete Project Reference", "Are you sure you want to delete the '" + to.Project.Name + "' project reference?", new DialogAction("Yes", () => Settings.DependencyProjects.Remove(to), true), new DialogAction("No", false, true));
-		}
-
 		private void UsingNamespace_KeyUp(object sender, KeyEventArgs e)
 		{
 			if (e.Key == Key.Enter)
@@ -146,15 +99,15 @@ namespace NETPath.Interface.Project
 			if (!string.IsNullOrEmpty(Settings.AbsolutePath)) openpath = System.IO.Path.GetDirectoryName(Settings.AbsolutePath);
 
 			var ofd = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog("Select an Output Path")
-				          {
-					          AllowNonFileSystemItems = false,
-					          EnsurePathExists = true,
+						  {
+							  AllowNonFileSystemItems = false,
+							  EnsurePathExists = true,
 							  IsFolderPicker = false,
 							  DefaultExtension = "cs",
 							  InitialDirectory = openpath,
-					          Multiselect = false,
-					          ShowPlacesList = true
-				          };
+							  Multiselect = false,
+							  ShowPlacesList = true
+						  };
 			if (ofd.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Cancel) return;
 
 			OutputPath.Text = Globals.GetRelativePath(Settings.AbsolutePath, ofd.FileName);
@@ -251,8 +204,8 @@ namespace NETPath.Interface.Project
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			var lt = (bool) value;
-			var dt = (DataTypeMode) parameter;
+			var lt = (bool)value;
+			var dt = (DataTypeMode)parameter;
 			if (lt && dt == DataTypeMode.Enum) return DataTypeMode.Enum;
 			if (lt && dt == DataTypeMode.Class) return DataTypeMode.Class;
 			if (lt && dt == DataTypeMode.Struct) return DataTypeMode.Struct;

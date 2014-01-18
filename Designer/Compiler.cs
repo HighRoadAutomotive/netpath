@@ -100,12 +100,10 @@ namespace NETPath
 		{
 			//Get all services with DRE in the solution.
 			var sl = new List<Service>();
-			foreach (var p in Globals.Projects)
-				sl.AddRange(DataRevisionServiceScan(p.Namespace));
+			sl.AddRange(DataRevisionServiceScan(Globals.Project.Namespace));
 
 			//Clean all DataRevisionServiceNames lists
-			foreach (var p in Globals.Projects)
-				ResetDRSNames(p.Namespace);
+			ResetDRSNames(Globals.Project.Namespace);
 
 			//Rebuild DRE service name lists
 			foreach (var sv in sl)
@@ -143,13 +141,7 @@ namespace NETPath
 			var d = Namespace.Data.FirstOrDefault(a => a.ID == TypeID);
 			if (d != null) return d;
 
-			foreach (Namespace n in Namespace.Children)
-			{
-				var t = DataReivsionReferenceRetrieve(Project, n, TypeID);
-				if (t != null) return t;
-			}
-
-			return !Equals(Namespace, Project.Namespace) ? null : Project.DependencyProjects.Select(dp => DataReivsionReferenceRetrieve(dp.Project, dp.Project.Namespace, TypeID)).FirstOrDefault(t => t != null);
+			return Namespace.Children.Select(n => DataReivsionReferenceRetrieve(Project, n, TypeID)).FirstOrDefault(t => t != null);
 		}
 
 		public static bool CanGenerateAsync(Service o, bool IsServer)

@@ -13,7 +13,6 @@ namespace NETPath.Compiler
 {
 	public static class Program
 	{
-		public static string SolutionPath { get; private set; }
 		public static string ProjectPath { get; private set; }
 		public static Project OpenProject { get; set; }
 		public static StreamWriter LogFile { get; private set; }
@@ -45,7 +44,7 @@ namespace NETPath.Compiler
 
 			ErrorStream = Console.OpenStandardError();
 
-			OpenProject = Project.Open(Path.Combine(Directory.GetCurrentDirectory(), SolutionPath), ProjectPath);
+			OpenProject = Project.Open(ProjectPath);
 
 			IGenerator NET = Loader.LoadModule(GenerationModule.NET, GenerationLanguage.CSharp);
 			NET.Initialize(OutputHandler, AddMessage);
@@ -104,9 +103,8 @@ namespace NETPath.Compiler
 			Quiet = false;
 			PrintHeader();
 
-			Console.WriteLine("Usage: npsc <solution file> <project file> [options]");
+			Console.WriteLine("Usage: npsc <project file> [options]");
 			Console.WriteLine();
-			Console.WriteLine("<solution file>\tThe path to the solution file relative to the current working directory.");
 			Console.WriteLine("<project file>\tThe path to the project file relative to solution file.");
 			Console.WriteLine("-log\tSave the output to a log file. Usage: -log \"<directory>\".");
 			Console.WriteLine("-stderr\tEnables stderr output.");
@@ -134,16 +132,9 @@ namespace NETPath.Compiler
 
 		public static void ParseOptions(List<string> args)
 		{
-			SolutionPath = args[0];
-			ProjectPath = args[1];
+			ProjectPath = args[0];
 			Messages = new List<CompileMessage>();
 			HighestSeverity = CompileMessageSeverity.INFO;
-
-			if (!File.Exists(SolutionPath))
-			{
-				Console.WriteLine("Unable to locate solution file: " + SolutionPath);
-				Environment.Exit(1);
-			}
 
 			if (!File.Exists(ProjectPath))
 			{

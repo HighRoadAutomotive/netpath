@@ -18,10 +18,10 @@ namespace NETPath.Options
 		public Guid ID { get { return id; } }
 		public string User { get; set; }
 		public string ComputerName { get; set; }
-		public Prospective.Server.Licensing.UsageData PriorUsage { get; set; }
-		[IgnoreDataMember] public string SKU { get; set; }
-		public List<RecentSolution> RecentProjects { get; set; }
-		public List<RecentSolution> ImportantProjects { get; set; }
+		[IgnoreDataMember]
+		public string SKU { get; set; }
+		public List<RecentProject> RecentProjects { get; set; }
+		public List<RecentProject> ImportantProjects { get; set; }
 
 		public string DefaultProjectFolder { get { return (string)GetValue(DefaultProjectFolderProperty); } set { SetValue(DefaultProjectFolderProperty, value); } }
 		public static readonly DependencyProperty DefaultProjectFolderProperty = DependencyProperty.Register("DefaultProjectFolder", typeof(string), typeof(UserProfile));
@@ -67,8 +67,8 @@ namespace NETPath.Options
 			id = Guid.NewGuid();
 			this.User = User;
 			ComputerName = Environment.MachineName;
-			RecentProjects = new List<RecentSolution>();
-			ImportantProjects = new List<RecentSolution>();
+			RecentProjects = new List<RecentProject>();
+			ImportantProjects = new List<RecentProject>();
 			DefaultProjectFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 			AutomaticBackupsEnabled = true;
 			AutomaticBackupsInterval = new TimeSpan(0, 5, 0);
@@ -85,7 +85,7 @@ namespace NETPath.Options
 				throw new FileNotFoundException("Unable to locate file '" + Path + "'");
 
 			var kt = new List<Type>(new Type[] { 
-				typeof(UserProfile), typeof(RecentSolution)
+				typeof(UserProfile), typeof(RecentProject)
 			});
 
 			var dcs = new DataContractSerializer(typeof(UserProfile), new DataContractSerializerSettings { KnownTypes = kt, MaxItemsInObjectGraph = Int32.MaxValue, IgnoreExtensionDataObject = true, SerializeReadOnlyTypes = true, PreserveObjectReferences = true });
@@ -108,7 +108,7 @@ namespace NETPath.Options
 			}
 
 			var kt = new List<Type>(new Type[] { 
-				typeof(UserProfile), typeof(RecentSolution)
+				typeof(UserProfile), typeof(RecentProject)
 			});
 
 			var dcs = new DataContractSerializer(typeof(UserProfile), new DataContractSerializerSettings { KnownTypes = kt, MaxItemsInObjectGraph = Int32.MaxValue, IgnoreExtensionDataObject = true, SerializeReadOnlyTypes = true, PreserveObjectReferences = true });
@@ -121,20 +121,20 @@ namespace NETPath.Options
 	}
 
 	[System.Reflection.Obfuscation(Exclude = true, ApplyToMembers = true, StripAfterObfuscation = true)]
-	public class RecentSolution : DependencyObject
+	public class RecentProject : DependencyObject
 	{
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
-		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(RecentSolution));
+		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(RecentProject));
 
 		public string Path { get { return (string)GetValue(PathProperty); } set { SetValue(PathProperty, value); } }
-		public static readonly DependencyProperty PathProperty = DependencyProperty.Register("Path", typeof(string), typeof(RecentSolution));
+		public static readonly DependencyProperty PathProperty = DependencyProperty.Register("Path", typeof(string), typeof(RecentProject));
 
 		public DateTime LastAccessed { get { return (DateTime)GetValue(LastAccessedProperty); } set { SetValue(LastAccessedProperty, value); } }
-		public static readonly DependencyProperty LastAccessedProperty = DependencyProperty.Register("LastAccessed", typeof(DateTime), typeof(RecentSolution));
+		public static readonly DependencyProperty LastAccessedProperty = DependencyProperty.Register("LastAccessed", typeof(DateTime), typeof(RecentProject));
 
-		public RecentSolution() { }
+		public RecentProject() { }
 
-		public RecentSolution(string Name, string Path)
+		public RecentProject(string Name, string Path)
 		{
 			this.Name = Name;
 			this.Path = Path;

@@ -91,12 +91,6 @@ namespace NETPath.Generators.CS
 			if ((Data.ServerOutputFile == Data.ClientOutputFile))
 				AddMessage(new CompileMessage("GS0007", "The '" + Data.Name + "' project Client and Server Assembly Names are the same. You must specify a different Server or Client Assembly Name.", CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Data.ID));
 
-			var refs = new List<DataType>(ReferenceScan(Data.Namespace));
-			if (refs.Count > 0)
-				foreach (DataType dt in refs)
-					if (ReferenceRetrieve(Data, Data.Namespace, dt.ID) == null)
-						AddMessage(new CompileMessage("GS0008", string.Format("Unable to locate type '{0}'. Please ensure that you have added the project containing this type to the Dependency Projects list and that it has not been renamed or removed from the project.", dt.Name), CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Data.ID));
-
 			NamespaceGenerator.VerifyCode(Data.Namespace, AddMessage);
 		}
 
@@ -175,27 +169,6 @@ namespace NETPath.Generators.CS
 			//Disable XML documentation warnings 
 			if (!Data.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
 
-			//Scan, verify, and generate references
-			var t = new List<DataType>(ReferenceScan(Data.Namespace));
-			var refs = new List<DataType>();
-			foreach (DataType d in t.Where(a => a.TypeMode == DataTypeMode.Class || a.TypeMode == DataTypeMode.Struct))
-				refs.AddRange(ReferenceChildScan(ReferenceRetrieve(Data, Data.Namespace, d.ID) as Data));
-			refs.AddRange(t);
-			refs = refs.GroupBy(a => a.ID).Select(a => a.OrderByDescending(b => b.ID).First()).ToList();
-			if (refs.Count > 0 && GenerateReferences)
-			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tDependency Types");
-				code.AppendLine("\t**************************************************************************/");
-				code.AppendLine();
-				foreach (DataType e in refs.Where(a => a.TypeMode == DataTypeMode.Enum))
-					EnumGenerator.VerifyCode(ReferenceRetrieve(Data, Data.Namespace, e.ID) as Projects.Enum, AddMessage);
-				foreach (DataType d in refs.Where(a => a.TypeMode == DataTypeMode.Class || a.TypeMode == DataTypeMode.Struct))
-					DataGenerator.VerifyCode(ReferenceRetrieve(Data, Data.Namespace, d.ID) as Data, AddMessage);
-				foreach (DataType dt in refs)
-					code.AppendLine(ReferenceGenerate(dt, Data, Server, AddMessage));
-			}
-
 			//Generate project
 			if (Server)
 			{
@@ -233,119 +206,9 @@ namespace NETPath.Generators.CS
 			NewMessage(Message.ProjectID, Message);
 		}
 
-		private static IEnumerable<DataType> ReferenceScan(Namespace Scan)
-		{
-			var refs = new List<DataType>();
-
-			foreach (DataElement de in Scan.Data.SelectMany(d => d.Elements))
-			{
-				if (de.DataType.IsTypeReference) refs.Add(de.DataType);
-			}
-
-			foreach (Service s in Scan.Services)
-			{
-				foreach (Method m in s.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
-				{
-					if (m.ReturnType.IsTypeReference) refs.Add(m.ReturnType);
-					refs.AddRange(from mp in m.Parameters where mp.Type.IsTypeReference select mp.Type);
-				}
-				refs.AddRange(from Property p in s.ServiceOperations.Where(a => a.GetType() == typeof(Property)) where p.ReturnType.IsTypeReference select p.ReturnType);
-				foreach (Method m in s.CallbackOperations.Where(a => a.GetType() == typeof(Method)))
-				{
-					if (m.ReturnType.IsTypeReference) refs.Add(m.ReturnType);
-					refs.AddRange(from mp in m.Parameters where mp.Type.IsTypeReference select mp.Type);
-				}
-				refs.AddRange(from Property p in s.CallbackOperations.Where(a => a.GetType() == typeof(Property)) where p.ReturnType.IsTypeReference select p.ReturnType);
-			}
-
-			foreach (Namespace n in Scan.Children)
-				refs.AddRange(ReferenceScan(n));
-
-			return refs;
-		}
-
-		private static IEnumerable<DataType> ReferenceChildScan(Data t)
-		{
-			var refs = new List<DataType>();
-			refs.AddRange(t.Elements.Where(a => (a.DataType.TypeMode == DataTypeMode.Class || a.DataType.TypeMode == DataTypeMode.Struct || a.DataType.TypeMode == DataTypeMode.Enum) && !a.DataType.IsExternalType).Select(de => de.DataType));
-			foreach (Data d in t.Elements.Where(a => (a.DataType.TypeMode == DataTypeMode.Class || a.DataType.TypeMode == DataTypeMode.Struct) && !a.DataType.IsExternalType).Where(a => !refs.Contains(a.DataType)).Select(b => b.DataType))
-				refs.AddRange(ReferenceChildScan(d));
-			return refs;
-		}
-
-		internal static DataType ReferenceRetrieve(Project Project, Namespace Namespace, Guid TypeID)
-		{
-			var d = Namespace.Data.FirstOrDefault(a => a.ID == TypeID);
-			if (d != null) return d;
-			var e = Namespace.Enums.FirstOrDefault(a => a.ID == TypeID);
-			if (e != null) return e;
-
-			foreach (Namespace n in Namespace.Children)
-			{
-				var t = ReferenceRetrieve(Project, n, TypeID);
-				if (t != null) return t;
-			}
-
-			return !Equals(Namespace, Project.Namespace) ? null : Project.DependencyProjects.Select(dp => ReferenceRetrieve(dp.Project, dp.Project.Namespace, TypeID)).FirstOrDefault(t => t != null);
-		}
-
-		private static string ReferenceGenerate(DataType Reference, Project RefProject, bool Server, Action<CompileMessage> AddMessage)
-		{
-			//Get the referenced type
-			DataType typeref = ReferenceRetrieve(RefProject, RefProject.Namespace, Reference.ID);
-			if (typeref == null) return "";
-			Type rt = typeref.GetType();
-
-			//Generate a namespace wrapper for the type then generate the type inside the namespace
-			var code = new StringBuilder();
-			code.AppendFormat("namespace {0}{1}", typeref.Parent.FullName, Environment.NewLine);
-			code.AppendLine("{");
-			if (Server && rt == typeof(Data))
-			{
-				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30) code.AppendLine(DataGenerator.GenerateServerCode30(typeref as Data));
-				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client) code.AppendLine(DataGenerator.GenerateServerCode35(typeref as Data));
-				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40Client) code.AppendLine(DataGenerator.GenerateServerCode40(typeref as Data));
-				code.AppendLine(DataGenerator.GenerateServerCode45(typeref as Data));
-			}
-			else if (!Server && rt == typeof(Data))
-			{
-				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30) code.AppendLine(DataGenerator.GenerateProxyCode30(typeref as Data));
-				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client) code.AppendLine(DataGenerator.GenerateProxyCode35(typeref as Data));
-				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40Client) code.AppendLine(DataGenerator.GenerateProxyCode40(typeref as Data));
-				code.AppendLine(DataGenerator.GenerateProxyCode45(typeref as Data));
-				code.AppendLine();
-				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30) code.AppendLine(DataGenerator.GenerateXAMLCode30(typeref as Data));
-				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client) code.AppendLine(DataGenerator.GenerateXAMLCode35(typeref as Data));
-				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40Client) code.AppendLine(DataGenerator.GenerateXAMLCode40(typeref as Data));
-				code.AppendLine(DataGenerator.GenerateXAMLCode45(typeref as Data));
-			}
-			else if (Server && rt == typeof(Projects.Enum))
-			{
-				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30) code.AppendLine(EnumGenerator.GenerateServerCode30(typeref as Projects.Enum));
-				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client) code.AppendLine(EnumGenerator.GenerateServerCode35(typeref as Projects.Enum));
-				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40Client) code.AppendLine(EnumGenerator.GenerateServerCode40(typeref as Projects.Enum));
-				code.AppendLine(EnumGenerator.GenerateServerCode45(typeref as Projects.Enum));
-			}
-			else if (!Server && rt == typeof(Projects.Enum))
-			{
-				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET30) code.AppendLine(EnumGenerator.GenerateProxyCode30(typeref as Projects.Enum));
-				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET35Client) code.AppendLine(EnumGenerator.GenerateProxyCode35(typeref as Projects.Enum));
-				//if (Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40 || Globals.CurrentGenerationTarget == ProjectGenerationFramework.NET40Client) code.AppendLine(EnumGenerator.GenerateProxyCode40(typeref as Projects.Enum));
-				code.AppendLine(EnumGenerator.GenerateProxyCode45(typeref as Projects.Enum));
-			}
-			code.AppendLine("}");
-
-			return code.ToString();
-		}
-
 		private static IEnumerable<ProjectUsingNamespace> GetUsingNamespaces(Project CurProject)
 		{
-			var puns = new List<ProjectUsingNamespace>(CurProject.UsingNamespaces);
-
-			foreach (DependencyProject dp in CurProject.DependencyProjects)
-				puns.AddRange(GetUsingNamespaces(dp.Project).Where(a => puns.All(b => a.Namespace != b.Namespace)));
-
-			return puns;
+			return new List<ProjectUsingNamespace>(CurProject.UsingNamespaces);
 		}
 	}
 

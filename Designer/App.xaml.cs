@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -11,8 +12,8 @@ using System.Windows;
 using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using NETPath.Generators.Interfaces;
 using Prospective.Controls.Dialogs;
-using Prospective.Server.Licensing;
 
 namespace NETPath
 {
@@ -28,13 +29,6 @@ namespace NETPath
 			//Check to see if the User Profile path exists and make a folder if it does not.
 			Globals.UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Prospective Software\\NETPath\\";
 			if (!Directory.Exists(Globals.UserProfilePath)) Directory.CreateDirectory(Globals.UserProfilePath);
-
-			//Create the UpdateStore directory if it does not exist and clean it out if it does.
-			Globals.UpdateStore = Path.Combine(Globals.UserProfilePath, "UpdateStore");
-			if (!Directory.Exists(Globals.UpdateStore)) Directory.CreateDirectory(Globals.UpdateStore);
-			var ufl = new List<string>(Directory.EnumerateFiles(Globals.UpdateStore));
-			foreach (string uf in ufl)
-				File.Delete(uf);
 
 			//Load the user profile if it exists or make a new one if it doesn't.
 			Globals.UserProfilePath = Path.Combine(Globals.UserProfilePath, "profile.dat");
@@ -63,27 +57,15 @@ namespace NETPath
 				}
 			}
 
-			InitializeUsageData();
+			//Initialize the compilers
+			Globals.Compilers = new ConcurrentDictionary<Guid, Compiler>();
+			Globals.NETGenerator = Loader.LoadModule(GenerationModule.NET, GenerationLanguage.CSharp);
+			Globals.NETGenerator.Initialize(Globals.GeneratorOutput, Globals.GeneratorMessage);
 		}
 
 		private void Application_Exit(object sender, ExitEventArgs e)
 		{
-			Globals.Usage.EndTime = DateTime.UtcNow;
 			Options.UserProfile.Save(Globals.UserProfilePath, Globals.UserProfile);
-		}
-
-		private void InitializeUsageData()
-		{
-			Globals.Usage = new UsageData();
-			Globals.Usage.SKU = Globals.UserProfile.SKU;
-			Globals.Usage.Version = Globals.ApplicationVersion;
-			Globals.Usage.Serial = Globals.UserProfile.Serial;
-			Globals.Usage.CLRVersion = Environment.Version;
-			Globals.Usage.OSVersion = Environment.OSVersion.ToString();
-			Globals.Usage.Processors = Environment.ProcessorCount;
-			Globals.Usage.UserID = System.Utilities.Cryptography.Hash.Compute512Hex(Environment.MachineName + Environment.UserDomainName + "\\" + Environment.UserName);
-			Globals.Usage.StartTime = DateTime.UtcNow;
-			Globals.UserProfile.PriorUsage = Globals.Usage;
 		}
 
 		private void ResetUserProfile()
@@ -125,12 +107,8 @@ namespace NETPath
 
 			//Get project files
 			var pfd = new Dictionary<string, byte[]>();
-			if (Globals.Solution != null)
-			{
-				pfd.Add(Path.GetFileName(Globals.Solution.AbsolutePath) ?? Globals.Solution.Name + ".nps", Projects.Solution.Dump(Globals.Solution));
-				foreach (Projects.Project p in Globals.Projects)
-					pfd.Add(Path.GetFileName(p.AbsolutePath) ?? p.Name + ".npp", Projects.Project.Dump(p));
-			}
+			if (Globals.Project != null)
+				pfd.Add(Path.GetFileName(Globals.Project.AbsolutePath) ?? Globals.Project.Name + ".npp", Projects.Project.Dump(Globals.Project));
 
 			var nr = new Interface.Dialogs.ReportError(e.Exception, ms.ToArray(), pfd);
 
