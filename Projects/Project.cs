@@ -545,6 +545,9 @@ namespace NETPath.Projects
 		public bool IsEnabled { get { return (bool)GetValue(IsEnabledProperty); } set { SetValue(IsEnabledProperty, value); } }
 		public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register("IsEnabled", typeof(bool), typeof(ProjectGenerationTarget), new UIPropertyMetadata(true));
 
+		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
+		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(ProjectGenerationTarget), new PropertyMetadata(""));
+
 		public string Path { get { return (string)GetValue(PathProperty); } set { SetValue(PathProperty, value); } }
 		public static readonly DependencyProperty PathProperty = DependencyProperty.Register("Path", typeof(string), typeof(ProjectGenerationTarget));
 
@@ -554,10 +557,13 @@ namespace NETPath.Projects
 		public bool IsServerPath { get { return (bool)GetValue(IsServerPathProperty); } set { SetValue(IsServerPathProperty, value); } }
 		public static readonly DependencyProperty IsServerPathProperty = DependencyProperty.Register("IsServerPath", typeof(bool), typeof(ProjectGenerationTarget), new PropertyMetadata(true));
 
-		public bool GenerateReferences { get { return (bool)GetValue(GenerateReferencesProperty); } set { SetValue(GenerateReferencesProperty, value); } }
-		public static readonly DependencyProperty GenerateReferencesProperty = DependencyProperty.Register("GenerateReferences", typeof(bool), typeof(ProjectGenerationTarget), new PropertyMetadata(true));
+		public ObservableCollection<DataType> TargetTypes { get { return (ObservableCollection<DataType>)GetValue(TargetTypesProperty); } set { SetValue(TargetTypesProperty, value); } }
+		public static readonly DependencyProperty TargetTypesProperty = DependencyProperty.Register("TargetTypes", typeof(ObservableCollection<DataType>), typeof(ProjectGenerationTarget));
 
-		public ProjectGenerationTarget() { }
+		public ProjectGenerationTarget()
+		{
+			TargetTypes = new ObservableCollection<DataType>();
+		}
 
 		public ProjectGenerationTarget(Guid ProjectID, string Path, bool IsServerPath)
 		{
@@ -566,6 +572,7 @@ namespace NETPath.Projects
 			this.Path = Path;
 			Framework = ProjectGenerationFramework.NET45;
 			this.IsServerPath = IsServerPath;
+			TargetTypes = new ObservableCollection<DataType>();
 		}
 	}
 }

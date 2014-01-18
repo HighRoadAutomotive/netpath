@@ -18,7 +18,7 @@ namespace NETPath.Projects
 				throw new FileNotFoundException("Unable to locate file '" + Path + "'");
 
 			var kt = new List<Type>(new Type[] { 
-				typeof(Solution), typeof(Project), typeof(ProjectGenerationTarget), typeof(DataType), typeof(Namespace), typeof(Documentation),
+				typeof(Project), typeof(ProjectGenerationTarget), typeof(DataType), typeof(Namespace), typeof(Documentation),
 				typeof(BindingSecurity), typeof(BindingSecurityBasicHTTP), typeof(BindingSecurityBasicHTTPS), typeof(BindingSecurityMSMQ), typeof(BindingSecurityMSMQIntegration), typeof(BindingSecurityNamedPipe), typeof(BindingSecurityPeerTCP), typeof(BindingSecurityTCP), typeof(BindingSecurityWebHTTP), typeof(BindingSecurityWSDualHTTP), typeof(BindingSecurityWSFederationHTTP), typeof(BindingSecurityWSHTTP),
 				typeof(ServiceBinding), typeof(ServiceBindingBasicHTTP), typeof(ServiceBindingBasicHTTPS), typeof(ServiceBindingMSMQ), typeof(ServiceBindingMSMQIntegration), typeof(ServiceBindingNamedPipe), typeof(ServiceBindingNetHTTP), typeof(ServiceBindingNetHTTPS), typeof(ServiceBindingPeerTCP), typeof(ServiceBindingTCP), typeof(ServiceBindingUDP), typeof(ServiceBindingWebHTTP), typeof(ServiceBindingWS2007FederationHTTP), typeof(ServiceBindingWS2007HTTP), typeof(ServiceBindingWSDualHTTP), typeof(ServiceBindingWSFederationHTTP), typeof(ServiceBindingWSHTTP),
 				typeof(Host), typeof(HostBehavior), typeof(HostCredentials), typeof(HostDebugBehavior), typeof(HostEndpoint), typeof(HostEndpointAddressHeader), typeof(HostMetadataBehavior), typeof(HostThrottlingBehavior), typeof(HostWebHTTPBehavior),
@@ -48,7 +48,7 @@ namespace NETPath.Projects
 			}
 
 			var kt = new List<Type>(new Type[] { 
-				typeof(Solution), typeof(Project), typeof(ProjectGenerationTarget), typeof(DataType), typeof(Namespace), typeof(Documentation),
+				typeof(Project), typeof(ProjectGenerationTarget), typeof(DataType), typeof(Namespace), typeof(Documentation),
 				typeof(BindingSecurity), typeof(BindingSecurityBasicHTTP), typeof(BindingSecurityBasicHTTPS), typeof(BindingSecurityMSMQ), typeof(BindingSecurityMSMQIntegration), typeof(BindingSecurityNamedPipe), typeof(BindingSecurityPeerTCP), typeof(BindingSecurityTCP), typeof(BindingSecurityWebHTTP), typeof(BindingSecurityWSDualHTTP), typeof(BindingSecurityWSFederationHTTP), typeof(BindingSecurityWSHTTP),
 				typeof(ServiceBinding), typeof(ServiceBindingBasicHTTP), typeof(ServiceBindingBasicHTTPS), typeof(ServiceBindingMSMQ), typeof(ServiceBindingMSMQIntegration), typeof(ServiceBindingNamedPipe), typeof(ServiceBindingNetHTTP), typeof(ServiceBindingNetHTTPS), typeof(ServiceBindingPeerTCP), typeof(ServiceBindingTCP), typeof(ServiceBindingUDP), typeof(ServiceBindingWebHTTP), typeof(ServiceBindingWS2007FederationHTTP), typeof(ServiceBindingWS2007HTTP), typeof(ServiceBindingWSDualHTTP), typeof(ServiceBindingWSFederationHTTP), typeof(ServiceBindingWSHTTP),
 				typeof(Host), typeof(HostBehavior), typeof(HostCredentials), typeof(HostDebugBehavior), typeof(HostEndpoint), typeof(HostEndpointAddressHeader), typeof(HostMetadataBehavior), typeof(HostThrottlingBehavior), typeof(HostWebHTTPBehavior),
@@ -65,11 +65,11 @@ namespace NETPath.Projects
 			xw.Flush();
 			xw.Close();
 		}
-	
+
 		public static byte[] Dump<T>(T Data)
 		{
 			var kt = new List<Type>(new Type[] { 
-				typeof(Solution), typeof(Project), typeof(ProjectGenerationTarget), typeof(DataType), typeof(Namespace), typeof(Documentation),
+				typeof(Project), typeof(ProjectGenerationTarget), typeof(DataType), typeof(Namespace), typeof(Documentation),
 				typeof(BindingSecurity), typeof(BindingSecurityBasicHTTP), typeof(BindingSecurityBasicHTTPS), typeof(BindingSecurityMSMQ), typeof(BindingSecurityMSMQIntegration), typeof(BindingSecurityNamedPipe), typeof(BindingSecurityPeerTCP), typeof(BindingSecurityTCP), typeof(BindingSecurityWebHTTP), typeof(BindingSecurityWSDualHTTP), typeof(BindingSecurityWSFederationHTTP), typeof(BindingSecurityWSHTTP),
 				typeof(ServiceBinding), typeof(ServiceBindingBasicHTTP), typeof(ServiceBindingBasicHTTPS), typeof(ServiceBindingMSMQ), typeof(ServiceBindingMSMQIntegration), typeof(ServiceBindingNamedPipe), typeof(ServiceBindingNetHTTP), typeof(ServiceBindingNetHTTPS), typeof(ServiceBindingPeerTCP), typeof(ServiceBindingTCP), typeof(ServiceBindingUDP), typeof(ServiceBindingWebHTTP), typeof(ServiceBindingWS2007FederationHTTP), typeof(ServiceBindingWS2007HTTP), typeof(ServiceBindingWSDualHTTP), typeof(ServiceBindingWSFederationHTTP), typeof(ServiceBindingWSHTTP),
 				typeof(Host), typeof(HostBehavior), typeof(HostCredentials), typeof(HostDebugBehavior), typeof(HostEndpoint), typeof(HostEndpointAddressHeader), typeof(HostMetadataBehavior), typeof(HostThrottlingBehavior), typeof(HostWebHTTPBehavior),

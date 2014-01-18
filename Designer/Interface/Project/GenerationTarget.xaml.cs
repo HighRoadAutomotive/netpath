@@ -28,7 +28,6 @@ namespace NETPath.Interface.Project
 
 			InitializeComponent();
 
-			OptionsGrid.IsEnabled = Path.IsEnabled;
 			if (Path.IsEnabled) EnableImage.Source = new BitmapImage(new Uri("pack://application:,,,/NETPath;component/Icons/X16/ReferenceAdded.png"));
 			else EnableImage.Source = new BitmapImage(new Uri("pack://application:,,,/NETPath;component/Icons/X16/NotAvailable.png"));
 		}
@@ -36,7 +35,6 @@ namespace NETPath.Interface.Project
 		private void Enable_Click(object sender, RoutedEventArgs e)
 		{
 			Path.IsEnabled = !Path.IsEnabled;
-			OptionsGrid.IsEnabled = Path.IsEnabled;
 			if (Path.IsEnabled) EnableImage.Source = new BitmapImage(new Uri("pack://application:,,,/NETPath;component/Icons/X16/ReferenceAdded.png"));
 			else EnableImage.Source = new BitmapImage(new Uri("pack://application:,,,/NETPath;component/Icons/X16/NotAvailable.png"));
 		}

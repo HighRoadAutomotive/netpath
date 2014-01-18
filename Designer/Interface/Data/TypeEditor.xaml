@@ -5,62 +5,50 @@
 	xmlns:Projects="clr-namespace:NETPath.Projects;assembly=NETPath.Projects"
 	xmlns:Data="clr-namespace:NETPath.Interface.Data"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" d:DesignWidth="1000" IsKeyboardFocusWithinChanged="ContentControl_IsKeyboardFocusWithinChanged" >
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" d:DesignWidth="1640" >
 	<ContentControl.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/Defaults.xaml" />
-			</ResourceDictionary.MergedDictionaries>
-			<Data:ClassScopeConverter x:Key="ClassScopeConverter" />
-			<Data:ClassTypeConverter x:Key="ClassTypeConverter" />
-			<Data:StructTypeConverter x:Key="StructTypeConverter" />
-			<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
-		</ResourceDictionary>
-	</ContentControl.Resources>
-	<Grid x:Name="BG">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="34" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-		<ComboBox x:Name="Scope" Grid.Column="0" Margin="5" Width="120" SelectedIndex="{Binding Path=OpenType.Scope, Converter={StaticResource ClassScopeConverter}, FallbackValue='-1', TargetNullValue='-1'}" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" >
-			<ComboBoxItem IsSelected="True">Public</ComboBoxItem>
-			<ComboBoxItem>Internal</ComboBoxItem>
-		</ComboBox>
-		<CheckBox x:Name="Partial" IsChecked="{Binding Path=OpenType.Partial, FallbackValue=False}" Grid.Column="1" Content="Partial" Margin="5" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" />
-		<CheckBox x:Name="Abstract" IsChecked="{Binding Path=OpenType.Abstract, FallbackValue=False}" Grid.Column="2" Content="Abstract" Margin="5" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" Checked="Abstract_Checked" Unchecked="Abstract_Unchecked" />
-		<CheckBox x:Name="Sealed" IsChecked="{Binding Path=OpenType.Sealed, FallbackValue=False}" Grid.Column="3" Content="Sealed" Margin="5" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" Checked="Sealed_Checked" Unchecked="Sealed_Unchecked" />
-		<RadioButton x:Name="ClassType" IsChecked="{Binding Path=OpenType.TypeMode, Converter={StaticResource ClassTypeConverter}}" Grid.Column="4" Content="Class" Margin="5" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" Checked="ClassType_Checked" />
-		<RadioButton x:Name="StructType" IsChecked="{Binding Path=OpenType.TypeMode, Converter={StaticResource StructTypeConverter}}" Grid.Column="5" Content="Struct" Margin="5" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" Checked="StructType_Checked" />
-		<pc:TextBox Text="{Binding Path=OpenType.Name, FallbackValue='', UpdateSourceTrigger=PropertyChanged}" Grid.Column="6" LabelText="Name" Margin="5" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" />
-		<Grid x:Name="InheritedTypesGrid" Grid.Row="1" Grid.ColumnSpan="7" Visibility="Collapsed" >
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="150" />
-			</Grid.ColumnDefinitions>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-			</Grid.RowDefinitions>
-			<Data:TypeSelector x:Name="SelectInheritedType" LabelText="Select Inherited Type" Grid.Column="0" Margin="5" IsInheriting="True" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" />
-			<Button Content="Add Inherited Type" Grid.Column="1" Margin="5" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" Click="AddInheritedType_Click" />
-			<ListBox x:Name="InheritedTypes" Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding Path=OpenType.InheritedTypes}" Margin="5" Padding="0" Background="Transparent" BorderBrush="{StaticResource DefaultBorderColor}" Visibility="Collapsed" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled"> 
-				<ListBox.ItemsPanel>
-					<ItemsPanelTemplate>
-						<WrapPanel Orientation="Horizontal" IsItemsHost="True" />
-					</ItemsPanelTemplate>
-				</ListBox.ItemsPanel>
-				<ListBox.ItemTemplate>
-					<DataTemplate DataType="Projects:DataType">
+				<ResourceDictionary>
+
+					<Data:ClassScopeConverter x:Key="ClassScopeConverter" />
+					<Data:ClassTypeConverter x:Key="ClassTypeConverter" />
+					<Data:StructTypeConverter x:Key="StructTypeConverter" />
+					<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
+
+					<DataTemplate x:Key="KnownTypesTemplate" DataType="{x:Type Projects:DataType}">
+						<Border Name="BG" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="0">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="20" />
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="22" />
+								</Grid.RowDefinitions>
+								<TextBlock Name="DataTypeName" Text="{Binding Path=Name}" Grid.Column="0" Margin="3,0" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" />
+								<Button Name="DeleteSelectedInheritedType" Grid.Column="1" Margin="0" Click="DeleteSelectedKnownType_Click" Padding="0" Visibility="Hidden" Background="Transparent">
+									<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+								</Button>
+							</Grid>
+						</Border>
+						<DataTemplate.Triggers>
+							<DataTrigger Binding="{Binding Path=TypeMode}" Value="Class">
+								<Setter TargetName="DataTypeName" Property="FontWeight" Value="Bold" />
+							</DataTrigger>
+							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
+								<Setter TargetName="BG" Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
+								<Setter TargetName="DeleteSelectedInheritedType" Property="Visibility" Value="Visible" />
+							</DataTrigger>
+							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
+								<Setter TargetName="BG" Property="Background" Value="{StaticResource DefaultSelectionColor}" />
+								<Setter TargetName="DeleteSelectedInheritedType" Property="Visibility" Value="Visible" />
+							</DataTrigger>
+						</DataTemplate.Triggers>
+					</DataTemplate>
+
+					<DataTemplate x:Key="InheritedTypesTemplate" DataType="{x:Type Projects:DataType}">
 						<Border Name="BG" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="0">
 							<Grid>
 								<Grid.ColumnDefinitions>
@@ -90,59 +78,78 @@
 							</DataTrigger>
 						</DataTemplate.Triggers>
 					</DataTemplate>
-				</ListBox.ItemTemplate>
-			</ListBox>
-		</Grid>
-		<Grid x:Name="KnownTypesGrid" Grid.Row="2" Grid.ColumnSpan="7" Visibility="Collapsed" >
+
+				</ResourceDictionary>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</ContentControl.Resources>
+	<Grid x:Name="BG">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="Auto" />
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="34" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		<ComboBox x:Name="Scope" Grid.Column="0" Margin="5" Width="120" SelectedIndex="{Binding Path=OpenType.Scope, Converter={StaticResource ClassScopeConverter}, FallbackValue='-1', TargetNullValue='-1'}" >
+			<ComboBoxItem IsSelected="True">Public</ComboBoxItem>
+			<ComboBoxItem>Internal</ComboBoxItem>
+		</ComboBox>
+		<CheckBox x:Name="Partial" IsChecked="{Binding Path=OpenType.Partial, FallbackValue=False}" Grid.Column="1" Content="Partial" Margin="5" />
+		<CheckBox x:Name="Abstract" IsChecked="{Binding Path=OpenType.Abstract, FallbackValue=False}" Grid.Column="2" Content="Abstract" Margin="5" Checked="Abstract_Checked" Unchecked="Abstract_Unchecked" />
+		<CheckBox x:Name="Sealed" IsChecked="{Binding Path=OpenType.Sealed, FallbackValue=False}" Grid.Column="3" Content="Sealed" Margin="5" Checked="Sealed_Checked" Unchecked="Sealed_Unchecked" />
+		<RadioButton x:Name="ClassType" IsChecked="{Binding Path=OpenType.TypeMode, Converter={StaticResource ClassTypeConverter}}" Grid.Column="4" Content="Class" Margin="5" Checked="ClassType_Checked" />
+		<RadioButton x:Name="StructType" IsChecked="{Binding Path=OpenType.TypeMode, Converter={StaticResource StructTypeConverter}}" Grid.Column="5" Content="Struct" Margin="5" Checked="StructType_Checked" />
+		<pc:TextBox Text="{Binding Path=OpenType.Name, FallbackValue='', UpdateSourceTrigger=PropertyChanged}" Grid.Column="6" LabelText="Name" Margin="5" />
+		<ToggleButton x:Name="ShowTypes" Content="Show Related Types" Grid.Column="7" Margin="5" />
+		<Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="8" Visibility="{Binding ElementName=ShowTypes, Path=IsChecked, Converter={StaticResource BoolVisibilityConverter}}">
 			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="130" />
 				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="150" />
+				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-			</Grid.RowDefinitions>
-			<Data:TypeSelector x:Name="SelectKnownType" LabelText="Select Known Type" Grid.Column="0" Margin="5" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" />
-			<Button Content="Add Known Type" Grid.Column="1" Margin="5" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" Click="AddKnownType_Click" />
-			<ListBox x:Name="KnownTypes" Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding Path=OpenType.KnownTypes}" Margin="5" Padding="0" Background="Transparent" BorderBrush="{StaticResource DefaultBorderColor}" Visibility="Collapsed" IsEnabled="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}}}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
-				<ListBox.ItemsPanel>
-					<ItemsPanelTemplate>
-						<WrapPanel Orientation="Horizontal" IsItemsHost="True" />
-					</ItemsPanelTemplate>
-				</ListBox.ItemsPanel>
-				<ListBox.ItemTemplate>
-					<DataTemplate DataType="Projects:DataType">
-						<Border Name="BG" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="0">
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="20" />
-								</Grid.ColumnDefinitions>
-								<Grid.RowDefinitions>
-									<RowDefinition Height="22" />
-								</Grid.RowDefinitions>
-								<TextBlock Name="DataTypeName" Text="{Binding Path=TypeName}" Grid.Column="0" Margin="3,0" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" />
-								<Button Name="DeleteSelectedKnownType" Grid.Column="1" Grid.RowSpan="2" Margin="0" Click="DeleteSelectedKnownType_Click" Padding="0" Visibility="Hidden" Background="Transparent">
-									<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
-								</Button>
-							</Grid>
-						</Border>
-						<DataTemplate.Triggers>
-							<DataTrigger Binding="{Binding Path=TypeMode}" Value="Class">
-								<Setter TargetName="DataTypeName" Property="FontWeight" Value="Bold" />
-							</DataTrigger>
-							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
-								<Setter TargetName="BG" Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
-								<Setter TargetName="DeleteSelectedKnownType" Property="Visibility" Value="Visible" />
-							</DataTrigger>
-							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
-								<Setter TargetName="BG" Property="Background" Value="{StaticResource DefaultSelectionColor}" />
-								<Setter TargetName="DeleteSelectedKnownType" Property="Visibility" Value="Visible" />
-							</DataTrigger>
-						</DataTemplate.Triggers>
-					</DataTemplate>
-				</ListBox.ItemTemplate>
-			</ListBox>
+			<Label Grid.Column="0" Content="Related Types:" FontSize="12pt" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" />
+			<Grid x:Name="InheritedTypesGrid" Grid.Column="1" >
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="200" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				<Data:TypeSelector x:Name="SelectInheritedType" LabelText="Select Inherited Type" Grid.Column="1" Margin="5" IsInheriting="True" />
+				<Button Content="Add Inherited Type" Grid.Column="2" Margin="5" Click="AddInheritedType_Click" />
+				<ListBox x:Name="InheritedTypes" Grid.Column="0" ItemsSource="{Binding Path=OpenType.InheritedTypes}" Margin="5" Padding="0" Background="Transparent" BorderBrush="{StaticResource DefaultBorderColor}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ItemTemplate="{StaticResource InheritedTypesTemplate}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled"> 
+					<ListBox.ItemsPanel>
+						<ItemsPanelTemplate>
+							<WrapPanel Orientation="Horizontal" IsItemsHost="True" />
+						</ItemsPanelTemplate>
+					</ListBox.ItemsPanel>
+				</ListBox>
+			</Grid>
+			<Grid x:Name="KnownTypesGrid" Grid.Column="2" >
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="200" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				<Data:TypeSelector x:Name="SelectKnownType" LabelText="Select Known Type" Grid.Column="1" Margin="5" />
+				<Button Content="Add Known Type" Grid.Column="2" Margin="5" Click="AddKnownType_Click" />
+				<ListBox x:Name="KnownTypes" Grid.Column="0" ItemsSource="{Binding Path=OpenType.KnownTypes}" Margin="5" Padding="0" Background="Transparent" BorderBrush="{StaticResource DefaultBorderColor}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ItemTemplate="{StaticResource KnownTypesTemplate}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+					<ListBox.ItemsPanel>
+						<ItemsPanelTemplate>
+							<WrapPanel Orientation="Horizontal" IsItemsHost="True" />
+						</ItemsPanelTemplate>
+					</ListBox.ItemsPanel>
+				</ListBox>
+			</Grid>
 		</Grid>
 	</Grid>
 </ContentControl>

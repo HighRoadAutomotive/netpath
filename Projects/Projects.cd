@@ -3,28 +3,28 @@
   <Class Name="NETPath.Projects.Project">
     <Position X="0.5" Y="0.5" Width="4.75" />
     <TypeIdentifier>
-      <HashCode>QAUEAIgAAACQpAAEJAgAwsQAAAhAIkAFhYAIAJNAADA=</HashCode>
+      <HashCode>QBUEAIgAAACQpEAEJAgAwgQAAAhAIkBFhYAIAJBAADA=</HashCode>
       <FileName>Project.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.Service">
     <Position X="0.5" Y="36" Width="4.75" />
     <TypeIdentifier>
-      <HashCode>iAQIEAAaK00oBAoMArQwEjAiMIhqkGGAoQAsCKAMCyA=</HashCode>
+      <HashCode>iAQIEAAaKk0oBAoMArQQEjAiMIhqkGGAoQAsCKAMCyA=</HashCode>
       <FileName>Service.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.Data">
     <Position X="6" Y="36" Width="3.5" />
     <TypeIdentifier>
-      <HashCode>BMaIADAQAICSAAAACBEQACBAIAAMgICAoAAAAAACQGI=</HashCode>
+      <HashCode>FEYICBAQAIACAAAAAAGQACBAYAAOoICAoAAAAAACQCA=</HashCode>
       <FileName>Data.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.DataElement">
     <Position X="6" Y="45.25" Width="3.5" />
     <TypeIdentifier>
-      <HashCode>pEEoIBySAA5EuQgUCBCDYgAwNAEMACQQyAAFAAAJEyM=</HashCode>
+      <HashCode>lEUoaByTAIaEmQg0GBSjYgBwNiEMAKyByACBACACGCs=</HashCode>
       <FileName>Data.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -45,14 +45,14 @@
   <Class Name="NETPath.Projects.MethodParameter">
     <Position X="0.5" Y="60.25" Width="4.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAiAAAAAgAkFIAAAQAQAAAAMAAAAgQAAAAAAkCA=</HashCode>
+      <HashCode>AAAAAAiAAAAAgAkEIAAAQAQAAAAMAAAAgQAAAAAAECA=</HashCode>
       <FileName>Service.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.Operation">
     <Position X="0.5" Y="52" Width="4.75" />
     <TypeIdentifier>
-      <HashCode>AAAgAACAQAAAmgCMAABgQAAAACABCADAwAAAAAAEBCA=</HashCode>
+      <HashCode>AAAgAACAQAAAmgiMAABgQAAAACABCADAwAAAAAAEFCA=</HashCode>
       <FileName>Service.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -266,17 +266,10 @@
       <FileName>Host.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="NETPath.Projects.Solution">
-    <Position X="6" Y="0.5" Width="3.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAIgAAAAAoAAAAAAAgAQAAAAAAAAAAQACAAAAAQA=</HashCode>
-      <FileName>Solution.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="NETPath.Projects.HostEndpoint">
     <Position X="14.5" Y="50.75" Width="5" />
     <TypeIdentifier>
-      <HashCode>AgCIAAggDAAAkAgEAABAQASYBAAAAACAgAEAwAAAgCA=</HashCode>
+      <HashCode>AgCIACggDAAAkAgEAABAQESQBAAAAACAgAEAwAAAACA=</HashCode>
       <FileName>Host.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -290,7 +283,7 @@
   <Class Name="NETPath.Projects.Namespace">
     <Position X="6.25" Y="12.5" Width="3.75" />
     <TypeIdentifier>
-      <HashCode>gACAgAzAAIAQBIAguAhUkAAAACAAABCohlAAAAAgACA=</HashCode>
+      <HashCode>gACAgAzAAIAQRIAguAhUkAAAACAAEBCohlAAAAAgACA=</HashCode>
       <FileName>Namespace.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -304,21 +297,21 @@
   <Class Name="NETPath.Projects.DataType">
     <Position X="0.5" Y="12.5" Width="4.75" />
     <TypeIdentifier>
-      <HashCode>CAFIIRyhYAB5iCAEIAAgQIQAiIAECPSgAECEgIAAGCA=</HashCode>
+      <HashCode>CAFIIRyhYBB5iCAEIAAgQIQAiIAECPSgAECEgIAAOCA=</HashCode>
       <FileName>DataType.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.RESTService">
     <Position X="6.25" Y="23" Width="3.75" />
     <TypeIdentifier>
-      <HashCode>AAQIAAAaCA0gAAoIADQQACAiEIhiEEAAoQAMCAAACSA=</HashCode>
+      <HashCode>gUTgRAEamB0jAIpoEXRUICEikIlmIEAAoSCNiAygCzY=</HashCode>
       <FileName>RESTService.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NETPath.Projects.RESTMethod">
     <Position X="10.25" Y="23" Width="3.75" />
     <TypeIdentifier>
-      <HashCode>ABAgAACARAQAmkLMIADgQgIEACANCAHCwIAQBAgEBCA=</HashCode>
+      <HashCode>AAAgAADAQJQAmkqOMADgAgAEAAANCAECwJAQBAAEFCA=</HashCode>
       <FileName>RESTService.cs</FileName>
     </TypeIdentifier>
   </Class>

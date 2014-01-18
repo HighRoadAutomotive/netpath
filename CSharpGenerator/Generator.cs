@@ -58,7 +58,7 @@ namespace NETPath.Generators.CS
 					string op = new Uri(new Uri(Data.AbsolutePath), t.Path).LocalPath;
 					op = Uri.UnescapeDataString(op);
 					NewOutput(Data.ID, string.Format("Writing Server Output: {0}", op));
-					System.IO.File.WriteAllText(op, GenerateServer(Data, t.Framework, t.GenerateReferences));
+					System.IO.File.WriteAllText(op, GenerateServer(Data, t.Framework));
 				}
 
 			foreach (ProjectGenerationTarget t in Data.ClientGenerationTargets.Where(a => a.Framework != ProjectGenerationFramework.WIN8))
@@ -66,7 +66,7 @@ namespace NETPath.Generators.CS
 				string op = new Uri(new Uri(Data.AbsolutePath), t.Path).LocalPath;
 				op = Uri.UnescapeDataString(op);
 				NewOutput(Data.ID, string.Format("Writing Client Output: {0}", op));
-				System.IO.File.WriteAllText(op, GenerateClient(Data, t.Framework, t.GenerateReferences));
+				System.IO.File.WriteAllText(op, GenerateClient(Data, t.Framework));
 			}
 		}
 
@@ -100,28 +100,28 @@ namespace NETPath.Generators.CS
 		}
 
 		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
-		public string GenerateServer(Project Data, ProjectGenerationFramework Framework, bool GenerateReferences)
+		public string GenerateServer(Project Data, ProjectGenerationFramework Framework)
 		{
-			return Generate(Data, Framework, true, GenerateReferences);
+			return Generate(Data, Framework, true);
 		}
 
 		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
-		public string GenerateClient(Project Data, ProjectGenerationFramework Framework, bool GenerateReferences)
+		public string GenerateClient(Project Data, ProjectGenerationFramework Framework)
 		{
-			return Generate(Data, Framework, false, GenerateReferences);
+			return Generate(Data, Framework, false);
 		}
 
-		public Task<string> GenerateServerAsync(Project Data, ProjectGenerationFramework Framework, bool GenerateReferences)
+		public Task<string> GenerateServerAsync(Project Data, ProjectGenerationFramework Framework)
 		{
-			return System.Windows.Application.Current == null ? null : Task.Run(() => System.Windows.Application.Current.Dispatcher.Invoke(() => GenerateServer(Data, Framework, GenerateReferences), DispatcherPriority.Normal));
+			return System.Windows.Application.Current == null ? null : Task.Run(() => System.Windows.Application.Current.Dispatcher.Invoke(() => GenerateServer(Data, Framework), DispatcherPriority.Normal));
 		}
 
-		public Task<string> GenerateClientAsync(Project Data, ProjectGenerationFramework Framework, bool GenerateReferences)
+		public Task<string> GenerateClientAsync(Project Data, ProjectGenerationFramework Framework)
 		{
-			return System.Windows.Application.Current == null ? null : Task.Run(() => System.Windows.Application.Current.Dispatcher.Invoke(() => GenerateClient(Data, Framework, GenerateReferences), DispatcherPriority.Normal));
+			return System.Windows.Application.Current == null ? null : Task.Run(() => System.Windows.Application.Current.Dispatcher.Invoke(() => GenerateClient(Data, Framework), DispatcherPriority.Normal));
 		}
 
-		private string Generate(Project Data, ProjectGenerationFramework Framework, bool Server, bool GenerateReferences)
+		private string Generate(Project Data, ProjectGenerationFramework Framework, bool Server)
 		{
 			Globals.CurrentProjectID = Data.ID;
 

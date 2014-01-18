@@ -138,16 +138,17 @@ namespace NETPath.Projects
 
 		public Namespace Parent { get { return (Namespace)GetValue(ParentProperty); } set { SetValue(ParentProperty, value); } }
 		public static readonly DependencyProperty ParentProperty = DependencyProperty.Register("Parent", typeof(Namespace), typeof(DataType));
-		
+
 		public bool IsNullable { get { return (bool)GetValue(IsNullableProperty); } set { SetValue(IsNullableProperty, value); } }
 		public static readonly DependencyProperty IsNullableProperty = DependencyProperty.Register("IsNullable", typeof(bool), typeof(DataType), new PropertyMetadata(false));
-		
+
 		[IgnoreDataMember]
 		public string TypeName { get { return (string)GetValue(TypeNameProperty); } private set { SetValue(TypeNamePropertyKey, value); } }
 		private static readonly DependencyPropertyKey TypeNamePropertyKey = DependencyProperty.RegisterReadOnly("TypeName", typeof(string), typeof(DataType), new PropertyMetadata(""));
 		public static readonly DependencyProperty TypeNameProperty = TypeNamePropertyKey.DependencyProperty;
 
-		[IgnoreDataMember] public string Declaration { get { return (string)GetValue(DeclarationProperty); } private set { SetValue(DeclarationPropertyKey, value); } }
+		[IgnoreDataMember]
+		public string Declaration { get { return (string)GetValue(DeclarationProperty); } private set { SetValue(DeclarationPropertyKey, value); } }
 		private static readonly DependencyPropertyKey DeclarationPropertyKey = DependencyProperty.RegisterReadOnly("Declaration", typeof(string), typeof(DataType), new PropertyMetadata(""));
 		public static readonly DependencyProperty DeclarationProperty = DeclarationPropertyKey.DependencyProperty;
 
@@ -159,11 +160,16 @@ namespace NETPath.Projects
 		public bool IsTypeReference { get; set; }
 		public SupportedFrameworks SupportedFrameworks { get; set; }
 
-		[IgnoreDataMember] public bool DataHasExtensionData { get { return InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0); } }
-		[IgnoreDataMember] public bool ClientHasExtensionData { get { return HasClientType && (ClientType.InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0)); } }
-		[IgnoreDataMember] public bool ClientHasImpliedExtensionData { get { return !HasClientType; } }
-		[IgnoreDataMember] public bool IsDataObject { get; set; }
-		[IgnoreDataMember] public bool IsCollectionType { get { return TypeMode == DataTypeMode.Array || TypeMode == DataTypeMode.Collection || TypeMode == DataTypeMode.Dictionary || TypeMode == DataTypeMode.Queue || TypeMode == DataTypeMode.Stack; } }
+		[IgnoreDataMember]
+		public bool DataHasExtensionData { get { return InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0); } }
+		[IgnoreDataMember]
+		public bool ClientHasExtensionData { get { return HasClientType && (ClientType.InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0)); } }
+		[IgnoreDataMember]
+		public bool ClientHasImpliedExtensionData { get { return !HasClientType; } }
+		[IgnoreDataMember]
+		public bool IsDataObject { get; set; }
+		[IgnoreDataMember]
+		public bool IsCollectionType { get { return TypeMode == DataTypeMode.Array || TypeMode == DataTypeMode.Collection || TypeMode == DataTypeMode.Dictionary || TypeMode == DataTypeMode.Queue || TypeMode == DataTypeMode.Stack; } }
 
 		private static void DataTypePropertyChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
 		{

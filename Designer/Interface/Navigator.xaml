@@ -31,7 +31,7 @@
 		</Grid.ColumnDefinitions>
 		<Button Grid.Column="0" Grid.Row="0" Padding="2" Margin="0,0,5,0" Background="#22FFFFFF" Style="{StaticResource ProjectContainerTemplate}" Command="{x:Static local:Navigator.ChangeActivePageCommand}" CommandParameter="{Binding Path=Project}">
 			<StackPanel Orientation="Vertical">
-				<StackPanel Orientation="Horizontal" Margin="0,0,0,3">
+				<StackPanel Orientation="Horizontal" Margin="0">
 					<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X32/Project.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,5,3" />
 					<TextBlock Text="{Binding Path=Project.Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="16pt" VerticalAlignment="Center" />
 				</StackPanel>

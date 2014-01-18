@@ -68,6 +68,9 @@ namespace NETPath.Interface.Data
 			}
 		}
 
+		public bool IsServerType { get { return (bool)GetValue(IsServerTypeProperty); } set { SetValue(IsServerTypeProperty, value); } }
+		public static readonly DependencyProperty IsServerTypeProperty = DependencyProperty.Register("IsServerType", typeof(bool), typeof(TypeEditor), new PropertyMetadata(false));
+
 		public bool SupportInheritedTypes { get { return (bool)GetValue(SupportInheritedTypesProperty); } set { SetValue(SupportInheritedTypesProperty, value); } }
 		public static readonly DependencyProperty SupportInheritedTypesProperty = DependencyProperty.Register("SupportInheritedTypes", typeof(bool), typeof(TypeEditor), new PropertyMetadata(false));
 
@@ -138,7 +141,7 @@ namespace NETPath.Interface.Data
 
 		private void AddInheritedType_Click(object sender, RoutedEventArgs e)
 		{
-			if(SelectInheritedType.OpenType != null)
+			if (SelectInheritedType.OpenType != null)
 				OpenType.InheritedTypes.Add(SelectInheritedType.OpenType);
 			else
 				return;
@@ -179,27 +182,6 @@ namespace NETPath.Interface.Data
 			OpenType.KnownTypes.Remove(lbi.Content as DataType);
 
 			if (OpenType.KnownTypes.Count == 0)
-				KnownTypes.Visibility = Visibility.Collapsed;
-		}
-
-		private void ContentControl_IsKeyboardFocusWithinChanged(object sender, DependencyPropertyChangedEventArgs e)
-		{
-			if(IsKeyboardFocusWithin && SupportInheritedTypes)
-				InheritedTypesGrid.Visibility = Visibility.Visible;
-			else
-				InheritedTypesGrid.Visibility = Visibility.Collapsed;
-			if(IsKeyboardFocusWithin && SupportKnownTypes)
-				KnownTypesGrid.Visibility = Visibility.Visible;
-			else
-				KnownTypesGrid.Visibility = Visibility.Collapsed;
-
-			if (IsKeyboardFocusWithin && OpenType.InheritedTypes.Count > 0)
-				InheritedTypes.Visibility = Visibility.Visible;
-			else
-				InheritedTypes.Visibility = Visibility.Collapsed;
-			if (IsKeyboardFocusWithin && OpenType.KnownTypes.Count > 0)
-				KnownTypes.Visibility = Visibility.Visible;
-			else
 				KnownTypes.Visibility = Visibility.Collapsed;
 		}
 	}
@@ -248,13 +230,13 @@ namespace NETPath.Interface.Data
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			var lt = (DataTypeMode) value;
+			var lt = (DataTypeMode)value;
 			return lt == DataTypeMode.Struct;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			var lt = (bool) value;
+			var lt = (bool)value;
 			return lt ? DataTypeMode.Struct : DataTypeMode.Class;
 		}
 	}

@@ -23,15 +23,19 @@
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
 		<RowDefinition Height="*" />
 	</Grid.RowDefinitions>
-	<Label Grid.Row="0" Margin="5" Padding="10,2,0,2" Content="Server Type:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="90" />
-	<Data:TypeEditor OpenType="{Binding Path=Binding}" x:Name="ServerTypeEditor" SupportInheritedTypes="False" SupportKnownTypes="False" CanSetType="False" Grid.Row="0" Grid.ColumnSpan="3" Margin="100,0,0,0" />
-	<ToggleButton Grid.Row="1" Margin="5" IsChecked="{Binding Path=Binding.HasClientType}" Content="Client Type:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="90" />
-	<Data:TypeEditor OpenType="{Binding Path=Binding.ClientType}" x:Name="ClientTypeEditor" SupportInheritedTypes="False" SupportKnownTypes="False" CanSetType="False" Grid.Row="1" Grid.ColumnSpan="3" Margin="100,0,0,0" />
-	<Label Content="Namespace:" Height="Auto" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalContentAlignment="Center" Grid.Row="2" />
-	<pc:TextBox Text="{Binding Path=Binding.Namespace}" Name="Namespace" Height="23" Margin="105,5,5,5" VerticalContentAlignment="Center" Grid.Row="2" TextChanged="Namespace_TextChanged" Validate="Namespace_Validate" ToolTip="{Binding Path=Binding.Namespace}" />
-	<Grid Grid.Row="3">
+	<Label Grid.Row="0" Margin="5" Padding="10,0" Content="Server Type:" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="125" />
+	<Data:TypeEditor OpenType="{Binding Path=Binding}" x:Name="ServerTypeEditor" SupportInheritedTypes="False" SupportKnownTypes="False" CanSetType="False" Grid.Row="0" Grid.ColumnSpan="3" Margin="135,0,0,0" />
+	<ToggleButton Grid.Row="1" Margin="5" IsChecked="{Binding Path=Binding.HasClientType}" Content="Client Type:" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="125" />
+	<Data:TypeEditor OpenType="{Binding Path=Binding.ClientType}" x:Name="ClientTypeEditor" SupportInheritedTypes="False" SupportKnownTypes="False" CanSetType="False" Grid.Row="1" Grid.ColumnSpan="3" Margin="135,0,0,0" />
+	<Data:TargetSelector Grid.Row="2" Grid.Column="0" OpenType="{Binding Path=Binding}" IsServerType="True" Visibility="Visible" />
+	<Data:TargetSelector Grid.Row="3" Grid.Column="0" OpenType="{Binding Path=Binding}" IsServerType="False" Visibility="Visible" />
+	<Label Content="Namespace:" Height="Auto" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalContentAlignment="Center" Grid.Row="4" />
+	<pc:TextBox Text="{Binding Path=Binding.Namespace}" Name="Namespace" Height="23" Margin="105,5,5,5" VerticalContentAlignment="Center" Grid.Row="4" TextChanged="Namespace_TextChanged" Validate="Namespace_Validate" ToolTip="{Binding Path=Binding.Namespace}" />
+	<Grid Grid.Row="5">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
@@ -52,7 +56,7 @@
 		<Label Content="Receive Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="1" />
 		<sf:TimeSpanEdit Value="{Binding Path=Binding.ReceiveTimeout, Mode=TwoWay}" Name="ReceiveTimeout" Margin="115,5,5,5" Format="hh:mm:ss" ShowArrowButtons="False" Height="24" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="1" FontSize="10pt" />
 	</Grid>
-	<Grid Grid.Row="4">
+	<Grid Grid.Row="6">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
@@ -67,7 +71,7 @@
 		<Label Content="Port:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
 		<sf:IntegerTextBox Value="{Binding Path=Binding.Port}" Margin="45,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Name="Port" Grid.Column="1" Grid.Row="1" FontSize="10pt" />
 	</Grid>
-	<Grid Grid.Row="5">
+	<Grid Grid.Row="7">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
@@ -82,7 +86,7 @@
 		<Label Content="Max Received Message Size:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
 		<pc:TextBox Text="{Binding Path=Binding.MaxReceivedMessageSize, Converter={StaticResource LongConverter}}" Name="MaxReceivedMessageSize" Height="23" Margin="180,5,5,5" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" Validate="MaxReceivedMessageSize_Validate" />
 	</Grid>
-	<Grid Grid.Row="6" DataContext="{Binding Path=Binding.Security}">
+	<Grid Grid.Row="8" DataContext="{Binding Path=Binding.Security}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
@@ -107,7 +111,7 @@
 			<ComboBoxItem Content="Certificate" />
 		</ComboBox>
 	</Grid>
-	<Grid Grid.Row="7">
+	<Grid Grid.Row="9">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
