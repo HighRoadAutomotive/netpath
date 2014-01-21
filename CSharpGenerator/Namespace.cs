@@ -38,14 +38,17 @@ namespace NETPath.Generators.CS
 
 		}
 
-		public static string GenerateContractNamespaceAttributes(Namespace o)
+		public static string GenerateContractNamespaceAttributes(Namespace o, ProjectGenerationTarget target)
 		{
+			if (!target.TargetTypes.Intersect(o.Enums).Any() && !target.TargetTypes.Intersect(o.Data).Any() && !target.TargetTypes.Intersect(o.Services).Any() && !target.TargetTypes.Intersect(o.RESTServices).Any() && !target.TargetTypes.Intersect(o.Bindings).Any())
+				return "";
+
 			var code = new StringBuilder();
 
 			code.AppendLine(string.Format("[assembly: System.Runtime.Serialization.ContractNamespaceAttribute(\"{0}\", ClrNamespace=\"{1}\")]", o.FullURI, o.FullName));
 
 			foreach (Namespace tn in o.Children)
-				code.AppendLine(GenerateContractNamespaceAttributes(tn));
+				code.Append(GenerateContractNamespaceAttributes(tn, target));
 
 			return code.ToString();
 		}
@@ -136,7 +139,7 @@ namespace NETPath.Generators.CS
 
 		public static string GenerateClientCode45(Namespace o, ProjectGenerationTarget target)
 		{
-			if (!target.TargetTypes.Intersect(o.Enums).Any() && !target.TargetTypes.Intersect(o.Data).Any() && target.TargetTypes.Intersect(o.Services).Any() && !target.TargetTypes.Intersect(o.RESTServices).Any() && !target.TargetTypes.Intersect(o.Bindings).Any())
+			if (!target.TargetTypes.Intersect(o.Enums).Any() && !target.TargetTypes.Intersect(o.Data).Any() && !target.TargetTypes.Intersect(o.Services).Any() && !target.TargetTypes.Intersect(o.RESTServices).Any() && !target.TargetTypes.Intersect(o.Bindings).Any())
 				return "";
 
 			var code = new StringBuilder();
@@ -144,7 +147,7 @@ namespace NETPath.Generators.CS
 			code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
 			code.AppendLine("{");
 
-			if (o.Enums.Count > 0)
+			if (target.TargetTypes.Intersect(o.Enums).Any())
 			{
 				code.AppendLine("\t/**************************************************************************");
 				code.AppendLine("\t*\tEnumeration Contracts");
@@ -155,7 +158,7 @@ namespace NETPath.Generators.CS
 				code.AppendLine();
 			}
 
-			if (o.Data.Count > 0)
+			if (target.TargetTypes.Intersect(o.Data).Any())
 			{
 				code.AppendLine("\t/**************************************************************************");
 				code.AppendLine("\t*\tData Contracts");
@@ -169,7 +172,7 @@ namespace NETPath.Generators.CS
 				code.AppendLine();
 			}
 
-			if (o.Services.Count > 0)
+			if (target.TargetTypes.Intersect(o.Services).Any())
 			{
 				code.AppendLine("\t/**************************************************************************");
 				code.AppendLine("\t*\tService Contracts");
@@ -180,7 +183,7 @@ namespace NETPath.Generators.CS
 				code.AppendLine();
 			}
 
-			if (o.RESTServices.Count > 0)
+			if (target.TargetTypes.Intersect(o.RESTServices).Any())
 			{
 				code.AppendLine("\t/**************************************************************************");
 				code.AppendLine("\t*\tREST Service Contracts");
@@ -191,7 +194,7 @@ namespace NETPath.Generators.CS
 				code.AppendLine();
 			}
 
-			if (o.Bindings.Count > 0)
+			if (target.TargetTypes.Intersect(o.Bindings).Any())
 			{
 				code.AppendLine("\t/**************************************************************************");
 				code.AppendLine("\t*\tService Bindings");
@@ -212,7 +215,7 @@ namespace NETPath.Generators.CS
 
 		public static string GenerateClientCodeRT8(Namespace o, ProjectGenerationTarget target)
 		{
-			if (!target.TargetTypes.Intersect(o.Enums).Any() && !target.TargetTypes.Intersect(o.Data).Any() && target.TargetTypes.Intersect(o.Services).Any() && !target.TargetTypes.Intersect(o.RESTServices).Any() && !target.TargetTypes.Intersect(o.Bindings).Any())
+			if (!target.TargetTypes.Intersect(o.Enums).Any() && !target.TargetTypes.Intersect(o.Data).Any() && !target.TargetTypes.Intersect(o.Services).Any() && !target.TargetTypes.Intersect(o.RESTServices).Any() && !target.TargetTypes.Intersect(o.Bindings).Any())
 				return "";
 
 			var code = new StringBuilder();
@@ -220,7 +223,7 @@ namespace NETPath.Generators.CS
 			code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
 			code.AppendLine("{");
 
-			if (o.Enums.Count > 0)
+			if (target.TargetTypes.Intersect(o.Enums).Any())
 			{
 				code.AppendLine("\t/**************************************************************************");
 				code.AppendLine("\t*\tEnumeration Contracts");
@@ -231,7 +234,7 @@ namespace NETPath.Generators.CS
 				code.AppendLine();
 			}
 
-			if (o.Data.Count > 0)
+			if (target.TargetTypes.Intersect(o.Data).Any())
 			{
 				code.AppendLine("\t/**************************************************************************");
 				code.AppendLine("\t*\tData Contracts");
@@ -245,7 +248,7 @@ namespace NETPath.Generators.CS
 				code.AppendLine();
 			}
 
-			if (o.Services.Count > 0)
+			if (target.TargetTypes.Intersect(o.Services).Any())
 			{
 				code.AppendLine("\t/**************************************************************************");
 				code.AppendLine("\t*\tService Contracts");
@@ -256,7 +259,7 @@ namespace NETPath.Generators.CS
 				code.AppendLine();
 			}
 
-			if (o.RESTServices.Count > 0)
+			if (target.TargetTypes.Intersect(o.RESTServices).Any())
 			{
 				code.AppendLine("\t/**************************************************************************");
 				code.AppendLine("\t*\tREST Service Contracts");
@@ -267,7 +270,7 @@ namespace NETPath.Generators.CS
 				code.AppendLine();
 			}
 
-			if (o.Bindings.Count > 0)
+			if (target.TargetTypes.Intersect(o.Bindings).Any())
 			{
 				code.AppendLine("\t/**************************************************************************");
 				code.AppendLine("\t*\tService Bindings");

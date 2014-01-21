@@ -110,7 +110,7 @@ namespace NETPath.Generators.CS
 			code.AppendLine();
 
 			//Generate ContractNamespace Attributes
-			if (!Server) code.AppendLine(NamespaceGenerator.GenerateContractNamespaceAttributes(Data.Namespace));
+			if (!Server) code.AppendLine(NamespaceGenerator.GenerateContractNamespaceAttributes(Data.Namespace, Target));
 
 			//Disable XML documentation warnings 
 			if (!Data.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
