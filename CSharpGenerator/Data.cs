@@ -830,7 +830,7 @@ namespace NETPath.Generators.CS
 		{
 			var code = new StringBuilder();
 
-			if (o.Owner.CMDEnabled)
+			if (o.Owner.DREEnabled)
 			{
 				if (o.DataType.TypeMode == DataTypeMode.Collection)
 				{
@@ -882,7 +882,7 @@ namespace NETPath.Generators.CS
 
 			code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty{5} {1}Property{5} = DependencyProperty.Register{4}(\"{1}\", typeof({0}), typeof({2}){3});", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.DataType, o.Owner.CMDEnabled)), o.XAMLName, o.Owner.XAMLType.Name, o.DREEnabled ? string.Format(", {0}PropertyMetadata", o.XAMLName) : ", null", o.IsReadOnly ? "ReadOnly" : "", o.IsReadOnly ? "Key" : ""));
 			if (o.IsReadOnly) code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty {0}Property = {0}PropertyKey.DependencyProperty;", o.XAMLName));
-
+	
 			return code.ToString();
 		}
 
