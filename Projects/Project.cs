@@ -101,12 +101,6 @@ namespace NETPath.Projects
 		public Namespace Namespace { get { return (Namespace)GetValue(NamespaceProperty); } set { SetValue(NamespaceProperty, value); } }
 		public static readonly DependencyProperty NamespaceProperty = DependencyProperty.Register("Namespace", typeof(Namespace), typeof(Project));
 
-		public string ServerOutputFile { get { return (string)GetValue(ServerOutputFileProperty); } set { SetValue(ServerOutputFileProperty, value); } }
-		public static readonly DependencyProperty ServerOutputFileProperty = DependencyProperty.Register("ServerOutputFile", typeof(string), typeof(Project), new PropertyMetadata("Server"));
-
-		public string ClientOutputFile { get { return (string)GetValue(ClientOutputFileProperty); } set { SetValue(ClientOutputFileProperty, value); } }
-		public static readonly DependencyProperty ClientOutputFileProperty = DependencyProperty.Register("ClientOutputName", typeof(string), typeof(Project), new PropertyMetadata("Client"));
-
 		public bool EnableDocumentationWarnings { get { return (bool)GetValue(EnableDocumentationWarningsProperty); } set { SetValue(EnableDocumentationWarningsProperty, value); } }
 		public static readonly DependencyProperty EnableDocumentationWarningsProperty = DependencyProperty.Register("EnableDocumentationWarnings", typeof(bool), typeof(Project), new PropertyMetadata(false));
 
@@ -526,14 +520,7 @@ namespace NETPath.Projects
 
 	public enum ProjectGenerationFramework
 	{
-		NET30,
-		NET35,
-		NET35Client,
-		NET40,
-		NET40Client,
 		NET45,
-		SL40,
-		SL50,
 		WIN8,
 	}
 

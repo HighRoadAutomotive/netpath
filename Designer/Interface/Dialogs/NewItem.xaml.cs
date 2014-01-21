@@ -40,23 +40,15 @@ namespace NETPath.Interface.Dialogs
 			EnableAddItem();
 
 			NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/BasicHTTP.png", "Basic HTTP Binding", "A binding that can be used with any web service that conforms to the WS-I Basic Profile.", 1));
-			if (ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET45) || ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.WIN8))
-			{
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/NetHTTP.png", "Net HTTP Binding", "A binding that can be used with any web service that conforms to the WebSockets Profile.", 3));
-			}
-			if (ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET45))
-			{
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/BasicHTTP.png", "Basic HTTPS Binding", "A binding that can be used with any web service that conforms to the WS-I Basic Profile.", 2));
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/NetHTTP.png", "Net HTTPS Binding", "A binding that can be used with any web service that conforms to the WebSockets Profile.", 4));
-			}
+			NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/NetHTTP.png", "Net HTTP Binding", "A binding that can be used with any web service that conforms to the WebSockets Profile.", 3));
+			NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/BasicHTTP.png", "Basic HTTPS Binding", "A binding that can be used with any web service that conforms to the WS-I Basic Profile.", 2));
+			NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/NetHTTP.png", "Net HTTPS Binding", "A binding that can be used with any web service that conforms to the WebSockets Profile.", 4));
 			NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/TCP.png", "TCP Binding", "A binding that provides security and reliability for cross-machine communications.", 5));
-			if (ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET45))
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/UDP.png", "UDP Binding", "A binding the user datagram protocol.", 16));
+			NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/UDP.png", "UDP Binding", "A binding the user datagram protocol.", 16));
 			NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/NamedPipe.png", "Named Pipe Binding", "A binding that provides security and reliability for intra-machine communications.", 6));
 			NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/MSMQ.png", "MSMQ Binding", "A queued binding for cross-machine communications.", 7));
 			NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/PeerTCP.png", "Peer TCP Binding", "A secure binding for peer-to-peer applications", 8));
-			if (ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET35) || ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET35Client) || ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET40) || ActiveProject.HasGenerationFramework(Projects.ProjectGenerationFramework.NET45))
-				NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/WebHTTP.png", "Web HTTP Binding", "A binding that provides the use of HTTP requests instead SOAP messags.", 9));
+			NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/WebHTTP.png", "Web HTTP Binding", "A binding that provides the use of HTTP requests instead SOAP messags.", 9));
 			NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/MSMQIntegration.png", "MSMQ Integration Binding", "A binding for mapping MSMQ messages to WCF messages.", 10));
 			NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/WSHTTP.png", "WS HTTP Binding", "A binding that supports, security, reliable sessions, and distributed transactions over HTTP.", 11));
 			NewItemBindingTypesList.Items.Add(new NewItemType("pack://application:,,,/NETPath;component/Icons/X32/WSHTTP.png", "WS 2007 HTTP Binding", "A binding that derives from the WS HTTP Binding and provides updated support for Security, Reliable Sessions, and Transaction Flows.", 12));
@@ -92,7 +84,7 @@ namespace NETPath.Interface.Dialogs
 			NewItemBindingTypesList.SelectedItem = null;
 			NewItemProjectNamespaces.Visibility = Visibility.Collapsed;
 			NewItemBindingTypesList.Visibility = Visibility.Collapsed;
-			
+
 			IsNamespaceListUpdating = true;
 			NewItemProjectNamespaceRoot.IsChecked = true;
 			if (NewItemTypesList.SelectedItem == null) return;
@@ -180,6 +172,8 @@ namespace NETPath.Interface.Dialogs
 				{
 					var NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace ?? ActiveProject.Namespace;
 					var NI = new Projects.Service(NewItemName.Text, NIN);
+					foreach (var t in ActiveProject.ServerGenerationTargets) t.TargetTypes.Add(NI);
+					foreach (var t in ActiveProject.ClientGenerationTargets) t.TargetTypes.Add(NI);
 					NIN.Services.Add(NI);
 					Globals.IsLoading = false;
 					OpenProjectItem(NI);
@@ -188,6 +182,8 @@ namespace NETPath.Interface.Dialogs
 				{
 					var NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace ?? ActiveProject.Namespace;
 					var NI = new Projects.RESTService(NewItemName.Text, NIN);
+					foreach (var t in ActiveProject.ServerGenerationTargets) t.TargetTypes.Add(NI);
+					foreach (var t in ActiveProject.ClientGenerationTargets) t.TargetTypes.Add(NI);
 					NIN.RESTServices.Add(NI);
 					Globals.IsLoading = false;
 					OpenProjectItem(NI);
@@ -196,6 +192,8 @@ namespace NETPath.Interface.Dialogs
 				{
 					var NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace ?? ActiveProject.Namespace;
 					var NI = new Projects.Data(NewItemName.Text, NIN);
+					foreach (var t in ActiveProject.ServerGenerationTargets) t.TargetTypes.Add(NI);
+					foreach (var t in ActiveProject.ClientGenerationTargets) t.TargetTypes.Add(NI);
 					NIN.Data.Add(NI);
 					Globals.IsLoading = false;
 					OpenProjectItem(NI);
@@ -204,6 +202,8 @@ namespace NETPath.Interface.Dialogs
 				{
 					var NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace ?? ActiveProject.Namespace;
 					var NI = new Projects.Enum(NewItemName.Text, NIN);
+					foreach (var t in ActiveProject.ServerGenerationTargets) t.TargetTypes.Add(NI);
+					foreach (var t in ActiveProject.ClientGenerationTargets) t.TargetTypes.Add(NI);
 					NIN.Enums.Add(NI);
 					Globals.IsLoading = false;
 					OpenProjectItem(NI);
@@ -232,6 +232,9 @@ namespace NETPath.Interface.Dialogs
 					if (NBT.DataType == 15) NI = new Projects.ServiceBindingWS2007FederationHTTP(NewItemName.Text, NIN);
 					if (NBT.DataType == 16) NI = new Projects.ServiceBindingUDP(NewItemName.Text, NIN);
 
+					foreach (var t in ActiveProject.ServerGenerationTargets) t.TargetTypes.Add(NI);
+					foreach (var t in ActiveProject.ClientGenerationTargets) t.TargetTypes.Add(NI);
+
 					NIN.Bindings.Add(NI);
 					Globals.IsLoading = false;
 					OpenProjectItem(NI);
@@ -240,6 +243,8 @@ namespace NETPath.Interface.Dialogs
 				{
 					var NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace ?? ActiveProject.Namespace;
 					var NI = new Projects.Host(NewItemName.Text, NIN);
+					foreach (var t in ActiveProject.ServerGenerationTargets) t.TargetTypes.Add(NI);
+					foreach (var t in ActiveProject.ClientGenerationTargets) t.TargetTypes.Add(NI);
 					NIN.Hosts.Add(NI);
 					Globals.IsLoading = false;
 					OpenProjectItem(NI);

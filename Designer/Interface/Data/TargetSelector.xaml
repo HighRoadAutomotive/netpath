@@ -57,7 +57,7 @@
 			</Style>
 
 			<DataTemplate DataType="{x:Type Projects:ProjectGenerationTarget}">
-				<Border Name="BG" Background="{StaticResource DefaultBackgroundColor}" BorderBrush="Transparent" BorderThickness="0" CornerRadius="3" MaxWidth="400">
+				<Border Name="BG" Background="{StaticResource DefaultBackgroundColor}" BorderBrush="Transparent" BorderThickness="0" CornerRadius="3" MaxWidth="400" Margin="0,0,10,0">
 					<Grid>
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="20" />
@@ -68,7 +68,7 @@
 							<ToggleButton.IsChecked>
 								<MultiBinding Converter="{StaticResource TargetHasTypeConverter}">
 									<Binding Path="." />
-									<Binding Path="OpenType" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type Data:TypeEditor}}" />
+									<Binding Path="OpenType" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type Data:TargetSelector}}" />
 								</MultiBinding>
 							</ToggleButton.IsChecked>
 						</ToggleButton>

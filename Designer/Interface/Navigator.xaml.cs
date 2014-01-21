@@ -66,37 +66,37 @@ namespace NETPath.Interface
 			{
 				var t = e.Parameter as Projects.Service;
 				if (t == null) return;
-				DialogService.ShowMessageDialog("NETPath", "Delete Service?", "Are you sure you want to delete the '" + t.Declaration + "' service?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Services.Remove(t); }, true), new DialogAction("No", false, true));
+				DialogService.ShowMessageDialog("NETPath", "Delete Service?", "Are you sure you want to delete the '" + t.Declaration + "' service?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Services.Remove(t); foreach (var x in t.Parent.Owner.ServerGenerationTargets) x.TargetTypes.Remove(t); foreach (var x in t.Parent.Owner.ClientGenerationTargets) x.TargetTypes.Remove(t); }, true), new DialogAction("No", false, true));
 			}
 			if (dt == typeof(Projects.RESTService))
 			{
 				var t = e.Parameter as Projects.RESTService;
 				if (t == null) return;
-				DialogService.ShowMessageDialog("NETPath", "Delete REST Service?", "Are you sure you want to delete the '" + t.Declaration + "' REST service?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.RESTServices.Remove(t); }, true), new DialogAction("No", false, true));
+				DialogService.ShowMessageDialog("NETPath", "Delete REST Service?", "Are you sure you want to delete the '" + t.Declaration + "' REST service?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.RESTServices.Remove(t); foreach (var x in t.Parent.Owner.ServerGenerationTargets) x.TargetTypes.Remove(t); foreach (var x in t.Parent.Owner.ClientGenerationTargets) x.TargetTypes.Remove(t); }, true), new DialogAction("No", false, true));
 			}
 			if (dt == typeof(Projects.Data))
 			{
 				var t = e.Parameter as Projects.Data;
 				if (t == null) return;
-				DialogService.ShowMessageDialog("NETPath", "Delete Data?", "Are you sure you want to delete the '" + t.Declaration + "' data?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Data.Remove(t); }, true), new DialogAction("No", false, true));
+				DialogService.ShowMessageDialog("NETPath", "Delete Data?", "Are you sure you want to delete the '" + t.Declaration + "' data?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Data.Remove(t); foreach (var x in t.Parent.Owner.ServerGenerationTargets) x.TargetTypes.Remove(t); foreach (var x in t.Parent.Owner.ClientGenerationTargets) x.TargetTypes.Remove(t); }, true), new DialogAction("No", false, true));
 			}
 			if (dt == typeof(Projects.Enum))
 			{
 				var t = e.Parameter as Projects.Enum;
 				if (t == null) return;
-				DialogService.ShowMessageDialog("NETPath", "Delete Enumeration?", "Are you sure you want to delete the '" + t.Declaration + "' enumeration?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Enums.Remove(t); }, true), new DialogAction("No", false, true));
+				DialogService.ShowMessageDialog("NETPath", "Delete Enumeration?", "Are you sure you want to delete the '" + t.Declaration + "' enumeration?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Enums.Remove(t); foreach (var x in t.Parent.Owner.ServerGenerationTargets) x.TargetTypes.Remove(t); foreach (var x in t.Parent.Owner.ClientGenerationTargets) x.TargetTypes.Remove(t); }, true), new DialogAction("No", false, true));
 			}
 			if (dt == typeof(ServiceBindingBasicHTTP) || dt == typeof(ServiceBindingBasicHTTPS) || dt == typeof(ServiceBindingNetHTTP) || dt == typeof(ServiceBindingNetHTTPS) || dt == typeof(ServiceBindingWSHTTP) || dt == typeof(ServiceBindingWS2007HTTP) || dt == typeof(ServiceBindingWSDualHTTP) || dt == typeof(ServiceBindingWSFederationHTTP) || dt == typeof(ServiceBindingWS2007FederationHTTP) || dt == typeof(ServiceBindingTCP) || dt == typeof(ServiceBindingNamedPipe) || dt == typeof(ServiceBindingMSMQ) || dt == typeof(ServiceBindingPeerTCP) || dt == typeof(ServiceBindingWebHTTP) || dt == typeof(ServiceBindingMSMQIntegration))
 			{
 				var t = e.Parameter as ServiceBinding;
 				if (t == null) return;
-				DialogService.ShowMessageDialog("NETPath", "Delete Binding?", "Are you sure you want to delete the '" + t.Declaration + "' binding?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Bindings.Remove(t); }, true), new DialogAction("No", false, true));
+				DialogService.ShowMessageDialog("NETPath", "Delete Binding?", "Are you sure you want to delete the '" + t.Declaration + "' binding?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Bindings.Remove(t); foreach (var x in t.Parent.Owner.ServerGenerationTargets) x.TargetTypes.Remove(t); foreach (var x in t.Parent.Owner.ClientGenerationTargets) x.TargetTypes.Remove(t); }, true), new DialogAction("No", false, true));
 			}
 			if (dt == typeof(Projects.Host))
 			{
 				var t = e.Parameter as Projects.Host;
 				if (t == null) return;
-				DialogService.ShowMessageDialog("NETPath", "Delete Host?", "Are you sure you want to delete the '" + t.Declaration + "' host?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Hosts.Remove(t); }, true), new DialogAction("No", false, true));
+				DialogService.ShowMessageDialog("NETPath", "Delete Host?", "Are you sure you want to delete the '" + t.Declaration + "' host?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Hosts.Remove(t); foreach (var x in t.Parent.Owner.ServerGenerationTargets) x.TargetTypes.Remove(t); foreach (var x in t.Parent.Owner.ClientGenerationTargets) x.TargetTypes.Remove(t); }, true), new DialogAction("No", false, true));
 			}
 		}
 

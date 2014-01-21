@@ -279,30 +279,6 @@ namespace NETPath.Projects
 			Declaration = ToDeclarationString();
 		}
 
-		public bool IsFrameworkSupported(ProjectGenerationFramework CurrentFramework)
-		{
-			if (SupportedFrameworks == SupportedFrameworks.None) return true;
-			if (CurrentFramework == ProjectGenerationFramework.NET30 || CurrentFramework == ProjectGenerationFramework.NET35 || CurrentFramework == ProjectGenerationFramework.NET35Client || CurrentFramework == ProjectGenerationFramework.NET40 || CurrentFramework == ProjectGenerationFramework.NET40Client || CurrentFramework == ProjectGenerationFramework.NET45)
-			{
-				if (CurrentFramework == ProjectGenerationFramework.NET30) return SupportedFrameworks.HasFlag(SupportedFrameworks.NET30);
-				if (CurrentFramework == ProjectGenerationFramework.NET35) return SupportedFrameworks.HasFlag(SupportedFrameworks.NET35);
-				if (CurrentFramework == ProjectGenerationFramework.NET35Client) return SupportedFrameworks.HasFlag(SupportedFrameworks.NET35);
-				if (CurrentFramework == ProjectGenerationFramework.NET40) return SupportedFrameworks.HasFlag(SupportedFrameworks.NET40);
-				if (CurrentFramework == ProjectGenerationFramework.NET40Client) return SupportedFrameworks.HasFlag(SupportedFrameworks.NET40);
-				if (CurrentFramework == ProjectGenerationFramework.NET45) return SupportedFrameworks.HasFlag(SupportedFrameworks.NET45);
-			}
-			else if (CurrentFramework == ProjectGenerationFramework.SL40 || CurrentFramework == ProjectGenerationFramework.SL50)
-			{
-				if (CurrentFramework == ProjectGenerationFramework.SL40) return SupportedFrameworks.HasFlag(SupportedFrameworks.SL40);
-				if (CurrentFramework == ProjectGenerationFramework.SL50) return SupportedFrameworks.HasFlag(SupportedFrameworks.SL50);
-			}
-			else
-			{
-				if (CurrentFramework == ProjectGenerationFramework.WIN8) return SupportedFrameworks.HasFlag(SupportedFrameworks.WIN8);
-			}
-			return true;
-		}
-
 		public string ToScopeString()
 		{
 			if (Scope == DataScope.Public) return "public";

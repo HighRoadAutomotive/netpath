@@ -50,89 +50,95 @@ namespace NETPath.Generators.CS
 			return code.ToString();
 		}
 
-		public static string GenerateServerCode45(Namespace o)
+		public static string GenerateServerCode45(Namespace o, ProjectGenerationTarget target)
 		{
+			if (!target.TargetTypes.Intersect(o.Enums).Any() && !target.TargetTypes.Intersect(o.Data).Any() && !target.TargetTypes.Intersect(o.Services).Any() && !target.TargetTypes.Intersect(o.RESTServices).Any() && !target.TargetTypes.Intersect(o.Bindings).Any() && !target.TargetTypes.Intersect(o.Hosts).Any())
+				return "";
+
 			var code = new StringBuilder();
 
 			code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
 			code.AppendLine("{");
 
-			if (o.Enums.Count > 0)
+			if (target.TargetTypes.Intersect(o.Enums).Any())
 			{
 				code.AppendLine("\t/**************************************************************************");
 				code.AppendLine("\t*\tEnumerations");
 				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
-				foreach (Projects.Enum ee in o.Enums)
-					code.AppendLine(EnumGenerator.GenerateServerCode45(ee));
+				foreach (var ee in target.TargetTypes.Intersect(o.Enums))
+					code.AppendLine(EnumGenerator.GenerateServerCode45((Projects.Enum)ee));
 				code.AppendLine();
 			}
 
-			if (o.Data.Count > 0)
+			if (target.TargetTypes.Intersect(o.Data).Any())
 			{
 				code.AppendLine("\t/**************************************************************************");
 				code.AppendLine("\t*\tData Contracts");
 				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
-				foreach (Data de in o.Data)
-					code.AppendLine(DataGenerator.GenerateServerCode45(de));
+				foreach (var de in target.TargetTypes.Intersect(o.Data))
+					code.AppendLine(DataGenerator.GenerateServerCode45((Data)de));
 				code.AppendLine();
 			}
 
-			if (o.Services.Count > 0)
+			if (target.TargetTypes.Intersect(o.Services).Any())
 			{
 				code.AppendLine("\t/**************************************************************************");
 				code.AppendLine("\t*\tService Contracts");
 				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
-				foreach (Service se in o.Services)
-					code.AppendLine(ServiceGenerator.GenerateServerCode45(se));
+				foreach (var se in target.TargetTypes.Intersect(o.Services))
+					code.AppendLine(ServiceGenerator.GenerateServerCode45((Service)se));
 				code.AppendLine();
 			}
 
-			if (o.RESTServices.Count > 0)
+			if (target.TargetTypes.Intersect(o.RESTServices).Any())
 			{
 				code.AppendLine("\t/**************************************************************************");
 				code.AppendLine("\t*\tREST Service Contracts");
 				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
-				foreach (RESTService se in o.RESTServices)
-					code.AppendLine(RESTServiceGenerator.GenerateServerCode(se));
+				foreach (var se in target.TargetTypes.Intersect(o.RESTServices))
+					code.AppendLine(RESTServiceGenerator.GenerateServerCode((RESTService)se));
 				code.AppendLine();
 			}
 
-			if (o.Bindings.Count > 0)
+			if (target.TargetTypes.Intersect(o.Bindings).Any())
 			{
 				code.AppendLine("\t/**************************************************************************");
 				code.AppendLine("\t*\tService Bindings");
 				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
-				foreach (ServiceBinding sb in o.Bindings)
-					code.AppendLine(BindingsGenerator.GenerateCode45(sb, ProjectGenerationFramework.NET45));
+				foreach (var sb in target.TargetTypes.Intersect(o.Bindings))
+					code.AppendLine(BindingsGenerator.GenerateCode45((ServiceBinding)sb, ProjectGenerationFramework.NET45));
 				code.AppendLine();
 			}
 
-			if (o.Hosts.Count > 0)
+			if (target.TargetTypes.Intersect(o.Hosts).Any())
 			{
 				code.AppendLine("\t/**************************************************************************");
 				code.AppendLine("\t*\tService Hosts");
 				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
-				foreach (Host he in o.Hosts)
-					code.AppendLine(HostGenerator.GenerateServerCode45(he));
+				foreach (var he in target.TargetTypes.Intersect(o.Hosts))
+					code.AppendLine(HostGenerator.GenerateServerCode45((Host)he));
 				code.AppendLine();
 			}
 
 			code.AppendLine("}");
 
 			foreach (Namespace tn in o.Children)
-				code.AppendLine(GenerateServerCode45(tn));
+				code.AppendLine(GenerateServerCode45(tn, target));
 
 			return code.ToString();
 		}
 
-		public static string GenerateClientCode45(Namespace o)
+		public static string GenerateClientCode45(Namespace o, ProjectGenerationTarget target)
 		{
+			if (!target.TargetTypes.Intersect(o.Enums).Any() && !target.TargetTypes.Intersect(o.Data).Any() && target.TargetTypes.Intersect(o.Services).Any() && !target.TargetTypes.Intersect(o.RESTServices).Any() && !target.TargetTypes.Intersect(o.Bindings).Any())
+				return "";
+
 			var code = new StringBuilder();
 
 			code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
@@ -144,8 +150,8 @@ namespace NETPath.Generators.CS
 				code.AppendLine("\t*\tEnumeration Contracts");
 				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
-				foreach (Projects.Enum ee in o.Enums)
-					code.AppendLine(EnumGenerator.GenerateProxyCode45(ee));
+				foreach (var ee in target.TargetTypes.Intersect(o.Enums))
+					code.AppendLine(EnumGenerator.GenerateProxyCode45((Projects.Enum)ee));
 				code.AppendLine();
 			}
 
@@ -155,10 +161,10 @@ namespace NETPath.Generators.CS
 				code.AppendLine("\t*\tData Contracts");
 				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
-				foreach (Data de in o.Data)
+				foreach (var de in target.TargetTypes.Intersect(o.Data))
 				{
-					code.AppendLine(DataGenerator.GenerateProxyCode45(de));
-					code.AppendLine(DataGenerator.GenerateXAMLCode45(de));
+					code.AppendLine(DataGenerator.GenerateProxyCode45((Data)de));
+					code.AppendLine(DataGenerator.GenerateXAMLCode45((Data)de));
 				}
 				code.AppendLine();
 			}
@@ -169,8 +175,8 @@ namespace NETPath.Generators.CS
 				code.AppendLine("\t*\tService Contracts");
 				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
-				foreach (Service se in o.Services)
-					code.AppendLine(ServiceGenerator.GenerateClientCode45(se, ProjectGenerationFramework.NET45));
+				foreach (var se in target.TargetTypes.Intersect(o.Services))
+					code.AppendLine(ServiceGenerator.GenerateClientCode45((Service)se, ProjectGenerationFramework.NET45));
 				code.AppendLine();
 			}
 
@@ -180,8 +186,8 @@ namespace NETPath.Generators.CS
 				code.AppendLine("\t*\tREST Service Contracts");
 				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
-				foreach (RESTService se in o.RESTServices)
-					code.AppendLine(RESTServiceGenerator.GenerateClientCode45(se));
+				foreach (var se in target.TargetTypes.Intersect(o.RESTServices))
+					code.AppendLine(RESTServiceGenerator.GenerateClientCode45((RESTService)se));
 				code.AppendLine();
 			}
 
@@ -191,21 +197,24 @@ namespace NETPath.Generators.CS
 				code.AppendLine("\t*\tService Bindings");
 				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
-				foreach (ServiceBinding sb in o.Bindings)
-					code.AppendLine(BindingsGenerator.GenerateCode45(sb, ProjectGenerationFramework.NET45));
+				foreach (var sb in target.TargetTypes.Intersect(o.Bindings))
+					code.AppendLine(BindingsGenerator.GenerateCode45((ServiceBinding)sb, ProjectGenerationFramework.NET45));
 				code.AppendLine();
 			}
 
 			code.AppendLine("}");
 
 			foreach (Namespace tn in o.Children)
-				code.AppendLine(GenerateClientCode45(tn));
+				code.AppendLine(GenerateClientCode45(tn, target));
 
 			return code.ToString();
 		}
 
-		public static string GenerateClientCodeRT8(Namespace o)
+		public static string GenerateClientCodeRT8(Namespace o, ProjectGenerationTarget target)
 		{
+			if (!target.TargetTypes.Intersect(o.Enums).Any() && !target.TargetTypes.Intersect(o.Data).Any() && target.TargetTypes.Intersect(o.Services).Any() && !target.TargetTypes.Intersect(o.RESTServices).Any() && !target.TargetTypes.Intersect(o.Bindings).Any())
+				return "";
+
 			var code = new StringBuilder();
 
 			code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
@@ -217,8 +226,8 @@ namespace NETPath.Generators.CS
 				code.AppendLine("\t*\tEnumeration Contracts");
 				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
-				foreach (Projects.Enum ee in o.Enums)
-					code.AppendLine(EnumGenerator.GenerateProxyCode45(ee));
+				foreach (var ee in target.TargetTypes.Intersect(o.Enums))
+					code.AppendLine(EnumGenerator.GenerateProxyCode45((Projects.Enum)ee));
 				code.AppendLine();
 			}
 
@@ -228,10 +237,10 @@ namespace NETPath.Generators.CS
 				code.AppendLine("\t*\tData Contracts");
 				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
-				foreach (Data de in o.Data)
+				foreach (var de in target.TargetTypes.Intersect(o.Data))
 				{
-					code.AppendLine(DataGenerator.GenerateProxyCodeRT8(de));
-					code.AppendLine(DataGenerator.GenerateXAMLCodeRT8(de));
+					code.AppendLine(DataGenerator.GenerateProxyCodeRT8((Data)de));
+					code.AppendLine(DataGenerator.GenerateXAMLCodeRT8((Data)de));
 				}
 				code.AppendLine();
 			}
@@ -242,8 +251,8 @@ namespace NETPath.Generators.CS
 				code.AppendLine("\t*\tService Contracts");
 				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
-				foreach (Service se in o.Services)
-					code.AppendLine(ServiceGenerator.GenerateClientCode45(se, ProjectGenerationFramework.WIN8));
+				foreach (var se in target.TargetTypes.Intersect(o.Services))
+					code.AppendLine(ServiceGenerator.GenerateClientCode45((Service)se, ProjectGenerationFramework.NET45));
 				code.AppendLine();
 			}
 
@@ -253,8 +262,8 @@ namespace NETPath.Generators.CS
 				code.AppendLine("\t*\tREST Service Contracts");
 				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
-				foreach (RESTService se in o.RESTServices)
-					code.AppendLine(RESTServiceGenerator.GenerateClientCode45(se));
+				foreach (var se in target.TargetTypes.Intersect(o.RESTServices))
+					code.AppendLine(RESTServiceGenerator.GenerateClientCode45((RESTService)se));
 				code.AppendLine();
 			}
 
@@ -264,15 +273,15 @@ namespace NETPath.Generators.CS
 				code.AppendLine("\t*\tService Bindings");
 				code.AppendLine("\t**************************************************************************/");
 				code.AppendLine();
-				foreach (ServiceBinding sb in o.Bindings)
-					code.AppendLine(BindingsGenerator.GenerateCodeRT8(sb));
+				foreach (var sb in target.TargetTypes.Intersect(o.Bindings))
+					code.AppendLine(BindingsGenerator.GenerateCodeRT8((ServiceBinding)sb));
 				code.AppendLine();
 			}
 
 			code.AppendLine("}");
 
 			foreach (Namespace tn in o.Children)
-				code.AppendLine(GenerateClientCode45(tn));
+				code.AppendLine(GenerateClientCodeRT8(tn, target));
 
 			return code.ToString();
 		}

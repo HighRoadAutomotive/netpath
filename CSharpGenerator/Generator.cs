@@ -52,21 +52,20 @@ namespace NETPath.Generators.CS
 			if (HighestSeverity == CompileMessageSeverity.ERROR)
 				return;
 
-			if (!ClientOnly)
-				foreach (ProjectGenerationTarget t in Data.ServerGenerationTargets)
-				{
-					string op = new Uri(new Uri(Data.AbsolutePath), t.Path).LocalPath;
-					op = Uri.UnescapeDataString(op);
-					NewOutput(Data.ID, string.Format("Writing Server Output: {0}", op));
-					System.IO.File.WriteAllText(op, GenerateServer(Data, t.Framework));
-				}
+			foreach (ProjectGenerationTarget t in Data.ServerGenerationTargets)
+			{
+				string op = new Uri(new Uri(Data.AbsolutePath), t.Path).LocalPath;
+				op = Uri.UnescapeDataString(op);
+				NewOutput(Data.ID, string.Format("Writing Server Output: {0}", op));
+				System.IO.File.WriteAllText(op, Generate(Data, t, true));
+			}
 
-			foreach (ProjectGenerationTarget t in Data.ClientGenerationTargets.Where(a => a.Framework != ProjectGenerationFramework.WIN8))
+			foreach (ProjectGenerationTarget t in Data.ClientGenerationTargets)
 			{
 				string op = new Uri(new Uri(Data.AbsolutePath), t.Path).LocalPath;
 				op = Uri.UnescapeDataString(op);
 				NewOutput(Data.ID, string.Format("Writing Client Output: {0}", op));
-				System.IO.File.WriteAllText(op, GenerateClient(Data, t.Framework));
+				System.IO.File.WriteAllText(op, Generate(Data, t, false));
 			}
 		}
 
@@ -78,19 +77,6 @@ namespace NETPath.Generators.CS
 		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
 		public void Verify(Project Data)
 		{
-			if (string.IsNullOrEmpty(Data.ServerOutputFile))
-				AddMessage(new CompileMessage("GS0003", "The '" + Data.Name + "' project does not have a Server Assembly Name. You must specify a Server Assembly Name.", CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Data.ID));
-			else
-				if (RegExs.MatchFileName.IsMatch(Data.ServerOutputFile) == false)
-					AddMessage(new CompileMessage("GS0004", "The Server Assembly Name in '" + Data.Name + "' project is not set or contains invalid characters. You must specify a valid Windows file name.", CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Data.ID));
-			if (string.IsNullOrEmpty(Data.ClientOutputFile))
-				AddMessage(new CompileMessage("GS0005", "The '" + Data.Name + "' project does not have a Client Assembly Name. You must specify a Client Assembly Name.", CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Data.ID));
-			else
-				if (RegExs.MatchFileName.IsMatch(Data.ClientOutputFile) == false)
-					AddMessage(new CompileMessage("GS0006", "The Client Assembly Name in '" + Data.Name + "' project is not set or contains invalid characters. You must specify a valid Windows file name.", CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Data.ID));
-			if ((Data.ServerOutputFile == Data.ClientOutputFile))
-				AddMessage(new CompileMessage("GS0007", "The '" + Data.Name + "' project Client and Server Assembly Names are the same. You must specify a different Server or Client Assembly Name.", CompileMessageSeverity.ERROR, null, Data, Data.GetType(), Data.ID));
-
 			NamespaceGenerator.VerifyCode(Data.Namespace, AddMessage);
 		}
 
@@ -99,29 +85,7 @@ namespace NETPath.Generators.CS
 			return System.Windows.Application.Current == null ? null : Task.Run(() => System.Windows.Application.Current.Dispatcher.Invoke(() => Verify(Data), DispatcherPriority.Normal));
 		}
 
-		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
-		public string GenerateServer(Project Data, ProjectGenerationFramework Framework)
-		{
-			return Generate(Data, Framework, true);
-		}
-
-		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
-		public string GenerateClient(Project Data, ProjectGenerationFramework Framework)
-		{
-			return Generate(Data, Framework, false);
-		}
-
-		public Task<string> GenerateServerAsync(Project Data, ProjectGenerationFramework Framework)
-		{
-			return System.Windows.Application.Current == null ? null : Task.Run(() => System.Windows.Application.Current.Dispatcher.Invoke(() => GenerateServer(Data, Framework), DispatcherPriority.Normal));
-		}
-
-		public Task<string> GenerateClientAsync(Project Data, ProjectGenerationFramework Framework)
-		{
-			return System.Windows.Application.Current == null ? null : Task.Run(() => System.Windows.Application.Current.Dispatcher.Invoke(() => GenerateClient(Data, Framework), DispatcherPriority.Normal));
-		}
-
-		private string Generate(Project Data, ProjectGenerationFramework Framework, bool Server)
+		private string Generate(Project Data, ProjectGenerationTarget Target, bool Server)
 		{
 			Globals.CurrentProjectID = Data.ID;
 
@@ -131,34 +95,16 @@ namespace NETPath.Generators.CS
 			code.AppendLine("// incorrect behavior and will be lost if the code is regenerated.");
 			code.AppendLine("//");
 			code.AppendLine(string.Format("// NETPath Version:\t{0}", Globals.ApplicationVersion));
-			if (Framework == ProjectGenerationFramework.NET30) code.AppendLine("// .NET Framework Version:\t3.0");
-			if (Framework == ProjectGenerationFramework.NET35) code.AppendLine("// .NET Framework Version:\t3.5");
-			if (Framework == ProjectGenerationFramework.NET35Client) code.AppendLine("// .NET Framework Version:\t3.5 (Client)");
-			if (Framework == ProjectGenerationFramework.NET40) code.AppendLine("// .NET Framework Version:\t4.0");
-			if (Framework == ProjectGenerationFramework.NET40Client) code.AppendLine("// .NET Framework Version:\t4.0 (Client)");
-			if (Framework == ProjectGenerationFramework.NET45) code.AppendLine("// .NET Framework Version:\t4.5");
-			if (Framework == ProjectGenerationFramework.SL40) code.AppendLine("// Silverlight Version:\t4.0");
-			if (Framework == ProjectGenerationFramework.SL50) code.AppendLine("// Silverlight Version:\t5.0");
+			if (Target.Framework == ProjectGenerationFramework.NET45) code.AppendLine("// .NET Framework Version:\t4.5");
+			if (Target.Framework == ProjectGenerationFramework.WIN8) code.AppendLine("// Windows Runtime Version:\t8.0");
 			code.AppendLine("//---------------------------------------------------------------------------");
 			code.AppendLine();
 
 			// Generate using namespaces
-			foreach (ProjectUsingNamespace pun in GetUsingNamespaces(Data))
+			foreach (ProjectUsingNamespace pun in Data.UsingNamespaces)
 			{
-				if (pun.Server && Server)
-				{
-					if (pun.NET && (Framework == ProjectGenerationFramework.NET30 || Framework == ProjectGenerationFramework.NET35 || Framework == ProjectGenerationFramework.NET40 || Framework == ProjectGenerationFramework.NET45))
-						code.AppendFormat("using {0};{1}", pun.Namespace, Environment.NewLine);
-					else if (pun.NET && (Framework == ProjectGenerationFramework.NET35Client || Framework == ProjectGenerationFramework.NET40Client))
-						if (!pun.IsFullFrameworkOnly) code.AppendFormat("using {0};{1}", pun.Namespace, Environment.NewLine);
-				}
-				if (!pun.Client || Server) continue;
-				if (pun.NET && (Framework == ProjectGenerationFramework.NET30 || Framework == ProjectGenerationFramework.NET35 || Framework == ProjectGenerationFramework.NET40 || Framework == ProjectGenerationFramework.NET45))
-					code.AppendFormat("using {0};{1}", pun.Namespace, Environment.NewLine);
-				else if (pun.NET && (Framework == ProjectGenerationFramework.NET35Client || Framework == ProjectGenerationFramework.NET40Client))
-					if (!pun.IsFullFrameworkOnly) code.AppendFormat("using {0};{1}", pun.Namespace, Environment.NewLine);
-				if (pun.SL && (Framework == ProjectGenerationFramework.SL40 || Framework == ProjectGenerationFramework.SL50))
-					code.AppendFormat("using {0};{1}", pun.Namespace, Environment.NewLine);
+				if ((pun.Server && Server) || (pun.Client && !Server))
+					code.AppendLine(string.Format("using {0};", pun.Namespace));
 			}
 			if (Data.EnableEntityFramework && Server) code.AppendLine("using System.Data.Entity.Core.Objects;");
 			code.AppendLine();
@@ -172,23 +118,13 @@ namespace NETPath.Generators.CS
 			//Generate project
 			if (Server)
 			{
-				//if (Framework == ProjectGenerationFramework.NET30) code.AppendLine(NamespaceGenerator.GenerateServerCode30(Data.Namespace));
-				//if (Framework == ProjectGenerationFramework.NET35) code.AppendLine(NamespaceGenerator.GenerateServerCode35(Data.Namespace));
-				//if (Framework == ProjectGenerationFramework.NET35Client) code.AppendLine(NamespaceGenerator.GenerateServerCode35Client(Data.Namespace));
-				//if (Framework == ProjectGenerationFramework.NET40) code.AppendLine(NamespaceGenerator.GenerateServerCode40(Data.Namespace));
-				//if (Framework == ProjectGenerationFramework.NET40Client) code.AppendLine(NamespaceGenerator.GenerateServerCode40Client(Data.Namespace));
-				if (Framework == ProjectGenerationFramework.NET45) code.AppendLine(NamespaceGenerator.GenerateServerCode45(Data.Namespace));
-				if (Framework == ProjectGenerationFramework.WIN8) code.AppendLine(NamespaceGenerator.GenerateServerCode45(Data.Namespace));
+				if (Target.Framework == ProjectGenerationFramework.NET45 || Target.Framework == ProjectGenerationFramework.WIN8)
+					code.AppendLine(NamespaceGenerator.GenerateServerCode45(Data.Namespace, Target));
 			}
 			else
 			{
-				//if (Framework == ProjectGenerationFramework.NET30) code.AppendLine(NamespaceGenerator.GenerateClientCode30(Data.Namespace));
-				//if (Framework == ProjectGenerationFramework.NET35) code.AppendLine(NamespaceGenerator.GenerateClientCode35(Data.Namespace));
-				//if (Framework == ProjectGenerationFramework.NET35Client) code.AppendLine(NamespaceGenerator.GenerateClientCode35Client(Data.Namespace));
-				//if (Framework == ProjectGenerationFramework.NET40) code.AppendLine(NamespaceGenerator.GenerateClientCode40(Data.Namespace));
-				//if (Framework == ProjectGenerationFramework.NET40Client) code.AppendLine(NamespaceGenerator.GenerateClientCode40Client(Data.Namespace));
-				if (Framework == ProjectGenerationFramework.NET45) code.AppendLine(NamespaceGenerator.GenerateClientCode45(Data.Namespace));
-				if (Framework == ProjectGenerationFramework.WIN8) code.AppendLine(NamespaceGenerator.GenerateClientCodeRT8(Data.Namespace));
+				if (Target.Framework == ProjectGenerationFramework.NET45) code.AppendLine(NamespaceGenerator.GenerateClientCode45(Data.Namespace, Target));
+				if (Target.Framework == ProjectGenerationFramework.WIN8) code.AppendLine(NamespaceGenerator.GenerateClientCodeRT8(Data.Namespace, Target));
 			}
 
 			//Reenable XML documentation warnings
@@ -204,11 +140,6 @@ namespace NETPath.Generators.CS
 			if (Message.Severity == CompileMessageSeverity.WARN && HighestSeverity == CompileMessageSeverity.INFO) HighestSeverity = CompileMessageSeverity.WARN;
 			NewOutput(Message.ProjectID, string.Format("{0} {1}: {2} Object: {3} Owner: {4}", Message.Severity, Message.Code, Message.Description, Message.ErrorObject, Message.Owner));
 			NewMessage(Message.ProjectID, Message);
-		}
-
-		private static IEnumerable<ProjectUsingNamespace> GetUsingNamespaces(Project CurProject)
-		{
-			return new List<ProjectUsingNamespace>(CurProject.UsingNamespaces);
 		}
 	}
 
