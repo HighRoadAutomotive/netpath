@@ -9,7 +9,7 @@
 		xmlns:sf="http://schemas.syncfusion.com/wpf"
 		Icon="pack://application:,,,/NETPath;component/Icons/DesignStudio.ico" 
 		mc:Ignorable="d" d:DesignHeight="1040" d:DesignWidth="1980"
-		Title="NETPath" MinHeight="1040" MinWidth="1920" DataContext="{Binding RelativeSource={RelativeSource Self}}" Style="{StaticResource MainWindowStyle}"
+		Title="NETPath" MinHeight="1040" MinWidth="1880" DataContext="{Binding RelativeSource={RelativeSource Self}}" Style="{StaticResource MainWindowStyle}"
 		SourceInitialized="Main_SourceInitialized" StateChanged="Main_StateChanged" Closing="Main_Closing" KeyUp="Main_KeyUp" >
 	<WindowChrome.WindowChrome>
 		<WindowChrome CaptionHeight="34" ResizeBorderThickness="4" CornerRadius="0" GlassFrameThickness="0" UseAeroCaptionButtons="False" />
