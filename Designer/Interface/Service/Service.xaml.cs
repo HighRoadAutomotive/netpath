@@ -418,7 +418,7 @@ namespace NETPath.Interface.Service
 		{
 			if (AddCallbackMethod.IsEnabled == false) return;
 
-			var t = new Projects.Method(AddCallbackMemberType.OpenType, AddCallbackMemberName.Text, ServiceType);
+			var t = new Projects.Callback(AddCallbackMemberType.OpenType, AddCallbackMemberName.Text, ServiceType);
 			ServiceType.CallbackOperations.Add(t);
 
 			AddCallbackMemberType.Focus();
@@ -452,11 +452,11 @@ namespace NETPath.Interface.Service
 				o.IsSelected = false;
 			t.IsSelected = true;
 
-			if (t.GetType() == typeof(Projects.Method))
+			if (t.GetType() == typeof(Projects.Callback))
 			{
-				var m = t as Projects.Method;
+				var m = t as Projects.Callback;
 				if (m == null) return;
-				ActiveCallback = new Method(m);
+				ActiveCallback = new Callback(m);
 			}
 			else
 			{

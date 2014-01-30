@@ -37,6 +37,7 @@
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
@@ -46,14 +47,16 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<Label Content="Calling Convention:" Height="Auto" HorizontalAlignment="Right" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="0" />
-		<ToggleButton Content="Synchronous" IsChecked="{Binding Path=MethodData.UseSyncPattern}" Margin="5" Grid.Column="1" Grid.Row="0" />
-		<ToggleButton Content="Awaitable" IsChecked="{Binding Path=MethodData.UseAwaitPattern}" Margin="5" Grid.Column="2" Grid.Row="0" />
+		<ToggleButton Content="Server Synchronous" IsChecked="{Binding Path=MethodData.UseServerSyncPattern}" Margin="5" Grid.Column="1" Grid.Row="0" />
+		<ToggleButton Content="Server Awaitable" IsChecked="{Binding Path=MethodData.UseServerAwaitPattern}" Margin="5" Grid.Column="2" Grid.Row="0" />
+		<ToggleButton Content="Client Synchronous" IsChecked="{Binding Path=MethodData.UseClientSyncPattern}" Margin="5" Grid.Column="3" Grid.Row="0" />
+		<ToggleButton Content="Client Awaitable" IsChecked="{Binding Path=MethodData.UseClientAwaitPattern}" Margin="5" Grid.Column="4" Grid.Row="0" />
 		<Label Content="Configuration:" Height="Auto" HorizontalAlignment="Right" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" />
-		<ToggleButton Content="Call Asynchronously" IsChecked="{Binding Path=MethodData.UseTPLForCallbacks}" Margin="5" Grid.Column="3" Grid.Row="0" Name="UseTPL" />
-		<ToggleButton Content="Data Is Read-Only" IsChecked="{Binding Path=MethodData.IsReadOnly}" Margin="5" Grid.Column="1" Grid.Row="2" />
-		<ToggleButton Content="Hidden" IsChecked="{Binding Path=MethodData.IsHidden}" Margin="5" Grid.Column="2" Grid.Row="2" />
-		<Label Content="Protection:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="2" />
-		<ComboBox Height="23" Margin="80,5,5,5" SelectedIndex="{Binding Path=MethodData.ProtectionLevel, Converter={StaticResource ProtectionLevelConverter}}" Grid.Column="3" Grid.Row="2" >
+		<ToggleButton Content="Call Asynchronously" IsChecked="{Binding Path=MethodData.UseTPLForCallbacks}" Margin="5" Grid.Column="1" Grid.Row="2" Name="UseTPL" />
+		<ToggleButton Content="Data Is Read-Only" IsChecked="{Binding Path=MethodData.IsReadOnly}" Margin="5" Grid.Column="2" Grid.Row="2" />
+		<ToggleButton Content="Hidden" IsChecked="{Binding Path=MethodData.IsHidden}" Margin="5" Grid.Column="3" Grid.Row="2" />
+		<Label Content="Protection:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="4" Grid.Row="2" />
+		<ComboBox Height="23" Margin="80,5,5,5" SelectedIndex="{Binding Path=MethodData.ProtectionLevel, Converter={StaticResource ProtectionLevelConverter}}" Grid.Column="4" Grid.Row="2" >
 			<ComboBoxItem Content="None" />
 			<ComboBoxItem Content="Sign" />
 			<ComboBoxItem Content="Encrypt and Sign" />

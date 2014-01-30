@@ -65,7 +65,7 @@ namespace NETPath.Interface
 		#region - Window Events -
 
 		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
-		private async void Main_SourceInitialized(object sender, EventArgs e)
+		private void Main_SourceInitialized(object sender, EventArgs e)
 		{
 			SystemMenuHome.IsChecked = true;
 		}

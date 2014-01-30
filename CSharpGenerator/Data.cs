@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.ServiceModel.Security.Tokens;
 using System.Text;
 using System.Threading.Tasks;
 using NETPath.Projects;
@@ -509,7 +510,7 @@ namespace NETPath.Generators.CS
 			if (o.DREEnabled)
 			{
 				code.AppendLine("\t\t//Data Revision Exchange Support");
-				code.AppendLine(string.Format("\t\tprotected override {0}void BatchUpdates()", o.DataRevisionServiceNames.Any(a => a.IsAwaitable) ? "async " : ""));
+				code.AppendLine(string.Format("\t\tprotected override {0}{1}void BatchUpdates()", o.DataRevisionServiceNames.Any(a => a.IsServerAwaitable) && IsServer ? "async " : "", o.DataRevisionServiceNames.Any(a => a.IsClientAwaitable) && !IsServer ? "async " : ""));
 				code.AppendLine("\t\t{");
 				if (o.Elements.Any(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch))
 				{
@@ -517,9 +518,9 @@ namespace NETPath.Generators.CS
 					foreach (var drs in o.DataRevisionServiceNames.Where(d => d.IsServer == IsServer))
 					{
 						if (o.Elements.Any(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch) && !IsServer && Globals.CurrentProjectID == drs.ProjectID)
-							code.AppendLine(string.Format("\t\t\t{4}{0}Proxy.Current.BatchUpdate{1}DRE{3}({2},", drs.Path, o.HasClientType ? o.ClientType.Name : o.Name, "_DREID", drs.IsAwaitable ? "Async" : "", drs.IsAwaitable ? "await " : ""));
+							code.AppendLine(string.Format("\t\t\t{4}{0}Proxy.Current.BatchUpdate{1}DRE{3}({2},", drs.Path, o.HasClientType ? o.ClientType.Name : o.Name, "_DREID", drs.IsClientAwaitable ? "Async" : "", drs.IsClientAwaitable ? "await " : ""));
 						else if (IsServer)
-							code.AppendLine(string.Format("\t\t\t{4}{0}Base.CallbackBatchUpdate{1}DRE{3}(null, {2},", drs.Path, o.Name, "_DREID", drs.IsAwaitable ? "Async" : "", drs.IsAwaitable ? "await " : ""));
+							code.AppendLine(string.Format("\t\t\t{4}{0}Base.CallbackBatchUpdate{1}DRE{3}(null, {2},", drs.Path, o.Name, "_DREID", drs.IsServerAwaitable ? "Async" : "", drs.IsServerAwaitable ? "await " : ""));
 						else continue;
 						foreach (var t in o.Elements.Where(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch && !a.DREPrimaryKey && !(a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
 							code.AppendLine(string.Format("\t\t\t\tdelta.FirstOrDefault(a => a.Key == {0}Property.ID) != null ? delta.First(a => a.Key == {0}Property.ID) as CMDItemValue<{1}> : null,", t.HasClientType ? t.ClientName : t.DataName, DataTypeGenerator.GenerateType(t.DataType)));
@@ -882,7 +883,7 @@ namespace NETPath.Generators.CS
 
 			code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty{5} {1}Property{5} = DependencyProperty.Register{4}(\"{1}\", typeof({0}), typeof({2}){3});", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.DataType, o.Owner.CMDEnabled)), o.XAMLName, o.Owner.XAMLType.Name, o.DREEnabled ? string.Format(", {0}PropertyMetadata", o.XAMLName) : ", null", o.IsReadOnly ? "ReadOnly" : "", o.IsReadOnly ? "Key" : ""));
 			if (o.IsReadOnly) code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty {0}Property = {0}PropertyKey.DependencyProperty;", o.XAMLName));
-	
+
 			return code.ToString();
 		}
 
@@ -1151,13 +1152,13 @@ namespace NETPath.Generators.CS
 			foreach (var drs in DRS.Where(d => d.IsServer == IsServer))
 				if (!IsCollection)
 				{
-					if (!IsServer && Globals.CurrentProjectID == drs.ProjectID) code.Append(string.Format("{0}Proxy.Current.Update{1}{2}DRE{3}(t._DREID, n); ", drs.Path, Class, Property, drs.IsAwaitable ? "Async" : ""));
-					else if (IsServer) code.Append(string.Format("{0}Base.CallbackUpdate{1}{2}DRE{3}(null, t._DREID, n); ", drs.Path, Class, Property, drs.IsAwaitable ? "Async" : ""));
+					if (!IsServer && Globals.CurrentProjectID == drs.ProjectID) code.Append(string.Format("{0}Proxy.Current.Update{1}{2}DRE{3}(t._DREID, n); ", drs.Path, Class, Property, drs.IsClientAwaitable ? "Async" : ""));
+					else if (IsServer) code.Append(string.Format("{0}Base.CallbackUpdate{1}{2}DRE{3}(null, t._DREID, n); ", drs.Path, Class, Property, drs.IsServerAwaitable ? "Async" : ""));
 				}
 				else
 				{
-					if (!IsServer && Globals.CurrentProjectID == drs.ProjectID) code.AppendLine(string.Format("\t\t\t{0}Proxy.Current.Update{1}{2}DRE{3}(_DREID, Changes);", drs.Path, Class, Property, drs.IsAwaitable ? "Async" : ""));
-					else if (IsServer) code.AppendLine(string.Format("\t\t\t{0}Base.CallbackUpdate{1}{2}DRE{3}(null, _DREID, Changes);", drs.Path, Class, Property, drs.IsAwaitable ? "Async" : ""));
+					if (!IsServer && Globals.CurrentProjectID == drs.ProjectID) code.AppendLine(string.Format("\t\t\t{0}Proxy.Current.Update{1}{2}DRE{3}(_DREID, Changes);", drs.Path, Class, Property, drs.IsClientAwaitable ? "Async" : ""));
+					else if (IsServer) code.AppendLine(string.Format("\t\t\t{0}Base.CallbackUpdate{1}{2}DRE{3}(null, _DREID, Changes);", drs.Path, Class, Property, drs.IsServerAwaitable ? "Async" : ""));
 				}
 			return code.ToString();
 		}

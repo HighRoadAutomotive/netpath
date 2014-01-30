@@ -36,9 +36,6 @@ namespace NETPath.Projects
 		public ObservableCollection<Operation> CallbackOperations { get { return (ObservableCollection<Operation>)GetValue(CallbackOperationsProperty); } set { SetValue(CallbackOperationsProperty, value); } }
 		public static readonly DependencyProperty CallbackOperationsProperty = DependencyProperty.Register("CallbackOperations", typeof(ObservableCollection<Operation>), typeof(Service));
 
-		public ServiceAsynchronyMode AsynchronyMode { get { return (ServiceAsynchronyMode)GetValue(AsynchronyModeProperty); } set { SetValue(AsynchronyModeProperty, value); } }
-		public static readonly DependencyProperty AsynchronyModeProperty = DependencyProperty.Register("AsynchronyMode", typeof(ServiceAsynchronyMode), typeof(Service), new PropertyMetadata(ServiceAsynchronyMode.Default));
-
 		public ProtectionLevel ProtectionLevel { get { return (ProtectionLevel)GetValue(ProtectionLevelProperty); } set { SetValue(ProtectionLevelProperty, value); } }
 		public static readonly DependencyProperty ProtectionLevelProperty = DependencyProperty.Register("ProtectionLevel", typeof(ProtectionLevel), typeof(Service));
 
@@ -126,9 +123,12 @@ namespace NETPath.Projects
 		public static readonly DependencyProperty CBValidateMustUnderstandProperty = DependencyProperty.Register("CBValidateMustUnderstand", typeof(bool), typeof(Service), new PropertyMetadata(true));
 
 		//System
-		[IgnoreDataMember] public bool HasCallback { get { return CallbackOperations.Count > 0; } }
-		[IgnoreDataMember] public bool HasCallbackOperations { get { return CallbackOperations.Count > 0 || ServiceOperations.Count(a => a.GetType() == typeof(DataChangeMethod)) > 0; } }
-		[IgnoreDataMember] public bool HasDCMOperations { get { return ServiceOperations.Count(a => a.GetType() == typeof(DataChangeMethod)) > 0; } }
+		[IgnoreDataMember]
+		public bool HasCallback { get { return CallbackOperations.Count > 0; } }
+		[IgnoreDataMember]
+		public bool HasCallbackOperations { get { return CallbackOperations.Count > 0 || ServiceOperations.Count(a => a.GetType() == typeof(DataChangeMethod)) > 0; } }
+		[IgnoreDataMember]
+		public bool HasDCMOperations { get { return ServiceOperations.Count(a => a.GetType() == typeof(DataChangeMethod)) > 0; } }
 
 		public Service()
 			: base(DataTypeMode.Class)
@@ -139,7 +139,8 @@ namespace NETPath.Projects
 			CallbackDocumentation = new Documentation { IsClass = true };
 		}
 
-		public Service(string Name, Namespace Parent) : base(DataTypeMode.Class)
+		public Service(string Name, Namespace Parent)
+			: base(DataTypeMode.Class)
 		{
 			this.Name = Name;
 			this.Parent = Parent;
@@ -293,11 +294,13 @@ namespace NETPath.Projects
 		public ProtectionLevel ProtectionLevel { get { return (ProtectionLevel)GetValue(ProtectionLevelProperty); } set { SetValue(ProtectionLevelProperty, value); } }
 		public static readonly DependencyProperty ProtectionLevelProperty = DependencyProperty.Register("ProtectionLevel", typeof(ProtectionLevel), typeof(Operation), new PropertyMetadata(ProtectionLevel.None));
 
-		[IgnoreDataMember] public string Declaration { get { return (string)GetValue(DeclarationProperty); } protected set { SetValue(DeclarationPropertyKey, value); } }
+		[IgnoreDataMember]
+		public string Declaration { get { return (string)GetValue(DeclarationProperty); } protected set { SetValue(DeclarationPropertyKey, value); } }
 		private static readonly DependencyPropertyKey DeclarationPropertyKey = DependencyProperty.RegisterReadOnly("Declaration", typeof(string), typeof(Operation), new PropertyMetadata(""));
 		public static readonly DependencyProperty DeclarationProperty = DeclarationPropertyKey.DependencyProperty;
-		
-		[IgnoreDataMember] public string ClientDeclaration { get { return (string)GetValue(ClientDeclarationProperty); } protected set { SetValue(ClientDeclarationPropertyKey, value); } }
+
+		[IgnoreDataMember]
+		public string ClientDeclaration { get { return (string)GetValue(ClientDeclarationProperty); } protected set { SetValue(ClientDeclarationPropertyKey, value); } }
 		private static readonly DependencyPropertyKey ClientDeclarationPropertyKey = DependencyProperty.RegisterReadOnly("ClientDeclaration", typeof(string), typeof(Operation), new PropertyMetadata(""));
 		public static readonly DependencyProperty ClientDeclarationProperty = ClientDeclarationPropertyKey.DependencyProperty;
 
@@ -414,7 +417,8 @@ namespace NETPath.Projects
 			Documentation = new Documentation { IsProperty = true };
 		}
 
-		public Property(DataType ReturnType, string Name, Service Owner) : base(Name, Owner)
+		public Property(DataType ReturnType, string Name, Service Owner)
+			: base(Name, Owner)
 		{
 			this.ReturnType = ReturnType;
 			Documentation = new Documentation { IsProperty = true };
@@ -438,17 +442,74 @@ namespace NETPath.Projects
 
 	public class Method : Operation
 	{
-		public bool UseSyncPattern { get { return (bool)GetValue(UseSyncPatternProperty); } set { SetValue(UseSyncPatternProperty, value); } }
-		public static readonly DependencyProperty UseSyncPatternProperty = DependencyProperty.Register("UseSyncPattern", typeof(bool), typeof(Method), new PropertyMetadata(true));
+		public bool UseServerSyncPattern { get { return (bool)GetValue(UseServerSyncPatternProperty); } set { SetValue(UseServerSyncPatternProperty, value); } }
+		public static readonly DependencyProperty UseServerSyncPatternProperty = DependencyProperty.Register("UseServerSyncPattern", typeof(bool), typeof(Method), new PropertyMetadata(false, UseServerSyncPatternChangedCallback));
 
-		public bool UseAwaitPattern { get { return (bool)GetValue(UseAwaitPatternProperty); } set { SetValue(UseAwaitPatternProperty, value); } }
-		public static readonly DependencyProperty UseAwaitPatternProperty = DependencyProperty.Register("UseAwaitPattern", typeof(bool), typeof(Method), new PropertyMetadata(false));
+		private static void UseServerSyncPatternChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as Method;
+			if (t == null) return;
+
+			if ((bool)e.NewValue) t.UseServerAwaitPattern = false;
+			else t.UseServerAwaitPattern = true;
+		}
+
+		public bool UseServerAwaitPattern { get { return (bool)GetValue(UseServerAwaitPatternProperty); } set { SetValue(UseServerAwaitPatternProperty, value); } }
+		public static readonly DependencyProperty UseServerAwaitPatternProperty = DependencyProperty.Register("UseServerAwaitPattern", typeof(bool), typeof(Method), new PropertyMetadata(true, UseServerAwaitPatternChangedCallback));
+
+		private static void UseServerAwaitPatternChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as Method;
+			if (t == null) return;
+
+			if ((bool)e.NewValue) t.UseServerSyncPattern = false;
+			else t.UseServerSyncPattern = true;
+		}
+
+		public bool UseClientSyncPattern { get { return (bool)GetValue(UseClientSyncPatternProperty); } set { SetValue(UseClientSyncPatternProperty, value); } }
+		public static readonly DependencyProperty UseClientSyncPatternProperty = DependencyProperty.Register("UseClientSyncPattern", typeof(bool), typeof(Method), new PropertyMetadata(false, UseClientSyncPatternChangedCallback));
+
+		private static void UseClientSyncPatternChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as Method;
+			if (t == null) return;
+
+			if ((bool)e.NewValue) t.UseClientAwaitPattern = false;
+			else t.UseClientAwaitPattern = true;
+		}
+
+		public bool UseClientAwaitPattern { get { return (bool)GetValue(UseClientAwaitPatternProperty); } set { SetValue(UseClientAwaitPatternProperty, value); } }
+		public static readonly DependencyProperty UseClientAwaitPatternProperty = DependencyProperty.Register("UseClientAwaitPattern", typeof(bool), typeof(Method), new PropertyMetadata(true, UseClientAwaitPatternChangedCallback));
+
+		private static void UseClientAwaitPatternChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as Method;
+			if (t == null) return;
+
+			if (t.IsTerminating)
+			{
+				t.UseClientSyncPattern = true;
+				t.UseClientAwaitPattern = false;
+				return;
+			}
+			if ((bool) e.NewValue) t.UseClientSyncPattern = false;
+			else t.UseClientSyncPattern = true;
+		}
 
 		public bool IsInitiating { get { return (bool)GetValue(IsInitiatingProperty); } set { SetValue(IsInitiatingProperty, value); } }
 		public static readonly DependencyProperty IsInitiatingProperty = DependencyProperty.Register("IsInitiating", typeof(bool), typeof(Method), new PropertyMetadata(false));
 
 		public bool IsTerminating { get { return (bool)GetValue(IsTerminatingProperty); } set { SetValue(IsTerminatingProperty, value); } }
-		public static readonly DependencyProperty IsTerminatingProperty = DependencyProperty.Register("IsTerminating", typeof(bool), typeof(Method), new PropertyMetadata(false));
+		public static readonly DependencyProperty IsTerminatingProperty = DependencyProperty.Register("IsTerminating", typeof(bool), typeof(Method), new PropertyMetadata(false, IsTerminatingChangedCallback));
+
+		private static void IsTerminatingChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as Method;
+			if (t == null) return;
+
+			t.UseClientSyncPattern = true;
+			t.UseClientAwaitPattern = false;
+		}
 
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(Method));
@@ -500,7 +561,8 @@ namespace NETPath.Projects
 			Documentation = new Documentation { IsMethod = true };
 		}
 
-		public Method(string Name, Service Owner) : base(Name, Owner)
+		public Method(string Name, Service Owner)
+			: base(Name, Owner)
 		{
 			Parameters = new ObservableCollection<MethodParameter>();
 			Parameters.CollectionChanged += Parameters_CollectionChanged;
@@ -508,7 +570,8 @@ namespace NETPath.Projects
 			Documentation = new Documentation { IsMethod = true };
 		}
 
-		public Method(DataType ReturnType, string Name, Service Owner) : base(Name, Owner)
+		public Method(DataType ReturnType, string Name, Service Owner)
+			: base(Name, Owner)
 		{
 			Parameters = new ObservableCollection<MethodParameter>();
 			Parameters.CollectionChanged += Parameters_CollectionChanged;
@@ -526,7 +589,152 @@ namespace NETPath.Projects
 		{
 			base.OnPropertyChanged(e);
 
-			if(Parameters == null) return;
+			if (Parameters == null) return;
+			if (e.Property == DeclarationProperty || e.Property == ClientDeclarationProperty) return;
+
+			UpdateDeclaration();
+		}
+
+		internal override void UpdateDeclaration()
+		{
+			var sb = new StringBuilder();
+			foreach (MethodParameter p in Parameters)
+				sb.AppendFormat("{0}, ", p);
+			if (Parameters.Count > 0) sb.Remove(sb.Length - 2, 2);
+			Declaration = string.Format("{0} {1}({2})", ReturnType, ServerName, sb);
+			ClientDeclaration = string.Format("{0} {1}({2})", ReturnType, ClientName, sb);
+		}
+
+		public override IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
+		{
+			var results = new List<FindReplaceResult>();
+			results.AddRange(base.FindReplace(Args));
+			foreach (MethodParameter mp in Parameters)
+				results.AddRange(mp.FindReplace(Args));
+			return results;
+		}
+
+		public override void Replace(FindReplaceInfo Args, string Field)
+		{
+			foreach (MethodParameter mp in Parameters)
+				mp.Replace(Args, Field);
+		}
+	}
+
+	public class Callback : Operation
+	{
+		public bool UseServerSyncPattern { get { return (bool)GetValue(UseServerSyncPatternProperty); } set { SetValue(UseServerSyncPatternProperty, value); } }
+		public static readonly DependencyProperty UseServerSyncPatternProperty = DependencyProperty.Register("UseServerSyncPattern", typeof(bool), typeof(Callback), new PropertyMetadata(false, UseServerSyncPatternChangedCallback));
+
+		private static void UseServerSyncPatternChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as Callback;
+			if (t == null) return;
+
+			if ((bool)e.NewValue) t.UseServerAwaitPattern = false;
+			else t.UseServerAwaitPattern = true;
+		}
+
+		public bool UseServerAwaitPattern { get { return (bool)GetValue(UseServerAwaitPatternProperty); } set { SetValue(UseServerAwaitPatternProperty, value); } }
+		public static readonly DependencyProperty UseServerAwaitPatternProperty = DependencyProperty.Register("UseServerAwaitPattern", typeof(bool), typeof(Callback), new PropertyMetadata(true, UseServerAwaitPatternChangedCallback));
+
+		private static void UseServerAwaitPatternChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as Callback;
+			if (t == null) return;
+
+			if ((bool)e.NewValue) t.UseServerSyncPattern = false;
+			else t.UseServerSyncPattern = true;
+		}
+
+		public bool UseClientSyncPattern { get { return (bool)GetValue(UseClientSyncPatternProperty); } set { SetValue(UseClientSyncPatternProperty, value); } }
+		public static readonly DependencyProperty UseClientSyncPatternProperty = DependencyProperty.Register("UseClientSyncPattern", typeof(bool), typeof(Callback), new PropertyMetadata(false, UseClientSyncPatternChangedCallback));
+
+		private static void UseClientSyncPatternChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as Callback;
+			if (t == null) return;
+
+			if ((bool)e.NewValue) t.UseClientAwaitPattern = false;
+			else t.UseClientAwaitPattern = true;
+		}
+
+		public bool UseClientAwaitPattern { get { return (bool)GetValue(UseClientAwaitPatternProperty); } set { SetValue(UseClientAwaitPatternProperty, value); } }
+		public static readonly DependencyProperty UseClientAwaitPatternProperty = DependencyProperty.Register("UseClientAwaitPattern", typeof(bool), typeof(Callback), new PropertyMetadata(true, UseClientAwaitPatternChangedCallback));
+
+		private static void UseClientAwaitPatternChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as Callback;
+			if (t == null) return;
+
+			if ((bool)e.NewValue) t.UseClientSyncPattern = false;
+			else t.UseClientSyncPattern = true;
+		}
+
+		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
+		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(Callback));
+
+		public ObservableCollection<MethodParameter> Parameters { get { return (ObservableCollection<MethodParameter>)GetValue(ParametersProperty); } set { SetValue(ParametersProperty, value); } }
+		public static readonly DependencyProperty ParametersProperty = DependencyProperty.Register("Parameters", typeof(ObservableCollection<MethodParameter>), typeof(Callback));
+
+		// Behavior
+		public bool HasOperationBehavior { get { return (bool)GetValue(HasOperationBehaviorProperty); } set { SetValue(HasOperationBehaviorProperty, value); } }
+		public static readonly DependencyProperty HasOperationBehaviorProperty = DependencyProperty.Register("HasOperationBehavior", typeof(bool), typeof(Callback), new PropertyMetadata(false));
+
+		public bool OBAutoDisposeParameters { get { return (bool)GetValue(OBAutoDisposeParametersProperty); } set { SetValue(OBAutoDisposeParametersProperty, value); } }
+		public static readonly DependencyProperty OBAutoDisposeParametersProperty = DependencyProperty.Register("OBAutoDisposeParameters", typeof(bool), typeof(Callback), new PropertyMetadata(true));
+
+		public ImpersonationOption OBImpersonation { get { return (ImpersonationOption)GetValue(OBImpersonationProperty); } set { SetValue(OBImpersonationProperty, value); } }
+		public static readonly DependencyProperty OBImpersonationProperty = DependencyProperty.Register("OBImpersonation", typeof(ImpersonationOption), typeof(Callback), new PropertyMetadata(ImpersonationOption.NotAllowed));
+
+		public ReleaseInstanceMode OBReleaseInstanceMode { get { return (ReleaseInstanceMode)GetValue(OBReleaseInstanceModeProperty); } set { SetValue(OBReleaseInstanceModeProperty, value); } }
+		public static readonly DependencyProperty OBReleaseInstanceModeProperty = DependencyProperty.Register("OBReleaseInstanceMode", typeof(ReleaseInstanceMode), typeof(Callback), new PropertyMetadata(ReleaseInstanceMode.None));
+
+		public bool OBTransactionAutoComplete { get { return (bool)GetValue(OBTransactionAutoCompleteProperty); } set { SetValue(OBTransactionAutoCompleteProperty, value); } }
+		public static readonly DependencyProperty OBTransactionAutoCompleteProperty = DependencyProperty.Register("OBTransactionAutoComplete", typeof(bool), typeof(Callback), new PropertyMetadata(true));
+
+		public bool OBTransactionScopeRequired { get { return (bool)GetValue(OBTransactionScopeRequiredProperty); } set { SetValue(OBTransactionScopeRequiredProperty, value); } }
+		public static readonly DependencyProperty OBTransactionScopeRequiredProperty = DependencyProperty.Register("OBTransactionScopeRequired", typeof(bool), typeof(Callback), new PropertyMetadata(false));
+
+		public TransactionFlowMode OBTransactionFlowMode { get { return (TransactionFlowMode)GetValue(OBTransactionFlowModeProperty); } set { SetValue(OBTransactionFlowModeProperty, value); } }
+		public static readonly DependencyProperty OBTransactionFlowModeProperty = DependencyProperty.Register("OBTransactionFlowMode", typeof(TransactionFlowMode), typeof(Callback), new PropertyMetadata(TransactionFlowMode.None));
+
+		public Callback()
+		{
+			Parameters = new ObservableCollection<MethodParameter>();
+			Parameters.CollectionChanged += Parameters_CollectionChanged;
+			Documentation = new Documentation { IsMethod = true };
+		}
+
+		public Callback(string Name, Service Owner)
+			: base(Name, Owner)
+		{
+			Parameters = new ObservableCollection<MethodParameter>();
+			Parameters.CollectionChanged += Parameters_CollectionChanged;
+			ReturnType = new DataType(PrimitiveTypes.Void);
+			Documentation = new Documentation { IsMethod = true };
+		}
+
+		public Callback(DataType ReturnType, string Name, Service Owner)
+			: base(Name, Owner)
+		{
+			Parameters = new ObservableCollection<MethodParameter>();
+			Parameters.CollectionChanged += Parameters_CollectionChanged;
+			this.ReturnType = ReturnType;
+			if (ReturnType.Primitive == PrimitiveTypes.Void) IsOneWay = true;
+			Documentation = new Documentation { IsMethod = true };
+		}
+
+		private void Parameters_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			UpdateDeclaration();
+		}
+
+		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnPropertyChanged(e);
+
+			if (Parameters == null) return;
 			if (e.Property == DeclarationProperty || e.Property == ClientDeclarationProperty) return;
 
 			UpdateDeclaration();
@@ -560,11 +768,49 @@ namespace NETPath.Projects
 
 	public class DataChangeMethod : Operation
 	{
-		public bool UseSyncPattern { get { return (bool)GetValue(UseSyncPatternProperty); } set { SetValue(UseSyncPatternProperty, value); } }
-		public static readonly DependencyProperty UseSyncPatternProperty = DependencyProperty.Register("UseSyncPattern", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(true));
+		public bool UseServerSyncPattern { get { return (bool)GetValue(UseServerSyncPatternProperty); } set { SetValue(UseServerSyncPatternProperty, value); } }
+		public static readonly DependencyProperty UseServerSyncPatternProperty = DependencyProperty.Register("UseServerSyncPattern", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(false, UseServerSyncPatternChangedCallback));
 
-		public bool UseAwaitPattern { get { return (bool)GetValue(UseAwaitPatternProperty); } set { SetValue(UseAwaitPatternProperty, value); } }
-		public static readonly DependencyProperty UseAwaitPatternProperty = DependencyProperty.Register("UseAwaitPattern", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(false));
+		private static void UseServerSyncPatternChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as DataChangeMethod;
+			if (t == null) return;
+
+			if ((bool) e.NewValue) t.UseServerAwaitPattern = false;
+		}
+
+		public bool UseServerAwaitPattern { get { return (bool)GetValue(UseServerAwaitPatternProperty); } set { SetValue(UseServerAwaitPatternProperty, value); } }
+		public static readonly DependencyProperty UseServerAwaitPatternProperty = DependencyProperty.Register("UseServerAwaitPattern", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(true, UseServerAwaitPatternChangedCallback));
+
+		private static void UseServerAwaitPatternChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as DataChangeMethod;
+			if (t == null) return;
+
+			if ((bool)e.NewValue) t.UseServerSyncPattern = false;
+		}
+
+		public bool UseClientSyncPattern { get { return (bool)GetValue(UseClientSyncPatternProperty); } set { SetValue(UseClientSyncPatternProperty, value); } }
+		public static readonly DependencyProperty UseClientSyncPatternProperty = DependencyProperty.Register("UseClientSyncPattern", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(false, UseClientSyncPatternChangedCallback));
+
+		private static void UseClientSyncPatternChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as DataChangeMethod;
+			if (t == null) return;
+
+			if ((bool)e.NewValue) t.UseClientAwaitPattern = false;
+		}
+
+		public bool UseClientAwaitPattern { get { return (bool)GetValue(UseClientAwaitPatternProperty); } set { SetValue(UseClientAwaitPatternProperty, value); } }
+		public static readonly DependencyProperty UseClientAwaitPatternProperty = DependencyProperty.Register("UseClientAwaitPattern", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(true, UseClientAwaitPatternChangedCallback));
+
+		private static void UseClientAwaitPatternChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as DataChangeMethod;
+			if (t == null) return;
+
+			if ((bool)e.NewValue) t.UseClientSyncPattern = false;
+		}
 
 		public bool UseTPLForCallbacks { get { return (bool)GetValue(UseTPLForCallbacksProperty); } set { SetValue(UseTPLForCallbacksProperty, value); } }
 		public static readonly DependencyProperty UseTPLForCallbacksProperty = DependencyProperty.Register("UseTPLForCallbacks", typeof(bool), typeof(DataChangeMethod), new PropertyMetadata(true));
@@ -602,7 +848,7 @@ namespace NETPath.Projects
 			var t = o as DataChangeMethod;
 			if (t == null) return;
 
-			if ((bool) e.NewValue) return;
+			if ((bool)e.NewValue) return;
 			t.NewParameters.Clear();
 			t.DeleteParameters.Clear();
 		}
@@ -664,7 +910,8 @@ namespace NETPath.Projects
 			DeleteDocumentation = new Documentation { IsMethod = true };
 		}
 
-		public DataChangeMethod(string Name, Service Owner) : base(Name, Owner)
+		public DataChangeMethod(string Name, Service Owner)
+			: base(Name, Owner)
 		{
 			GetParameters = new ObservableCollection<MethodParameter>();
 			OpenParameters = new ObservableCollection<MethodParameter>();
@@ -679,7 +926,8 @@ namespace NETPath.Projects
 			DeleteDocumentation = new Documentation { IsMethod = true };
 		}
 
-		public DataChangeMethod(DataType ReturnType, string Name, Service Owner) : base(Name, Owner)
+		public DataChangeMethod(DataType ReturnType, string Name, Service Owner)
+			: base(Name, Owner)
 		{
 			GetParameters = new ObservableCollection<MethodParameter>();
 			OpenParameters = new ObservableCollection<MethodParameter>();
@@ -769,12 +1017,12 @@ namespace NETPath.Projects
 		public Service Owner { get; set; }
 		public Operation Parent { get; set; }
 
-		public MethodParameter ()
+		public MethodParameter()
 		{
 			ID = Guid.NewGuid();
 			Type = new DataType(PrimitiveTypes.String);
 			IsHidden = false;
-			Documentation = new Documentation {IsParameter = true};
+			Documentation = new Documentation { IsParameter = true };
 		}
 
 		public MethodParameter(DataType Type, string Name, Service Owner, Operation Parent)
@@ -810,8 +1058,8 @@ namespace NETPath.Projects
 				{
 					if (Args.MatchCase == false)
 						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
-					else
-						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
+							else
+								if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
 				}
 				else
 					if (!string.IsNullOrEmpty(Name)) if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
@@ -822,11 +1070,11 @@ namespace NETPath.Projects
 					{
 						if (Args.MatchCase == false)
 							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-						else
-							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
+							else
+								if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
 					}
 					else
-						if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace); 
+						if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
 				}
 			}
 
@@ -840,8 +1088,8 @@ namespace NETPath.Projects
 			{
 				if (Args.MatchCase == false)
 					if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-				else
-					if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
+					else
+						if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
 			}
 			else
 				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);

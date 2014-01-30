@@ -31,18 +31,20 @@ namespace NETPath.Projects
 		ZigZag,
 	}
 
-	public struct  DataRevisionName
+	public struct DataRevisionName
 	{
 		public readonly string Path;
 		public readonly bool IsServer;
-		public readonly bool IsAwaitable;
+		public readonly bool IsServerAwaitable;
+		public readonly bool IsClientAwaitable;
 		public readonly Guid ProjectID;
 
-		public DataRevisionName(string Path, bool IsServer, bool IsAwaitable, Guid ProjectID)
+		public DataRevisionName(string Path, bool IsServer, bool IsServerAwaitable, bool IsClientAwaitable, Guid ProjectID)
 		{
 			this.Path = Path;
 			this.IsServer = IsServer;
-			this.IsAwaitable = IsAwaitable;
+			this.IsServerAwaitable = IsServerAwaitable;
+			this.IsClientAwaitable = IsClientAwaitable;
 			this.ProjectID = ProjectID;
 		}
 	}
@@ -58,12 +60,12 @@ namespace NETPath.Projects
 			if (t == null) return;
 
 			if (Convert.ToBoolean(e.NewValue) == false)
-				t.XAMLType = null; 
+				t.XAMLType = null;
 			else
 			{
 				if (t.XAMLType == null)
 				{
-					t.XAMLType = Convert.ToBoolean(e.NewValue) == false ? null : new DataType(t.TypeMode) {ID = t.ID, Parent = t.Parent, Name = t.Name + "XAML", Scope = t.Scope, Partial = t.Partial, Abstract = t.Abstract, Sealed = t.Sealed};
+					t.XAMLType = Convert.ToBoolean(e.NewValue) == false ? null : new DataType(t.TypeMode) { ID = t.ID, Parent = t.Parent, Name = t.Name + "XAML", Scope = t.Scope, Partial = t.Partial, Abstract = t.Abstract, Sealed = t.Sealed };
 					if (t.XAMLType != null) t.XAMLType.InheritedTypes.Add(new DataType(t.CMDEnabled ? "DependencyObjectEx" : "DependencyObject", DataTypeMode.Class));
 				}
 			}
@@ -117,20 +119,25 @@ namespace NETPath.Projects
 		public int DREBatchCount { get { return (int)GetValue(DREBatchCountProperty); } set { SetValue(DREBatchCountProperty, value); } }
 		public static readonly DependencyProperty DREBatchCountProperty = DependencyProperty.Register("DREBatchCount", typeof(int), typeof(Data), new PropertyMetadata(0));
 
-		[IgnoreDataMember] public List<DataRevisionName> DataRevisionServiceNames { get; set; }
+		[IgnoreDataMember]
+		public List<DataRevisionName> DataRevisionServiceNames { get; set; }
 
 		//System
-		[IgnoreDataMember] public bool HasWinFormsBindings { get { return Elements.Any(a => a.GenerateWinFormsSupport); } }
-		[IgnoreDataMember] public bool XAMLHasExtensionData { get { return HasXAMLType && (XAMLType.InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0)); } }
+		[IgnoreDataMember]
+		public bool HasWinFormsBindings { get { return Elements.Any(a => a.GenerateWinFormsSupport); } }
+		[IgnoreDataMember]
+		public bool XAMLHasExtensionData { get { return HasXAMLType && (XAMLType.InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0)); } }
 
-		public Data() : base(DataTypeMode.Class)
+		public Data()
+			: base(DataTypeMode.Class)
 		{
 			Documentation = new Documentation { IsClass = true };
 			IsDataObject = true;
 			DataRevisionServiceNames = new List<DataRevisionName>();
 		}
 
-		public Data(string Name, Namespace Parent) : base(DataTypeMode.Class)
+		public Data(string Name, Namespace Parent)
+			: base(DataTypeMode.Class)
 		{
 			Elements = new ObservableCollection<DataElement>();
 			ID = Guid.NewGuid();
@@ -284,7 +291,7 @@ namespace NETPath.Projects
 			}
 			de.DRECanBatch = (de.DataType.TypeMode == DataTypeMode.Collection || de.DataType.TypeMode == DataTypeMode.Dictionary);
 
-			
+
 			if (de.DataType.TypeMode == DataTypeMode.Primitive && (de.DataType.Primitive == PrimitiveTypes.Byte || de.DataType.Primitive == PrimitiveTypes.SByte || de.DataType.Primitive == PrimitiveTypes.Short || de.DataType.Primitive == PrimitiveTypes.Int || de.DataType.Primitive == PrimitiveTypes.Long || de.DataType.Primitive == PrimitiveTypes.UShort || de.DataType.Primitive == PrimitiveTypes.UInt || de.DataType.Primitive == PrimitiveTypes.ULong || de.DataType.Primitive == PrimitiveTypes.String || de.DataType.Primitive == PrimitiveTypes.GUID))
 				de.DRECanPrimaryKey = true;
 			else
@@ -292,11 +299,11 @@ namespace NETPath.Projects
 				de.DRECanPrimaryKey = false;
 				de.DREPrimaryKey = false;
 			}
-	
+
 			var ot = p.OldValue as DataType;
 			if (ot == null) return;
 			if (de.Owner == null) return;
-			
+
 			if (ot.TypeMode == DataTypeMode.Array && ot.CollectionGenericType.TypeMode == DataTypeMode.Primitive) de.Owner.RemoveKnownType(nt);
 			if (nt.TypeMode == DataTypeMode.Array && nt.CollectionGenericType.TypeMode == DataTypeMode.Primitive) de.Owner.AddKnownType(nt);
 			if (ot.TypeMode == DataTypeMode.Primitive && ot.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.RemoveKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
@@ -366,7 +373,7 @@ namespace NETPath.Projects
 
 			if (Convert.ToBoolean(e.NewValue))
 			{
-				if(t.XAMLName == "") t.XAMLName = t.DataName;
+				if (t.XAMLName == "") t.XAMLName = t.DataName;
 			}
 			else
 			{
@@ -434,11 +441,13 @@ namespace NETPath.Projects
 		public static readonly DependencyProperty OrderProperty = DependencyProperty.Register("Order", typeof(int), typeof(DataElement), new PropertyMetadata(-1));
 
 		//Callbacks
-		[IgnoreDataMember] public bool CanPropertyChanged { get { return (bool)GetValue(CanPropertyChangedProperty); } protected set { SetValue(CanPropertyChangedPropertyKey, value); } }
+		[IgnoreDataMember]
+		public bool CanPropertyChanged { get { return (bool)GetValue(CanPropertyChangedProperty); } protected set { SetValue(CanPropertyChangedPropertyKey, value); } }
 		private static readonly DependencyPropertyKey CanPropertyChangedPropertyKey = DependencyProperty.RegisterReadOnly("CanPropertyChanged", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
 		public static readonly DependencyProperty CanPropertyChangedProperty = CanPropertyChangedPropertyKey.DependencyProperty;
 
-		[IgnoreDataMember] public bool CanPropertyUpdated { get { return (bool)GetValue(CanPropertyUpdatedProperty); } protected set { SetValue(CanPropertyUpdatedPropertyKey, value); } }
+		[IgnoreDataMember]
+		public bool CanPropertyUpdated { get { return (bool)GetValue(CanPropertyUpdatedProperty); } protected set { SetValue(CanPropertyUpdatedPropertyKey, value); } }
 		private static readonly DependencyPropertyKey CanPropertyUpdatedPropertyKey = DependencyProperty.RegisterReadOnly("CanPropertyUpdated", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
 		public static readonly DependencyProperty CanPropertyUpdatedProperty = CanPropertyUpdatedPropertyKey.DependencyProperty;
 
@@ -486,7 +495,8 @@ namespace NETPath.Projects
 			}
 		}
 
-		[IgnoreDataMember] public bool DRECanPrimaryKey { get { return (bool)GetValue(DRECanPrimaryKeyProperty); } protected set { SetValue(DRECanPrimaryKeyPropertyKey, value); } }
+		[IgnoreDataMember]
+		public bool DRECanPrimaryKey { get { return (bool)GetValue(DRECanPrimaryKeyProperty); } protected set { SetValue(DRECanPrimaryKeyPropertyKey, value); } }
 		private static readonly DependencyPropertyKey DRECanPrimaryKeyPropertyKey = DependencyProperty.RegisterReadOnly("DRECanPrimaryKey", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
 		public static readonly DependencyProperty DRECanPrimaryKeyProperty = DRECanPrimaryKeyPropertyKey.DependencyProperty;
 
@@ -501,13 +511,14 @@ namespace NETPath.Projects
 			if (!Convert.ToBoolean(e.NewValue)) return;
 
 			foreach (var x in t.Owner.Elements)
-				if(x.ID != t.ID) x.DREPrimaryKey = false;
+				if (x.ID != t.ID) x.DREPrimaryKey = false;
 		}
 
 		public DataUpdateMode DREUpdateMode { get { return (DataUpdateMode)GetValue(DREUpdateModeProperty); } set { SetValue(DREUpdateModeProperty, value); } }
 		public static readonly DependencyProperty DREUpdateModeProperty = DependencyProperty.Register("DREUpdateMode", typeof(DataUpdateMode), typeof(DataElement), new PropertyMetadata(DataUpdateMode.Immediate));
 
-		[IgnoreDataMember] public bool DRECanBatch { get { return (bool)GetValue(DRECanBatchProperty); } protected set { SetValue(DRECanBatchPropertyKey, value); } }
+		[IgnoreDataMember]
+		public bool DRECanBatch { get { return (bool)GetValue(DRECanBatchProperty); } protected set { SetValue(DRECanBatchPropertyKey, value); } }
 		private static readonly DependencyPropertyKey DRECanBatchPropertyKey = DependencyProperty.RegisterReadOnly("DRECanBatch", typeof(bool), typeof(DataElement), new PropertyMetadata(false));
 		public static readonly DependencyProperty DRECanBatchProperty = DRECanBatchPropertyKey.DependencyProperty;
 

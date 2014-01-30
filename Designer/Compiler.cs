@@ -112,8 +112,8 @@ namespace NETPath
 					Data t = DataReivsionReferenceRetrieve(sv.Parent.Owner, sv.Parent.Owner.Namespace, dre.ReturnType.ID);
 					if (t == null) continue;
 					if (dre.IsHidden) continue;
-					t.DataRevisionServiceNames.Add(new DataRevisionName(string.Format("{0}.{1}", sv.Parent, sv.Name), true, dre.UseAwaitPattern && CanGenerateAsync(sv, true), sv.Parent.Owner.ID));
-					t.DataRevisionServiceNames.Add(new DataRevisionName(string.Format("{0}.{1}", sv.Parent, sv.HasClientType ? sv.ClientType.Name : sv.Name), false, dre.UseAwaitPattern && CanGenerateAsync(sv, false), sv.Parent.Owner.ID));
+					t.DataRevisionServiceNames.Add(new DataRevisionName(string.Format("{0}.{1}", sv.Parent, sv.Name), true, dre.UseServerAwaitPattern, dre.UseClientAwaitPattern, sv.Parent.Owner.ID));
+					t.DataRevisionServiceNames.Add(new DataRevisionName(string.Format("{0}.{1}", sv.Parent, sv.HasClientType ? sv.ClientType.Name : sv.Name), false, dre.UseServerAwaitPattern, dre.UseClientAwaitPattern, sv.Parent.Owner.ID));
 				}
 		}
 
@@ -142,11 +142,6 @@ namespace NETPath
 			if (d != null) return d;
 
 			return Namespace.Children.Select(n => DataReivsionReferenceRetrieve(Project, n, TypeID)).FirstOrDefault(t => t != null);
-		}
-
-		public static bool CanGenerateAsync(Service o, bool IsServer)
-		{
-			return IsServer ? (o.AsynchronyMode == ServiceAsynchronyMode.Server || o.AsynchronyMode == ServiceAsynchronyMode.Both) : (o.AsynchronyMode == ServiceAsynchronyMode.Client || o.AsynchronyMode == ServiceAsynchronyMode.Both || o.AsynchronyMode == ServiceAsynchronyMode.Default);
 		}
 	}
 }
