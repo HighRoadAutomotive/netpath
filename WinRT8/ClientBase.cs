@@ -23,7 +23,9 @@ using System.Threading.Tasks;
 
 namespace System.ServiceModel
 {
-	public abstract class ClientBaseEx<T, TChannel> : ClientBase<TChannel> where T : ClientBaseEx<T, TChannel>, new() where TChannel : class 
+	public abstract class ClientBaseEx<T, TChannel> : ClientBase<TChannel>
+		where T : ClientBaseEx<T, TChannel>, new()
+		where TChannel : class
 	{
 		public Guid ClientID { get; protected set; }
 		public bool IsTerminated { get; protected set; }
@@ -136,22 +138,25 @@ namespace System.ServiceModel
 		}
 	}
 
-	public abstract class ClientDuplexBaseEx<T, TChannel> : DuplexClientBase<TChannel> where T : ClientDuplexBaseEx<T, TChannel>, new() where TChannel : class
+	public abstract class ClientDuplexBaseEx<T, TChannel> : DuplexClientBase<TChannel>
+		where T : ClientDuplexBaseEx<T, TChannel>, new()
+		where TChannel : class
 	{
 		public Guid ClientID { get; protected set; }
 		public bool IsTerminated { get; protected set; }
 		private static T current;
 		public static T Current { get { return current; } }
 		private static object callbackInstance;
-	
-		protected ClientDuplexBaseEx() : base(new InstanceContext(callbackInstance))
+
+		protected ClientDuplexBaseEx()
+			: base(new InstanceContext(callbackInstance))
 		{
 			ClientID = Guid.NewGuid();
 
 			var t = Current;
 			if (t != null)
 			{
-				
+
 				Endpoint.Address = t.Endpoint.Address;
 				Endpoint.Binding = t.Endpoint.Binding;
 				Endpoint.Contract = t.Endpoint.Contract;
@@ -172,7 +177,8 @@ namespace System.ServiceModel
 			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 
-		public ClientDuplexBaseEx(object callback, string endpointConfigurationName) : base(new InstanceContext(callback), endpointConfigurationName)
+		public ClientDuplexBaseEx(object callback, string endpointConfigurationName)
+			: base(new InstanceContext(callback), endpointConfigurationName)
 		{
 			System.Threading.Interlocked.Exchange<object>(ref callbackInstance, callback);
 			ClientID = Guid.NewGuid();
@@ -181,7 +187,8 @@ namespace System.ServiceModel
 			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 
-		public ClientDuplexBaseEx(object callback, string endpointConfigurationName, string remoteAddress) : base(new InstanceContext(callback), endpointConfigurationName, remoteAddress)
+		public ClientDuplexBaseEx(object callback, string endpointConfigurationName, string remoteAddress)
+			: base(new InstanceContext(callback), endpointConfigurationName, remoteAddress)
 		{
 			System.Threading.Interlocked.Exchange<object>(ref callbackInstance, callback);
 			ClientID = Guid.NewGuid();
@@ -190,7 +197,8 @@ namespace System.ServiceModel
 			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 
-		public ClientDuplexBaseEx(object callback, string endpointConfigurationName, EndpointAddress remoteAddress) : base(new InstanceContext(callback), endpointConfigurationName, remoteAddress)
+		public ClientDuplexBaseEx(object callback, string endpointConfigurationName, EndpointAddress remoteAddress)
+			: base(new InstanceContext(callback), endpointConfigurationName, remoteAddress)
 		{
 			System.Threading.Interlocked.Exchange<object>(ref callbackInstance, callback);
 			ClientID = Guid.NewGuid();
@@ -199,7 +207,8 @@ namespace System.ServiceModel
 			System.Threading.Interlocked.Exchange(ref current, this as T);
 		}
 
-		public ClientDuplexBaseEx(object callback, System.ServiceModel.Channels.Binding binding, EndpointAddress remoteAddress) : base(new InstanceContext(callback), binding, remoteAddress)
+		public ClientDuplexBaseEx(object callback, System.ServiceModel.Channels.Binding binding, EndpointAddress remoteAddress)
+			: base(new InstanceContext(callback), binding, remoteAddress)
 		{
 			System.Threading.Interlocked.Exchange<object>(ref callbackInstance, callback);
 			ClientID = Guid.NewGuid();
@@ -210,7 +219,7 @@ namespace System.ServiceModel
 
 		protected virtual bool Initialize()
 		{
-			if (State != CommunicationState.Created)
+			if (State == CommunicationState.Created)
 				InnerChannel.Open();
 
 			System.Threading.Interlocked.Exchange(ref current, this as T);
