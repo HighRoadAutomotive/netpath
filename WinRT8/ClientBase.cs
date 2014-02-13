@@ -74,10 +74,10 @@ namespace System.ServiceModel
 
 		protected virtual bool Initialize()
 		{
-			if (State != CommunicationState.Created)
-				InnerChannel.Open();
+			//if (State != CommunicationState.Created)
+			//	InnerChannel.Open();
 
-			System.Threading.Interlocked.Exchange(ref current, this as T);
+			Threading.Interlocked.Exchange(ref current, this as T);
 
 			return true;
 		}
@@ -219,10 +219,10 @@ namespace System.ServiceModel
 
 		protected virtual bool Initialize()
 		{
-			if (State == CommunicationState.Created)
-				InnerChannel.Open();
+			//if (State == CommunicationState.Created)
+			//	InnerChannel.Open();
 
-			System.Threading.Interlocked.Exchange(ref current, this as T);
+			Threading.Interlocked.Exchange(ref current, this as T);
 
 			return true;
 		}
