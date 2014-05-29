@@ -54,11 +54,11 @@ namespace NETPath.Compiler
 			//Run project code generation
 			if (NET.IsInitialized && WinRT.IsInitialized)
 			{
-				NET.Build(OpenProject, ProjectPath);
-				if (OpenProject.ClientGenerationTargets.Any(a => a.Framework == ProjectGenerationFramework.WIN8)) WinRT.Build(OpenProject, ProjectPath, true);
+				NET.Build(OpenProject, Path.Combine(Environment.CurrentDirectory, ProjectPath));
+				if (OpenProject.ClientGenerationTargets.Any(a => a.Framework == ProjectGenerationFramework.WIN8)) WinRT.Build(OpenProject, Path.Combine(Environment.CurrentDirectory, ProjectPath), true);
 			}
 			else if (WinRT.IsInitialized)
-				WinRT.Build(OpenProject, ProjectPath);
+				WinRT.Build(OpenProject, Path.Combine(Environment.CurrentDirectory, ProjectPath));
 			else
 			{
 				Console.WriteLine("FATAL ERROR: Unable to initialize any code generators.");
