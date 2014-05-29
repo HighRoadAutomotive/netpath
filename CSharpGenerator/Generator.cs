@@ -59,9 +59,8 @@ namespace NETPath.Generators.CS
 			foreach (ProjectGenerationTarget t in Data.ServerGenerationTargets)
 			{
 				Console.WriteLine("Output Relative Path: {0}", t.Path);
-				string op = new Uri(new Uri(projdir), "./" + t.Path).LocalPath;
+				string op = System.IO.Path.Combine(projdir, t.Path.Replace("/", "\\"));
 				Console.WriteLine("Output Absolute Path: {0}", op);
-				op = Uri.UnescapeDataString(op);
 				NewOutput(Data.ID, string.Format("Writing Server Output: {0}", op));
 				System.IO.File.WriteAllText(op, Generate(Data, t, true));
 			}
@@ -69,7 +68,7 @@ namespace NETPath.Generators.CS
 			foreach (ProjectGenerationTarget t in Data.ClientGenerationTargets)
 			{
 				Console.WriteLine("Output Relative Path: {0}", t.Path);
-				string op = new Uri(new Uri(projdir), "./" + t.Path).LocalPath;
+				string op = System.IO.Path.Combine(projdir, t.Path.Replace("/", "\\"));
 				Console.WriteLine("Output Absolute Path: {0}", op);
 				op = Uri.UnescapeDataString(op);
 				NewOutput(Data.ID, string.Format("Writing Client Output: {0}", op));
