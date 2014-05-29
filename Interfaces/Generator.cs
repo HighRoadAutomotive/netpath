@@ -58,8 +58,8 @@ namespace NETPath.Generators.Interfaces
 		void Initialize(Action<Guid, string> OutputHandler, Action<Guid, CompileMessage> CompileMessageHandler);
 		void Verify(Project Data);
 		Task VerifyAsync(Project Data);
-		void Build(Project Data, bool ClientOnly = false);
-		Task BuildAsync(Project Data, bool ClientOnly = false);
+		void Build(Project Data, string ProjectPath, bool ClientOnly = false);
+		Task BuildAsync(Project Data, string ProjectPath, bool ClientOnly = false);
 
 		Action<Guid, string> NewOutput { get; }
 		Action<Guid, CompileMessage> NewMessage { get; }

@@ -50,7 +50,7 @@ namespace NETPath
 
 			//Run project code generation
 			if (NET.IsInitialized)
-				await NET.BuildAsync(NavWindow.Project);
+				await NET.BuildAsync(NavWindow.Project, Globals.ProjectPath);
 			else
 				GeneratorOutput("FATAL ERROR: Unable to initialize any code generators.");
 
@@ -59,7 +59,7 @@ namespace NETPath
 			Globals.MainScreen.IsBuilding = false;
 		}
 
-		public async static void BuildProject(Projects.Project project)
+		public async static void BuildProject(Projects.Project Project)
 		{
 			IGenerator NET = Globals.NETGenerator;
 
@@ -68,7 +68,7 @@ namespace NETPath
 
 			//Run project code generation
 			if (NET.IsInitialized)
-				await NET.BuildAsync(project);
+				await NET.BuildAsync(Project, Globals.ProjectPath);
 			else
 				DialogService.ShowMessageDialog("COMPILER", "FATAL ERROR: Unable to initialize any code generators.", "NETPath was unable to initialize any code generators. This is usually caused by a corrupted installation or an invalid license. Please reinstall the software to continue.");
 		}

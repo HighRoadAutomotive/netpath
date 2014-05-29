@@ -38,7 +38,7 @@ namespace NETPath.Generators.CS
 		}
 
 		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
-		public void Build(Project Data, bool ClientOnly = false)
+		public void Build(Project Data, string ProjectPath, bool ClientOnly = false)
 		{
 			HighestSeverity = CompileMessageSeverity.INFO;
 			Messages.Clear();
@@ -52,9 +52,11 @@ namespace NETPath.Generators.CS
 			if (HighestSeverity == CompileMessageSeverity.ERROR)
 				return;
 
+			string projdir = System.IO.Path.GetDirectoryName(ProjectPath);
+
 			foreach (ProjectGenerationTarget t in Data.ServerGenerationTargets)
 			{
-				string op = new Uri(new Uri(Data.AbsolutePath), t.Path).LocalPath;
+				string op = new Uri(new Uri(projdir), t.Path).LocalPath;
 				op = Uri.UnescapeDataString(op);
 				NewOutput(Data.ID, string.Format("Writing Server Output: {0}", op));
 				System.IO.File.WriteAllText(op, Generate(Data, t, true));
@@ -62,16 +64,16 @@ namespace NETPath.Generators.CS
 
 			foreach (ProjectGenerationTarget t in Data.ClientGenerationTargets)
 			{
-				string op = new Uri(new Uri(Data.AbsolutePath), t.Path).LocalPath;
+				string op = new Uri(new Uri(projdir), t.Path).LocalPath;
 				op = Uri.UnescapeDataString(op);
 				NewOutput(Data.ID, string.Format("Writing Client Output: {0}", op));
 				System.IO.File.WriteAllText(op, Generate(Data, t, false));
 			}
 		}
 
-		public Task BuildAsync(Project Data, bool ClientOnly = false)
+		public Task BuildAsync(Project Data, string ProjectPath, bool ClientOnly = false)
 		{
-			return System.Windows.Application.Current == null ? null : Task.Run(() => System.Windows.Application.Current.Dispatcher.Invoke(() => Build(Data, ClientOnly), DispatcherPriority.Normal));
+			return System.Windows.Application.Current == null ? null : Task.Run(() => System.Windows.Application.Current.Dispatcher.Invoke(() => Build(Data, ProjectPath, ClientOnly), DispatcherPriority.Normal));
 		}
 
 		[System.Reflection.Obfuscation(Feature = "encryptmethod", Exclude = false, StripAfterObfuscation = true)]
@@ -103,7 +105,7 @@ namespace NETPath.Generators.CS
 			// Generate using namespaces
 			foreach (ProjectUsingNamespace pun in Data.UsingNamespaces)
 			{
-				if ((pun.Server && Server) || (pun.Client && !Server && ((pun.RT && Target.Framework == ProjectGenerationFramework.WIN8) ||(pun.NET && Target.Framework == ProjectGenerationFramework.NET45))))
+				if ((pun.Server && Server) || (pun.Client && !Server && ((pun.RT && Target.Framework == ProjectGenerationFramework.WIN8) || (pun.NET && Target.Framework == ProjectGenerationFramework.NET45))))
 					code.AppendLine(string.Format("using {0};", pun.Namespace));
 			}
 			if (Data.EnableEntityFramework && Server) code.AppendLine("using System.Data.Entity.Core.Objects;");
