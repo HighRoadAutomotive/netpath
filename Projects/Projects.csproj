@@ -86,8 +86,9 @@
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Transactions" />
-    <Reference Include="System.Utilities.NET45">
-      <HintPath>..\..\..\System.Utilities\Build\System.Utilities.NET45.dll</HintPath>
+    <Reference Include="System.Utilities.NET45, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\System.Utilities\Build\System.Utilities.NET45.dll</HintPath>
     </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
