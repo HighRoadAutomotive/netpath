@@ -1,0 +1,17 @@
+== NETPath ==
+
+-- Compatibility --
+
+.NET Runtimes Supported:
+* .NET 4.0
+* .NET 4.5
+* Windows 8 Runtime
+
+CPU Architectures Suppported:
+* .NET
+- x86
+- x64
+- Itanium
+* Windows Runtime
+- x86
+- x64
