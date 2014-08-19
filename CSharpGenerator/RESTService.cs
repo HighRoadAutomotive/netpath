@@ -134,7 +134,7 @@ namespace NETPath.Generators.CS
 			//Generate the Proxy Class
 			if (o.ClientDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.ClientDocumentation));
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t{0} abstract partial class {1}Base : RESTClientBase", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
+			code.AppendLine(string.Format("\t{0} {2}partial class {1}{3} : RESTClientBase", DataTypeGenerator.GenerateScope(o.Scope), o.Name, o.ClientType.Abstract ? "abstract " : "", o.ClientType.Abstract ? "Base" : ""));
 			code.AppendLine("\t{");
 			foreach (RESTHTTPClientConfiguration c in o.RequestConfigurations.Where(a => a.GetType() == typeof(RESTHTTPClientConfiguration)).Select(t => t as RESTHTTPClientConfiguration).Where(c => o.ServiceOperations.Any(a => Equals(a.RequestConfiguration, c))))
 				code.AppendLine(string.Format("\t\tprotected System.Net.Http.HttpClient {0}Client {{ get; private set; }}", RegExs.ReplaceSpaces.Replace(c.Name, "")));
@@ -224,7 +224,7 @@ namespace NETPath.Generators.CS
 			if (conf.CookieContainerMode != CookieContainerMode.Custom) code.AppendLine(string.Format("\t\t\trc.CookieContainer = {0};", conf.CookieContainerMode == CookieContainerMode.Global ? "GlobalCookies" : conf.CookieContainerMode == CookieContainerMode.Instance ? "Cookies" : "null"));
 			code.Append("\t\t\tvar rp = new Dictionary<string, object>() { ");
 			foreach (RESTMethodParameter op in o.Parameters.Where(a => a.Type.TypeMode == DataTypeMode.Primitive || a.Type.TypeMode == DataTypeMode.Enum))
-				code.AppendFormat("{{ \"{0}\", {0} }} ", op.Name);
+				code.AppendFormat("{{ \"{0}\", {0} }}, ", op.Name);
 			code.AppendLine("};");
 			if (o.Parameters.Any(a => a.Serialize))
 			{
@@ -298,7 +298,7 @@ namespace NETPath.Generators.CS
 			if (conf.CookieContainerMode != CookieContainerMode.Custom) code.AppendLine(string.Format("\t\t\trc.CookieContainer = {0};", conf.CookieContainerMode == CookieContainerMode.Global ? "GlobalCookies" : conf.CookieContainerMode == CookieContainerMode.Instance ? "Cookies" : "null"));
 			code.Append("\t\t\tvar rp = new Dictionary<string, object>() { ");
 			foreach (RESTMethodParameter op in o.Parameters.Where(a => a.Type.TypeMode == DataTypeMode.Primitive || a.Type.TypeMode == DataTypeMode.Enum))
-				code.AppendFormat("{{ \"{0}\", {0} }} ", op.Name);
+				code.AppendFormat("{{ \"{0}\", {0} }}, ", op.Name);
 			code.AppendLine("};");
 			if (o.Parameters.Any(a => a.Serialize))
 			{
@@ -372,7 +372,7 @@ namespace NETPath.Generators.CS
 			code.AppendLine("\t\t\tvar rc = Configuration ?? new RESTHttpClientConfig();");
 			code.Append("\t\t\tvar rp = new Dictionary<string, object>() { ");
 			foreach (RESTMethodParameter op in o.Parameters.Where(a => a.Type.TypeMode == DataTypeMode.Primitive || a.Type.TypeMode == DataTypeMode.Enum))
-				code.AppendFormat("{{ \"{0}\", {0} }} ", op.Name);
+				code.AppendFormat("{{ \"{0}\", {0} }}, ", op.Name);
 			code.AppendLine("};");
 			if (o.Parameters.Any(a => a.Serialize))
 			{
@@ -422,7 +422,7 @@ namespace NETPath.Generators.CS
 			code.AppendLine("\t\t\tvar rc = Configuration ?? new RESTHttpClientConfig();");
 			code.Append("\t\t\tvar rp = new Dictionary<string, object>() { ");
 			foreach (RESTMethodParameter op in o.Parameters.Where(a => a.Type.TypeMode == DataTypeMode.Primitive || a.Type.TypeMode == DataTypeMode.Enum))
-				code.AppendFormat("{{ \"{0}\", {0} }} ", op.Name);
+				code.AppendFormat("{{ \"{0}\", {0} }}, ", op.Name);
 			code.AppendLine("};");
 			if (o.Parameters.Any(a => a.Serialize))
 			{
