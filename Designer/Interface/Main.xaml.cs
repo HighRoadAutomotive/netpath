@@ -99,12 +99,10 @@ namespace NETPath.Interface
 			if (Globals.Project == null) return;
 			if (CloseMode == SaveCloseMode.None)
 			{
-				DialogService.ShowMessageDialog("NETPath", "Save Solution?", "Would you like to save your work before closing?", new DialogAction("Yes", () => { CloseMode = SaveCloseMode.Save; Application.Current.Shutdown(0); }, true), new DialogAction("No", () => { CloseMode = SaveCloseMode.NoSave; Application.Current.Shutdown(0); }), new DialogAction("Cancel", false, true));
+				DialogService.ShowMessageDialog("NETPath", "Save Solution?", "Would you like to save your work before closing?", new DialogAction("Yes", () => { Globals.SaveProject(); CloseMode = SaveCloseMode.Save; Application.Current.Shutdown(0); }, true), new DialogAction("No", () => { CloseMode = SaveCloseMode.NoSave; Application.Current.Shutdown(0); }), new DialogAction("Cancel", false, true));
 				e.Cancel = true;
 				return;
 			}
-
-			Globals.SaveProject();
 		}
 
 		private void Main_KeyUp(object sender, KeyEventArgs e)
@@ -192,8 +190,9 @@ namespace NETPath.Interface
 
 		public void NewProject(string Name, string Path)
 		{
-			var NP = new Projects.Project(Name);
+			var NP = new Projects.Project(Name, Path);
 			Projects.Project.Save(NP, Path);
+			
 			Globals.Project = NP;
 			SelectProjectScreen(new Navigator(NP));
 		}

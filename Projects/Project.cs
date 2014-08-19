@@ -213,7 +213,7 @@ namespace NETPath.Projects
 			VoidType = new DataType(PrimitiveTypes.Void);
 		}
 
-		public Project(string Name)
+		public Project(string Name, string Path)
 		{
 			ID = Guid.NewGuid();
 			ExternalTypes = new ObservableCollection<DataType>();
@@ -223,6 +223,7 @@ namespace NETPath.Projects
 
 			Namespace = new Namespace(Helpers.RegExs.ReplaceSpaces.Replace(Name, "."), null, this) { URI = "http://tempuri.org/" };
 			this.Name = Name;
+			this.AbsolutePath = Path;
 
 			DeltaList = new DataType("DeltaList", DataTypeMode.Collection, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8);
 			DeltaDictionary = new DataType("DeltaDictionary", DataTypeMode.Dictionary, SupportedFrameworks.NET40 | SupportedFrameworks.NET45 | SupportedFrameworks.WIN8);

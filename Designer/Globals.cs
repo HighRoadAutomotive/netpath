@@ -54,6 +54,11 @@ namespace NETPath
 		public static T GetVisualParent<T>(object childObject) where T : Visual { var child = childObject as DependencyObject; while ((child != null) && !(child is T)) { child = VisualTreeHelper.GetParent(child); } return child as T; }
 		public static T GetVisualChild<T>(Visual parent) where T : Visual { T child = default(T); int numVisuals = VisualTreeHelper.GetChildrenCount(parent); for (int i = 0; i < numVisuals; i++) { var v = (Visual)VisualTreeHelper.GetChild(parent, i); child = v as T; if (child == null) { child = GetVisualChild<T>(v); } if (child != null) { break; } } return child; }
 
+		static Globals()
+		{
+			Compilers = new ConcurrentDictionary<Guid, Compiler>();
+		}
+
 		public static string GetRelativePath(string BasePath, string FilePath)
 		{
 			if (!Path.IsPathRooted(FilePath)) FilePath = Path.GetFullPath(FilePath);
