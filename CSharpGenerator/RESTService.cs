@@ -134,11 +134,11 @@ namespace NETPath.Generators.CS
 			//Generate the Proxy Class
 			if (o.ClientDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.ClientDocumentation));
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t{0} {2}partial class {1}{3} : RESTClientBase", DataTypeGenerator.GenerateScope(o.Scope), o.Name, o.ClientType.Abstract ? "abstract " : "", o.ClientType.Abstract ? "Base" : ""));
+			code.AppendLine(string.Format("\t{0} {2}partial class {1}{3} : RESTClientBase", DataTypeGenerator.GenerateScope(o.Scope), o.Name, o.Abstract ? "abstract " : "", o.Abstract ? "Base" : ""));
 			code.AppendLine("\t{");
 			foreach (RESTHTTPClientConfiguration c in o.RequestConfigurations.Where(a => a.GetType() == typeof(RESTHTTPClientConfiguration)).Select(t => t as RESTHTTPClientConfiguration).Where(c => o.ServiceOperations.Any(a => Equals(a.RequestConfiguration, c))))
 				code.AppendLine(string.Format("\t\tprotected System.Net.Http.HttpClient {0}Client {{ get; private set; }}", RegExs.ReplaceSpaces.Replace(c.Name, "")));
-			code.AppendLine(string.Format("\t\tprotected {0}Base(string BaseURI, CookieContainer Cookies = null, NetworkCredential Credentials = null, CredentialCache CredentialCache = null, IWebProxy Proxy = null) : base(BaseURI, Cookies, Credentials, CredentialCache, Proxy)", o.Name));
+			code.AppendLine(string.Format("\t\t{1} {0}{2}(string BaseURI, CookieContainer Cookies = null, NetworkCredential Credentials = null, CredentialCache CredentialCache = null, IWebProxy Proxy = null) : base(BaseURI, Cookies, Credentials, CredentialCache, Proxy)", o.Name, o.Abstract ? "protected" : "public", o.Abstract ? "Base" : ""));
 			code.AppendLine("\t\t{");
 			foreach (RESTHTTPClientConfiguration c in o.RequestConfigurations.Where(a => a.GetType() == typeof(RESTHTTPClientConfiguration)).Select(t => t as RESTHTTPClientConfiguration).Where(c => o.ServiceOperations.Any(a => Equals(a.RequestConfiguration, c))))
 				code.AppendLine(string.Format("\t\t\t{0}Client = new System.Net.Http.HttpClient(new System.Net.Http.HttpClientHandler() {{ AllowAutoRedirect = {1}, AutomaticDecompression = System.Net.DecompressionMethods.{2}, ClientCertificateOptions = System.Net.Http.ClientCertificateOption.{3}, CookieContainer = {4}, Credentials = (this.Credentials == null) ? (ICredentials)this.CredentialCache : (ICredentials)this.Credentials, MaxAutomaticRedirections = {5}, MaxRequestContentBufferSize = {6}, PreAuthenticate = {7}, Proxy = this.Proxy, UseCookies = {8}, UseDefaultCredentials = {9}, UseProxy = {10} }});",

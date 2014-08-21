@@ -5,7 +5,6 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 		xmlns:pc="http://schemas.propsectivesoftware.com/pc"
 		xmlns:local="clr-namespace:NETPath.Interface"
-		xmlns:apm="clr-namespace:ActiproSoftware.Windows.Media.Animation;assembly=ActiproSoftware.Shared.Wpf"
 		xmlns:sf="http://schemas.syncfusion.com/wpf"
 		Icon="pack://application:,,,/NETPath;component/Icons/DesignStudio.ico" 
 		mc:Ignorable="d" d:DesignHeight="1040" d:DesignWidth="1980"
@@ -18,7 +17,6 @@
 		<ResourceDictionary>
 			<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
 			<pc:NotBoolVisibilityConverter x:Key="NotBoolVisibilityConverter" />
-			<apm:SlideTransition Mode="Out" IsFromContentPushed="True" x:Key="HeaderTransition" />
 			<pc:UriToBitmapImageConverter x:Key="UriToBitmapImageConverter" />
 			<pc:StripHTMLConverter x:Key="StripHTMLConverter"/>
 			<pc:NotBoolConverter x:Key="NotBoolConverter" />
@@ -96,12 +94,7 @@
 						<Image Source="pack://application:,,,/NETPath;component/Icons/X32/Close.png" Width="32" Height="32" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,1" />
 					</Button>
 				</StackPanel>
-				<apm:ToggleTransitionPresenter Grid.Column="2" DefaultDirection="Down" Margin="50,0" Transition="{StaticResource HeaderTransition}" IsAlternateContentVisible="{Binding Path=IsBuilding}" >
-					<TextBlock Text="{Binding Path=Title}" FontSize="14pt" HorizontalAlignment="Center" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
-					<apm:ToggleTransitionPresenter.AlternateContent>
-						<TextBlock Text="Building..." FontSize="14pt" HorizontalAlignment="Center" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
-					</apm:ToggleTransitionPresenter.AlternateContent>
-				</apm:ToggleTransitionPresenter>
+				<TextBlock Text="{Binding Path=Title}" Grid.Column="2" FontSize="14pt" HorizontalAlignment="Center" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
 				<Button x:Name="MinimizeWindow" Grid.Column="3" Style="{StaticResource WindowControlButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" Click="MinimizeWindow_Click">
 					<Image Source="pack://application:,,,/NETPath;component/Icons/WindowMinimize.png" Width="12" Height="12" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
 				</Button>
