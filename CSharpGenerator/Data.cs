@@ -308,11 +308,11 @@ namespace NETPath.Generators.CS
 			code.AppendLine("\t\t{");
 			foreach (DataElement de in o.Elements)
 				if (de.DataType.TypeMode == DataTypeMode.Collection || de.DataType.TypeMode == DataTypeMode.Dictionary)
-					code.AppendLine(string.Format("\t\t\t{3}{1} = new {0}({2});", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.DataType, o.CMDEnabled)), de.XAMLName, de.DREEnabled && de.DRECanBatch && de.DREBatchCount > 0 ? de.DREBatchCount.ToString(CultureInfo.InvariantCulture) : "", de.DREEnabled ? "m" : ""));
+					code.AppendLine(string.Format("\t\t\t{3}{1} = new {0}({2});", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.DataType, o.CMDEnabled)), de.HasXAMLType ? de.XAMLName : de.HasClientType ? de.ClientName : de.DataName, de.DREEnabled && de.DRECanBatch && de.DREBatchCount > 0 ? de.DREBatchCount.ToString(CultureInfo.InvariantCulture) : "", de.DREEnabled ? "m" : ""));
 				else if (de.DataType.TypeMode == DataTypeMode.Queue || de.DataType.TypeMode == DataTypeMode.Stack)
-					code.AppendLine(string.Format("\t\t\t{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.DataType, o.CMDEnabled)), de.XAMLName));
+					code.AppendLine(string.Format("\t\t\t{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.DataType, o.CMDEnabled)), de.HasXAMLType ? de.XAMLName : de.HasClientType ? de.ClientName : de.DataName));
 				else if (de.DataType.TypeMode == DataTypeMode.Array)
-					code.AppendLine(string.Format("\t\t\t{1} = new {0}[0];", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.DataType.CollectionGenericType, o.DREEnabled)), de.HasClientType ? de.ClientName : de.DataName));
+					code.AppendLine(string.Format("\t\t\t{1} = new {0}[0];", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.DataType.CollectionGenericType, o.DREEnabled)), de.HasXAMLType ? de.XAMLName : de.HasClientType ? de.ClientName : de.DataName));
 			if (o.HasXAMLType) code.AppendLine(string.Format("\t\t\tApplication.Current.Dispatcher.Invoke(() => {{ BaseXAMLObject = new {0}(this); }}, System.Windows.Threading.DispatcherPriority.Normal);", o.XAMLType.Name));
 			if (o.CMDEnabled && o.HasXAMLType)
 				foreach (DataElement de in o.Elements)

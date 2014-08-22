@@ -14,7 +14,6 @@
 				<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/Window.xaml" />
 				<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/IntegerTextBox.xaml" />
 				<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/TimeSpanEdit.xaml" />
-				<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/RichTextBoxAdv.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>

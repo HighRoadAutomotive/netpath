@@ -426,8 +426,8 @@ namespace NETPath.Generators.CS
 			code.AppendLine("};");
 			if (o.Parameters.Any(a => a.Serialize))
 			{
-				if (o.ResponseFormat == WebMessageFormat.Json) code.AppendLine(string.Format("\t\t\tvar rd = new System.Net.Http.StringContent(SerializeJSON<{0}>({1}), System.Text.Encoding.UTF8, rc.ContentType.MediaType);", DataTypeGenerator.GenerateType(o.Parameters.First(a => a.Serialize).Type), o.ServerName));
-				if (o.ResponseFormat == WebMessageFormat.Xml) code.AppendLine(string.Format("\t\t\tvar rd = new System.Net.Http.StringContent(SerializeXML<{0}>({1}), System.Text.Encoding.UTF8, rc.ContentType.MediaType);", DataTypeGenerator.GenerateType(o.Parameters.First(a => a.Serialize).Type), o.ServerName));
+				if (o.ResponseFormat == WebMessageFormat.Json) code.AppendLine(string.Format("\t\t\tvar rd = new System.Net.Http.StringContent(SerializeJSON<{0}>({1}), System.Text.Encoding.UTF8, \"application/json\");", DataTypeGenerator.GenerateType(o.Parameters.First(a => a.Serialize).Type), o.Parameters.First(a => a.Serialize).Name));
+				if (o.ResponseFormat == WebMessageFormat.Xml) code.AppendLine(string.Format("\t\t\tvar rd = new System.Net.Http.StringContent(SerializeXML<{0}>({1}), System.Text.Encoding.UTF8, \"application/xml\");", DataTypeGenerator.GenerateType(o.Parameters.First(a => a.Serialize).Type), o.Parameters.First(a => a.Serialize).Name));
 			}
 			code.AppendLine(string.Format("\t\t\tvar rm = rc.CreateRequest(new Uri(BaseURI, ParseURI(\"{0}\", rp)).ToString(), System.Net.Http.HttpMethod.{1}, {2}, {3});", o.UriTemplate, o.Method == MethodRESTVerbs.GET ? "Get" : o.Method == MethodRESTVerbs.POST ? "Post" : o.Method == MethodRESTVerbs.PUT ? "Put" : "Delete", o.Parameters.Any(a => a.Serialize) ? "rd" : "null", o.RequestConfiguration.UseHTTP10 ? bool.TrueString.ToLower() : bool.FalseString.ToLower()));
 			code.AppendLine(string.Format("\t\t\trr = await {0}Client.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);", RegExs.ReplaceSpaces.Replace(o.RequestConfiguration.Name, "")));
