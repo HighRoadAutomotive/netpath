@@ -1,972 +1,967 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{26437A88-CCC9-4006-BE4E-2EB3EAC8D78D}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NETPath</RootNamespace>
-    <AssemblyName>NETPath</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>Icons\DesignStudio.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>NETPath.App</StartupObject>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>..\Build\</OutputPath>
-    <DefineConstants>TRACE;DEVELOPER</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release %28TRIAL%29|AnyCPU'">
-    <OutputPath>bin\Release %28TRIAL%29\</OutputPath>
-    <DefineConstants>TRACE;TRIAL</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release %28PROFESSIONAL%29|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Release %28PROFESSIONAL%29\</OutputPath>
-    <DefineConstants>TRACE;PROFESSIONAL</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release %28WINRT%29|AnyCPU'">
-    <OutputPath>bin\Release %28WINRT%29\</OutputPath>
-    <DefineConstants>TRACE;WINRT</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\winapicp.1.1\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\winapicp.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationFramework.Aero" />
-    <Reference Include="Prospective.Controls, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Components\Build\Prospective.Controls.dll</HintPath>
-    </Reference>
-    <Reference Include="ReachFramework" />
-    <Reference Include="Syncfusion.Core, Version=11.3045.0.30, Culture=neutral, PublicKeyToken=632609b4d040f6b4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Syncfusion\Essential Studio\11.3.0.30\Assemblies\4.5\Syncfusion.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Syncfusion.Shared.Wpf, Version=11.3045.0.30, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Syncfusion\Essential Studio\11.3.0.30\Assemblies\4.5\Syncfusion.Shared.Wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IdentityModel" />
-    <Reference Include="System.Net" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Printing" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.ServiceModel.Web" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Utilities.NET45, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\System.Utilities\Build\System.Utilities.NET45.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-  </ItemGroup>
-  <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Compile Include="Compiler.cs" />
-    <Compile Include="Interface\Bindings\BasicHTTP.xaml.cs">
-      <DependentUpon>BasicHTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Bindings\BasicHTTPS.xaml.cs">
-      <DependentUpon>BasicHTTPS.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Bindings\Converters.cs" />
-    <Compile Include="Interface\Bindings\UDP.xaml.cs">
-      <DependentUpon>UDP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Bindings\MSMQ.xaml.cs">
-      <DependentUpon>MSMQ.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Bindings\MSMQIntegration.xaml.cs">
-      <DependentUpon>MSMQIntegration.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Bindings\NamedPipe.xaml.cs">
-      <DependentUpon>NamedPipe.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Bindings\NetHTTP.xaml.cs">
-      <DependentUpon>NetHTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Bindings\NetHTTPS.xaml.cs">
-      <DependentUpon>NetHTTPS.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Bindings\PeerTCP.xaml.cs">
-      <DependentUpon>PeerTCP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Bindings\TCP.xaml.cs">
-      <DependentUpon>TCP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Bindings\WebHTTP.xaml.cs">
-      <DependentUpon>WebHTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Bindings\WS2007FederationHTTP.xaml.cs">
-      <DependentUpon>WS2007FederationHTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Bindings\WS2007HTTP.xaml.cs">
-      <DependentUpon>WS2007HTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Bindings\WSDualHTTP.xaml.cs">
-      <DependentUpon>WSDualHTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Bindings\WSFederationHTTP.xaml.cs">
-      <DependentUpon>WSFederationHTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Bindings\WSHTTP.xaml.cs">
-      <DependentUpon>WSHTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Data\Data.xaml.cs">
-      <DependentUpon>Data.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Data\DataElement.xaml.cs">
-      <DependentUpon>DataElement.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Data\TargetSelector.xaml.cs">
-      <DependentUpon>TargetSelector.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Data\TypeEditor.xaml.cs">
-      <DependentUpon>TypeEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Data\TypeSelector.xaml.cs">
-      <DependentUpon>TypeSelector.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Dialogs\SetTrial.xaml.cs">
-      <DependentUpon>SetTrial.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Dialogs\SetLicense.xaml.cs">
-      <DependentUpon>SetLicense.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Dialogs\ReportSuggestion.xaml.cs">
-      <DependentUpon>ReportSuggestion.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Dialogs\NewItem.xaml.cs">
-      <DependentUpon>NewItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Dialogs\NewProject.xaml.cs">
-      <DependentUpon>NewProject.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Dialogs\ReportError.xaml.cs">
-      <DependentUpon>ReportError.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Documentation\Class.xaml.cs">
-      <DependentUpon>Class.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Documentation\Standard.xaml.cs">
-      <DependentUpon>Standard.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Enum\Enum.xaml.cs">
-      <DependentUpon>Enum.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Host\Converters.cs" />
-    <Compile Include="Interface\Host\DebugBehavior.xaml.cs">
-      <DependentUpon>DebugBehavior.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Host\Endpoint.xaml.cs">
-      <DependentUpon>Endpoint.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Host\Host.xaml.cs">
-      <DependentUpon>Host.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Interface\Host\MetadataBehavior.xaml.cs">
-      <DependentUpon>MetadataBehavior.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Host\ThrottlingBehavior.xaml.cs">
-      <DependentUpon>ThrottlingBehavior.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Host\WebHTTPBehavior.xaml.cs">
-      <DependentUpon>WebHTTPBehavior.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Main.xaml.cs">
-      <DependentUpon>Main.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Namespace\Namespace.xaml.cs">
-      <DependentUpon>Namespace.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Navigator.xaml.cs">
-      <DependentUpon>Navigator.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\GenerationTarget.xaml.cs">
-      <DependentUpon>GenerationTarget.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Project\Project.xaml.cs">
-      <DependentUpon>Project.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\REST\Converters.cs" />
-    <Compile Include="Interface\REST\HttpWebConfig.xaml.cs">
-      <DependentUpon>HttpWebConfig.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\REST\HttpClientConfig.xaml.cs">
-      <DependentUpon>HttpClientConfig.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\REST\Method.xaml.cs">
-      <DependentUpon>Method.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\REST\Service.xaml.cs">
-      <DependentUpon>Service.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Service\Converters.cs" />
-    <Compile Include="Interface\Service\DataChangeMethod.xaml.cs">
-      <DependentUpon>DataChangeMethod.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Service\Callback.xaml.cs">
-      <DependentUpon>Callback.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Service\Method.xaml.cs">
-      <DependentUpon>Method.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Service\Property.xaml.cs">
-      <DependentUpon>Property.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Service\Service.xaml.cs">
-      <DependentUpon>Service.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\UserProfile.cs" />
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Globals.cs" />
-    <Compile Include="Themes\DragAdorner.cs" />
-    <Page Include="Interface\Bindings\BasicHTTP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Bindings\BasicHTTPS.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Bindings\UDP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Bindings\MSMQ.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Bindings\MSMQIntegration.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Bindings\NamedPipe.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Bindings\NetHTTP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Bindings\NetHTTPS.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Bindings\PeerTCP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Bindings\TCP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Bindings\WebHTTP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Bindings\WS2007FederationHTTP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Bindings\WS2007HTTP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Bindings\WSDualHTTP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Bindings\WSFederationHTTP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Bindings\WSHTTP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Data\Data.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Data\DataElement.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Data\TargetSelector.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Data\TypeEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Data\TypeSelector.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Dialogs\SetTrial.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Dialogs\SetLicense.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Dialogs\ReportSuggestion.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Dialogs\NewItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Dialogs\NewProject.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Dialogs\ReportError.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Documentation\Class.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Documentation\Standard.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Enum\Enum.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Host\DebugBehavior.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Host\Endpoint.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Host\Host.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Host\MetadataBehavior.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Host\ThrottlingBehavior.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Host\WebHTTPBehavior.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Main.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Namespace\Namespace.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Navigator.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Project\GenerationTarget.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Project\Project.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\REST\HttpWebConfig.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\REST\HttpClientConfig.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\REST\Method.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\REST\Service.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Service\DataChangeMethod.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Service\Callback.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Service\Method.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Service\Property.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Service\Service.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\IntegerTextBox.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Themes\Defaults.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\Extended.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\Lists.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\Menus.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\ProjectListItemTemplates.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\Standard.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\Window.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Resource Include="Themes\TimeSpanEdit.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
-    <Page Include="Themes\Colors.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="Properties\licenses.licx" />
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <None Include="app.config" />
-    <None Include="app.manifest" />
-    <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <AppDesigner Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\BuildSolution.png" />
-    <Resource Include="Icons\X32\BuildProject.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\DesignStudio.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Exit.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Open.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Save.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\SaveAs.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Close.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Service.png" />
-    <Resource Include="Icons\X32\Enum.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X64\Logo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\ReferenceAdded.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\Blank.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\WebHTTP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\BasicHTTP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\PeerTCP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\TCP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\MSMQIntegration.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\WSHTTP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\WSFederationHTTP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\MSMQ.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\NamedPipe.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\WSDualHTTP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Binding.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\BindingSecurity.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Icons\X32\Source\Binding.png" />
-    <None Include="Icons\X32\Source\BindingSecurity.png" />
-    <None Include="Icons\X32\Source\Service.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\Service.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\Binding.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\BindingSecurity.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Namespace.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\NamespaceOpen.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Data.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Search.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Delete.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\SearchClear.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\ProjectProperties.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\BasicHTTP.png" />
-    <Resource Include="Icons\X16\MSMQ.png" />
-    <Resource Include="Icons\X16\MSMQIntegration.png" />
-    <Resource Include="Icons\X16\NamedPipe.png" />
-    <Resource Include="Icons\X16\PeerTCP.png" />
-    <Resource Include="Icons\X16\TCP.png" />
-    <Resource Include="Icons\X16\WebHTTP.png" />
-    <Resource Include="Icons\X16\WSDualHTTP.png" />
-    <Resource Include="Icons\X16\WSFederationHTTP.png" />
-    <Resource Include="Icons\X16\WSHTTP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Host.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\BuildServer.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Method.png" />
-    <Resource Include="Icons\X16\Property.png" />
-    <Resource Include="Icons\X16\Enum.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\Host.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\Data.png" />
-    <Resource Include="Icons\X32\Namespace.png" />
-    <Resource Include="Icons\X32\Property.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Icons\X32\Source\Host.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Project.png" />
-    <Resource Include="Icons\X16\Solution.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\Project.png" />
-    <Resource Include="Icons\X32\Solution.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X64\Project.png" />
-    <Resource Include="Icons\X64\Solution.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\Behavior.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\BehaviorDebug.png" />
-    <Resource Include="Icons\X32\BehaviorMetadata.png" />
-    <Resource Include="Icons\X32\BehaviorThrottling.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Behavior.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Icons\X32\Source\Behaviors.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Add.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\Method.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\MoveDown.png" />
-    <Resource Include="Icons\X16\MoveUp.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Icons\X32\Source\Operation.png" />
-    <None Include="Icons\X32\Source\Property.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Import.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Error.png" />
-    <Resource Include="Icons\X16\Message.png" />
-    <Resource Include="Icons\X16\Warning.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\Endpoint.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Help.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\DependencyProject.png" />
-    <Resource Include="Icons\X32\DependencyProject.png" />
-    <Resource Include="Icons\X64\DependencyProject.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Collapse.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\ListCollapse.png" />
-    <Resource Include="Icons\X16\ListExpand.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\ErrorList.png" />
-    <Resource Include="Icons\X16\Output.png" />
-    <Resource Include="Icons\X16\SolutionNavigator.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\NewItem.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\BuildProject.png" />
-    <Resource Include="Icons\X16\BuildSolution.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\ReportBug.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\NewItem.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\Help.png" />
-    <Resource Include="Icons\X32\ReportBug.png" />
-    <Resource Include="Icons\X32\Save.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\BuildOutput.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\NotAvailable.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\LogoIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\BuildOutput.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Icons\Odd\Source\DirtyIndicatorSource.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\Odd\DirtyIndicator.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\BuildOutput.ico" />
-    <Resource Include="Icons\X16\BuildSolution.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\FindReplace.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\FindReplace.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\Odd\FullLogoDeveloper.png" />
-    <Resource Include="Icons\Odd\FullLogoProfessional.png" />
-    <Resource Include="Icons\Odd\FullLogoTrial.png" />
-    <None Include="Icons\Odd\Source\FullLogoSource.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Interfaces\Interfaces.csproj">
-      <Project>{6594cd45-2f17-4353-8cfc-8c314092821e}</Project>
-      <Name>Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Projects\Projects.csproj">
-      <Project>{fe02550c-5269-4327-a129-fb9d41316005}</Project>
-      <Name>Projects</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\FlagImportant.png" />
-    <Resource Include="Icons\X32\FlagRecent.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\NetHTTP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\NetHTTP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\Delete.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Collection.png" />
-    <Resource Include="Icons\X16\External.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Endpoint.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\BehaviorDebug.png" />
-    <Resource Include="Icons\X16\BehaviorMetadata.png" />
-    <Resource Include="Icons\X16\BehaviorThrottling.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\DataChangeMethod.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\WindowClose.png" />
-    <Resource Include="Icons\WindowMaximize.png" />
-    <Resource Include="Icons\WindowMinimize.png" />
-    <Resource Include="Icons\WindowRestore.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\UDP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\UDP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\Close.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\Options.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X64\Open.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\REST.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\REST.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\HttpClientConfig.png" />
-    <Resource Include="Icons\X16\HttpWebConfig.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X32\Update.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Update.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\X16\Download.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\Odd\FullLogoAcademic.png" />
-    <Resource Include="Icons\Odd\FullLogoFOSS.png" />
-    <Resource Include="Icons\Odd\FullLogoMVP.png" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-  </PropertyGroup>
-  <Import Project="..\MSBuild.ExtensionPack.VersionNumber.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-			 Other similar extension points exist, see Microsoft.Common.targets. -->
-  <Target Name="BeforeBuild">
-    <Message Text="Updating AssemblyFileBuildNumber to $(BuildNumber)">
-    </Message>
-    <AssemblyInfo AssemblyInfoFiles="@(AssemblyInfoFiles)" AssemblyFileBuildNumber="$(BuildNumber)">
-    </AssemblyInfo>
-  </Target>
-  <!-- <Target Name="AfterBuild">
+	<PropertyGroup>
+		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+		<Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+		<ProductVersion>8.0.30703</ProductVersion>
+		<SchemaVersion>2.0</SchemaVersion>
+		<ProjectGuid>{26437A88-CCC9-4006-BE4E-2EB3EAC8D78D}</ProjectGuid>
+		<OutputType>WinExe</OutputType>
+		<AppDesignerFolder>Properties</AppDesignerFolder>
+		<RootNamespace>NETPath</RootNamespace>
+		<AssemblyName>NETPath</AssemblyName>
+		<TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+		<TargetFrameworkProfile>
+		</TargetFrameworkProfile>
+		<FileAlignment>512</FileAlignment>
+		<ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+		<WarningLevel>4</WarningLevel>
+		<SccProjectName>SAK</SccProjectName>
+		<SccLocalPath>SAK</SccLocalPath>
+		<SccAuxPath>SAK</SccAuxPath>
+		<SccProvider>SAK</SccProvider>
+		<IsWebBootstrapper>false</IsWebBootstrapper>
+		<PublishUrl>publish\</PublishUrl>
+		<Install>true</Install>
+		<InstallFrom>Disk</InstallFrom>
+		<UpdateEnabled>false</UpdateEnabled>
+		<UpdateMode>Foreground</UpdateMode>
+		<UpdateInterval>7</UpdateInterval>
+		<UpdateIntervalUnits>Days</UpdateIntervalUnits>
+		<UpdatePeriodically>false</UpdatePeriodically>
+		<UpdateRequired>false</UpdateRequired>
+		<MapFileExtensions>true</MapFileExtensions>
+		<ApplicationRevision>0</ApplicationRevision>
+		<ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+		<UseApplicationTrust>false</UseApplicationTrust>
+		<BootstrapperEnabled>true</BootstrapperEnabled>
+	</PropertyGroup>
+	<PropertyGroup>
+		<ApplicationIcon>Icons\DesignStudio.ico</ApplicationIcon>
+	</PropertyGroup>
+	<PropertyGroup>
+		<StartupObject>NETPath.App</StartupObject>
+	</PropertyGroup>
+	<PropertyGroup>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+		<DebugSymbols>true</DebugSymbols>
+		<OutputPath>..\Build\</OutputPath>
+		<DefineConstants>TRACE;DEBUG</DefineConstants>
+		<DebugType>full</DebugType>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<ErrorReport>prompt</ErrorReport>
+		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+		<Prefer32Bit>false</Prefer32Bit>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+		<OutputPath>..\Build\</OutputPath>
+		<DefineConstants>TRACE;DEVELOPER</DefineConstants>
+		<Optimize>true</Optimize>
+		<DebugType>pdbonly</DebugType>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<ErrorReport>prompt</ErrorReport>
+		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+		<Prefer32Bit>false</Prefer32Bit>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release %28TRIAL%29|AnyCPU'">
+		<OutputPath>bin\Release %28TRIAL%29\</OutputPath>
+		<DefineConstants>TRACE;TRIAL</DefineConstants>
+		<Optimize>true</Optimize>
+		<DebugType>pdbonly</DebugType>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<ErrorReport>prompt</ErrorReport>
+		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+		<CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+		<CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+		<Prefer32Bit>false</Prefer32Bit>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release %28PROFESSIONAL%29|AnyCPU'">
+		<DebugSymbols>true</DebugSymbols>
+		<OutputPath>bin\Release %28PROFESSIONAL%29\</OutputPath>
+		<DefineConstants>TRACE;PROFESSIONAL</DefineConstants>
+		<Optimize>true</Optimize>
+		<DebugType>full</DebugType>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+		<Prefer32Bit>false</Prefer32Bit>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release %28WINRT%29|AnyCPU'">
+		<OutputPath>bin\Release %28WINRT%29\</OutputPath>
+		<DefineConstants>TRACE;WINRT</DefineConstants>
+		<Optimize>true</Optimize>
+		<DebugType>pdbonly</DebugType>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<ErrorReport>prompt</ErrorReport>
+		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+		<CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+		<CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+		<Prefer32Bit>false</Prefer32Bit>
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+			<SpecificVersion>False</SpecificVersion>
+			<HintPath>..\packages\winapicp.1.1\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
+		</Reference>
+		<Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+			<SpecificVersion>False</SpecificVersion>
+			<HintPath>..\packages\winapicp.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+		</Reference>
+		<Reference Include="PresentationFramework.Aero" />
+		<Reference Include="Prospective.Controls, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+			<SpecificVersion>False</SpecificVersion>
+			<HintPath>..\..\..\Components\Build\Prospective.Controls.dll</HintPath>
+		</Reference>
+		<Reference Include="ReachFramework" />
+		<Reference Include="Syncfusion.Core, Version=11.3045.0.30, Culture=neutral, PublicKeyToken=632609b4d040f6b4, processorArchitecture=MSIL">
+			<SpecificVersion>False</SpecificVersion>
+			<HintPath>C:\Program Files (x86)\Syncfusion\Essential Studio\11.3.0.30\Assemblies\4.5\Syncfusion.Core.dll</HintPath>
+		</Reference>
+		<Reference Include="Syncfusion.Shared.Wpf, Version=11.3045.0.30, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+			<SpecificVersion>False</SpecificVersion>
+			<HintPath>C:\Program Files (x86)\Syncfusion\Essential Studio\11.3.0.30\Assemblies\4.5\Syncfusion.Shared.Wpf.dll</HintPath>
+		</Reference>
+		<Reference Include="System" />
+		<Reference Include="System.Drawing" />
+		<Reference Include="System.IdentityModel" />
+		<Reference Include="System.Net" />
+		<Reference Include="System.Net.Http" />
+		<Reference Include="System.Printing" />
+		<Reference Include="System.Runtime.Serialization" />
+		<Reference Include="System.ServiceModel" />
+		<Reference Include="System.ServiceModel.Web" />
+		<Reference Include="System.Transactions" />
+		<Reference Include="System.Utilities.NET45, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+			<SpecificVersion>False</SpecificVersion>
+			<HintPath>..\System.Utilities\Build\System.Utilities.NET45.dll</HintPath>
+		</Reference>
+		<Reference Include="System.Windows.Forms" />
+		<Reference Include="System.Xml" />
+		<Reference Include="Microsoft.CSharp" />
+		<Reference Include="System.Core" />
+		<Reference Include="System.Xml.Linq" />
+		<Reference Include="System.Xaml">
+			<RequiredTargetFramework>4.0</RequiredTargetFramework>
+		</Reference>
+		<Reference Include="WindowsBase" />
+		<Reference Include="PresentationCore" />
+		<Reference Include="PresentationFramework" />
+	</ItemGroup>
+	<ItemGroup>
+		<ApplicationDefinition Include="App.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</ApplicationDefinition>
+		<Compile Include="Compiler.cs" />
+		<Compile Include="Interface\Bindings\BasicHTTP.xaml.cs">
+			<DependentUpon>BasicHTTP.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Bindings\BasicHTTPS.xaml.cs">
+			<DependentUpon>BasicHTTPS.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Bindings\Converters.cs" />
+		<Compile Include="Interface\Bindings\UDP.xaml.cs">
+			<DependentUpon>UDP.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Bindings\MSMQ.xaml.cs">
+			<DependentUpon>MSMQ.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Bindings\MSMQIntegration.xaml.cs">
+			<DependentUpon>MSMQIntegration.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Bindings\NamedPipe.xaml.cs">
+			<DependentUpon>NamedPipe.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Bindings\NetHTTP.xaml.cs">
+			<DependentUpon>NetHTTP.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Bindings\NetHTTPS.xaml.cs">
+			<DependentUpon>NetHTTPS.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Bindings\PeerTCP.xaml.cs">
+			<DependentUpon>PeerTCP.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Bindings\TCP.xaml.cs">
+			<DependentUpon>TCP.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Bindings\WebHTTP.xaml.cs">
+			<DependentUpon>WebHTTP.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Bindings\WS2007FederationHTTP.xaml.cs">
+			<DependentUpon>WS2007FederationHTTP.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Bindings\WS2007HTTP.xaml.cs">
+			<DependentUpon>WS2007HTTP.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Bindings\WSDualHTTP.xaml.cs">
+			<DependentUpon>WSDualHTTP.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Bindings\WSFederationHTTP.xaml.cs">
+			<DependentUpon>WSFederationHTTP.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Bindings\WSHTTP.xaml.cs">
+			<DependentUpon>WSHTTP.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Data\Data.xaml.cs">
+			<DependentUpon>Data.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Data\DataElement.xaml.cs">
+			<DependentUpon>DataElement.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Data\TargetSelector.xaml.cs">
+			<DependentUpon>TargetSelector.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Data\TypeEditor.xaml.cs">
+			<DependentUpon>TypeEditor.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Data\TypeSelector.xaml.cs">
+			<DependentUpon>TypeSelector.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Dialogs\SetTrial.xaml.cs">
+			<DependentUpon>SetTrial.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Dialogs\SetLicense.xaml.cs">
+			<DependentUpon>SetLicense.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Dialogs\ReportSuggestion.xaml.cs">
+			<DependentUpon>ReportSuggestion.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Dialogs\NewItem.xaml.cs">
+			<DependentUpon>NewItem.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Dialogs\NewProject.xaml.cs">
+			<DependentUpon>NewProject.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Dialogs\ReportError.xaml.cs">
+			<DependentUpon>ReportError.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Documentation\Class.xaml.cs">
+			<DependentUpon>Class.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Documentation\Standard.xaml.cs">
+			<DependentUpon>Standard.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Enum\Enum.xaml.cs">
+			<DependentUpon>Enum.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Host\Converters.cs" />
+		<Compile Include="Interface\Host\DebugBehavior.xaml.cs">
+			<DependentUpon>DebugBehavior.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Host\Endpoint.xaml.cs">
+			<DependentUpon>Endpoint.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Host\Host.xaml.cs">
+			<DependentUpon>Host.xaml</DependentUpon>
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Include="Interface\Host\MetadataBehavior.xaml.cs">
+			<DependentUpon>MetadataBehavior.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Host\ThrottlingBehavior.xaml.cs">
+			<DependentUpon>ThrottlingBehavior.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Host\WebHTTPBehavior.xaml.cs">
+			<DependentUpon>WebHTTPBehavior.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Main.xaml.cs">
+			<DependentUpon>Main.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Namespace\Namespace.xaml.cs">
+			<DependentUpon>Namespace.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Navigator.xaml.cs">
+			<DependentUpon>Navigator.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Project\GenerationTarget.xaml.cs">
+			<DependentUpon>GenerationTarget.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Project\Project.xaml.cs">
+			<DependentUpon>Project.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\REST\Converters.cs" />
+		<Compile Include="Interface\REST\HttpWebConfig.xaml.cs">
+			<DependentUpon>HttpWebConfig.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\REST\HttpClientConfig.xaml.cs">
+			<DependentUpon>HttpClientConfig.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\REST\Method.xaml.cs">
+			<DependentUpon>Method.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\REST\Service.xaml.cs">
+			<DependentUpon>Service.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Service\Converters.cs" />
+		<Compile Include="Interface\Service\DataChangeMethod.xaml.cs">
+			<DependentUpon>DataChangeMethod.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Service\Callback.xaml.cs">
+			<DependentUpon>Callback.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Service\Method.xaml.cs">
+			<DependentUpon>Method.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Service\Property.xaml.cs">
+			<DependentUpon>Property.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Interface\Service\Service.xaml.cs">
+			<DependentUpon>Service.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="Options\UserProfile.cs" />
+		<Compile Include="App.xaml.cs">
+			<DependentUpon>App.xaml</DependentUpon>
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Include="Globals.cs" />
+		<Compile Include="Themes\DragAdorner.cs" />
+		<Page Include="Interface\Bindings\BasicHTTP.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Bindings\BasicHTTPS.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Bindings\UDP.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Bindings\MSMQ.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Bindings\MSMQIntegration.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Bindings\NamedPipe.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Bindings\NetHTTP.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Bindings\NetHTTPS.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Bindings\PeerTCP.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Bindings\TCP.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Bindings\WebHTTP.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Bindings\WS2007FederationHTTP.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Bindings\WS2007HTTP.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Bindings\WSDualHTTP.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Bindings\WSFederationHTTP.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Bindings\WSHTTP.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Data\Data.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Include="Interface\Data\DataElement.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Include="Interface\Data\TargetSelector.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Data\TypeEditor.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Include="Interface\Data\TypeSelector.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Include="Interface\Dialogs\SetTrial.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Dialogs\SetLicense.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Dialogs\ReportSuggestion.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Dialogs\NewItem.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Include="Interface\Dialogs\NewProject.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Dialogs\ReportError.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Include="Interface\Documentation\Class.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Include="Interface\Documentation\Standard.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Enum\Enum.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Host\DebugBehavior.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Host\Endpoint.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Host\Host.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Include="Interface\Host\MetadataBehavior.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Host\ThrottlingBehavior.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Host\WebHTTPBehavior.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Main.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Include="Interface\Namespace\Namespace.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Navigator.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Project\GenerationTarget.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Project\Project.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\REST\HttpWebConfig.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\REST\HttpClientConfig.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Include="Interface\REST\Method.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\REST\Service.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Service\DataChangeMethod.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Service\Callback.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Service\Method.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Service\Property.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Interface\Service\Service.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Themes\IntegerTextBox.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Include="Themes\Defaults.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Themes\Extended.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Themes\Lists.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Themes\Menus.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Themes\ProjectListItemTemplates.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Themes\Standard.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="Themes\Window.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Resource Include="Themes\TimeSpanEdit.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Resource>
+		<Page Include="Themes\Colors.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Include="Properties\AssemblyInfo.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Include="Properties\Resources.Designer.cs">
+			<AutoGen>True</AutoGen>
+			<DesignTime>True</DesignTime>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+		<Compile Include="Properties\Settings.Designer.cs">
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Settings.settings</DependentUpon>
+			<DesignTimeSharedInput>True</DesignTimeSharedInput>
+		</Compile>
+		<EmbeddedResource Include="Properties\licenses.licx" />
+		<EmbeddedResource Include="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<None Include="app.config" />
+		<None Include="app.manifest" />
+		<None Include="packages.config" />
+		<None Include="Properties\Settings.settings">
+			<Generator>SettingsSingleFileGenerator</Generator>
+			<LastGenOutput>Settings.Designer.cs</LastGenOutput>
+		</None>
+		<AppDesigner Include="Properties\" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\BuildSolution.png" />
+		<Resource Include="Icons\X32\BuildProject.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\DesignStudio.ico" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Exit.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Open.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Save.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\SaveAs.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Close.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
+			<Visible>False</Visible>
+			<ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
+			<Install>true</Install>
+		</BootstrapperPackage>
+		<BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+			<Visible>False</Visible>
+			<ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+			<Install>false</Install>
+		</BootstrapperPackage>
+		<BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+			<Visible>False</Visible>
+			<ProductName>.NET Framework 3.5 SP1</ProductName>
+			<Install>false</Install>
+		</BootstrapperPackage>
+		<BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+			<Visible>False</Visible>
+			<ProductName>Windows Installer 3.1</ProductName>
+			<Install>true</Install>
+		</BootstrapperPackage>
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Service.png" />
+		<Resource Include="Icons\X32\Enum.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X64\Logo.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\ReferenceAdded.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\Blank.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\WebHTTP.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\BasicHTTP.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\PeerTCP.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\TCP.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\MSMQIntegration.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\WSHTTP.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\WSFederationHTTP.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\MSMQ.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\NamedPipe.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\WSDualHTTP.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Binding.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\BindingSecurity.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="Icons\X32\Source\Binding.png" />
+		<None Include="Icons\X32\Source\BindingSecurity.png" />
+		<None Include="Icons\X32\Source\Service.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\Service.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\Binding.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\BindingSecurity.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Namespace.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\NamespaceOpen.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Data.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Search.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Delete.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\SearchClear.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\ProjectProperties.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\BasicHTTP.png" />
+		<Resource Include="Icons\X16\MSMQ.png" />
+		<Resource Include="Icons\X16\MSMQIntegration.png" />
+		<Resource Include="Icons\X16\NamedPipe.png" />
+		<Resource Include="Icons\X16\PeerTCP.png" />
+		<Resource Include="Icons\X16\TCP.png" />
+		<Resource Include="Icons\X16\WebHTTP.png" />
+		<Resource Include="Icons\X16\WSDualHTTP.png" />
+		<Resource Include="Icons\X16\WSFederationHTTP.png" />
+		<Resource Include="Icons\X16\WSHTTP.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Host.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\BuildServer.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Method.png" />
+		<Resource Include="Icons\X16\Property.png" />
+		<Resource Include="Icons\X16\Enum.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\Host.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\Data.png" />
+		<Resource Include="Icons\X32\Namespace.png" />
+		<Resource Include="Icons\X32\Property.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="Icons\X32\Source\Host.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Project.png" />
+		<Resource Include="Icons\X16\Solution.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\Project.png" />
+		<Resource Include="Icons\X32\Solution.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X64\Project.png" />
+		<Resource Include="Icons\X64\Solution.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\Behavior.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\BehaviorDebug.png" />
+		<Resource Include="Icons\X32\BehaviorMetadata.png" />
+		<Resource Include="Icons\X32\BehaviorThrottling.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Behavior.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="Icons\X32\Source\Behaviors.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Add.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\Method.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\MoveDown.png" />
+		<Resource Include="Icons\X16\MoveUp.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="Icons\X32\Source\Operation.png" />
+		<None Include="Icons\X32\Source\Property.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Import.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Error.png" />
+		<Resource Include="Icons\X16\Message.png" />
+		<Resource Include="Icons\X16\Warning.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\Endpoint.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Help.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\DependencyProject.png" />
+		<Resource Include="Icons\X32\DependencyProject.png" />
+		<Resource Include="Icons\X64\DependencyProject.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Collapse.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\ListCollapse.png" />
+		<Resource Include="Icons\X16\ListExpand.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\ErrorList.png" />
+		<Resource Include="Icons\X16\Output.png" />
+		<Resource Include="Icons\X16\SolutionNavigator.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\NewItem.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\BuildProject.png" />
+		<Resource Include="Icons\X16\BuildSolution.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\ReportBug.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\NewItem.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\Help.png" />
+		<Resource Include="Icons\X32\ReportBug.png" />
+		<Resource Include="Icons\X32\Save.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\BuildOutput.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\NotAvailable.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\LogoIcon.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\BuildOutput.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="Icons\Odd\Source\DirtyIndicatorSource.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\Odd\DirtyIndicator.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\BuildOutput.ico" />
+		<Resource Include="Icons\X16\BuildSolution.ico" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\FindReplace.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\FindReplace.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\Odd\FullLogoDeveloper.png" />
+		<Resource Include="Icons\Odd\FullLogoProfessional.png" />
+		<Resource Include="Icons\Odd\FullLogoTrial.png" />
+		<None Include="Icons\Odd\Source\FullLogoSource.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Interfaces\Interfaces.csproj">
+			<Project>{6594cd45-2f17-4353-8cfc-8c314092821e}</Project>
+			<Name>Interfaces</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\Projects\Projects.csproj">
+			<Project>{fe02550c-5269-4327-a129-fb9d41316005}</Project>
+			<Name>Projects</Name>
+		</ProjectReference>
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\FlagImportant.png" />
+		<Resource Include="Icons\X32\FlagRecent.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\NetHTTP.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\NetHTTP.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\Delete.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Collection.png" />
+		<Resource Include="Icons\X16\External.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Endpoint.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\BehaviorDebug.png" />
+		<Resource Include="Icons\X16\BehaviorMetadata.png" />
+		<Resource Include="Icons\X16\BehaviorThrottling.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\DataChangeMethod.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\WindowClose.png" />
+		<Resource Include="Icons\WindowMaximize.png" />
+		<Resource Include="Icons\WindowMinimize.png" />
+		<Resource Include="Icons\WindowRestore.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\UDP.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\UDP.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\Close.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\Options.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X64\Open.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\REST.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\REST.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\HttpClientConfig.png" />
+		<Resource Include="Icons\X16\HttpWebConfig.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X32\Update.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Update.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\X16\Download.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Icons\Odd\FullLogoAcademic.png" />
+		<Resource Include="Icons\Odd\FullLogoFOSS.png" />
+		<Resource Include="Icons\Odd\FullLogoMVP.png" />
+	</ItemGroup>
+	<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+	<PropertyGroup>
+		<PreBuildEvent>
+		</PreBuildEvent>
+	</PropertyGroup>
+	<!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+			 Other similar extension points exist, see Microsoft.Common.targets.
+	<Target Name="BeforeBuild">
+	</Target>
+	<Target Name="AfterBuild">
 	</Target> -->
 </Project>
