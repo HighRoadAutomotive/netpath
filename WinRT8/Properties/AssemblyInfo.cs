@@ -20,12 +20,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NETPath 2 Windows Runtime 8 Toolkit")]
-[assembly: AssemblyDescription("NETPath 2 Programmer Toolkit for the Window Runtime 8")]
+[assembly: AssemblyTitle("NETPath Windows Runtime 8 Toolkit")]
+[assembly: AssemblyDescription("NETPath Programmer Toolkit for the Window Runtime 8")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Prospective Software Inc.")]
-[assembly: AssemblyProduct("NETPath 2")]
-[assembly: AssemblyCopyright("Copyright © 2012-2013 Prospective Software Inc.")]
+[assembly: AssemblyCompany("High Road Automotive Inc.")]
+[assembly: AssemblyProduct("NETPath")]
+[assembly: AssemblyCopyright("Copyright © 2012-2014 High Road Automotive Inc.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -39,6 +39,6 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.1.0.0")]
-[assembly: AssemblyFileVersion("1.1.0.1434")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.2.0")]
 [assembly: ComVisible(false)]
