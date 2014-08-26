@@ -130,7 +130,7 @@ namespace NETPath.Projects
 		{
 			var de = o as RESTService;
 			if (de == null) return;
-			de.DebugBehavior = ((bool) e.NewValue) ? new HostDebugBehavior() : null;
+			de.DebugBehavior = ((bool)e.NewValue) ? new HostDebugBehavior() : null;
 		}
 
 		public HostDebugBehavior DebugBehavior { get { return (HostDebugBehavior)GetValue(DebugBehaviorProperty); } set { SetValue(DebugBehaviorProperty, value); } }
@@ -352,7 +352,8 @@ namespace NETPath.Projects
 		public static readonly DependencyProperty DeserializeContentProperty = DependencyProperty.Register("DeserializeContent", typeof(bool), typeof(RESTMethod), new PropertyMetadata(true));
 
 		//System
-		[IgnoreDataMember] public string Declaration { get { return (string)GetValue(DeclarationProperty); } protected set { SetValue(DeclarationPropertyKey, value); } }
+		[IgnoreDataMember]
+		public string Declaration { get { return (string)GetValue(DeclarationProperty); } protected set { SetValue(DeclarationPropertyKey, value); } }
 		private static readonly DependencyPropertyKey DeclarationPropertyKey = DependencyProperty.RegisterReadOnly("Declaration", typeof(string), typeof(RESTMethod), new PropertyMetadata(""));
 		public static readonly DependencyProperty DeclarationProperty = DeclarationPropertyKey.DependencyProperty;
 
@@ -411,7 +412,7 @@ namespace NETPath.Projects
 		{
 			base.OnPropertyChanged(e);
 
-			if(Parameters == null) return;
+			if (Parameters == null) return;
 			if (e.Property == DeclarationProperty) return;
 
 			UpdateDeclaration();
@@ -436,9 +437,10 @@ namespace NETPath.Projects
 				if (Args.UseRegex == false)
 				{
 					if (Args.MatchCase == false)
-						if (!string.IsNullOrEmpty(ServerName)) if (ServerName.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Server Name", ServerName, Owner.Parent.Owner, this));
-					else
-						if (!string.IsNullOrEmpty(ServerName)) if (ServerName.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Server Name", ServerName, Owner.Parent.Owner, this));
+						if (!string.IsNullOrEmpty(ServerName))
+							if (ServerName.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Server Name", ServerName, Owner.Parent.Owner, this));
+							else
+if (!string.IsNullOrEmpty(ServerName)) if (ServerName.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Server Name", ServerName, Owner.Parent.Owner, this));
 				}
 				else
 					if (!string.IsNullOrEmpty(ServerName)) if (Args.RegexSearch.IsMatch(ServerName)) results.Add(new FindReplaceResult("Server Name", ServerName, Owner.Parent.Owner, this));
@@ -449,7 +451,7 @@ namespace NETPath.Projects
 					{
 						if (Args.MatchCase == false)
 							if (!string.IsNullOrEmpty(ServerName)) ServerName = Microsoft.VisualBasic.Strings.Replace(ServerName, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-						else
+							else
 							if (!string.IsNullOrEmpty(ServerName)) ServerName = Microsoft.VisualBasic.Strings.Replace(ServerName, Args.Search, Args.Replace);
 					}
 					else
@@ -470,7 +472,7 @@ namespace NETPath.Projects
 			{
 				if (Args.MatchCase == false)
 					if (Field == "Server Name") ServerName = Microsoft.VisualBasic.Strings.Replace(ServerName, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-				else
+					else
 					if (Field == "Server Name") ServerName = Microsoft.VisualBasic.Strings.Replace(ServerName, Args.Search, Args.Replace);
 			}
 			else
@@ -504,15 +506,20 @@ namespace NETPath.Projects
 
 			de.IsSerializable = false;
 			if (nt.TypeMode == DataTypeMode.Array || nt.TypeMode == DataTypeMode.Class || nt.TypeMode == DataTypeMode.Collection || nt.TypeMode == DataTypeMode.Dictionary || nt.TypeMode == DataTypeMode.Struct || nt.TypeMode == DataTypeMode.Queue || nt.TypeMode == DataTypeMode.Stack) de.IsSerializable = true;
+			if (nt.TypeMode == DataTypeMode.Primitive && (nt.Primitive == PrimitiveTypes.ByteArray || nt.Primitive == PrimitiveTypes.String)) de.IsSerializable = true;
 		}
 
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value ?? "", @"")); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(RESTMethodParameter));
 
+		public string DefaultValue { get { return (string)GetValue(DefaultValueProperty); } set { SetValue(DefaultValueProperty, Helpers.RegExs.ReplaceSpaces.Replace(value ?? "", @"")); } }
+		public static readonly DependencyProperty DefaultValueProperty = DependencyProperty.Register("DefaultValue", typeof(string), typeof(RESTMethodParameter));
+
 		public bool IsHidden { get { return (bool)GetValue(IsHiddenProperty); } set { SetValue(IsHiddenProperty, value); } }
 		public static readonly DependencyProperty IsHiddenProperty = DependencyProperty.Register("IsHidden", typeof(bool), typeof(RESTMethodParameter));
 
-		[IgnoreDataMember] public bool IsSerializable { get { return (bool)GetValue(IsSerializableProperty); } protected set { SetValue(IsSerializablePropertyKey, value); } }
+		[IgnoreDataMember]
+		public bool IsSerializable { get { return (bool)GetValue(IsSerializableProperty); } protected set { SetValue(IsSerializablePropertyKey, value); } }
 		private static readonly DependencyPropertyKey IsSerializablePropertyKey = DependencyProperty.RegisterReadOnly("IsSerializable", typeof(bool), typeof(RESTMethodParameter), new PropertyMetadata(false));
 		public static readonly DependencyProperty IsSerializableProperty = IsSerializablePropertyKey.DependencyProperty;
 
@@ -556,6 +563,7 @@ namespace NETPath.Projects
 
 			IsSerializable = false;
 			if (Type.TypeMode == DataTypeMode.Array || Type.TypeMode == DataTypeMode.Class || Type.TypeMode == DataTypeMode.Collection || Type.TypeMode == DataTypeMode.Dictionary || Type.TypeMode == DataTypeMode.Struct || Type.TypeMode == DataTypeMode.Queue || Type.TypeMode == DataTypeMode.Stack) IsSerializable = true;
+			if (Type.TypeMode == DataTypeMode.Primitive && (Type.Primitive == PrimitiveTypes.ByteArray || Type.Primitive == PrimitiveTypes.String)) IsSerializable = true;
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -579,9 +587,10 @@ namespace NETPath.Projects
 				if (Args.UseRegex == false)
 				{
 					if (Args.MatchCase == false)
-						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
+						if (!string.IsNullOrEmpty(Name))
+							if (Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
 							else
-								if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
+   if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
 				}
 				else
 					if (!string.IsNullOrEmpty(Name)) if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
@@ -617,7 +626,7 @@ namespace NETPath.Projects
 				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
 		}
 	}
-	
+
 	public enum CookieContainerMode
 	{
 		None,
@@ -703,7 +712,7 @@ namespace NETPath.Projects
 		public static readonly DependencyProperty CanContinueProperty = DependencyProperty.Register("CanContinue", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(false));
 
 		public TimeSpan ContinueTimeout { get { return (TimeSpan)GetValue(ContinueTimeoutProperty); } set { SetValue(ContinueTimeoutProperty, value); } }
-		public static readonly DependencyProperty ContinueTimeoutProperty = DependencyProperty.Register("ContinueTimeout", typeof(TimeSpan), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(new TimeSpan(0,0,100)));
+		public static readonly DependencyProperty ContinueTimeoutProperty = DependencyProperty.Register("ContinueTimeout", typeof(TimeSpan), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(new TimeSpan(0, 0, 100)));
 
 		public bool KeepAlive { get { return (bool)GetValue(KeepAliveProperty); } set { SetValue(KeepAliveProperty, value); } }
 		public static readonly DependencyProperty KeepAliveProperty = DependencyProperty.Register("KeepAlive", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(true));
@@ -718,7 +727,7 @@ namespace NETPath.Projects
 		public static readonly DependencyProperty PipelinedProperty = DependencyProperty.Register("Pipelined", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(true));
 
 		public TimeSpan ReadWriteTimeout { get { return (TimeSpan)GetValue(ReadWriteTimeoutProperty); } set { SetValue(ReadWriteTimeoutProperty, value); } }
-		public static readonly DependencyProperty ReadWriteTimeoutProperty = DependencyProperty.Register("ReadWriteTimeout", typeof(TimeSpan), typeof(RESTHTTPConfiguration), new PropertyMetadata(new TimeSpan(0,0,30)));
+		public static readonly DependencyProperty ReadWriteTimeoutProperty = DependencyProperty.Register("ReadWriteTimeout", typeof(TimeSpan), typeof(RESTHTTPConfiguration), new PropertyMetadata(new TimeSpan(0, 0, 30)));
 
 		public TimeSpan Timeout { get { return (TimeSpan)GetValue(TimeoutProperty); } set { SetValue(TimeoutProperty, value); } }
 		public static readonly DependencyProperty TimeoutProperty = DependencyProperty.Register("Timeout", typeof(TimeSpan), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(new TimeSpan(0, 0, 100)));
@@ -748,7 +757,7 @@ namespace NETPath.Projects
 
 		public RESTHTTPWebConfiguration() { }
 
-		public RESTHTTPWebConfiguration(string Name): base(Name) { }
+		public RESTHTTPWebConfiguration(string Name) : base(Name) { }
 	}
 
 	public class RESTHTTPClientConfiguration : RESTHTTPConfiguration
@@ -763,7 +772,7 @@ namespace NETPath.Projects
 		public static readonly DependencyProperty ContentModeProperty = DependencyProperty.Register("ContentMode", typeof(ContentMode), typeof(RESTHTTPClientConfiguration), new PropertyMetadata(ContentMode.Default));
 
 		public RESTHTTPClientConfiguration() { }
-		
+
 		public RESTHTTPClientConfiguration(string Name) : base(Name) { }
 	}
 }
