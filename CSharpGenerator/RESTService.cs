@@ -435,7 +435,7 @@ namespace NETPath.Generators.CS
 			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendFormat("\t\tpublic async virtual System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> {0}Async(", o.ServerName);
 			else code.AppendFormat("\t\tpublic async virtual System.Threading.Tasks.Task<Tuple<{0}, System.Net.Http.HttpResponseMessage>> {1}Async(", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName);
 			foreach (RESTMethodParameter op in o.Parameters)
-				code.AppendFormat("{0},", GenerateMethodParameterClientCode(op));
+				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 			code.AppendLine("RESTHttpClientConfig Configuration = null)");
 			code.AppendLine("\t\t{");
 			code.AppendLine("\t\t\tSystem.Net.Http.HttpResponseMessage rr = null;");
