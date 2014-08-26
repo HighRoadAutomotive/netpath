@@ -505,8 +505,10 @@ if (!string.IsNullOrEmpty(ServerName)) if (ServerName.IndexOf(Args.Search, Strin
 			if (nt.TypeMode == DataTypeMode.Primitive && nt.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.AddKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
 
 			de.IsSerializable = false;
+			de.IsNullable = false;
 			if (nt.TypeMode == DataTypeMode.Array || nt.TypeMode == DataTypeMode.Class || nt.TypeMode == DataTypeMode.Collection || nt.TypeMode == DataTypeMode.Dictionary || nt.TypeMode == DataTypeMode.Struct || nt.TypeMode == DataTypeMode.Queue || nt.TypeMode == DataTypeMode.Stack) de.IsSerializable = true;
 			if (nt.TypeMode == DataTypeMode.Primitive && (nt.Primitive == PrimitiveTypes.ByteArray || nt.Primitive == PrimitiveTypes.String)) de.IsSerializable = true;
+			if (nt.TypeMode == DataTypeMode.Primitive || nt.TypeMode == DataTypeMode.Struct) de.IsNullable = true;
 		}
 
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value ?? "", @"")); } }
@@ -536,6 +538,14 @@ if (!string.IsNullOrEmpty(ServerName)) if (ServerName.IndexOf(Args.Search, Strin
 			de.Serialize = true;
 		}
 
+		[IgnoreDataMember]
+		public bool IsNullable { get { return (bool)GetValue(IsNullableProperty); } protected set { SetValue(IsNullablePropertyKey, value); } }
+		private static readonly DependencyPropertyKey IsNullablePropertyKey = DependencyProperty.RegisterReadOnly("IsNullable", typeof(bool), typeof(RESTMethodParameter), new PropertyMetadata(false));
+		public static readonly DependencyProperty IsNullableProperty = IsNullablePropertyKey.DependencyProperty;
+
+		public bool Nullable { get { return (bool)GetValue(NullableProperty); } set { SetValue(NullableProperty, value); } }
+		public static readonly DependencyProperty NullableProperty = DependencyProperty.Register("Nullable", typeof(bool), typeof(RESTMethodParameter), new PropertyMetadata(false));
+
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(RESTMethodParameter));
 
@@ -562,8 +572,10 @@ if (!string.IsNullOrEmpty(ServerName)) if (ServerName.IndexOf(Args.Search, Strin
 			Documentation = new Documentation { IsParameter = true };
 
 			IsSerializable = false;
+			IsNullable = false;
 			if (Type.TypeMode == DataTypeMode.Array || Type.TypeMode == DataTypeMode.Class || Type.TypeMode == DataTypeMode.Collection || Type.TypeMode == DataTypeMode.Dictionary || Type.TypeMode == DataTypeMode.Struct || Type.TypeMode == DataTypeMode.Queue || Type.TypeMode == DataTypeMode.Stack) IsSerializable = true;
 			if (Type.TypeMode == DataTypeMode.Primitive && (Type.Primitive == PrimitiveTypes.ByteArray || Type.Primitive == PrimitiveTypes.String)) IsSerializable = true;
+			if (Type.TypeMode == DataTypeMode.Primitive || Type.TypeMode == DataTypeMode.Struct) IsNullable = true;
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -575,7 +587,7 @@ if (!string.IsNullOrEmpty(ServerName)) if (ServerName.IndexOf(Args.Search, Strin
 
 		public override string ToString()
 		{
-			return string.Format("{0} {1}", Type, Name);
+			return string.Format("{0}{3} {1}{2}", Type, Name, string.IsNullOrWhiteSpace(DefaultValue) ? "" : string.Format(" = {0}", DefaultValue), Nullable ? "?" : "");
 		}
 
 		public IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
@@ -587,25 +599,46 @@ if (!string.IsNullOrEmpty(ServerName)) if (ServerName.IndexOf(Args.Search, Strin
 				if (Args.UseRegex == false)
 				{
 					if (Args.MatchCase == false)
+					{
 						if (!string.IsNullOrEmpty(Name))
-							if (Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
-							else
-   if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
+							if (Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0)
+								results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
+					}
+					else
+					{
+						if (!string.IsNullOrEmpty(Name))
+							if (Name.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0)
+								results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
+					}
 				}
 				else
-					if (!string.IsNullOrEmpty(Name)) if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
+				{
+					if (!string.IsNullOrEmpty(Name))
+						if (Args.RegexSearch.IsMatch(Name))
+							results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
+				}
 
 				if (Args.ReplaceAll)
 				{
 					if (Args.UseRegex == false)
 					{
 						if (Args.MatchCase == false)
-							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-							else
-								if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
+						{
+							if (!string.IsNullOrEmpty(Name))
+								Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1,
+									Microsoft.VisualBasic.CompareMethod.Text);
+						}
+						else
+						{
+							if (!string.IsNullOrEmpty(Name))
+								Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
+						}
 					}
 					else
-						if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
+					{
+						if (!string.IsNullOrEmpty(Name)) 
+							Name = Args.RegexSearch.Replace(Name, Args.Replace);
+					}
 				}
 			}
 

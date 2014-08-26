@@ -84,7 +84,7 @@
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="*" />
 	</Grid.RowDefinitions>
-	<TextBlock Text="{Binding Path=MethodData.Declaration}" FontSize="14pt" Margin="0,5" Grid.Row="0" />
+	<TextBlock Text="{Binding Path=MethodData.Declaration}" FontSize="14pt" Margin="0,5" Grid.Row="0" TextWrapping="Wrap" />
 	<Label Grid.Row="1" Content="Return Type:" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="100" Padding="10,2,0,2" Margin="5,0" />
 	<Data:TypeSelector OpenType="{Binding Path=MethodData.ReturnType, Mode=TwoWay}" Project="{Binding Path=ServiceProject}" AllowVoid="True" Grid.Row="1" Margin="110,5,5,5" />
 	<Label Content="Server Name:" Grid.Row="2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="100" Padding="10,2,0,2" Margin="5,0" />
@@ -123,7 +123,7 @@
 		</Grid.RowDefinitions>
 		<Label Grid.Row="0" Content="REST" FontSize="12pt" Margin="0,5,0,0" />
 		<Label Content="URI Template:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="1" />
-		<pc:TextBox Text="{Binding Path=MethodData.UriTemplate}" Height="23" Margin="120,5,5,5" VerticalContentAlignment="Center" Grid.Row="1" Grid.ColumnSpan="2" />
+		<pc:TextBox Text="{Binding Path=MethodData.UriTemplate}" TextWrapping="Wrap" MinHeight="23" Margin="120,5,5,5" VerticalContentAlignment="Center" Grid.Row="1" Grid.ColumnSpan="2" />
 		<Label Content="HTTP Verb:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" />
 		<ComboBox Height="23" Margin="120,5,5,5" SelectedIndex="{Binding Path=MethodData.Method, Converter={StaticResource MethodRESTVerbsConverter}}" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" >
 			<ComboBoxItem Content="GET" />
@@ -189,6 +189,7 @@
 									</Grid.RowDefinitions>
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition Width=".5*" />
+										<ColumnDefinition Width="Auto" />
 										<ColumnDefinition Width="*" />
 										<ColumnDefinition Width="Auto" />
 										<ColumnDefinition Width="*" />
@@ -199,14 +200,15 @@
 										<ColumnDefinition Width="30" />
 									</Grid.ColumnDefinitions>
 									<Data:TypeSelector x:Name="OperationParameterDataType" OpenType="{Binding Path=Type, Mode=TwoWay}" Project="{Binding ElementName=ProjectBinding, Path=DataContext}" Grid.Column="0" Margin="0,5,5,5" VerticalContentAlignment="Center" ToolTip="{Binding Path=Type}"  />
-									<pc:TextBox Name="OperationParameterElementName" Text="{Binding Path=Name}" Grid.Column="1" Margin="5" VerticalContentAlignment="Center" PreviewKeyDown="OperationParameterElementName_PreviewKeyDown" Validate="OperationParameterElementName_Validate" ToolTip="{Binding Path=Name}" />
-									<Label Content=" = " FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" />
-									<pc:TextBox Name="OperationParameterElementDefaultValue" Text="{Binding Path=DefaultValue}" LabelText="Default Value" Grid.Column="3" Margin="5" VerticalContentAlignment="Center" PreviewKeyDown="OperationParameterElementName_PreviewKeyDown" ToolTip="{Binding Path=Name}" />
-									<pc:TextBox Name="OperationParameterDocumentation" Text="{Binding Path=Documentation.Summary}" LabelText="Documentation" Margin="5" Grid.Column="4" VerticalContentAlignment="Center" PreviewKeyDown="OperationParameterDocumentation_PreviewKeyDown" ToolTip="{Binding Path=Name}" />
-									<RadioButton Content="Serialize" IsChecked="{Binding Path=Serialize}" Grid.Column="5" IsEnabled="{Binding Path=IsSerializable}" />
-									<ToggleButton Content="Hidden" IsChecked="{Binding Path=IsHidden}" Margin="5" Grid.Column="6" />
-									<Label Content="Click to Move" FontSize="10" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="7" />
-									<Button Name="DeleteOperationParameter" Visibility="Hidden" Grid.Column="8" Margin="1,1,2,1" Padding="0" Click="DeleteOperationParameter_Click">
+									<CheckBox Content="Nullable" IsChecked="{Binding Path=Nullable}" Grid.Column="1" IsEnabled="{Binding Path=IsNullable}" />
+									<pc:TextBox Name="OperationParameterElementName" Text="{Binding Path=Name}" Grid.Column="2" Margin="5" VerticalContentAlignment="Center" PreviewKeyDown="OperationParameterElementName_PreviewKeyDown" Validate="OperationParameterElementName_Validate" ToolTip="{Binding Path=Name}" />
+									<Label Content=" = " FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="3" />
+									<pc:TextBox Name="OperationParameterElementDefaultValue" Text="{Binding Path=DefaultValue}" LabelText="Default Value" Grid.Column="4" Margin="5" VerticalContentAlignment="Center" PreviewKeyDown="OperationParameterElementName_PreviewKeyDown" ToolTip="{Binding Path=Name}" />
+									<pc:TextBox Name="OperationParameterDocumentation" Text="{Binding Path=Documentation.Summary}" LabelText="Documentation" Margin="5" Grid.Column="5" VerticalContentAlignment="Center" PreviewKeyDown="OperationParameterDocumentation_PreviewKeyDown" ToolTip="{Binding Path=Name}" />
+									<CheckBox Content="Serialize" IsChecked="{Binding Path=Serialize}" Grid.Column="6" IsEnabled="{Binding Path=IsSerializable}" />
+									<ToggleButton Content="Hidden" IsChecked="{Binding Path=IsHidden}" Margin="5" Grid.Column="7" />
+									<Label Content="Click to Move" FontSize="10" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="8" />
+									<Button Name="DeleteOperationParameter" Visibility="Hidden" Grid.Column="9" Margin="1,1,2,1" Padding="0" Click="DeleteOperationParameter_Click">
 										<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
 									</Button>
 								</Grid>
