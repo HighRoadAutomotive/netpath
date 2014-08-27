@@ -200,12 +200,12 @@
 										<ColumnDefinition Width="30" />
 									</Grid.ColumnDefinitions>
 									<Data:TypeSelector x:Name="OperationParameterDataType" OpenType="{Binding Path=Type, Mode=TwoWay}" Project="{Binding ElementName=ProjectBinding, Path=DataContext}" Grid.Column="0" Margin="0,5,5,5" VerticalContentAlignment="Center" ToolTip="{Binding Path=Type}"  />
-									<CheckBox Content="Nullable" IsChecked="{Binding Path=Nullable}" Grid.Column="1" IsEnabled="{Binding Path=IsNullable}" />
+									<CheckBox Content="Nullable" IsChecked="{Binding Path=Nullable}" Grid.Column="1" Margin="5,0" IsEnabled="{Binding Path=IsNullable}" />
 									<pc:TextBox Name="OperationParameterElementName" Text="{Binding Path=Name}" Grid.Column="2" Margin="5" VerticalContentAlignment="Center" PreviewKeyDown="OperationParameterElementName_PreviewKeyDown" Validate="OperationParameterElementName_Validate" ToolTip="{Binding Path=Name}" />
-									<Label Content=" = " FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="3" />
+									<Label Content="=" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="3" />
 									<pc:TextBox Name="OperationParameterElementDefaultValue" Text="{Binding Path=DefaultValue}" LabelText="Default Value" Grid.Column="4" Margin="5" VerticalContentAlignment="Center" PreviewKeyDown="OperationParameterElementName_PreviewKeyDown" ToolTip="{Binding Path=Name}" />
 									<pc:TextBox Name="OperationParameterDocumentation" Text="{Binding Path=Documentation.Summary}" LabelText="Documentation" Margin="5" Grid.Column="5" VerticalContentAlignment="Center" PreviewKeyDown="OperationParameterDocumentation_PreviewKeyDown" ToolTip="{Binding Path=Name}" />
-									<CheckBox Content="Serialize" IsChecked="{Binding Path=Serialize}" Grid.Column="6" IsEnabled="{Binding Path=IsSerializable}" />
+									<CheckBox Content="Serialize" IsChecked="{Binding Path=Serialize}" Grid.Column="6" Margin="5,0" IsEnabled="{Binding Path=IsSerializable}" />
 									<ToggleButton Content="Hidden" IsChecked="{Binding Path=IsHidden}" Margin="5" Grid.Column="7" />
 									<Label Content="Click to Move" FontSize="10" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="8" />
 									<Button Name="DeleteOperationParameter" Visibility="Hidden" Grid.Column="9" Margin="1,1,2,1" Padding="0" Click="DeleteOperationParameter_Click">
