@@ -21,25 +21,6 @@ namespace System.ServiceModel
 		Query,
 	}
 
-	public sealed class RestParameter<T>
-	{
-		private readonly string _restName;
-		private readonly UriBuildMode _mode;
-		private readonly T _value;
-
-		public string RestName { get { return _restName; } }
-		public UriBuildMode Mode { get { return _mode; } }
-		public T Value { get { return _value; } }
-
-		public RestParameter(string restName, UriBuildMode mode, T value)
-		{
-			if (restName == null) throw new ArgumentNullException("restName");
-			_restName = restName;
-			_mode = mode;
-			_value = value;
-		}
-	}
-
 	public abstract class RestClientBase
 	{
 		private static readonly CookieContainer _globalCookies;
@@ -70,23 +51,17 @@ namespace System.ServiceModel
 			_proxy = proxy;
 		}
 
-		public string ParseUri(string uri, IDictionary<string, object> parameters)
+		public void BuildUri<T>(StringBuilder uriBuilder, string restName, UriBuildMode mode, T value)
 		{
-			string t = uri;
-			foreach (KeyValuePair<string, object> kvp in parameters)
-				t = Regex.Replace(t, string.Format("\\{{{0}\\}}", kvp.Key), kvp.Value.ToString(), RegexOptions.IgnoreCase);
-			return t;
-		}
-
-		public void BuildUri<T>(StringBuilder uriBuilder, RestParameter<T> parameter)
-		{
-			if (parameter.Mode == UriBuildMode.Path)
+			if (mode == UriBuildMode.Path)
 			{
-				uriBuilder.Replace(string.Format("\\{{{0}\\}}", parameter.RestName), parameter.Value.ToString());
+				uriBuilder.Replace(string.Format("\\{{{0}\\}}", restName), value.ToString());
 			}
-			else if (parameter.Mode == UriBuildMode.Query)
+			else if (mode == UriBuildMode.Query)
 			{
-				uriBuilder.AppendFormat("&{0}={1}", parameter.RestName, parameter.Value.ToString());
+				if (!string.IsNullOrWhiteSpace(restName)) uriBuilder.AppendFormat("&{0}={1}", restName, value.ToString());
+				else uriBuilder.AppendFormat("&{0}", value.ToString());
+				uriBuilder.Replace("?&", "?");
 			}
 		}
 
