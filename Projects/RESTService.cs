@@ -520,6 +520,32 @@ if (!string.IsNullOrEmpty(ServerName)) if (ServerName.IndexOf(Args.Search, Strin
 		public bool IsHidden { get { return (bool)GetValue(IsHiddenProperty); } set { SetValue(IsHiddenProperty, value); } }
 		public static readonly DependencyProperty IsHiddenProperty = DependencyProperty.Register("IsHidden", typeof(bool), typeof(RESTMethodParameter));
 
+		//REST Specific
+		public string RestName { get { return (string)GetValue(RestNameProperty); } set { SetValue(RestNameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value ?? "", @"")); } }
+		public static readonly DependencyProperty RestNameProperty = DependencyProperty.Register("RestName", typeof(string), typeof(RESTMethodParameter));
+
+		public bool IsPath { get { return (bool)GetValue(IsPathProperty); } set { SetValue(IsPathProperty, value); } }
+		public static readonly DependencyProperty IsPathProperty = DependencyProperty.Register("IsPath", typeof(bool), typeof(RESTMethodParameter), new PropertyMetadata(true, IsPathChangedCallback));
+
+		private static void IsPathChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var de = o as RESTMethodParameter;
+			if (de == null) return;
+			if (Convert.ToBoolean(e.NewValue) == false) return;
+			de.IsQuery = false;
+		}
+
+		public bool IsQuery { get { return (bool)GetValue(IsQueryProperty); } set { SetValue(IsQueryProperty, value); } }
+		public static readonly DependencyProperty IsQueryProperty = DependencyProperty.Register("IsQuery", typeof(bool), typeof(RESTMethodParameter), new PropertyMetadata(false, IsQueryChangedCallback));
+
+		private static void IsQueryChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var de = o as RESTMethodParameter;
+			if (de == null) return;
+			if (Convert.ToBoolean(e.NewValue) == false) return;
+			de.IsPath = false;
+		}
+
 		[IgnoreDataMember]
 		public bool IsSerializable { get { return (bool)GetValue(IsSerializableProperty); } protected set { SetValue(IsSerializablePropertyKey, value); } }
 		private static readonly DependencyPropertyKey IsSerializablePropertyKey = DependencyProperty.RegisterReadOnly("IsSerializable", typeof(bool), typeof(RESTMethodParameter), new PropertyMetadata(false));
@@ -532,10 +558,13 @@ if (!string.IsNullOrEmpty(ServerName)) if (ServerName.IndexOf(Args.Search, Strin
 		{
 			var de = o as RESTMethodParameter;
 			if (de == null) return;
+			if (Convert.ToBoolean(e.NewValue) == false) return;
 
 			foreach (var t in de.Parent.Parameters.Where(a => !Equals(a, de)))
 				t.Serialize = false;
 			de.Serialize = true;
+			de.IsPath = false;
+			de.IsQuery = false;
 		}
 
 		[IgnoreDataMember]
@@ -566,6 +595,7 @@ if (!string.IsNullOrEmpty(ServerName)) if (ServerName.IndexOf(Args.Search, Strin
 			ID = Guid.NewGuid();
 			this.Type = Type;
 			this.Name = Name;
+			RestName = Name;
 			IsHidden = false;
 			this.Owner = Owner;
 			this.Parent = Parent;
@@ -636,7 +666,7 @@ if (!string.IsNullOrEmpty(ServerName)) if (ServerName.IndexOf(Args.Search, Strin
 					}
 					else
 					{
-						if (!string.IsNullOrEmpty(Name)) 
+						if (!string.IsNullOrEmpty(Name))
 							Name = Args.RegexSearch.Replace(Name, Args.Replace);
 					}
 				}

@@ -90,8 +90,10 @@ namespace NETPath.Interface.REST
 			DragItemStartIndex = ValuesList.SelectedIndex;
 			var tuie = (UIElement)ValuesList.ItemContainerGenerator.ContainerFromItem(ValuesList.SelectedItem);
 			if (tuie == null) return;
-			try { DragAdorner = new Themes.DragAdorner(ValuesList, tuie, true, 0.5); }
-			catch { return; }
+			try
+			{ DragAdorner = new Themes.DragAdorner(ValuesList, tuie, true, 0.5); }
+			catch
+			{ return; }
 			DragLayer = AdornerLayer.GetAdornerLayer(ValuesList);
 			DragLayer.Add(DragAdorner);
 
