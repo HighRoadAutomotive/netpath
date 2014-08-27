@@ -15,44 +15,82 @@ using System.Threading.Tasks;
 
 namespace System.ServiceModel
 {
-	public abstract class RESTClientBase
+	public enum UriBuildMode
 	{
-		public static CookieContainer GlobalCookies { get; private set; }
-		static RESTClientBase()
+		Path,
+		Query,
+	}
+
+	public sealed class RestParameter<T>
+	{
+		private readonly string _restName;
+		private readonly UriBuildMode _mode;
+		private readonly T _value;
+
+		public string RestName { get { return _restName; } }
+		public UriBuildMode Mode { get { return _mode; } }
+		public T Value { get { return _value; } }
+
+		public RestParameter(string restName, UriBuildMode mode, T value)
 		{
-			GlobalCookies = new CookieContainer();
+			if (restName == null) throw new ArgumentNullException("restName");
+			_restName = restName;
+			_mode = mode;
+			_value = value;
+		}
+	}
+
+	public abstract class RestClientBase
+	{
+		private static readonly CookieContainer _globalCookies;
+		public static CookieContainer GlobalCookies { get { return _globalCookies; } }
+		static RestClientBase()
+		{
+			_globalCookies = new CookieContainer();
 		}
 
-		public Uri BaseURI { get; protected set; }
-		public CookieContainer Cookies { get; private set; }
-		public CredentialCache CredentialCache { get; protected set; }
-		public NetworkCredential Credentials { get; protected set; }
-		public IWebProxy Proxy { get; protected set; }
+		private readonly Uri _baseUri;
+		private readonly CookieContainer _cookies;
+		private readonly CredentialCache _credentialCache;
+		private readonly NetworkCredential _credentials;
+		private readonly IWebProxy _proxy;
 
-		protected RESTClientBase()
+		public Uri BaseUri { get { return _baseUri; } }
+		public CookieContainer Cookies { get { return _cookies; } }
+		public CredentialCache CredentialCache { get { return _credentialCache; } }
+		public NetworkCredential Credentials { get { return _credentials; } }
+		public IWebProxy Proxy { get { return _proxy; } }
+
+		protected RestClientBase(string baseUri, CookieContainer cookies = null, NetworkCredential credentials = null, CredentialCache credentialCache = null, IWebProxy proxy = null)
 		{
-			Cookies = new CookieContainer();
-			Credentials = null;
+			_baseUri = new Uri(baseUri);
+			_cookies = cookies ?? new CookieContainer();
+			_credentials = credentials;
+			_credentialCache = credentialCache;
+			_proxy = proxy;
 		}
 
-		protected RESTClientBase(string BaseURI, CookieContainer Cookies = null, NetworkCredential Credentials = null, CredentialCache CredentialCache = null, IWebProxy Proxy = null)
+		public string ParseUri(string uri, IDictionary<string, object> parameters)
 		{
-			this.BaseURI = new Uri(BaseURI);
-			this.Cookies = Cookies ?? new CookieContainer();
-			this.Credentials = Credentials;
-			this.CredentialCache = CredentialCache;
-			this.Proxy = Proxy;
-		}
-
-		public string ParseURI(string Uri, IDictionary<string, object> Parameters)
-		{
-			string t = Uri;
-			foreach (KeyValuePair<string, object> kvp in Parameters)
+			string t = uri;
+			foreach (KeyValuePair<string, object> kvp in parameters)
 				t = Regex.Replace(t, string.Format("\\{{{0}\\}}", kvp.Key), kvp.Value.ToString(), RegexOptions.IgnoreCase);
 			return t;
 		}
 
-		public string SerializeJSON<T>(T value)
+		public void BuildUri<T>(StringBuilder uriBuilder, RestParameter<T> parameter)
+		{
+			if (parameter.Mode == UriBuildMode.Path)
+			{
+				uriBuilder.Replace(string.Format("\\{{{0}\\}}", parameter.RestName), parameter.Value.ToString());
+			}
+			else if (parameter.Mode == UriBuildMode.Query)
+			{
+				uriBuilder.AppendFormat("&{0}={1}", parameter.RestName, parameter.Value.ToString());
+			}
+		}
+
+		public string SerializeJson<T>(T value)
 		{
 			var ms = new MemoryStream();
 			var dcjs = new DataContractJsonSerializer(typeof(T));
@@ -61,34 +99,34 @@ namespace System.ServiceModel
 			return Encoding.UTF8.GetString(da, 0, da.Length);
 		}
 
-		public T DeserializeJSON<T>(string value)
+		public T DeserializeJson<T>(string value)
 		{
 			var ms = new MemoryStream(Encoding.UTF8.GetBytes(value));
 			var dcjs = new DataContractJsonSerializer(typeof(T));
 			return (T)dcjs.ReadObject(ms);
 		}
 
-		public string SerializeXML<T>(T value)
+		public string SerializeXml<T>(T value)
 		{
 			var ms = new MemoryStream();
-			var dcjs = new DataContractSerializer(typeof(T));
-			dcjs.WriteObject(ms, value);
+			var dcs = new DataContractSerializer(typeof(T));
+			dcs.WriteObject(ms, value);
 			var da = ms.ToArray();
 			return Encoding.UTF8.GetString(da, 0, da.Length);
 		}
 
-		public T DeserializeXML<T>(string value)
+		public T DeserializeXml<T>(string value)
 		{
 			var ms = new MemoryStream(Encoding.UTF8.GetBytes(value));
-			var dcjs = new DataContractSerializer(typeof(T));
-			return (T)dcjs.ReadObject(ms);
+			var dcs = new DataContractSerializer(typeof(T));
+			return (T)dcs.ReadObject(ms);
 		}
 
-		protected void EnsureSuccessStatusCode(HttpStatusCode Status, string StatusDescription)
+		protected void EnsureSuccessStatusCode(HttpStatusCode status, string statusDescription)
 		{
-			if (Status == HttpStatusCode.Continue || Status == HttpStatusCode.SwitchingProtocols) return;
-			if (Status == HttpStatusCode.OK || Status == HttpStatusCode.Created || Status == HttpStatusCode.Accepted || Status == HttpStatusCode.NonAuthoritativeInformation || Status == HttpStatusCode.NoContent || Status == HttpStatusCode.ResetContent || Status == HttpStatusCode.PartialContent) return;
-			throw new Exception(string.Format("HTTP Status: {0}" + Environment.NewLine + "Status Description: {1}", Status, StatusDescription));
+			if (status == HttpStatusCode.Continue || status == HttpStatusCode.SwitchingProtocols) return;
+			if (status == HttpStatusCode.OK || status == HttpStatusCode.Created || status == HttpStatusCode.Accepted || status == HttpStatusCode.NonAuthoritativeInformation || status == HttpStatusCode.NoContent || status == HttpStatusCode.ResetContent || status == HttpStatusCode.PartialContent) return;
+			throw new Exception(string.Format("HTTP Status: {0}" + Environment.NewLine + "Status Description: {1}", status, statusDescription));
 		}
 	}
 
