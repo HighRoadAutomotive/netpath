@@ -385,22 +385,26 @@ namespace NETPath.Generators.CS
 			code.AppendLine("RESTHttpClientConfig Configuration = null)");
 			code.AppendLine("\t\t{");
 			code.AppendLine("\t\t\tvar rc = Configuration ?? new RESTHttpClientConfig();");
-			code.Append("\t\t\tvar rp = new Dictionary<string, object>() { ");
-			foreach (RESTMethodParameter op in o.Parameters.Where(a => a.Type.TypeMode == DataTypeMode.Primitive || a.Type.TypeMode == DataTypeMode.Enum))
-				code.AppendFormat("{{ \"{0}\", {0} }}, ", op.Name);
-			code.AppendLine("};");
+			code.AppendLine(string.Format("\t\t\tvar urisb = new StringBuilder(\"{0}\", 1024);", o.UriTemplate));
+			foreach (RESTMethodParameter op in o.Parameters.Where(a => !a.Serialize))
+			{
+				if (op.Nullable)
+					code.AppendLine(string.Format("\t\t\tif ({0}.HasValue) BuildUri<{2}>(urisb, \"{1}\", UriBuildMode.Query, {0}.Value);", op.Name, op.RestName, DataTypeGenerator.GenerateType(op.Type)));
+				else
+					code.AppendLine(string.Format("\t\t\tBuildUri<{3}>(urisb, \"{1}\", {2}, {0});", op.Name, op.RestName, op.IsPath ? "UriBuildMode.Path" : "UriBuildMode.Query", DataTypeGenerator.GenerateType(op.Type)));
+			}
 			if (o.Parameters.Any(a => a.Serialize))
 			{
 				var p = o.Parameters.First(a => a.Serialize);
 				var pt = p.Type;
-				if (o.ResponseFormat == WebMessageFormat.Json && pt.TypeMode != DataTypeMode.Primitive) code.AppendLine(string.Format("\t\t\tvar rd = new System.Net.Http.ByteArrayContent(Encoding.UTF8.GetBytes(SerializeJSON<{0}>({1})));", DataTypeGenerator.GenerateType(pt), p.Name));
-				if (o.ResponseFormat == WebMessageFormat.Xml && pt.TypeMode != DataTypeMode.Primitive) code.AppendLine(string.Format("\t\t\tvar rd = new System.Net.Http.ByteArrayContent(Encoding.UTF8.GetBytes(SerializeXML<{0}>({1})));", DataTypeGenerator.GenerateType(pt), p.Name));
+				if (o.ResponseFormat == WebMessageFormat.Json && pt.TypeMode != DataTypeMode.Primitive) code.AppendLine(string.Format("\t\t\tvar rd = new System.Net.Http.ByteArrayContent(Encoding.UTF8.GetBytes(SerializeJson<{0}>({1})));", DataTypeGenerator.GenerateType(pt), p.Name));
+				if (o.ResponseFormat == WebMessageFormat.Xml && pt.TypeMode != DataTypeMode.Primitive) code.AppendLine(string.Format("\t\t\tvar rd = new System.Net.Http.ByteArrayContent(Encoding.UTF8.GetBytes(SerializeXml<{0}>({1})));", DataTypeGenerator.GenerateType(pt), p.Name));
 				if (pt.TypeMode == DataTypeMode.Primitive && pt.Primitive == PrimitiveTypes.ByteArray)
 					code.AppendLine(string.Format("\t\t\tvar rd = new System.Net.Http.ByteArrayContent({0});", p.Name));
 				if (pt.TypeMode == DataTypeMode.Primitive && pt.Primitive == PrimitiveTypes.String)
 					code.AppendLine(string.Format("\t\t\tvar rd = new System.Net.Http.ByteArrayContent(Encoding.UTF8.GetBytes({0}));", p.Name));
 			}
-			code.AppendLine(string.Format("\t\t\tvar rm = rc.CreateRequest(new Uri(BaseURI, ParseURI(\"{0}\", rp)).ToString(), System.Net.Http.HttpMethod.{1}, {2}, {3});", o.UriTemplate, o.Method == MethodRESTVerbs.GET ? "Get" : o.Method == MethodRESTVerbs.POST ? "Post" : o.Method == MethodRESTVerbs.PUT ? "Put" : "Delete", o.Parameters.Any(a => a.Serialize) ? "rd" : "null", o.RequestConfiguration.UseHTTP10 ? bool.TrueString.ToLower() : bool.FalseString.ToLower()));
+			code.AppendLine(string.Format("\t\t\tvar rm = rc.CreateRequest(new Uri(BaseUri, urisb.ToString()).ToString(), System.Net.Http.HttpMethod.{1}, {2}, {3});", o.UriTemplate, o.Method == MethodRESTVerbs.GET ? "Get" : o.Method == MethodRESTVerbs.POST ? "Post" : o.Method == MethodRESTVerbs.PUT ? "Put" : "Delete", o.Parameters.Any(a => a.Serialize) ? "rd" : "null", o.RequestConfiguration.UseHTTP10 ? bool.TrueString.ToLower() : bool.FalseString.ToLower()));
 			code.AppendLine(string.Format("\t\t\tvar rr = await {0}Client.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);", RegExs.ReplaceSpaces.Replace(o.RequestConfiguration.Name, "")));
 			code.AppendLine("\t\t\trr.EnsureSuccessStatusCode();");
 			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent)
@@ -411,8 +415,8 @@ namespace NETPath.Generators.CS
 			else
 			{
 				code.AppendLine("\t\t\tstring rs = await rr.Content.ReadAsStringAsync();");
-				if (o.ResponseFormat == WebMessageFormat.Json) code.AppendLine(string.Format("\t\t\t{1}Result(DeserializeJSON<{0}>(rs), rr);", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName));
-				if (o.ResponseFormat == WebMessageFormat.Xml) code.AppendLine(string.Format("\t\t\t{1}Result(DeserializeXML<{0}>(rs), rr);", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName));
+				if (o.ResponseFormat == WebMessageFormat.Json) code.AppendLine(string.Format("\t\t\t{1}Result(DeserializeJson<{0}>(rs), rr);", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName));
+				if (o.ResponseFormat == WebMessageFormat.Xml) code.AppendLine(string.Format("\t\t\t{1}Result(DeserializeXml<{0}>(rs), rr);", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName));
 			}
 			code.AppendLine("\t\t}");
 			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine(string.Format("\t\tpublic abstract void {0}Result(System.Net.Http.HttpResponseMessage Response);", o.ServerName));
@@ -440,15 +444,14 @@ namespace NETPath.Generators.CS
 			code.AppendLine("\t\t{");
 			code.AppendLine("\t\t\tSystem.Net.Http.HttpResponseMessage rr = null;");
 			if (!(o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine("\t\t\tstring rs = \"\";");
-			//code.AppendLine("\t\t\treturn System.Threading.Tasks.Task.Factory.StartNew(async() => {");
 			code.AppendLine("\t\t\tvar rc = Configuration ?? new RESTHttpClientConfig();");
 			code.AppendLine(string.Format("\t\t\tvar urisb = new StringBuilder(\"{0}\", 1024);", o.UriTemplate));
 			foreach (RESTMethodParameter op in o.Parameters.Where(a => !a.Serialize))
 			{
 				if (op.Nullable)
-					code.AppendLine(string.Format("\t\t\tif ({0}.HasValue) BuildUri(urisb, new RestParameter<{2}>(\"{1}\", UriBuildMode.Query, {0}.Value));", op.Name, op.RestName, DataTypeGenerator.GenerateType(op.Type)));
+					code.AppendLine(string.Format("\t\t\tif ({0}.HasValue) BuildUri<{2}>(urisb, \"{1}\", UriBuildMode.Query, {0}.Value);", op.Name, op.RestName, DataTypeGenerator.GenerateType(op.Type)));
 				else
-					code.AppendLine(string.Format("\t\t\tBuildUri(urisb, new RestParameter<{3}>(\"{1}\", {2}, {0}));", op.Name, op.RestName, op.IsPath ? "UriBuildMode.Path" : "UriBuildMode.Query", DataTypeGenerator.GenerateType(op.Type)));
+					code.AppendLine(string.Format("\t\t\tBuildUri<{3}>(urisb, \"{1}\", {2}, {0});", op.Name, op.RestName, op.IsPath ? "UriBuildMode.Path" : "UriBuildMode.Query", DataTypeGenerator.GenerateType(op.Type)));
 			}
 			if (o.Parameters.Any(a => a.Serialize))
 			{
@@ -472,7 +475,6 @@ namespace NETPath.Generators.CS
 				if (o.ResponseFormat == WebMessageFormat.Json) code.AppendLine(string.Format("\t\t\treturn new Tuple<{0}, System.Net.Http.HttpResponseMessage>(DeserializeJson<{0}>(rs), rr);", DataTypeGenerator.GenerateType(o.ReturnType)));
 				if (o.ResponseFormat == WebMessageFormat.Xml) code.AppendLine(string.Format("\t\t\treturn new Tuple<{0}, System.Net.Http.HttpResponseMessage>(DeserializeXml<{0}>(rs), rr);", DataTypeGenerator.GenerateType(o.ReturnType)));
 			}
-			//code.AppendLine("\t\t\t}).Unwrap();");
 			code.AppendLine("\t\t}");
 
 			return code.ToString();

@@ -425,6 +425,12 @@ namespace NETPath.Projects
 				sb.AppendFormat("{0}, ", p);
 			if (Parameters.Count > 0) sb.Remove(sb.Length - 2, 2);
 			Declaration = string.Format("{0} {1}({2})", ReturnType, ServerName, sb);
+
+			if (Parameters.Any(a => a.Nullable) && !UriTemplate.EndsWith("?"))
+			{
+				if (UriTemplate.EndsWith("/")) UriTemplate = UriTemplate.Substring(0, UriTemplate.Length - 1) + "?";
+				else UriTemplate = UriTemplate + "?";
+			}
 		}
 
 
@@ -595,7 +601,7 @@ if (!string.IsNullOrEmpty(ServerName)) if (ServerName.IndexOf(Args.Search, Strin
 			ID = Guid.NewGuid();
 			this.Type = Type;
 			this.Name = Name;
-			RestName = Name;
+			RestName = Name.ToLowerInvariant();
 			IsHidden = false;
 			this.Owner = Owner;
 			this.Parent = Parent;
