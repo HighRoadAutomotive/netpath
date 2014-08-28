@@ -136,12 +136,23 @@ namespace NETPath.Generators.CS
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 			code.AppendLine(string.Format("\t{0} {2}partial class {1}{3} : RestClientBase", DataTypeGenerator.GenerateScope(o.Scope), o.Name, o.Abstract ? "abstract " : "", o.Abstract ? "Base" : ""));
 			code.AppendLine("\t{");
+			if (o.RequestConfigurations.Any(a => a.GetType() == typeof (RESTHTTPClientConfiguration)))
+			{
+				code.AppendLine("\t\tprivate readonly RESTHttpClientConfig _defaultHeaders;");
+				code.AppendLine(string.Format("\t\tprotected RESTHttpClientConfig DefaultHeadersConfiguration {{ get {{ return _defaultHeaders; }} }}"));
+			}
 			foreach (RESTHTTPClientConfiguration c in o.RequestConfigurations.Where(a => a.GetType() == typeof(RESTHTTPClientConfiguration)).Select(t => t as RESTHTTPClientConfiguration).Where(c => o.ServiceOperations.Any(a => Equals(a.RequestConfiguration, c))))
-				code.AppendLine(string.Format("\t\tprotected System.Net.Http.HttpClient {0}Client {{ get; private set; }}", RegExs.ReplaceSpaces.Replace(c.Name, "")));
-			code.AppendLine(string.Format("\t\t{1} {0}{2}(string BaseURI, CookieContainer Cookies = null, NetworkCredential Credentials = null, CredentialCache CredentialCache = null, IWebProxy Proxy = null) : base(BaseURI, Cookies, Credentials, CredentialCache, Proxy)", o.Name, o.Abstract ? "protected" : "public", o.Abstract ? "Base" : ""));
+			{
+				code.AppendLine(string.Format("\t\tprivate readonly System.Net.Http.HttpClient _{0}Client;", RegExs.ReplaceSpaces.Replace(c.Name, "")));
+				code.AppendLine(string.Format("\t\tprotected System.Net.Http.HttpClient {0}Client {{ get {{ return _{0}Client; }} }}", RegExs.ReplaceSpaces.Replace(c.Name, "")));
+			}
+			code.AppendLine(string.Format("\t\t{1} {0}{2}(string BaseURI, {3}CookieContainer Cookies = null, NetworkCredential Credentials = null, CredentialCache CredentialCache = null, IWebProxy Proxy = null)", o.Name, o.Abstract ? "protected" : "public", o.Abstract ? "Base" : "", o.RequestConfigurations.Any(a => a.GetType() == typeof(RESTHTTPClientConfiguration)) ? "RESTHttpClientConfig defaultConfiguration = null, " : ""));
+			code.AppendLine("\t\t\t : base(BaseURI, Cookies, Credentials, CredentialCache, Proxy)");
 			code.AppendLine("\t\t{");
+			if (o.RequestConfigurations.Any(a => a.GetType() == typeof(RESTHTTPClientConfiguration)))
+				code.AppendLine("\t\t\t_defaultHeaders = defaultConfiguration ?? new RESTHttpClientConfig();");
 			foreach (RESTHTTPClientConfiguration c in o.RequestConfigurations.Where(a => a.GetType() == typeof(RESTHTTPClientConfiguration)).Select(t => t as RESTHTTPClientConfiguration).Where(c => o.ServiceOperations.Any(a => Equals(a.RequestConfiguration, c))))
-				code.AppendLine(string.Format("\t\t\t{0}Client = new System.Net.Http.HttpClient(new System.Net.Http.HttpClientHandler() {{ AllowAutoRedirect = {1}, AutomaticDecompression = System.Net.DecompressionMethods.{2}, ClientCertificateOptions = System.Net.Http.ClientCertificateOption.{3}, CookieContainer = {4}, Credentials = (this.Credentials == null) ? (ICredentials)this.CredentialCache : (ICredentials)this.Credentials, MaxAutomaticRedirections = {5}, MaxRequestContentBufferSize = {6}, PreAuthenticate = {7}, Proxy = this.Proxy, UseCookies = {8}, UseDefaultCredentials = {9}, UseProxy = {10} }});",
+				code.AppendLine(string.Format("\t\t\t_{0}Client = new System.Net.Http.HttpClient(new System.Net.Http.HttpClientHandler() {{ AllowAutoRedirect = {1}, AutomaticDecompression = System.Net.DecompressionMethods.{2}, ClientCertificateOptions = System.Net.Http.ClientCertificateOption.{3}, CookieContainer = {4}, Credentials = (this.Credentials == null) ? (ICredentials)this.CredentialCache : (ICredentials)this.Credentials, MaxAutomaticRedirections = {5}, MaxRequestContentBufferSize = {6}, PreAuthenticate = {7}, Proxy = this.Proxy, UseCookies = {8}, UseDefaultCredentials = {9}, UseProxy = {10} }});",
 					RegExs.ReplaceSpaces.Replace(c.Name, ""), c.AllowAutoRedirect ? bool.TrueString.ToLower() : bool.FalseString.ToLower(), c.AutomaticDecompression, c.ClientCertificateOptions,
 					c.CookieContainerMode == CookieContainerMode.None ? "null" : c.CookieContainerMode == CookieContainerMode.Global ? "GlobalCookies" : c.CookieContainerMode == CookieContainerMode.Instance ? "Cookies" : "new CookieContainer()",
 					c.MaxAutomaticRedirections, c.MaxRequestContentBufferSize, c.PreAuthenticate ? bool.TrueString.ToLower() : bool.FalseString.ToLower(),
@@ -215,14 +226,14 @@ namespace NETPath.Generators.CS
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				code.AppendLine(string.Format("\t\t///<param name='Configuration'>HTTP Client Configuration</param>"));
 			}
-			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendFormat("\t\tpublic virtual async void {0}(", o.ServerName);
-			else code.AppendFormat("\t\tpublic virtual async void {0}(", o.ServerName);
+			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendFormat("\t\tpublic virtual async System.Threading.Tasks.Task {0}(", o.ServerName);
+			else code.AppendFormat("\t\tpublic virtual async System.Threading.Tasks.Task {0}(", o.ServerName);
 			foreach (RESTMethodParameter op in o.Parameters)
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
-			code.AppendLine("RESTHttpWebConfig Configuration = null)");
+			code.AppendLine(!o.UseDefaultHeaders ? "RESTHttpWebConfig Configuration = null)" : ")");
 			code.AppendLine("\t\t{");
 			code.AppendLine("\t\t\tvar rc = Configuration ?? new RESTHttpWebConfig();");
-			if (conf.CookieContainerMode != CookieContainerMode.Custom) code.AppendLine(string.Format("\t\t\trc.CookieContainer = {0};", conf.CookieContainerMode == CookieContainerMode.Global ? "GlobalCookies" : conf.CookieContainerMode == CookieContainerMode.Instance ? "Cookies" : "null"));
+			if (conf != null && conf.CookieContainerMode != CookieContainerMode.Custom) code.AppendLine(string.Format("\t\t\trc.CookieContainer = {0};", conf.CookieContainerMode == CookieContainerMode.Global ? "GlobalCookies" : conf.CookieContainerMode == CookieContainerMode.Instance ? "Cookies" : "null"));
 			code.Append("\t\t\tvar rp = new Dictionary<string, object>() { ");
 			foreach (RESTMethodParameter op in o.Parameters.Where(a => a.Type.TypeMode == DataTypeMode.Primitive || a.Type.TypeMode == DataTypeMode.Enum))
 				code.AppendFormat("{{ \"{0}\", {0} }}, ", op.Name);
@@ -231,8 +242,8 @@ namespace NETPath.Generators.CS
 			{
 				var p = o.Parameters.First(a => a.Serialize);
 				var pt = p.Type;
-				if (o.ResponseFormat == WebMessageFormat.Json && pt.TypeMode != DataTypeMode.Primitive) code.AppendLine(string.Format("\t\t\tvar rd = Encoding.UTF8.GetBytes(SerializeJSON<{0}>({1}));", DataTypeGenerator.GenerateType(pt), p.Name));
-				if (o.ResponseFormat == WebMessageFormat.Xml && pt.TypeMode != DataTypeMode.Primitive) code.AppendLine(string.Format("\t\t\tvar rd = Encoding.UTF8.GetBytes(SerializeXML<{0}>({1}));", DataTypeGenerator.GenerateType(pt), p.Name));
+				if (o.ResponseFormat == WebMessageFormat.Json && pt.TypeMode != DataTypeMode.Primitive) code.AppendLine(string.Format("\t\t\tvar rd = Encoding.UTF8.GetBytes(SerializeJson<{0}>({1}));", DataTypeGenerator.GenerateType(pt), p.Name));
+				if (o.ResponseFormat == WebMessageFormat.Xml && pt.TypeMode != DataTypeMode.Primitive) code.AppendLine(string.Format("\t\t\tvar rd = Encoding.UTF8.GetBytes(SerializeXml<{0}>({1}));", DataTypeGenerator.GenerateType(pt), p.Name));
 				if (pt.TypeMode == DataTypeMode.Primitive && pt.Primitive == PrimitiveTypes.ByteArray)
 					code.AppendLine(string.Format("\t\t\tvar rd = {0};", p.Name));
 				if (pt.TypeMode == DataTypeMode.Primitive && pt.Primitive == PrimitiveTypes.String)
@@ -272,8 +283,8 @@ namespace NETPath.Generators.CS
 			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.Append("");
 			else
 			{
-				if (o.ResponseFormat == WebMessageFormat.Json) code.AppendLine(string.Format("\t\t\t{1}Result(DeserializeJSON<{0}>(rs), rr);", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName));
-				if (o.ResponseFormat == WebMessageFormat.Xml) code.AppendLine(string.Format("\t\t\t{1}Result(DeserializeXML<{0}>(rs), rr);", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName));
+				if (o.ResponseFormat == WebMessageFormat.Json) code.AppendLine(string.Format("\t\t\t{1}Result(DeserializeJson<{0}>(rs), rr);", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName));
+				if (o.ResponseFormat == WebMessageFormat.Xml) code.AppendLine(string.Format("\t\t\t{1}Result(DeserializeXml<{0}>(rs), rr);", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName));
 			}
 			code.AppendLine("\t\t}");
 			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine(string.Format("\t\tpublic abstract void {0}Result(System.Net.HttpWebResponse Response);", o.ServerName));
@@ -305,12 +316,12 @@ namespace NETPath.Generators.CS
 			}
 			foreach (RESTMethodParameter op in o.Parameters)
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
-			code.AppendLine("RESTHttpWebConfig Configuration = null)");
+			code.AppendLine(!o.UseDefaultHeaders ? "RESTHttpWebConfig Configuration = null)" : ")");
 			code.AppendLine("\t\t{");
 			code.AppendLine("\t\t\tSystem.Net.HttpWebResponse rr = null;");
 			if (!(o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine("\t\t\tstring rs = \"\";");
 			code.AppendLine("\t\t\tvar rc = Configuration ?? new RESTHttpWebConfig();");
-			if (conf.CookieContainerMode != CookieContainerMode.Custom) code.AppendLine(string.Format("\t\t\trc.CookieContainer = {0};", conf.CookieContainerMode == CookieContainerMode.Global ? "GlobalCookies" : conf.CookieContainerMode == CookieContainerMode.Instance ? "Cookies" : "null"));
+			if (conf != null && conf.CookieContainerMode != CookieContainerMode.Custom) code.AppendLine(string.Format("\t\t\trc.CookieContainer = {0};", conf.CookieContainerMode == CookieContainerMode.Global ? "GlobalCookies" : conf.CookieContainerMode == CookieContainerMode.Instance ? "Cookies" : "null"));
 			code.Append("\t\t\tvar rp = new Dictionary<string, object>() { ");
 			foreach (RESTMethodParameter op in o.Parameters.Where(a => a.Type.TypeMode == DataTypeMode.Primitive || a.Type.TypeMode == DataTypeMode.Enum))
 				code.AppendFormat("{{ \"{0}\", {0} }}, ", op.Name);
@@ -319,8 +330,8 @@ namespace NETPath.Generators.CS
 			{
 				var p = o.Parameters.First(a => a.Serialize);
 				var pt = p.Type;
-				if (o.ResponseFormat == WebMessageFormat.Json && pt.TypeMode != DataTypeMode.Primitive) code.AppendLine(string.Format("\t\t\tvar rd = Encoding.UTF8.GetBytes(SerializeJSON<{0}>({1}));", DataTypeGenerator.GenerateType(pt), p.Name));
-				if (o.ResponseFormat == WebMessageFormat.Xml && pt.TypeMode != DataTypeMode.Primitive) code.AppendLine(string.Format("\t\t\tvar rd = Encoding.UTF8.GetBytes(SerializeXML<{0}>({1}));", DataTypeGenerator.GenerateType(pt), p.Name));
+				if (o.ResponseFormat == WebMessageFormat.Json && pt.TypeMode != DataTypeMode.Primitive) code.AppendLine(string.Format("\t\t\tvar rd = Encoding.UTF8.GetBytes(SerializeJson<{0}>({1}));", DataTypeGenerator.GenerateType(pt), p.Name));
+				if (o.ResponseFormat == WebMessageFormat.Xml && pt.TypeMode != DataTypeMode.Primitive) code.AppendLine(string.Format("\t\t\tvar rd = Encoding.UTF8.GetBytes(SerializeXml<{0}>({1}));", DataTypeGenerator.GenerateType(pt), p.Name));
 				if (pt.TypeMode == DataTypeMode.Primitive && pt.Primitive == PrimitiveTypes.ByteArray)
 					code.AppendLine(string.Format("\t\t\tvar rd = {0};", p.Name));
 				if (pt.TypeMode == DataTypeMode.Primitive && pt.Primitive == PrimitiveTypes.String)
@@ -414,15 +425,17 @@ namespace NETPath.Generators.CS
 				code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 				foreach (RESTMethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
-				code.AppendLine(string.Format("\t\t///<param name='Configuration'>HTTP Client Configuration</param>"));
+				if (!o.UseDefaultHeaders) code.AppendLine(string.Format("\t\t///<param name='Configuration'>HTTP Client Configuration</param>"));
 			}
 			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendFormat("\t\tpublic virtual async void {0}(", o.ServerName);
 			else code.AppendFormat("\t\tpublic virtual async void {0}(", o.ServerName);
 			foreach (RESTMethodParameter op in o.Parameters)
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
-			code.AppendLine("RESTHttpClientConfig Configuration = null)");
+			if (o.UseDefaultHeaders && o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+			code.AppendLine(!o.UseDefaultHeaders ? "RESTHttpClientConfig Configuration = null)" : ")");
 			code.AppendLine("\t\t{");
-			code.AppendLine("\t\t\tvar rc = Configuration ?? new RESTHttpClientConfig();");
+			if(o.UseDefaultHeaders) code.AppendLine("\t\t\tvar rc = _defaultHeaders;");
+			else code.AppendLine("\t\t\tvar rc = Configuration ?? _defaultHeaders;");
 			code.AppendLine(string.Format("\t\t\tvar urisb = new StringBuilder(\"{0}\", 1024);", o.UriTemplate));
 			foreach (RESTMethodParameter op in o.Parameters.Where(a => !a.Serialize))
 			{
@@ -496,7 +509,7 @@ namespace NETPath.Generators.CS
 				code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 				foreach (RESTMethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
-				code.AppendLine(string.Format("\t\t///<param name='Configuration'>HTTP Client Configuration</param>"));
+				if (!o.UseDefaultHeaders) code.AppendLine(string.Format("\t\t///<param name='Configuration'>HTTP Client Configuration</param>"));
 			}
 			if (o.ReturnResponseData)
 			{
@@ -510,11 +523,13 @@ namespace NETPath.Generators.CS
 			}
 			foreach (RESTMethodParameter op in o.Parameters)
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
-			code.AppendLine("RESTHttpClientConfig Configuration = null)");
+			if (o.UseDefaultHeaders && o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+			code.AppendLine(!o.UseDefaultHeaders ? "RESTHttpClientConfig Configuration = null)" : ")");
 			code.AppendLine("\t\t{");
 			code.AppendLine("\t\t\tSystem.Net.Http.HttpResponseMessage rr = null;");
 			if (!(o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine("\t\t\tstring rs = \"\";");
-			code.AppendLine("\t\t\tvar rc = Configuration ?? new RESTHttpClientConfig();");
+			if (o.UseDefaultHeaders) code.AppendLine("\t\t\tvar rc = _defaultHeaders;");
+			else code.AppendLine("\t\t\tvar rc = Configuration ?? _defaultHeaders;");
 			code.AppendLine(string.Format("\t\t\tvar urisb = new StringBuilder(\"{0}\", 1024);", o.UriTemplate));
 			foreach (RESTMethodParameter op in o.Parameters.Where(a => !a.Serialize))
 			{
