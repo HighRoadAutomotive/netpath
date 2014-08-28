@@ -522,7 +522,7 @@ if (!string.IsNullOrEmpty(ServerName)) if (ServerName.IndexOf(Args.Search, Strin
 			de.IsNullable = false;
 			if (nt.TypeMode == DataTypeMode.Array || nt.TypeMode == DataTypeMode.Class || nt.TypeMode == DataTypeMode.Collection || nt.TypeMode == DataTypeMode.Dictionary || nt.TypeMode == DataTypeMode.Struct || nt.TypeMode == DataTypeMode.Queue || nt.TypeMode == DataTypeMode.Stack) de.IsSerializable = true;
 			if (nt.TypeMode == DataTypeMode.Primitive && (nt.Primitive == PrimitiveTypes.ByteArray || nt.Primitive == PrimitiveTypes.String)) de.IsSerializable = true;
-			if ((nt.TypeMode == DataTypeMode.Primitive && (nt.Primitive != PrimitiveTypes.ByteArray || nt.Primitive != PrimitiveTypes.String || nt.Primitive != PrimitiveTypes.Object))) de.IsNullable = true;
+			if (nt.TypeMode == DataTypeMode.Primitive && nt.Primitive != PrimitiveTypes.ByteArray && nt.Primitive != PrimitiveTypes.String && nt.Primitive != PrimitiveTypes.Object) de.IsNullable = true;
 			if (nt.TypeMode == DataTypeMode.Struct || nt.TypeMode == DataTypeMode.Enum) de.IsNullable = true;
 		}
 
@@ -620,7 +620,7 @@ if (!string.IsNullOrEmpty(ServerName)) if (ServerName.IndexOf(Args.Search, Strin
 			IsNullable = false;
 			if (Type.TypeMode == DataTypeMode.Array || Type.TypeMode == DataTypeMode.Class || Type.TypeMode == DataTypeMode.Collection || Type.TypeMode == DataTypeMode.Dictionary || Type.TypeMode == DataTypeMode.Struct || Type.TypeMode == DataTypeMode.Queue || Type.TypeMode == DataTypeMode.Stack) IsSerializable = true;
 			if (Type.TypeMode == DataTypeMode.Primitive && (Type.Primitive == PrimitiveTypes.ByteArray || Type.Primitive == PrimitiveTypes.String)) IsSerializable = true;
-			if ((Type.TypeMode == DataTypeMode.Primitive && (Type.Primitive != PrimitiveTypes.ByteArray || Type.Primitive != PrimitiveTypes.String || Type.Primitive != PrimitiveTypes.Object))) IsNullable = true;
+			if ((Type.TypeMode == DataTypeMode.Primitive && Type.Primitive != PrimitiveTypes.ByteArray && Type.Primitive != PrimitiveTypes.String && Type.Primitive != PrimitiveTypes.Object)) IsNullable = true;
 			if (Type.TypeMode == DataTypeMode.Struct || Type.TypeMode == DataTypeMode.Enum) IsNullable = true;
 		}
 

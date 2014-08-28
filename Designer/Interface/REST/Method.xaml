@@ -88,18 +88,18 @@
 	</Grid.RowDefinitions>
 	<TextBlock Text="{Binding Path=MethodData.Declaration}" FontSize="14pt" Margin="0,5" Grid.Row="0" Grid.ColumnSpan="2" TextWrapping="Wrap" />
 	<Label Grid.Column="0" Grid.Row="1" Content="Return Type:" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="100" />
-	<Data:TypeSelector OpenType="{Binding Path=MethodData.ReturnType, Mode=TwoWay}" Project="{Binding Path=ServiceProject}" AllowVoid="True" Grid.Column="0" Grid.Row="1" Margin="80,5,5,5" />
+	<Data:TypeSelector OpenType="{Binding Path=MethodData.ReturnType, Mode=TwoWay}" Project="{Binding Path=ServiceProject}" AllowVoid="True" Grid.Column="0" Grid.Row="1" Margin="90,5,5,5" />
 	<Label Content="Server Name:" Grid.Column="1" Grid.Row="1" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="100" />
-	<pc:TextBox Text="{Binding Path=MethodData.ServerName}" Name="ServerName" Grid.Column="1" Grid.Row="1" Height="23" Margin="90,5,5,5" ToolTip="{Binding Path=MethodData.ServerName}" />
+	<pc:TextBox Text="{Binding Path=MethodData.ServerName}" Name="ServerName" Grid.Column="1" Grid.Row="1" Height="23" Margin="100,5,5,5" ToolTip="{Binding Path=MethodData.ServerName}" />
 	<Label Content="HTTP Verb:" HorizontalAlignment="Left" Margin="0,5" VerticalContentAlignment="Center" VerticalAlignment="Top" Grid.Row="2" Grid.Column="0" />
-	<ComboBox Height="23" Margin="80,5,5,5" SelectedIndex="{Binding Path=MethodData.Method, Converter={StaticResource MethodRESTVerbsConverter}}" VerticalContentAlignment="Center" VerticalAlignment="Top" Grid.Row="2" Grid.Column="0" >
+	<ComboBox Height="23" Margin="90,5,5,5" SelectedIndex="{Binding Path=MethodData.Method, Converter={StaticResource MethodRESTVerbsConverter}}" VerticalContentAlignment="Center" VerticalAlignment="Top" Grid.Row="2" Grid.Column="0" >
 		<ComboBoxItem Content="GET" />
 		<ComboBoxItem Content="POST" />
 		<ComboBoxItem Content="PUT" />
 		<ComboBoxItem Content="DELETE" />
 	</ComboBox>
 	<Label Content="URL Template:" Height="Auto" HorizontalAlignment="Left" Margin="0,5" VerticalContentAlignment="Center" VerticalAlignment="Top" Width="Auto" Grid.Column="1" Grid.Row="2" />
-	<pc:TextBox Text="{Binding Path=MethodData.UriTemplate}" TextWrapping="Wrap" MinHeight="23" Margin="90,5,5,5" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1" />
+	<pc:TextBox Text="{Binding Path=MethodData.UriTemplate}" TextWrapping="Wrap" MinHeight="23" Margin="100,5,5,5" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1" />
 	<TabControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,10,0,0">
 		<TabItem Padding="10,5" IsSelected="True">
 			<TabItem.Header>
