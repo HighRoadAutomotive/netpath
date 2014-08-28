@@ -121,12 +121,13 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<Label Grid.Row="0" Content="REST" FontSize="12pt" Margin="0,5,0,0" />
 		<Label Content="URI Template:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="1" />
-		<pc:TextBox Text="{Binding Path=MethodData.UriTemplate}" TextWrapping="Wrap" MinHeight="23" Margin="120,5,5,5" VerticalContentAlignment="Center" Grid.Row="1" Grid.ColumnSpan="2" />
+		<pc:TextBox Text="{Binding Path=MethodData.UriTemplate}" TextWrapping="Wrap" MinHeight="23" Margin="130,5,5,5" VerticalContentAlignment="Center" Grid.Row="1" Grid.ColumnSpan="2" />
 		<Label Content="HTTP Verb:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" />
-		<ComboBox Height="23" Margin="120,5,5,5" SelectedIndex="{Binding Path=MethodData.Method, Converter={StaticResource MethodRESTVerbsConverter}}" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" >
+		<ComboBox Height="23" Margin="130,5,5,5" SelectedIndex="{Binding Path=MethodData.Method, Converter={StaticResource MethodRESTVerbsConverter}}" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" >
 			<ComboBoxItem Content="GET" />
 			<ComboBoxItem Content="POST" />
 			<ComboBoxItem Content="PUT" />
@@ -140,7 +141,7 @@
 			<ComboBoxItem Content="Wrapped Response" />
 		</ComboBox>
 		<Label Content="Request Format:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" />
-		<ComboBox Height="23" Margin="120,5,5,5" SelectedIndex="{Binding Path=MethodData.RequestFormat, Converter={StaticResource WebMessageFormatConverter}}" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" >
+		<ComboBox Height="23" Margin="130,5,5,5" SelectedIndex="{Binding Path=MethodData.RequestFormat, Converter={StaticResource WebMessageFormatConverter}}" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" >
 			<ComboBoxItem Content="XML" />
 			<ComboBoxItem Content="JSON" />
 		</ComboBox>
@@ -150,8 +151,10 @@
 			<ComboBoxItem Content="JSON" />
 		</ComboBox>
 		<ToggleButton Content="Deserialize Content" IsChecked="{Binding Path=MethodData.DeserializeContent}" Margin="5" Grid.Column="0" Grid.Row="4" />
-		<Label Content="Client Configuration:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="1" />
-		<ComboBox SelectedItem="{Binding Path=MethodData.RequestConfiguration}" ItemsSource="{Binding Path=MethodData.Owner.RequestConfigurations}" ItemTemplateSelector="{StaticResource RequestConfigurationTemplateSelector}" Height="23" Margin="130,5,5,5" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="1" />
+		<ToggleButton Content="Return Response Data" IsChecked="{Binding Path=MethodData.ReturnResponseData}" Margin="5" Grid.Column="1" Grid.Row="4" />
+		<ToggleButton Content="Use Default Header Configuration" IsChecked="{Binding Path=MethodData.UseDefaultHeaders}" Margin="5" Grid.Column="1" Grid.Row="5" />
+		<Label Content="Client Configuration:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="5" Grid.Column="0" />
+		<ComboBox SelectedItem="{Binding Path=MethodData.RequestConfiguration}" ItemsSource="{Binding Path=MethodData.Owner.RequestConfigurations}" ItemTemplateSelector="{StaticResource RequestConfigurationTemplateSelector}" Height="23" Margin="130,5,5,5" VerticalContentAlignment="Center" Grid.Row="5" Grid.Column="0" />
 	</Grid>
 	<TabControl Grid.Row="6" Margin="0,10,0,0">
 		<TabItem Padding="10,5" IsSelected="True">

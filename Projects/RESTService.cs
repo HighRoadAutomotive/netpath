@@ -351,6 +351,12 @@ namespace NETPath.Projects
 		public bool DeserializeContent { get { return (bool)GetValue(DeserializeContentProperty); } set { SetValue(DeserializeContentProperty, value); } }
 		public static readonly DependencyProperty DeserializeContentProperty = DependencyProperty.Register("DeserializeContent", typeof(bool), typeof(RESTMethod), new PropertyMetadata(true));
 
+		public bool ReturnResponseData { get { return (bool)GetValue(ReturnResponseDataProperty); } set { SetValue(ReturnResponseDataProperty, value); } }
+		public static readonly DependencyProperty ReturnResponseDataProperty = DependencyProperty.Register("ReturnResponseData", typeof(bool), typeof(RESTMethod), new PropertyMetadata(false));
+
+		public bool UseDefaultHeaders { get { return (bool)GetValue(UseDefaultHeadersProperty); } set { SetValue(UseDefaultHeadersProperty, value); } }
+		public static readonly DependencyProperty UseDefaultHeadersProperty = DependencyProperty.Register("UseDefaultHeaders", typeof(bool), typeof(RESTMethod), new PropertyMetadata(true));
+
 		//System
 		[IgnoreDataMember]
 		public string Declaration { get { return (string)GetValue(DeclarationProperty); } protected set { SetValue(DeclarationPropertyKey, value); } }
@@ -382,6 +388,7 @@ namespace NETPath.Projects
 			Parameters.CollectionChanged += Parameters_CollectionChanged;
 			ReturnType = new DataType(PrimitiveTypes.Void);
 			Documentation = new Documentation { IsMethod = true };
+			RequestConfiguration = Owner.RequestConfigurations.FirstOrDefault();
 		}
 
 		public RESTMethod(DataType ReturnType, string Name, RESTService Owner)
@@ -395,6 +402,7 @@ namespace NETPath.Projects
 			Parameters.CollectionChanged += Parameters_CollectionChanged;
 			this.ReturnType = ReturnType;
 			Documentation = new Documentation { IsMethod = true };
+			RequestConfiguration = Owner.RequestConfigurations.FirstOrDefault();
 		}
 
 		public override string ToString()
