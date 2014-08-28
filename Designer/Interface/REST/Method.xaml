@@ -84,7 +84,6 @@
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
-		<RowDefinition Height="Auto" />
 		<RowDefinition Height="*" />
 	</Grid.RowDefinitions>
 	<TextBlock Text="{Binding Path=MethodData.Declaration}" FontSize="14pt" Margin="0,5" Grid.Row="0" Grid.ColumnSpan="2" TextWrapping="Wrap" />
