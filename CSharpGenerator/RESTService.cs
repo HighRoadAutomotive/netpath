@@ -141,7 +141,7 @@ namespace NETPath.Generators.CS
 				code.AppendLine(string.Format("\t\tprivate readonly System.Net.Http.HttpClient _{0}Client;", RegExs.ReplaceSpaces.Replace(c.Name, "")));
 				code.AppendLine(string.Format("\t\tprotected System.Net.Http.HttpClient {0}Client {{ get {{ return _{0}Client; }} }}", RegExs.ReplaceSpaces.Replace(c.Name, "")));
 			}
-			code.AppendLine(string.Format("\t\t{1} {0}{2}(string BaseURI, {3}CookieContainer Cookies = null, NetworkCredential Credentials = null, CredentialCache CredentialCache = null, IWebProxy Proxy = null)", o.Name, o.Abstract ? "protected" : "public", o.Abstract ? "Base" : "", o.RequestConfigurations.Any(a => a.GetType() == typeof(RESTHTTPClientConfiguration)) ? "RESTHttpClientConfig defaultConfiguration = null, " : ""));
+			code.AppendLine(string.Format("\t\t{1} {0}{2}(string BaseURI, CookieContainer Cookies = null, NetworkCredential Credentials = null, CredentialCache CredentialCache = null, IWebProxy Proxy = null)", o.Name, o.Abstract ? "protected" : "public", o.Abstract ? "Base" : ""));
 			code.AppendLine("\t\t\t : base(BaseURI, Cookies, Credentials, CredentialCache, Proxy)");
 			code.AppendLine("\t\t{");
 			foreach (RESTHTTPClientConfiguration c in o.RequestConfigurations.Where(a => a.GetType() == typeof(RESTHTTPClientConfiguration)).Select(t => t as RESTHTTPClientConfiguration).Where(c => o.ServiceOperations.Any(a => Equals(a.RequestConfiguration, c))))
