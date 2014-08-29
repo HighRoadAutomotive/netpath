@@ -136,11 +136,6 @@ namespace NETPath.Generators.CS
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 			code.AppendLine(string.Format("\t{0} {2}partial class {1}{3} : RestClientBase", DataTypeGenerator.GenerateScope(o.Scope), o.Name, o.Abstract ? "abstract " : "", o.Abstract ? "Base" : ""));
 			code.AppendLine("\t{");
-			if (o.RequestConfigurations.Any(a => a.GetType() == typeof (RESTHTTPClientConfiguration)))
-			{
-				code.AppendLine("\t\tprivate readonly RESTHttpClientConfig _defaultHeaders;");
-				code.AppendLine(string.Format("\t\tprotected RESTHttpClientConfig DefaultHeadersConfiguration {{ get {{ return _defaultHeaders; }} }}"));
-			}
 			foreach (RESTHTTPClientConfiguration c in o.RequestConfigurations.Where(a => a.GetType() == typeof(RESTHTTPClientConfiguration)).Select(t => t as RESTHTTPClientConfiguration).Where(c => o.ServiceOperations.Any(a => Equals(a.RequestConfiguration, c))))
 			{
 				code.AppendLine(string.Format("\t\tprivate readonly System.Net.Http.HttpClient _{0}Client;", RegExs.ReplaceSpaces.Replace(c.Name, "")));
@@ -149,8 +144,6 @@ namespace NETPath.Generators.CS
 			code.AppendLine(string.Format("\t\t{1} {0}{2}(string BaseURI, {3}CookieContainer Cookies = null, NetworkCredential Credentials = null, CredentialCache CredentialCache = null, IWebProxy Proxy = null)", o.Name, o.Abstract ? "protected" : "public", o.Abstract ? "Base" : "", o.RequestConfigurations.Any(a => a.GetType() == typeof(RESTHTTPClientConfiguration)) ? "RESTHttpClientConfig defaultConfiguration = null, " : ""));
 			code.AppendLine("\t\t\t : base(BaseURI, Cookies, Credentials, CredentialCache, Proxy)");
 			code.AppendLine("\t\t{");
-			if (o.RequestConfigurations.Any(a => a.GetType() == typeof(RESTHTTPClientConfiguration)))
-				code.AppendLine("\t\t\t_defaultHeaders = defaultConfiguration ?? new RESTHttpClientConfig();");
 			foreach (RESTHTTPClientConfiguration c in o.RequestConfigurations.Where(a => a.GetType() == typeof(RESTHTTPClientConfiguration)).Select(t => t as RESTHTTPClientConfiguration).Where(c => o.ServiceOperations.Any(a => Equals(a.RequestConfiguration, c))))
 				code.AppendLine(string.Format("\t\t\t_{0}Client = new System.Net.Http.HttpClient(new System.Net.Http.HttpClientHandler() {{ AllowAutoRedirect = {1}, AutomaticDecompression = System.Net.DecompressionMethods.{2}, ClientCertificateOptions = System.Net.Http.ClientCertificateOption.{3}, CookieContainer = {4}, Credentials = (this.Credentials == null) ? (ICredentials)this.CredentialCache : (ICredentials)this.Credentials, MaxAutomaticRedirections = {5}, MaxRequestContentBufferSize = {6}, PreAuthenticate = {7}, Proxy = this.Proxy, UseCookies = {8}, UseDefaultCredentials = {9}, UseProxy = {10} }});",
 					RegExs.ReplaceSpaces.Replace(c.Name, ""), c.AllowAutoRedirect ? bool.TrueString.ToLower() : bool.FalseString.ToLower(), c.AutomaticDecompression, c.ClientCertificateOptions,
@@ -425,17 +418,19 @@ namespace NETPath.Generators.CS
 				code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 				foreach (RESTMethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
-				if (!o.UseDefaultHeaders) code.AppendLine(string.Format("\t\t///<param name='Configuration'>HTTP Client Configuration</param>"));
+				if (!o.UseDefaultHeaders)
+				{
+					code.AppendLine(string.Format("\t\t///<param name='configuration'>HTTP Client Request Headers specific to this method.</param>"));
+					code.AppendLine(string.Format("\t\t///<param name='ignoreDefaultHeaders'>Do not include the default headers in the request.</param>"));
+				}
 			}
 			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendFormat("\t\tpublic virtual async void {0}(", o.ServerName);
 			else code.AppendFormat("\t\tpublic virtual async void {0}(", o.ServerName);
 			foreach (RESTMethodParameter op in o.Parameters)
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 			if (o.UseDefaultHeaders && o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
-			code.AppendLine(!o.UseDefaultHeaders ? "RESTHttpClientConfig Configuration = null)" : ")");
+			code.AppendLine(!o.UseDefaultHeaders ? "RestHttpClientRequestHeaders headers = null, bool ignoreDefaultHeaders = false)" : ")");
 			code.AppendLine("\t\t{");
-			if(o.UseDefaultHeaders) code.AppendLine("\t\t\tvar rc = _defaultHeaders;");
-			else code.AppendLine("\t\t\tvar rc = Configuration ?? _defaultHeaders;");
 			code.AppendLine(string.Format("\t\t\tvar urisb = new StringBuilder(\"{0}\", 1024);", o.UriTemplate));
 			foreach (RESTMethodParameter op in o.Parameters.Where(a => !a.Serialize))
 			{
@@ -455,7 +450,13 @@ namespace NETPath.Generators.CS
 				if (pt.TypeMode == DataTypeMode.Primitive && pt.Primitive == PrimitiveTypes.String)
 					code.AppendLine(string.Format("\t\t\tvar rd = new System.Net.Http.ByteArrayContent(Encoding.UTF8.GetBytes({0}));", p.Name));
 			}
-			code.AppendLine(string.Format("\t\t\tvar rm = rc.CreateRequest(new Uri(BaseUri, urisb.ToString()).ToString(), System.Net.Http.HttpMethod.{0}, {1}, {2});", o.Method == MethodRESTVerbs.GET ? "Get" : o.Method == MethodRESTVerbs.POST ? "Post" : o.Method == MethodRESTVerbs.PUT ? "Put" : "Delete", o.Parameters.Any(a => a.Serialize) ? "rd" : "null", o.RequestConfiguration.UseHTTP10 ? bool.TrueString.ToLower() : bool.FalseString.ToLower()));
+			code.AppendLine(
+				string.Format(
+					"\t\t\tvar rm = CreateHttpClientRequest(new Uri(BaseUri, urisb.ToString()).ToString(), System.Net.Http.HttpMethod.{0}{1}{2}{3});",
+					o.Method == MethodRESTVerbs.GET ? "Get" : o.Method == MethodRESTVerbs.POST ? "Post" : o.Method == MethodRESTVerbs.PUT ? "Put" : "Delete",
+					o.Parameters.Any(a => a.Serialize) ? ", rd" : "",
+					o.RequestConfiguration.UseHTTP10 ? ", true" : "",
+					!o.UseDefaultHeaders ? ", headers.Headers, ignoreDefaultHeaders" : ""));
 			code.AppendLine(string.Format("\t\t\tvar rr = await {0}Client.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);", RegExs.ReplaceSpaces.Replace(o.RequestConfiguration.Name, "")));
 			code.AppendLine("\t\t\trr.EnsureSuccessStatusCode();");
 			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent)
@@ -509,7 +510,11 @@ namespace NETPath.Generators.CS
 				code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 				foreach (RESTMethodParameter mp in o.Parameters.Where(mp => mp.Documentation != null))
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
-				if (!o.UseDefaultHeaders) code.AppendLine(string.Format("\t\t///<param name='Configuration'>HTTP Client Configuration</param>"));
+				if (!o.UseDefaultHeaders)
+				{
+					code.AppendLine(string.Format("\t\t///<param name='configuration'>HTTP Client Request Headers specific to this method.</param>"));
+					code.AppendLine(string.Format("\t\t///<param name='ignoreDefaultHeaders'>Do not include the default headers in the request.</param>"));
+				}
 			}
 			if (o.ReturnResponseData)
 			{
@@ -524,12 +529,9 @@ namespace NETPath.Generators.CS
 			foreach (RESTMethodParameter op in o.Parameters)
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 			if (o.UseDefaultHeaders && o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
-			code.AppendLine(!o.UseDefaultHeaders ? "RESTHttpClientConfig Configuration = null)" : ")");
+			code.AppendLine(!o.UseDefaultHeaders ? "RestHttpClientRequestHeaders headers = null, bool ignoreDefaultHeaders = false)" : ")");
 			code.AppendLine("\t\t{");
 			code.AppendLine("\t\t\tSystem.Net.Http.HttpResponseMessage rr = null;");
-			if (!(o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine("\t\t\tstring rs = \"\";");
-			if (o.UseDefaultHeaders) code.AppendLine("\t\t\tvar rc = _defaultHeaders;");
-			else code.AppendLine("\t\t\tvar rc = Configuration ?? _defaultHeaders;");
 			code.AppendLine(string.Format("\t\t\tvar urisb = new StringBuilder(\"{0}\", 1024);", o.UriTemplate));
 			foreach (RESTMethodParameter op in o.Parameters.Where(a => !a.Serialize))
 			{
@@ -549,13 +551,19 @@ namespace NETPath.Generators.CS
 				if (pt.TypeMode == DataTypeMode.Primitive && pt.Primitive == PrimitiveTypes.String)
 					code.AppendLine(string.Format("\t\t\tvar rd = new System.Net.Http.ByteArrayContent(Encoding.UTF8.GetBytes({0}));", p.Name));
 			}
-			code.AppendLine(string.Format("\t\t\tvar rm = rc.CreateRequest(new Uri(BaseUri, urisb.ToString()).ToString(), System.Net.Http.HttpMethod.{0}, {1}, {2});", o.Method == MethodRESTVerbs.GET ? "Get" : o.Method == MethodRESTVerbs.POST ? "Post" : o.Method == MethodRESTVerbs.PUT ? "Put" : "Delete", o.Parameters.Any(a => a.Serialize) ? "rd" : "null", o.RequestConfiguration.UseHTTP10 ? bool.TrueString.ToLower() : bool.FalseString.ToLower()));
+			code.AppendLine(
+				string.Format(
+					"\t\t\tvar rm = CreateHttpClientRequest(new Uri(BaseUri, urisb.ToString()).ToString(), System.Net.Http.HttpMethod.{0}{1}{2}{3});",
+					o.Method == MethodRESTVerbs.GET ? "Get" : o.Method == MethodRESTVerbs.POST ? "Post" : o.Method == MethodRESTVerbs.PUT ? "Put" : "Delete",
+					o.Parameters.Any(a => a.Serialize) ? ", rd" : "",
+					o.RequestConfiguration.UseHTTP10 ? ", true" : "",
+					!o.UseDefaultHeaders ? ", headers.Headers, ignoreDefaultHeaders" : ""));
 			code.AppendLine(string.Format("\t\t\trr = await {0}Client.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);", RegExs.ReplaceSpaces.Replace(o.RequestConfiguration.Name, "")));
 			code.AppendLine("\t\t\trr.EnsureSuccessStatusCode();");
 			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.Append("");
 			else
 			{
-				code.AppendLine("\t\t\trs = await rr.Content.ReadAsStringAsync();");
+				code.AppendLine("\t\t\tvar rs = await rr.Content.ReadAsStringAsync();");
 				if (o.ReturnResponseData)
 				{
 					if (o.ResponseFormat == WebMessageFormat.Json) code.AppendLine(string.Format("\t\t\treturn new Tuple<{0}, System.Net.Http.HttpResponseMessage>(DeserializeJson<{0}>(rs), rr);", DataTypeGenerator.GenerateType(o.ReturnType)));
