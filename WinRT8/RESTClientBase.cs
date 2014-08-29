@@ -56,6 +56,8 @@ namespace System.ServiceModel
 
 			var hrq = new HttpRequestMessage();
 			_defaultHttpRequestHeaders = hrq.Headers;
+			hrq.Content = new StringContent("");
+			hrq.Content.Headers.Clear();
 			_defaultHttpContentHeaders = hrq.Content.Headers;
 		}
 
@@ -86,81 +88,42 @@ namespace System.ServiceModel
 				t.Content.Headers.Clear();
 				if (!ignoreDefaultHeaders)
 				{
-					foreach (var x in _defaultHttpContentHeaders.Allow) t.Content.Headers.Allow.Add(x);
-					foreach (var x in _defaultHttpContentHeaders.ContentEncoding) t.Content.Headers.ContentEncoding.Add(x);
-					foreach (var x in _defaultHttpContentHeaders.ContentLanguage) t.Content.Headers.ContentLanguage.Add(x);
+					foreach (var x in _defaultHttpContentHeaders)
+						t.Content.Headers.Add(x.Key, x.Value);
 				}
-				foreach (var x in content.Headers.Allow) t.Content.Headers.Allow.Add(x);
-				foreach (var x in content.Headers.ContentEncoding) t.Content.Headers.ContentEncoding.Add(x);
-				foreach (var x in content.Headers.ContentLanguage) t.Content.Headers.ContentLanguage.Add(x);
+				foreach (var x in content.Headers)
+					t.Content.Headers.Add(x.Key, x.Value);
+				t.Content.Headers.ContentType = content.Headers.ContentType;
 			}
 
 			//Request Headers
-			if (headers == null) return t;
 			t.Headers.Clear();
 
 			//Add Default Headers
 			if (!ignoreDefaultHeaders)
 			{
-				foreach (var x in _defaultHttpRequestHeaders.Accept) t.Headers.Accept.Add(x);
-				foreach (var x in _defaultHttpRequestHeaders.AcceptCharset) t.Headers.AcceptCharset.Add(x);
-				foreach (var x in _defaultHttpRequestHeaders.AcceptEncoding) t.Headers.AcceptEncoding.Add(x);
-				foreach (var x in _defaultHttpRequestHeaders.AcceptLanguage) t.Headers.AcceptLanguage.Add(x);
-				t.Headers.Authorization = _defaultHttpRequestHeaders.Authorization;
-				t.Headers.CacheControl = _defaultHttpRequestHeaders.CacheControl;
-				foreach (var x in _defaultHttpRequestHeaders.Connection) t.Headers.Connection.Add(x);
-				t.Headers.Date = _defaultHttpRequestHeaders.Date;
-				foreach (var x in _defaultHttpRequestHeaders.Expect) t.Headers.Expect.Add(x);
-				t.Headers.From = _defaultHttpRequestHeaders.From;
-				t.Headers.Host = _defaultHttpRequestHeaders.Host;
-				foreach (var x in _defaultHttpRequestHeaders.IfMatch) t.Headers.IfMatch.Add(x);
-				t.Headers.IfModifiedSince = _defaultHttpRequestHeaders.IfModifiedSince;
-				foreach (var x in _defaultHttpRequestHeaders.IfNoneMatch) t.Headers.IfNoneMatch.Add(x);
-				t.Headers.IfRange = _defaultHttpRequestHeaders.IfRange;
-				t.Headers.IfUnmodifiedSince = _defaultHttpRequestHeaders.IfUnmodifiedSince;
-				t.Headers.MaxForwards = _defaultHttpRequestHeaders.MaxForwards;
-				foreach (var x in _defaultHttpRequestHeaders.Pragma) t.Headers.Pragma.Add(x);
-				t.Headers.ProxyAuthorization = _defaultHttpRequestHeaders.ProxyAuthorization;
-				t.Headers.Range = _defaultHttpRequestHeaders.Range;
-				foreach (var x in _defaultHttpRequestHeaders.Trailer) t.Headers.Trailer.Add(x);
-				foreach (var x in _defaultHttpRequestHeaders.TransferEncoding) t.Headers.TransferEncoding.Add(x);
-				foreach (var x in _defaultHttpRequestHeaders.UserAgent) t.Headers.UserAgent.Add(x);
-				foreach (var x in _defaultHttpRequestHeaders.Upgrade) t.Headers.Upgrade.Add(x);
-				foreach (var x in _defaultHttpRequestHeaders.Via) t.Headers.Via.Add(x);
-				foreach (var x in _defaultHttpRequestHeaders.Warning) t.Headers.Warning.Add(x);
+				foreach (var x in _defaultHttpRequestHeaders)
+					t.Headers.Add(x.Key, x.Value);
 			}
 
 			//Add Custom Headers
-			foreach (var x in headers.Accept) t.Headers.Accept.Add(x);
-			foreach (var x in headers.AcceptCharset) t.Headers.AcceptCharset.Add(x);
-			foreach (var x in headers.AcceptEncoding) t.Headers.AcceptEncoding.Add(x);
-			foreach (var x in headers.AcceptLanguage) t.Headers.AcceptLanguage.Add(x);
+			if (headers == null) return t;
+			foreach (var x in headers)
+				t.Headers.Add(x.Key, x.Value);
 			t.Headers.Authorization = headers.Authorization;
 			t.Headers.CacheControl = headers.CacheControl;
-			foreach (var x in headers.Connection) t.Headers.Connection.Add(x);
 			t.Headers.Date = headers.Date;
-			foreach (var x in headers.Expect) t.Headers.Expect.Add(x);
 			t.Headers.From = headers.From;
 			t.Headers.Host = headers.Host;
-			foreach (var x in headers.IfMatch) t.Headers.IfMatch.Add(x);
 			t.Headers.IfModifiedSince = headers.IfModifiedSince;
-			foreach (var x in headers.IfNoneMatch) t.Headers.IfNoneMatch.Add(x);
 			t.Headers.IfRange = headers.IfRange;
 			t.Headers.IfUnmodifiedSince = headers.IfUnmodifiedSince;
 			t.Headers.MaxForwards = headers.MaxForwards;
-			foreach (var x in headers.Pragma) t.Headers.Pragma.Add(x);
 			t.Headers.ProxyAuthorization = headers.ProxyAuthorization;
 			t.Headers.Range = headers.Range;
-			foreach (var x in headers.Trailer) t.Headers.Trailer.Add(x);
-			foreach (var x in headers.TransferEncoding) t.Headers.TransferEncoding.Add(x);
-			foreach (var x in headers.UserAgent) t.Headers.UserAgent.Add(x);
-			foreach (var x in headers.Upgrade) t.Headers.Upgrade.Add(x);
-			foreach (var x in headers.Via) t.Headers.Via.Add(x);
-			foreach (var x in headers.Warning) t.Headers.Warning.Add(x);
 
 			return t;
 		}
-
 
 		public string SerializeJson<T>(T value)
 		{
