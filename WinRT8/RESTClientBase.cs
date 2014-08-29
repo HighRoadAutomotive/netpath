@@ -40,6 +40,12 @@ namespace System.ServiceModel
 		public NetworkCredential Credentials { get { return _credentials; } }
 		public IWebProxy Proxy { get { return _proxy; } }
 
+		private readonly HttpRequestHeaders _defaultHttpRequestHeaders;
+		private readonly HttpContentHeaders _defaultHttpContentHeaders;
+
+		public HttpRequestHeaders DefaultHttpRequestHeaders { get { return _defaultHttpRequestHeaders; } }
+		public HttpContentHeaders DefaultHttpContentHeaders { get { return _defaultHttpContentHeaders; } }
+
 		protected RestClientBase(string baseUri, CookieContainer cookies = null, NetworkCredential credentials = null, CredentialCache credentialCache = null, IWebProxy proxy = null)
 		{
 			_baseUri = new Uri(baseUri);
@@ -47,6 +53,10 @@ namespace System.ServiceModel
 			_credentials = credentials;
 			_credentialCache = credentialCache;
 			_proxy = proxy;
+
+			var hrq = new HttpRequestMessage();
+			_defaultHttpRequestHeaders = hrq.Headers;
+			_defaultHttpContentHeaders = hrq.Content.Headers;
 		}
 
 		public void BuildUri<T>(StringBuilder uriBuilder, string restName, UriBuildMode mode, T value)
@@ -63,6 +73,94 @@ namespace System.ServiceModel
 				uriBuilder.Replace("?&", "?");
 			}
 		}
+
+		public HttpRequestMessage CreateHttpClientRequest(string requestUri, HttpMethod method, HttpContent content = null, bool useHttp10 = false, HttpRequestHeaders headers = null, bool ignoreDefaultHeaders = false)
+		{
+			var t = new HttpRequestMessage(method, new Uri(requestUri, UriKind.RelativeOrAbsolute));
+			if (useHttp10) t.Version = new Version(1, 0);
+			t.Content = content;
+
+			//Content Headers
+			if (content != null)
+			{
+				t.Content.Headers.Clear();
+				if (!ignoreDefaultHeaders)
+				{
+					foreach (var x in _defaultHttpContentHeaders.Allow) t.Content.Headers.Allow.Add(x);
+					foreach (var x in _defaultHttpContentHeaders.ContentEncoding) t.Content.Headers.ContentEncoding.Add(x);
+					foreach (var x in _defaultHttpContentHeaders.ContentLanguage) t.Content.Headers.ContentLanguage.Add(x);
+				}
+				foreach (var x in content.Headers.Allow) t.Content.Headers.Allow.Add(x);
+				foreach (var x in content.Headers.ContentEncoding) t.Content.Headers.ContentEncoding.Add(x);
+				foreach (var x in content.Headers.ContentLanguage) t.Content.Headers.ContentLanguage.Add(x);
+			}
+
+			//Request Headers
+			if (headers == null) return t;
+			t.Headers.Clear();
+
+			//Add Default Headers
+			if (!ignoreDefaultHeaders)
+			{
+				foreach (var x in _defaultHttpRequestHeaders.Accept) t.Headers.Accept.Add(x);
+				foreach (var x in _defaultHttpRequestHeaders.AcceptCharset) t.Headers.AcceptCharset.Add(x);
+				foreach (var x in _defaultHttpRequestHeaders.AcceptEncoding) t.Headers.AcceptEncoding.Add(x);
+				foreach (var x in _defaultHttpRequestHeaders.AcceptLanguage) t.Headers.AcceptLanguage.Add(x);
+				t.Headers.Authorization = _defaultHttpRequestHeaders.Authorization;
+				t.Headers.CacheControl = _defaultHttpRequestHeaders.CacheControl;
+				foreach (var x in _defaultHttpRequestHeaders.Connection) t.Headers.Connection.Add(x);
+				t.Headers.Date = _defaultHttpRequestHeaders.Date;
+				foreach (var x in _defaultHttpRequestHeaders.Expect) t.Headers.Expect.Add(x);
+				t.Headers.From = _defaultHttpRequestHeaders.From;
+				t.Headers.Host = _defaultHttpRequestHeaders.Host;
+				foreach (var x in _defaultHttpRequestHeaders.IfMatch) t.Headers.IfMatch.Add(x);
+				t.Headers.IfModifiedSince = _defaultHttpRequestHeaders.IfModifiedSince;
+				foreach (var x in _defaultHttpRequestHeaders.IfNoneMatch) t.Headers.IfNoneMatch.Add(x);
+				t.Headers.IfRange = _defaultHttpRequestHeaders.IfRange;
+				t.Headers.IfUnmodifiedSince = _defaultHttpRequestHeaders.IfUnmodifiedSince;
+				t.Headers.MaxForwards = _defaultHttpRequestHeaders.MaxForwards;
+				foreach (var x in _defaultHttpRequestHeaders.Pragma) t.Headers.Pragma.Add(x);
+				t.Headers.ProxyAuthorization = _defaultHttpRequestHeaders.ProxyAuthorization;
+				t.Headers.Range = _defaultHttpRequestHeaders.Range;
+				foreach (var x in _defaultHttpRequestHeaders.Trailer) t.Headers.Trailer.Add(x);
+				foreach (var x in _defaultHttpRequestHeaders.TransferEncoding) t.Headers.TransferEncoding.Add(x);
+				foreach (var x in _defaultHttpRequestHeaders.UserAgent) t.Headers.UserAgent.Add(x);
+				foreach (var x in _defaultHttpRequestHeaders.Upgrade) t.Headers.Upgrade.Add(x);
+				foreach (var x in _defaultHttpRequestHeaders.Via) t.Headers.Via.Add(x);
+				foreach (var x in _defaultHttpRequestHeaders.Warning) t.Headers.Warning.Add(x);
+			}
+
+			//Add Custom Headers
+			foreach (var x in headers.Accept) t.Headers.Accept.Add(x);
+			foreach (var x in headers.AcceptCharset) t.Headers.AcceptCharset.Add(x);
+			foreach (var x in headers.AcceptEncoding) t.Headers.AcceptEncoding.Add(x);
+			foreach (var x in headers.AcceptLanguage) t.Headers.AcceptLanguage.Add(x);
+			t.Headers.Authorization = headers.Authorization;
+			t.Headers.CacheControl = headers.CacheControl;
+			foreach (var x in headers.Connection) t.Headers.Connection.Add(x);
+			t.Headers.Date = headers.Date;
+			foreach (var x in headers.Expect) t.Headers.Expect.Add(x);
+			t.Headers.From = headers.From;
+			t.Headers.Host = headers.Host;
+			foreach (var x in headers.IfMatch) t.Headers.IfMatch.Add(x);
+			t.Headers.IfModifiedSince = headers.IfModifiedSince;
+			foreach (var x in headers.IfNoneMatch) t.Headers.IfNoneMatch.Add(x);
+			t.Headers.IfRange = headers.IfRange;
+			t.Headers.IfUnmodifiedSince = headers.IfUnmodifiedSince;
+			t.Headers.MaxForwards = headers.MaxForwards;
+			foreach (var x in headers.Pragma) t.Headers.Pragma.Add(x);
+			t.Headers.ProxyAuthorization = headers.ProxyAuthorization;
+			t.Headers.Range = headers.Range;
+			foreach (var x in headers.Trailer) t.Headers.Trailer.Add(x);
+			foreach (var x in headers.TransferEncoding) t.Headers.TransferEncoding.Add(x);
+			foreach (var x in headers.UserAgent) t.Headers.UserAgent.Add(x);
+			foreach (var x in headers.Upgrade) t.Headers.Upgrade.Add(x);
+			foreach (var x in headers.Via) t.Headers.Via.Add(x);
+			foreach (var x in headers.Warning) t.Headers.Warning.Add(x);
+
+			return t;
+		}
+
 
 		public string SerializeJson<T>(T value)
 		{
@@ -102,6 +200,20 @@ namespace System.ServiceModel
 			if (status == HttpStatusCode.OK || status == HttpStatusCode.Created || status == HttpStatusCode.Accepted || status == HttpStatusCode.NonAuthoritativeInformation || status == HttpStatusCode.NoContent || status == HttpStatusCode.ResetContent || status == HttpStatusCode.PartialContent) return;
 			throw new Exception(string.Format("HTTP Status: {0}" + Environment.NewLine + "Status Description: {1}", status, statusDescription));
 		}
+	}
+
+	public sealed class RestHttpClientRequestHeaders
+	{
+		private readonly HttpRequestHeaders _headers;
+		public HttpRequestHeaders Headers { get { return _headers; } }
+
+		public RestHttpClientRequestHeaders()
+		{
+			var hrq = new HttpRequestMessage();
+			_headers = hrq.Headers;
+		}
+
+		//TODO: Add forwarding properties.
 	}
 
 	public sealed class RESTHttpWebConfig
@@ -183,111 +295,6 @@ namespace System.ServiceModel
 
 				ret = t;
 			}).ContinueWith((t) => ret);
-		}
-	}
-
-	public sealed class RESTHttpClientConfig
-	{
-		//Request Headers
-		public List<MediaTypeWithQualityHeaderValue> Accept { get; private set; }
-		public List<StringWithQualityHeaderValue> AcceptCharset { get; private set; }
-		public List<StringWithQualityHeaderValue> AcceptEncoding { get; private set; }
-		public List<StringWithQualityHeaderValue> AcceptLanguage { get; private set; }
-		public AuthenticationHeaderValue Authorization { get; private set; }
-		public CacheControlHeaderValue CacheControl { get; private set; }
-		public List<string> Connection { get; private set; }
-		public List<string> Cookie { get; private set; }
-		public DateTimeOffset? Date { get; private set; }
-		public List<NameValueWithParametersHeaderValue> Expect { get; private set; }
-		public string From { get; private set; }
-		public string Host { get; private set; }
-		public List<EntityTagHeaderValue> IfMatch { get; private set; }
-		public DateTimeOffset? IfModifiedSince { get; private set; }
-		public List<EntityTagHeaderValue> IfNoneMatch { get; private set; }
-		public RangeConditionHeaderValue IfRange { get; private set; }
-		public DateTimeOffset? IfUnmodifiedSince { get; private set; }
-		public int? MaxForwards { get; private set; }
-		public List<NameValueHeaderValue> Pragma { get; private set; }
-		public AuthenticationHeaderValue ProxyAuthorization { get; private set; }
-		public RangeHeaderValue Range { get; private set; }
-		public List<string> Trailer { get; private set; }
-		public List<TransferCodingHeaderValue> TransferEncoding { get; private set; }
-		public List<ProductInfoHeaderValue> UserAgent { get; private set; }
-		public List<ProductHeaderValue> Upgrade { get; private set; }
-		public List<ViaHeaderValue> Via { get; private set; }
-		public List<WarningHeaderValue> Warning { get; private set; }
-
-		//Content Headers
-		public List<string> Allow { get; private set; }
-		public List<string> ContentEncoding { get; private set; }
-		public List<string> ContentLanguage { get; private set; }
-
-		public RESTHttpClientConfig()
-		{
-			//Request Headers
-			Accept = new List<MediaTypeWithQualityHeaderValue>();
-			AcceptCharset = new List<StringWithQualityHeaderValue>();
-			AcceptEncoding = new List<StringWithQualityHeaderValue>();
-			AcceptLanguage = new List<StringWithQualityHeaderValue>();
-			Connection = new List<string>();
-			Cookie = new List<string>();
-			Expect = new List<NameValueWithParametersHeaderValue>();
-			IfMatch = new List<EntityTagHeaderValue>();
-			IfNoneMatch = new List<EntityTagHeaderValue>();
-			Pragma = new List<NameValueHeaderValue>();
-			Trailer = new List<string>();
-			TransferEncoding = new List<TransferCodingHeaderValue>();
-			UserAgent = new List<ProductInfoHeaderValue>();
-			Upgrade = new List<ProductHeaderValue>();
-			Via = new List<ViaHeaderValue>();
-			Warning = new List<WarningHeaderValue>();
-
-			//Content Headers
-			Allow = new List<string>();
-			ContentEncoding = new List<string>();
-			ContentLanguage = new List<string>();
-		}
-
-		public HttpRequestMessage CreateRequest(string RequestUri, HttpMethod Method, HttpContent Content, bool UseHTTP10 = false)
-		{
-			var t = new HttpRequestMessage(Method, new Uri(RequestUri, UriKind.RelativeOrAbsolute));
-			if (UseHTTP10) t.Version = new Version(1, 0);
-			t.Content = Content;
-
-			//Request Headers
-			foreach (var x in Accept) t.Headers.Accept.Add(x);
-			foreach (var x in AcceptCharset) t.Headers.AcceptCharset.Add(x);
-			foreach (var x in AcceptEncoding) t.Headers.AcceptEncoding.Add(x);
-			foreach (var x in AcceptLanguage) t.Headers.AcceptLanguage.Add(x);
-			t.Headers.Authorization = Authorization;
-			t.Headers.CacheControl = CacheControl;
-			foreach (var x in Connection) t.Headers.Connection.Add(x);
-			t.Headers.Date = Date;
-			foreach (var x in Expect) t.Headers.Expect.Add(x);
-			t.Headers.From = From;
-			t.Headers.Host = Host;
-			foreach (var x in IfMatch) t.Headers.IfMatch.Add(x);
-			t.Headers.IfModifiedSince = IfModifiedSince;
-			foreach (var x in IfNoneMatch) t.Headers.IfNoneMatch.Add(x);
-			t.Headers.IfRange = IfRange;
-			t.Headers.IfUnmodifiedSince = IfUnmodifiedSince;
-			t.Headers.MaxForwards = MaxForwards;
-			foreach (var x in Pragma) t.Headers.Pragma.Add(x);
-			t.Headers.ProxyAuthorization = ProxyAuthorization;
-			t.Headers.Range = Range;
-			foreach (var x in Trailer) t.Headers.Trailer.Add(x);
-			foreach (var x in TransferEncoding) t.Headers.TransferEncoding.Add(x);
-			foreach (var x in UserAgent) t.Headers.UserAgent.Add(x);
-			foreach (var x in Upgrade) t.Headers.Upgrade.Add(x);
-			foreach (var x in Via) t.Headers.Via.Add(x);
-			foreach (var x in Warning) t.Headers.Warning.Add(x);
-
-			//Content Headers
-			foreach (var x in Allow) t.Content.Headers.Allow.Add(x);
-			foreach (var x in ContentEncoding) t.Content.Headers.ContentEncoding.Add(x);
-			foreach (var x in ContentLanguage) t.Content.Headers.ContentLanguage.Add(x);
-
-			return t;
 		}
 	}
 }
