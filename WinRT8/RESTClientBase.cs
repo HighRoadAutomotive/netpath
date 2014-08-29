@@ -51,6 +51,7 @@ namespace System.ServiceModel
 
 		public void BuildUri<T>(StringBuilder uriBuilder, string restName, UriBuildMode mode, T value)
 		{
+			if (value == null) return;
 			if (mode == UriBuildMode.Path)
 			{
 				uriBuilder.Replace(string.Format("\\{{{0}\\}}", restName), value.ToString());
