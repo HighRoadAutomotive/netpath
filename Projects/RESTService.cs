@@ -434,7 +434,7 @@ namespace NETPath.Projects
 			if (Parameters.Count > 0) sb.Remove(sb.Length - 2, 2);
 			Declaration = string.Format("{0} {1}({2})", ReturnType, ServerName, sb);
 
-			if (Parameters.Any(a => a.Nullable) && !UriTemplate.EndsWith("?"))
+			if (Parameters.Any(a => a.Nullable) && !UriTemplate.Contains("?"))
 			{
 				if (UriTemplate.EndsWith("/")) UriTemplate = UriTemplate.Substring(0, UriTemplate.Length - 1) + "?";
 				else UriTemplate = UriTemplate + "?";
