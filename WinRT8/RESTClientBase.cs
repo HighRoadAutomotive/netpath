@@ -66,11 +66,11 @@ namespace System.ServiceModel
 			if (value == null) return;
 			if (mode == UriBuildMode.Path)
 			{
-				uriBuilder.Replace(string.Format("\\{{{0}\\}}", restName), value.ToString());
+				uriBuilder.Replace(string.Format("{{{0}}}", restName), Uri.EscapeDataString(value.ToString()));
 			}
 			else if (mode == UriBuildMode.Query)
 			{
-				if (!string.IsNullOrWhiteSpace(restName)) uriBuilder.AppendFormat("&{0}={1}", restName, value.ToString());
+				if (!string.IsNullOrWhiteSpace(restName)) uriBuilder.AppendFormat("&{0}={1}", restName, Uri.EscapeDataString(value.ToString()));
 				else uriBuilder.AppendFormat("&{0}", value.ToString());
 				uriBuilder.Replace("?&", "?");
 			}
