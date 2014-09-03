@@ -107,14 +107,17 @@ namespace NETPath.Generators.CS
 			code.AppendLine("//---------------------------------------------------------------------------");
 			code.AppendLine();
 
-			// Generate using namespaces
-			foreach (ProjectUsingNamespace pun in Data.UsingNamespaces)
+			if (!Data.UsingInsideNamespace)
 			{
-				if ((pun.Server && Server) || (pun.Client && !Server && ((pun.RT && Target.Framework == ProjectGenerationFramework.WIN8) || (pun.NET && Target.Framework == ProjectGenerationFramework.NET45))))
-					code.AppendLine(string.Format("using {0};", pun.Namespace));
+				// Generate using namespaces
+				foreach (ProjectUsingNamespace pun in Data.UsingNamespaces)
+				{
+					if ((pun.Server && Server) || (pun.Client && !Server && ((pun.RT && Target.Framework == ProjectGenerationFramework.WIN8) || (pun.NET && Target.Framework == ProjectGenerationFramework.NET45))))
+						code.AppendLine(string.Format("using {0};", pun.Namespace));
+				}
+				if (Data.EnableEntityFramework && Server) code.AppendLine("using System.Data.Entity.Core.Objects;");
+				code.AppendLine();
 			}
-			if (Data.EnableEntityFramework && Server) code.AppendLine("using System.Data.Entity.Core.Objects;");
-			code.AppendLine();
 
 			//Generate ContractNamespace Attributes
 			if (!Server) code.AppendLine(NamespaceGenerator.GenerateContractNamespaceAttributes(Data.Namespace, Target));

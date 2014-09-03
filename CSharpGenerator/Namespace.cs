@@ -16,7 +16,7 @@ namespace NETPath.Generators.CS
 				AddMessage(new CompileMessage("GS1000", "The '" + o.Name + "' namespace in the '" + o.Owner.Name + "' project does not have a URI. Namespaces MUST have a URI.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 			else
 				if (RegExs.MatchHTTPURI.IsMatch(o.URI) == false)
-					AddMessage(new CompileMessage("GS1001", "The URI '" + o.URI + "' for the '" + o.Name + "' namespace in the '" + o.Owner.Name + "' project is not a valid URI. Any associated services and data may not function properly.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+				AddMessage(new CompileMessage("GS1001", "The URI '" + o.URI + "' for the '" + o.Name + "' namespace in the '" + o.Owner.Name + "' project is not a valid URI. Any associated services and data may not function properly.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 
 			foreach (Projects.Enum ee in o.Enums)
 				EnumGenerator.VerifyCode(ee, AddMessage);
@@ -62,6 +62,18 @@ namespace NETPath.Generators.CS
 
 			code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
 			code.AppendLine("{");
+
+			if (o.Owner.UsingInsideNamespace)
+			{
+				// Generate using namespaces
+				foreach (ProjectUsingNamespace pun in o.Owner.UsingNamespaces)
+				{
+					if ((pun.Server))
+						code.AppendLine(string.Format("\tusing {0};", pun.Namespace));
+				}
+				if (o.Owner.EnableEntityFramework) code.AppendLine("\tusing System.Data.Entity.Core.Objects;");
+				code.AppendLine();
+			}
 
 			if (target.TargetTypes.Intersect(o.Enums).Any())
 			{
@@ -147,6 +159,17 @@ namespace NETPath.Generators.CS
 			code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
 			code.AppendLine("{");
 
+			if (o.Owner.UsingInsideNamespace)
+			{
+				// Generate using namespaces
+				foreach (ProjectUsingNamespace pun in o.Owner.UsingNamespaces)
+				{
+					if (pun.Client && pun.NET)
+						code.AppendLine(string.Format("\tusing {0};", pun.Namespace));
+				}
+				code.AppendLine();
+			}
+
 			if (target.TargetTypes.Intersect(o.Enums).Any())
 			{
 				code.AppendLine("\t/**************************************************************************");
@@ -222,6 +245,17 @@ namespace NETPath.Generators.CS
 
 			code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
 			code.AppendLine("{");
+
+			if (o.Owner.UsingInsideNamespace)
+			{
+				// Generate using namespaces
+				foreach (ProjectUsingNamespace pun in o.Owner.UsingNamespaces)
+				{
+					if (pun.Client && pun.RT)
+						code.AppendLine(string.Format("\tusing {0};", pun.Namespace));
+				}
+				code.AppendLine();
+			}
 
 			if (target.TargetTypes.Intersect(o.Enums).Any())
 			{

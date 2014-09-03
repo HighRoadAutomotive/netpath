@@ -125,6 +125,12 @@ namespace NETPath.Projects
 		public string EnitityDatabaseType { get { return (string)GetValue(EnitityDatabaseTypeProperty); } set { SetValue(EnitityDatabaseTypeProperty, value); } }
 		public static readonly DependencyProperty EnitityDatabaseTypeProperty = DependencyProperty.Register("EnitityDatabaseType", typeof(string), typeof(Project), new PropertyMetadata(""));
 
+		public bool GenerateRegions { get { return (bool)GetValue(GenerateRegionsProperty); } set { SetValue(GenerateRegionsProperty, value); } }
+		public static readonly DependencyProperty GenerateRegionsProperty = DependencyProperty.Register("GenerateRegions", typeof(bool), typeof(Project), new PropertyMetadata(true));
+
+		public bool UsingInsideNamespace { get { return (bool)GetValue(UsingInsideNamespaceProperty); } set { SetValue(UsingInsideNamespaceProperty, value); } }
+		public static readonly DependencyProperty UsingInsideNamespaceProperty = DependencyProperty.Register("UsingInsideNamespace", typeof(bool), typeof(Project), new PropertyMetadata(true));
+
 		[IgnoreDataMember]
 		public List<DataType> DefaultTypes { get; private set; }
 		[IgnoreDataMember]
