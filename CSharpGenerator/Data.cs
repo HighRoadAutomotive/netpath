@@ -159,9 +159,9 @@ namespace NETPath.Generators.CS
 		{
 			var code = new StringBuilder();
 			code.AppendLine(string.Format("\t\t[DataMember({0}{1}{2}{3})] ", o.IsRequired ? "IsRequired = true" : "IsRequired = false", o.EmitDefaultValue ? ", EmitDefaultValue = false" : "", o.Order >= 0 ? string.Format(", Order = {0}{1}", o.Order, o.HasContractName ? ", " : "") : "", o.HasContractName ? string.Format(", Name = \"{0}\"", o.ContractName) : ""));
-			code.AppendLine(string.Format("\t\tprivate {0} {1}Field;", DataTypeGenerator.GenerateType(o.DataType), o.HasClientType ? o.ClientName : o.DataName));
+			code.AppendLine(string.Format("\t\tprivate {2}{0} _{1}Field;", DataTypeGenerator.GenerateType(o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly && ((o.Owner.HasClientType && o.Owner.ClientType.Sealed) || (!o.Owner.HasClientType && o.Owner.Sealed)) ? "readonly " : ""));
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return {1}Field; }} {2}set {{ {1}Field = value; {3}}} }}", DataTypeGenerator.GenerateType(o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : "", o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : ""));
+			code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return _{1}Field; }} {2}}}", DataTypeGenerator.GenerateType(o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly && ((o.Owner.HasClientType && o.Owner.ClientType.Sealed) || (!o.Owner.HasClientType && o.Owner.Sealed)) ? "" : string.Format("{0}set {{ _{1}Field = value; {2}}} ", o.IsReadOnly && ((o.Owner.HasClientType && !o.Owner.ClientType.Sealed) || (!o.Owner.HasClientType && !o.Owner.Sealed)) ? "protected " : "", o.HasClientType ? o.ClientName : o.DataName, o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : "")));
 			return code.ToString();
 		}
 
@@ -537,9 +537,9 @@ namespace NETPath.Generators.CS
 		{
 			var code = new StringBuilder();
 			code.AppendLine(string.Format("\t\t[DataMember({0}{1}{2}{3})] ", o.IsRequired ? "IsRequired = true" : "IsRequired = false", o.EmitDefaultValue ? ", EmitDefaultValue = false" : "", o.Order >= 0 ? string.Format(", Order = {0}{1}", o.Order, o.HasContractName ? ", " : "") : "", o.HasContractName ? string.Format(", Name = \"{0}\"", o.ContractName) : ""));
-			code.AppendLine(string.Format("\t\tprivate {0} {1}Field;", DataTypeGenerator.GenerateType(o.DataType), o.HasClientType ? o.ClientName : o.DataName));
+			code.AppendLine(string.Format("\t\tprivate {2}{0} _{1}Field;", DataTypeGenerator.GenerateType(o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly && ((o.Owner.HasClientType && o.Owner.ClientType.Sealed) || (!o.Owner.HasClientType && o.Owner.Sealed)) ? "readonly " : ""));
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return {1}Field; }} {2}set {{ {1}Field = value; {3}}} }}", DataTypeGenerator.GenerateType(o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : "", o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : ""));
+			code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return _{1}Field; }} {2}}}", DataTypeGenerator.GenerateType(o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly && ((o.Owner.HasClientType && o.Owner.ClientType.Sealed) || (!o.Owner.HasClientType && o.Owner.Sealed)) ? "" : string.Format("{0}set {{ _{1}Field = value; {2}}} ", o.IsReadOnly && ((o.Owner.HasClientType && !o.Owner.ClientType.Sealed) || (!o.Owner.HasClientType && !o.Owner.Sealed)) ? "protected " : "", o.HasClientType ? o.ClientName : o.DataName, o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : "")));
 			return code.ToString();
 		}
 
