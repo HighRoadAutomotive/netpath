@@ -158,13 +158,10 @@ namespace NETPath.Generators.CS
 		private static string GenerateElementServerCode45(DataElement o)
 		{
 			var code = new StringBuilder();
+			code.AppendLine(string.Format("\t\t[DataMember({0}{1}{2}{3})] ", o.IsRequired ? "IsRequired = true" : "IsRequired = false", o.EmitDefaultValue ? ", EmitDefaultValue = false" : "", o.Order >= 0 ? string.Format(", Order = {0}{1}", o.Order, o.HasContractName ? ", " : "") : "", o.HasContractName ? string.Format(", Name = \"{0}\"", o.ContractName) : ""));
+			code.AppendLine(string.Format("\t\tprivate {0} {1}Field;", DataTypeGenerator.GenerateType(o.DataType), o.HasClientType ? o.ClientName : o.DataName));
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-			code.Append("\t\t");
-			if (o.IsDataMember)
-				code.AppendFormat("[DataMember({0}{1}{2}{3})] ", o.IsRequired ? "IsRequired = true" : "IsRequired = false", o.EmitDefaultValue ? ", EmitDefaultValue = false" : "", o.Order >= 0 ? string.Format(", Order = {0}{1}", o.Order, o.HasContractName ? ", " : "") : "", o.HasContractName ? string.Format(", Name = \"{0}\"", o.ContractName) : "");
-			else
-				if (o.Owner.Parent.Owner.ServiceSerializer == ProjectServiceSerializerType.XML) code.Append("[XmlIgnore] ");
-			code.AppendLine(string.Format("public {0} {1} {{ get; {2}set; }}", DataTypeGenerator.GenerateType(o.DataType), o.DataName, o.IsReadOnly ? "protected " : ""));
+			code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return {1}Field; }} {2}set {{ {1}Field = value; {3}}} }}", DataTypeGenerator.GenerateType(o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : "", o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : ""));
 			return code.ToString();
 		}
 
@@ -539,10 +536,10 @@ namespace NETPath.Generators.CS
 		private static string GenerateElementProxyCode(DataElement o)
 		{
 			var code = new StringBuilder();
+			code.AppendLine(string.Format("\t\t[DataMember({0}{1}{2}{3})] ", o.IsRequired ? "IsRequired = true" : "IsRequired = false", o.EmitDefaultValue ? ", EmitDefaultValue = false" : "", o.Order >= 0 ? string.Format(", Order = {0}{1}", o.Order, o.HasContractName ? ", " : "") : "", o.HasContractName ? string.Format(", Name = \"{0}\"", o.ContractName) : ""));
 			code.AppendLine(string.Format("\t\tprivate {0} {1}Field;", DataTypeGenerator.GenerateType(o.DataType), o.HasClientType ? o.ClientName : o.DataName));
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendFormat("\t\t[DataMember({0}{1}{2}{3})] ", o.IsRequired ? "IsRequired = true" : "IsRequired = false", o.EmitDefaultValue ? ", EmitDefaultValue = false" : "", o.Order >= 0 ? string.Format(", Order = {0}{1}", o.Order, o.HasContractName ? ", " : "") : "", o.HasContractName ? string.Format(", Name = \"{0}\"", o.ContractName) : "");
-			code.AppendLine(string.Format("public {0} {1} {{ get {{ return {1}Field; }} {2}set {{ {1}Field = value; {3}}} }}", DataTypeGenerator.GenerateType(o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : "", o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : ""));
+			code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return {1}Field; }} {2}set {{ {1}Field = value; {3}}} }}", DataTypeGenerator.GenerateType(o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly ? "protected " : "", o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : ""));
 			return code.ToString();
 		}
 
