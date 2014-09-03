@@ -16,11 +16,11 @@ namespace NETPath.Generators.CS
 				AddMessage(new CompileMessage("GS5000", "A host in the '" + o.Parent.Name + "' project has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 			else
 				if (RegExs.MatchCodeName.IsMatch(o.Name) == false)
-					AddMessage(new CompileMessage("GS5001", "The host '" + o.Name + "' in the '" + o.Parent.Name + "' project contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+				AddMessage(new CompileMessage("GS5001", "The host '" + o.Name + "' in the '" + o.Parent.Name + "' project contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 			if (string.IsNullOrEmpty(o.Namespace)) { }
 			else
 				if (RegExs.MatchHTTPURI.IsMatch(o.Namespace) == false)
-					AddMessage(new CompileMessage("GS5002", "The Namespace URI '" + o.Namespace + "' for the '" + o.Name + "' host in the '" + o.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+				AddMessage(new CompileMessage("GS5002", "The Namespace URI '" + o.Namespace + "' for the '" + o.Name + "' host in the '" + o.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 
 			if (o.Service == null)
 				AddMessage(new CompileMessage("GS5003", "The host '" + o.Name + "' in the '" + o.Parent.Name + "' project has no Service associated with it and will not be generated. A Service must be associated with this Host for it be generated.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
@@ -91,7 +91,7 @@ namespace NETPath.Generators.CS
 			var code = new StringBuilder();
 			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
+			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCode(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 			code.AppendLine(string.Format("\t{0} : ServiceHost", DataTypeGenerator.GenerateTypeDeclaration(o)));
 			code.AppendLine("\t{");
 			string baVars = "";

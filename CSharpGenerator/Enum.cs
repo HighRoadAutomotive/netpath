@@ -14,7 +14,7 @@ namespace NETPath.Generators.CS
 				AddMessage(new CompileMessage("GS4000", "The enumeration '" + o.Name + "' in the '" + o.Parent.Name + "' namespace has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 			else
 				if (RegExs.MatchCodeName.IsMatch(o.Name) == false)
-					AddMessage(new CompileMessage("GS4001", "The enumeration '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
+				AddMessage(new CompileMessage("GS4001", "The enumeration '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 
 			if (o.HasClientType)
 				if (RegExs.MatchCodeName.IsMatch(o.ClientType.Name) == false)
@@ -26,7 +26,7 @@ namespace NETPath.Generators.CS
 					AddMessage(new CompileMessage("GS4003", "The enumeration '" + o.Name + "' in the '" + o.Parent.Name + "' namespace has an enumeration element with a blank Name. A Name MUST be specified.", CompileMessageSeverity.ERROR, o, e, e.GetType(), o.Parent.Owner.ID));
 				else
 					if (RegExs.MatchCodeName.IsMatch(e.Name) == false)
-						AddMessage(new CompileMessage("GS4004", "The enumeration element '" + e.Name + "' in the '" + o.Name + "' enumeration contains invalid characters in the Name.", CompileMessageSeverity.ERROR, o, e, e.GetType(), o.Parent.Owner.ID));
+					AddMessage(new CompileMessage("GS4004", "The enumeration element '" + e.Name + "' in the '" + o.Name + "' enumeration contains invalid characters in the Name.", CompileMessageSeverity.ERROR, o, e, e.GetType(), o.Parent.Owner.ID));
 			}
 
 			if (o.IsFlags)
@@ -37,7 +37,7 @@ namespace NETPath.Generators.CS
 		{
 			var code = new StringBuilder();
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
+			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCode(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 			code.Append("\t[DataContract(");
 			if (o.HasClientType) code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
 			code.AppendFormat("Namespace = \"{0}\"", o.Parent.FullURI);
@@ -85,7 +85,7 @@ namespace NETPath.Generators.CS
 			{
 				if (ElementIndex == 0) code.Append(" = 0");
 				if (ElementIndex == 1) code.Append(" = 1");
-				if (ElementIndex > 1) code.AppendFormat(" = {0}", Convert.ToInt32(Decimal.Round((decimal) Math.Pow(2, ElementIndex - 1))));
+				if (ElementIndex > 1) code.AppendFormat(" = {0}", Convert.ToInt32(Decimal.Round((decimal)Math.Pow(2, ElementIndex - 1))));
 			}
 			if (o.IsCustomValue)
 				code.AppendFormat(" = {0}", o.ServerValue);
@@ -104,7 +104,7 @@ namespace NETPath.Generators.CS
 		{
 			var code = new StringBuilder();
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCodeAttribute(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
+			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCode(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 			code.Append("\t[DataContract(");
 			if (o.HasClientType) code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
 			code.AppendFormat("Namespace = \"{0}\"", o.Parent.FullURI);
@@ -150,7 +150,7 @@ namespace NETPath.Generators.CS
 			{
 				if (ElementIndex == 0) code.Append(" = 0");
 				if (ElementIndex == 1) code.Append(" = 1");
-				if (ElementIndex > 1) code.AppendFormat(" = {0}", Convert.ToInt32(Decimal.Round((decimal) Math.Pow(2, ElementIndex - 1))));
+				if (ElementIndex > 1) code.AppendFormat(" = {0}", Convert.ToInt32(Decimal.Round((decimal)Math.Pow(2, ElementIndex - 1))));
 			}
 			if (o.IsCustomValue)
 				code.AppendFormat(" = {0}", o.ClientValue ?? o.ServerValue);
