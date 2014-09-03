@@ -65,6 +65,11 @@ namespace NETPath.Generators.CS
 
 			if (o.Owner.UsingInsideNamespace)
 			{
+				if (o.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t#region Using");
+					code.AppendLine();
+				}
 				// Generate using namespaces
 				foreach (ProjectUsingNamespace pun in o.Owner.UsingNamespaces)
 				{
@@ -73,6 +78,11 @@ namespace NETPath.Generators.CS
 				}
 				if (o.Owner.EnableEntityFramework) code.AppendLine("\tusing System.Data.Entity.Core.Objects;");
 				code.AppendLine();
+				if (o.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t#endregion");
+					code.AppendLine();
+				}
 			}
 
 			if (target.TargetTypes.Intersect(o.Enums).Any())
@@ -161,6 +171,11 @@ namespace NETPath.Generators.CS
 
 			if (o.Owner.UsingInsideNamespace)
 			{
+				if (o.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t#region Using");
+					code.AppendLine();
+				}
 				// Generate using namespaces
 				foreach (ProjectUsingNamespace pun in o.Owner.UsingNamespaces)
 				{
@@ -168,6 +183,11 @@ namespace NETPath.Generators.CS
 						code.AppendLine(string.Format("\tusing {0};", pun.Namespace));
 				}
 				code.AppendLine();
+				if (o.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t#endregion");
+					code.AppendLine();
+				}
 			}
 
 			if (target.TargetTypes.Intersect(o.Enums).Any())
@@ -248,6 +268,11 @@ namespace NETPath.Generators.CS
 
 			if (o.Owner.UsingInsideNamespace)
 			{
+				if (o.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t#region Using");
+					code.AppendLine();
+				}
 				// Generate using namespaces
 				foreach (ProjectUsingNamespace pun in o.Owner.UsingNamespaces)
 				{
@@ -255,6 +280,11 @@ namespace NETPath.Generators.CS
 						code.AppendLine(string.Format("\tusing {0};", pun.Namespace));
 				}
 				code.AppendLine();
+				if (o.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t#endregion");
+					code.AppendLine();
+				}
 			}
 
 			if (target.TargetTypes.Intersect(o.Enums).Any())

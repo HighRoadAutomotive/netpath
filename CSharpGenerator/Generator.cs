@@ -109,6 +109,11 @@ namespace NETPath.Generators.CS
 
 			if (!Data.UsingInsideNamespace)
 			{
+				if (Data.GenerateRegions)
+				{
+					code.AppendLine("#region Using");
+					code.AppendLine();
+				}
 				// Generate using namespaces
 				foreach (ProjectUsingNamespace pun in Data.UsingNamespaces)
 				{
@@ -117,6 +122,11 @@ namespace NETPath.Generators.CS
 				}
 				if (Data.EnableEntityFramework && Server) code.AppendLine("using System.Data.Entity.Core.Objects;");
 				code.AppendLine();
+				if (Data.GenerateRegions)
+				{
+					code.AppendLine("#endregion");
+					code.AppendLine();
+				}
 			}
 
 			//Generate ContractNamespace Attributes
