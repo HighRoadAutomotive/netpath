@@ -26,7 +26,7 @@ namespace NETPath.Generators.CS
 			var sb = new StringBuilder();
 			if (o.TypeMode == DataTypeMode.Class || ForceClass)
 			{
-				sb.AppendFormat("{0} {1}{2}{3}class {4}", GenerateScope(o.Scope), o.Partial ? "partial " : "", o.Abstract ? "abstract " : "", o.Sealed ? "sealed " : "", o.Name);
+				sb.AppendFormat("{0} {2}{3}{1}class {4}", GenerateScope(o.Scope), o.Partial ? "partial " : "", o.Abstract ? "abstract " : "", o.Sealed ? "sealed " : "", o.Name);
 				if (IsDeltaObject && !IsDREObject) sb.Append(" : CMDObject");
 				if (IsDeltaObject && IsDREObject) sb.Append(string.Format(" : {1}DREObject<{0}{2}>", o.Name, IsEFDREObject ? "EF" : "", IsEFDREObject ? string.Format(", {0}", EFDBContext) : ""));
 				if (o.InheritedTypes.Any() || ImpliedExtensionData || HasWinFormsDatabinding)
