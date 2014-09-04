@@ -87,12 +87,33 @@ namespace NETPath.Generators.CS
 			code.AppendLine(string.Format("\t[ServiceContract({0}SessionMode = System.ServiceModel.SessionMode.{1}, {2}{3}{4}Namespace = \"{5}\")]", o.HasCallback || o.HasDCMOperations ? string.Format("CallbackContract = typeof(I{0}Callback), ", o.Name) : "", System.Enum.GetName(typeof(System.ServiceModel.SessionMode), o.SessionMode), o.ProtectionLevel != System.Net.Security.ProtectionLevel.None ? string.Format("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}, ", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.ProtectionLevel)) : "", !string.IsNullOrEmpty(o.ConfigurationName) ? string.Format("ConfigurationName = \"{0}\", ", o.ConfigurationName) : "", o.HasClientType ? string.Format("Name = \"{0}\", ", o.ClientType.Name) : "", o.Parent.FullURI));
 			code.AppendLine(string.Format("\t{0} interface I{1}", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
 			code.AppendLine("\t{");
+			code.AppendLine();
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#region Properties");
+				code.AppendLine();
+			}
 			foreach (Property p in o.ServiceOperations.Where(a => a.GetType() == typeof(Property)))
 				code.AppendLine(GeneratePropertyServerCode45(p));
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#endregion");
+				code.AppendLine();
+			}
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#region Methods");
+				code.AppendLine();
+			}
 			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
 				code.AppendLine(GenerateServiceInterfaceMethodCode45(m));
 			foreach (DataChangeMethod m in o.ServiceOperations.Where(a => a.GetType() == typeof(DataChangeMethod)))
 				code.AppendLine(GenerateServiceInterfaceDCM45(m, true));
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#endregion");
+				code.AppendLine();
+			}
 			code.AppendLine("\t}");
 
 			if (o.HasCallback || o.HasDCMOperations)
@@ -103,12 +124,33 @@ namespace NETPath.Generators.CS
 				code.AppendLine(string.Format("\t[System.ServiceModel.ServiceBehaviorAttribute(AutomaticSessionShutdown = {0}, ConcurrencyMode = ConcurrencyMode.{1}, IgnoreExtensionDataObject = {2}, IncludeExceptionDetailInFaults = {3}, MaxItemsInObjectGraph = {4}, {5}{6}UseSynchronizationContext = {7}, ValidateMustUnderstand = {8}, EnsureOrderedDispatch = {10}, InstanceContextMode = InstanceContextMode.{11}, {12}{13}AddressFilterMode = AddressFilterMode.{9})]", o.SBAutomaticSessionShutdown ? "true" : "false", o.SBConcurrencyMode, o.SBIgnoreExtensionDataObject ? "true" : "false", o.SBIncludeExceptionDetailInFaults ? "true" : "false", o.SBMaxItemsInObjectGraph > 0 ? Convert.ToString(o.SBMaxItemsInObjectGraph) : "Int32.MaxValue", o.SBTransactionIsolationLevel != IsolationLevel.Unspecified ? string.Format("TransactionIsolationLevel = System.Transactions.IsolationLevel.{0}, ", o.SBTransactionIsolationLevel) : "", o.SBTransactionTimeout.Ticks != 0L ? string.Format("TransactionTimeout = \"{0}\", ", o.SBTransactionTimeout) : "", o.SBUseSynchronizationContext ? "true" : "false", o.SBValidateMustUnderstand ? "true" : "false", o.SBAddressFilterMode, o.SBEnsureOrderedDispatch ? "true" : "false", o.SBInstanceContextMode, o.SBReleaseServiceInstanceOnTransactionComplete ? string.Format("ReleaseServiceInstanceOnTransactionComplete = true, ") : "", o.SBTransactionAutoCompleteOnSessionClose ? string.Format("TransactionAutoCompleteOnSessionClose = true, ") : ""));
 				code.AppendLine(string.Format("\t{0} abstract class {1}Base : ServerDuplexBase<{1}Base, {1}Callback, I{1}Callback>, I{1}", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
 				code.AppendLine("\t{");
+				code.AppendLine();
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#region Properties");
+					code.AppendLine();
+				}
 				foreach (Property p in o.ServiceOperations.Where(a => a.GetType() == typeof(Property)))
 					code.AppendLine(GenerateServerProxyPropertyCode(p));
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#endregion");
+					code.AppendLine();
+				}
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#region Methods");
+					code.AppendLine();
+				}
 				foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
 					code.AppendLine(GenerateServerProxyMethodCode45(m));
 				foreach (DataChangeMethod m in o.ServiceOperations.Where(a => a.GetType() == typeof(DataChangeMethod)))
 					code.AppendLine(GenerateServiceImplementationDCM45(m, true));
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#endregion");
+					code.AppendLine();
+				}
 				code.AppendLine("\t}");
 
 				//Generate the callback interface
@@ -118,12 +160,33 @@ namespace NETPath.Generators.CS
 				code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCode(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 				code.AppendLine(string.Format("\t{0} interface I{1}Callback", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
 				code.AppendLine("\t{");
+				code.AppendLine();
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#region Properties");
+					code.AppendLine();
+				}
 				foreach (Property p in o.CallbackOperations.Where(a => a.GetType() == typeof(Property)))
 					code.AppendLine(GeneratePropertyInterfaceCode45(p));
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#endregion");
+					code.AppendLine();
+				}
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#region Methods");
+					code.AppendLine();
+				}
 				foreach (Callback m in o.CallbackOperations.Where(a => a.GetType() == typeof(Callback)))
 					code.AppendLine(GenerateCallbackInterfaceMethodCode45(m));
 				foreach (DataChangeMethod m in o.ServiceOperations.Where(a => a.GetType() == typeof(DataChangeMethod)))
 					code.AppendLine(GenerateCallbackInterfaceDCM45(m, true));
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#endregion");
+					code.AppendLine();
+				}
 				code.AppendLine("\t}");
 
 				//Generate the callback facade implementation
@@ -131,6 +194,12 @@ namespace NETPath.Generators.CS
 				code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCode(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 				code.AppendLine(string.Format("\t{0} partial class {1}Callback : ServerCallbackBase<I{1}Callback>, I{1}Callback", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
 				code.AppendLine("\t{");
+				code.AppendLine();
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#region Constructors");
+					code.AppendLine();
+				}
 				code.AppendLine(string.Format("\t\tpublic {0}Callback()", o.Name));
 				code.AppendLine("\t\t{");
 				code.AppendLine("\t\t}");
@@ -140,12 +209,37 @@ namespace NETPath.Generators.CS
 				code.AppendLine("\t\t\t__callback = callback;");
 				code.AppendLine("\t\t}");
 				code.AppendLine();
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#endregion");
+					code.AppendLine();
+				}
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#region Properties");
+					code.AppendLine();
+				}
 				foreach (Property p in o.CallbackOperations.Where(a => a.GetType() == typeof(Property)))
 					code.AppendLine(GeneratePropertyClientCode(p));
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#endregion");
+					code.AppendLine();
+				}
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#region Methods");
+					code.AppendLine();
+				}
 				foreach (Callback m in o.CallbackOperations.Where(a => a.GetType() == typeof(Callback)))
 					code.AppendLine(GenerateCallbackMethodProxy45(m));
 				foreach (DataChangeMethod m in o.ServiceOperations.Where(a => a.GetType() == typeof(DataChangeMethod)))
 					code.AppendLine(GenerateCallbackImplementationDCM45(m, true));
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#endregion");
+					code.AppendLine();
+				}
 				code.AppendLine("\t}");
 			}
 
@@ -168,12 +262,33 @@ namespace NETPath.Generators.CS
 			code.AppendLine(GenerationTarget == ProjectGenerationFramework.WIN8 ? string.Format("\t[ServiceContract({0}{1}{2}Namespace = \"{3}\")]", o.HasCallback || o.HasDCMOperations ? string.Format("CallbackContract = typeof(I{0}Callback), ", o.Name) : "", !string.IsNullOrEmpty(o.ConfigurationName) ? string.Format("ConfigurationName = \"{0}\", ", o.ConfigurationName) : "", o.HasClientType ? string.Format("Name = \"{0}\", ", o.ClientType.Name) : "", o.Parent.FullURI) : string.Format("\t[ServiceContract({0}SessionMode = System.ServiceModel.SessionMode.{1}, {2}{3}{4}Namespace = \"{5}\")]", o.HasCallback || o.HasDCMOperations ? string.Format("CallbackContract = typeof(I{0}Callback), ", o.Name) : "", System.Enum.GetName(typeof(System.ServiceModel.SessionMode), o.SessionMode), o.ProtectionLevel != System.Net.Security.ProtectionLevel.None ? string.Format("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}, ", System.Enum.GetName(typeof(System.Net.Security.ProtectionLevel), o.ProtectionLevel)) : "", !string.IsNullOrEmpty(o.ConfigurationName) ? string.Format("ConfigurationName = \"{0}\", ", o.ConfigurationName) : "", o.HasClientType ? string.Format("Name = \"{0}\", ", o.ClientType.Name) : "", o.Parent.FullURI));
 			code.AppendLine(string.Format("\t{0} interface I{1}", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine("\t{");
+			code.AppendLine();
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#region Properties");
+				code.AppendLine();
+			}
 			foreach (Property p in o.ServiceOperations.Where(a => a.GetType() == typeof(Property)))
 				code.AppendLine(GeneratePropertyInterfaceCode45(p));
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#endregion");
+				code.AppendLine();
+			}
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#region Methods");
+				code.AppendLine();
+			}
 			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
 				code.AppendLine(GenerateClientInterfaceMethodCode45(m));
 			foreach (DataChangeMethod m in o.ServiceOperations.Where(a => a.GetType() == typeof(DataChangeMethod)))
 				code.AppendLine(GenerateServiceInterfaceDCM45(m, false));
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#endregion");
+				code.AppendLine();
+			}
 			code.AppendLine("\t}");
 			code.AppendLine();
 			//Generate Channel Interface
@@ -186,6 +301,12 @@ namespace NETPath.Generators.CS
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCode(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 			code.AppendLine(string.Format("\t{0} partial class {1}Proxy : {2}, I{1}", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.HasDCMOperations || o.HasCallbackOperations ? string.Format("System.ServiceModel.ClientDuplexBaseEx<{0}Proxy, I{0}>", o.HasClientType ? o.ClientType.Name : o.Name) : string.Format("System.ServiceModel.ClientBaseEx<{0}Proxy, I{0}>", o.HasClientType ? o.ClientType.Name : o.Name)));
 			code.AppendLine("\t{");
+			code.AppendLine();
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#region Constructors");
+				code.AppendLine();
+			}
 			if (o.HasCallbackOperations || o.HasDCMOperations)
 			{
 				code.AppendLine(string.Format("\t\tpublic {0}Proxy()", o.HasClientType ? o.ClientType.Name : o.Name));
@@ -250,15 +371,50 @@ namespace NETPath.Generators.CS
 				code.AppendLine("\t\t}");
 				code.AppendLine();
 			}
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#endregion");
+				code.AppendLine();
+			}
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#region Host Configuration");
+				code.AppendLine();
+			}
 			Host h = o.Parent.Owner.Namespace.GetServiceHost(o);
 			if (h != null)
 				code.Append(HostGenerator.GenerateClientCode45(h, o.HasDCMOperations));
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#endregion");
+				code.AppendLine();
+			}
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\tregion Properties");
+				code.AppendLine();
+			}
 			foreach (Property p in o.ServiceOperations.Where(a => a.GetType() == typeof(Property)))
 				code.AppendLine(GeneratePropertyClientCode(p));
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#endregion");
+				code.AppendLine();
+			}
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#region Methods");
+				code.AppendLine();
+			}
 			foreach (Method m in o.ServiceOperations.Where(a => a.GetType() == typeof(Method)))
 				code.AppendLine(GenerateServiceMethodProxy45(m));
 			foreach (DataChangeMethod m in o.ServiceOperations.Where(a => a.GetType() == typeof(DataChangeMethod)))
 				code.AppendLine(GenerateServiceImplementationDCM45(m, false));
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#endregion");
+				code.AppendLine();
+			}
 			code.AppendLine("\t}");
 			//Generate Callback Interface (if any)
 			if (o.HasCallback || o.HasDCMOperations)
@@ -269,24 +425,64 @@ namespace NETPath.Generators.CS
 				code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCode(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 				code.AppendFormat("\t{0} interface I{1}Callback{2}", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.Name, Environment.NewLine);
 				code.AppendLine("\t{");
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#region Properties");
+					code.AppendLine();
+				}
 				foreach (Property p in o.CallbackOperations.Where(a => a.GetType() == typeof(Property)))
 					code.AppendLine(GeneratePropertyInterfaceCode45(p));
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#endregion");
+					code.AppendLine();
+				}
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#region Methods");
+					code.AppendLine();
+				}
 				foreach (Callback m in o.CallbackOperations.Where(a => a.GetType() == typeof(Callback)))
 					code.AppendLine(GenerateClientInterfaceCallbackCode45(m));
 				foreach (DataChangeMethod m in o.ServiceOperations.Where(a => a.GetType() == typeof(DataChangeMethod)))
 					code.AppendLine(GenerateCallbackInterfaceDCM45(m, false));
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#endregion");
+					code.AppendLine();
+				}
 				code.AppendLine("\t}");
 				code.AppendLine();
 				code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCode(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
 				code.AppendLine(string.Format("\t[System.ServiceModel.CallbackBehaviorAttribute(AutomaticSessionShutdown = {0}, ConcurrencyMode = ConcurrencyMode.{1}, IgnoreExtensionDataObject = {2}, IncludeExceptionDetailInFaults = {3}, MaxItemsInObjectGraph = {4}, {5}{6}UseSynchronizationContext = {7}, ValidateMustUnderstand = {8})]", o.CBAutomaticSessionShutdown ? "true" : "false", o.CBConcurrencyMode, o.CBIgnoreExtensionDataObject ? "true" : "false", o.CBIncludeExceptionDetailInFaults ? "true" : "false", o.CBMaxItemsInObjectGraph > 0 ? Convert.ToString(o.CBMaxItemsInObjectGraph) : "Int32.MaxValue", o.CBTransactionIsolationLevel != IsolationLevel.Unspecified ? string.Format("TransactionIsolationLevel = System.Transactions.IsolationLevel.{0}, ", o.CBTransactionIsolationLevel) : "", o.CBTransactionTimeout.Ticks != 0L ? string.Format("TransactionTimeout = \"{0}\", ", o.CBTransactionTimeout) : "", o.CBUseSynchronizationContext ? "true" : "false", o.CBValidateMustUnderstand ? "true" : "false"));
 				code.AppendLine(string.Format("\t{0} abstract class {1}Callback : I{1}Callback", o.HasClientType ? DataTypeGenerator.GenerateScope(o.ClientType.Scope) : DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name));
 				code.AppendLine("\t{");
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#region Properties");
+					code.AppendLine();
+				}
 				foreach (Property p in o.CallbackOperations.Where(a => a.GetType() == typeof(Property)))
 					code.AppendLine(GeneratePropertyServerCode45(p));
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#endregion");
+					code.AppendLine();
+				}
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#region Methods");
+					code.AppendLine();
+				}
 				foreach (Callback m in o.CallbackOperations.Where(a => a.GetType() == typeof(Callback)))
 					code.AppendLine(GenerateCallbackClientMethodCode45(m));
 				foreach (DataChangeMethod m in o.ServiceOperations.Where(a => a.GetType() == typeof(DataChangeMethod)))
 					code.AppendLine(GenerateCallbackImplementationDCM45(m, false));
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#endregion");
+					code.AppendLine();
+				}
 				code.AppendLine("\t}");
 			}
 

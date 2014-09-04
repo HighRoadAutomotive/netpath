@@ -87,67 +87,97 @@ namespace NETPath.Generators.CS
 
 			if (target.TargetTypes.Intersect(o.Enums).Any())
 			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tEnumerations");
-				code.AppendLine("\t**************************************************************************/");
+				if (!o.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t/**************************************************************************");
+					code.AppendLine("\t*\tEnumerations");
+					code.AppendLine("\t**************************************************************************/");
+				}
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#region Enumeration Contracts");
 				code.AppendLine();
 				foreach (var ee in target.TargetTypes.Intersect(o.Enums))
 					code.AppendLine(EnumGenerator.GenerateServerCode45((Projects.Enum)ee));
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#endregion");
 				code.AppendLine();
 			}
 
 			if (target.TargetTypes.Intersect(o.Data).Any())
 			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tData Contracts");
-				code.AppendLine("\t**************************************************************************/");
+				if (!o.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t/**************************************************************************");
+					code.AppendLine("\t*\tData Contracts");
+					code.AppendLine("\t**************************************************************************/");
+				}
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#region Data Contracts");
 				code.AppendLine();
 				foreach (var de in target.TargetTypes.Intersect(o.Data))
 					code.AppendLine(DataGenerator.GenerateServerCode45((Data)de));
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#endregion");
 				code.AppendLine();
 			}
 
 			if (target.TargetTypes.Intersect(o.Services).Any())
 			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Contracts");
-				code.AppendLine("\t**************************************************************************/");
+				if (!o.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t/**************************************************************************");
+					code.AppendLine("\t*\tService Contracts");
+					code.AppendLine("\t**************************************************************************/");
+				}
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#region Service Contracts");
 				code.AppendLine();
 				foreach (var se in target.TargetTypes.Intersect(o.Services))
 					code.AppendLine(ServiceGenerator.GenerateServerCode45((Service)se));
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#endregion");
 				code.AppendLine();
 			}
 
 			if (target.TargetTypes.Intersect(o.RESTServices).Any())
 			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tREST Service Contracts");
-				code.AppendLine("\t**************************************************************************/");
+				if (!o.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t/**************************************************************************");
+					code.AppendLine("\t*\tREST Service Contracts");
+					code.AppendLine("\t**************************************************************************/");
+				}
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#region REST Service Contracts");
 				code.AppendLine();
 				foreach (var se in target.TargetTypes.Intersect(o.RESTServices))
 					code.AppendLine(RESTServiceGenerator.GenerateServerCode((RESTService)se));
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#endregion");
 				code.AppendLine();
 			}
 
 			if (target.TargetTypes.Intersect(o.Bindings).Any())
 			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Bindings");
-				code.AppendLine("\t**************************************************************************/");
+				if (!o.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t/**************************************************************************");
+					code.AppendLine("\t*\tService Bindings");
+					code.AppendLine("\t**************************************************************************/");
+				}
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#region Service Bindings");
 				code.AppendLine();
 				foreach (var sb in target.TargetTypes.Intersect(o.Bindings))
 					code.AppendLine(BindingsGenerator.GenerateCode45((ServiceBinding)sb, ProjectGenerationFramework.NET45));
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#endregion");
 				code.AppendLine();
 			}
 
 			if (target.TargetTypes.Intersect(o.Hosts).Any())
 			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Hosts");
-				code.AppendLine("\t**************************************************************************/");
+				if (!o.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t/**************************************************************************");
+					code.AppendLine("\t*\tService Hosts");
+					code.AppendLine("\t**************************************************************************/");
+				}
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#region Service Hosts");
 				code.AppendLine();
 				foreach (var he in target.TargetTypes.Intersect(o.Hosts))
 					code.AppendLine(HostGenerator.GenerateServerCode45((Host)he));
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#endregion");
 				code.AppendLine();
 			}
 
@@ -192,59 +222,84 @@ namespace NETPath.Generators.CS
 
 			if (target.TargetTypes.Intersect(o.Enums).Any())
 			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tEnumeration Contracts");
-				code.AppendLine("\t**************************************************************************/");
+				if (!o.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t/**************************************************************************");
+					code.AppendLine("\t*\tEnumeration Contracts");
+					code.AppendLine("\t**************************************************************************/");
+				}
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#region Enumeration Contracts");
 				code.AppendLine();
 				foreach (var ee in target.TargetTypes.Intersect(o.Enums))
 					code.AppendLine(EnumGenerator.GenerateProxyCode45((Projects.Enum)ee));
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#endregion");
 				code.AppendLine();
 			}
 
 			if (target.TargetTypes.Intersect(o.Data).Any())
 			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tData Contracts");
-				code.AppendLine("\t**************************************************************************/");
+				if (!o.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t/**************************************************************************");
+					code.AppendLine("\t*\tData Contracts");
+					code.AppendLine("\t**************************************************************************/");
+				}
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#region Data Contracts");
 				code.AppendLine();
 				foreach (var de in target.TargetTypes.Intersect(o.Data))
 				{
 					code.AppendLine(DataGenerator.GenerateProxyCode45((Data)de));
 					code.AppendLine(DataGenerator.GenerateXAMLCode45((Data)de));
 				}
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#endregion");
 				code.AppendLine();
 			}
 
 			if (target.TargetTypes.Intersect(o.Services).Any())
 			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Contracts");
-				code.AppendLine("\t**************************************************************************/");
+				if (!o.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t/**************************************************************************");
+					code.AppendLine("\t*\tService Contracts");
+					code.AppendLine("\t**************************************************************************/");
+				}
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#region Service Contracts");
 				code.AppendLine();
 				foreach (var se in target.TargetTypes.Intersect(o.Services))
 					code.AppendLine(ServiceGenerator.GenerateClientCode45((Service)se, ProjectGenerationFramework.NET45));
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#endregion");
 				code.AppendLine();
 			}
 
 			if (target.TargetTypes.Intersect(o.RESTServices).Any())
 			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tREST Service Contracts");
-				code.AppendLine("\t**************************************************************************/");
+				if (!o.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t/**************************************************************************");
+					code.AppendLine("\t*\tREST Service Contracts");
+					code.AppendLine("\t**************************************************************************/");
+				}
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#region REST Service Contracts");
 				code.AppendLine();
 				foreach (var se in target.TargetTypes.Intersect(o.RESTServices))
 					code.AppendLine(RESTServiceGenerator.GenerateClientCode45((RESTService)se));
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#endregion");
 				code.AppendLine();
 			}
 
 			if (target.TargetTypes.Intersect(o.Bindings).Any())
 			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Bindings");
-				code.AppendLine("\t**************************************************************************/");
+				if (!o.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t/**************************************************************************");
+					code.AppendLine("\t*\tService Bindings");
+					code.AppendLine("\t**************************************************************************/");
+				}
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#region Service Bindings");
 				code.AppendLine();
 				foreach (var sb in target.TargetTypes.Intersect(o.Bindings))
 					code.AppendLine(BindingsGenerator.GenerateCode45((ServiceBinding)sb, ProjectGenerationFramework.NET45));
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#endregion");
 				code.AppendLine();
 			}
 
@@ -289,59 +344,84 @@ namespace NETPath.Generators.CS
 
 			if (target.TargetTypes.Intersect(o.Enums).Any())
 			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tEnumeration Contracts");
-				code.AppendLine("\t**************************************************************************/");
+				if (!o.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t/**************************************************************************");
+					code.AppendLine("\t*\tEnumeration Contracts");
+					code.AppendLine("\t**************************************************************************/");
+				}
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#region Enumeration Contracts");
 				code.AppendLine();
 				foreach (var ee in target.TargetTypes.Intersect(o.Enums))
 					code.AppendLine(EnumGenerator.GenerateProxyCode45((Projects.Enum)ee));
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#endregion");
 				code.AppendLine();
 			}
 
 			if (target.TargetTypes.Intersect(o.Data).Any())
 			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tData Contracts");
-				code.AppendLine("\t**************************************************************************/");
+				if (!o.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t/**************************************************************************");
+					code.AppendLine("\t*\tData Contracts");
+					code.AppendLine("\t**************************************************************************/");
+				}
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#region Data Contracts");
 				code.AppendLine();
 				foreach (var de in target.TargetTypes.Intersect(o.Data))
 				{
 					code.AppendLine(DataGenerator.GenerateProxyCodeRT8((Data)de));
 					code.AppendLine(DataGenerator.GenerateXAMLCodeRT8((Data)de));
 				}
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#endregion");
 				code.AppendLine();
 			}
 
 			if (target.TargetTypes.Intersect(o.Services).Any())
 			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Contracts");
-				code.AppendLine("\t**************************************************************************/");
+				if (!o.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t/**************************************************************************");
+					code.AppendLine("\t*\tService Contracts");
+					code.AppendLine("\t**************************************************************************/");
+				}
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#region Service Contracts");
 				code.AppendLine();
 				foreach (var se in target.TargetTypes.Intersect(o.Services))
 					code.AppendLine(ServiceGenerator.GenerateClientCode45((Service)se, ProjectGenerationFramework.NET45));
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#endregion");
 				code.AppendLine();
 			}
 
 			if (target.TargetTypes.Intersect(o.RESTServices).Any())
 			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tREST Service Contracts");
-				code.AppendLine("\t**************************************************************************/");
+				if (!o.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t/**************************************************************************");
+					code.AppendLine("\t*\tREST Service Contracts");
+					code.AppendLine("\t**************************************************************************/");
+				}
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#region REST Service Contracts");
 				code.AppendLine();
 				foreach (var se in target.TargetTypes.Intersect(o.RESTServices))
 					code.AppendLine(RESTServiceGenerator.GenerateClientCode45((RESTService)se));
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#endregion");
 				code.AppendLine();
 			}
 
 			if (target.TargetTypes.Intersect(o.Bindings).Any())
 			{
-				code.AppendLine("\t/**************************************************************************");
-				code.AppendLine("\t*\tService Bindings");
-				code.AppendLine("\t**************************************************************************/");
+				if (!o.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t/**************************************************************************");
+					code.AppendLine("\t*\tService Bindings");
+					code.AppendLine("\t**************************************************************************/");
+				}
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#region Service Bindings");
 				code.AppendLine();
 				foreach (var sb in target.TargetTypes.Intersect(o.Bindings))
 					code.AppendLine(BindingsGenerator.GenerateCodeRT8((ServiceBinding)sb));
+				if (o.Owner.GenerateRegions) code.AppendLine("\t#endregion");
 				code.AppendLine();
 			}
 

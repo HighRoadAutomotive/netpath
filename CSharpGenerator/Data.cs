@@ -79,7 +79,9 @@ namespace NETPath.Generators.CS
 				code.AppendLine();
 			}
 
-			code.AppendLine("\t\t//Constuctors");
+			if (o.Parent.Owner.GenerateRegions) code.AppendLine("\t\t#region Constructor");
+			else code.AppendLine("\t\t//Constuctors");
+			code.AppendLine();
 			code.AppendLine(string.Format("\t\tpublic {0}(){1}", o.HasClientType ? o.ClientType.Name : o.Name, o.DREBatchCount > 0 ? string.Format(" : base({0})", o.DREBatchCount) : ""));
 			code.AppendLine("\t\t{");
 			foreach (DataElement de in o.Elements)
@@ -99,9 +101,19 @@ namespace NETPath.Generators.CS
 				}
 			code.AppendLine("\t\t}");
 			code.AppendLine();
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#endregion");
+				code.AppendLine();
+			}
 
 			code.Append(GenerateProxyDCMCode(o, true));
 
+			if (o.Parent.Owner.GenerateRegions && o.HasEntity)
+			{
+				code.AppendLine("\t\t#endregion Entity Framework Support");
+				code.AppendLine();
+			}
 			var idv = o.Elements.FirstOrDefault(a => a.DREPrimaryKey);
 			if (o.HasEntity && idv != null)
 			{
@@ -148,9 +160,25 @@ namespace NETPath.Generators.CS
 				code.AppendLine(string.Format("\t\tstatic partial void FinishCastToDatabase(ref {0} DBType);", o.EntityType));
 				code.AppendLine();
 			}
+			if (o.Parent.Owner.GenerateRegions && o.HasEntity)
+			{
+				code.AppendLine("\t\t#endregion");
+				code.AppendLine();
+			}
 
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#region Data Members");
+				code.AppendLine();
+			}
 			foreach (DataElement de in o.Elements.Where(a => !a.IsHidden))
 				code.AppendLine(o.CMDEnabled ? GenerateElementDCMServerCode45(de) : GenerateElementServerCode45(de));
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#endregion");
+				code.AppendLine();
+			}
+
 			code.AppendLine("\t}");
 			return code.ToString();
 		}
@@ -247,13 +275,7 @@ namespace NETPath.Generators.CS
 			code.AppendLine(string.Format("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI));
 			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, o.ClientHasImpliedExtensionData, o.HasWinFormsBindings, o.CMDEnabled, o.CMDEnabled, o.DREEnabled)));
 			code.AppendLine("\t{");
-			if (o.HasXAMLType)
-			{
-				if (!o.CMDEnabled) code.AppendLine(string.Format("\t\tprivate DependencyObject BaseXAMLObject {{ get; set; }}"));
-				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get {{ if(BaseXAMLObject == null) Application.Current.Dispatcher.Invoke(() => {{ BaseXAMLObject = new {0}(this); }}, System.Windows.Threading.DispatcherPriority.Normal); return BaseXAMLObject as {0}; }} {1}}}", o.XAMLType.Name, !o.CMDEnabled ? "set { BaseXAMLObject = value; } " : ""));
-				code.AppendLine();
-			}
-			code.Append(GenerateProxyDCMCode(o));
+			code.AppendLine();
 			if (o.ClientHasExtensionData || o.ClientHasImpliedExtensionData)
 			{
 				code.AppendLine("\t\tpublic System.Runtime.Serialization.ExtensionDataObject ExtensionData { get; set; }");
@@ -261,6 +283,11 @@ namespace NETPath.Generators.CS
 			}
 			if (o.HasWinFormsBindings)
 			{
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#region Windows Forms Binding Support");
+					code.AppendLine();
+				}
 				code.AppendLine("\t\tpublic event PropertyChangedEventHandler PropertyChanged;");
 				code.AppendLine("\t\tprivate void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberNameAttribute] string propertyName = \"\")");
 				code.AppendLine("\t\t{");
@@ -268,10 +295,23 @@ namespace NETPath.Generators.CS
 				code.AppendLine("\t\t\t\tPropertyChanged(this, new PropertyChangedEventArgs(propertyName));");
 				code.AppendLine("\t\t}");
 				code.AppendLine();
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#endregion");
+					code.AppendLine();
+				}
 			}
 
 			if (o.HasXAMLType)
 			{
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#region XAML Integration Support");
+					code.AppendLine();
+				}
+				if (!o.CMDEnabled) code.AppendLine(string.Format("\t\tprivate DependencyObject BaseXAMLObject {{ get; set; }}"));
+				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get {{ if(BaseXAMLObject == null) Application.Current.Dispatcher.Invoke(() => {{ BaseXAMLObject = new {0}(this); }}, System.Windows.Threading.DispatcherPriority.Normal); return BaseXAMLObject as {0}; }} {1}}}", o.XAMLType.Name, !o.CMDEnabled ? "set { BaseXAMLObject = value; } " : ""));
+				code.AppendLine();
 				code.AppendLine("\t\t//Implicit Conversion");
 				code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
 				code.AppendLine("\t\t{");
@@ -298,9 +338,25 @@ namespace NETPath.Generators.CS
 						code.Append(GenerateElementProxyUpdateCode45(de, o));
 					code.AppendLine("\t\t}");
 				}
+				code.AppendLine("\t\t//DTO->XMAL Conversion Function");
+				code.AppendLine(string.Format("\t\tpublic static {0} ConvertFromXAMLObject({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
+				code.AppendLine("\t\t{");
+				code.AppendLine("\t\t\tif (Data.DataObject != null) return Data.DataObject;");
+				code.AppendLine(string.Format("\t\t\treturn new {0}(Data);", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#endregion");
+					code.AppendLine();
+				}
 			}
 
-			code.AppendLine("\t\t//Constuctors");
+			code.Append(GenerateProxyDCMCode(o));
+
+			if (o.Parent.Owner.GenerateRegions) code.AppendLine("\t\t#region Constructors");
+			else code.AppendLine("\t\t//Constuctors");
+			code.AppendLine();
 			code.AppendLine(string.Format("\t\tpublic {0}(){1}", o.HasClientType ? o.ClientType.Name : o.Name, o.DREBatchCount > 0 ? string.Format(" : base({0})", o.DREBatchCount) : ""));
 			code.AppendLine("\t\t{");
 			foreach (DataElement de in o.Elements)
@@ -337,20 +393,24 @@ namespace NETPath.Generators.CS
 				code.AppendLine("\t\t}");
 			}
 			code.AppendLine();
-
-			if (o.HasXAMLType)
+			if (o.Parent.Owner.GenerateRegions)
 			{
-				code.AppendLine("\t\t//DTO->XMAL Conversion Function");
-				code.AppendLine(string.Format("\t\tpublic static {0} ConvertFromXAMLObject({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
-				code.AppendLine("\t\t{");
-				code.AppendLine("\t\t\tif (Data.DataObject != null) return Data.DataObject;");
-				code.AppendLine(string.Format("\t\t\treturn new {0}(Data);", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t}");
+				code.AppendLine("\t\t#endregion");
 				code.AppendLine();
 			}
 
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#region Data Members");
+				code.AppendLine();
+			}
 			foreach (DataElement de in o.Elements.Where(a => !a.IsHidden && a.IsDataMember))
 				code.AppendLine(o.CMDEnabled ? GenerateElementDCMProxyCode(de) : GenerateElementProxyCode(de));
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#endregion");
+				code.AppendLine();
+			}
 			code.AppendLine("\t}");
 			return code.ToString();
 		}
@@ -366,15 +426,14 @@ namespace NETPath.Generators.CS
 			code.AppendLine(string.Format("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.URI));
 			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, false, o.HasWinFormsBindings, o.CMDEnabled, o.CMDEnabled, o.DREEnabled)));
 			code.AppendLine("\t{");
-			if (o.HasXAMLType)
-			{
-				if (!o.CMDEnabled) code.AppendLine(string.Format("\t\tprivate DependencyObject BaseXAMLObject {{ get; set; }}"));
-				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get {{ if (BaseXAMLObject == null) Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {{ BaseXAMLObject = new {0}(this); }}).GetResults(); return BaseXAMLObject as {0}; }} {1}}}", o.XAMLType.Name, !o.CMDEnabled ? "set { BaseXAMLObject = value; } " : ""));
-				code.AppendLine();
-			}
-			code.Append(GenerateProxyDCMCode(o, false, true));
+			code.AppendLine();
 			if (o.HasWinFormsBindings)
 			{
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#region Windows Forms Binding Support");
+					code.AppendLine();
+				}
 				code.AppendLine("\t\tpublic event PropertyChangedEventHandler PropertyChanged;");
 				code.AppendLine("\t\tprivate void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberNameAttribute] string propertyName = \"\")");
 				code.AppendLine("\t\t{");
@@ -382,10 +441,30 @@ namespace NETPath.Generators.CS
 				code.AppendLine("\t\t\t\tPropertyChanged(this, new PropertyChangedEventArgs(propertyName));");
 				code.AppendLine("\t\t}");
 				code.AppendLine();
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#endregion");
+					code.AppendLine();
+				}
 			}
 
 			if (o.HasXAMLType)
 			{
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#region XAML Integration Support");
+					code.AppendLine();
+				}
+				if (!o.CMDEnabled) code.AppendLine(string.Format("\t\tprivate DependencyObject BaseXAMLObject {{ get; set; }}"));
+				code.AppendLine(string.Format("\t\tpublic {0} XAMLObject {{ get {{ if (BaseXAMLObject == null) Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {{ BaseXAMLObject = new {0}(this); }}).GetResults(); return BaseXAMLObject as {0}; }} {1}}}", o.XAMLType.Name, !o.CMDEnabled ? "set { BaseXAMLObject = value; } " : ""));
+				code.AppendLine();
+				code.AppendLine("\t\t//DTO->XMAL Conversion Function");
+				code.AppendLine(string.Format("\t\tpublic static {0} ConvertFromXAMLObject({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
+				code.AppendLine("\t\t{");
+				code.AppendLine("\t\t\tif (Data.DataObject != null) return Data.DataObject;");
+				code.AppendLine(string.Format("\t\t\treturn new {0}(Data);", o.HasClientType ? o.ClientType.Name : o.Name));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
 				code.AppendLine("\t\t//Implicit Conversion");
 				code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
 				code.AppendLine("\t\t{");
@@ -413,9 +492,18 @@ namespace NETPath.Generators.CS
 					code.AppendLine("\t\t}");
 					code.AppendLine();
 				}
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine("\t\t#endregion");
+					code.AppendLine();
+				}
 			}
 
-			code.AppendLine("\t\t//Constuctors");
+			code.Append(GenerateProxyDCMCode(o, false, true));
+
+			if (o.Parent.Owner.GenerateRegions) code.AppendLine("\t\t#region Constructors");
+			else code.AppendLine("\t\t//Constuctors");
+			code.AppendLine();
 			code.AppendLine(string.Format("\t\tpublic {0}(){1}", o.HasClientType ? o.ClientType.Name : o.Name, o.DREBatchCount > 0 ? string.Format(" : base({0})", o.DREBatchCount) : ""));
 			code.AppendLine("\t\t{");
 			foreach (DataElement de in o.Elements)
@@ -451,21 +539,25 @@ namespace NETPath.Generators.CS
 					}
 				code.AppendLine("\t\t}");
 			}
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine();
+				code.AppendLine("\t\t#endregion");
+			}
 			code.AppendLine();
 
-			if (o.HasXAMLType)
+			if (o.Parent.Owner.GenerateRegions)
 			{
-				code.AppendLine("\t\t//DTO->XMAL Conversion Function");
-				code.AppendLine(string.Format("\t\tpublic static {0} ConvertFromXAMLObject({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
-				code.AppendLine("\t\t{");
-				code.AppendLine("\t\t\tif (Data.DataObject != null) return Data.DataObject;");
-				code.AppendLine(string.Format("\t\t\treturn new {0}(Data);", o.HasClientType ? o.ClientType.Name : o.Name));
-				code.AppendLine("\t\t}");
+				code.AppendLine("\t\t#region Data Members");
 				code.AppendLine();
 			}
-
 			foreach (DataElement de in o.Elements.Where(a => !a.IsHidden && a.IsDataMember))
 				code.AppendLine(o.CMDEnabled ? GenerateElementDCMProxyCode(de, false, true) : GenerateElementProxyCode(de));
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#endregion");
+				code.AppendLine();
+			}
 			code.AppendLine("\t}");
 			return code.ToString();
 		}
@@ -475,7 +567,9 @@ namespace NETPath.Generators.CS
 			if (!o.CMDEnabled) return "";
 
 			var code = new StringBuilder();
-			code.AppendLine("\t\t//Concurrently Mutable Data Support");
+			if (o.Parent.Owner.GenerateRegions) code.AppendLine("\t\t#region Concurrently Mutable Data Support");
+			else code.AppendLine("\t\t//Concurrently Mutable Data Support");
+			code.AppendLine();
 			code.AppendLine("\t\t[OnDeserializing]");
 			code.AppendLine("\t\tprivate void OnDeserializing(StreamingContext context)");
 			code.AppendLine("\t\t{");
@@ -504,9 +598,17 @@ namespace NETPath.Generators.CS
 						code.AppendLine(string.Format("\t\t\t{0}.SetEvents((xk, xv) => {{ {0}Added(xk, xv); }}, (xk, xv) => {{ {0}Removed(xk, xv); }}, (x) => {{ {0}Cleared(x); }}, (xk, ox, nx) => {{ {0}Updated(xk, ox, nx); }}, (x) => {{ Internal{0}SendChanges(x); }});", de.HasClientType ? de.ClientName : de.DataName));
 				}
 			code.AppendLine("\t\t}");
+			code.AppendLine();
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#endregion");
+				code.AppendLine();
+			}
+
 			if (o.DREEnabled)
 			{
-				code.AppendLine("\t\t//Data Revision Exchange Support");
+				if (o.Parent.Owner.GenerateRegions) code.AppendLine("\t\t#region Data Revision Exchange Support");
+				else code.AppendLine("\t\t//Data Revision Exchange Support");
 				code.AppendLine(string.Format("\t\tprotected override {0}{1}void BatchUpdates()", o.DataRevisionServiceNames.Any(a => a.IsServerAwaitable) && IsServer ? "async " : "", o.DataRevisionServiceNames.Any(a => a.IsClientAwaitable) && !IsServer ? "async " : ""));
 				code.AppendLine("\t\t{");
 				if (o.Elements.Any(a => a.DREEnabled && a.DREUpdateMode == DataUpdateMode.Batch))
@@ -528,6 +630,11 @@ namespace NETPath.Generators.CS
 					}
 				}
 				code.AppendLine("\t\t}");
+				if (o.Parent.Owner.GenerateRegions)
+				{
+					code.AppendLine();
+					code.AppendLine("\t\t#endregion");
+				}
 			}
 			code.AppendLine();
 			return code.ToString();
