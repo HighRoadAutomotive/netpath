@@ -338,7 +338,7 @@ namespace NETPath.Projects
 			else if (TypeMode == DataTypeMode.Namespace)
 				return Parent == null ? string.Format("namespace {0}", Name) : string.Format("namespace {0}.{1}", Parent.FullName, Name);
 			else if (IsExternalType == false && (TypeMode == DataTypeMode.Class || TypeMode == DataTypeMode.Struct || TypeMode == DataTypeMode.Enum))
-				return string.Format("{0} {1}{1}{2}{3}{4} {5}{6}", ToScopeString(), Partial ? "partial " : "", Abstract ? "abstract " : "", Sealed ? "sealed " : "", ToStorageClassString(), Name, ToInheritedString());
+				return string.Format("{0} {2}{3}{1}{4} {5}{6}", ToScopeString(), Partial ? "partial " : "", Abstract ? "abstract " : "", Sealed ? "sealed " : "", ToStorageClassString(), Name, ToInheritedString());
 			else if (TypeMode == DataTypeMode.Array)
 				return string.Format("{0} {1}[]{3} {2}", ToScopeString(), CollectionGenericType, Name, IsNullable ? "?" : "");
 			else if (TypeMode == DataTypeMode.Collection || TypeMode == DataTypeMode.Stack || TypeMode == DataTypeMode.Queue)
