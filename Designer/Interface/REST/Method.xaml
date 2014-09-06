@@ -234,7 +234,14 @@
 						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
 					<Label Content="Client Configuration:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" />
-					<ComboBox SelectedItem="{Binding Path=MethodData.RequestConfiguration}" ItemsSource="{Binding Path=MethodData.Owner.RequestConfigurations}" ItemTemplateSelector="{StaticResource RequestConfigurationTemplateSelector}" Height="23" Margin="130,5,5,5" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" />
+					<ComboBox SelectedItem="{Binding Path=MethodData.RequestConfiguration}" ItemsSource="{Binding Path=MethodData.Owner.RequestConfigurations}" ItemTemplateSelector="{StaticResource RequestConfigurationTemplateSelector}" Height="23" Margin="130,5,5,5" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" />
+					<Label Content="Body Style:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="1" />
+					<ComboBox Height="23" Margin="130,5,5,5" SelectedIndex="{Binding Path=MethodData.BodyStyle, Converter={StaticResource WebMessageBodyStyleConverter}}" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="1" >
+						<ComboBoxItem Content="Bare" />
+						<ComboBoxItem Content="Wrapped" />
+						<ComboBoxItem Content="Wrapped Request" />
+						<ComboBoxItem Content="Wrapped Response" />
+					</ComboBox>
 					<Label Content="Request Format:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0" />
 					<ComboBox Height="23" Margin="130,5,5,5" SelectedIndex="{Binding Path=MethodData.RequestFormat, Converter={StaticResource WebMessageFormatConverter}}" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0" >
 						<ComboBoxItem Content="XML" />
@@ -245,16 +252,10 @@
 						<ComboBoxItem Content="XML" />
 						<ComboBoxItem Content="JSON" />
 					</ComboBox>
-					<ToggleButton Content="Deserialize Content" IsChecked="{Binding Path=MethodData.DeserializeContent}" Margin="5" Grid.Column="0" Grid.Row="2" />
-					<ToggleButton Content="Return Response Data" IsChecked="{Binding Path=MethodData.ReturnResponseData}" Margin="5" Grid.Column="1" Grid.Row="2" />
-					<ToggleButton Content="Use Default Header Configuration" IsChecked="{Binding Path=MethodData.UseDefaultHeaders}" Margin="5" Grid.Column="1" Grid.Row="3" />
-					<Label Content="Body Style:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" />
-					<ComboBox Height="23" Margin="130,5,5,5" SelectedIndex="{Binding Path=MethodData.BodyStyle, Converter={StaticResource WebMessageBodyStyleConverter}}" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" >
-						<ComboBoxItem Content="Bare" />
-						<ComboBoxItem Content="Wrapped" />
-						<ComboBoxItem Content="Wrapped Request" />
-						<ComboBoxItem Content="Wrapped Response" />
-					</ComboBox>
+					<ToggleButton Content="Ensure Success Status Code" IsChecked="{Binding Path=MethodData.EnsureSuccessStatusCode}" Margin="5" Grid.Column="0" Grid.Row="2" />
+					<ToggleButton Content="Use Default Header Configuration" IsChecked="{Binding Path=MethodData.UseDefaultHeaders}" Margin="5" Grid.Column="1" Grid.Row="2" />
+					<ToggleButton Content="Deserialize Content" IsChecked="{Binding Path=MethodData.DeserializeContent}" Margin="5" Grid.Column="0" Grid.Row="3" />
+					<ToggleButton Content="Return Response Data" IsChecked="{Binding Path=MethodData.ReturnResponseData}" Margin="5" Grid.Column="1" Grid.Row="3" />
 				</Grid>
 			</Grid>
 		</TabItem>

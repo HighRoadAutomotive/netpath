@@ -357,6 +357,9 @@ namespace NETPath.Projects
 		public bool UseDefaultHeaders { get { return (bool)GetValue(UseDefaultHeadersProperty); } set { SetValue(UseDefaultHeadersProperty, value); } }
 		public static readonly DependencyProperty UseDefaultHeadersProperty = DependencyProperty.Register("UseDefaultHeaders", typeof(bool), typeof(RESTMethod), new PropertyMetadata(true));
 
+		public bool EnsureSuccessStatusCode { get { return (bool)GetValue(EnsureSuccessStatusCodeProperty); } set { SetValue(EnsureSuccessStatusCodeProperty, value); } }
+		public static readonly DependencyProperty EnsureSuccessStatusCodeProperty = DependencyProperty.Register("EnsureSuccessStatusCode", typeof(bool), typeof(RESTMethod), new PropertyMetadata(false));
+
 		//System
 		[IgnoreDataMember]
 		public string Declaration { get { return (string)GetValue(DeclarationProperty); } protected set { SetValue(DeclarationPropertyKey, value); } }

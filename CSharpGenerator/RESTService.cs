@@ -332,7 +332,7 @@ namespace NETPath.Generators.CS
 			if (conf.UnsafeAuthenticatedConnectionSharing) code.AppendLine("\t\t\trm.UnsafeAuthenticatedConnectionSharing = true;");
 			if (conf.UseDefaultCredentials) code.AppendLine("\t\t\trm.UseDefaultCredentials = true;");
 			code.AppendLine(string.Format("\t\t\tvar rr = (System.Net.HttpWebResponse) await rm.GetResponseAsync();"));
-			code.AppendLine("\t\t\tEnsureSuccessStatusCode(rr.StatusCode, rr.StatusDescription);");
+			if (o.EnsureSuccessStatusCode) code.AppendLine("\t\t\tEnsureSuccessStatusCode(rr.StatusCode, rr.StatusDescription);");
 			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine(string.Format("\t\t\t{0}Result(rr);", o.ServerName));
 			else
 			{
@@ -420,7 +420,7 @@ namespace NETPath.Generators.CS
 			if (conf.UnsafeAuthenticatedConnectionSharing) code.AppendLine("\t\t\trm.UnsafeAuthenticatedConnectionSharing = true;");
 			if (conf.UseDefaultCredentials) code.AppendLine("\t\t\trm.UseDefaultCredentials = true;");
 			code.AppendLine(string.Format("\t\t\trr = (System.Net.HttpWebResponse) await rm.GetResponseAsync();"));
-			code.AppendLine("\t\t\tEnsureSuccessStatusCode(rr.StatusCode, rr.StatusDescription);");
+			if (o.EnsureSuccessStatusCode) code.AppendLine("\t\t\tEnsureSuccessStatusCode(rr.StatusCode, rr.StatusDescription);");
 			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine("\t\t\treturn rr);");
 			else
 			{
@@ -527,7 +527,7 @@ namespace NETPath.Generators.CS
 					o.RequestConfiguration.UseHTTP10 ? ", true" : "",
 					!o.UseDefaultHeaders ? ", headers.Headers, ignoreDefaultHeaders" : ""));
 			code.AppendLine(string.Format("\t\t\tvar rr = await {0}Client.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);", RegExs.ReplaceSpaces.Replace(o.RequestConfiguration.Name, "")));
-			code.AppendLine("\t\t\trr.EnsureSuccessStatusCode();");
+			if (o.EnsureSuccessStatusCode) code.AppendLine("\t\t\trr.EnsureSuccessStatusCode();");
 			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent)
 			{
 				if (o.ReturnResponseData)
@@ -628,7 +628,7 @@ namespace NETPath.Generators.CS
 					o.RequestConfiguration.UseHTTP10 ? ", true" : "",
 					!o.UseDefaultHeaders ? ", headers.Headers, ignoreDefaultHeaders" : ""));
 			code.AppendLine(string.Format("\t\t\trr = await {0}Client.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);", RegExs.ReplaceSpaces.Replace(o.RequestConfiguration.Name, "")));
-			code.AppendLine("\t\t\trr.EnsureSuccessStatusCode();");
+			if (o.EnsureSuccessStatusCode) code.AppendLine("\t\t\trr.EnsureSuccessStatusCode();");
 			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.Append("");
 			else
 			{
