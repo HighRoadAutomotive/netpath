@@ -133,7 +133,7 @@ namespace NETPath.Generators.CS
 			if (!Server) code.AppendLine(NamespaceGenerator.GenerateContractNamespaceAttributes(Data.Namespace, Target));
 
 			//Disable XML documentation warnings 
-			if (!Data.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
+			code.AppendLine(string.Format("#pragma warning disable 0649{0}", !Data.EnableDocumentationWarnings ? ", 1591" : ""));
 
 			//Generate project
 			if (Server)
@@ -148,7 +148,7 @@ namespace NETPath.Generators.CS
 			}
 
 			//Reenable XML documentation warnings
-			if (!Data.EnableDocumentationWarnings) code.AppendLine("#pragma warning restore 1591");
+			code.AppendLine(string.Format("#pragma warning restore 1591{0}", !Data.EnableDocumentationWarnings ? ", 1591" : ""));
 
 			return code.ToString();
 		}
