@@ -329,6 +329,13 @@ namespace NETPath.Projects
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(RESTMethod));
 
+		//Preamble Code Injection
+		public string ServerPreambleCode { get { return (string)GetValue(ServerPreambleCodeProperty); } set { SetValue(ServerPreambleCodeProperty, value); } }
+		public static readonly DependencyProperty ServerPreambleCodeProperty = DependencyProperty.Register("ServerPreambleCode", typeof(string), typeof(RESTMethod));
+
+		public string ClientPreambleCode { get { return (string)GetValue(ClientPreambleCodeProperty); } set { SetValue(ClientPreambleCodeProperty, value); } }
+		public static readonly DependencyProperty ClientPreambleCodeProperty = DependencyProperty.Register("ClientPreambleCode", typeof(string), typeof(RESTMethod));
+
 		//REST
 		public string UriTemplate { get { return (string)GetValue(UriTemplateProperty); } set { SetValue(UriTemplateProperty, value); } }
 		public static readonly DependencyProperty UriTemplateProperty = DependencyProperty.Register("UriTemplate", typeof(string), typeof(RESTMethod), new PropertyMetadata("/"));

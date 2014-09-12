@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Net.Cache;
 using System.Net.Security;
@@ -294,6 +295,7 @@ namespace NETPath.Generators.CS
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 			code.AppendLine(!o.UseDefaultHeaders ? "RESTHttpWebConfig Configuration = null)" : ")");
 			code.AppendLine("\t\t{");
+			GenerateMethodPreamble(code, o.ClientPreambleCode, 3);
 			code.AppendLine("\t\t\tvar rc = Configuration ?? new RESTHttpWebConfig();");
 			if (conf != null && conf.CookieContainerMode != CookieContainerMode.Custom) code.AppendLine(string.Format("\t\t\trc.CookieContainer = {0};", conf.CookieContainerMode == CookieContainerMode.Global ? "GlobalCookies" : conf.CookieContainerMode == CookieContainerMode.Instance ? "Cookies" : "null"));
 			code.Append("\t\t\tvar rp = new Dictionary<string, object>() { ");
@@ -380,6 +382,7 @@ namespace NETPath.Generators.CS
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 			code.AppendLine(!o.UseDefaultHeaders ? "RESTHttpWebConfig Configuration = null)" : ")");
 			code.AppendLine("\t\t{");
+			GenerateMethodPreamble(code, o.ClientPreambleCode, 3);
 			code.AppendLine("\t\t\tSystem.Net.HttpWebResponse rr = null;");
 			if (!(o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine("\t\t\tstring rs = \"\";");
 			code.AppendLine("\t\t\tvar rc = Configuration ?? new RESTHttpWebConfig();");
@@ -500,6 +503,7 @@ namespace NETPath.Generators.CS
 			if (o.UseDefaultHeaders && o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
 			code.AppendLine(!o.UseDefaultHeaders ? "RestHttpClientRequestHeaders headers = null, bool ignoreDefaultHeaders = false)" : ")");
 			code.AppendLine("\t\t{");
+			GenerateMethodPreamble(code, o.ClientPreambleCode, 3);
 			code.AppendLine(string.Format("\t\t\tvar urisb = new StringBuilder(\"{0}\", 1024);", o.UriTemplate));
 			foreach (RESTMethodParameter op in o.Parameters.Where(a => !a.Serialize))
 			{
@@ -600,6 +604,7 @@ namespace NETPath.Generators.CS
 			if (o.UseDefaultHeaders && o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
 			code.AppendLine(!o.UseDefaultHeaders ? "RestHttpClientRequestHeaders headers = null, bool ignoreDefaultHeaders = false)" : ")");
 			code.AppendLine("\t\t{");
+			GenerateMethodPreamble(code, o.ClientPreambleCode, 3);
 			code.AppendLine("\t\t\tSystem.Net.Http.HttpResponseMessage rr = null;");
 			code.AppendLine(string.Format("\t\t\tvar urisb = new StringBuilder(\"{0}\", 1024);", o.UriTemplate));
 			foreach (RESTMethodParameter op in o.Parameters.Where(a => !a.Serialize))
@@ -647,6 +652,22 @@ namespace NETPath.Generators.CS
 			code.AppendLine("\t\t}");
 
 			return code.ToString();
+		}
+
+		#endregion
+
+		#region - Method Preamble Code -
+
+		public static void GenerateMethodPreamble(StringBuilder code, string preamble, short tabDepth)
+		{
+			if (string.IsNullOrWhiteSpace(preamble)) return;
+			string tabs = "";
+			for (short i = 0; i < tabDepth; i++)
+				tabs += "\t";
+
+			var ll = new List<string>(preamble.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
+			foreach (var l in ll)
+				code.AppendLine(string.Format("{0}{1}", tabs, l));
 		}
 
 		#endregion
