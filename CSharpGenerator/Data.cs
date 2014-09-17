@@ -111,7 +111,7 @@ namespace NETPath.Generators.CS
 
 			if (o.Parent.Owner.GenerateRegions && o.HasEntity)
 			{
-				code.AppendLine("\t\t#endregion Entity Framework Support");
+				code.AppendLine("\t\t#region Entity Framework Support");
 				code.AppendLine();
 			}
 			var idv = o.Elements.FirstOrDefault(a => a.DREPrimaryKey);

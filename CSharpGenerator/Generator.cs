@@ -148,7 +148,7 @@ namespace NETPath.Generators.CS
 			}
 
 			//Reenable XML documentation warnings
-			code.AppendLine(string.Format("#pragma warning restore 1591{0}", !Data.EnableDocumentationWarnings ? ", 1591" : ""));
+			code.AppendLine(string.Format("#pragma warning restore 0649{0}", !Data.EnableDocumentationWarnings ? ", 1591" : ""));
 
 			return code.ToString();
 		}
