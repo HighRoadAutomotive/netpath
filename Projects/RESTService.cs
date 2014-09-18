@@ -766,6 +766,12 @@ if (!string.IsNullOrEmpty(ServerName)) if (ServerName.IndexOf(Args.Search, Strin
 		public bool UseHTTP10 { get { return (bool)GetValue(UseHTTP10Property); } set { SetValue(UseHTTP10Property, value); } }
 		public static readonly DependencyProperty UseHTTP10Property = DependencyProperty.Register("UseHTTP10", typeof(bool), typeof(RESTHTTPConfiguration), new PropertyMetadata(false));
 
+		public bool UriIncludesMethodName { get { return (bool)GetValue(UriIncludesMethodNameProperty); } set { SetValue(UriIncludesMethodNameProperty, value); } }
+		public static readonly DependencyProperty UriIncludesMethodNameProperty = DependencyProperty.Register("UriIncludesMethodName", typeof(bool), typeof(RESTHTTPConfiguration), new PropertyMetadata(false));
+
+		public string ServiceUri { get { return (string)GetValue(ServiceUriProperty); } set { SetValue(ServiceUriProperty, value); } }
+		public static readonly DependencyProperty ServiceUriProperty = DependencyProperty.Register("ServiceUri", typeof(string), typeof(RESTHTTPConfiguration), new PropertyMetadata("/"));
+
 		//Security
 		public CredentialsMode CredentialsMode { get { return (CredentialsMode)GetValue(CredentialsModeProperty); } set { SetValue(CredentialsModeProperty, value); } }
 		public static readonly DependencyProperty CredentialsModeProperty = DependencyProperty.Register("CredentialsMode", typeof(CredentialsMode), typeof(RESTHTTPConfiguration), new PropertyMetadata(CredentialsMode.None));
