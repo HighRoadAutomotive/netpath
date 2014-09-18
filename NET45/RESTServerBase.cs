@@ -19,13 +19,16 @@ namespace System.ServiceModel
 		public ServiceDebugBehavior DebugBehavior { get; protected set; }
 		public ServiceThrottlingBehavior ThrottlingBehavior { get; protected set; }
 		public WebHttpBehavior WebHttpBehavior { get; protected set; }
-		
-		public RESTServerBase(Type ServiceType, Uri[] BaseAddresses, WebHttpSecurityMode SecurityMode)
+
+		public RESTServerBase(Type ServiceType, Uri[] BaseAddresses, string ServiceUri, WebHttpSecurityMode SecurityMode)
 		{
 			ThrottlingBehavior = new ServiceThrottlingBehavior();
 			WebHttpBehavior = new WebHttpBehavior();
 
-			Host = new WebServiceHost(ServiceType, BaseAddresses);
+			if (string.IsNullOrWhiteSpace(ServiceUri) || ServiceUri == "/") ServiceUri = "";
+			var uris = BaseAddresses.Select(uri => new Uri(uri, ServiceUri)).ToList();
+
+			Host = new WebServiceHost(ServiceType, uris.ToArray());
 			DebugBehavior = Host.Description.Behaviors.Find<ServiceDebugBehavior>();
 			Host.Description.Behaviors.Add(ThrottlingBehavior);
 			Binding = new WebHttpBinding(SecurityMode);
