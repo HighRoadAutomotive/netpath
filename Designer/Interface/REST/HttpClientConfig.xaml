@@ -28,11 +28,14 @@
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
+		<RowDefinition Height="*" />
 	</Grid.RowDefinitions>
 	<Label Content="Name:" Grid.Row="0" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="100" Padding="10,2,0,2" Margin="5,0" />
 	<pc:TextBox Text="{Binding Path=Name}" Name="ServerName" Grid.Row="0" Height="23" Margin="110,5,5,5" ToolTip="{Binding Path=Name}" />
-	<Label Grid.Row="1" Content="Request" FontSize="12pt" Margin="0,5,0,0" />
-	<Grid Grid.Row="2">
+	<Label Content="Service Uri:" Grid.Row="1" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="100" Padding="10,2,0,2" Margin="5,0" />
+	<pc:TextBox Text="{Binding Path=ServiceUri}" Name="ServiceUri" Grid.Row="1" Height="23" Margin="110,5,5,5" ToolTip="{Binding Path=ServiceUri}" />
+	<Label Grid.Row="2" Content="Request" FontSize="12pt" Margin="0,5,0,0" />
+	<Grid Grid.Row="3">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="*"/>
@@ -51,11 +54,12 @@
 			<ComboBoxItem Content="GZip" />
 			<ComboBoxItem Content="Deflate" />
 		</ComboBox>
-		<ToggleButton Content="Use Proxy" IsChecked="{Binding Path=UseProxy}" Margin="5" Grid.Column="1" Grid.Row="1" />
+		<ToggleButton Content="Include Method Name in Request URI" IsChecked="{Binding Path=UriIncludesMethodName}" Margin="5" Grid.Column="1" Grid.Row="1" />
+		<ToggleButton Content="Use Proxy" IsChecked="{Binding Path=UseProxy}" Margin="5" Grid.Column="1" Grid.Row="2" />
 		<ToggleButton Content="Use HTTP 1.0" IsChecked="{Binding Path=UseHTTP10}" Margin="5" Grid.Column="0" Grid.Row="2" />
 	</Grid>
-	<Label Grid.Row="3" Content="Security" FontSize="12pt" Margin="0,5,0,0" />
-	<Grid Grid.Row="4">
+	<Label Grid.Row="4" Content="Security" FontSize="12pt" Margin="0,5,0,0" />
+	<Grid Grid.Row="5">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="*"/>
@@ -86,8 +90,8 @@
 			<ComboBoxItem Content="Custom" />
 		</ComboBox>
 	</Grid>
-	<Label Grid.Row="5" Content="Content" FontSize="12pt" Margin="0,5,0,0" />
-	<Grid Grid.Row="6">
+	<Label Grid.Row="6" Content="Content" FontSize="12pt" Margin="0,5,0,0" />
+	<Grid Grid.Row="7">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="*"/>

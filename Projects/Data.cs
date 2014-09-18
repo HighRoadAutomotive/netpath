@@ -542,6 +542,7 @@ namespace NETPath.Projects
 			Documentation = new Documentation { IsProperty = true };
 			HasClientType = false;
 			HasXAMLType = true;
+			HasXAMLType = false;
 		}
 
 		public DataElement(DataType DataType, string Name, Data Owner)
@@ -555,8 +556,9 @@ namespace NETPath.Projects
 			EmitDefaultValue = false;
 			Order = -1;
 			Documentation = new Documentation { IsProperty = true };
-			HasClientType = false;
-			HasXAMLType = true;
+			HasClientType = Owner.HasClientType;
+			HasXAMLType = Owner.HasXAMLType;
+			HasEntity = Owner.HasEntity;
 		}
 
 		public override string ToString()

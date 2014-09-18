@@ -106,21 +106,23 @@ namespace NETPath.Generators.CS
 				code.AppendLine("\t\t#region Constructors");
 				code.AppendLine();
 			}
-			code.AppendLine(string.Format("\t\tpublic {0}Base(string BaseAddress, string DefaultEndpointAddress) : base(typeof(T), new Uri[] {{ new Uri(BaseAddress) }}, WebHttpSecurityMode.{1})", o.Name, o.EndpointBinding.Security.Mode));
+
+			var conf = o.RequestConfigurations.FirstOrDefault();
+			string srvuri = "";
+			if (conf != null)
+				srvuri = conf.ServiceUri;
+
+			code.AppendLine(string.Format("\t\tpublic {0}Base(string BaseAddress = \"{3}\", string ServiceUri = \"{2}\") : base(typeof(T), new Uri[] {{ new Uri(BaseAddress) }}, ServiceUri, WebHttpSecurityMode.{1})", o.Name, o.EndpointBinding.Security.Mode, srvuri, o.EndpointAddress));
 			code.AppendLine("\t\t{");
-			code.AppendLine("\t\t\tthis.DefaultEndpointAddress = new Uri(DefaultEndpointAddress);");
+			code.AppendLine("\t\tif (string.IsNullOrWhiteSpace(ServiceUri) || ServiceUri == \"/\") ServiceUri = \"\";");
+			code.AppendLine("\t\t\tthis.DefaultEndpointAddress = new Uri(new Uri(BaseAddress), ServiceUri);");
 			code.AppendLine("\t\t\tInitialize();");
 			code.AppendLine("\t\t}");
 			code.AppendLine();
-			code.AppendLine(string.Format("\t\tpublic {0}Base(Uri BaseURI, Uri DefaultEndpointAddress) : base(typeof(T), new Uri[] {{ BaseURI }}, WebHttpSecurityMode.{1})", o.Name, o.EndpointBinding.Security.Mode));
+			code.AppendLine(string.Format("\t\tpublic {0}Base(Uri[] BaseAddresses, string ServiceUri = \"{2}\", int DefaultEndpointAddress = 0) : base(typeof(T), BaseURIs, ServiceUri, WebHttpSecurityMode.{1})", o.Name, o.EndpointBinding.Security.Mode, srvuri));
 			code.AppendLine("\t\t{");
-			code.AppendLine("\t\t\tthis.DefaultEndpointAddress = DefaultEndpointAddress;");
-			code.AppendLine("\t\t\tInitialize();");
-			code.AppendLine("\t\t}");
-			code.AppendLine();
-			code.AppendLine(string.Format("\t\tpublic {0}Base(Uri[] BaseURIs, Uri DefaultEndpointAddress) : base(typeof(T), BaseURIs, WebHttpSecurityMode.{1})", o.Name, o.EndpointBinding.Security.Mode));
-			code.AppendLine("\t\t{");
-			code.AppendLine("\t\t\tthis.DefaultEndpointAddress = DefaultEndpointAddress;");
+			code.AppendLine("\t\tif (string.IsNullOrWhiteSpace(ServiceUri) || ServiceUri == \"/\") ServiceUri = \"\";");
+			code.AppendLine("\t\t\tthis.DefaultEndpointAddress = new Uri(BaseAddresses[DefaultEndpointAddress], ServiceUri);");
 			code.AppendLine("\t\t\tInitialize();");
 			code.AppendLine("\t\t}");
 			code.AppendLine();
@@ -504,7 +506,7 @@ namespace NETPath.Generators.CS
 			code.AppendLine(!o.UseDefaultHeaders ? "RestHttpClientRequestHeaders headers = null, bool ignoreDefaultHeaders = false)" : ")");
 			code.AppendLine("\t\t{");
 			GenerateMethodPreamble(code, o.ClientPreambleCode, 3);
-			code.AppendLine(string.Format("\t\t\tvar urisb = new StringBuilder(\"{0}\", 1024);", o.UriTemplate));
+			code.AppendLine(string.Format("\t\t\tvar urisb = new StringBuilder(\"{1}{0}\", 1024);", o.UriTemplate, o.RequestConfiguration.UriIncludesMethodName ? o.ServerName : ""));
 			foreach (RESTMethodParameter op in o.Parameters.Where(a => !a.Serialize))
 			{
 				if (op.Nullable)
@@ -606,7 +608,7 @@ namespace NETPath.Generators.CS
 			code.AppendLine("\t\t{");
 			GenerateMethodPreamble(code, o.ClientPreambleCode, 3);
 			code.AppendLine("\t\t\tSystem.Net.Http.HttpResponseMessage rr = null;");
-			code.AppendLine(string.Format("\t\t\tvar urisb = new StringBuilder(\"{0}\", 1024);", o.UriTemplate));
+			code.AppendLine(string.Format("\t\t\tvar urisb = new StringBuilder(\"{1}{0}\", 1024);", o.UriTemplate, o.RequestConfiguration.UriIncludesMethodName ? o.ServerName : ""));
 			foreach (RESTMethodParameter op in o.Parameters.Where(a => !a.Serialize))
 			{
 				if (op.Nullable)
