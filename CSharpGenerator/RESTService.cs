@@ -112,16 +112,16 @@ namespace NETPath.Generators.CS
 			if (conf != null)
 				srvuri = conf.ServiceUri;
 
-			code.AppendLine(string.Format("\t\tpublic {0}Base(string BaseAddress = \"{3}\", string ServiceUri = \"{2}\") : base(typeof(T), new Uri[] {{ new Uri(BaseAddress) }}, ServiceUri, WebHttpSecurityMode.{1})", o.Name, o.EndpointBinding.Security.Mode, srvuri, o.EndpointAddress));
+			code.AppendLine(string.Format("\t\tpublic {0}Base(string BaseAddress = \"{3}\", string ServiceUri = \"{2}\") : base(typeof(T), new Uri[] {{ new Uri(BaseAddress) }}, ServiceUri, WebHttpSecurityMode.{1})", o.Name, o.EndpointBinding.Security.Mode, srvuri, string.Format("{0}{1}", o.EndpointAddress, o.EndpointPort > 0 ? string.Format(":{0}", o.EndpointPort) : "")));
 			code.AppendLine("\t\t{");
-			code.AppendLine("\t\tif (string.IsNullOrWhiteSpace(ServiceUri) || ServiceUri == \"/\") ServiceUri = \"\";");
+			code.AppendLine("\t\t\tif (string.IsNullOrWhiteSpace(ServiceUri) || ServiceUri == \"/\") ServiceUri = \"\";");
 			code.AppendLine("\t\t\tthis.DefaultEndpointAddress = new Uri(new Uri(BaseAddress), ServiceUri);");
 			code.AppendLine("\t\t\tInitialize();");
 			code.AppendLine("\t\t}");
 			code.AppendLine();
-			code.AppendLine(string.Format("\t\tpublic {0}Base(Uri[] BaseAddresses, string ServiceUri = \"{2}\", int DefaultEndpointAddress = 0) : base(typeof(T), BaseURIs, ServiceUri, WebHttpSecurityMode.{1})", o.Name, o.EndpointBinding.Security.Mode, srvuri));
+			code.AppendLine(string.Format("\t\tpublic {0}Base(Uri[] BaseAddresses, string ServiceUri = \"{2}\", int DefaultEndpointAddress = 0) : base(typeof(T), BaseAddresses, ServiceUri, WebHttpSecurityMode.{1})", o.Name, o.EndpointBinding.Security.Mode, srvuri));
 			code.AppendLine("\t\t{");
-			code.AppendLine("\t\tif (string.IsNullOrWhiteSpace(ServiceUri) || ServiceUri == \"/\") ServiceUri = \"\";");
+			code.AppendLine("\t\t\tif (string.IsNullOrWhiteSpace(ServiceUri) || ServiceUri == \"/\") ServiceUri = \"\";");
 			code.AppendLine("\t\t\tthis.DefaultEndpointAddress = new Uri(BaseAddresses[DefaultEndpointAddress], ServiceUri);");
 			code.AppendLine("\t\t\tInitialize();");
 			code.AppendLine("\t\t}");
@@ -250,7 +250,7 @@ namespace NETPath.Generators.CS
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 			}
 			code.AppendLine(string.Format("\t\t[OperationContract({0}{1})]", o.IsOneWay ? "IsOneWay = true, " : "", string.Format("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}", o.ProtectionLevel)));
-			code.AppendLine(string.Format("\t\t[System.ServiceModel.Web.{0}(UriTemplate=\"/{6}{1}\", {2}BodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.{3}, RequestFormat = System.ServiceModel.Web.WebMessageFormat.{4}, ResponseFormat = System.ServiceModel.Web.WebMessageFormat.{5})]", o.Method == MethodRESTVerbs.GET ? "WebGet" : "WebInvoke", o.UriTemplate, o.Method != MethodRESTVerbs.GET ? string.Format("Method = \"{0}\", ", o.Method) : "", o.BodyStyle, o.RequestFormat, o.ResponseFormat, o.ServerName));
+			code.AppendLine(string.Format("\t\t[System.ServiceModel.Web.{0}(UriTemplate=\"/{6}{1}\", {2}BodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.{3}, RequestFormat = System.ServiceModel.Web.WebMessageFormat.{4}, ResponseFormat = System.ServiceModel.Web.WebMessageFormat.{5})]", o.Method == MethodRESTVerbs.GET ? "WebGet" : "WebInvoke", BuildUriTemplate(o), o.Method != MethodRESTVerbs.GET ? string.Format("Method = \"{0}\", ", o.Method) : "", o.BodyStyle, o.RequestFormat, o.ResponseFormat, o.ServerName));
 			code.AppendFormat("\t\t{0} {1}(", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName);
 			foreach (RESTMethodParameter op in o.Parameters)
 				code.AppendFormat("{0},", GenerateMethodParameterServerCode(op));
@@ -258,6 +258,28 @@ namespace NETPath.Generators.CS
 			code.AppendLine(");");
 
 			return code.ToString();
+		}
+
+		private static string BuildUriTemplate(RESTMethod o)
+		{
+			if (o.UriTemplate.EndsWith("/")) o.UriTemplate = o.UriTemplate.Remove(o.UriTemplate.Length - 1, 1);
+			if (o.UriTemplate.EndsWith("?")) o.UriTemplate = o.UriTemplate.Remove(o.UriTemplate.Length - 1, 1);
+			var uriBuilder = new StringBuilder(o.UriTemplate);
+
+			foreach (var pp in o.Parameters.Where(a => a.IsPath))
+				uriBuilder.AppendFormat("/{{{0}}}", pp.Name);
+
+			if (o.Parameters.Any(a => a.IsQuery))
+			{
+				uriBuilder.Append("?");
+
+				foreach (var pq in o.Parameters.Where(a => a.IsQuery))
+					uriBuilder.AppendFormat("&{0}={{{0}}}");
+
+				uriBuilder.Replace("?&", "?");
+			}
+
+			return uriBuilder.ToString();
 		}
 
 		#endregion
