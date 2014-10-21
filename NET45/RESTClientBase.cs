@@ -18,8 +18,7 @@ namespace System.ServiceModel
 	public enum UriBuildMode
 	{
 		Path,
-		QueryXml,
-		QueryJson,
+		Query,
 	}
 
 	public abstract class RestClientBase
@@ -71,19 +70,12 @@ namespace System.ServiceModel
 			{
 				uriBuilder.Replace(string.Format("{{{0}}}", restName), Uri.EscapeDataString(value.ToString()));
 			}
-			else if (mode == UriBuildMode.QueryXml)
+			else if (mode == UriBuildMode.Query)
 			{
 				uriBuilder.Append("?");
 				if (!string.IsNullOrWhiteSpace(restName)) uriBuilder.AppendFormat("&{0}={1}", restName, Uri.EscapeDataString(value.ToString()));
 				else uriBuilder.AppendFormat("&{0}", value.ToString());
 				uriBuilder.Replace("?&", "?");
-			}
-			else if (mode == UriBuildMode.QueryJson)
-			{
-				uriBuilder.Append("?");
-				if (!string.IsNullOrWhiteSpace(restName)) uriBuilder.AppendFormat(",\"{0}\":\"{1}\"", restName, Uri.EscapeDataString(value.ToString()));
-				else uriBuilder.AppendFormat(",\"{0}\"", value.ToString());
-				uriBuilder.Replace("?,", "?");
 			}
 		}
 
