@@ -70,7 +70,6 @@ namespace System.ServiceModel
 			}
 			else if (mode == UriBuildMode.Query)
 			{
-				uriBuilder.Append("?");
 				if (!string.IsNullOrWhiteSpace(restName)) uriBuilder.AppendFormat("&{0}={1}", restName, Uri.EscapeDataString(value.ToString()));
 				else uriBuilder.AppendFormat("&{0}", value.ToString());
 				uriBuilder.Replace("?&", "?");
