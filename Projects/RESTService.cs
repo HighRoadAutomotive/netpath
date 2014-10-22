@@ -399,6 +399,9 @@ namespace NETPath.Projects
 			ReturnType = new DataType(PrimitiveTypes.Void);
 			Documentation = new Documentation { IsMethod = true };
 			RequestConfiguration = Owner.RequestConfigurations.FirstOrDefault();
+			BodyStyle = Owner.WebHTTPBehavior.DefaultBodyStyle;
+			RequestFormat = Owner.WebHTTPBehavior.DefaultOutgoingRequestFormat;
+			ResponseFormat = Owner.WebHTTPBehavior.DefaultOutgoingResponseFormat;
 		}
 
 		public RESTMethod(DataType ReturnType, string Name, RESTService Owner)
@@ -413,6 +416,9 @@ namespace NETPath.Projects
 			this.ReturnType = ReturnType;
 			Documentation = new Documentation { IsMethod = true };
 			RequestConfiguration = Owner.RequestConfigurations.FirstOrDefault();
+			BodyStyle = Owner.WebHTTPBehavior.DefaultBodyStyle;
+			RequestFormat = Owner.WebHTTPBehavior.DefaultOutgoingRequestFormat;
+			ResponseFormat = Owner.WebHTTPBehavior.DefaultOutgoingResponseFormat;
 		}
 
 		public override string ToString()

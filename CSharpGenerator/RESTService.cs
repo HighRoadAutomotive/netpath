@@ -201,6 +201,12 @@ namespace NETPath.Generators.CS
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t\tprivate void Initialize()");
 			code.AppendLine("\t\t{");
+			if (o.GenerateServer)
+			{
+				code.AppendLine("\t\t\tDefaultHttpRequestHeaders.AcceptEncoding.Add(new System.Net.Http.Headers.StringWithQualityHeaderValue(\"gzip\"));");
+				code.AppendLine(string.Format("\t\t\tDefaultHttpRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(\"application/{0}\"));", o.WebHTTPBehavior.DefaultOutgoingResponseFormat == WebMessageFormat.Json ? "json" : "xml"));
+				code.AppendLine(string.Format("\t\t\tDefaultHttpContentHeaders.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(\"application/{0}\");", o.WebHTTPBehavior.DefaultOutgoingResponseFormat == WebMessageFormat.Json ? "json" : "xml"));
+			}
 			foreach (RESTHTTPClientConfiguration c in o.RequestConfigurations.Where(a => a.GetType() == typeof(RESTHTTPClientConfiguration)).Select(t => t as RESTHTTPClientConfiguration).Where(c => o.ServiceOperations.Any(a => Equals(a.RequestConfiguration, c))))
 				code.AppendLine(string.Format("\t\t\t_{0}Client = new System.Net.Http.HttpClient(new System.Net.Http.HttpClientHandler() {{ AllowAutoRedirect = {1}, AutomaticDecompression = System.Net.DecompressionMethods.{2}, ClientCertificateOptions = System.Net.Http.ClientCertificateOption.{3}, CookieContainer = {4}, Credentials = (this.Credentials == null) ? (ICredentials)this.CredentialCache : (ICredentials)this.Credentials, MaxAutomaticRedirections = {5}, MaxRequestContentBufferSize = {6}, PreAuthenticate = {7}, Proxy = this.Proxy, UseCookies = {8}, UseDefaultCredentials = {9}, UseProxy = {10} }});",
 					RegExs.ReplaceSpaces.Replace(c.Name, ""), c.AllowAutoRedirect ? bool.TrueString.ToLower() : bool.FalseString.ToLower(), c.AutomaticDecompression, c.ClientCertificateOptions,
@@ -274,7 +280,7 @@ namespace NETPath.Generators.CS
 				uriBuilder.Append("?");
 
 				foreach (var pq in o.Parameters.Where(a => a.IsQuery))
-					uriBuilder.AppendFormat("&{0}={{{0}}}");
+					uriBuilder.AppendFormat("&{0}={{{0}}}", pq.Name);
 
 				uriBuilder.Replace("?&", "?");
 			}
@@ -529,12 +535,16 @@ namespace NETPath.Generators.CS
 			code.AppendLine("\t\t{");
 			GenerateMethodPreamble(code, o.ClientPreambleCode, 3);
 			code.AppendLine(string.Format("\t\t\tvar urisb = new StringBuilder(\"{1}{0}\", 1024);", o.UriTemplate, o.RequestConfiguration.UriIncludesMethodName ? o.ServerName : ""));
-			foreach (RESTMethodParameter op in o.Parameters.Where(a => !a.Serialize))
+			foreach (RESTMethodParameter op in o.Parameters.Where(a => !a.Serialize && a.IsPath))
+				code.AppendLine(string.Format("\t\t\tBuildUri<{2}>(urisb, \"{1}\", UriBuildMode.Path, {0});", op.Name, op.RestName, DataTypeGenerator.GenerateType(op.Type)));
+			if (o.Parameters.Any(a => a.IsQuery))
+				code.AppendLine("\t\t\turisb.Append(\"?\");");
+			foreach (RESTMethodParameter op in o.Parameters.Where(a => !a.Serialize && a.IsQuery))
 			{
 				if (op.Nullable)
 					code.AppendLine(string.Format("\t\t\tif ({0}.HasValue) BuildUri<{2}>(urisb, \"{1}\", UriBuildMode.Query, {0}.Value);", op.Name, op.RestName, DataTypeGenerator.GenerateType(op.Type)));
 				else
-					code.AppendLine(string.Format("\t\t\tBuildUri<{3}>(urisb, \"{1}\", {2}, {0});", op.Name, op.RestName, op.IsPath ? "UriBuildMode.Path" : "UriBuildMode.Query", DataTypeGenerator.GenerateType(op.Type)));
+					code.AppendLine(string.Format("\t\t\tBuildUri<{2}>(urisb, \"{1}\", UriBuildMode.Query, {0});", op.Name, op.RestName, DataTypeGenerator.GenerateType(op.Type)));
 			}
 			if (o.Parameters.Any(a => a.Serialize))
 			{
@@ -554,6 +564,12 @@ namespace NETPath.Generators.CS
 					o.Parameters.Any(a => a.Serialize) ? ", rd" : "",
 					o.RequestConfiguration.UseHTTP10 ? ", true" : "",
 					!o.UseDefaultHeaders ? ", headers.Headers, ignoreDefaultHeaders" : ""));
+			if (o.Owner.GenerateServer && o.ResponseFormat != o.Owner.WebHTTPBehavior.DefaultOutgoingResponseFormat && o.Parameters.Any(a => a.Serialize))
+			{
+				code.AppendLine("\t\t\trm.Headers.Accept.Clear()");
+				code.AppendLine(string.Format("\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"application/{0}\"));", o.ResponseFormat == WebMessageFormat.Json ? "json" : "xml"));
+				code.AppendLine(string.Format("\t\t\trd.Headers.ContentType = new MediaTypeHeaderValue(\"application/{0}\");", o.ResponseFormat == WebMessageFormat.Json ? "json" : "xml"));
+			}
 			code.AppendLine(string.Format("\t\t\tvar rr = await {0}Client.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);", RegExs.ReplaceSpaces.Replace(o.RequestConfiguration.Name, "")));
 			if (o.EnsureSuccessStatusCode) code.AppendLine("\t\t\trr.EnsureSuccessStatusCode();");
 			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent)
@@ -631,12 +647,16 @@ namespace NETPath.Generators.CS
 			GenerateMethodPreamble(code, o.ClientPreambleCode, 3);
 			code.AppendLine("\t\t\tSystem.Net.Http.HttpResponseMessage rr = null;");
 			code.AppendLine(string.Format("\t\t\tvar urisb = new StringBuilder(\"{1}{0}\", 1024);", o.UriTemplate, o.RequestConfiguration.UriIncludesMethodName ? o.ServerName : ""));
-			foreach (RESTMethodParameter op in o.Parameters.Where(a => !a.Serialize))
+			foreach (RESTMethodParameter op in o.Parameters.Where(a => !a.Serialize && a.IsPath))
+				code.AppendLine(string.Format("\t\t\tBuildUri<{2}>(urisb, \"{1}\", UriBuildMode.Path, {0});", op.Name, op.RestName, DataTypeGenerator.GenerateType(op.Type)));
+			if (o.Parameters.Any(a => a.IsQuery))
+				code.AppendLine("\t\t\turisb.Append(\"?\");");
+			foreach (RESTMethodParameter op in o.Parameters.Where(a => !a.Serialize && a.IsQuery))
 			{
 				if (op.Nullable)
 					code.AppendLine(string.Format("\t\t\tif ({0}.HasValue) BuildUri<{2}>(urisb, \"{1}\", UriBuildMode.Query, {0}.Value);", op.Name, op.RestName, DataTypeGenerator.GenerateType(op.Type)));
 				else
-					code.AppendLine(string.Format("\t\t\tBuildUri<{3}>(urisb, \"{1}\", {2}, {0});", op.Name, op.RestName, op.IsPath ? "UriBuildMode.Path" : "UriBuildMode.Query", DataTypeGenerator.GenerateType(op.Type)));
+					code.AppendLine(string.Format("\t\t\tBuildUri<{2}>(urisb, \"{1}\", UriBuildMode.Query, {0});", op.Name, op.RestName, DataTypeGenerator.GenerateType(op.Type)));
 			}
 			if (o.Parameters.Any(a => a.Serialize))
 			{
@@ -656,6 +676,12 @@ namespace NETPath.Generators.CS
 					o.Parameters.Any(a => a.Serialize) ? ", rd" : "",
 					o.RequestConfiguration.UseHTTP10 ? ", true" : "",
 					!o.UseDefaultHeaders ? ", headers.Headers, ignoreDefaultHeaders" : ""));
+			if (o.Owner.GenerateServer && o.ResponseFormat != o.Owner.WebHTTPBehavior.DefaultOutgoingResponseFormat && o.Parameters.Any(a => a.Serialize))
+			{
+				code.AppendLine("\t\t\trm.Headers.Accept.Clear()");
+				code.AppendLine(string.Format("\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"application/{0}\"));", o.ResponseFormat == WebMessageFormat.Json ? "json" : "xml"));
+				code.AppendLine(string.Format("\t\t\trd.Headers.ContentType = new MediaTypeHeaderValue(\"application/{0}\");", o.ResponseFormat == WebMessageFormat.Json ? "json" : "xml"));
+			}
 			code.AppendLine(string.Format("\t\t\trr = await {0}Client.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);", RegExs.ReplaceSpaces.Replace(o.RequestConfiguration.Name, "")));
 			if (o.EnsureSuccessStatusCode) code.AppendLine("\t\t\trr.EnsureSuccessStatusCode();");
 			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.Append("");

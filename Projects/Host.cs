@@ -687,7 +687,7 @@ namespace NETPath.Projects
 	public class HostWebHTTPBehavior : HostBehavior
 	{
 		public bool AutomaticFormatSelectionEnabled { get { return (bool)GetValue(AutomaticFormatSelectionEnabledProperty); } set { SetValue(AutomaticFormatSelectionEnabledProperty, value); } }
-		public static readonly DependencyProperty AutomaticFormatSelectionEnabledProperty = DependencyProperty.Register("AutomaticFormatSelectionEnabled", typeof(bool), typeof(HostWebHTTPBehavior), new PropertyMetadata(false));
+		public static readonly DependencyProperty AutomaticFormatSelectionEnabledProperty = DependencyProperty.Register("AutomaticFormatSelectionEnabled", typeof(bool), typeof(HostWebHTTPBehavior), new PropertyMetadata(true));
 
 		public System.ServiceModel.Web.WebMessageBodyStyle DefaultBodyStyle { get { return (System.ServiceModel.Web.WebMessageBodyStyle)GetValue(DefaultBodyStyleProperty); } set { SetValue(DefaultBodyStyleProperty, value); } }
 		public static readonly DependencyProperty DefaultBodyStyleProperty = DependencyProperty.Register("DefaultBodyStyle", typeof(System.ServiceModel.Web.WebMessageBodyStyle), typeof(HostWebHTTPBehavior), new PropertyMetadata(System.ServiceModel.Web.WebMessageBodyStyle.Bare));
