@@ -216,16 +216,18 @@
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
-					<ToggleButton Content="Async Client Method" IsChecked="{Binding Path=MethodData.ClientAsync}" Margin="5" Grid.Column="0" Grid.Row="0" />
-					<ToggleButton Content="One Way" IsChecked="{Binding Path=MethodData.IsOneWay}" Margin="5" Grid.Column="1" Grid.Row="0" />
-					<ToggleButton Content="Hidden" IsChecked="{Binding Path=MethodData.IsHidden}" Margin="5" Grid.Column="0" Grid.Row="1" />
+					<ToggleButton Content="Async Server Method" IsChecked="{Binding Path=MethodData.ServerAsync}" Margin="5" Grid.Column="0" Grid.Row="0" />
+					<ToggleButton Content="Async Client Method" IsChecked="{Binding Path=MethodData.ClientAsync}" Margin="5" Grid.Column="1" Grid.Row="0" />
+					<ToggleButton Content="One Way" IsChecked="{Binding Path=MethodData.IsOneWay}" Margin="5" Grid.Column="0" Grid.Row="1" />
 					<Label Content="Protection:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
 					<ComboBox Height="23" Margin="80,5,5,5" SelectedIndex="{Binding Path=MethodData.ProtectionLevel, Converter={StaticResource ProtectionLevelConverter}}" Grid.Column="1" Grid.Row="1" >
 						<ComboBoxItem Content="None" />
 						<ComboBoxItem Content="Sign" />
 						<ComboBoxItem Content="Encrypt and Sign" />
 					</ComboBox>
+					<ToggleButton Content="Hidden" IsChecked="{Binding Path=MethodData.IsHidden}" Margin="5" Grid.Column="0" Grid.Row="2" />
 				</Grid>
 				<Label Grid.Row="2" Content="REST" FontSize="12pt" Margin="0,5,0,0" />
 				<Grid Grid.Row="3" Margin="0,5,0,0">
