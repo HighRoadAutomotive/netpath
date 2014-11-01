@@ -170,6 +170,8 @@ namespace NETPath.Projects
 		public bool IsDataObject { get; set; }
 		[IgnoreDataMember]
 		public bool IsCollectionType { get { return TypeMode == DataTypeMode.Array || TypeMode == DataTypeMode.Collection || TypeMode == DataTypeMode.Dictionary || TypeMode == DataTypeMode.Queue || TypeMode == DataTypeMode.Stack; } }
+		[IgnoreDataMember]
+		public bool IsVoid { get { return TypeMode == DataTypeMode.Primitive && Primitive == PrimitiveTypes.Void; } }
 
 		private static void DataTypePropertyChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
 		{
