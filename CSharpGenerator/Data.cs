@@ -143,7 +143,7 @@ namespace NETPath.Generators.CS
 					code.AppendLine(string.Format("\t\t\t\t{0} = DBType.{1},", efe.DataName, efe.EntityName));
 				code.AppendLine("\t\t\t};");
 				foreach (var efe in o.Elements.Where(a => a.HasEntity && a.DataType.TypeMode == DataTypeMode.Collection))
-					code.AppendLine(string.Format("\t\t\tforeach(var x in DBType.{0}) t.{1}.Add(x);", efe.EntityName, efe.DataName));
+					code.AppendLine(string.Format("\t\t\tif (DBType.{0} != null) foreach(var x in DBType.{0}) t.{1}.Add(x);", efe.EntityName, efe.DataName));
 				code.AppendLine("\t\t\tFinishCastToNetwork(ref t, DBType);");
 				code.AppendLine("\t\t\treturn t;");
 				code.AppendLine("\t\t}");
@@ -159,7 +159,7 @@ namespace NETPath.Generators.CS
 					code.AppendLine(string.Format("\t\t\t\t{0} = NetworkType.{1},", efe.EntityName, efe.DataName));
 				code.AppendLine("\t\t\t};");
 				foreach (var efe in o.Elements.Where(a => a.HasEntity && !a.IsReadOnly && a.DataType.TypeMode == DataTypeMode.Collection))
-					code.AppendLine(string.Format("\t\t\tforeach(var x in NetworkType.{0}) t.{1}.Add(x);", efe.DataName, efe.EntityName));
+					code.AppendLine(string.Format("\t\t\tif (NetworkType.{0} != null) foreach(var x in NetworkType.{0}) t.{1}.Add(x);", efe.DataName, efe.EntityName));
 				code.AppendLine("\t\t\tFinishCastToDatabase(ref t, NetworkType);");
 				code.AppendLine("\t\t\treturn t;");
 				code.AppendLine("\t\t}");
