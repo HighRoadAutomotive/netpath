@@ -1,5 +1,7 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.ServiceModel.Security.Tokens;
@@ -137,6 +139,8 @@ namespace NETPath.Generators.CS
 				code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} DBType)", o.Name, o.EntityType));
 				code.AppendLine("\t\t{");
 				code.AppendLine("\t\t\tif (DBType == null) return null;");
+				//code.AppendLine("\t\t\t//Automatic Entity Cycle Detection");
+				//AutomaticEntityCycleDetection(code, o, o, "DBType.");
 				code.AppendLine(string.Format("\t\t\tvar t = new {0}()", o.Name));
 				code.AppendLine("\t\t\t{");
 				foreach (var efe in o.Elements.Where(a => a.HasEntity && !(a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
@@ -187,6 +191,44 @@ namespace NETPath.Generators.CS
 
 			code.AppendLine("\t}");
 			return code.ToString();
+		}
+
+		public static void AutomaticEntityCycleDetection(StringBuilder code, DataType search, DataType find, string path)
+		{
+			if (search.GetType() == typeof (Data))
+			{
+				var s = search as Data;
+				if (s == null) return;
+				foreach (
+					var d in
+						s.Elements.Where(
+							a => a.DataType.TypeMode != DataTypeMode.Enum && a.DataType.TypeMode != DataTypeMode.Namespace
+							     && a.DataType.TypeMode != DataTypeMode.Primitive && a.DataType.TypeMode != DataTypeMode.Struct))
+				{
+					AutomaticEntityCycleDetection(code, d.DataType, find, path + d.EntityName + ".");
+				}
+			}
+			else
+			{
+				if (search.TypeMode == DataTypeMode.Array || search.TypeMode == DataTypeMode.Collection || search.TypeMode == DataTypeMode.Dictionary || search.TypeMode == DataTypeMode.Queue || search.TypeMode == DataTypeMode.Stack)
+				{
+					if (search.ToString() == find.ToString())
+					{
+						if (path.EndsWith(".")) path = path.Remove(path.Length - 1, 1);
+						code.AppendLine(string.Format("\t\t\t{0} = null;", path));
+					}
+					if (search.CollectionGenericType != null && search.CollectionGenericType.ToString() == find.ToString())
+					{
+						if (path.EndsWith(".")) path = path.Remove(path.Length - 1, 1);
+						code.AppendLine(string.Format("\t\t\t{0} = null;", path));
+					}
+					if (search.DictionaryValueGenericType != null && search.DictionaryValueGenericType.ToString() == find.ToString())
+					{
+						if (path.EndsWith(".")) path = path.Remove(path.Length - 1, 1);
+						code.AppendLine(string.Format("\t\t\t{0} = null;", path));
+					}
+				}
+			}
 		}
 
 		private static string GenerateElementServerCode45(DataElement o)

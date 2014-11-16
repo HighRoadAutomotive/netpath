@@ -92,53 +92,59 @@
 						<ListBox x:Name="ValuesList" ItemsSource="{Binding Path=OpenType.Elements}" AllowDrop="True" BorderThickness="0" Background="Transparent" Margin="0" SelectionMode="Single" Padding="-1,0" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.IsVirtualizing="False" SelectionChanged="ValuesList_SelectionChanged" PreviewMouseLeftButtonDown="ValuesList_PreviewMouseLeftButtonDown" PreviewMouseMove="ValuesList_PreviewMouseMove" QueryContinueDrag="ValuesList_QueryContinueDrag" DragLeave="ValuesList_DragLeave" PreviewDragOver="ValuesList_PreviewDragOver" PreviewDrop="ValuesList_Drop" >
 							<ListBox.ItemTemplate>
 								<DataTemplate DataType="{x:Type Projects:DataElement}">
-									<Grid Name="ItemGrid" >
-										<Grid.ColumnDefinitions>
-											<ColumnDefinition Width="*" />
-											<ColumnDefinition Width="Auto" />
-										</Grid.ColumnDefinitions>
-										<Grid.RowDefinitions>
-											<RowDefinition Height="Auto" />
-										</Grid.RowDefinitions>
-										<Border x:Name="ItemBG" Grid.ColumnSpan="2" Background="Transparent" CornerRadius="5" />
-										<StackPanel Orientation="Vertical" Margin="3">
-											<StackPanel Orientation="Horizontal">
-												<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/Property.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
-												<TextBlock Text="{Binding Path=DataName}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="11pt" />
+									<Border Background="#01FFFFFF">
+										<Border.ToolTip>
+											<StackPanel Orientation="Vertical">
+												<TextBlock Visibility="{Binding Path=HasContractName, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource ReadOnlyFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" >
+													<TextBlock.Text>
+														<MultiBinding StringFormat="Contract: {0}">
+															<Binding Path="ContractName" />
+														</MultiBinding>
+													</TextBlock.Text>
+												</TextBlock>
+												<TextBlock Visibility="{Binding Path=HasClientType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource ReadOnlyFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" >
+													<TextBlock.Text>
+														<MultiBinding StringFormat="Client: {0}">
+															<Binding Path="ClientName" />
+														</MultiBinding>
+													</TextBlock.Text>
+												</TextBlock>
+												<TextBlock Visibility="{Binding Path=HasXAMLType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource ReadOnlyFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" >
+													<TextBlock.Text>
+														<MultiBinding StringFormat="XAML: {0}">
+															<Binding Path="XAMLName" />
+														</MultiBinding>
+													</TextBlock.Text>
+												</TextBlock>
 											</StackPanel>
-											<TextBlock Foreground="{StaticResource ReadOnlyFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" >
-												<TextBlock.Text>
-													<MultiBinding StringFormat="Type: {0}">
-														<Binding Path="DataType.TypeName" />
-													</MultiBinding>
-												</TextBlock.Text>
-											</TextBlock>
-											<TextBlock Visibility="{Binding Path=HasContractName, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource ReadOnlyFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" >
-												<TextBlock.Text>
-													<MultiBinding StringFormat="Contract: {0}">
-														<Binding Path="ContractName" />
-													</MultiBinding>
-												</TextBlock.Text>
-											</TextBlock>
-											<TextBlock Visibility="{Binding Path=HasClientType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource ReadOnlyFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" >
-												<TextBlock.Text>
-													<MultiBinding StringFormat="Client: {0}">
-														<Binding Path="ClientName" />
-													</MultiBinding>
-												</TextBlock.Text>
-											</TextBlock>
-											<TextBlock Visibility="{Binding Path=HasXAMLType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource ReadOnlyFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" >
-												<TextBlock.Text>
-													<MultiBinding StringFormat="XAML: {0}">
-														<Binding Path="XAMLName" />
-													</MultiBinding>
-												</TextBlock.Text>
-											</TextBlock>
-										</StackPanel>
-										<Button Grid.Column="1" x:Name="DeleteElement" Visibility="Collapsed" Margin="0" Padding="0" Width="30" Style="{StaticResource ListItemButtonRight}" Click="DeleteElement_Click">
-											<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
-										</Button>
-									</Grid>
+										</Border.ToolTip>
+										<Grid Name="ItemGrid">
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="*" />
+												<ColumnDefinition Width="Auto" />
+											</Grid.ColumnDefinitions>
+											<Grid.RowDefinitions>
+												<RowDefinition Height="Auto" />
+											</Grid.RowDefinitions>
+											<Border x:Name="ItemBG" Grid.ColumnSpan="2" Background="Transparent" CornerRadius="5" />
+											<StackPanel Orientation="Vertical" Margin="3">
+												<StackPanel Orientation="Horizontal">
+													<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/Property.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
+													<TextBlock Text="{Binding Path=DataName}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="11pt" />
+												</StackPanel>
+												<TextBlock Foreground="{StaticResource ReadOnlyFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" >
+													<TextBlock.Text>
+														<MultiBinding StringFormat="{}{0}">
+															<Binding Path="DataType.TypeName" />
+														</MultiBinding>
+													</TextBlock.Text>
+												</TextBlock>
+											</StackPanel>
+											<Button Grid.Column="1" x:Name="DeleteElement" Visibility="Collapsed" Margin="0" Padding="0" Width="30" Style="{StaticResource ListItemButtonRight}" Click="DeleteElement_Click">
+												<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+											</Button>
+										</Grid>
+									</Border>
 									<DataTemplate.Triggers>
 										<MultiDataTrigger>
 											<MultiDataTrigger.Conditions>
