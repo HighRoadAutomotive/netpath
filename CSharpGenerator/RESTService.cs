@@ -257,7 +257,7 @@ namespace NETPath.Generators.CS
 			}
 			code.AppendLine(string.Format("\t\t[OperationContract({0}{1})]", o.IsOneWay ? "IsOneWay = true, " : "", string.Format("ProtectionLevel = System.Net.Security.ProtectionLevel.{0}", o.ProtectionLevel)));
 			code.AppendLine(string.Format("\t\t[System.ServiceModel.Web.{0}(UriTemplate=\"/{6}{1}\", {2}BodyStyle = System.ServiceModel.Web.WebMessageBodyStyle.{3}, RequestFormat = System.ServiceModel.Web.WebMessageFormat.{4}, ResponseFormat = System.ServiceModel.Web.WebMessageFormat.{5})]", o.Method == MethodRESTVerbs.GET ? "WebGet" : "WebInvoke", BuildUriTemplate(o), o.Method != MethodRESTVerbs.GET ? string.Format("Method = \"{0}\", ", o.Method) : "", o.BodyStyle, o.RequestFormat, o.ResponseFormat, o.ServerName));
-			code.AppendFormat("\t\t{0} {1}(", o.ServerAsync && !o.ReturnType.IsVoid ? string.Format("Task<{0}>", DataTypeGenerator.GenerateType(o.ReturnType)) : DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName);
+			code.AppendFormat("\t\t{0} {1}(", o.ServerAsync ? o.ReturnType.IsVoid ? "Task" : string.Format("Task<{0}>", DataTypeGenerator.GenerateType(o.ReturnType)) : DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName);
 			foreach (RESTMethodParameter op in o.Parameters)
 				code.AppendFormat("{0},", GenerateMethodParameterServerCode(op));
 			if (o.Parameters.Count > 0) code.Remove(code.Length - 1, 1);
@@ -296,7 +296,7 @@ namespace NETPath.Generators.CS
 		{
 			if (o.IsHidden) return "";
 			var code = new StringBuilder();
-			code.AppendFormat("\t\tpublic abstract {0} {1}(", o.ServerAsync && !o.ReturnType.IsVoid ? string.Format("async Task<{0}>", DataTypeGenerator.GenerateType(o.ReturnType)) : DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName);
+			code.AppendFormat("\t\tpublic abstract {0} {1}(", o.ServerAsync ? o.ReturnType.IsVoid ? "Task" : string.Format("Task<{0}>", DataTypeGenerator.GenerateType(o.ReturnType)) : DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName);
 			foreach (RESTMethodParameter op in o.Parameters)
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
@@ -537,7 +537,7 @@ namespace NETPath.Generators.CS
 			code.AppendLine(string.Format("\t\t\tvar urisb = new StringBuilder(\"{1}{0}\", 1024);", o.UriTemplate, o.RequestConfiguration.UriIncludesMethodName ? o.ServerName : ""));
 			foreach (RESTMethodParameter op in o.Parameters.Where(a => !a.Serialize && a.IsPath))
 				code.AppendLine(string.Format("\t\t\tBuildUri<{2}>(urisb, \"{1}\", UriBuildMode.Path, {0});", op.Name, op.RestName, DataTypeGenerator.GenerateType(op.Type)));
-			if (o.Parameters.Any(a => a.IsQuery))
+			if (o.Parameters.Any(a => a.IsQuery) && !o.UriTemplate.Contains("?"))
 				code.AppendLine("\t\t\turisb.Append(\"?\");");
 			foreach (RESTMethodParameter op in o.Parameters.Where(a => !a.Serialize && a.IsQuery))
 			{
@@ -649,7 +649,7 @@ namespace NETPath.Generators.CS
 			code.AppendLine(string.Format("\t\t\tvar urisb = new StringBuilder(\"{1}{0}\", 1024);", o.UriTemplate, o.RequestConfiguration.UriIncludesMethodName ? o.ServerName : ""));
 			foreach (RESTMethodParameter op in o.Parameters.Where(a => !a.Serialize && a.IsPath))
 				code.AppendLine(string.Format("\t\t\tBuildUri<{2}>(urisb, \"{1}\", UriBuildMode.Path, {0});", op.Name, op.RestName, DataTypeGenerator.GenerateType(op.Type)));
-			if (o.Parameters.Any(a => a.IsQuery))
+			if (o.Parameters.Any(a => a.IsQuery) && !o.UriTemplate.Contains("?"))
 				code.AppendLine("\t\t\turisb.Append(\"?\");");
 			foreach (RESTMethodParameter op in o.Parameters.Where(a => !a.Serialize && a.IsQuery))
 			{
@@ -726,7 +726,7 @@ namespace NETPath.Generators.CS
 
 		public static string GenerateMethodParameterServerCode(RESTMethodParameter o)
 		{
-			return o.IsHidden ? "" : string.Format("{0} {1}", DataTypeGenerator.GenerateType(o.Type), o.Name);
+			return o.IsHidden ? "" : string.Format("{0}{2} {1}", DataTypeGenerator.GenerateType(o.Type), o.Name, o.Nullable ? "?" : "");
 		}
 
 		public static string GenerateMethodParameterClientCode(RESTMethodParameter o)
