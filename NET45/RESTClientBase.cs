@@ -66,14 +66,21 @@ namespace System.ServiceModel
 		public void BuildUri<T>(StringBuilder uriBuilder, string restName, UriBuildMode mode, T value)
 		{
 			if (value == null) return;
+			string tv = value.ToString();
+
+			//If the type of value is an Enum we need to convert it to an integer.
+			var vti = value.GetType();
+			if (vti.IsEnum)
+				tv = Convert.ToInt64(value).ToString();
+
 			if (mode == UriBuildMode.Path)
 			{
-				uriBuilder.Replace(string.Format("{{{0}}}", restName), Uri.EscapeDataString(value.ToString()));
+				uriBuilder.Replace(string.Format("{{{0}}}", restName), Uri.EscapeDataString(tv));
 			}
 			else if (mode == UriBuildMode.Query)
 			{
-				if (!string.IsNullOrWhiteSpace(restName)) uriBuilder.AppendFormat("&{0}={1}", restName, Uri.EscapeDataString(value.ToString()));
-				else uriBuilder.AppendFormat("&{0}", value.ToString());
+				if (!string.IsNullOrWhiteSpace(restName)) uriBuilder.AppendFormat("&{0}={1}", restName, Uri.EscapeDataString(tv));
+				else uriBuilder.AppendFormat("&{0}", tv);
 				uriBuilder.Replace("?&", "?");
 			}
 		}
