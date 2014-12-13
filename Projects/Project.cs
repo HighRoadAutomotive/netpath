@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
@@ -568,5 +569,86 @@ namespace NETPath.Projects
 			this.IsServerPath = IsServerPath;
 			TargetTypes = new ObservableCollection<DataType>();
 		}
+	}
+
+	public class DCJSSettings : DependencyObject
+	{
+		public string DateTimeFormat { get { return (string)GetValue(DateTimeFormatProperty); } set { SetValue(DateTimeFormatProperty, value); } }
+		public static readonly DependencyProperty DateTimeFormatProperty = DependencyProperty.Register("DateTimeFormat", typeof(string), typeof(DCJSSettings), new PropertyMetadata("s"));
+
+		public EmitTypeInformation EmitTypeInformation { get { return (EmitTypeInformation)GetValue(EmitTypeInformationProperty); } set { SetValue(EmitTypeInformationProperty, value); } }
+		public static readonly DependencyProperty EmitTypeInformationProperty = DependencyProperty.Register("EmitTypeInformation", typeof(EmitTypeInformation), typeof(DCJSSettings), new PropertyMetadata(EmitTypeInformation.Never));
+
+		public int MaxItemsInObjectGraph { get { return (int)GetValue(MaxItemsInObjectGraphProperty); } set { SetValue(MaxItemsInObjectGraphProperty, value); } }
+		public static readonly DependencyProperty MaxItemsInObjectGraphProperty = DependencyProperty.Register("MaxItemsInObjectGraph", typeof(int), typeof(DCJSSettings), new PropertyMetadata(int.MaxValue));
+
+		public string RootName { get { return (string)GetValue(RootNameProperty); } set { SetValue(RootNameProperty, value); } }
+		public static readonly DependencyProperty RootNameProperty = DependencyProperty.Register("RootName", typeof(string), typeof(DCJSSettings), new PropertyMetadata(""));
+
+		public bool SerializeReadOnlyTypes { get { return (bool)GetValue(SerializeReadOnlyTypesProperty); } set { SetValue(SerializeReadOnlyTypesProperty, value); } }
+		public static readonly DependencyProperty SerializeReadOnlyTypesProperty = DependencyProperty.Register("SerializeReadOnlyTypes", typeof(bool), typeof(DCJSSettings), new PropertyMetadata(true));
+
+		public bool UseSimpleDictionaryFormat { get { return (bool)GetValue(UseSimpleDictionaryFormatProperty); } set { SetValue(UseSimpleDictionaryFormatProperty, value); } }
+		public static readonly DependencyProperty UseSimpleDictionaryFormatProperty = DependencyProperty.Register("UseSimpleDictionaryFormat", typeof(bool), typeof(DCJSSettings), new PropertyMetadata(true));
+	}
+
+	public class JSONNETSettings : DependencyObject
+	{
+		public ConstructorHandling ConstructorHandling { get { return (ConstructorHandling)GetValue(ConstructorHandlingProperty); } set { SetValue(ConstructorHandlingProperty, value); } }
+		public static readonly DependencyProperty ConstructorHandlingProperty = DependencyProperty.Register("ConstructorHandling", typeof(ConstructorHandling), typeof(JSONNETSettings), new PropertyMetadata(ConstructorHandling.Default));
+
+		public DateFormatHandling DateFormatHandling { get { return (DateFormatHandling)GetValue(DateFormatHandlingProperty); } set { SetValue(DateFormatHandlingProperty, value); } }
+		public static readonly DependencyProperty DateFormatHandlingProperty = DependencyProperty.Register("DateFormatHandling", typeof(DateFormatHandling), typeof(JSONNETSettings), new PropertyMetadata(DateFormatHandling.IsoDateFormat));
+
+		public string DateFormatString { get { return (string)GetValue(DateFormatStringProperty); } set { SetValue(DateFormatStringProperty, value); } }
+		public static readonly DependencyProperty DateFormatStringProperty = DependencyProperty.Register("DateFormatString", typeof(string), typeof(JSONNETSettings), new PropertyMetadata("s"));
+
+		public DateParseHandling DateParseHandling { get { return (DateParseHandling)GetValue(DateParseHandlingProperty); } set { SetValue(DateParseHandlingProperty, value); } }
+		public static readonly DependencyProperty DateParseHandlingProperty = DependencyProperty.Register("DateParseHandling", typeof(DateParseHandling), typeof(JSONNETSettings), new PropertyMetadata(DateParseHandling.DateTime));
+
+		public DateTimeZoneHandling DateTimeZoneHandling { get { return (DateTimeZoneHandling)GetValue(DateTimeZoneHandlingProperty); } set { SetValue(DateTimeZoneHandlingProperty, value); } }
+		public static readonly DependencyProperty DateTimeZoneHandlingProperty = DependencyProperty.Register("DateTimeZoneHandling", typeof(DateTimeZoneHandling), typeof(JSONNETSettings), new PropertyMetadata(DateTimeZoneHandling.Local));
+
+		public DefaultValueHandling DefaultValueHandling { get { return (DefaultValueHandling)GetValue(DefaultValueHandlingProperty); } set { SetValue(DefaultValueHandlingProperty, value); } }
+		public static readonly DependencyProperty DefaultValueHandlingProperty = DependencyProperty.Register("DefaultValueHandling", typeof(DefaultValueHandling), typeof(JSONNETSettings), new PropertyMetadata(DefaultValueHandling.Ignore));
+
+		public FloatFormatHandling FloatFormatHandling { get { return (FloatFormatHandling)GetValue(FloatFormatHandlingProperty); } set { SetValue(FloatFormatHandlingProperty, value); } }
+		public static readonly DependencyProperty FloatFormatHandlingProperty = DependencyProperty.Register("FloatFormatHandling ", typeof(FloatFormatHandling), typeof(JSONNETSettings), new PropertyMetadata(FloatFormatHandling.String));
+
+		public FloatParseHandling FloatParseHandling { get { return (FloatParseHandling)GetValue(FloatParseHandlingProperty); } set { SetValue(FloatParseHandlingProperty, value); } }
+		public static readonly DependencyProperty FloatParseHandlingProperty = DependencyProperty.Register("FloatParseHandling ", typeof(FloatParseHandling), typeof(JSONNETSettings), new PropertyMetadata(FloatParseHandling.Decimal));
+
+		public Formatting Formatting { get { return (Formatting)GetValue(FormattingProperty); } set { SetValue(FormattingProperty, value); } }
+		public static readonly DependencyProperty FormattingProperty = DependencyProperty.Register("Formatting ", typeof(Formatting), typeof(JSONNETSettings), new PropertyMetadata(Formatting.None));
+
+		public int MaxDepth { get { return (int)GetValue(MaxDepthProperty); } set { SetValue(MaxDepthProperty, value); } }
+		public static readonly DependencyProperty MaxDepthProperty = DependencyProperty.Register("MaxDepth ", typeof(int), typeof(JSONNETSettings), new PropertyMetadata(int.MaxValue));
+
+		public MetadataPropertyHandling MetadataPropertyHandling { get { return (MetadataPropertyHandling)GetValue(MetadataPropertyHandlingProperty); } set { SetValue(MetadataPropertyHandlingProperty, value); } }
+		public static readonly DependencyProperty MetadataPropertyHandlingProperty = DependencyProperty.Register("MetadataPropertyHandling ", typeof(MetadataPropertyHandling), typeof(JSONNETSettings), new PropertyMetadata(MetadataPropertyHandling.Default));
+
+		public MissingMemberHandling MissingMemberHandling { get { return (MissingMemberHandling)GetValue(MissingMemberHandlingProperty); } set { SetValue(MissingMemberHandlingProperty, value); } }
+		public static readonly DependencyProperty MissingMemberHandlingProperty = DependencyProperty.Register("MissingMemberHandling ", typeof(MissingMemberHandling), typeof(JSONNETSettings), new PropertyMetadata(MissingMemberHandling.Ignore));
+
+		public NullValueHandling NullValueHandling { get { return (NullValueHandling)GetValue(NullValueHandlingProperty); } set { SetValue(NullValueHandlingProperty, value); } }
+		public static readonly DependencyProperty NullValueHandlingProperty = DependencyProperty.Register("NullValueHandling ", typeof(NullValueHandling), typeof(JSONNETSettings), new PropertyMetadata(NullValueHandling.Ignore));
+
+		public ObjectCreationHandling ObjectCreationHandling { get { return (ObjectCreationHandling)GetValue(ObjectCreationHandlingProperty); } set { SetValue(ObjectCreationHandlingProperty, value); } }
+		public static readonly DependencyProperty ObjectCreationHandlingProperty = DependencyProperty.Register("NullValueHandling ", typeof(ObjectCreationHandling), typeof(JSONNETSettings), new PropertyMetadata(ObjectCreationHandling.Auto));
+
+		public PreserveReferencesHandling PreserveReferencesHandling { get { return (PreserveReferencesHandling)GetValue(PreserveReferencesHandlingProperty); } set { SetValue(PreserveReferencesHandlingProperty, value); } }
+		public static readonly DependencyProperty PreserveReferencesHandlingProperty = DependencyProperty.Register("PreserveReferencesHandling ", typeof(PreserveReferencesHandling), typeof(JSONNETSettings), new PropertyMetadata(PreserveReferencesHandling.None));
+
+		public ReferenceLoopHandling ReferenceLoopHandling { get { return (ReferenceLoopHandling)GetValue(ReferenceLoopHandlingProperty); } set { SetValue(ReferenceLoopHandlingProperty, value); } }
+		public static readonly DependencyProperty ReferenceLoopHandlingProperty = DependencyProperty.Register("ReferenceLoopHandling ", typeof(ReferenceLoopHandling), typeof(JSONNETSettings), new PropertyMetadata(ReferenceLoopHandling.Ignore));
+
+		public StringEscapeHandling StringEscapeHandling { get { return (StringEscapeHandling)GetValue(StringEscapeHandlingProperty); } set { SetValue(StringEscapeHandlingProperty, value); } }
+		public static readonly DependencyProperty StringEscapeHandlingProperty = DependencyProperty.Register("StringEscapeHandling ", typeof(StringEscapeHandling), typeof(JSONNETSettings), new PropertyMetadata(StringEscapeHandling.Default));
+
+		public System.Runtime.Serialization.Formatters.FormatterAssemblyStyle TypeNameAssemblyFormat { get { return (System.Runtime.Serialization.Formatters.FormatterAssemblyStyle)GetValue(TypeNameAssemblyFormatProperty); } set { SetValue(TypeNameAssemblyFormatProperty, value); } }
+		public static readonly DependencyProperty TypeNameAssemblyFormatProperty = DependencyProperty.Register("TypeNameAssemblyFormat ", typeof(System.Runtime.Serialization.Formatters.FormatterAssemblyStyle), typeof(JSONNETSettings), new PropertyMetadata(System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple));
+
+		public TypeNameHandling TypeNameHandling { get { return (TypeNameHandling)GetValue(TypeNameHandlingProperty); } set { SetValue(TypeNameHandlingProperty, value); } }
+		public static readonly DependencyProperty TypeNameHandlingProperty = DependencyProperty.Register("TypeNameHandling ", typeof(TypeNameHandling), typeof(JSONNETSettings), new PropertyMetadata(TypeNameHandling.Auto));
 	}
 }
