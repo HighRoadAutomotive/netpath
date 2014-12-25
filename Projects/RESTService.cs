@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,91 +24,13 @@ namespace NETPath.Projects
 		public ObservableCollection<RESTHTTPConfiguration> RequestConfigurations { get { return (ObservableCollection<RESTHTTPConfiguration>)GetValue(RequestConfigurationsProperty); } set { SetValue(RequestConfigurationsProperty, value); } }
 		public static readonly DependencyProperty RequestConfigurationsProperty = DependencyProperty.Register("RequestConfigurations", typeof(ObservableCollection<RESTHTTPConfiguration>), typeof(ObservableCollection<RESTHTTPConfiguration>));
 
-		public bool GenerateServer { get { return (bool)GetValue(GenerateServerProperty); } set { SetValue(GenerateServerProperty, value); } }
-		public static readonly DependencyProperty GenerateServerProperty = DependencyProperty.Register("GenerateServer", typeof(bool), typeof(RESTService), new PropertyMetadata(true));
-
-		public bool GenerateClient { get { return (bool)GetValue(GenerateClientProperty); } set { SetValue(GenerateClientProperty, value); } }
-		public static readonly DependencyProperty GenerateClientProperty = DependencyProperty.Register("GenerateClient", typeof(bool), typeof(RESTService), new PropertyMetadata(true));
-
-		public ProtectionLevel ProtectionLevel { get { return (ProtectionLevel)GetValue(ProtectionLevelProperty); } set { SetValue(ProtectionLevelProperty, value); } }
-		public static readonly DependencyProperty ProtectionLevelProperty = DependencyProperty.Register("ProtectionLevel", typeof(ProtectionLevel), typeof(RESTService));
-
-		public string ConfigurationName { get { return (string)GetValue(ConfigurationNameProperty); } set { SetValue(ConfigurationNameProperty, value); } }
-		public static readonly DependencyProperty ConfigurationNameProperty = DependencyProperty.Register("ConfigurationName", typeof(string), typeof(RESTService));
-
 		public Documentation ServiceDocumentation { get { return (Documentation)GetValue(ServiceDocumentationProperty); } set { SetValue(ServiceDocumentationProperty, value); } }
 		public static readonly DependencyProperty ServiceDocumentationProperty = DependencyProperty.Register("ServiceDocumentation", typeof(Documentation), typeof(RESTService));
 
 		public Documentation ClientDocumentation { get { return (Documentation)GetValue(ClientDocumentationProperty); } set { SetValue(ClientDocumentationProperty, value); } }
 		public static readonly DependencyProperty ClientDocumentationProperty = DependencyProperty.Register("ClientDocumentation", typeof(Documentation), typeof(RESTService));
 
-		//Service Behavior
-		public AddressFilterMode SBAddressFilterMode { get { return (AddressFilterMode)GetValue(SBAddressFilterModeProperty); } set { SetValue(SBAddressFilterModeProperty, value); } }
-		public static readonly DependencyProperty SBAddressFilterModeProperty = DependencyProperty.Register("SBAddressFilterMode", typeof(AddressFilterMode), typeof(RESTService), new PropertyMetadata(AddressFilterMode.Any));
-
-		public bool SBAutomaticSessionShutdown { get { return (bool)GetValue(SBAutomaticSessionShutdownProperty); } set { SetValue(SBAutomaticSessionShutdownProperty, value); } }
-		public static readonly DependencyProperty SBAutomaticSessionShutdownProperty = DependencyProperty.Register("SBAutomaticSessionShutdown", typeof(bool), typeof(RESTService), new PropertyMetadata(true));
-
-		public ConcurrencyMode SBConcurrencyMode { get { return (ConcurrencyMode)GetValue(SBConcurrencyModeProperty); } set { SetValue(SBConcurrencyModeProperty, value); } }
-		public static readonly DependencyProperty SBConcurrencyModeProperty = DependencyProperty.Register("SBConcurrencyMode", typeof(ConcurrencyMode), typeof(RESTService), new PropertyMetadata(ConcurrencyMode.Multiple));
-
-		public bool SBEnsureOrderedDispatch { get { return (bool)GetValue(SBEnsureOrderedDispatchProperty); } set { SetValue(SBEnsureOrderedDispatchProperty, value); } }
-		public static readonly DependencyProperty SBEnsureOrderedDispatchProperty = DependencyProperty.Register("SBEnsureOrderedDispatch", typeof(bool), typeof(RESTService), new PropertyMetadata(false));
-
-		public bool SBIgnoreExtensionDataObject { get { return (bool)GetValue(SBIgnoreExtensionDataObjectProperty); } set { SetValue(SBIgnoreExtensionDataObjectProperty, value); } }
-		public static readonly DependencyProperty SBIgnoreExtensionDataObjectProperty = DependencyProperty.Register("SBIgnoreExtensionDataObject", typeof(bool), typeof(RESTService), new PropertyMetadata(false));
-
-		public bool SBIncludeExceptionDetailInFaults { get { return (bool)GetValue(SBIncludeExceptionDetailInFaultsProperty); } set { SetValue(SBIncludeExceptionDetailInFaultsProperty, value); } }
-		public static readonly DependencyProperty SBIncludeExceptionDetailInFaultsProperty = DependencyProperty.Register("SBIncludeExceptionDetailInFaults", typeof(bool), typeof(RESTService), new PropertyMetadata(false));
-
-		public InstanceContextMode SBInstanceContextMode { get { return (InstanceContextMode)GetValue(SBInstanceContextModeProperty); } set { SetValue(SBInstanceContextModeProperty, value); } }
-		public static readonly DependencyProperty SBInstanceContextModeProperty = DependencyProperty.Register("SBInstanceContextMode", typeof(InstanceContextMode), typeof(RESTService), new PropertyMetadata(InstanceContextMode.PerSession));
-
-		public int SBMaxItemsInObjectGraph { get { return (int)GetValue(SBMaxItemsInObjectGraphProperty); } set { SetValue(SBMaxItemsInObjectGraphProperty, value); } }
-		public static readonly DependencyProperty SBMaxItemsInObjectGraphProperty = DependencyProperty.Register("SBMaxItemsInObjectGraph", typeof(int), typeof(RESTService), new PropertyMetadata(65536));
-
-		public bool SBReleaseServiceInstanceOnTransactionComplete { get { return (bool)GetValue(SBReleaseServiceInstanceOnTransactionCompleteProperty); } set { SetValue(SBReleaseServiceInstanceOnTransactionCompleteProperty, value); } }
-		public static readonly DependencyProperty SBReleaseServiceInstanceOnTransactionCompleteProperty = DependencyProperty.Register("SReleaseServiceInstanceOnTransactionComplete", typeof(bool), typeof(RESTService), new PropertyMetadata(true));
-
-		public bool SBTransactionAutoCompleteOnSessionClose { get { return (bool)GetValue(SBTransactionAutoCompleteOnSessionCloseProperty); } set { SetValue(SBTransactionAutoCompleteOnSessionCloseProperty, value); } }
-		public static readonly DependencyProperty SBTransactionAutoCompleteOnSessionCloseProperty = DependencyProperty.Register("SBTransactionAutoCompleteOnSessionClose", typeof(bool), typeof(RESTService), new PropertyMetadata(false));
-
-		public IsolationLevel SBTransactionIsolationLevel { get { return (IsolationLevel)GetValue(SBTransactionIsolationLevelProperty); } set { SetValue(SBTransactionIsolationLevelProperty, value); } }
-		public static readonly DependencyProperty SBTransactionIsolationLevelProperty = DependencyProperty.Register("SBTransactionIsolationLevel", typeof(IsolationLevel), typeof(RESTService), new PropertyMetadata(IsolationLevel.Unspecified));
-
-		public TimeSpan SBTransactionTimeout { get { return (TimeSpan)GetValue(SBTransactionTimeoutProperty); } set { SetValue(SBTransactionTimeoutProperty, value); } }
-		public static readonly DependencyProperty SBTransactionTimeoutProperty = DependencyProperty.Register("SBTransactionTimeout", typeof(TimeSpan), typeof(RESTService), new PropertyMetadata(new TimeSpan(0, 0, 0)));
-
-		public bool SBUseSynchronizationContext { get { return (bool)GetValue(SBUseSynchronizationContextProperty); } set { SetValue(SBUseSynchronizationContextProperty, value); } }
-		public static readonly DependencyProperty SBUseSynchronizationContextProperty = DependencyProperty.Register("SBUseSynchronizationContext", typeof(bool), typeof(RESTService), new PropertyMetadata(true));
-
-		public bool SBValidateMustUnderstand { get { return (bool)GetValue(SBValidateMustUnderstandProperty); } set { SetValue(SBValidateMustUnderstandProperty, value); } }
-		public static readonly DependencyProperty SBValidateMustUnderstandProperty = DependencyProperty.Register("SBValidateMustUnderstand", typeof(bool), typeof(RESTService), new PropertyMetadata(true));
-
 		//Host
-		public HostCredentials Credentials { get { return (HostCredentials)GetValue(CredentialsProperty); } set { SetValue(CredentialsProperty, value); } }
-		public static readonly DependencyProperty CredentialsProperty = DependencyProperty.Register("Credentials", typeof(HostCredentials), typeof(RESTService));
-
-		public string HostConfigurationName { get { return (string)GetValue(HostConfigurationNameProperty); } set { SetValue(HostConfigurationNameProperty, value); } }
-		public static readonly DependencyProperty HostConfigurationNameProperty = DependencyProperty.Register("HostConfigurationName", typeof(string), typeof(RESTService));
-
-		public TimeSpan CloseTimeout { get { return (TimeSpan)GetValue(CloseTimeoutProperty); } set { SetValue(CloseTimeoutProperty, value); } }
-		public static readonly DependencyProperty CloseTimeoutProperty = DependencyProperty.Register("CloseTimeout", typeof(TimeSpan), typeof(RESTService), new PropertyMetadata(new TimeSpan(0, 1, 0)));
-
-		public TimeSpan OpenTimeout { get { return (TimeSpan)GetValue(OpenTimeoutProperty); } set { SetValue(OpenTimeoutProperty, value); } }
-		public static readonly DependencyProperty OpenTimeoutProperty = DependencyProperty.Register("OpenTimeout", typeof(TimeSpan), typeof(RESTService), new PropertyMetadata(new TimeSpan(0, 1, 0)));
-
-		public int ManualFlowControlLimit { get { return (int)GetValue(ManualFlowControlLimitProperty); } set { SetValue(ManualFlowControlLimitProperty, value); } }
-		public static readonly DependencyProperty ManualFlowControlLimitProperty = DependencyProperty.Register("ManualFlowControlLimit", typeof(int), typeof(RESTService));
-
-		public bool AuthorizationImpersonateCallerForAllOperations { get { return (bool)GetValue(AuthorizationImpersonateCallerForAllOperationsProperty); } set { SetValue(AuthorizationImpersonateCallerForAllOperationsProperty, value); } }
-		public static readonly DependencyProperty AuthorizationImpersonateCallerForAllOperationsProperty = DependencyProperty.Register("AuthorizationImpersonateCallerForAllOperations", typeof(bool), typeof(RESTService));
-
-		public bool AuthorizationImpersonateOnSerializingReply { get { return (bool)GetValue(AuthorizationImpersonateOnSerializingReplyProperty); } set { SetValue(AuthorizationImpersonateOnSerializingReplyProperty, value); } }
-		public static readonly DependencyProperty AuthorizationImpersonateOnSerializingReplyProperty = DependencyProperty.Register("AuthorizationImpersonateOnSerializingReply", typeof(bool), typeof(RESTService), new PropertyMetadata(false));
-
-		public System.ServiceModel.Description.PrincipalPermissionMode AuthorizationPrincipalPermissionMode { get { return (System.ServiceModel.Description.PrincipalPermissionMode)GetValue(AuthorizationPrincipalPermissionModeProperty); } set { SetValue(AuthorizationPrincipalPermissionModeProperty, value); } }
-		public static readonly DependencyProperty AuthorizationPrincipalPermissionModeProperty = DependencyProperty.Register("AuthorizationPrincipalPermissionMode", typeof(System.ServiceModel.Description.PrincipalPermissionMode), typeof(RESTService));
 
 		//Endpoint
 		public string EndpointAddress { get { return (string)GetValue(EndpointAddressProperty); } set { SetValue(EndpointAddressProperty, value); } }
@@ -119,58 +42,12 @@ namespace NETPath.Projects
 		public bool EndpointUseHTTPS { get { return (bool)GetValue(EndpointUseHTTPSProperty); } set { SetValue(EndpointUseHTTPSProperty, value); } }
 		public static readonly DependencyProperty EndpointUseHTTPSProperty = DependencyProperty.Register("EndpointUseHTTPS", typeof(bool), typeof(RESTService), new PropertyMetadata(false));
 
-		public ServiceBindingWebHTTP EndpointBinding { get { return (ServiceBindingWebHTTP)GetValue(EndpointBindingProperty); } set { SetValue(EndpointBindingProperty, value); } }
-		public static readonly DependencyProperty EndpointBindingProperty = DependencyProperty.Register("EndpointBinding", typeof(ServiceBindingWebHTTP), typeof(RESTService));
-
-		//Behaviors
-		public bool HasDebugBehavior { get { return (bool)GetValue(HasDebugBehaviorProperty); } set { SetValue(HasDebugBehaviorProperty, value); } }
-		public static readonly DependencyProperty HasDebugBehaviorProperty = DependencyProperty.Register("HasDebugBehavior", typeof(bool), typeof(RESTService), new PropertyMetadata(false, HasDebugBehaviorChangedCallback));
-
-		private static void HasDebugBehaviorChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
-		{
-			var de = o as RESTService;
-			if (de == null) return;
-			de.DebugBehavior = ((bool)e.NewValue) ? new HostDebugBehavior() : null;
-		}
-
-		public HostDebugBehavior DebugBehavior { get { return (HostDebugBehavior)GetValue(DebugBehaviorProperty); } set { SetValue(DebugBehaviorProperty, value); } }
-		public static readonly DependencyProperty DebugBehaviorProperty = DependencyProperty.Register("DebugBehavior", typeof(HostDebugBehavior), typeof(RESTService));
-
-		public bool HasThrottlingBehavior { get { return (bool)GetValue(HasThrottlingBehaviorProperty); } set { SetValue(HasThrottlingBehaviorProperty, value); } }
-		public static readonly DependencyProperty HasThrottlingBehaviorProperty = DependencyProperty.Register("HasThrottlingBehavior", typeof(bool), typeof(RESTService), new PropertyMetadata(false, HasThrottlingBehaviorChangedCallback));
-
-		private static void HasThrottlingBehaviorChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
-		{
-			var de = o as RESTService;
-			if (de == null) return;
-			de.ThrottlingBehavior = ((bool)e.NewValue) ? new HostThrottlingBehavior() : null;
-		}
-
-		public HostThrottlingBehavior ThrottlingBehavior { get { return (HostThrottlingBehavior)GetValue(ThrottlingBehaviorProperty); } set { SetValue(ThrottlingBehaviorProperty, value); } }
-		public static readonly DependencyProperty ThrottlingBehaviorProperty = DependencyProperty.Register("ThrottlingBehavior", typeof(HostThrottlingBehavior), typeof(RESTService));
-
-		public bool HasWebHTTPBehavior { get { return (bool)GetValue(HasWebHTTPBehaviorProperty); } set { SetValue(HasWebHTTPBehaviorProperty, value); } }
-		public static readonly DependencyProperty HasWebHTTPBehaviorProperty = DependencyProperty.Register("HasWebHTTPBehavior", typeof(bool), typeof(RESTService), new PropertyMetadata(true, HasWebHTTPBehaviorChangedCallback));
-
-		private static void HasWebHTTPBehaviorChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
-		{
-			var de = o as RESTService;
-			if (de == null) return;
-			de.WebHTTPBehavior = ((bool)e.NewValue) ? new HostWebHTTPBehavior() : null;
-		}
-
-		public HostWebHTTPBehavior WebHTTPBehavior { get { return (HostWebHTTPBehavior)GetValue(WebHTTPBehaviorProperty); } set { SetValue(WebHTTPBehaviorProperty, value); } }
-		public static readonly DependencyProperty WebHTTPBehaviorProperty = DependencyProperty.Register("WebHTTPBehavior", typeof(HostWebHTTPBehavior), typeof(RESTService));
-
 		public RESTService() : base(DataTypeMode.Class)
 		{
 			ID = Guid.NewGuid();
 			ServiceOperations = new ObservableCollection<RESTMethod>();
 			RequestConfigurations = new ObservableCollection<RESTHTTPConfiguration>();
 			ServiceDocumentation = new Documentation { IsClass = true };
-			EndpointBinding = new ServiceBindingWebHTTP();
-			WebHTTPBehavior = new HostWebHTTPBehavior();
-			Credentials = new HostCredentials();
 		}
 
 		public RESTService(string Name, Namespace Parent) : base(DataTypeMode.Class)
@@ -180,11 +57,7 @@ namespace NETPath.Projects
 			ServiceOperations = new ObservableCollection<RESTMethod>();
 			RequestConfigurations = new ObservableCollection<RESTHTTPConfiguration>();
 			ID = Guid.NewGuid();
-			ConfigurationName = "";
 			ServiceDocumentation = new Documentation { IsClass = true };
-			EndpointBinding = new ServiceBindingWebHTTP();
-			WebHTTPBehavior = new HostWebHTTPBehavior();
-			Credentials = new HostCredentials();
 		}
 
 		public void AddKnownType(DataType Type)
@@ -283,7 +156,12 @@ namespace NETPath.Projects
 		GET,
 		POST,
 		PUT,
-		DELETE
+		DELETE,
+		HEAD,
+		OPTIONS,
+		TRACE,
+		CONNECT,
+		CUSTOM,
 	}
 
 	public class RESTMethod : DependencyObject
@@ -308,17 +186,11 @@ namespace NETPath.Projects
 			if (nt.TypeMode == DataTypeMode.Primitive && nt.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.AddKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
 		}
 
-		public string ServerName { get { return (string)GetValue(ServerNameProperty); } set { SetValue(ServerNameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value ?? "", @"")); } }
-		public static readonly DependencyProperty ServerNameProperty = DependencyProperty.Register("ServerName", typeof(string), typeof(RESTMethod));
-
-		public bool IsOneWay { get { return (bool)GetValue(IsOneWayProperty); } set { SetValue(IsOneWayProperty, value); } }
-		public static readonly DependencyProperty IsOneWayProperty = DependencyProperty.Register("IsOneWay", typeof(bool), typeof(RESTMethod), new PropertyMetadata(false));
+		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value ?? "", @"")); } }
+		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(RESTMethod));
 
 		public bool IsHidden { get { return (bool)GetValue(IsHiddenProperty); } set { SetValue(IsHiddenProperty, value); } }
 		public static readonly DependencyProperty IsHiddenProperty = DependencyProperty.Register("IsHidden", typeof(bool), typeof(RESTMethod), new PropertyMetadata(false));
-
-		public ProtectionLevel ProtectionLevel { get { return (ProtectionLevel)GetValue(ProtectionLevelProperty); } set { SetValue(ProtectionLevelProperty, value); } }
-		public static readonly DependencyProperty ProtectionLevelProperty = DependencyProperty.Register("ProtectionLevel", typeof(ProtectionLevel), typeof(RESTMethod), new PropertyMetadata(ProtectionLevel.None));
 
 		public bool ServerAsync { get { return (bool)GetValue(ServerAsyncProperty); } set { SetValue(ServerAsyncProperty, value); } }
 		public static readonly DependencyProperty ServerAsyncProperty = DependencyProperty.Register("ServerAsync", typeof(bool), typeof(RESTMethod), new PropertyMetadata(true));
@@ -340,20 +212,8 @@ namespace NETPath.Projects
 		public static readonly DependencyProperty ClientPreambleCodeProperty = DependencyProperty.Register("ClientPreambleCode", typeof(string), typeof(RESTMethod));
 
 		//REST
-		public string UriTemplate { get { return (string)GetValue(UriTemplateProperty); } set { SetValue(UriTemplateProperty, value); } }
-		public static readonly DependencyProperty UriTemplateProperty = DependencyProperty.Register("UriTemplate", typeof(string), typeof(RESTMethod), new PropertyMetadata("/"));
-
 		public MethodRESTVerbs Method { get { return (MethodRESTVerbs)GetValue(MethodProperty); } set { SetValue(MethodProperty, value); } }
 		public static readonly DependencyProperty MethodProperty = DependencyProperty.Register("Method", typeof(MethodRESTVerbs), typeof(RESTMethod), new PropertyMetadata(MethodRESTVerbs.GET));
-
-		public WebMessageBodyStyle BodyStyle { get { return (WebMessageBodyStyle)GetValue(BodyStyleProperty); } set { SetValue(BodyStyleProperty, value); } }
-		public static readonly DependencyProperty BodyStyleProperty = DependencyProperty.Register("BodyStyle", typeof(WebMessageBodyStyle), typeof(RESTMethod), new PropertyMetadata(WebMessageBodyStyle.Bare));
-
-		public WebMessageFormat RequestFormat { get { return (WebMessageFormat)GetValue(RequestFormatProperty); } set { SetValue(RequestFormatProperty, value); } }
-		public static readonly DependencyProperty RequestFormatProperty = DependencyProperty.Register("RequestFormat", typeof(WebMessageFormat), typeof(RESTMethod), new PropertyMetadata(WebMessageFormat.Xml));
-
-		public WebMessageFormat ResponseFormat { get { return (WebMessageFormat)GetValue(ResponseFormatProperty); } set { SetValue(ResponseFormatProperty, value); } }
-		public static readonly DependencyProperty ResponseFormatProperty = DependencyProperty.Register("ResponseFormat", typeof(WebMessageFormat), typeof(RESTMethod), new PropertyMetadata(WebMessageFormat.Xml));
 
 		public RESTHTTPConfiguration RequestConfiguration { get { return (RESTHTTPConfiguration)GetValue(RequestConfigurationProperty); } set { SetValue(RequestConfigurationProperty, value); } }
 		public static readonly DependencyProperty RequestConfigurationProperty = DependencyProperty.Register("RequestConfiguration", typeof(RESTHTTPConfiguration), typeof(RESTMethod), new PropertyMetadata(null));
@@ -393,46 +253,37 @@ namespace NETPath.Projects
 		public RESTMethod(string Name, RESTService Owner)
 		{
 			ID = Guid.NewGuid();
-			ServerName = Name;
+			this.Name = Name;
 			ReturnType = new DataType(PrimitiveTypes.Void);
-			ProtectionLevel = ProtectionLevel.None;
 			this.Owner = Owner;
 			Parameters = new ObservableCollection<RESTMethodParameter>();
 			Parameters.CollectionChanged += Parameters_CollectionChanged;
 			ReturnType = new DataType(PrimitiveTypes.Void);
 			Documentation = new Documentation { IsMethod = true };
 			RequestConfiguration = Owner.RequestConfigurations.FirstOrDefault();
-			BodyStyle = Owner.WebHTTPBehavior.DefaultBodyStyle;
-			RequestFormat = Owner.WebHTTPBehavior.DefaultOutgoingRequestFormat;
-			ResponseFormat = Owner.WebHTTPBehavior.DefaultOutgoingResponseFormat;
 		}
 
 		public RESTMethod(DataType ReturnType, string Name, RESTService Owner)
 		{
 			ID = Guid.NewGuid();
-			ServerName = Name;
+			this.Name = Name;
 			this.ReturnType = ReturnType;
-			ProtectionLevel = ProtectionLevel.None;
 			this.Owner = Owner;
 			Parameters = new ObservableCollection<RESTMethodParameter>();
 			Parameters.CollectionChanged += Parameters_CollectionChanged;
 			this.ReturnType = ReturnType;
 			Documentation = new Documentation { IsMethod = true };
 			RequestConfiguration = Owner.RequestConfigurations.FirstOrDefault();
-			BodyStyle = Owner.WebHTTPBehavior.DefaultBodyStyle;
-			RequestFormat = Owner.WebHTTPBehavior.DefaultOutgoingRequestFormat;
-			ResponseFormat = Owner.WebHTTPBehavior.DefaultOutgoingResponseFormat;
 		}
 
 		public override string ToString()
 		{
-			return ServerName;
+			return Name;
 		}
 
 		private void Parameters_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 		{
 			UpdateDeclaration();
-			if (Parameters.Count > 1 && (BodyStyle == WebMessageBodyStyle.Bare || BodyStyle == WebMessageBodyStyle.WrappedResponse)) BodyStyle = WebMessageBodyStyle.Wrapped;
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -451,13 +302,7 @@ namespace NETPath.Projects
 			foreach (RESTMethodParameter p in Parameters)
 				sb.AppendFormat("{0}, ", p);
 			if (Parameters.Count > 0) sb.Remove(sb.Length - 2, 2);
-			Declaration = string.Format("{0} {1}({2})", ReturnType, ServerName, sb);
-
-			if (Parameters.Any(a => a.Nullable) && !UriTemplate.Contains("?"))
-			{
-				if (UriTemplate.EndsWith("/")) UriTemplate = UriTemplate.Substring(0, UriTemplate.Length - 1) + "?";
-				else UriTemplate = UriTemplate + "?";
-			}
+			Declaration = string.Format("{0} {1}({2})", ReturnType, Name, sb);
 		}
 
 
@@ -470,21 +315,21 @@ namespace NETPath.Projects
 				if (Args.UseRegex == false)
 				{
 					if (Args.MatchCase == false)
-						if (!string.IsNullOrEmpty(ServerName))
-							if (ServerName.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Server Name", ServerName, Owner.Parent.Owner, this));
-							else if (!string.IsNullOrEmpty(ServerName)) if (ServerName.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Server Name", ServerName, Owner.Parent.Owner, this));
+						if (!string.IsNullOrEmpty(Name))
+							if (Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Server Name", Name, Owner.Parent.Owner, this));
+							else if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Server Name", Name, Owner.Parent.Owner, this));
 				}
-				else if (!string.IsNullOrEmpty(ServerName)) if (Args.RegexSearch.IsMatch(ServerName)) results.Add(new FindReplaceResult("Server Name", ServerName, Owner.Parent.Owner, this));
+				else if (!string.IsNullOrEmpty(Name)) if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Server Name", Name, Owner.Parent.Owner, this));
 
 				if (Args.ReplaceAll)
 				{
 					if (Args.UseRegex == false)
 					{
 						if (Args.MatchCase == false)
-							if (!string.IsNullOrEmpty(ServerName)) ServerName = Microsoft.VisualBasic.Strings.Replace(ServerName, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-							else if (!string.IsNullOrEmpty(ServerName)) ServerName = Microsoft.VisualBasic.Strings.Replace(ServerName, Args.Search, Args.Replace);
+							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+							else if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
 					}
-					else if (!string.IsNullOrEmpty(ServerName)) ServerName = Args.RegexSearch.Replace(ServerName, Args.Replace);
+					else if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
 				}
 			}
 
@@ -500,19 +345,40 @@ namespace NETPath.Projects
 			if (Args.UseRegex == false)
 			{
 				if (Args.MatchCase == false)
-					if (Field == "Server Name") ServerName = Microsoft.VisualBasic.Strings.Replace(ServerName, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
+					if (Field == "Server Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
 					else
-					if (Field == "Server Name") ServerName = Microsoft.VisualBasic.Strings.Replace(ServerName, Args.Search, Args.Replace);
+					if (Field == "Server Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
 			}
 			else
-				if (Field == "Server Name") ServerName = Args.RegexSearch.Replace(ServerName, Args.Replace);
+				if (Field == "Server Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
 
 			foreach (RESTMethodParameter mp in Parameters)
 				mp.Replace(Args, Field);
 		}
 	}
 
-	public class RESTMethodParameter : DependencyObject
+	public class RESTRouteParameter : DependencyObject
+	{
+		public string RouteName { get { return (string)GetValue(RouteNameProperty); } set { SetValue(RouteNameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value ?? "", @"")); } }
+		public static readonly DependencyProperty RouteNameProperty = DependencyProperty.Register("RouteName", typeof(string), typeof(RESTRouteParameter));
+
+		//Internal Use
+		public RESTService Owner { get; set; }
+		public RESTMethod Parent { get; set; }
+
+		public bool IsHidden { get { return (bool)GetValue(IsHiddenProperty); } set { SetValue(IsHiddenProperty, value); } }
+		public static readonly DependencyProperty IsHiddenProperty = DependencyProperty.Register("IsHidden", typeof(bool), typeof(RESTRouteParameter), new PropertyMetadata(false));
+
+		public RESTRouteParameter(string routeName, RESTService Owner, RESTMethod Parent)
+		{
+			RouteName = routeName;
+			IsHidden = false;
+			this.Owner = Owner;
+			this.Parent = Parent;
+		}
+	}
+
+	public class RESTMethodParameter : RESTRouteParameter
 	{
 		public Guid ID { get; set; }
 
@@ -547,13 +413,7 @@ namespace NETPath.Projects
 		public string DefaultValue { get { return (string)GetValue(DefaultValueProperty); } set { SetValue(DefaultValueProperty, Helpers.RegExs.ReplaceSpaces.Replace(value ?? "", @"")); } }
 		public static readonly DependencyProperty DefaultValueProperty = DependencyProperty.Register("DefaultValue", typeof(string), typeof(RESTMethodParameter));
 
-		public bool IsHidden { get { return (bool)GetValue(IsHiddenProperty); } set { SetValue(IsHiddenProperty, value); } }
-		public static readonly DependencyProperty IsHiddenProperty = DependencyProperty.Register("IsHidden", typeof(bool), typeof(RESTMethodParameter));
-
 		//REST Specific
-		public string RestName { get { return (string)GetValue(RestNameProperty); } set { SetValue(RestNameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value ?? "", @"")); } }
-		public static readonly DependencyProperty RestNameProperty = DependencyProperty.Register("RestName", typeof(string), typeof(RESTMethodParameter));
-
 		public bool IsPath { get { return (bool)GetValue(IsPathProperty); } set { SetValue(IsPathProperty, value); } }
 		public static readonly DependencyProperty IsPathProperty = DependencyProperty.Register("IsPath", typeof(bool), typeof(RESTMethodParameter), new PropertyMetadata(true, IsPathChangedCallback));
 
@@ -608,27 +468,11 @@ namespace NETPath.Projects
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(RESTMethodParameter));
 
-		//Internal Use
-		public RESTService Owner { get; set; }
-		public RESTMethod Parent { get; set; }
-
-		public RESTMethodParameter()
-		{
-			ID = Guid.NewGuid();
-			Type = new DataType(PrimitiveTypes.String);
-			IsHidden = false;
-			Documentation = new Documentation { IsParameter = true };
-		}
-
-		public RESTMethodParameter(DataType Type, string Name, RESTService Owner, RESTMethod Parent)
+		public RESTMethodParameter(DataType Type, string Name, RESTService Owner, RESTMethod Parent) : base(Name, Owner, Parent)
 		{
 			ID = Guid.NewGuid();
 			this.Type = Type;
 			this.Name = Name;
-			RestName = Name.ToLowerInvariant();
-			IsHidden = false;
-			this.Owner = Owner;
-			this.Parent = Parent;
 			Documentation = new Documentation { IsParameter = true };
 
 			IsSerializable = false;
@@ -643,7 +487,7 @@ namespace NETPath.Projects
 		{
 			base.OnPropertyChanged(e);
 
-			if (Parent != null) Parent.UpdateDeclaration();
+			Parent?.UpdateDeclaration();
 		}
 
 		public override string ToString()
@@ -790,6 +634,15 @@ namespace NETPath.Projects
 		public bool UseDefaultCredentials { get { return (bool)GetValue(UseDefaultCredentialsProperty); } set { SetValue(UseDefaultCredentialsProperty, value); } }
 		public static readonly DependencyProperty UseDefaultCredentialsProperty = DependencyProperty.Register("UseDefaultCredentials", typeof(bool), typeof(RESTHTTPConfiguration), new PropertyMetadata(false));
 
+		public ClientCertificateOption ClientCertificateOptions { get { return (ClientCertificateOption)GetValue(ClientCertificateOptionsProperty); } set { SetValue(ClientCertificateOptionsProperty, value); } }
+		public static readonly DependencyProperty ClientCertificateOptionsProperty = DependencyProperty.Register("ClientCertificateOptions", typeof(ClientCertificateOption), typeof(RESTHTTPConfiguration), new PropertyMetadata(ClientCertificateOption.Automatic));
+
+		public long MaxRequestContentBufferSize { get { return (long)GetValue(MaxRequestContentBufferSizeProperty); } set { SetValue(MaxRequestContentBufferSizeProperty, value); } }
+		public static readonly DependencyProperty MaxRequestContentBufferSizeProperty = DependencyProperty.Register("MaxRequestContentBufferSize", typeof(long), typeof(RESTHTTPConfiguration), new PropertyMetadata(2147483647L));
+
+		public ContentMode ContentMode { get { return (ContentMode)GetValue(ContentModeProperty); } set { SetValue(ContentModeProperty, value); } }
+		public static readonly DependencyProperty ContentModeProperty = DependencyProperty.Register("ContentMode", typeof(ContentMode), typeof(RESTHTTPConfiguration), new PropertyMetadata(ContentMode.Default));
+
 		public RESTHTTPConfiguration()
 		{
 			ID = Guid.NewGuid();
@@ -800,79 +653,5 @@ namespace NETPath.Projects
 			ID = Guid.NewGuid();
 			this.Name = Name;
 		}
-	}
-
-	public class RESTHTTPWebConfiguration : RESTHTTPConfiguration
-	{
-		//HTTP Request Configuration
-		public string ConnectionGroupName { get { return (string)GetValue(ConnectionGroupNameProperty); } set { SetValue(ConnectionGroupNameProperty, value); } }
-		public static readonly DependencyProperty ConnectionGroupNameProperty = DependencyProperty.Register("ConnectionGroupName", typeof(string), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(null));
-
-		public bool CanContinue { get { return (bool)GetValue(CanContinueProperty); } set { SetValue(CanContinueProperty, value); } }
-		public static readonly DependencyProperty CanContinueProperty = DependencyProperty.Register("CanContinue", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(false));
-
-		public TimeSpan ContinueTimeout { get { return (TimeSpan)GetValue(ContinueTimeoutProperty); } set { SetValue(ContinueTimeoutProperty, value); } }
-		public static readonly DependencyProperty ContinueTimeoutProperty = DependencyProperty.Register("ContinueTimeout", typeof(TimeSpan), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(new TimeSpan(0, 0, 100)));
-
-		public bool KeepAlive { get { return (bool)GetValue(KeepAliveProperty); } set { SetValue(KeepAliveProperty, value); } }
-		public static readonly DependencyProperty KeepAliveProperty = DependencyProperty.Register("KeepAlive", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(true));
-
-		public int MaximumResponseHeadersLength { get { return (int)GetValue(MaximumResponseHeadersLengthProperty); } set { SetValue(MaximumResponseHeadersLengthProperty, value); } }
-		public static readonly DependencyProperty MaximumResponseHeadersLengthProperty = DependencyProperty.Register("MaximumResponseHeadersLength", typeof(int), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(-1));
-
-		public HttpRequestCacheLevel RequestCacheLevel { get { return (HttpRequestCacheLevel)GetValue(RequestCacheLevelProperty); } set { SetValue(RequestCacheLevelProperty, value); } }
-		public static readonly DependencyProperty RequestCacheLevelProperty = DependencyProperty.Register("RequestCacheLevel", typeof(HttpRequestCacheLevel), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(HttpRequestCacheLevel.Default));
-
-		public bool Pipelined { get { return (bool)GetValue(PipelinedProperty); } set { SetValue(PipelinedProperty, value); } }
-		public static readonly DependencyProperty PipelinedProperty = DependencyProperty.Register("Pipelined", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(true));
-
-		public TimeSpan ReadWriteTimeout { get { return (TimeSpan)GetValue(ReadWriteTimeoutProperty); } set { SetValue(ReadWriteTimeoutProperty, value); } }
-		public static readonly DependencyProperty ReadWriteTimeoutProperty = DependencyProperty.Register("ReadWriteTimeout", typeof(TimeSpan), typeof(RESTHTTPConfiguration), new PropertyMetadata(new TimeSpan(0, 0, 30)));
-
-		public TimeSpan Timeout { get { return (TimeSpan)GetValue(TimeoutProperty); } set { SetValue(TimeoutProperty, value); } }
-		public static readonly DependencyProperty TimeoutProperty = DependencyProperty.Register("Timeout", typeof(TimeSpan), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(new TimeSpan(0, 0, 100)));
-
-		//Security
-		public AuthenticationLevel AuthenticationLevel { get { return (AuthenticationLevel)GetValue(AuthenticationLevelProperty); } set { SetValue(AuthenticationLevelProperty, value); } }
-		public static readonly DependencyProperty AuthenticationLevelProperty = DependencyProperty.Register("AuthenticationLevel", typeof(AuthenticationLevel), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(AuthenticationLevel.MutualAuthRequested));
-
-		public System.Security.Principal.TokenImpersonationLevel ImpersonationLevel { get { return (System.Security.Principal.TokenImpersonationLevel)GetValue(ImpersonationLevelProperty); } set { SetValue(ImpersonationLevelProperty, value); } }
-		public static readonly DependencyProperty ImpersonationLevelProperty = DependencyProperty.Register("ImpersonationLevel", typeof(System.Security.Principal.TokenImpersonationLevel), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(System.Security.Principal.TokenImpersonationLevel.None));
-
-		public bool UnsafeAuthenticatedConnectionSharing { get { return (bool)GetValue(UnsafeAuthenticatedConnectionSharingProperty); } set { SetValue(UnsafeAuthenticatedConnectionSharingProperty, value); } }
-		public static readonly DependencyProperty UnsafeAuthenticatedConnectionSharingProperty = DependencyProperty.Register("UnsafeAuthenticatedConnectionSharing", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(false));
-
-		//Content
-		public bool AllowReadStreamBuffering { get { return (bool)GetValue(AllowReadStreamBufferingProperty); } set { SetValue(AllowReadStreamBufferingProperty, value); } }
-		public static readonly DependencyProperty AllowReadStreamBufferingProperty = DependencyProperty.Register("AllowReadStreamBuffering", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(true));
-
-		public bool AllowWriteStreamBuffering { get { return (bool)GetValue(AllowWriteStreamBufferingProperty); } set { SetValue(AllowWriteStreamBufferingProperty, value); } }
-		public static readonly DependencyProperty AllowWriteStreamBufferingProperty = DependencyProperty.Register("AllowWriteStreamBuffering", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(true));
-
-		public string MediaType { get { return (string)GetValue(MediaTypeProperty); } set { SetValue(MediaTypeProperty, value); } }
-		public static readonly DependencyProperty MediaTypeProperty = DependencyProperty.Register("MediaType", typeof(string), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(null));
-
-		public bool SendChunked { get { return (bool)GetValue(SendChunkedProperty); } set { SetValue(SendChunkedProperty, value); } }
-		public static readonly DependencyProperty SendChunkedProperty = DependencyProperty.Register("SendChunked", typeof(bool), typeof(RESTHTTPWebConfiguration), new PropertyMetadata(false));
-
-		public RESTHTTPWebConfiguration() { }
-
-		public RESTHTTPWebConfiguration(string Name) : base(Name) { }
-	}
-
-	public class RESTHTTPClientConfiguration : RESTHTTPConfiguration
-	{
-		public ClientCertificateOption ClientCertificateOptions { get { return (ClientCertificateOption)GetValue(ClientCertificateOptionsProperty); } set { SetValue(ClientCertificateOptionsProperty, value); } }
-		public static readonly DependencyProperty ClientCertificateOptionsProperty = DependencyProperty.Register("ClientCertificateOptions", typeof(ClientCertificateOption), typeof(RESTHTTPClientConfiguration), new PropertyMetadata(ClientCertificateOption.Automatic));
-
-		public long MaxRequestContentBufferSize { get { return (long)GetValue(MaxRequestContentBufferSizeProperty); } set { SetValue(MaxRequestContentBufferSizeProperty, value); } }
-		public static readonly DependencyProperty MaxRequestContentBufferSizeProperty = DependencyProperty.Register("MaxRequestContentBufferSize", typeof(long), typeof(RESTHTTPClientConfiguration), new PropertyMetadata(2147483647L));
-
-		public ContentMode ContentMode { get { return (ContentMode)GetValue(ContentModeProperty); } set { SetValue(ContentModeProperty, value); } }
-		public static readonly DependencyProperty ContentModeProperty = DependencyProperty.Register("ContentMode", typeof(ContentMode), typeof(RESTHTTPClientConfiguration), new PropertyMetadata(ContentMode.Default));
-
-		public RESTHTTPClientConfiguration() { }
-
-		public RESTHTTPClientConfiguration(string Name) : base(Name) { }
 	}
 }
