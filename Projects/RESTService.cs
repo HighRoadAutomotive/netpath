@@ -151,6 +151,14 @@ namespace NETPath.Projects
 		}
 	}
 
+	public enum RestSerialization
+	{
+		JSON,
+		BSON,
+		XmlSerializer,
+		DataContract,
+	}
+
 	public enum MethodRESTVerbs
 	{
 		GET,
@@ -198,8 +206,8 @@ namespace NETPath.Projects
 		public bool ClientAsync { get { return (bool)GetValue(ClientAsyncProperty); } set { SetValue(ClientAsyncProperty, value); } }
 		public static readonly DependencyProperty ClientAsyncProperty = DependencyProperty.Register("ClientAsync", typeof(bool), typeof(RESTMethod), new PropertyMetadata(true));
 
-		public ObservableCollection<RESTMethodParameter> Parameters { get { return (ObservableCollection<RESTMethodParameter>)GetValue(ParametersProperty); } set { SetValue(ParametersProperty, value); } }
-		public static readonly DependencyProperty ParametersProperty = DependencyProperty.Register("Parameters", typeof(ObservableCollection<RESTMethodParameter>), typeof(RESTMethod));
+		public ObservableCollection<RESTRouteParameter> Parameters { get { return (ObservableCollection<RESTRouteParameter>)GetValue(ParametersProperty); } set { SetValue(ParametersProperty, value); } }
+		public static readonly DependencyProperty ParametersProperty = DependencyProperty.Register("Parameters", typeof(ObservableCollection<RESTRouteParameter>), typeof(RESTMethod));
 
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(RESTMethod));
@@ -245,7 +253,7 @@ namespace NETPath.Projects
 		public RESTMethod()
 		{
 			ID = Guid.NewGuid();
-			Parameters = new ObservableCollection<RESTMethodParameter>();
+			Parameters = new ObservableCollection<RESTRouteParameter>();
 			Parameters.CollectionChanged += Parameters_CollectionChanged;
 			Documentation = new Documentation { IsMethod = true };
 		}
@@ -256,7 +264,7 @@ namespace NETPath.Projects
 			this.Name = Name;
 			ReturnType = new DataType(PrimitiveTypes.Void);
 			this.Owner = Owner;
-			Parameters = new ObservableCollection<RESTMethodParameter>();
+			Parameters = new ObservableCollection<RESTRouteParameter>();
 			Parameters.CollectionChanged += Parameters_CollectionChanged;
 			ReturnType = new DataType(PrimitiveTypes.Void);
 			Documentation = new Documentation { IsMethod = true };
@@ -269,7 +277,7 @@ namespace NETPath.Projects
 			this.Name = Name;
 			this.ReturnType = ReturnType;
 			this.Owner = Owner;
-			Parameters = new ObservableCollection<RESTMethodParameter>();
+			Parameters = new ObservableCollection<RESTRouteParameter>();
 			Parameters.CollectionChanged += Parameters_CollectionChanged;
 			this.ReturnType = ReturnType;
 			Documentation = new Documentation { IsMethod = true };
@@ -299,7 +307,7 @@ namespace NETPath.Projects
 		internal void UpdateDeclaration()
 		{
 			var sb = new StringBuilder();
-			foreach (RESTMethodParameter p in Parameters)
+			foreach (var p in Parameters)
 				sb.AppendFormat("{0}, ", p);
 			if (Parameters.Count > 0) sb.Remove(sb.Length - 2, 2);
 			Declaration = string.Format("{0} {1}({2})", ReturnType, Name, sb);
@@ -362,12 +370,17 @@ namespace NETPath.Projects
 		public string RouteName { get { return (string)GetValue(RouteNameProperty); } set { SetValue(RouteNameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value ?? "", @"")); } }
 		public static readonly DependencyProperty RouteNameProperty = DependencyProperty.Register("RouteName", typeof(string), typeof(RESTRouteParameter));
 
+		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value ?? "", @"")); } }
+		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(RESTRouteParameter));
+
 		//Internal Use
 		public RESTService Owner { get; set; }
 		public RESTMethod Parent { get; set; }
 
 		public bool IsHidden { get { return (bool)GetValue(IsHiddenProperty); } set { SetValue(IsHiddenProperty, value); } }
 		public static readonly DependencyProperty IsHiddenProperty = DependencyProperty.Register("IsHidden", typeof(bool), typeof(RESTRouteParameter), new PropertyMetadata(false));
+
+		public virtual bool IsPath { get { return true; } set { } }
 
 		public RESTRouteParameter(string routeName, RESTService Owner, RESTMethod Parent)
 		{
@@ -407,14 +420,11 @@ namespace NETPath.Projects
 			if (nt.TypeMode == DataTypeMode.Struct || nt.TypeMode == DataTypeMode.Enum) de.IsNullable = true;
 		}
 
-		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value ?? "", @"")); } }
-		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(RESTMethodParameter));
-
 		public string DefaultValue { get { return (string)GetValue(DefaultValueProperty); } set { SetValue(DefaultValueProperty, Helpers.RegExs.ReplaceSpaces.Replace(value ?? "", @"")); } }
 		public static readonly DependencyProperty DefaultValueProperty = DependencyProperty.Register("DefaultValue", typeof(string), typeof(RESTMethodParameter));
 
 		//REST Specific
-		public bool IsPath { get { return (bool)GetValue(IsPathProperty); } set { SetValue(IsPathProperty, value); } }
+		public override bool IsPath { get { return (bool)GetValue(IsPathProperty); } set { SetValue(IsPathProperty, value); } }
 		public static readonly DependencyProperty IsPathProperty = DependencyProperty.Register("IsPath", typeof(bool), typeof(RESTMethodParameter), new PropertyMetadata(true, IsPathChangedCallback));
 
 		private static void IsPathChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
@@ -450,7 +460,7 @@ namespace NETPath.Projects
 			if (de == null) return;
 			if (Convert.ToBoolean(e.NewValue) == false) return;
 
-			foreach (var t in de.Parent.Parameters.Where(a => !Equals(a, de)))
+			foreach (var t in de.Parent.Parameters.OfType<RESTMethodParameter>().Where(a => !Equals(a, de)))
 				t.Serialize = false;
 			de.Serialize = true;
 			de.IsPath = false;
