@@ -16,12 +16,12 @@ using Prospective.Controls;
 using Prospective.Controls.Dialogs;
 using NETPath.Projects;
 
-namespace NETPath.Interface.REST
+namespace NETPath.Interface.Rest
 {
 	internal partial class Service : Grid
 	{
-		public Projects.RESTService ServiceType { get { return (Projects.RESTService)GetValue(ServiceTypeProperty); } set { SetValue(ServiceTypeProperty, value); } }
-		public static readonly DependencyProperty ServiceTypeProperty = DependencyProperty.Register("ServiceType", typeof(Projects.RESTService), typeof(Service));
+		public Projects.RestService ServiceType { get { return (Projects.RestService)GetValue(ServiceTypeProperty); } set { SetValue(ServiceTypeProperty, value); } }
+		public static readonly DependencyProperty ServiceTypeProperty = DependencyProperty.Register("ServiceType", typeof(Projects.RestService), typeof(Service));
 
 		public Projects.Project ServiceProject { get { return (Projects.Project)GetValue(ServiceProjectProperty); } set { SetValue(ServiceProjectProperty, value); } }
 		public static readonly DependencyProperty ServiceProjectProperty = DependencyProperty.Register("ServiceProject", typeof(Projects.Project), typeof(Service));
@@ -40,17 +40,17 @@ namespace NETPath.Interface.REST
 		public bool IsDragging { get; set; }
 		public bool DragHasLeftScope { get; set; }
 
-		public Service(Projects.RESTService Data)
+		public Service(Projects.RestService Data)
 		{
 			ServiceType = Data;
 			ServiceProject = Data.Parent.Owner;
 
 			InitializeComponent();
 
-			RESTMethod s = ServiceType.ServiceOperations.FirstOrDefault(a => a.IsSelected);
+			RestMethod s = ServiceType.ServiceOperations.FirstOrDefault(a => a.IsSelected);
 			if (s != null) ServiceOperationsList.SelectedItem = s;
 
-			RESTHTTPConfiguration c = ServiceType.RequestConfigurations.FirstOrDefault(a => a.IsSelected);
+			RestHttpConfiguration c = ServiceType.RequestConfigurations.FirstOrDefault(a => a.IsSelected);
 			if (c != null) ConfigurationList.SelectedItem = c;
 		}
 
@@ -117,7 +117,7 @@ namespace NETPath.Interface.REST
 		{
 			ServiceType.ServiceOperations.Move(DragItemStartIndex, DragItemNewIndex);
 
-			foreach (Projects.RESTMethod O in ServiceType.ServiceOperations)
+			foreach (Projects.RestMethod O in ServiceType.ServiceOperations)
 			{
 				var lbi = (ListBoxItem)ServiceOperationsList.ItemContainerGenerator.ContainerFromItem(O);
 				if (lbi == null) continue;
@@ -136,7 +136,7 @@ namespace NETPath.Interface.REST
 			Point MP = e.GetPosition(ServiceOperationsList);
 			HitTestResult htr = VisualTreeHelper.HitTest(ServiceOperationsList, MP);
 			if (htr == null) return;
-			foreach (Projects.RESTMethod O in ServiceType.ServiceOperations)
+			foreach (Projects.RestMethod O in ServiceType.ServiceOperations)
 			{
 				var lbi = (ListBoxItem)ServiceOperationsList.ItemContainerGenerator.ContainerFromItem(O);
 				var lbiht = Globals.GetVisualParent<ListBoxItem>(htr.VisualHit);
@@ -194,7 +194,7 @@ namespace NETPath.Interface.REST
 		{
 			if (AddServiceMethod.IsEnabled == false) return;
 
-			var t = new Projects.RESTMethod(AddServiceMemberType.OpenType, AddServiceMemberName.Text, ServiceType);
+			var t = new Projects.RestMethod(AddServiceMemberType.OpenType, AddServiceMemberName.Text, ServiceType);
 			ServiceType.ServiceOperations.Add(t);
 
 			AddServiceMemberType.Focus();
@@ -206,11 +206,11 @@ namespace NETPath.Interface.REST
 
 		private void ServiceOperationsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			var t = ServiceOperationsList.SelectedItem as RESTMethod;
+			var t = ServiceOperationsList.SelectedItem as RestMethod;
 			if (t == null) return;
 
 			//Set the new item as selected.
-			foreach (RESTMethod o in ServiceType.ServiceOperations)
+			foreach (RestMethod o in ServiceType.ServiceOperations)
 				o.IsSelected = false;
 			t.IsSelected = true;
 
@@ -220,7 +220,7 @@ namespace NETPath.Interface.REST
 		private void DeleteOperation_Click(object sender, RoutedEventArgs e)
 		{
 			var lbi = Globals.GetVisualParent<ListBoxItem>(sender);
-			var OP = lbi.Content as RESTMethod;
+			var OP = lbi.Content as RestMethod;
 			if (OP == null) return;
 
 			DialogService.ShowMessageDialog("NETPath", "Delete Method?", "Are you sure you want to delete the '" + OP.ReturnType + " " + OP.ServerName + "' method?", new DialogAction("Yes", () => ServiceType.ServiceOperations.Remove(OP), true), new DialogAction("No", false, true));
@@ -246,7 +246,7 @@ namespace NETPath.Interface.REST
 
 		private void AddHttpWebConfiguration_Click(object Sender, RoutedEventArgs E)
 		{
-			var t = new RESTHTTPWebConfiguration(AddHttpConfigurationName.Text);
+			var t = new RestHTTPWebConfiguration(AddHttpConfigurationName.Text);
 			ServiceType.RequestConfigurations.Add(t);
 
 			AddHttpConfigurationName.Focus();
@@ -257,7 +257,7 @@ namespace NETPath.Interface.REST
 
 		private void AddHttpClientConfiguration_Click(object Sender, RoutedEventArgs E)
 		{
-			var t = new RESTHTTPClientConfiguration(AddHttpConfigurationName.Text);
+			var t = new RestHTTPClientConfiguration(AddHttpConfigurationName.Text);
 			ServiceType.RequestConfigurations.Add(t);
 
 			AddHttpConfigurationName.Focus();
@@ -268,13 +268,13 @@ namespace NETPath.Interface.REST
 
 		private void ConfigurationList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			var w = ConfigurationList.SelectedItem as RESTHTTPWebConfiguration;
-			var c = ConfigurationList.SelectedItem as RESTHTTPClientConfiguration;
+			var w = ConfigurationList.SelectedItem as RestHTTPWebConfiguration;
+			var c = ConfigurationList.SelectedItem as RestHTTPClientConfiguration;
 			if (w == null && c == null) return;
 
 
 			//Set the new item as selected.
-			foreach (RESTHTTPConfiguration o in ServiceType.RequestConfigurations)
+			foreach (RestHttpConfiguration o in ServiceType.RequestConfigurations)
 				o.IsSelected = false;
 			if (w != null)
 			{
@@ -291,7 +291,7 @@ namespace NETPath.Interface.REST
 		private void DeleteConfiguration_Click(object sender, RoutedEventArgs e)
 		{
 			var lbi = Globals.GetVisualParent<ListBoxItem>(sender);
-			var OP = lbi.Content as RESTHTTPConfiguration;
+			var OP = lbi.Content as RestHttpConfiguration;
 			if (OP == null) return;
 
 			DialogService.ShowMessageDialog("NETPath", "Delete HTTP Configuration?", "Are you sure you want to delete the '" + OP.Name + "' HTTP Configuration?", new DialogAction("Yes", () => ServiceType.RequestConfigurations.Remove(OP), true), new DialogAction("No", false, true));

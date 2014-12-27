@@ -181,10 +181,10 @@ namespace NETPath.Interface.Dialogs
 				else if (NIT.DataType == 7)
 				{
 					var NIN = NewItemProjectNamespaceList.SelectedItem as Projects.Namespace ?? ActiveProject.Namespace;
-					var NI = new Projects.RESTService(NewItemName.Text, NIN);
+					var NI = new Projects.RestService(NewItemName.Text, NIN);
 					foreach (var t in ActiveProject.ServerGenerationTargets) t.TargetTypes.Add(NI);
 					foreach (var t in ActiveProject.ClientGenerationTargets) t.TargetTypes.Add(NI);
-					NIN.RESTServices.Add(NI);
+					NIN.RestServices.Add(NI);
 					Globals.IsLoading = false;
 					OpenProjectItem(NI);
 				}

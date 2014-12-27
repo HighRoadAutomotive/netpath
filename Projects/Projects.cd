@@ -301,18 +301,18 @@
       <FileName>DataType.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="NETPath.Projects.RESTService">
+  <Class Name="NETPath.Projects.RestService">
     <Position X="6.25" Y="23" Width="3.75" />
     <TypeIdentifier>
       <HashCode>gUTgRAEamB0jAIpoEXRUICEikIlmIEAAoSCNiAygCzY=</HashCode>
-      <FileName>RESTService.cs</FileName>
+      <FileName>RestService.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="NETPath.Projects.RESTMethod">
+  <Class Name="NETPath.Projects.RestMethod">
     <Position X="10.25" Y="23" Width="3.75" />
     <TypeIdentifier>
       <HashCode>AAAgAADAQJQAmkqOMADgAgAEAAANCAECwJAQBAAEFCA=</HashCode>
-      <FileName>RESTService.cs</FileName>
+      <FileName>RestService.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Enum Name="NETPath.Projects.BindingSecurityAlgorithmSuite">

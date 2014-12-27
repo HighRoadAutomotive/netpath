@@ -539,20 +539,20 @@ namespace NETPath.Projects
 		public TransactionFlowMode OBTransactionFlowMode { get { return (TransactionFlowMode)GetValue(OBTransactionFlowModeProperty); } set { SetValue(OBTransactionFlowModeProperty, value); } }
 		public static readonly DependencyProperty OBTransactionFlowModeProperty = DependencyProperty.Register("OBTransactionFlowMode", typeof(TransactionFlowMode), typeof(Method), new PropertyMetadata(TransactionFlowMode.None));
 
-		// REST
-		public bool IsRESTMethod { get { return (bool)GetValue(IsRESTMethodProperty); } set { SetValue(IsRESTMethodProperty, value); } }
-		public static readonly DependencyProperty IsRESTMethodProperty = DependencyProperty.Register("IsRESTMethod", typeof(bool), typeof(Method), new PropertyMetadata(false, IsRESTMethodChangedCallback));
+		// Rest
+		public bool IsRestMethod { get { return (bool)GetValue(IsRestMethodProperty); } set { SetValue(IsRestMethodProperty, value); } }
+		public static readonly DependencyProperty IsRestMethodProperty = DependencyProperty.Register("IsRestMethod", typeof(bool), typeof(Method), new PropertyMetadata(false, IsRestMethodChangedCallback));
 
-		private static void IsRESTMethodChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		private static void IsRestMethodChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
 		{
 			var t = o as Method;
 			if (t == null) return;
 
-			t.REST = Convert.ToBoolean(e.NewValue) ? new MethodREST(t) : null;
+			t.Rest = Convert.ToBoolean(e.NewValue) ? new MethodRest(t) : null;
 		}
 
-		public MethodREST REST { get { return (MethodREST)GetValue(RESTProperty); } set { SetValue(RESTProperty, value); } }
-		public static readonly DependencyProperty RESTProperty = DependencyProperty.Register("REST", typeof(MethodREST), typeof(Method));
+		public MethodRest Rest { get { return (MethodRest)GetValue(RestProperty); } set { SetValue(RestProperty, value); } }
+		public static readonly DependencyProperty RestProperty = DependencyProperty.Register("Rest", typeof(MethodRest), typeof(Method));
 
 		public Method()
 		{
@@ -1096,30 +1096,30 @@ namespace NETPath.Projects
 		}
 	}
 
-	public class MethodREST : DependencyObject
+	public class MethodRest : DependencyObject
 	{
 		public Guid ID { get; private set; }
 
 		public string UriTemplate { get { return (string)GetValue(UriTemplateProperty); } set { SetValue(UriTemplateProperty, value); } }
-		public static readonly DependencyProperty UriTemplateProperty = DependencyProperty.Register("UriTemplate", typeof(string), typeof(MethodREST), new PropertyMetadata("/"));
+		public static readonly DependencyProperty UriTemplateProperty = DependencyProperty.Register("UriTemplate", typeof(string), typeof(MethodRest), new PropertyMetadata("/"));
 
-		public MethodRESTVerbs Method { get { return (MethodRESTVerbs)GetValue(MethodProperty); } set { SetValue(MethodProperty, value); } }
-		public static readonly DependencyProperty MethodProperty = DependencyProperty.Register("Method", typeof(MethodRESTVerbs), typeof(MethodREST), new PropertyMetadata(MethodRESTVerbs.GET));
+		public MethodRestVerbs Method { get { return (MethodRestVerbs)GetValue(MethodProperty); } set { SetValue(MethodProperty, value); } }
+		public static readonly DependencyProperty MethodProperty = DependencyProperty.Register("Method", typeof(MethodRestVerbs), typeof(MethodRest), new PropertyMetadata(MethodRestVerbs.GET));
 
 		public WebMessageBodyStyle BodyStyle { get { return (WebMessageBodyStyle)GetValue(BodyStyleProperty); } set { SetValue(BodyStyleProperty, value); } }
-		public static readonly DependencyProperty BodyStyleProperty = DependencyProperty.Register("BodyStyle", typeof(WebMessageBodyStyle), typeof(MethodREST), new PropertyMetadata(WebMessageBodyStyle.Bare));
+		public static readonly DependencyProperty BodyStyleProperty = DependencyProperty.Register("BodyStyle", typeof(WebMessageBodyStyle), typeof(MethodRest), new PropertyMetadata(WebMessageBodyStyle.Bare));
 
 		public WebMessageFormat RequestFormat { get { return (WebMessageFormat)GetValue(RequestFormatProperty); } set { SetValue(RequestFormatProperty, value); } }
-		public static readonly DependencyProperty RequestFormatProperty = DependencyProperty.Register("RequestFormat", typeof(WebMessageFormat), typeof(MethodREST), new PropertyMetadata(WebMessageFormat.Xml));
+		public static readonly DependencyProperty RequestFormatProperty = DependencyProperty.Register("RequestFormat", typeof(WebMessageFormat), typeof(MethodRest), new PropertyMetadata(WebMessageFormat.Xml));
 
 		public WebMessageFormat ResponseFormat { get { return (WebMessageFormat)GetValue(ResponseFormatProperty); } set { SetValue(ResponseFormatProperty, value); } }
-		public static readonly DependencyProperty ResponseFormatProperty = DependencyProperty.Register("ResponseFormat", typeof(WebMessageFormat), typeof(MethodREST), new PropertyMetadata(WebMessageFormat.Xml));
+		public static readonly DependencyProperty ResponseFormatProperty = DependencyProperty.Register("ResponseFormat", typeof(WebMessageFormat), typeof(MethodRest), new PropertyMetadata(WebMessageFormat.Xml));
 
 		public Method Owner { get; private set; }
 
-		public MethodREST() { }
+		public MethodRest() { }
 
-		public MethodREST(Method Owner)
+		public MethodRest(Method Owner)
 		{
 			ID = new Guid();
 			this.Owner = Owner;

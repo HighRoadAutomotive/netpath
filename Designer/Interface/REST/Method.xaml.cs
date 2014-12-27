@@ -18,12 +18,12 @@ using System.Windows.Shapes;
 using Prospective.Controls.Dialogs;
 using NETPath.Projects.Helpers;
 
-namespace NETPath.Interface.REST
+namespace NETPath.Interface.Rest
 {
 	internal partial class Method : Grid
 	{
-		public Projects.RESTMethod MethodData { get { return (Projects.RESTMethod)GetValue(MethodDataProperty); } set { SetValue(MethodDataProperty, value); } }
-		public static readonly DependencyProperty MethodDataProperty = DependencyProperty.Register("MethodData", typeof(Projects.RESTMethod), typeof(Method));
+		public Projects.RestMethod MethodData { get { return (Projects.RestMethod)GetValue(MethodDataProperty); } set { SetValue(MethodDataProperty, value); } }
+		public static readonly DependencyProperty MethodDataProperty = DependencyProperty.Register("MethodData", typeof(Projects.RestMethod), typeof(Method));
 
 		public Projects.Project ServiceProject { get { return (Projects.Project)GetValue(ServiceProjectProperty); } set { SetValue(ServiceProjectProperty, value); } }
 		public static readonly DependencyProperty ServiceProjectProperty = DependencyProperty.Register("ServiceProject", typeof(Projects.Project), typeof(Method));
@@ -42,7 +42,7 @@ namespace NETPath.Interface.REST
 			InitializeComponent();
 		}
 
-		public Method(Projects.RESTMethod Data)
+		public Method(Projects.RestMethod Data)
 		{
 			MethodData = Data;
 			ServiceProject = Data.Owner.Parent.Owner;
@@ -128,7 +128,7 @@ namespace NETPath.Interface.REST
 			DragHasLeftScope = true;
 			e.Handled = true;
 
-			foreach (Projects.RESTMethodParameter O in MethodData.Parameters)
+			foreach (Projects.RestMethodParameter O in MethodData.Parameters)
 			{
 				var lbi = (ListBoxItem)ValuesList.ItemContainerGenerator.ContainerFromItem(O);
 				if (lbi == null) continue;
@@ -161,7 +161,7 @@ namespace NETPath.Interface.REST
 			HitTestResult htr = VisualTreeHelper.HitTest(ValuesList, MP);
 			if (htr != null)
 			{
-				foreach (Projects.RESTMethodParameter O in MethodData.Parameters)
+				foreach (Projects.RestMethodParameter O in MethodData.Parameters)
 				{
 					var lbi = (ListBoxItem)ValuesList.ItemContainerGenerator.ContainerFromItem(O);
 					var lbiht = Globals.GetVisualParent<ListBoxItem>(htr.VisualHit);
@@ -186,7 +186,7 @@ namespace NETPath.Interface.REST
 		{
 			MethodData.Parameters.Move(DragItemStartIndex, DragItemNewIndex);
 
-			foreach (Projects.RESTMethodParameter O in MethodData.Parameters)
+			foreach (Projects.RestMethodParameter O in MethodData.Parameters)
 			{
 				var lbi = (ListBoxItem)ValuesList.ItemContainerGenerator.ContainerFromItem(O);
 				if (lbi == null) continue;
@@ -245,7 +245,7 @@ namespace NETPath.Interface.REST
 		private void AddParameter_Click(object sender, RoutedEventArgs e)
 		{
 			if (AddParameter.IsEnabled == false) return;
-			MethodData.Parameters.Add(new Projects.RESTMethodParameter(AddParameterType.OpenType, AddParameterName.Text, MethodData.Owner, MethodData));
+			MethodData.Parameters.Add(new Projects.RestMethodParameter(AddParameterType.OpenType, AddParameterName.Text, MethodData.Owner, MethodData));
 			AddParameterType.OpenType = null;
 			AddParameterType.Focus();
 			AddParameterName.Text = "";
@@ -285,7 +285,7 @@ namespace NETPath.Interface.REST
 		private void DeleteOperationParameter_Click(object sender, RoutedEventArgs e)
 		{
 			var lbi = Globals.GetVisualParent<ListBoxItem>(sender);
-			var OP = lbi.Content as Projects.RESTMethodParameter;
+			var OP = lbi.Content as Projects.RestMethodParameter;
 			if (OP == null) return;
 
 			DialogService.ShowMessageDialog("NETPath", "Delete Method Parameter?", "Are you sure you want to delete the '" + OP.Type + " " + OP.Name + "' method parameter?", new DialogAction("Yes", () => MethodData.Parameters.Remove(OP), true), new DialogAction("No", false, true));
@@ -300,8 +300,8 @@ namespace NETPath.Interface.REST
 		public override DataTemplate SelectTemplate(object item, DependencyObject container)
 		{
 			if (item == null) return WebTemplate;
-			if (item.GetType() == typeof(Projects.RESTHTTPWebConfiguration)) return WebTemplate;
-			if (item.GetType() == typeof(Projects.RESTHTTPClientConfiguration)) return ClientTemplate;
+			if (item.GetType() == typeof(Projects.RestHTTPWebConfiguration)) return WebTemplate;
+			if (item.GetType() == typeof(Projects.RestHTTPClientConfiguration)) return ClientTemplate;
 			return WebTemplate;
 		}
 	}

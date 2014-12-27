@@ -11,7 +11,7 @@
 	d:DesignHeight="620" d:DesignWidth="1390" UseLayoutRounding="True" >
 	<Grid.Resources>
 		<Service:ProtectionLevelConverter x:Key="ProtectionLevelConverter" />
-		<Service:MethodRESTVerbsConverter x:Key="MethodRESTVerbsConverter" />
+		<Service:MethodRestVerbsConverter x:Key="MethodRestVerbsConverter" />
 		<Service:WebMessageBodyStyleConverter x:Key="WebMessageBodyStyleConverter"/>
 		<Service:WebMessageFormatConverter x:Key="WebMessageFormatConverter" />
 		<Service:ImpersonationOptionConverter x:Key="ImpersonationOptionConverter" />
@@ -135,7 +135,7 @@
 					<ToggleButton Content="One Way" IsChecked="{Binding Path=MethodData.IsOneWay}" Margin="5" Grid.Column="5" Grid.Row="1" />
 					<Label Content="Contract Options:" Height="Auto" HorizontalAlignment="Right" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="3" />
 					<ToggleButton Content="Operation Behavior" IsChecked="{Binding Path=MethodData.HasOperationBehavior}" Margin="5" Grid.Column="1" Grid.Row="3" />
-					<ToggleButton Content="REST Method" IsChecked="{Binding Path=MethodData.IsRESTMethod}" Margin="5" Grid.Column="2" Grid.Row="3" />
+					<ToggleButton Content="Rest Method" IsChecked="{Binding Path=MethodData.IsRestMethod}" Margin="5" Grid.Column="2" Grid.Row="3" />
 					<ToggleButton Content="Hidden" IsChecked="{Binding Path=MethodData.IsHidden}" Margin="5" Grid.Column="4" Grid.Row="3" />
 					<Label Content="Protection:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="3" />
 					<ComboBox Height="23" Margin="90,5,5,5" SelectedIndex="{Binding Path=MethodData.ProtectionLevel, Converter={StaticResource ProtectionLevelConverter}}" Grid.Column="3" Grid.Row="3" >

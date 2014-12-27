@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace NETPath.Interface.REST
+namespace NETPath.Interface.Rest
 {
 	internal partial class HttpWebConfig : Grid
 	{
-		public Projects.RESTHTTPWebConfiguration HttpConfig { get { return (Projects.RESTHTTPWebConfiguration)GetValue(HttpConfigProperty); } set { SetValue(HttpConfigProperty, value); } }
-		public static readonly DependencyProperty HttpConfigProperty = DependencyProperty.Register("HttpConfig", typeof(Projects.RESTHTTPWebConfiguration), typeof(HttpWebConfig));
+		public Projects.RestHTTPWebConfiguration HttpConfig { get { return (Projects.RestHTTPWebConfiguration)GetValue(HttpConfigProperty); } set { SetValue(HttpConfigProperty, value); } }
+		public static readonly DependencyProperty HttpConfigProperty = DependencyProperty.Register("HttpConfig", typeof(Projects.RestHTTPWebConfiguration), typeof(HttpWebConfig));
 
-		public HttpWebConfig(Projects.RESTHTTPWebConfiguration HttpConfig)
+		public HttpWebConfig(Projects.RestHTTPWebConfiguration HttpConfig)
 		{
 			InitializeComponent();
 

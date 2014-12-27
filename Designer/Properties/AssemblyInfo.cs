@@ -8,7 +8,7 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("NETPath Designer")]
-[assembly: AssemblyDescription("A design environment and code generator for WCF and REST Web Services.")]
+[assembly: AssemblyDescription("A design environment and code generator for WCF and Rest Web Services.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("High Road Automotive Inc.")]
 [assembly: AssemblyProduct("NETPath")]

@@ -96,27 +96,27 @@ namespace NETPath.Interface.Service
 		}
 	}
 
-	[ValueConversion(typeof(Projects.MethodRESTVerbs), typeof(int))]
-	public class MethodRESTVerbsConverter : IValueConverter
+	[ValueConversion(typeof(Projects.MethodRestVerbs), typeof(int))]
+	public class MethodRestVerbsConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			var lt = (Projects.MethodRESTVerbs)value;
-			if (lt == Projects.MethodRESTVerbs.GET) return 0;
-			if (lt == Projects.MethodRESTVerbs.POST) return 1;
-			if (lt == Projects.MethodRESTVerbs.PUT) return 2;
-			if (lt == Projects.MethodRESTVerbs.DELETE) return 3;
+			var lt = (Projects.MethodRestVerbs)value;
+			if (lt == Projects.MethodRestVerbs.GET) return 0;
+			if (lt == Projects.MethodRestVerbs.POST) return 1;
+			if (lt == Projects.MethodRestVerbs.PUT) return 2;
+			if (lt == Projects.MethodRestVerbs.DELETE) return 3;
 			return 0;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			var lt = (int)value;
-			if (lt == 0) return Projects.MethodRESTVerbs.GET;
-			if (lt == 1) return Projects.MethodRESTVerbs.POST;
-			if (lt == 2) return Projects.MethodRESTVerbs.PUT;
-			if (lt == 3) return Projects.MethodRESTVerbs.DELETE;
-			return Projects.MethodRESTVerbs.GET;
+			if (lt == 0) return Projects.MethodRestVerbs.GET;
+			if (lt == 1) return Projects.MethodRestVerbs.POST;
+			if (lt == 2) return Projects.MethodRestVerbs.PUT;
+			if (lt == 3) return Projects.MethodRestVerbs.DELETE;
+			return Projects.MethodRestVerbs.GET;
 		}
 	}
 

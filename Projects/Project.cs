@@ -380,8 +380,8 @@ namespace NETPath.Projects
 				foreach (var t in ns.Services)
 					t.IsSelected = false;
 
-			if (tt == typeof(RESTService))
-				foreach (var t in ns.RESTServices)
+			if (tt == typeof(RestService))
+				foreach (var t in ns.RestServices)
 					t.IsSelected = false;
 
 			if (tt == typeof(Host))

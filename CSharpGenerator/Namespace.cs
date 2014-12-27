@@ -40,7 +40,7 @@ namespace NETPath.Generators.CS
 
 		public static string GenerateContractNamespaceAttributes(Namespace o, ProjectGenerationTarget target)
 		{
-			if (!target.TargetTypes.Intersect(o.Enums).Any() && !target.TargetTypes.Intersect(o.Data).Any() && !target.TargetTypes.Intersect(o.Services).Any() && !target.TargetTypes.Intersect(o.RESTServices).Any() && !target.TargetTypes.Intersect(o.Bindings).Any())
+			if (!target.TargetTypes.Intersect(o.Enums).Any() && !target.TargetTypes.Intersect(o.Data).Any() && !target.TargetTypes.Intersect(o.Services).Any() && !target.TargetTypes.Intersect(o.RestServices).Any() && !target.TargetTypes.Intersect(o.Bindings).Any())
 				return "";
 
 			var code = new StringBuilder();
@@ -55,12 +55,12 @@ namespace NETPath.Generators.CS
 
 		public static string GenerateServerCode45(Namespace o, ProjectGenerationTarget target)
 		{
-			if (!o.Children.Any() && !target.TargetTypes.Intersect(o.Enums).Any() && !target.TargetTypes.Intersect(o.Data).Any() && !target.TargetTypes.Intersect(o.Services).Any() && !target.TargetTypes.Intersect(o.RESTServices).Any() && !target.TargetTypes.Intersect(o.Bindings).Any() && !target.TargetTypes.Intersect(o.Hosts).Any())
+			if (!o.Children.Any() && !target.TargetTypes.Intersect(o.Enums).Any() && !target.TargetTypes.Intersect(o.Data).Any() && !target.TargetTypes.Intersect(o.Services).Any() && !target.TargetTypes.Intersect(o.RestServices).Any() && !target.TargetTypes.Intersect(o.Bindings).Any() && !target.TargetTypes.Intersect(o.Hosts).Any())
 				return "";
 
 			var code = new StringBuilder();
 
-			if (target.TargetTypes.Intersect(o.Enums).Any() || target.TargetTypes.Intersect(o.Data).Any() || target.TargetTypes.Intersect(o.Services).Any() || target.TargetTypes.Intersect(o.RESTServices).Any() || target.TargetTypes.Intersect(o.Bindings).Any() || target.TargetTypes.Intersect(o.Hosts).Any())
+			if (target.TargetTypes.Intersect(o.Enums).Any() || target.TargetTypes.Intersect(o.Data).Any() || target.TargetTypes.Intersect(o.Services).Any() || target.TargetTypes.Intersect(o.RestServices).Any() || target.TargetTypes.Intersect(o.Bindings).Any() || target.TargetTypes.Intersect(o.Hosts).Any())
 			{
 				code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
 				code.AppendLine("{");
@@ -135,18 +135,18 @@ namespace NETPath.Generators.CS
 					code.AppendLine();
 				}
 
-				if (target.TargetTypes.Intersect(o.RESTServices).Any())
+				if (target.TargetTypes.Intersect(o.RestServices).Any())
 				{
 					if (!o.Owner.GenerateRegions)
 					{
 						code.AppendLine("\t/**************************************************************************");
-						code.AppendLine("\t*\tREST Service Contracts");
+						code.AppendLine("\t*\tRest Service Contracts");
 						code.AppendLine("\t**************************************************************************/");
 					}
-					if (o.Owner.GenerateRegions) code.AppendLine("\t#region REST Service Contracts");
+					if (o.Owner.GenerateRegions) code.AppendLine("\t#region Rest Service Contracts");
 					code.AppendLine();
-					foreach (var se in target.TargetTypes.Intersect(o.RESTServices))
-						code.AppendLine(RESTServiceGenerator.GenerateServerCode((RESTService)se));
+					foreach (var se in target.TargetTypes.Intersect(o.RestServices))
+						code.AppendLine(RestServiceGenerator.GenerateServerCode((RestService)se));
 					if (o.Owner.GenerateRegions) code.AppendLine("\t#endregion");
 					code.AppendLine();
 				}
@@ -194,12 +194,12 @@ namespace NETPath.Generators.CS
 
 		public static string GenerateClientCode45(Namespace o, ProjectGenerationTarget target)
 		{
-			if (!o.Children.Any() && !target.TargetTypes.Intersect(o.Enums).Any() && !target.TargetTypes.Intersect(o.Data).Any() && !target.TargetTypes.Intersect(o.Services).Any() && !target.TargetTypes.Intersect(o.RESTServices).Any() && !target.TargetTypes.Intersect(o.Bindings).Any() && !target.TargetTypes.Intersect(o.Hosts).Any())
+			if (!o.Children.Any() && !target.TargetTypes.Intersect(o.Enums).Any() && !target.TargetTypes.Intersect(o.Data).Any() && !target.TargetTypes.Intersect(o.Services).Any() && !target.TargetTypes.Intersect(o.RestServices).Any() && !target.TargetTypes.Intersect(o.Bindings).Any() && !target.TargetTypes.Intersect(o.Hosts).Any())
 				return "";
 
 			var code = new StringBuilder();
 
-			if (target.TargetTypes.Intersect(o.Enums).Any() || target.TargetTypes.Intersect(o.Data).Any() || target.TargetTypes.Intersect(o.Services).Any() || target.TargetTypes.Intersect(o.RESTServices).Any() || target.TargetTypes.Intersect(o.Bindings).Any() || target.TargetTypes.Intersect(o.Hosts).Any())
+			if (target.TargetTypes.Intersect(o.Enums).Any() || target.TargetTypes.Intersect(o.Data).Any() || target.TargetTypes.Intersect(o.Services).Any() || target.TargetTypes.Intersect(o.RestServices).Any() || target.TargetTypes.Intersect(o.Bindings).Any() || target.TargetTypes.Intersect(o.Hosts).Any())
 			{
 				code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
 				code.AppendLine("{");
@@ -276,18 +276,18 @@ namespace NETPath.Generators.CS
 					code.AppendLine();
 				}
 
-				if (target.TargetTypes.Intersect(o.RESTServices).Any())
+				if (target.TargetTypes.Intersect(o.RestServices).Any())
 				{
 					if (!o.Owner.GenerateRegions)
 					{
 						code.AppendLine("\t/**************************************************************************");
-						code.AppendLine("\t*\tREST Service Contracts");
+						code.AppendLine("\t*\tRest Service Contracts");
 						code.AppendLine("\t**************************************************************************/");
 					}
-					if (o.Owner.GenerateRegions) code.AppendLine("\t#region REST Service Contracts");
+					if (o.Owner.GenerateRegions) code.AppendLine("\t#region Rest Service Contracts");
 					code.AppendLine();
-					foreach (var se in target.TargetTypes.Intersect(o.RESTServices))
-						code.AppendLine(RESTServiceGenerator.GenerateClientCode45((RESTService)se));
+					foreach (var se in target.TargetTypes.Intersect(o.RestServices))
+						code.AppendLine(RestServiceGenerator.GenerateClientCode45((RestService)se));
 					if (o.Owner.GenerateRegions) code.AppendLine("\t#endregion");
 					code.AppendLine();
 				}
@@ -319,12 +319,12 @@ namespace NETPath.Generators.CS
 
 		public static string GenerateClientCodeRT8(Namespace o, ProjectGenerationTarget target)
 		{
-			if (!o.Children.Any() && !target.TargetTypes.Intersect(o.Enums).Any() && !target.TargetTypes.Intersect(o.Data).Any() && !target.TargetTypes.Intersect(o.Services).Any() && !target.TargetTypes.Intersect(o.RESTServices).Any() && !target.TargetTypes.Intersect(o.Bindings).Any() && !target.TargetTypes.Intersect(o.Hosts).Any())
+			if (!o.Children.Any() && !target.TargetTypes.Intersect(o.Enums).Any() && !target.TargetTypes.Intersect(o.Data).Any() && !target.TargetTypes.Intersect(o.Services).Any() && !target.TargetTypes.Intersect(o.RestServices).Any() && !target.TargetTypes.Intersect(o.Bindings).Any() && !target.TargetTypes.Intersect(o.Hosts).Any())
 				return "";
 
 			var code = new StringBuilder();
 
-			if (target.TargetTypes.Intersect(o.Enums).Any() || target.TargetTypes.Intersect(o.Data).Any() || target.TargetTypes.Intersect(o.Services).Any() || target.TargetTypes.Intersect(o.RESTServices).Any() || target.TargetTypes.Intersect(o.Bindings).Any() || target.TargetTypes.Intersect(o.Hosts).Any())
+			if (target.TargetTypes.Intersect(o.Enums).Any() || target.TargetTypes.Intersect(o.Data).Any() || target.TargetTypes.Intersect(o.Services).Any() || target.TargetTypes.Intersect(o.RestServices).Any() || target.TargetTypes.Intersect(o.Bindings).Any() || target.TargetTypes.Intersect(o.Hosts).Any())
 			{
 				code.AppendFormat("namespace {0}{1}", o.FullName, Environment.NewLine);
 				code.AppendLine("{");
@@ -401,18 +401,18 @@ namespace NETPath.Generators.CS
 					code.AppendLine();
 				}
 
-				if (target.TargetTypes.Intersect(o.RESTServices).Any())
+				if (target.TargetTypes.Intersect(o.RestServices).Any())
 				{
 					if (!o.Owner.GenerateRegions)
 					{
 						code.AppendLine("\t/**************************************************************************");
-						code.AppendLine("\t*\tREST Service Contracts");
+						code.AppendLine("\t*\tRest Service Contracts");
 						code.AppendLine("\t**************************************************************************/");
 					}
-					if (o.Owner.GenerateRegions) code.AppendLine("\t#region REST Service Contracts");
+					if (o.Owner.GenerateRegions) code.AppendLine("\t#region Rest Service Contracts");
 					code.AppendLine();
-					foreach (var se in target.TargetTypes.Intersect(o.RESTServices))
-						code.AppendLine(RESTServiceGenerator.GenerateClientCode45((RESTService)se));
+					foreach (var se in target.TargetTypes.Intersect(o.RestServices))
+						code.AppendLine(RestServiceGenerator.GenerateClientCode45((RestService)se));
 					if (o.Owner.GenerateRegions) code.AppendLine("\t#endregion");
 					code.AppendLine();
 				}

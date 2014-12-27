@@ -16,10 +16,10 @@ using NETPath.Projects.Helpers;
 
 namespace NETPath.Generators.CS
 {
-	internal static class RESTServiceGenerator
+	internal static class RestServiceGenerator
 	{
 
-		public static void VerifyCode(RESTService o, Action<CompileMessage> AddMessage)
+		public static void VerifyCode(RestService o, Action<CompileMessage> AddMessage)
 		{
 			if (string.IsNullOrEmpty(o.Name))
 				AddMessage(new CompileMessage("GS2000", "An service in the '" + o.Parent.Name + "' namespace has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
@@ -29,10 +29,10 @@ namespace NETPath.Generators.CS
 				if (RegExs.MatchCodeName.IsMatch(o.ClientType.Name) == false)
 					AddMessage(new CompileMessage("GS2002", "The service '" + o.Name + "' in the '" + o.Parent.Name + "' namespace contains invalid characters in the Client Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType(), o.Parent.Owner.ID));
 
-			var Operations = new ObservableCollection<RESTMethod>();
+			var Operations = new ObservableCollection<RestMethod>();
 			Operations.AddRange(o.ServiceOperations);
 
-			foreach (RESTMethod m in Operations)
+			foreach (RestMethod m in Operations)
 			{
 				if (string.IsNullOrEmpty(m.Name))
 					AddMessage(new CompileMessage("GS2004", "An method in the '" + o.Name + "' service has a blank Code Name. A Code Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
@@ -47,18 +47,20 @@ namespace NETPath.Generators.CS
 				if (m.ReturnType == null)
 					AddMessage(new CompileMessage("GS2007", "The method '" + m.Name + "' in the '" + o.Name + "' service has a blank Return Type. A Return Type MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
 				else if (m.ReturnType.TypeMode == DataTypeMode.Primitive && (m.ReturnType.Primitive == PrimitiveTypes.Void || m.ReturnType.Primitive == PrimitiveTypes.None))
-					AddMessage(new CompileMessage("GS2012", "The method return type '" + m.ReturnType + "' in the '" + o.Name + "' service is not a valid REST return type. Please specify a valid REST return type.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
+					AddMessage(new CompileMessage("GS2012", "The method return type '" + m.ReturnType + "' in the '" + o.Name + "' service is not a valid Rest return type. Please specify a valid Rest return type.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
 				if (m.ReturnType.TypeMode == DataTypeMode.Namespace || m.ReturnType.TypeMode == DataTypeMode.Interface)
 					AddMessage(new CompileMessage("GS2013", "The method return type '" + m.ReturnType + "' in the '" + o.Name + "' service is not a valid return type. Please specify a valid return type.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
 				if (m.RequestConfiguration == null)
 					AddMessage(new CompileMessage("GS2017", "The Request Configuration type in method '" + m.Name + "' in the '" + o.Name + "' service is not set. A Request Configuration MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
 
-				foreach (RESTMethodParameter mp in m.Parameters)
+				foreach (var mp in m.Parameters)
 				{
 					if (string.IsNullOrEmpty(mp.Name))
-						AddMessage(new CompileMessage("GS2008", "The method parameter '" + m.Name + "' in the '" + o.Name + "' service has a parameter with a blank name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
-					//if (mp.IsRESTInvalid)
-					//	AddMessage(new CompileMessage("GS2009", "The method REST parameter '" + m.Name + "' in the '" + m.Name + "' method is not a valid REST parameter. Please specify a valid REST parameter.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
+						AddMessage(new CompileMessage("GS2008", "The method parameter '" + m.Name + "' in the '" + o.Name + "' service has a blank parameter name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
+					if (string.IsNullOrEmpty(mp.Name))
+						AddMessage(new CompileMessage("GS20018", "The method parameter '" + m.Name + "' in the '" + o.Name + "' service has a blank route name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
+					//if (mp.IsRestInvalid)
+					//	AddMessage(new CompileMessage("GS2009", "The method Rest parameter '" + m.Name + "' in the '" + m.Name + "' method is not a valid Rest parameter. Please specify a valid Rest parameter.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
 					if (mp.Name == "__callback")
 						AddMessage(new CompileMessage("GS2016", "The name of the method parameter '" + mp.Name + "' in the '" + m.Name + "' method is invalid. Please rename it.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
 				}
@@ -67,7 +69,7 @@ namespace NETPath.Generators.CS
 
 		#region - Server Interfaces -
 
-		public static string GenerateServerCode(RESTService o)
+		public static string GenerateServerCode(RestService o)
 		{
 			var code = new StringBuilder();
 
@@ -106,7 +108,7 @@ namespace NETPath.Generators.CS
 				code.AppendLine();
 			}
 
-			foreach (RESTMethod m in o.ServiceOperations)
+			foreach (RestMethod m in o.ServiceOperations)
 				code.AppendLine(GenerateServerProxyMethod(m));
 			if (o.Parent.Owner.GenerateRegions)
 			{
@@ -122,7 +124,7 @@ namespace NETPath.Generators.CS
 
 		#region - Client Interfaces -
 
-		public static string GenerateClientCode45(RESTService o)
+		public static string GenerateClientCode45(RestService o)
 		{
 			var code = new StringBuilder();
 
@@ -133,14 +135,27 @@ namespace NETPath.Generators.CS
 			code.AppendLine("\t{");
 			code.AppendLine();
 			code.AppendLine("\t\tprivate readonly string _baseUri;");
-			code.AppendLine("\t\tprivate static readonly System.Net.Http.Headers.HttpRequestHeaders _requestHeaders = new System.Net.Http.HttpRequestMessage().Headers;");
-			code.AppendLine("\t\tprivate static readonly System.Net.Http.Headers.HttpContentHeaders _contentHeaders = new System.Net.Http.HttpContent().Headers;");
+			code.AppendLine("\t\tprivate readonly CookieContainer _cookies;");
+			code.AppendLine("\t\tprivate readonly CredentialCache _credentialCache;");
+			code.AppendLine("\t\tprivate readonly NetworkCredential _credentials;");
+			code.AppendLine("\t\tprivate readonly IWebProxy _proxy;");
+			code.AppendLine("\t\tprivate readonly System.Net.Http.Headers.HttpRequestHeaders _requestHeaders = new System.Net.Http.HttpRequestMessage().Headers;");
+			code.AppendLine("\t\tprivate readonly System.Net.Http.Headers.HttpContentHeaders _contentHeaders = new System.Net.Http.StringContent(\"\").Headers;");
+
+			code.AppendLine("\t\tpublic string BaseUri { get { return _baseUri; } }");
+			code.AppendLine("\t\tpublic CookieContainer Cookies { get { return _cookies; } }");
+			code.AppendLine("\t\tpublic CredentialCache CredentialCache { get { return _credentialCache; } }");
+			code.AppendLine("\t\tpublic NetworkCredential Credentials { get { return _credentials; } ");
+			code.AppendLine("\t\tpublic IWebProxy Proxy { get { return _proxy; } }");
+			code.AppendLine("\t\tpublic HttpRequestHeaders DefaultRequestHeaders { get { return _requestHeaders; } }");
+            code.AppendLine("\t\tpublic HttpContentHeaders DefaultContentHeaders { get { return _contentHeaders; } }");
+
 			if (o.Parent.Owner.GenerateRegions)
 			{
 				code.AppendLine("\t\t#region Request Configurations");
 				code.AppendLine();
 			}
-			foreach (RESTHTTPConfiguration c in o.RequestConfigurations.Where(a => a.GetType() == typeof(RESTHTTPConfiguration)).Select(t => t).Where(c => o.ServiceOperations.Any(a => Equals(a.RequestConfiguration, c))))
+			foreach (RestHttpConfiguration c in o.RequestConfigurations.Where(a => a.GetType() == typeof(RestHttpConfiguration)).Select(t => t).Where(c => o.ServiceOperations.Any(a => Equals(a.RequestConfiguration, c))))
 			{
 				code.AppendLine(string.Format("\t\tprivate System.Net.Http.HttpClient _{0}Client;", RegExs.ReplaceSpaces.Replace(c.Name, "")));
 				code.AppendLine(string.Format("\t\tprotected System.Net.Http.HttpClient {0}Client {{ get {{ return _{0}Client; }} }}", RegExs.ReplaceSpaces.Replace(c.Name, "")));
@@ -156,18 +171,22 @@ namespace NETPath.Generators.CS
 				code.AppendLine("\t\t#region Constructors");
 				code.AppendLine();
 			}
-			code.AppendLine(string.Format("\t\t{1} {0}{2}(string BaseURI = \"{3}\")", o.Name, o.Abstract ? "protected" : "public", o.Abstract ? "Base" : "", o.Parent.Owner.Namespace.URI));
+			code.AppendLine(string.Format("\t\t{1} {0}{2}(string BaseURI = \"{3}\", CookieContainer cookies = null, NetworkCredential credentials = null, CredentialCache credentialCache = null, IWebProxy proxy = null)", o.Name, o.Abstract ? "protected" : "public", o.Abstract ? "Base" : "", o.Parent.Owner.Namespace.URI));
 			code.AppendLine("\t\t{");
 			code.AppendLine("\t\t\t_baseUri = BaseURI;");
 			code.AppendLine("\t\t\tif (_baseUri.EndsWith(\"/\")) _baseUri = _baseUri.Remove(_baseUri.Length - 1, 1);");
+			code.AppendLine("\t\t\t_cookies = cookies ?? new CookieContainer();");
+			code.AppendLine("\t\t\t_credentials = credentials;");
+			code.AppendLine("\t\t\t_credentialCache = credentialCache;");
+			code.AppendLine("\t\t\t_proxy = proxy;");
 			code.AppendLine("\t\t\tInitialize();");
 			code.AppendLine("\t\t}");
 			code.AppendLine("\t\tprivate void Initialize()");
 			code.AppendLine("\t\t{");
-			foreach (RESTHTTPConfiguration c in o.RequestConfigurations.Where(a => a.GetType() == typeof(RESTHTTPConfiguration)).Select(t => t).Where(c => o.ServiceOperations.Any(a => Equals(a.RequestConfiguration, c))))
+			foreach (RestHttpConfiguration c in o.RequestConfigurations.Where(a => a.GetType() == typeof(RestHttpConfiguration)).Select(t => t).Where(c => o.ServiceOperations.Any(a => Equals(a.RequestConfiguration, c))))
 				code.AppendLine(string.Format("\t\t\t_{0}Client = new System.Net.Http.HttpClient(new System.Net.Http.HttpClientHandler() {{ AllowAutoRedirect = {1}, AutomaticDecompression = System.Net.DecompressionMethods.{2}, ClientCertificateOptions = System.Net.Http.ClientCertificateOption.{3}, CookieContainer = {4}, Credentials = (this.Credentials == null) ? (ICredentials)this.CredentialCache : (ICredentials)this.Credentials, MaxAutomaticRedirections = {5}, MaxRequestContentBufferSize = {6}, PreAuthenticate = {7}, Proxy = this.Proxy, UseCookies = {8}, UseDefaultCredentials = {9}, UseProxy = {10} }});",
 					RegExs.ReplaceSpaces.Replace(c.Name, ""), c.AllowAutoRedirect ? bool.TrueString.ToLower() : bool.FalseString.ToLower(), c.AutomaticDecompression, c.ClientCertificateOptions,
-					c.CookieContainerMode == CookieContainerMode.None ? "null" : c.CookieContainerMode == CookieContainerMode.Global ? "GlobalCookies" : c.CookieContainerMode == CookieContainerMode.Instance ? "Cookies" : "new CookieContainer()",
+					c.CookieContainerMode == CookieContainerMode.None ? "null" : c.CookieContainerMode == CookieContainerMode.Instance ? "new CookieContainer()" : "Cookies",
 					c.MaxAutomaticRedirections, c.MaxRequestContentBufferSize, c.PreAuthenticate ? bool.TrueString.ToLower() : bool.FalseString.ToLower(),
 					(c.CookieContainerMode == CookieContainerMode.None || c.CookieContainerMode == CookieContainerMode.Custom) ? bool.FalseString.ToLower() : bool.TrueString.ToLower(),
 					c.UseDefaultCredentials ? bool.TrueString.ToLower() : bool.FalseString.ToLower(), c.UseProxy ? bool.TrueString.ToLower() : bool.FalseString.ToLower()));
@@ -183,7 +202,7 @@ namespace NETPath.Generators.CS
 				code.AppendLine("\t\t#region Methods");
 				code.AppendLine();
 			}
-			foreach (RESTMethod m in o.ServiceOperations.Where(a => a.RequestConfiguration.GetType() == typeof(RESTHTTPConfiguration)))
+			foreach (RestMethod m in o.ServiceOperations.Where(a => a.RequestConfiguration.GetType() == typeof(RestHttpConfiguration)))
 				code.AppendLine(m.ClientAsync ? GenerateClientMethodClientAsync45(m) : GenerateClientMethodClient45(m));
 			if (o.Parent.Owner.GenerateRegions)
 			{
@@ -199,18 +218,18 @@ namespace NETPath.Generators.CS
 
 		#region - Server Controller Methods -
 
-		private static string BuildUriTemplate(RESTMethod o)
+		private static string BuildUriTemplate(RestMethod o)
 		{
 			var uriBuilder = new StringBuilder(512);
 
 			foreach (var pp in o.Parameters.Where(a => a.IsPath))
 				uriBuilder.AppendFormat("/{{{0}}}", pp.RouteName);
 
-			if (!o.Parameters.OfType<RESTMethodParameter>().Any(a => a.IsQuery)) return uriBuilder.ToString();
+			if (!o.Parameters.OfType<RestMethodParameter>().Any(a => a.IsQuery)) return uriBuilder.ToString();
 
 			uriBuilder.Append("?");
 
-			foreach (var pq in o.Parameters.OfType<RESTMethodParameter>().Where(a => a.IsQuery))
+			foreach (var pq in o.Parameters.OfType<RestMethodParameter>().Where(a => a.IsQuery))
 				uriBuilder.AppendFormat("&{0}={{{0}}}", pq.RouteName);
 
 			uriBuilder.Replace("?&", "?");
@@ -218,7 +237,7 @@ namespace NETPath.Generators.CS
 			return uriBuilder.ToString();
 		}
 
-		public static string GenerateServerProxyMethod(RESTMethod o)
+		public static string GenerateServerProxyMethod(RestMethod o)
 		{
 			if (o.IsHidden) return "";
 			var code = new StringBuilder();
@@ -226,12 +245,12 @@ namespace NETPath.Generators.CS
 			if (o.Documentation != null)
 			{
 				code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-				foreach (var mp in o.Parameters.OfType<RESTMethodParameter>().Where(mp => mp.Documentation != null))
+				foreach (var mp in o.Parameters.OfType<RestMethodParameter>().Where(mp => mp.Documentation != null))
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 			}
 			code.AppendLine(string.Format("\t\t[System.Web.Http.Route(\"{0}\")]", BuildUriTemplate(o)));
 			code.AppendFormat("\t\tpublic abstract {0} {1}(", o.ServerAsync ? o.ReturnType.IsVoid ? "Task" : string.Format("Task<{0}>", DataTypeGenerator.GenerateType(o.ReturnType)) : DataTypeGenerator.GenerateType(o.ReturnType), o.Name);
-			foreach (var op in o.Parameters.OfType<RESTMethodParameter>())
+			foreach (var op in o.Parameters.OfType<RestMethodParameter>())
 				code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
 			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
 			code.AppendLine(");");
@@ -242,7 +261,7 @@ namespace NETPath.Generators.CS
 
 		#region - Client HttpClient Methods -
 
-		public static string GenerateClientMethodClient45(RESTMethod o)
+		public static string GenerateClientMethodClient45(RestMethod o)
 		{
 			if (o.IsHidden) return "";
 			var conf = o.RequestConfiguration;
@@ -250,44 +269,35 @@ namespace NETPath.Generators.CS
 			if (o.Documentation != null)
 			{
 				code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-				foreach (var mp in o.Parameters.OfType<RESTMethodParameter>().Where(mp => mp.Documentation != null))
+				foreach (var mp in o.Parameters.OfType<RestMethodParameter>().Where(mp => mp.Documentation != null))
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
-				if (!o.UseDefaultHeaders)
-				{
-					code.AppendLine(string.Format("\t\t///<param name='requestHeaders'>Request Headers specific to this method.</param>"));
-					code.AppendLine(string.Format("\t\t///<param name='contentHeaders'>Content Headers specific to this method.</param>"));
-				}
 			}
 			code.AppendFormat("\t\tpublic virtual async void {0}(", o.Name);
-			foreach (var op in o.Parameters.OfType<RESTMethodParameter>())
+			foreach (var op in o.Parameters.OfType<RestMethodParameter>())
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
-			if (o.UseDefaultHeaders && o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
-			code.AppendLine(!o.UseDefaultHeaders ? "System.Net.Http.Headers.HttpRequestHeaders requestHeaders = null, System.Net.Http.Headers.HttpContentHeaders contentHeaders = null)" : ")");
+			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+			code.AppendLine(")");
 			code.AppendLine("\t\t{");
 			GenerateMethodPreamble(code, o.ClientPreambleCode, 3);
 
-			code.AppendLine("\t\t\tvar uri = StringBuilder(_baseUri, 256);");
+			//Construct the URI
+			code.AppendLine("\t\t\tvar uri = StringBuilder(_baseUri, 2048);");
 			foreach (var op in o.Parameters.Where(a => a.IsPath))
 			{
-				if (op.GetType() == typeof (RESTRouteParameter))
-					code.AppendLine("\t\t\turi.Append(\"\");");
+				if (op.GetType() == typeof (RestRouteParameter))
+					code.AppendLine(string.Format("\t\t\turi.Append(\"/{0}\");", op.RouteName));
+				if (op.GetType() == typeof (RestMethodParameter))
+					code.AppendLine(string.Format("\t\t\turi.Append(\"/{{0}}\", {0});", op.Name));
 			}
+			if (o.Parameters.OfType<RestMethodParameter>().Any(a => a.IsQuery && !a.Serialize))
+				code.AppendLine("\t\t\turi.Append(\"?\"");
+			foreach (var op in o.Parameters.OfType<RestMethodParameter>().Where(a => a.IsQuery && !a.Serialize))
+				code.AppendLine(string.Format(!op.Nullable ? "\t\t\turi.Append(\"&{0}={{0}}\", {1});" : "\t\t\tif ({1} != null) uri.Append(\"&{0}={{0}}\", {1});", op.RouteName, op.Name));
+			code.AppendLine("\t\t\turi.Replace(\"?&\", \"?\"");
 
-			code.AppendLine(string.Format("\t\t\tvar urisb = new StringBuilder(\"{1}{0}\", 1024);", o.UriTemplate, o.RequestConfiguration.UriIncludesMethodName ? o.Name : ""));
-			foreach (var op in o.Parameters.OfType<RESTMethodParameter>().Where(a => !a.Serialize && a.IsPath))
-				code.AppendLine(string.Format("\t\t\tBuildUri<{2}>(urisb, \"{1}\", UriBuildMode.Path, {0});", op.Name, op.RestName, DataTypeGenerator.GenerateType(op.Type)));
-			if (o.Parameters.Any(a => a.IsQuery) && !o.UriTemplate.Contains("?"))
-				code.AppendLine("\t\t\turisb.Append(\"?\");");
-			foreach (var op in o.Parameters.OfType<RESTMethodParameter>().Where(a => !a.Serialize && a.IsQuery))
+			if (o.Parameters.OfType<RestMethodParameter>().Any(a => a.Serialize))
 			{
-				if (op.Nullable)
-					code.AppendLine(string.Format("\t\t\tif ({0}.HasValue) BuildUri<{2}>(urisb, \"{1}\", UriBuildMode.Query, {0}.Value);", op.Name, op.RestName, DataTypeGenerator.GenerateType(op.Type)));
-				else
-					code.AppendLine(string.Format("\t\t\tBuildUri<{2}>(urisb, \"{1}\", UriBuildMode.Query, {0});", op.Name, op.RestName, DataTypeGenerator.GenerateType(op.Type)));
-			}
-			if (o.Parameters.Any(a => a.Serialize))
-			{
-				var p = o.Parameters.First(a => a.Serialize);
+				var p = o.Parameters.OfType<RestMethodParameter>().First(a => a.Serialize);
 				var pt = p.Type;
 				if (o.ResponseFormat == WebMessageFormat.Json && pt.TypeMode != DataTypeMode.Primitive) code.AppendLine(string.Format("\t\t\tvar rd = new System.Net.Http.ByteArrayContent(Encoding.UTF8.GetBytes(SerializeJson<{0}>({1})));", DataTypeGenerator.GenerateType(pt), p.Name));
 				if (o.ResponseFormat == WebMessageFormat.Xml && pt.TypeMode != DataTypeMode.Primitive) code.AppendLine(string.Format("\t\t\tvar rd = new System.Net.Http.ByteArrayContent(Encoding.UTF8.GetBytes(SerializeXml<{0}>({1})));", DataTypeGenerator.GenerateType(pt), p.Name));
@@ -299,7 +309,7 @@ namespace NETPath.Generators.CS
 			code.AppendLine(
 				string.Format(
 					"\t\t\tvar rm = CreateHttpClientRequest(new Uri(BaseUri, urisb.ToString()).ToString(), System.Net.Http.HttpMethod.{0}{1}{2}{3});",
-					o.Method == MethodRESTVerbs.GET ? "Get" : o.Method == MethodRESTVerbs.POST ? "Post" : o.Method == MethodRESTVerbs.PUT ? "Put" : "Delete",
+					o.Method,
 					o.Parameters.Any(a => a.Serialize) ? ", rd" : "",
 					o.RequestConfiguration.UseHTTP10 ? ", true" : "",
 					!o.UseDefaultHeaders ? ", headers.Headers, ignoreDefaultHeaders" : ""));
@@ -352,7 +362,7 @@ namespace NETPath.Generators.CS
 			return code.ToString();
 		}
 
-		public static string GenerateClientMethodClientAsync45(RESTMethod o)
+		public static string GenerateClientMethodClientAsync45(RestMethod o)
 		{
 			if (o.IsHidden) return "";
 			var code = new StringBuilder();
@@ -360,7 +370,7 @@ namespace NETPath.Generators.CS
 			if (o.Documentation != null)
 			{
 				code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-				foreach (var mp in o.Parameters.OfType<RESTMethodParameter>().Where(mp => mp.Documentation != null))
+				foreach (var mp in o.Parameters.OfType<RestMethodParameter>().Where(mp => mp.Documentation != null))
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 				if (!o.UseDefaultHeaders)
 				{
@@ -378,7 +388,7 @@ namespace NETPath.Generators.CS
 				if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendFormat("\t\tpublic async virtual System.Threading.Tasks.Task {0}Async(", o.ServerName);
 				else code.AppendFormat("\t\tpublic async virtual System.Threading.Tasks.Task<{0}> {1}Async(", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName);
 			}
-			foreach (RESTMethodParameter op in o.Parameters)
+			foreach (RestMethodParameter op in o.Parameters)
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 			if (o.UseDefaultHeaders && o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
 			code.AppendLine(!o.UseDefaultHeaders ? "RestHttpClientRequestHeaders headers = null, bool ignoreDefaultHeaders = false)" : ")");
@@ -386,11 +396,11 @@ namespace NETPath.Generators.CS
 			GenerateMethodPreamble(code, o.ClientPreambleCode, 3);
 			code.AppendLine("\t\t\tSystem.Net.Http.HttpResponseMessage rr = null;");
 			code.AppendLine(string.Format("\t\t\tvar urisb = new StringBuilder(\"{1}{0}\", 1024);", o.UriTemplate, o.RequestConfiguration.UriIncludesMethodName ? o.ServerName : ""));
-			foreach (RESTMethodParameter op in o.Parameters.Where(a => !a.Serialize && a.IsPath))
+			foreach (RestMethodParameter op in o.Parameters.Where(a => !a.Serialize && a.IsPath))
 				code.AppendLine(string.Format("\t\t\tBuildUri<{2}>(urisb, \"{1}\", UriBuildMode.Path, {0});", op.Name, op.RestName, DataTypeGenerator.GenerateType(op.Type)));
 			if (o.Parameters.Any(a => a.IsQuery) && !o.UriTemplate.Contains("?"))
 				code.AppendLine("\t\t\turisb.Append(\"?\");");
-			foreach (RESTMethodParameter op in o.Parameters.Where(a => !a.Serialize && a.IsQuery))
+			foreach (RestMethodParameter op in o.Parameters.Where(a => !a.Serialize && a.IsQuery))
 			{
 				if (op.Nullable)
 					code.AppendLine(string.Format("\t\t\tif ({0}.HasValue) BuildUri<{2}>(urisb, \"{1}\", UriBuildMode.Query, {0}.Value);", op.Name, op.RestName, DataTypeGenerator.GenerateType(op.Type)));
@@ -411,7 +421,7 @@ namespace NETPath.Generators.CS
 			code.AppendLine(
 				string.Format(
 					"\t\t\tvar rm = CreateHttpClientRequest(new Uri(BaseUri, urisb.ToString()).ToString(), System.Net.Http.HttpMethod.{0}{1}{2}{3});",
-					o.Method == MethodRESTVerbs.GET ? "Get" : o.Method == MethodRESTVerbs.POST ? "Post" : o.Method == MethodRESTVerbs.PUT ? "Put" : "Delete",
+					o.Method == MethodRestVerbs.GET ? "Get" : o.Method == MethodRestVerbs.POST ? "Post" : o.Method == MethodRestVerbs.PUT ? "Put" : "Delete",
 					o.Parameters.Any(a => a.Serialize) ? ", rd" : "",
 					o.RequestConfiguration.UseHTTP10 ? ", true" : "",
 					!o.UseDefaultHeaders ? ", headers.Headers, ignoreDefaultHeaders" : ""));
@@ -463,12 +473,12 @@ namespace NETPath.Generators.CS
 
 		#region - Method Parameters -
 
-		public static string GenerateMethodParameterServerCode(RESTMethodParameter o)
+		public static string GenerateMethodParameterServerCode(RestMethodParameter o)
 		{
 			return o.IsHidden ? "" : string.Format("{0}{2} {1}", DataTypeGenerator.GenerateType(o.Type), o.Name, o.Nullable ? "?" : "");
 		}
 
-		public static string GenerateMethodParameterClientCode(RESTMethodParameter o)
+		public static string GenerateMethodParameterClientCode(RestMethodParameter o)
 		{
 			if (o.IsHidden) return "";
 

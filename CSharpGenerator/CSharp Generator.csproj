@@ -60,7 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bindings.cs" />
-    <Compile Include="RESTService.cs" />
+    <Compile Include="RestService.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="DataType.cs" />
     <Compile Include="Documentation.cs" />

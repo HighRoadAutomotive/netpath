@@ -15,7 +15,7 @@
 
 	<SolidColorBrush x:Key="NamespaceContainerColor" Color="#44000099" />
 	<SolidColorBrush x:Key="ServiceContainerColor" Color="#AA006600" />
-	<SolidColorBrush x:Key="RESTContainerColor" Color="#AA669933" />
+	<SolidColorBrush x:Key="RestContainerColor" Color="#AA669933" />
 	<SolidColorBrush x:Key="DataContainerColor" Color="#AA006699" />
 	<SolidColorBrush x:Key="EnumContainerColor" Color="#AA0033FF" />
 	<SolidColorBrush x:Key="HostContainerColor" Color="#AA660000" />
@@ -155,12 +155,12 @@
 	</DataTemplate>
 
 
-	<!-- REST Templates -->
-	<Style x:Key="RESTContainerTemplate" TargetType="{x:Type ToggleButton}">
+	<!-- Rest Templates -->
+	<Style x:Key="RestContainerTemplate" TargetType="{x:Type ToggleButton}">
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
 		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
 		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
-		<Setter Property="Background" Value="{StaticResource RESTContainerColor}"/>
+		<Setter Property="Background" Value="{StaticResource RestContainerColor}"/>
 		<Setter Property="BorderBrush" Value="{StaticResource DefaultBorderColor}"/>
 		<Setter Property="IsChecked" Value="{Binding Path=IsTreeExpanded}" />
 		<Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -214,7 +214,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	<DataTemplate x:Key="RESTItemTemplate" DataType="{x:Type wap:RESTService}">
+	<DataTemplate x:Key="RestItemTemplate" DataType="{x:Type wap:RestService}">
 		<Border Background="#01FFFFFF">
 			<Border.ToolTip>
 				<StackPanel Orientation="Vertical">
@@ -222,7 +222,7 @@
 				</StackPanel>
 			</Border.ToolTip>
 			<StackPanel Orientation="Horizontal" >
-				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/REST.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
+				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/Rest.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="11pt" />
 			</StackPanel>
 		</Border>
@@ -737,7 +737,7 @@
 				<StackPanel Orientation="Vertical" Margin="5,5,0,5">
 					<local:ProjectList x:Name="SubItems1" ItemsSource="{Binding Path=Children}" ItemContainerStyle="{StaticResource NamespaceContainerTemplate}" ItemTemplate="{DynamicResource NamespaceItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
 					<local:ProjectList x:Name="SubItems2" ItemsSource="{Binding Path=Services}" ItemContainerStyle="{StaticResource ServiceContainerTemplate}" ItemTemplate="{StaticResource ServiceItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
-					<local:ProjectList x:Name="SubItems7" ItemsSource="{Binding Path=RESTServices}" ItemContainerStyle="{StaticResource RESTContainerTemplate}" ItemTemplate="{StaticResource RESTItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
+					<local:ProjectList x:Name="SubItems7" ItemsSource="{Binding Path=RestServices}" ItemContainerStyle="{StaticResource RestContainerTemplate}" ItemTemplate="{StaticResource RestItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
 					<local:ProjectList x:Name="SubItems3" ItemsSource="{Binding Path=Data}" ItemContainerStyle="{StaticResource DataContainerTemplate}" ItemTemplate="{StaticResource DataItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
 					<local:ProjectList x:Name="SubItems4" ItemsSource="{Binding Path=Enums}" ItemContainerStyle="{StaticResource EnumContainerTemplate}" ItemTemplate="{StaticResource EnumItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
 					<local:ProjectItemList x:Name="SubItems5" ItemsSource="{Binding Path=Bindings}" ItemContainerStyle="{StaticResource BindingContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListBindingTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />

@@ -17,13 +17,13 @@ namespace NETPath.Projects
 			if (!File.Exists(Path))
 				throw new FileNotFoundException("Unable to locate file '" + Path + "'");
 
-			var kt = new List<Type>(new Type[] { 
+			var kt = new List<Type>(new Type[] {
 				typeof(Project), typeof(ProjectGenerationTarget), typeof(DataType), typeof(Namespace), typeof(Documentation),
 				typeof(BindingSecurity), typeof(BindingSecurityBasicHTTP), typeof(BindingSecurityBasicHTTPS), typeof(BindingSecurityMSMQ), typeof(BindingSecurityMSMQIntegration), typeof(BindingSecurityNamedPipe), typeof(BindingSecurityPeerTCP), typeof(BindingSecurityTCP), typeof(BindingSecurityWebHTTP), typeof(BindingSecurityWSDualHTTP), typeof(BindingSecurityWSFederationHTTP), typeof(BindingSecurityWSHTTP),
 				typeof(ServiceBinding), typeof(ServiceBindingBasicHTTP), typeof(ServiceBindingBasicHTTPS), typeof(ServiceBindingMSMQ), typeof(ServiceBindingMSMQIntegration), typeof(ServiceBindingNamedPipe), typeof(ServiceBindingNetHTTP), typeof(ServiceBindingNetHTTPS), typeof(ServiceBindingPeerTCP), typeof(ServiceBindingTCP), typeof(ServiceBindingUDP), typeof(ServiceBindingWebHTTP), typeof(ServiceBindingWS2007FederationHTTP), typeof(ServiceBindingWS2007HTTP), typeof(ServiceBindingWSDualHTTP), typeof(ServiceBindingWSFederationHTTP), typeof(ServiceBindingWSHTTP),
 				typeof(Host), typeof(HostBehavior), typeof(HostCredentials), typeof(HostDebugBehavior), typeof(HostEndpoint), typeof(HostEndpointAddressHeader), typeof(HostMetadataBehavior), typeof(HostThrottlingBehavior), typeof(HostWebHTTPBehavior),
-				typeof(Service), typeof(Operation), typeof(Method), typeof(Callback), typeof(MethodREST), typeof(DataChangeMethod), typeof(MethodParameter), typeof(Property),
-				typeof(RESTService), typeof(RESTMethod), typeof(RESTHTTPConfiguration),
+				typeof(Service), typeof(Operation), typeof(Method), typeof(Callback), typeof(MethodRest), typeof(DataChangeMethod), typeof(MethodParameter), typeof(Property),
+				typeof(RestService), typeof(RestMethod), typeof(RestHttpConfiguration),
 				typeof(Enum), typeof(EnumElement),
 				typeof(Data), typeof(DataElement)
 			});
@@ -47,13 +47,13 @@ namespace NETPath.Projects
 					throw new IOException("The file '" + Path + "' is currently read-only. Please disable read-only mode on this file.");
 			}
 
-			var kt = new List<Type>(new Type[] { 
+			var kt = new List<Type>(new Type[] {
 				typeof(Project), typeof(ProjectGenerationTarget), typeof(DataType), typeof(Namespace), typeof(Documentation),
 				typeof(BindingSecurity), typeof(BindingSecurityBasicHTTP), typeof(BindingSecurityBasicHTTPS), typeof(BindingSecurityMSMQ), typeof(BindingSecurityMSMQIntegration), typeof(BindingSecurityNamedPipe), typeof(BindingSecurityPeerTCP), typeof(BindingSecurityTCP), typeof(BindingSecurityWebHTTP), typeof(BindingSecurityWSDualHTTP), typeof(BindingSecurityWSFederationHTTP), typeof(BindingSecurityWSHTTP),
 				typeof(ServiceBinding), typeof(ServiceBindingBasicHTTP), typeof(ServiceBindingBasicHTTPS), typeof(ServiceBindingMSMQ), typeof(ServiceBindingMSMQIntegration), typeof(ServiceBindingNamedPipe), typeof(ServiceBindingNetHTTP), typeof(ServiceBindingNetHTTPS), typeof(ServiceBindingPeerTCP), typeof(ServiceBindingTCP), typeof(ServiceBindingUDP), typeof(ServiceBindingWebHTTP), typeof(ServiceBindingWS2007FederationHTTP), typeof(ServiceBindingWS2007HTTP), typeof(ServiceBindingWSDualHTTP), typeof(ServiceBindingWSFederationHTTP), typeof(ServiceBindingWSHTTP),
 				typeof(Host), typeof(HostBehavior), typeof(HostCredentials), typeof(HostDebugBehavior), typeof(HostEndpoint), typeof(HostEndpointAddressHeader), typeof(HostMetadataBehavior), typeof(HostThrottlingBehavior), typeof(HostWebHTTPBehavior),
-				typeof(Service), typeof(Operation), typeof(Method), typeof(Callback), typeof(MethodREST), typeof(DataChangeMethod), typeof(MethodParameter), typeof(Property),
-				typeof(RESTService), typeof(RESTMethod), typeof(RESTHTTPConfiguration),
+				typeof(Service), typeof(Operation), typeof(Method), typeof(Callback), typeof(MethodRest), typeof(DataChangeMethod), typeof(MethodParameter), typeof(Property),
+				typeof(RestService), typeof(RestMethod), typeof(RestHttpConfiguration),
 				typeof(Enum), typeof(EnumElement),
 				typeof(Data), typeof(DataElement)
 			});
@@ -68,13 +68,13 @@ namespace NETPath.Projects
 
 		public static byte[] Dump<T>(T Data)
 		{
-			var kt = new List<Type>(new Type[] { 
+			var kt = new List<Type>(new Type[] {
 				typeof(Project), typeof(ProjectGenerationTarget), typeof(DataType), typeof(Namespace), typeof(Documentation),
 				typeof(BindingSecurity), typeof(BindingSecurityBasicHTTP), typeof(BindingSecurityBasicHTTPS), typeof(BindingSecurityMSMQ), typeof(BindingSecurityMSMQIntegration), typeof(BindingSecurityNamedPipe), typeof(BindingSecurityPeerTCP), typeof(BindingSecurityTCP), typeof(BindingSecurityWebHTTP), typeof(BindingSecurityWSDualHTTP), typeof(BindingSecurityWSFederationHTTP), typeof(BindingSecurityWSHTTP),
 				typeof(ServiceBinding), typeof(ServiceBindingBasicHTTP), typeof(ServiceBindingBasicHTTPS), typeof(ServiceBindingMSMQ), typeof(ServiceBindingMSMQIntegration), typeof(ServiceBindingNamedPipe), typeof(ServiceBindingNetHTTP), typeof(ServiceBindingNetHTTPS), typeof(ServiceBindingPeerTCP), typeof(ServiceBindingTCP), typeof(ServiceBindingUDP), typeof(ServiceBindingWebHTTP), typeof(ServiceBindingWS2007FederationHTTP), typeof(ServiceBindingWS2007HTTP), typeof(ServiceBindingWSDualHTTP), typeof(ServiceBindingWSFederationHTTP), typeof(ServiceBindingWSHTTP),
 				typeof(Host), typeof(HostBehavior), typeof(HostCredentials), typeof(HostDebugBehavior), typeof(HostEndpoint), typeof(HostEndpointAddressHeader), typeof(HostMetadataBehavior), typeof(HostThrottlingBehavior), typeof(HostWebHTTPBehavior),
-				typeof(Service), typeof(Operation), typeof(Method), typeof(Callback), typeof(MethodREST), typeof(DataChangeMethod), typeof(MethodParameter), typeof(Property),
-				typeof(RESTService), typeof(RESTMethod), typeof(RESTHTTPConfiguration),
+				typeof(Service), typeof(Operation), typeof(Method), typeof(Callback), typeof(MethodRest), typeof(DataChangeMethod), typeof(MethodParameter), typeof(Property),
+				typeof(RestService), typeof(RestMethod), typeof(RestHttpConfiguration),
 				typeof(Enum), typeof(EnumElement),
 				typeof(Data), typeof(DataElement)
 			});

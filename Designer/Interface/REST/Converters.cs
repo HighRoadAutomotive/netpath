@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace NETPath.Interface.REST
+namespace NETPath.Interface.Rest
 {
 	[ValueConversion(typeof(System.Net.DecompressionMethods), typeof(int))]
 	public class DecompressionMethodsConverter : IValueConverter
