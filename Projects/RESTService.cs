@@ -151,12 +151,16 @@ namespace NETPath.Projects
 		}
 	}
 
-	public enum RestSerialization
+	public enum RestMethodVerbs
 	{
-		JSON,
-		BSON,
-		XmlSerializer,
-		DataContract,
+		Get,
+		Post,
+		Put,
+		Delete,
+		Head,
+		Options,
+		Trace,
+		Custom,
 	}
 
 	public class RestMethod : DependencyObject
@@ -581,7 +585,14 @@ namespace NETPath.Projects
 		Stream
 	}
 
-	public abstract class RestHttpConfiguration : DependencyObject
+	public enum RestSerialization
+	{
+		Json,
+		Bson,
+		Xml,
+	}
+
+	public class RestHttpConfiguration : DependencyObject
 	{
 		//System
 		public Guid ID { get; set; }
@@ -598,6 +609,12 @@ namespace NETPath.Projects
 
 		public DecompressionMethods AutomaticDecompression { get { return (DecompressionMethods)GetValue(AutomaticDecompressionProperty); } set { SetValue(AutomaticDecompressionProperty, value); } }
 		public static readonly DependencyProperty AutomaticDecompressionProperty = DependencyProperty.Register("AutomaticDecompression", typeof(DecompressionMethods), typeof(RestHttpConfiguration), new PropertyMetadata(DecompressionMethods.None));
+
+		public RestSerialization RequestFormat { get { return (RestSerialization)GetValue(RequestFormatProperty); } set { SetValue(RequestFormatProperty, value); } }
+		public static readonly DependencyProperty RequestFormatProperty = DependencyProperty.Register("RequestFormat", typeof(RestSerialization), typeof(RestHttpConfiguration), new PropertyMetadata(RestSerialization.Json));
+
+		public RestSerialization ResponseFormat { get { return (RestSerialization)GetValue(ResponseFormatProperty); } set { SetValue(ResponseFormatProperty, value); } }
+		public static readonly DependencyProperty ResponseFormatProperty = DependencyProperty.Register("ResponseFormat", typeof(RestSerialization), typeof(RestHttpConfiguration), new PropertyMetadata(RestSerialization.Json));
 
 		public int MaxAutomaticRedirections { get { return (int)GetValue(MaxAutomaticRedirectionsProperty); } set { SetValue(MaxAutomaticRedirectionsProperty, value); } }
 		public static readonly DependencyProperty MaxAutomaticRedirectionsProperty = DependencyProperty.Register("MaxAutomaticRedirections", typeof(int), typeof(RestHttpConfiguration), new PropertyMetadata(50));

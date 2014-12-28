@@ -17,10 +17,10 @@ namespace NETPath.Interface.Rest
 {
 	internal partial class HttpClientConfig : Grid
 	{
-		public Projects.RestHTTPClientConfiguration HttpConfig { get { return (Projects.RestHTTPClientConfiguration)GetValue(HttpConfigProperty); } set { SetValue(HttpConfigProperty, value); } }
-		public static readonly DependencyProperty HttpConfigProperty = DependencyProperty.Register("HttpConfig", typeof(Projects.RestHTTPClientConfiguration), typeof(HttpClientConfig));
+		public Projects.RestHttpConfiguration HttpConfig { get { return (Projects.RestHttpConfiguration)GetValue(HttpConfigProperty); } set { SetValue(HttpConfigProperty, value); } }
+		public static readonly DependencyProperty HttpConfigProperty = DependencyProperty.Register("HttpConfig", typeof(Projects.RestHttpConfiguration), typeof(HttpClientConfig));
 
-		public HttpClientConfig(Projects.RestHTTPClientConfiguration HttpConfig)
+		public HttpClientConfig(Projects.RestHttpConfiguration HttpConfig)
 		{
 			InitializeComponent();
 

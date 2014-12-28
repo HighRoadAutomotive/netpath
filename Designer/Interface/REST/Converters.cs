@@ -60,8 +60,7 @@ namespace NETPath.Interface.Rest
 			var lt = (Projects.CookieContainerMode)value;
 			if (lt == Projects.CookieContainerMode.None) return 0;
 			if (lt == Projects.CookieContainerMode.Instance) return 1;
-			if (lt == Projects.CookieContainerMode.Global) return 2;
-			if (lt == Projects.CookieContainerMode.Custom) return 3;
+			if (lt == Projects.CookieContainerMode.Custom) return 2;
 			return 0;
 		}
 
@@ -70,8 +69,7 @@ namespace NETPath.Interface.Rest
 			var lt = (int)value;
 			if (lt == 0) return Projects.CookieContainerMode.None;
 			if (lt == 1) return Projects.CookieContainerMode.Instance;
-			if (lt == 2) return Projects.CookieContainerMode.Global;
-			if (lt == 3) return Projects.CookieContainerMode.Custom;
+			if (lt == 2) return Projects.CookieContainerMode.Custom;
 			return Projects.CookieContainerMode.None;
 		}
 	}

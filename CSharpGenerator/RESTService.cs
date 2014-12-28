@@ -266,12 +266,16 @@ namespace NETPath.Generators.CS
 			if (o.IsHidden) return "";
 			var conf = o.RequestConfiguration;
 			var code = new StringBuilder();
+
+			//Generate documentation
 			if (o.Documentation != null)
 			{
 				code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 				foreach (var mp in o.Parameters.OfType<RestMethodParameter>().Where(mp => mp.Documentation != null))
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 			}
+
+			//Construct method declaration
 			code.AppendFormat("\t\tpublic virtual async void {0}(", o.Name);
 			foreach (var op in o.Parameters.OfType<RestMethodParameter>())
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
@@ -295,69 +299,56 @@ namespace NETPath.Generators.CS
 				code.AppendLine(string.Format(!op.Nullable ? "\t\t\turi.Append(\"&{0}={{0}}\", {1});" : "\t\t\tif ({1} != null) uri.Append(\"&{0}={{0}}\", {1});", op.RouteName, op.Name));
 			code.AppendLine("\t\t\turi.Replace(\"?&\", \"?\"");
 
+			//Create the HttpRequestMessage
+			code.AppendLine(string.Format("\t\t\tvar rm = new HttpRequestMessage(HttpMethod.{0}, new Uri(uri.ToString(), UriKind.RelativeOrAbsolute));", o.Method));
+			if (conf.UseHTTP10)
+				code.AppendLine("\t\t\trm.Version = new Version(1, 0););");
+			code.AppendLine("\t\t\trm.Headers.Clear();");
+            code.AppendLine("\t\t\tforeach (var x in _requestHeaders) rm.Headers.Add(x.Key, x.Value);");
+			code.AppendLine("\t\t\trm.Headers.Authorization = _requestHeaders.Authorization;");
+			code.AppendLine("\t\t\trm.Headers.CacheControl = _requestHeaders.CacheControl;");
+			code.AppendLine("\t\t\trm.Headers.Date = _requestHeaders.Date;");
+			code.AppendLine("\t\t\trm.Headers.From = _requestHeaders.From;");
+			code.AppendLine("\t\t\trm.Headers.Host = _requestHeaders.Host;");
+			code.AppendLine("\t\t\trm.Headers.IfModifiedSince = _requestHeaders.IfModifiedSince;");
+			code.AppendLine("\t\t\trm.Headers.IfRange = _requestHeaders.IfRange;");
+			code.AppendLine("\t\t\trm.Headers.IfUnmodifiedSince = _requestHeaders.IfUnmodifiedSince;");
+			code.AppendLine("\t\t\trm.Headers.MaxForwards = _requestHeaders.MaxForwards;");
+			code.AppendLine("\t\t\trm.Headers.ProxyAuthorization = _requestHeaders.ProxyAuthorization;");
+			code.AppendLine("\t\t\trm.Headers.Range = _requestHeaders.Range;");
+			code.AppendLine("\t\t\trm.Headers.Accept.Clear()");
+			code.AppendLine(string.Format("\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"application/{0}\"));", conf.ResponseFormat == RestSerialization.Json ? "json" : conf.ResponseFormat == RestSerialization.Bson ? "bson" : "xml"));
+
+			//Serialize any parameters
 			if (o.Parameters.OfType<RestMethodParameter>().Any(a => a.Serialize))
 			{
 				var p = o.Parameters.OfType<RestMethodParameter>().First(a => a.Serialize);
 				var pt = p.Type;
-				if (o.ResponseFormat == WebMessageFormat.Json && pt.TypeMode != DataTypeMode.Primitive) code.AppendLine(string.Format("\t\t\tvar rd = new System.Net.Http.ByteArrayContent(Encoding.UTF8.GetBytes(SerializeJson<{0}>({1})));", DataTypeGenerator.GenerateType(pt), p.Name));
-				if (o.ResponseFormat == WebMessageFormat.Xml && pt.TypeMode != DataTypeMode.Primitive) code.AppendLine(string.Format("\t\t\tvar rd = new System.Net.Http.ByteArrayContent(Encoding.UTF8.GetBytes(SerializeXml<{0}>({1})));", DataTypeGenerator.GenerateType(pt), p.Name));
-				if (pt.TypeMode == DataTypeMode.Primitive && pt.Primitive == PrimitiveTypes.ByteArray)
-					code.AppendLine(string.Format("\t\t\tvar rd = new System.Net.Http.ByteArrayContent({0});", p.Name));
-				if (pt.TypeMode == DataTypeMode.Primitive && pt.Primitive == PrimitiveTypes.String)
-					code.AppendLine(string.Format("\t\t\tvar rd = new System.Net.Http.ByteArrayContent(Encoding.UTF8.GetBytes({0}));", p.Name));
+				code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.ObjectContent<{0}>({1}, new {2}());", DataTypeGenerator.GenerateType(pt), p.Name, conf.RequestFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.RequestFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
+				code.AppendLine(string.Format("\t\t\tforeach (var x in _contentHeaders) rm.Content.Headers.Add(x.Key, x.Value);"));
 			}
-			code.AppendLine(
-				string.Format(
-					"\t\t\tvar rm = CreateHttpClientRequest(new Uri(BaseUri, urisb.ToString()).ToString(), System.Net.Http.HttpMethod.{0}{1}{2}{3});",
-					o.Method,
-					o.Parameters.Any(a => a.Serialize) ? ", rd" : "",
-					o.RequestConfiguration.UseHTTP10 ? ", true" : "",
-					!o.UseDefaultHeaders ? ", headers.Headers, ignoreDefaultHeaders" : ""));
-			if (o.Owner.GenerateServer && o.ResponseFormat != o.Owner.WebHTTPBehavior.DefaultOutgoingResponseFormat && o.Parameters.Any(a => a.Serialize))
-			{
-				code.AppendLine("\t\t\trm.Headers.Accept.Clear()");
-				code.AppendLine(string.Format("\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"application/{0}\"));", o.ResponseFormat == WebMessageFormat.Json ? "json" : "xml"));
-				code.AppendLine(string.Format("\t\t\trd.Headers.ContentType = new MediaTypeHeaderValue(\"application/{0}\");", o.ResponseFormat == WebMessageFormat.Json ? "json" : "xml"));
-			}
+
 			code.AppendLine(string.Format("\t\t\tvar rr = await {0}Client.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);", RegExs.ReplaceSpaces.Replace(o.RequestConfiguration.Name, "")));
 			if (o.EnsureSuccessStatusCode) code.AppendLine("\t\t\trr.EnsureSuccessStatusCode();");
 			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent)
 			{
-				if (o.ReturnResponseData)
-				{
-					if (o.ResponseFormat == WebMessageFormat.Json) code.AppendLine(string.Format("\t\t\t{0}Result(rr);", o.ServerName));
-					if (o.ResponseFormat == WebMessageFormat.Xml) code.AppendLine(string.Format("\t\t\t{0}Result(rr);", o.ServerName));
-				}
-				else
-				{
-					if (o.ResponseFormat == WebMessageFormat.Json) code.AppendLine(string.Format("\t\t\t{0}Result();", o.ServerName));
-					if (o.ResponseFormat == WebMessageFormat.Xml) code.AppendLine(string.Format("\t\t\t{0}Result();", o.ServerName));
-				}
+				code.AppendLine(string.Format("\t\t\t{0}Result({1});", o.Name, o.ReturnResponseData ? "rr" : ""));
 			}
 			else
 			{
-				code.AppendLine("\t\t\tstring rs = await rr.Content.ReadAsStringAsync();");
-				if (o.ReturnResponseData)
-				{
-					if (o.ResponseFormat == WebMessageFormat.Json) code.AppendLine(string.Format("\t\t\t{1}Result(DeserializeJson<{0}>(rs), rr);", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName));
-					if (o.ResponseFormat == WebMessageFormat.Xml) code.AppendLine(string.Format("\t\t\t{1}Result(DeserializeXml<{0}>(rs), rr);", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName));
-				}
-				else
-				{
-					if (o.ResponseFormat == WebMessageFormat.Json) code.AppendLine(string.Format("\t\t\t{1}Result(DeserializeJson<{0}>(rs));", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName));
-					if (o.ResponseFormat == WebMessageFormat.Xml) code.AppendLine(string.Format("\t\t\t{1}Result(DeserializeXml<{0}>(rs));", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName));
-				}
+				code.AppendLine(string.Format("\t\t\tvar rs = await rr.Content.ReadAsAsync<{0}>(new MediaTypeFormatter[] {{ new {1}() }});", DataTypeGenerator.GenerateType(o.ReturnType), conf.ResponseFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.ResponseFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
+				code.AppendLine(string.Format("\t\t\t{0}Result(rs{1});", o.Name, o.ReturnResponseData ? ", rr" : ""));
 			}
 			code.AppendLine("\t\t}");
 			if (o.ReturnResponseData)
 			{
-				if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine(string.Format("\t\tpublic abstract void {0}Result(System.Net.Http.HttpResponseMessage Response);", o.ServerName));
-				else code.AppendLine(string.Format("\t\tpublic abstract void {0}Result({1} Value, System.Net.Http.HttpResponseMessage Response);", o.ServerName, DataTypeGenerator.GenerateType(o.ReturnType)));
+				if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine(string.Format("\t\tpublic abstract void {0}Result(System.Net.Http.HttpResponseMessage Response);", o.Name));
+				else code.AppendLine(string.Format("\t\tpublic abstract void {0}Result({1} Value, System.Net.Http.HttpResponseMessage Response);", o.Name, DataTypeGenerator.GenerateType(o.ReturnType)));
 			}
 			else
 			{
-				if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine(string.Format("\t\tpublic abstract void {0}Result();", o.ServerName));
-				else code.AppendLine(string.Format("\t\tpublic abstract void {0}Result({1} Value);", o.ServerName, DataTypeGenerator.GenerateType(o.ReturnType)));
+				if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine(string.Format("\t\tpublic abstract void {0}Result();", o.Name));
+				else code.AppendLine(string.Format("\t\tpublic abstract void {0}Result({1} Value);", o.Name, DataTypeGenerator.GenerateType(o.ReturnType)));
 			}
 			return code.ToString();
 		}
@@ -365,88 +356,90 @@ namespace NETPath.Generators.CS
 		public static string GenerateClientMethodClientAsync45(RestMethod o)
 		{
 			if (o.IsHidden) return "";
+			var conf = o.RequestConfiguration;
 			var code = new StringBuilder();
 
+			//Generate documentation
 			if (o.Documentation != null)
 			{
 				code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 				foreach (var mp in o.Parameters.OfType<RestMethodParameter>().Where(mp => mp.Documentation != null))
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
-				if (!o.UseDefaultHeaders)
-				{
-					code.AppendLine(string.Format("\t\t///<param name='configuration'>HTTP Client Request Headers specific to this method.</param>"));
-					code.AppendLine(string.Format("\t\t///<param name='ignoreDefaultHeaders'>Do not include the default headers in the request.</param>"));
-				}
 			}
+
+			//Construct method declaration
 			if (o.ReturnResponseData)
 			{
-				if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendFormat("\t\tpublic async virtual System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> {0}Async(", o.ServerName);
-				else code.AppendFormat("\t\tpublic async virtual System.Threading.Tasks.Task<Tuple<{0}, System.Net.Http.HttpResponseMessage>> {1}Async(", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName);
+				if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendFormat("\t\tpublic async virtual System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> {0}Async(", o.Name);
+				else code.AppendFormat("\t\tpublic async virtual System.Threading.Tasks.Task<Tuple<{0}, System.Net.Http.HttpResponseMessage>> {1}Async(", DataTypeGenerator.GenerateType(o.ReturnType), o.Name);
 			}
 			else
 			{
-				if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendFormat("\t\tpublic async virtual System.Threading.Tasks.Task {0}Async(", o.ServerName);
-				else code.AppendFormat("\t\tpublic async virtual System.Threading.Tasks.Task<{0}> {1}Async(", DataTypeGenerator.GenerateType(o.ReturnType), o.ServerName);
+				if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendFormat("\t\tpublic async virtual System.Threading.Tasks.Task {0}Async(", o.Name);
+				else code.AppendFormat("\t\tpublic async virtual System.Threading.Tasks.Task<{0}> {1}Async(", DataTypeGenerator.GenerateType(o.ReturnType), o.Name);
 			}
-			foreach (RestMethodParameter op in o.Parameters)
+			foreach (var op in o.Parameters.OfType<RestMethodParameter>())
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
-			if (o.UseDefaultHeaders && o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
-			code.AppendLine(!o.UseDefaultHeaders ? "RestHttpClientRequestHeaders headers = null, bool ignoreDefaultHeaders = false)" : ")");
+			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+			code.AppendLine(")");
 			code.AppendLine("\t\t{");
 			GenerateMethodPreamble(code, o.ClientPreambleCode, 3);
-			code.AppendLine("\t\t\tSystem.Net.Http.HttpResponseMessage rr = null;");
-			code.AppendLine(string.Format("\t\t\tvar urisb = new StringBuilder(\"{1}{0}\", 1024);", o.UriTemplate, o.RequestConfiguration.UriIncludesMethodName ? o.ServerName : ""));
-			foreach (RestMethodParameter op in o.Parameters.Where(a => !a.Serialize && a.IsPath))
-				code.AppendLine(string.Format("\t\t\tBuildUri<{2}>(urisb, \"{1}\", UriBuildMode.Path, {0});", op.Name, op.RestName, DataTypeGenerator.GenerateType(op.Type)));
-			if (o.Parameters.Any(a => a.IsQuery) && !o.UriTemplate.Contains("?"))
-				code.AppendLine("\t\t\turisb.Append(\"?\");");
-			foreach (RestMethodParameter op in o.Parameters.Where(a => !a.Serialize && a.IsQuery))
+
+			//Construct the URI
+			code.AppendLine("\t\t\tvar uri = StringBuilder(_baseUri, 2048);");
+			foreach (var op in o.Parameters.Where(a => a.IsPath))
 			{
-				if (op.Nullable)
-					code.AppendLine(string.Format("\t\t\tif ({0}.HasValue) BuildUri<{2}>(urisb, \"{1}\", UriBuildMode.Query, {0}.Value);", op.Name, op.RestName, DataTypeGenerator.GenerateType(op.Type)));
-				else
-					code.AppendLine(string.Format("\t\t\tBuildUri<{2}>(urisb, \"{1}\", UriBuildMode.Query, {0});", op.Name, op.RestName, DataTypeGenerator.GenerateType(op.Type)));
+				if (op.GetType() == typeof(RestRouteParameter))
+					code.AppendLine(string.Format("\t\t\turi.Append(\"/{0}\");", op.RouteName));
+				if (op.GetType() == typeof(RestMethodParameter))
+					code.AppendLine(string.Format("\t\t\turi.Append(\"/{{0}}\", {0});", op.Name));
 			}
-			if (o.Parameters.Any(a => a.Serialize))
+			if (o.Parameters.OfType<RestMethodParameter>().Any(a => a.IsQuery && !a.Serialize))
+				code.AppendLine("\t\t\turi.Append(\"?\"");
+			foreach (var op in o.Parameters.OfType<RestMethodParameter>().Where(a => a.IsQuery && !a.Serialize))
+				code.AppendLine(string.Format(!op.Nullable ? "\t\t\turi.Append(\"&{0}={{0}}\", {1});" : "\t\t\tif ({1} != null) uri.Append(\"&{0}={{0}}\", {1});", op.RouteName, op.Name));
+			code.AppendLine("\t\t\turi.Replace(\"?&\", \"?\"");
+
+			//Create the HttpRequestMessage
+			code.AppendLine(string.Format("\t\t\tvar rm = new HttpRequestMessage(HttpMethod.{0}, new Uri(uri.ToString(), UriKind.RelativeOrAbsolute));", o.Method));
+			if (conf.UseHTTP10)
+				code.AppendLine("\t\t\trm.Version = new Version(1, 0););");
+			code.AppendLine("\t\t\trm.Headers.Clear();");
+			code.AppendLine("\t\t\tforeach (var x in _requestHeaders) rm.Headers.Add(x.Key, x.Value);");
+			code.AppendLine("\t\t\trm.Headers.Authorization = _requestHeaders.Authorization;");
+			code.AppendLine("\t\t\trm.Headers.CacheControl = _requestHeaders.CacheControl;");
+			code.AppendLine("\t\t\trm.Headers.Date = _requestHeaders.Date;");
+			code.AppendLine("\t\t\trm.Headers.From = _requestHeaders.From;");
+			code.AppendLine("\t\t\trm.Headers.Host = _requestHeaders.Host;");
+			code.AppendLine("\t\t\trm.Headers.IfModifiedSince = _requestHeaders.IfModifiedSince;");
+			code.AppendLine("\t\t\trm.Headers.IfRange = _requestHeaders.IfRange;");
+			code.AppendLine("\t\t\trm.Headers.IfUnmodifiedSince = _requestHeaders.IfUnmodifiedSince;");
+			code.AppendLine("\t\t\trm.Headers.MaxForwards = _requestHeaders.MaxForwards;");
+			code.AppendLine("\t\t\trm.Headers.ProxyAuthorization = _requestHeaders.ProxyAuthorization;");
+			code.AppendLine("\t\t\trm.Headers.Range = _requestHeaders.Range;");
+			code.AppendLine("\t\t\trm.Headers.Accept.Clear()");
+			code.AppendLine(string.Format("\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"application/{0}\"));", conf.ResponseFormat == RestSerialization.Json ? "json" : conf.ResponseFormat == RestSerialization.Bson ? "bson" : "xml"));
+
+			//Serialize any parameters
+			if (o.Parameters.OfType<RestMethodParameter>().Any(a => a.Serialize))
 			{
-				var p = o.Parameters.First(a => a.Serialize);
+				var p = o.Parameters.OfType<RestMethodParameter>().First(a => a.Serialize);
 				var pt = p.Type;
-				if (o.ResponseFormat == WebMessageFormat.Json && pt.TypeMode != DataTypeMode.Primitive) code.AppendLine(string.Format("\t\t\tvar rd = new System.Net.Http.ByteArrayContent(Encoding.UTF8.GetBytes(SerializeJson<{0}>({1})));", DataTypeGenerator.GenerateType(pt), p.Name));
-				if (o.ResponseFormat == WebMessageFormat.Xml && pt.TypeMode != DataTypeMode.Primitive) code.AppendLine(string.Format("\t\t\tvar rd = new System.Net.Http.ByteArrayContent(Encoding.UTF8.GetBytes(SerializeXml<{0}>({1})));", DataTypeGenerator.GenerateType(pt), p.Name));
-				if (pt.TypeMode == DataTypeMode.Primitive && pt.Primitive == PrimitiveTypes.ByteArray)
-					code.AppendLine(string.Format("\t\t\tvar rd = new System.Net.Http.ByteArrayContent({0});", p.Name));
-				if (pt.TypeMode == DataTypeMode.Primitive && pt.Primitive == PrimitiveTypes.String)
-					code.AppendLine(string.Format("\t\t\tvar rd = new System.Net.Http.ByteArrayContent(Encoding.UTF8.GetBytes({0}));", p.Name));
+				code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.ObjectContent<{0}>({1}, new {2}());", DataTypeGenerator.GenerateType(pt), p.Name, conf.RequestFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.RequestFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
+				code.AppendLine(string.Format("\t\t\tforeach (var x in _contentHeaders) rm.Content.Headers.Add(x.Key, x.Value);"));
 			}
-			code.AppendLine(
-				string.Format(
-					"\t\t\tvar rm = CreateHttpClientRequest(new Uri(BaseUri, urisb.ToString()).ToString(), System.Net.Http.HttpMethod.{0}{1}{2}{3});",
-					o.Method == MethodRestVerbs.GET ? "Get" : o.Method == MethodRestVerbs.POST ? "Post" : o.Method == MethodRestVerbs.PUT ? "Put" : "Delete",
-					o.Parameters.Any(a => a.Serialize) ? ", rd" : "",
-					o.RequestConfiguration.UseHTTP10 ? ", true" : "",
-					!o.UseDefaultHeaders ? ", headers.Headers, ignoreDefaultHeaders" : ""));
-			if (o.Owner.GenerateServer && o.ResponseFormat != o.Owner.WebHTTPBehavior.DefaultOutgoingResponseFormat && o.Parameters.Any(a => a.Serialize))
-			{
-				code.AppendLine("\t\t\trm.Headers.Accept.Clear()");
-				code.AppendLine(string.Format("\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"application/{0}\"));", o.ResponseFormat == WebMessageFormat.Json ? "json" : "xml"));
-				code.AppendLine(string.Format("\t\t\trd.Headers.ContentType = new MediaTypeHeaderValue(\"application/{0}\");", o.ResponseFormat == WebMessageFormat.Json ? "json" : "xml"));
-			}
-			code.AppendLine(string.Format("\t\t\trr = await {0}Client.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);", RegExs.ReplaceSpaces.Replace(o.RequestConfiguration.Name, "")));
+
+			code.AppendLine(string.Format("\t\t\tvar rr = await {0}Client.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);", RegExs.ReplaceSpaces.Replace(o.RequestConfiguration.Name, "")));
 			if (o.EnsureSuccessStatusCode) code.AppendLine("\t\t\trr.EnsureSuccessStatusCode();");
-			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.Append("");
-			else
+			if ((o.ReturnType.TypeMode != DataTypeMode.Primitive && o.ReturnType.Primitive != PrimitiveTypes.Void) || !o.DeserializeContent)
 			{
-				code.AppendLine("\t\t\tvar rs = await rr.Content.ReadAsStringAsync();");
 				if (o.ReturnResponseData)
 				{
-					if (o.ResponseFormat == WebMessageFormat.Json) code.AppendLine(string.Format("\t\t\treturn new Tuple<{0}, System.Net.Http.HttpResponseMessage>(DeserializeJson<{0}>(rs), rr);", DataTypeGenerator.GenerateType(o.ReturnType)));
-					if (o.ResponseFormat == WebMessageFormat.Xml) code.AppendLine(string.Format("\t\t\treturn new Tuple<{0}, System.Net.Http.HttpResponseMessage>(DeserializeXml<{0}>(rs), rr);", DataTypeGenerator.GenerateType(o.ReturnType)));
+					code.AppendLine(string.Format("\t\t\tvar rs = await rr.Content.ReadAsAsync<{0}>(new MediaTypeFormatter[] {{ new {1}() }});", DataTypeGenerator.GenerateType(o.ReturnType), conf.ResponseFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.ResponseFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
+					code.AppendLine(string.Format("\t\t\treturn new Tuple<{0}, System.Net.Http.HttpResponseMessage>(rs, rr);", DataTypeGenerator.GenerateType(o.ReturnType)));
 				}
 				else
-				{
-					if (o.ResponseFormat == WebMessageFormat.Json) code.AppendLine(string.Format("\t\t\treturn DeserializeJson<{0}>(rs);", DataTypeGenerator.GenerateType(o.ReturnType)));
-					if (o.ResponseFormat == WebMessageFormat.Xml) code.AppendLine(string.Format("\t\t\treturn DeserializeXml<{0}>(rs);", DataTypeGenerator.GenerateType(o.ReturnType)));
-				}
+					code.AppendLine(string.Format("\t\t\treturn await rr.Content.ReadAsAsync<{0}>(new MediaTypeFormatter[] {{ new {1}() }});", DataTypeGenerator.GenerateType(o.ReturnType), conf.ResponseFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.ResponseFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
 			}
 			code.AppendLine("\t\t}");
 

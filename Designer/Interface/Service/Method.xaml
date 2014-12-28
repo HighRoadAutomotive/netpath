@@ -11,9 +11,6 @@
 	d:DesignHeight="620" d:DesignWidth="1390" UseLayoutRounding="True" >
 	<Grid.Resources>
 		<Service:ProtectionLevelConverter x:Key="ProtectionLevelConverter" />
-		<Service:MethodRestVerbsConverter x:Key="MethodRestVerbsConverter" />
-		<Service:WebMessageBodyStyleConverter x:Key="WebMessageBodyStyleConverter"/>
-		<Service:WebMessageFormatConverter x:Key="WebMessageFormatConverter" />
 		<Service:ImpersonationOptionConverter x:Key="ImpersonationOptionConverter" />
 		<Service:ReleaseInstanceModeConverter x:Key="ReleaseInstanceModeConverter" />
 		<Service:TransactionFlowModeConverter x:Key="TransactionFlowModeConverter" />
@@ -183,45 +180,6 @@
 					<ToggleButton Content="Auto Dispose Parameters" IsChecked="{Binding Path=MethodData.OBAutoDisposeParameters}" Margin="5" Grid.Column="0" Grid.Row="2" />
 					<ToggleButton Content="Transation Auto Complete" IsChecked="{Binding Path=MethodData.OBTransactionAutoComplete}" Margin="5" Grid.Column="1" Grid.Row="2" />
 					<ToggleButton Content="Transaction Scope Required" IsChecked="{Binding Path=MethodData.OBTransactionScopeRequired}" Margin="5" Grid.Column="2" Grid.Row="2" />
-				</Grid>
-				<Grid Visibility="{Binding Path=MethodData.IsRestMethod, Converter={StaticResource BoolVisibilityConverter}}" Grid.Row="2" Margin="0,5,0,0">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="*"/>
-					</Grid.ColumnDefinitions>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
-					<Label Grid.Row="0" Content="Rest" FontSize="12pt" Margin="0,5,0,0" />
-					<Label Content="URI Template:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" Grid.Row="1" />
-					<pc:TextBox Text="{Binding Path=MethodData.Rest.UriTemplate}" Height="23" Margin="111,5,5,5" VerticalContentAlignment="Center" Grid.Row="1" Grid.ColumnSpan="2" />
-					<Label Content="HTTP Verb:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" />
-					<ComboBox Height="23" Margin="111,5,5,5" SelectedIndex="{Binding Path=MethodData.Rest.Method, Converter={StaticResource MethodRestVerbsConverter}}" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" >
-						<ComboBoxItem Content="GET" />
-						<ComboBoxItem Content="POST" />
-						<ComboBoxItem Content="PUT" />
-						<ComboBoxItem Content="DELETE" />
-					</ComboBox>
-					<Label Content="Body Style:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1" />
-					<ComboBox Height="23" Margin="120,5,5,5" SelectedIndex="{Binding Path=MethodData.Rest.BodyStyle, Converter={StaticResource WebMessageBodyStyleConverter}}" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1" >
-						<ComboBoxItem Content="Bare" />
-						<ComboBoxItem Content="Wrapped" />
-						<ComboBoxItem Content="Wrapped Request" />
-						<ComboBoxItem Content="Wrapped Response" />
-					</ComboBox>
-					<Label Content="Request Format:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" />
-					<ComboBox Height="23" Margin="111,5,5,5" SelectedIndex="{Binding Path=MethodData.Rest.RequestFormat, Converter={StaticResource WebMessageFormatConverter}}" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" >
-						<ComboBoxItem Content="XML" />
-						<ComboBoxItem Content="JSON" />
-					</ComboBox>
-					<Label Content="Response Format:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="1" />
-					<ComboBox Height="23" Margin="120,5,5,5" SelectedIndex="{Binding Path=MethodData.Rest.ResponseFormat, Converter={StaticResource WebMessageFormatConverter}}" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="1" >
-						<ComboBoxItem Content="XML" />
-						<ComboBoxItem Content="JSON" />
-					</ComboBox>
 				</Grid>
 			</Grid>
 		</TabItem>

@@ -285,9 +285,6 @@
       <DependentUpon>Project.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interface\Rest\Converters.cs" />
-    <Compile Include="Interface\Rest\HttpWebConfig.xaml.cs">
-      <DependentUpon>HttpWebConfig.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Interface\Rest\HttpClientConfig.xaml.cs">
       <DependentUpon>HttpClientConfig.xaml</DependentUpon>
     </Compile>
@@ -481,10 +478,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Interface\Project\Project.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Rest\HttpWebConfig.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

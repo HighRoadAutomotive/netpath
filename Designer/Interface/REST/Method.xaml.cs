@@ -291,18 +291,4 @@ namespace NETPath.Interface.Rest
 			DialogService.ShowMessageDialog("NETPath", "Delete Method Parameter?", "Are you sure you want to delete the '" + OP.Type + " " + OP.Name + "' method parameter?", new DialogAction("Yes", () => MethodData.Parameters.Remove(OP), true), new DialogAction("No", false, true));
 		}
 	}
-
-	public class RequestConfigurationTemplateSelector : DataTemplateSelector
-	{
-		public DataTemplate WebTemplate { get; set; }
-		public DataTemplate ClientTemplate { get; set; }
-
-		public override DataTemplate SelectTemplate(object item, DependencyObject container)
-		{
-			if (item == null) return WebTemplate;
-			if (item.GetType() == typeof(Projects.RestHTTPWebConfiguration)) return WebTemplate;
-			if (item.GetType() == typeof(Projects.RestHTTPClientConfiguration)) return ClientTemplate;
-			return WebTemplate;
-		}
-	}
 }

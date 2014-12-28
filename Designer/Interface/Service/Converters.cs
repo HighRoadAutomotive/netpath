@@ -96,27 +96,35 @@ namespace NETPath.Interface.Service
 		}
 	}
 
-	[ValueConversion(typeof(Projects.MethodRestVerbs), typeof(int))]
-	public class MethodRestVerbsConverter : IValueConverter
+	[ValueConversion(typeof(Projects.RestMethodVerbs), typeof(int))]
+	public class RestMethodVerbsConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			var lt = (Projects.MethodRestVerbs)value;
-			if (lt == Projects.MethodRestVerbs.GET) return 0;
-			if (lt == Projects.MethodRestVerbs.POST) return 1;
-			if (lt == Projects.MethodRestVerbs.PUT) return 2;
-			if (lt == Projects.MethodRestVerbs.DELETE) return 3;
+			var lt = (Projects.RestMethodVerbs)value;
+			if (lt == Projects.RestMethodVerbs.Get) return 0;
+			if (lt == Projects.RestMethodVerbs.Post) return 1;
+			if (lt == Projects.RestMethodVerbs.Put) return 2;
+			if (lt == Projects.RestMethodVerbs.Delete) return 3;
+			if (lt == Projects.RestMethodVerbs.Head) return 4;
+			if (lt == Projects.RestMethodVerbs.Options) return 5;
+			if (lt == Projects.RestMethodVerbs.Trace) return 6;
+			if (lt == Projects.RestMethodVerbs.Custom) return 7;
 			return 0;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			var lt = (int)value;
-			if (lt == 0) return Projects.MethodRestVerbs.GET;
-			if (lt == 1) return Projects.MethodRestVerbs.POST;
-			if (lt == 2) return Projects.MethodRestVerbs.PUT;
-			if (lt == 3) return Projects.MethodRestVerbs.DELETE;
-			return Projects.MethodRestVerbs.GET;
+			if (lt == 0) return Projects.RestMethodVerbs.Get;
+			if (lt == 1) return Projects.RestMethodVerbs.Post;
+			if (lt == 2) return Projects.RestMethodVerbs.Put;
+			if (lt == 3) return Projects.RestMethodVerbs.Delete;
+			if (lt == 4) return Projects.RestMethodVerbs.Head;
+			if (lt == 5) return Projects.RestMethodVerbs.Options;
+			if (lt == 6) return Projects.RestMethodVerbs.Trace;
+			if (lt == 7) return Projects.RestMethodVerbs.Custom;
+			return Projects.RestMethodVerbs.Get;
 		}
 	}
 

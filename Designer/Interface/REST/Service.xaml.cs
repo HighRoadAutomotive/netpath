@@ -223,7 +223,7 @@ namespace NETPath.Interface.Rest
 			var OP = lbi.Content as RestMethod;
 			if (OP == null) return;
 
-			DialogService.ShowMessageDialog("NETPath", "Delete Method?", "Are you sure you want to delete the '" + OP.ReturnType + " " + OP.ServerName + "' method?", new DialogAction("Yes", () => ServiceType.ServiceOperations.Remove(OP), true), new DialogAction("No", false, true));
+			DialogService.ShowMessageDialog("NETPath", "Delete Method?", "Are you sure you want to delete the '" + OP.ReturnType + " " + OP.Name + "' method?", new DialogAction("Yes", () => ServiceType.ServiceOperations.Remove(OP), true), new DialogAction("No", false, true));
 		}
 
 		#endregion
@@ -232,32 +232,19 @@ namespace NETPath.Interface.Rest
 
 		private void AddHttpConfigurationName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
 		{
-			AddHttpWebConfiguration.IsEnabled = false;
-			AddHttpClientConfiguration.IsEnabled = false;
+			AddHttpConfiguration.IsEnabled = false;
 
 			e.IsValid = true;
 			if (string.IsNullOrEmpty(AddHttpConfigurationName.Text)) return;
 
 			e.IsValid = RegExs.MatchCodeName.IsMatch(RegExs.ReplaceSpaces.Replace(AddHttpConfigurationName.Text, ""));
 
-			AddHttpWebConfiguration.IsEnabled = e.IsValid;
-			AddHttpClientConfiguration.IsEnabled = e.IsValid;
+			AddHttpConfiguration.IsEnabled = e.IsValid;
 		}
 
-		private void AddHttpWebConfiguration_Click(object Sender, RoutedEventArgs E)
+		private void AddHttpConfiguration_Click(object Sender, RoutedEventArgs E)
 		{
-			var t = new RestHTTPWebConfiguration(AddHttpConfigurationName.Text);
-			ServiceType.RequestConfigurations.Add(t);
-
-			AddHttpConfigurationName.Focus();
-			AddHttpConfigurationName.Text = "";
-
-			ConfigurationList.SelectedItem = t;
-		}
-
-		private void AddHttpClientConfiguration_Click(object Sender, RoutedEventArgs E)
-		{
-			var t = new RestHTTPClientConfiguration(AddHttpConfigurationName.Text);
+			var t = new RestHttpConfiguration(AddHttpConfigurationName.Text);
 			ServiceType.RequestConfigurations.Add(t);
 
 			AddHttpConfigurationName.Focus();
@@ -268,24 +255,15 @@ namespace NETPath.Interface.Rest
 
 		private void ConfigurationList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			var w = ConfigurationList.SelectedItem as RestHTTPWebConfiguration;
-			var c = ConfigurationList.SelectedItem as RestHTTPClientConfiguration;
-			if (w == null && c == null) return;
+			var c = ConfigurationList.SelectedItem as RestHttpConfiguration;
+			if (c == null) return;
 
 
 			//Set the new item as selected.
 			foreach (RestHttpConfiguration o in ServiceType.RequestConfigurations)
 				o.IsSelected = false;
-			if (w != null)
-			{
-				w.IsSelected = true;
-				ActiveConfiguration = new HttpWebConfig(w);
-			}
-			else
-			{
-				c.IsSelected = true;
-				ActiveConfiguration = new HttpClientConfig(c);
-			}
+			c.IsSelected = true;
+			ActiveConfiguration = new HttpClientConfig(c);
 		}
 
 		private void DeleteConfiguration_Click(object sender, RoutedEventArgs e)
@@ -295,69 +273,6 @@ namespace NETPath.Interface.Rest
 			if (OP == null) return;
 
 			DialogService.ShowMessageDialog("NETPath", "Delete HTTP Configuration?", "Are you sure you want to delete the '" + OP.Name + "' HTTP Configuration?", new DialogAction("Yes", () => ServiceType.RequestConfigurations.Remove(OP), true), new DialogAction("No", false, true));
-		}
-
-		#endregion
-
-		#region - Endpoint Screen -
-
-		private void ProxyAddress_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			if (IsLoaded == false) return;
-			ServiceType.EndpointBinding.ProxyAddress = RegExs.ReplaceSpaces.Replace(ProxyAddress.Text, @"");
-		}
-
-		private void ProxyAddress_Validate(object sender, ValidateEventArgs e)
-		{
-			e.IsValid = RegExs.MatchHTTPURI.IsMatch(ProxyAddress.Text);
-		}
-
-		private void MaxBufferPoolSize_Validate(object sender, ValidateEventArgs e)
-		{
-			e.IsValid = true;
-			try { Convert.ToInt64(MaxBufferPoolSize.Text); }
-			catch (Exception) { e.IsValid = false; }
-		}
-
-		private void MaxBufferSize_Validate(object sender, ValidateEventArgs e)
-		{
-			e.IsValid = true;
-			try { Convert.ToInt64(MaxBufferSize.Text); }
-			catch (Exception) { e.IsValid = false; }
-		}
-
-		private void MaxReceivedMessageSize_Validate(object sender, ValidateEventArgs e)
-		{
-			e.IsValid = true;
-			try { Convert.ToInt64(MaxReceivedMessageSize.Text); }
-			catch (Exception) { e.IsValid = false; }
-		}
-
-		#endregion
-
-		#region - Behaviors Screen -
-
-		private void DebugHttpHelpPageUrl_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			if (IsLoaded == false) return;
-			ServiceType.DebugBehavior.HttpHelpPageUrl = RegExs.ReplaceSpaces.Replace(DebugHttpHelpPageUrl.Text, "");
-		}
-
-		private void DebugHttpHelpPageUrl_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
-		{
-			e.IsValid = RegExs.MatchHTTPURI.IsMatch(DebugHttpHelpPageUrl.Text);
-		}
-
-		private void DebugHttpsHelpPageUrl_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			if (IsLoaded == false) return;
-			if (ServiceType.DebugBehavior == null) return;
-			ServiceType.DebugBehavior.HttpsHelpPageUrl = RegExs.ReplaceSpaces.Replace(DebugHttpsHelpPageUrl.Text, "");
-		}
-
-		private void DebugHttpsHelpPageUrl_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
-		{
-			e.IsValid = RegExs.MatchHTTPURI.IsMatch(DebugHttpsHelpPageUrl.Text);
 		}
 
 		#endregion
