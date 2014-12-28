@@ -5,7 +5,6 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:pc="http://schemas.ellipticbit.com/controls"
 		xmlns:local="clr-namespace:NETPath.Interface"
-		xmlns:sf="http://schemas.syncfusion.com/wpf"
 		Icon="pack://application:,,,/NETPath;component/Icons/DesignStudio.ico"
 		mc:Ignorable="d" d:DesignHeight="1040" d:DesignWidth="1980"
 		Title="NETPath" MinHeight="1040" MinWidth="1880" DataContext="{Binding RelativeSource={RelativeSource Self}}" Style="{StaticResource MainWindowStyle}"
@@ -199,7 +198,7 @@
 										<Label Content="Enabled:" Margin="5,5,0,0" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Width="Auto" />
 										<ToggleButton IsChecked="{Binding Path=AutomaticBackupsEnabled}" Name="AutomaticBackupsEnabled" Content="No" Margin="0,6,5,5" Checked="AutomaticBackupsEnabled_Checked" Unchecked="AutomaticBackupsEnabled_Unchecked" Height="23" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100" />
 										<Label Content="Interval:" Height="28" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top" Grid.Column="1" />
-										<sf:TimeSpanEdit Value="{Binding Path=AutomaticBackupsInterval}" Name="AutomaticBackupsInterval" IsEnabled="{Binding ElementName=AutomaticBackupsEnabled, Path=IsChecked}" HorizontalAlignment="Right" Margin="0,6,5,5" Grid.Column="1" Format="hh:mm:ss" ShowArrowButtons="False" Height="24" VerticalAlignment="Top" Width="70" ValueChanged="AutomaticBackupsInterval_ValueChanged" />
+										<pc:TimeSpanTextBox Value="{Binding Path=AutomaticBackupsInterval}" Name="AutomaticBackupsInterval" IsEnabled="{Binding ElementName=AutomaticBackupsEnabled, Path=IsChecked}" HorizontalAlignment="Right" Margin="0,6,5,5" Grid.Column="1" Height="24" VerticalAlignment="Top" Width="70" TextChanged="AutomaticBackupsInterval_OnTextChanged" />
 									</Grid>
 								</GroupBox>
 							</Grid>
@@ -224,7 +223,7 @@
 											<RowDefinition Height="Auto" />
 										</Grid.RowDefinitions>
 										<StackPanel Grid.Row="0">
-											<Label Content="NETPath Open-Source" Padding="4,0" Name="ProductTitle" />
+											<Label Content="NETPath Open Source" Padding="4,0" Name="ProductTitle" />
 											<Label Name="AboutVersion" Content="Version: 1.0.0.0" Padding="4,0" />
 											<Label Content="Copyright © 2012-2015 Dr. Honda Inc." Padding="4,0" />
 											<Label Content="All Rights Reserved." Padding="4,0" />

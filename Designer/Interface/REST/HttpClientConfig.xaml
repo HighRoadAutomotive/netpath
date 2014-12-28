@@ -4,7 +4,6 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:pc="http://schemas.ellipticbit.com/controls"
-	xmlns:sf="http://schemas.syncfusion.com/wpf"
 	xmlns:Rest="clr-namespace:NETPath.Interface.Rest"
 	xmlns:Service="clr-namespace:NETPath.Interface.Service"
 	mc:Ignorable="d" d:DesignHeight="750" d:DesignWidth="750" UseLayoutRounding="True" >
@@ -44,7 +43,7 @@
 		</Grid.RowDefinitions>
 		<ToggleButton Content="Allow Automatic Redirects" IsChecked="{Binding Path=AllowAutoRedirects}" Margin="5" Grid.Column="0" Grid.Row="0" />
 		<Label Content="Max Automatic Redirections:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0" />
-		<sf:IntegerTextBox Value="{Binding Path=MaxAutomaticRedirections}" Margin="175,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Grid.Column="1" Grid.Row="0" FontSize="10pt" />
+		<pc:IntegerTextBox Value="{Binding Path=MaxAutomaticRedirections}" Margin="175,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Grid.Column="1" Grid.Row="0" FontSize="10pt" />
 		<Label Content="Automatic Decompression:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" />
 		<ComboBox Height="23" Margin="165,5,5,5" SelectedIndex="{Binding Path=AutomaticDecompression, Converter={StaticResource DecompressionMethodsConverter}}" Grid.Column="0" Grid.Row="2" >
 			<ComboBoxItem Content="None" />
@@ -97,6 +96,6 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<Label Content="Max Request Content Buffer Size:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="0" />
-		<sf:IntegerTextBox Value="{Binding Path=MaxRequestContentBufferSize}" Margin="205,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Grid.Column="0" Grid.Row="0" FontSize="10pt" />
+		<pc:IntegerTextBox Value="{Binding Path=MaxRequestContentBufferSize}" Margin="205,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Grid.Column="0" Grid.Row="0" FontSize="10pt" />
 	</Grid>
 </Grid>

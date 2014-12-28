@@ -13,6 +13,7 @@ git pull origin master
 cd ..
 
 cd EllipticBit.Controls
+git pull origin master
 sh BuildVS14.sh
 cd ..
 

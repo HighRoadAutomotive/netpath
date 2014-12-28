@@ -59,13 +59,13 @@
 		</Grid.ColumnDefinitions>
 		<Label Grid.Column="0" Content="Timeouts" FontSize="12pt" Margin="0,5,0,0" />
 		<Label Content="Open Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
-		<sf:TimeSpanEdit Value="{Binding Path=Binding.OpenTimeout, Mode=TwoWay}" Name="OpenTimeout" Margin="105,5,5,5" Format="hh:mm:ss" ShowArrowButtons="False" Height="24" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" FontSize="10pt" />
+		<pc:TimeSpanTextBox Value="{Binding Path=Binding.OpenTimeout, Mode=TwoWay}" Name="OpenTimeout" Margin="105,5,5,5" Height="24" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" FontSize="10pt" />
 		<Label Content="Close Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
-		<sf:TimeSpanEdit Value="{Binding Path=Binding.CloseTimeout, Mode=TwoWay}" Name="CloseTimeout" Margin="105,5,5,5" Format="hh:mm:ss" ShowArrowButtons="False" Height="24" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" FontSize="10pt" />
+		<pc:TimeSpanTextBox Value="{Binding Path=Binding.CloseTimeout, Mode=TwoWay}" Name="CloseTimeout" Margin="105,5,5,5" Height="24" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" FontSize="10pt" />
 		<Label Content="Send Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" />
-		<sf:TimeSpanEdit Value="{Binding Path=Binding.SendTimeout, Mode=TwoWay}" Name="SendTimeout" Margin="105,5,5,5" Format="hh:mm:ss" ShowArrowButtons="False" Height="24" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" FontSize="10pt" />
+		<pc:TimeSpanTextBox Value="{Binding Path=Binding.SendTimeout, Mode=TwoWay}" Name="SendTimeout" Margin="105,5,5,5" Height="24" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" FontSize="10pt" />
 		<Label Content="Receive Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="1" />
-		<sf:TimeSpanEdit Value="{Binding Path=Binding.ReceiveTimeout, Mode=TwoWay}" Name="ReceiveTimeout" Margin="115,5,5,5" Format="hh:mm:ss" ShowArrowButtons="False" Height="24" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="1" FontSize="10pt" />
+		<pc:TimeSpanTextBox Value="{Binding Path=Binding.ReceiveTimeout, Mode=TwoWay}" Name="ReceiveTimeout" Margin="115,5,5,5" Height="24" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="1" FontSize="10pt" />
 	</Grid>
 	<Grid Grid.Row="6">
 		<Grid.RowDefinitions>
@@ -84,7 +84,7 @@
 		<ToggleButton Content="Use Source Journal" IsChecked="{Binding Path=Binding.UseSourceJournal}" Margin="5" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" />
 		<ToggleButton Content="Durable" IsChecked="{Binding Path=Binding.Durable}" Margin="5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2"  />
 		<Label Content="Validity Duration:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="2" />
-		<sf:TimeSpanEdit Format="TimeSpan" Height="24" Margin="120,5,5,5" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="2" />
+		<pc:TimeSpanTextBox Height="24" Margin="120,5,5,5" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="2" />
 	</Grid>
 	<Grid Grid.Row="7">
 		<Grid.RowDefinitions>
@@ -106,7 +106,7 @@
 			<ComboBoxItem Content="Move" />
 		</ComboBox>
 		<Label Content="Receive Retry Count:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" />
-		<sf:IntegerTextBox Margin="140,5,5,5" Value="{Binding Path=Binding.ReceiveRetryCount}" Name="ReceiveRetryCount" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" />
+		<pc:IntegerTextBox Margin="140,5,5,5" Value="{Binding Path=Binding.ReceiveRetryCount}" Name="ReceiveRetryCount" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" />
 	</Grid>
 	<Grid Grid.Row="8">
 		<Grid.RowDefinitions>
@@ -136,11 +136,11 @@
 		<Label Grid.Column="0" Content="Message Handling" FontSize="12pt" Margin="0,5,0,0" />
 		<ToggleButton Content="Exactly Once" IsChecked="{Binding Path=Binding.ExactlyOnce}" Margin="5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
 		<Label Content="Time To Live:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
-		<sf:TimeSpanEdit Format="hh:mm:ss" ShowArrowButtons="False" Height="24" Margin="120,5,5,5" Value="{Binding Path=Binding.TimeToLive, Mode=TwoWay}" Name="TimeToLive" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
+		<pc:TimeSpanTextBox Height="24" Margin="120,5,5,5" Value="{Binding Path=Binding.TimeToLive, Mode=TwoWay}" Name="TimeToLive" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
 		<Label Content="Max Retry Cycles:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" />
-		<sf:IntegerTextBox Value="{Binding Path=Binding.MaxRetryCycles}" Margin="120,5,5,0" VerticalAlignment="Top" Name="MaxRetryCycles" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" />
+		<pc:IntegerTextBox Value="{Binding Path=Binding.MaxRetryCycles}" Margin="120,5,5,0" VerticalAlignment="Top" Name="MaxRetryCycles" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" />
 		<Label Content="Retry Cycle Delay:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="2" />
-		<sf:TimeSpanEdit Format="hh:mm:ss" ShowArrowButtons="False" Height="24" Margin="120,5,5,5" Value="{Binding Path=Binding.RetryCycleDelay, Mode=TwoWay}" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="2" />
+		<pc:TimeSpanTextBox Height="24" Margin="120,5,5,5" Value="{Binding Path=Binding.RetryCycleDelay, Mode=TwoWay}" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="2" />
 	</Grid>
 	<Grid Grid.Row="10">
 		<Grid.RowDefinitions>

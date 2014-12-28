@@ -4,10 +4,9 @@
 	  xmlns:Data="clr-namespace:NETPath.Interface.Data"
 	  xmlns:Docs="clr-namespace:NETPath.Interface.Documentation"
 	  xmlns:pc="http://schemas.ellipticbit.com/controls"
-	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-	  xmlns:sf="http://schemas.syncfusion.com/wpf"
-	  DataContext="{Binding RelativeSource={RelativeSource Self}}" 
+	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	  DataContext="{Binding RelativeSource={RelativeSource Self}}"
 	  mc:Ignorable="d" d:DesignHeight="820" d:DesignWidth="1390">
 	<Grid.Resources>
 		<ResourceDictionary>
@@ -157,7 +156,7 @@
 					<Border Grid.Column="1" Grid.Row="1" Visibility="{Binding Path=Element.DRECanBatch, Converter={StaticResource BoolVisibilityConverter}}">
 						<Grid>
 							<Label Content="Batch Interval:" Height="Auto" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Width="Auto" />
-							<sf:IntegerTextBox Value="{Binding Path=Element.DREBatchCount}" Margin="95,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Name="UpdateBatchSize" FontSize="10pt" ToolTip="Specify the number of changes to this collection before a change message is sent." />
+							<pc:IntegerTextBox Value="{Binding Path=Element.DREBatchCount}" Margin="95,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Name="UpdateBatchSize" FontSize="10pt" ToolTip="Specify the number of changes to this collection before a change message is sent." />
 						</Grid>
 					</Border>
 				</Grid>

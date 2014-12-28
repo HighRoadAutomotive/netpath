@@ -53,13 +53,13 @@
 		</Grid.ColumnDefinitions>
 		<Label Grid.Column="0" Content="Timeouts" FontSize="12pt" Margin="0,5,0,0" />
 		<Label Content="Open Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
-		<sf:TimeSpanEdit Value="{Binding Path=Binding.OpenTimeout, Mode=TwoWay}" Name="OpenTimeout" Margin="105,5,5,5" Format="hh:mm:ss" ShowArrowButtons="False" Height="24" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" FontSize="10pt" />
+		<pc:TimeSpanTextBox Value="{Binding Path=Binding.OpenTimeout, Mode=TwoWay}" Name="OpenTimeout" Margin="105,5,5,5" Height="24" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" FontSize="10pt" />
 		<Label Content="Close Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
-		<sf:TimeSpanEdit Value="{Binding Path=Binding.CloseTimeout, Mode=TwoWay}" Name="CloseTimeout" Margin="105,5,5,5" Format="hh:mm:ss" ShowArrowButtons="False" Height="24" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" FontSize="10pt" />
+		<pc:TimeSpanTextBox Value="{Binding Path=Binding.CloseTimeout, Mode=TwoWay}" Name="CloseTimeout" Margin="105,5,5,5" Height="24" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" FontSize="10pt" />
 		<Label Content="Send Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" />
-		<sf:TimeSpanEdit Value="{Binding Path=Binding.SendTimeout, Mode=TwoWay}" Name="SendTimeout" Margin="105,5,5,5" Format="hh:mm:ss" ShowArrowButtons="False" Height="24" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" FontSize="10pt" />
+		<pc:TimeSpanTextBox Value="{Binding Path=Binding.SendTimeout, Mode=TwoWay}" Name="SendTimeout" Margin="105,5,5,5" Height="24" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="1" FontSize="10pt" />
 		<Label Content="Receive Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="1" />
-		<sf:TimeSpanEdit Value="{Binding Path=Binding.ReceiveTimeout, Mode=TwoWay}" Name="ReceiveTimeout" Margin="115,5,5,5" Format="hh:mm:ss" ShowArrowButtons="False" Height="24" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="1" FontSize="10pt" />
+		<pc:TimeSpanTextBox Value="{Binding Path=Binding.ReceiveTimeout, Mode=TwoWay}" Name="ReceiveTimeout" Margin="115,5,5,5" Height="24" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="1" FontSize="10pt" />
 	</Grid>
 	<Grid Grid.Row="6">
 		<Grid.RowDefinitions>

@@ -88,7 +88,7 @@ namespace NETPath
 			// For use in debugging.
 			//DialogService.ShowMessageDialog(null, "We've Encountered an Unknown Problem.", e.Exception.ToString(), new DialogAction("Dismiss", false, true));
 			Clipboard.SetText(e.Exception.ToString());
-			System.IO.File.WriteAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dr. Honda", "NETPath", "NPError.txt"), e.Exception.ToString());
+			System.IO.File.WriteAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EllipticBit", "NETPath", "NPError.txt"), e.Exception.ToString());
 
 			if (Globals.MainScreen == null || !Globals.MainScreen.IsLoaded) return;
 

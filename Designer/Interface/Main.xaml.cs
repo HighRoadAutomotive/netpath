@@ -367,13 +367,10 @@ namespace NETPath.Interface
 			AutomaticBackupsInterval.IsEnabled = false;
 		}
 
-		private void AutomaticBackupsInterval_ValueChanged(DependencyObject D, DependencyPropertyChangedEventArgs e)
+		private void AutomaticBackupsInterval_OnTextChanged(object Sender, TextChangedEventArgs E)
 		{
-			if (IsLoaded == false) return;
-			if (e.NewValue == null) { UserProfile.AutomaticBackupsInterval = new TimeSpan(0, 5, 0); return; }
-			if (((TimeSpan)e.NewValue).TotalMinutes < 1) { UserProfile.AutomaticBackupsInterval = new TimeSpan(0, 1, 0); return; }
-			UserProfile.AutomaticBackupsInterval = (TimeSpan)e.NewValue;
-			Globals.BackupTimer.Dispose();
+			UserProfile.AutomaticBackupsInterval = AutomaticBackupsInterval.Value;
+			if (Globals.BackupTimer != null) Globals.BackupTimer.Dispose();
 			Globals.BackupTimer = new System.Threading.Timer(Globals.BackupProject, null, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds);
 		}
 

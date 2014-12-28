@@ -221,7 +221,7 @@
 						<ColumnDefinition Width="230" />
 						<ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
-					<ListBox x:Name="ConfigurationList" Grid.Column="0" ItemsSource="{Binding Path=ServiceType.RequestConfigurations}" ItemTemplateSelector="{StaticResource RequestConfigurationTemplateSelector}" AllowDrop="True" BorderThickness="0" Background="Transparent" Margin="0" SelectionMode="Single" Padding="-1,0" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.IsVirtualizing="False" SelectionChanged="ConfigurationList_SelectionChanged" />
+					<ListBox x:Name="ConfigurationList" Grid.Column="0" ItemsSource="{Binding Path=ServiceType.RequestConfigurations}" ItemTemplate="{StaticResource RestHttpConfigurationTemplate}" AllowDrop="True" BorderThickness="0" Background="Transparent" Margin="0" SelectionMode="Single" Padding="-1,0" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.IsVirtualizing="False" SelectionChanged="ConfigurationList_SelectionChanged" />
 					<ContentPresenter Grid.Column="1" Grid.Row="1" Margin="5,0,0,0" Content="{Binding Path=ActiveConfiguration}" />
 				</Grid>
 			</Grid>
@@ -247,13 +247,13 @@
 						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
 					<Label Content="Open Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" />
-					<sf:TimeSpanEdit Value="{Binding Path=ServiceType.OpenTimeout, Mode=TwoWay}" Name="OpenTimeout" HorizontalAlignment="Left" Margin="100,5,5,5" Grid.Row="0" Grid.Column="0" Format="hh:mm:ss" ShowArrowButtons="False" VerticalContentAlignment="Center" Width="60" />
+					<pc:TimeSpanTextBox Value="{Binding Path=ServiceType.OpenTimeout, Mode=TwoWay}" Name="OpenTimeout" HorizontalAlignment="Left" Margin="100,5,5,5" Grid.Row="0" Grid.Column="0" VerticalContentAlignment="Center" Width="60" />
 					<Label Content="Close Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="1"  />
-					<sf:TimeSpanEdit Value="{Binding Path=ServiceType.CloseTimeout, Mode=TwoWay}" Name="CloseTimeout" HorizontalAlignment="Left" Margin="100,5,5,5" Grid.Row="0" Grid.Column="1" Format="hh:mm:ss" ShowArrowButtons="False" VerticalContentAlignment="Center" Width="60" />
+					<pc:TimeSpanTextBox Value="{Binding Path=ServiceType.CloseTimeout, Mode=TwoWay}" Name="CloseTimeout" HorizontalAlignment="Left" Margin="100,5,5,5" Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center" Width="60" />
 					<ToggleButton IsChecked="{Binding Path=ServiceType.AuthorizationImpersonateCallerForAllOperations}" Name="AuthorizationImpersonateCallerForAllOperations" Content="Impersonate Caller for all Operations" Margin="5" Grid.Row="1" Grid.Column="2" />
 					<ToggleButton IsChecked="{Binding Path=ServiceType.AuthorizationImpersonateOnSerializingReply}" Name="AuthorizationImpersonateOnSerializingReply" Content="Impersonate On Serializing Reply" Margin="5" Grid.Row="1" Grid.Column="3" />
 					<Label Content="Manual Flow Control Limit:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="1" Grid.ColumnSpan="2" />
-					<sf:IntegerTextBox Value="{Binding Path=ServiceType.ManualFlowControlLimit}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Margin="5" Grid.Row="1" Grid.Column="1" Name="ManualFlowControlLimit" />
+					<pc:IntegerTextBox Value="{Binding Path=ServiceType.ManualFlowControlLimit}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Margin="5" Grid.Row="1" Grid.Column="1" Name="ManualFlowControlLimit" />
 					<Label Content="Permission Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="3" />
 					<ComboBox Margin="120,5,5,5" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="3" SelectedIndex="{Binding Path=ServiceType.AuthorizationPrincipalPermissionMode, Converter={StaticResource PrincipalPermissionModeConverter}}" >
 						<ComboBox.Items>
@@ -424,9 +424,9 @@
 									<ToggleButton Content="Include Windows Groups" Height="23" Grid.Row="0" IsChecked="{Binding Path=UserNamePasswordCacheLogonTokens}" Margin="5" />
 									<ToggleButton Content="Cache Logon Tokens" Height="23" Grid.Row="1" IsChecked="{Binding Path=UserNamePasswordIncludeWindowsGroups}" Margin="5" />
 									<Label Content="Cached Token Lifetime:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" />
-									<sf:TimeSpanEdit Format="hh:mm:ss" ShowArrowButtons="False" Height="24" Margin="176,5,5,5" Value="{Binding Path=UserNamePasswordCachedLogonTokenLifetime, Mode=TwoWay}" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0"  />
+									<pc:TimeSpanTextBox Height="24" Margin="176,5,5,5" Value="{Binding Path=UserNamePasswordCachedLogonTokenLifetime, Mode=TwoWay}" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0"  />
 									<Label Content="Max Cached Logon Tokens:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" />
-									<sf:IntegerTextBox Margin="176,5,5,5" Value="{Binding Path=UserNamePasswordMaxCachedLogonTokens}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Grid.Row="3" Grid.Column="0" />
+									<pc:IntegerTextBox Margin="176,5,5,5" Value="{Binding Path=UserNamePasswordMaxCachedLogonTokens}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Grid.Row="3" Grid.Column="0" />
 									<Label Content="Validation Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="0" />
 									<ComboBox Height="23" Margin="115,5,5,5" SelectedIndex="{Binding Path=UserNamePasswordValidationMode, Converter={StaticResource UserNamePasswordValidationModeConverter}}" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="0"  >
 										<ComboBoxItem Content="None" />

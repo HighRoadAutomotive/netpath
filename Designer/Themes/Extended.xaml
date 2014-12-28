@@ -100,7 +100,7 @@
 		</Setter>
 	</Style>
 
-	
+
 	<!-- TextBox -->
 
 	<Style x:Key="{x:Type pc:TextBox}" TargetType="{x:Type pc:TextBox}">
@@ -194,5 +194,151 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	
+
+
+	<!-- IntegerTextBox -->
+
+	<Style x:Key="{x:Type pc:IntegerTextBox}" TargetType="{x:Type pc:IntegerTextBox}">
+		<Setter Property="CaretBrush" Value="{StaticResource DefaultFontColor}" />
+		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
+		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
+		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
+		<Setter Property="SelectionBrush" Value="{StaticResource DefaultSelectionColor}" />
+		<Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}"/>
+		<Setter Property="BorderBrush" Value="Transparent"/>
+		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="UseLayoutRounding" Value="True" />
+		<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+		<Setter Property="LabelTextColor" Value="{StaticResource ReadOnlyFontColor}" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type pc:IntegerTextBox}">
+					<Border x:Name="PART_Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" >
+						<Grid x:Name="LayoutGrid">
+							<ScrollViewer Margin="1,2" x:Name="PART_ContentHost" UseLayoutRounding="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" />
+							<Label x:Name="LabelText" Cursor="IBeam" VerticalAlignment="Center" Margin="2" Foreground="{TemplateBinding LabelTextColor}" Content="{TemplateBinding LabelText}" Padding="2,0,0,0" FontStyle="Italic" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" />
+						</Grid>
+					</Border>
+					<ControlTemplate.Triggers>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsFocused" Value="False"></Condition>
+								<Condition Property="IsInvalid" Value="False"></Condition>
+								<Condition Property="IsRequired" Value="True"></Condition>
+							</MultiTrigger.Conditions>
+							<MultiTrigger.Setters>
+								<Setter Property="Background" Value="{StaticResource RequiredBackgroundColor}" />
+							</MultiTrigger.Setters>
+						</MultiTrigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsInvalid" Value="False"></Condition>
+								<Condition Property="IsFocused" Value="True"></Condition>
+							</MultiTrigger.Conditions>
+							<MultiTrigger.Setters>
+								<Setter Property="Background" Value="{StaticResource FocusedBackgroundColor}" />
+							</MultiTrigger.Setters>
+						</MultiTrigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsInvalid" Value="True"></Condition>
+							</MultiTrigger.Conditions>
+							<MultiTrigger.Setters>
+								<Setter Property="Background" Value="{StaticResource ErrorBackgroundColor}" />
+							</MultiTrigger.Setters>
+						</MultiTrigger>
+						<Trigger Property="IsKeyboardFocusWithin" Value="True">
+							<Setter Property="Visibility" TargetName="LabelText" Value="Collapsed" />
+						</Trigger>
+						<Trigger Property="HasText" Value="True">
+							<Setter Property="Visibility" TargetName="LabelText" Value="Collapsed" />
+						</Trigger>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
+						</Trigger>
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter Property="Background" Value="{StaticResource DisabledBackgroundColor}" />
+							<Setter Property="Visibility" TargetName="LabelText" Value="Collapsed" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+
+	<!-- TimeSpanTextBox -->
+
+	<Style x:Key="{x:Type pc:TimeSpanTextBox}" TargetType="{x:Type pc:TimeSpanTextBox}">
+		<Setter Property="CaretBrush" Value="{StaticResource DefaultFontColor}" />
+		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
+		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
+		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
+		<Setter Property="SelectionBrush" Value="{StaticResource DefaultSelectionColor}" />
+		<Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}"/>
+		<Setter Property="BorderBrush" Value="Transparent"/>
+		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="UseLayoutRounding" Value="True" />
+		<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+		<Setter Property="LabelTextColor" Value="{StaticResource ReadOnlyFontColor}" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type pc:TimeSpanTextBox}">
+					<Border x:Name="PART_Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" >
+						<Grid x:Name="LayoutGrid">
+							<ScrollViewer Margin="1,2" x:Name="PART_ContentHost" UseLayoutRounding="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" />
+							<Label x:Name="LabelText" Cursor="IBeam" VerticalAlignment="Center" Margin="2" Foreground="{TemplateBinding LabelTextColor}" Content="{TemplateBinding LabelText}" Padding="2,0,0,0" FontStyle="Italic" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" />
+						</Grid>
+					</Border>
+					<ControlTemplate.Triggers>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsFocused" Value="False"></Condition>
+								<Condition Property="IsInvalid" Value="False"></Condition>
+								<Condition Property="IsRequired" Value="True"></Condition>
+							</MultiTrigger.Conditions>
+							<MultiTrigger.Setters>
+								<Setter Property="Background" Value="{StaticResource RequiredBackgroundColor}" />
+							</MultiTrigger.Setters>
+						</MultiTrigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsInvalid" Value="False"></Condition>
+								<Condition Property="IsFocused" Value="True"></Condition>
+							</MultiTrigger.Conditions>
+							<MultiTrigger.Setters>
+								<Setter Property="Background" Value="{StaticResource FocusedBackgroundColor}" />
+							</MultiTrigger.Setters>
+						</MultiTrigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsInvalid" Value="True"></Condition>
+							</MultiTrigger.Conditions>
+							<MultiTrigger.Setters>
+								<Setter Property="Background" Value="{StaticResource ErrorBackgroundColor}" />
+							</MultiTrigger.Setters>
+						</MultiTrigger>
+						<Trigger Property="IsKeyboardFocusWithin" Value="True">
+							<Setter Property="Visibility" TargetName="LabelText" Value="Collapsed" />
+						</Trigger>
+						<Trigger Property="HasText" Value="True">
+							<Setter Property="Visibility" TargetName="LabelText" Value="Collapsed" />
+						</Trigger>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
+						</Trigger>
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter Property="Background" Value="{StaticResource DisabledBackgroundColor}" />
+							<Setter Property="Visibility" TargetName="LabelText" Value="Collapsed" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
 </ResourceDictionary>
