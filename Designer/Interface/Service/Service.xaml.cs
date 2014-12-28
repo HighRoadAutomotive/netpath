@@ -11,7 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Prospective.Controls.Dialogs;
+using EllipticBit.Controls.WPF.Dialogs;
 using NETPath.Projects;
 using NETPath.Projects.Helpers;
 
@@ -262,7 +262,7 @@ namespace NETPath.Interface.Service
 			AddServiceProperty.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && AddServiceMemberType.OpenType.Primitive != PrimitiveTypes.Void && !AddServiceMemberName.IsInvalid && AddServiceMemberType.IsValid);
 		}
 
-		private void AddServiceMemberName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void AddServiceMemberName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
 			e.IsValid = true;
 			if (string.IsNullOrEmpty(AddServiceMemberName.Text)) return;
@@ -382,7 +382,7 @@ namespace NETPath.Interface.Service
 			AddCallbackProperty.IsEnabled = (!string.IsNullOrEmpty(AddCallbackMemberName.Text) && AddCallbackMemberType.OpenType.Primitive != PrimitiveTypes.Void && !AddCallbackMemberName.IsInvalid && AddCallbackMemberType.IsValid);
 		}
 
-		private void AddCallbackMemberName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void AddCallbackMemberName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
 			e.IsValid = true;
 			if (string.IsNullOrEmpty(AddCallbackMemberName.Text)) return;

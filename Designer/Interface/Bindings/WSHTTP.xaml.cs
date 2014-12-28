@@ -10,8 +10,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Prospective.Controls;
-using Prospective.Controls.Dialogs;
+using EllipticBit.Controls.WPF;
+using EllipticBit.Controls.WPF.Dialogs;
 using NETPath.Projects;
 using NETPath.Projects.Helpers;
 

@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:wap="clr-namespace:NETPath.Projects;assembly=NETPath.Projects"
-					xmlns:pc="http://schemas.propsectivesoftware.com/pc"
+					xmlns:pc="http://schemas.ellipticbit.com/controls"
 					xmlns:local="clr-namespace:NETPath.Interface">
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/Defaults.xaml" />

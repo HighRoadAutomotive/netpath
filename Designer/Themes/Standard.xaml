@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:pc="clr-namespace:Prospective.Controls;assembly=Prospective.Controls">
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+					xmlns:pc="http://schemas.ellipticbit.com/controls">
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/Defaults.xaml"/>
 	</ResourceDictionary.MergedDictionaries>

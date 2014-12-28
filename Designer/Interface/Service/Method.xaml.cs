@@ -15,7 +15,7 @@ using System.Windows.Threading;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Prospective.Controls.Dialogs;
+using EllipticBit.Controls.WPF.Dialogs;
 using NETPath.Projects.Helpers;
 
 namespace NETPath.Interface.Service
@@ -67,10 +67,10 @@ namespace NETPath.Interface.Service
 			var tds = ValuesList.ItemTemplate.FindName("OperationParameterDataType", cp) as NETPath.Interface.Data.TypeSelector;
 			if (tds == null) return;
 			if (tds.IsKeyboardFocusWithin) return;
-			var ts = ValuesList.ItemTemplate.FindName("OperationParameterElementName", cp) as Prospective.Controls.TextBox;
+			var ts = ValuesList.ItemTemplate.FindName("OperationParameterElementName", cp) as EllipticBit.Controls.WPF.TextBox;
 			if (ts == null) return;
 			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("OperationParameterDocumentation", cp) as Prospective.Controls.TextBox;
+			ts = ValuesList.ItemTemplate.FindName("OperationParameterDocumentation", cp) as EllipticBit.Controls.WPF.TextBox;
 			if (ts == null) return;
 			if (ts.IsKeyboardFocusWithin) return;
 
@@ -140,10 +140,10 @@ namespace NETPath.Interface.Service
 			var tds = ValuesList.ItemTemplate.FindName("OperationParameterDataType", cp) as NETPath.Interface.Data.TypeSelector;
 			if (tds == null) return;
 			if (tds.IsKeyboardFocusWithin) return;
-			var ts = ValuesList.ItemTemplate.FindName("OperationParameterElementName", cp) as Prospective.Controls.TextBox;
+			var ts = ValuesList.ItemTemplate.FindName("OperationParameterElementName", cp) as EllipticBit.Controls.WPF.TextBox;
 			if (ts == null) return;
 			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("OperationParameterDocumentation", cp) as Prospective.Controls.TextBox;
+			ts = ValuesList.ItemTemplate.FindName("OperationParameterDocumentation", cp) as EllipticBit.Controls.WPF.TextBox;
 			if (ts == null) return;
 			if (ts.IsKeyboardFocusWithin) return;
 
@@ -221,7 +221,7 @@ namespace NETPath.Interface.Service
 			AddParameter.IsEnabled = (!string.IsNullOrEmpty(AddParameterName.Text) && !AddParameterName.IsInvalid && AddParameterType.IsValid);
 		}
 
-		private void AddParameterName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void AddParameterName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
 			e.IsValid = true;
 			if (string.IsNullOrEmpty(AddParameterName.Text)) return;
@@ -263,7 +263,7 @@ namespace NETPath.Interface.Service
 			if (e.Key == Key.Down) if (ValuesList.SelectedIndex == MethodData.Parameters.Count - 1) ValuesList.SelectedIndex = 0; else ValuesList.SelectedIndex++;
 
 			if (e.Key != Key.Up && e.Key != Key.Down) return;
-			var ts = ValuesList.ItemTemplate.FindName("OperationParameterElementName", GetListBoxItemPresenter()) as Prospective.Controls.TextBox;
+			var ts = ValuesList.ItemTemplate.FindName("OperationParameterElementName", GetListBoxItemPresenter()) as EllipticBit.Controls.WPF.TextBox;
 			if (ts == null) return;
 			ts.Focus();
 		}
@@ -274,14 +274,14 @@ namespace NETPath.Interface.Service
 			if (e.Key == Key.Down) if (ValuesList.SelectedIndex == MethodData.Parameters.Count - 1) ValuesList.SelectedIndex = 0; else ValuesList.SelectedIndex++;
 
 			if (e.Key != Key.Up && e.Key != Key.Down) return;
-			var ts = ValuesList.ItemTemplate.FindName("OperationParameterDocumentation", GetListBoxItemPresenter()) as Prospective.Controls.TextBox;
+			var ts = ValuesList.ItemTemplate.FindName("OperationParameterDocumentation", GetListBoxItemPresenter()) as EllipticBit.Controls.WPF.TextBox;
 			if (ts == null) return;
 			ts.Focus();
 		}
 
-		private void OperationParameterElementName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void OperationParameterElementName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
-			var ElementName = sender as Prospective.Controls.TextBox;
+			var ElementName = sender as EllipticBit.Controls.WPF.TextBox;
 			if (ElementName == null) return;
 			string t = RegExs.ReplaceSpaces.Replace(string.IsNullOrEmpty(ElementName.Text) ? "" : ElementName.Text, @"");
 

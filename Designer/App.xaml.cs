@@ -13,7 +13,7 @@ using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using NETPath.Generators.Interfaces;
-using Prospective.Controls.Dialogs;
+using EllipticBit.Controls.WPF.Dialogs;
 
 namespace NETPath
 {

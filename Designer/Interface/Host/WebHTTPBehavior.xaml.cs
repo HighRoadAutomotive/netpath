@@ -41,7 +41,7 @@ namespace NETPath.Interface.Host
 			Data.Name = RegExs.ReplaceSpaces.Replace(DisplayName.Text, "");
 		}
 
-		private void Name_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void Name_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
 			e.IsValid = RegExs.MatchCodeName.IsMatch(DisplayName.Text);
 		}

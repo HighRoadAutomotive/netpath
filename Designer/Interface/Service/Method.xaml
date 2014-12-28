@@ -7,7 +7,7 @@
 	xmlns:Data="clr-namespace:NETPath.Interface.Data"
 	xmlns:Projects="clr-namespace:NETPath.Projects;assembly=NETPath.Projects"
 	xmlns:Docs="clr-namespace:NETPath.Interface.Documentation"
-	xmlns:pc="http://schemas.propsectivesoftware.com/pc"
+	xmlns:pc="http://schemas.ellipticbit.com/controls"
 	d:DesignHeight="620" d:DesignWidth="1390" UseLayoutRounding="True" >
 	<Grid.Resources>
 		<Service:ProtectionLevelConverter x:Key="ProtectionLevelConverter" />

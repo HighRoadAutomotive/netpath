@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Globalization;
-using Prospective.Controls.Dialogs;
+using EllipticBit.Controls.WPF.Dialogs;
 using NETPath.Projects.Helpers;
 
 namespace NETPath.Interface.Data
@@ -43,7 +43,7 @@ namespace NETPath.Interface.Data
 			AddMember.IsEnabled = (!string.IsNullOrEmpty(AddMemberName.Text) && !AddMemberName.IsInvalid && AddMemberType.IsValid);
 		}
 
-		private void AddMemberName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void AddMemberName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
 			e.IsValid = true;
 			if (string.IsNullOrEmpty(AddMemberName.Text)) return;

@@ -8,7 +8,7 @@
 	xmlns:Data="clr-namespace:NETPath.Interface.Data"
 	xmlns:Projects="clr-namespace:NETPath.Projects;assembly=NETPath.Projects"
 	xmlns:Docs="clr-namespace:NETPath.Interface.Documentation"
-	xmlns:pc="http://schemas.propsectivesoftware.com/pc"
+	xmlns:pc="http://schemas.ellipticbit.com/controls"
 	d:DesignHeight="750" d:DesignWidth="750" UseLayoutRounding="True" >
 	<Grid.Resources>
 		<Service:ProtectionLevelConverter x:Key="ProtectionLevelConverter" />
@@ -78,9 +78,11 @@
 		<ComboBoxItem Content="POST" />
 		<ComboBoxItem Content="PUT" />
 		<ComboBoxItem Content="DELETE" />
+		<ComboBoxItem Content="HEAD" />
+		<ComboBoxItem Content="OPTIONS" />
+		<ComboBoxItem Content="TRACE" />
+		<ComboBoxItem Content="CUSTOM" />
 	</ComboBox>
-	<Label Content="URL Template:" Height="Auto" HorizontalAlignment="Left" Margin="0,5" VerticalContentAlignment="Center" VerticalAlignment="Top" Width="Auto" Grid.Column="1" Grid.Row="2" />
-	<pc:TextBox Text="{Binding Path=MethodData.UriTemplate}" TextWrapping="Wrap" MinHeight="23" Margin="100,5,5,5" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1" />
 	<TabControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,10,0,0">
 		<TabItem Padding="10,5" IsSelected="True">
 			<TabItem.Header>
@@ -197,18 +199,10 @@
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
 					<ToggleButton Content="Async Server Method" IsChecked="{Binding Path=MethodData.ServerAsync}" Margin="5" Grid.Column="0" Grid.Row="0" />
 					<ToggleButton Content="Async Client Method" IsChecked="{Binding Path=MethodData.ClientAsync}" Margin="5" Grid.Column="1" Grid.Row="0" />
-					<ToggleButton Content="One Way" IsChecked="{Binding Path=MethodData.IsOneWay}" Margin="5" Grid.Column="0" Grid.Row="1" />
-					<Label Content="Protection:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
-					<ComboBox Height="23" Margin="80,5,5,5" SelectedIndex="{Binding Path=MethodData.ProtectionLevel, Converter={StaticResource ProtectionLevelConverter}}" Grid.Column="1" Grid.Row="1" >
-						<ComboBoxItem Content="None" />
-						<ComboBoxItem Content="Sign" />
-						<ComboBoxItem Content="Encrypt and Sign" />
-					</ComboBox>
-					<ToggleButton Content="Hidden" IsChecked="{Binding Path=MethodData.IsHidden}" Margin="5" Grid.Column="0" Grid.Row="2" />
+					<ToggleButton Content="Hidden" IsChecked="{Binding Path=MethodData.IsHidden}" Margin="5" Grid.Column="0" Grid.Row="1" />
 				</Grid>
 				<Label Grid.Row="2" Content="Rest" FontSize="12pt" Margin="0,5,0,0" />
 				<Grid Grid.Row="3" Margin="0,5,0,0">
@@ -223,14 +217,7 @@
 						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
 					<Label Content="Client Configuration:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" />
-					<ComboBox SelectedItem="{Binding Path=MethodData.RequestConfiguration}" ItemsSource="{Binding Path=MethodData.Owner.RequestConfigurations}" ItemTemplateSelector="{StaticResource RequestConfigurationTemplateSelector}" Height="23" Margin="130,5,5,5" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" />
-					<Label Content="Body Style:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="1" />
-					<ComboBox Height="23" Margin="130,5,5,5" SelectedIndex="{Binding Path=MethodData.BodyStyle, Converter={StaticResource WebMessageBodyStyleConverter}}" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="1" >
-						<ComboBoxItem Content="Bare" />
-						<ComboBoxItem Content="Wrapped" />
-						<ComboBoxItem Content="Wrapped Request" />
-						<ComboBoxItem Content="Wrapped Response" />
-					</ComboBox>
+					<ComboBox SelectedItem="{Binding Path=MethodData.RequestConfiguration}" ItemsSource="{Binding Path=MethodData.Owner.RequestConfigurations}" ItemTemplateSelector="{StaticResource RequestConfigurationTemplateSelector}" Height="23" Margin="130,5,5,5" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" />
 					<Label Content="Request Format:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0" />
 					<ComboBox Height="23" Margin="130,5,5,5" SelectedIndex="{Binding Path=MethodData.RequestFormat, Converter={StaticResource WebMessageFormatConverter}}" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0" >
 						<ComboBoxItem Content="XML" />

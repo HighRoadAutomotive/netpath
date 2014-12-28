@@ -3,7 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-	xmlns:pc="http://schemas.propsectivesoftware.com/pc"
+	xmlns:pc="http://schemas.ellipticbit.com/controls"
 	xmlns:Projects="clr-namespace:NETPath.Projects;assembly=NETPath.Projects" 
 	xmlns:Data="clr-namespace:NETPath.Interface.Data"
 	MinHeight="24" MinWidth="100"

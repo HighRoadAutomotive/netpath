@@ -41,7 +41,7 @@ namespace NETPath.Interface.Namespace
 			Data.UpdateFullNamespace();
 		}
 
-		private void CodeName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void CodeName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
 			e.IsValid = RegExs.MatchCodeName.IsMatch(CodeName.Text);
 		}
@@ -52,7 +52,7 @@ namespace NETPath.Interface.Namespace
 			Data.URI = RegExs.ReplaceSpaces.Replace(NamespaceURI.Text, "");
 		}
 
-		private void NamespaceURI_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void NamespaceURI_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
 			e.IsValid = RegExs.MatchHTTPURI.IsMatch(NamespaceURI.Text);
 		}

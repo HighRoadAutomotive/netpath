@@ -11,7 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Prospective.Controls.Dialogs;
+using EllipticBit.Controls.WPF.Dialogs;
 using NETPath.Projects;
 using NETPath.Projects.Helpers;
 
@@ -58,14 +58,14 @@ namespace NETPath.Interface.Host
 			Data.Namespace = RegExs.ReplaceSpaces.Replace(Namespace.Text, "");
 		}
 
-		private void Namespace_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void Namespace_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
 			e.IsValid = RegExs.MatchHTTPURI.IsMatch(Namespace.Text);
 		}
 
 		#region - Endpoints -
 
-		private void AddEndpointName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void AddEndpointName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
 			e.IsValid = true;
 			if (string.IsNullOrEmpty(AddEndpointName.Text)) return;
@@ -129,7 +129,7 @@ namespace NETPath.Interface.Host
 
 		#region - Behaviors -
 
-		private void AddBehaviorName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void AddBehaviorName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
 			e.IsValid = true;
 			if (string.IsNullOrEmpty(AddBehaviorName.Text)) return;

@@ -11,7 +11,7 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Threading;
 using NETPath.Interface;
-using Prospective.Controls.Dialogs;
+using EllipticBit.Controls.WPF.Dialogs;
 using NETPath.Projects;
 using NETPath.Generators.Interfaces;
 

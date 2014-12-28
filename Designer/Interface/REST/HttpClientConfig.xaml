@@ -3,7 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:pc="http://schemas.propsectivesoftware.com/pc"
+	xmlns:pc="http://schemas.ellipticbit.com/controls"
 	xmlns:sf="http://schemas.syncfusion.com/wpf"
 	xmlns:Rest="clr-namespace:NETPath.Interface.Rest"
 	xmlns:Service="clr-namespace:NETPath.Interface.Service"
@@ -27,15 +27,12 @@
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
-		<RowDefinition Height="Auto" />
 		<RowDefinition Height="*" />
 	</Grid.RowDefinitions>
-	<Label Content="Name:" Grid.Row="0" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="100" Padding="10,2,0,2" Margin="5,0" />
-	<pc:TextBox Text="{Binding Path=Name}" Name="ServerName" Grid.Row="0" Height="23" Margin="110,5,5,5" ToolTip="{Binding Path=Name}" />
-	<Label Content="Service Uri:" Grid.Row="1" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="100" Padding="10,2,0,2" Margin="5,0" />
-	<pc:TextBox Text="{Binding Path=ServiceUri}" Name="ServiceUri" Grid.Row="1" Height="23" Margin="110,5,5,5" ToolTip="{Binding Path=ServiceUri}" />
-	<Label Grid.Row="2" Content="Request" FontSize="12pt" Margin="0,5,0,0" />
-	<Grid Grid.Row="3">
+	<Label Content="Name:" Grid.Row="0" VerticalContentAlignment="Center" HorizontalAlignment="Left" Padding="10,2,0,2" Margin="5,0" />
+	<pc:TextBox Text="{Binding Path=Name}" Name="ServerName" Grid.Row="0" Height="23" Margin="75,5,5,5" ToolTip="{Binding Path=Name}" />
+	<Label Grid.Row="1" Content="Request" FontSize="12pt" Margin="0,5,0,0" />
+	<Grid Grid.Row="2">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="*"/>
@@ -48,18 +45,17 @@
 		<ToggleButton Content="Allow Automatic Redirects" IsChecked="{Binding Path=AllowAutoRedirects}" Margin="5" Grid.Column="0" Grid.Row="0" />
 		<Label Content="Max Automatic Redirections:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0" />
 		<sf:IntegerTextBox Value="{Binding Path=MaxAutomaticRedirections}" Margin="175,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Grid.Column="1" Grid.Row="0" FontSize="10pt" />
-		<Label Content="Automatic Decompression:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
-		<ComboBox Height="23" Margin="165,5,5,5" SelectedIndex="{Binding Path=AutomaticDecompression, Converter={StaticResource DecompressionMethodsConverter}}" Grid.Column="0" Grid.Row="1" >
+		<Label Content="Automatic Decompression:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" />
+		<ComboBox Height="23" Margin="165,5,5,5" SelectedIndex="{Binding Path=AutomaticDecompression, Converter={StaticResource DecompressionMethodsConverter}}" Grid.Column="0" Grid.Row="2" >
 			<ComboBoxItem Content="None" />
 			<ComboBoxItem Content="GZip" />
 			<ComboBoxItem Content="Deflate" />
 		</ComboBox>
-		<ToggleButton Content="Include Method Name in Request URI" IsChecked="{Binding Path=UriIncludesMethodName}" Margin="5" Grid.Column="1" Grid.Row="1" />
-		<ToggleButton Content="Use Proxy" IsChecked="{Binding Path=UseProxy}" Margin="5" Grid.Column="1" Grid.Row="2" />
-		<ToggleButton Content="Use HTTP 1.0" IsChecked="{Binding Path=UseHTTP10}" Margin="5" Grid.Column="0" Grid.Row="2" />
+		<ToggleButton Content="Use Proxy" IsChecked="{Binding Path=UseProxy}" Margin="5" Grid.Column="1" Grid.Row="1" />
+		<ToggleButton Content="Use HTTP 1.0" IsChecked="{Binding Path=UseHTTP10}" Margin="5" Grid.Column="0" Grid.Row="1" />
 	</Grid>
-	<Label Grid.Row="4" Content="Security" FontSize="12pt" Margin="0,5,0,0" />
-	<Grid Grid.Row="5">
+	<Label Grid.Row="3" Content="Security" FontSize="12pt" Margin="0,5,0,0" />
+	<Grid Grid.Row="4">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="*"/>
@@ -90,8 +86,8 @@
 			<ComboBoxItem Content="Custom" />
 		</ComboBox>
 	</Grid>
-	<Label Grid.Row="6" Content="Content" FontSize="12pt" Margin="0,5,0,0" />
-	<Grid Grid.Row="7">
+	<Label Grid.Row="5" Content="Content" FontSize="12pt" Margin="0,5,0,0" />
+	<Grid Grid.Row="6">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="*"/>
@@ -102,12 +98,5 @@
 		</Grid.RowDefinitions>
 		<Label Content="Max Request Content Buffer Size:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="0" />
 		<sf:IntegerTextBox Value="{Binding Path=MaxRequestContentBufferSize}" Margin="205,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Grid.Column="0" Grid.Row="0" FontSize="10pt" />
-		<Label Content="Content Mode:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0" />
-		<ComboBox Height="23" Margin="105,5,5,5" SelectedIndex="{Binding Path=ContentMode, Converter={StaticResource ContentModeConverter}}" Grid.Column="1" Grid.Row="0" >
-			<ComboBoxItem Content="Default" />
-			<ComboBoxItem Content="ByteArray" />
-			<ComboBoxItem Content="String" />
-			<ComboBoxItem Content="Stream" />
-		</ComboBox>
 	</Grid>
 </Grid>

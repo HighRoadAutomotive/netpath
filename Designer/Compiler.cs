@@ -13,7 +13,7 @@ using System.Windows.Threading;
 using System.Xml;
 using NETPath.Projects;
 using NETPath.Generators.Interfaces;
-using Prospective.Controls.Dialogs;
+using EllipticBit.Controls.WPF.Dialogs;
 
 namespace NETPath
 {

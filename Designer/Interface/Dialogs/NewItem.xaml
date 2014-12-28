@@ -1,7 +1,7 @@
 ﻿<Grid x:Class="NETPath.Interface.Dialogs.NewItem"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:pc="http://schemas.propsectivesoftware.com/pc"
+	xmlns:pc="http://schemas.ellipticbit.com/controls"
 	xmlns:Root="clr-namespace:NETPath.Interface"
 	xmlns:Projects="clr-namespace:NETPath.Projects;assembly=NETPath.Projects"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 

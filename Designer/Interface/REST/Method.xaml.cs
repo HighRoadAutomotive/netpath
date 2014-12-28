@@ -15,7 +15,7 @@ using System.Windows.Threading;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Prospective.Controls.Dialogs;
+using EllipticBit.Controls.WPF.Dialogs;
 using NETPath.Projects.Helpers;
 
 namespace NETPath.Interface.Rest
@@ -67,10 +67,10 @@ namespace NETPath.Interface.Rest
 			var tds = ValuesList.ItemTemplate.FindName("OperationParameterDataType", cp) as NETPath.Interface.Data.TypeSelector;
 			if (tds == null) return;
 			if (tds.IsKeyboardFocusWithin) return;
-			var ts = ValuesList.ItemTemplate.FindName("OperationParameterElementName", cp) as Prospective.Controls.TextBox;
+			var ts = ValuesList.ItemTemplate.FindName("OperationParameterElementName", cp) as EllipticBit.Controls.WPF.TextBox;
 			if (ts == null) return;
 			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("OperationParameterDocumentation", cp) as Prospective.Controls.TextBox;
+			ts = ValuesList.ItemTemplate.FindName("OperationParameterDocumentation", cp) as EllipticBit.Controls.WPF.TextBox;
 			if (ts == null) return;
 			if (ts.IsKeyboardFocusWithin) return;
 
@@ -85,7 +85,7 @@ namespace NETPath.Interface.Rest
 
 		private void StartValueDrag(MouseEventArgs e)
 		{
-			//Here we create our adorner.. 
+			//Here we create our adorner..
 			DragElement = ValuesList.SelectedItem as Projects.MethodParameter;
 			DragItemStartIndex = ValuesList.SelectedIndex;
 			var tuie = (UIElement)ValuesList.ItemContainerGenerator.ContainerFromItem(ValuesList.SelectedItem);
@@ -103,7 +103,7 @@ namespace NETPath.Interface.Rest
 			var data = new DataObject(DataFormats.Text, "");
 			DragDropEffects de = DragDrop.DoDragDrop(ValuesList, data, DragDropEffects.Move);
 
-			// Clean up our mess :) 
+			// Clean up our mess :)
 			AdornerLayer.GetAdornerLayer(ValuesList).Remove(DragAdorner);
 			DragAdorner = null;
 
@@ -144,10 +144,10 @@ namespace NETPath.Interface.Rest
 			var tds = ValuesList.ItemTemplate.FindName("OperationParameterDataType", cp) as NETPath.Interface.Data.TypeSelector;
 			if (tds == null) return;
 			if (tds.IsKeyboardFocusWithin) return;
-			var ts = ValuesList.ItemTemplate.FindName("OperationParameterElementName", cp) as Prospective.Controls.TextBox;
+			var ts = ValuesList.ItemTemplate.FindName("OperationParameterElementName", cp) as EllipticBit.Controls.WPF.TextBox;
 			if (ts == null) return;
 			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("OperationParameterDocumentation", cp) as Prospective.Controls.TextBox;
+			ts = ValuesList.ItemTemplate.FindName("OperationParameterDocumentation", cp) as EllipticBit.Controls.WPF.TextBox;
 			if (ts == null) return;
 			if (ts.IsKeyboardFocusWithin) return;
 
@@ -215,7 +215,7 @@ namespace NETPath.Interface.Rest
 			AddParameter.IsEnabled = (!string.IsNullOrEmpty(AddParameterName.Text) && !AddParameterName.IsInvalid && AddParameterType.IsValid);
 		}
 
-		private void AddParameterName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void AddParameterName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
 			e.IsValid = true;
 			if (string.IsNullOrEmpty(AddParameterName.Text)) return;
@@ -257,9 +257,8 @@ namespace NETPath.Interface.Rest
 			if (e.Key == Key.Down) if (ValuesList.SelectedIndex == MethodData.Parameters.Count - 1) ValuesList.SelectedIndex = 0; else ValuesList.SelectedIndex++;
 
 			if (e.Key != Key.Up && e.Key != Key.Down) return;
-			var ts = ValuesList.ItemTemplate.FindName("OperationParameterElementName", GetListBoxItemPresenter()) as Prospective.Controls.TextBox;
-			if (ts == null) return;
-			ts.Focus();
+			var ts = ValuesList.ItemTemplate.FindName("OperationParameterElementName", GetListBoxItemPresenter()) as EllipticBit.Controls.WPF.TextBox;
+			ts?.Focus();
 		}
 
 		private void OperationParameterDocumentation_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -268,14 +267,13 @@ namespace NETPath.Interface.Rest
 			if (e.Key == Key.Down) if (ValuesList.SelectedIndex == MethodData.Parameters.Count - 1) ValuesList.SelectedIndex = 0; else ValuesList.SelectedIndex++;
 
 			if (e.Key != Key.Up && e.Key != Key.Down) return;
-			var ts = ValuesList.ItemTemplate.FindName("OperationParameterDocumentation", GetListBoxItemPresenter()) as Prospective.Controls.TextBox;
-			if (ts == null) return;
-			ts.Focus();
+			var ts = ValuesList.ItemTemplate.FindName("OperationParameterDocumentation", GetListBoxItemPresenter()) as EllipticBit.Controls.WPF.TextBox;
+			ts?.Focus();
 		}
 
-		private void OperationParameterElementName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void OperationParameterElementName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
-			var ElementName = sender as Prospective.Controls.TextBox;
+			var ElementName = sender as EllipticBit.Controls.WPF.TextBox;
 			if (ElementName == null) return;
 			string t = RegExs.ReplaceSpaces.Replace(string.IsNullOrEmpty(ElementName.Text) ? "" : ElementName.Text, @"");
 

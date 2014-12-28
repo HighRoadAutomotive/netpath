@@ -1,7 +1,7 @@
 ﻿<Grid x:Class="NETPath.Interface.Data.TargetSelector" x:ClassModifier="internal"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:pc="http://schemas.propsectivesoftware.com/pc"
+	xmlns:pc="http://schemas.ellipticbit.com/controls"
 	xmlns:Projects="clr-namespace:NETPath.Projects;assembly=NETPath.Projects"
 	xmlns:Data="clr-namespace:NETPath.Interface.Data"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 

@@ -625,9 +625,6 @@ namespace NETPath.Projects
 		public bool UseHTTP10 { get { return (bool)GetValue(UseHTTP10Property); } set { SetValue(UseHTTP10Property, value); } }
 		public static readonly DependencyProperty UseHTTP10Property = DependencyProperty.Register("UseHTTP10", typeof(bool), typeof(RestHttpConfiguration), new PropertyMetadata(false));
 
-		public bool UriIncludesMethodName { get { return (bool)GetValue(UriIncludesMethodNameProperty); } set { SetValue(UriIncludesMethodNameProperty, value); } }
-		public static readonly DependencyProperty UriIncludesMethodNameProperty = DependencyProperty.Register("UriIncludesMethodName", typeof(bool), typeof(RestHttpConfiguration), new PropertyMetadata(false));
-
 		//Security
 		public CredentialsMode CredentialsMode { get { return (CredentialsMode)GetValue(CredentialsModeProperty); } set { SetValue(CredentialsModeProperty, value); } }
 		public static readonly DependencyProperty CredentialsModeProperty = DependencyProperty.Register("CredentialsMode", typeof(CredentialsMode), typeof(RestHttpConfiguration), new PropertyMetadata(CredentialsMode.None));
@@ -646,9 +643,6 @@ namespace NETPath.Projects
 
 		public long MaxRequestContentBufferSize { get { return (long)GetValue(MaxRequestContentBufferSizeProperty); } set { SetValue(MaxRequestContentBufferSizeProperty, value); } }
 		public static readonly DependencyProperty MaxRequestContentBufferSizeProperty = DependencyProperty.Register("MaxRequestContentBufferSize", typeof(long), typeof(RestHttpConfiguration), new PropertyMetadata(2147483647L));
-
-		public ContentMode ContentMode { get { return (ContentMode)GetValue(ContentModeProperty); } set { SetValue(ContentModeProperty, value); } }
-		public static readonly DependencyProperty ContentModeProperty = DependencyProperty.Register("ContentMode", typeof(ContentMode), typeof(RestHttpConfiguration), new PropertyMetadata(ContentMode.Default));
 
 		public RestHttpConfiguration()
 		{

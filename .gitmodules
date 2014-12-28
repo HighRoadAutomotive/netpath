@@ -1,3 +1,6 @@
 [submodule "System.Utilities"]
 	path = System.Utilities
 	url = https://github.com/ellipticbit/systemutilities.git
+[submodule "EllipticBit.Controls"]
+	path = EllipticBit.Controls
+	url = https://github.com/ellipticbit/controls.git

@@ -46,7 +46,7 @@ namespace NETPath.Interface.Host
 			Data.Name = RegExs.ReplaceSpaces.Replace(DisplayName.Text, "");
 		}
 
-		private void Name_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void Name_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
 			e.IsValid = RegExs.MatchCodeName.IsMatch(DisplayName.Text);
 		}
@@ -57,7 +57,7 @@ namespace NETPath.Interface.Host
 			Data.HttpHelpPageUrl = RegExs.ReplaceSpaces.Replace(HttpHelpPageUrl.Text, "");
 		}
 
-		private void HttpHelpPageUrl_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void HttpHelpPageUrl_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
 			e.IsValid = RegExs.MatchCodeName.IsMatch(HttpHelpPageUrl.Text);
 		}
@@ -68,7 +68,7 @@ namespace NETPath.Interface.Host
 			Data.HttpsHelpPageUrl = RegExs.ReplaceSpaces.Replace(HttpsHelpPageUrl.Text, "");
 		}
 
-		private void HttpsHelpPageUrl_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void HttpsHelpPageUrl_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
 			e.IsValid = RegExs.MatchCodeName.IsMatch(HttpsHelpPageUrl.Text);
 		}

@@ -14,8 +14,8 @@ using System.Windows.Threading;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Prospective.Controls;
-using Prospective.Controls.Dialogs;
+using EllipticBit.Controls.WPF;
+using EllipticBit.Controls.WPF.Dialogs;
 using NETPath.Projects.Helpers;
 using Button = System.Windows.Controls.Button;
 
@@ -53,13 +53,13 @@ namespace NETPath.Interface.Enum
 		{
 			ContentPresenter cp = GetValuesListBoxItemPresenter();
 			if (cp == null) return;
-			var ts = ValuesList.ItemTemplate.FindName("ValueName", cp) as Prospective.Controls.TextBox;
+			var ts = ValuesList.ItemTemplate.FindName("ValueName", cp) as EllipticBit.Controls.WPF.TextBox;
 			if (ts == null) return;
 			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("Value", cp) as Prospective.Controls.TextBox;
+			ts = ValuesList.ItemTemplate.FindName("Value", cp) as EllipticBit.Controls.WPF.TextBox;
 			if (ts == null) return;
 			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("ContractValue", cp) as Prospective.Controls.TextBox;
+			ts = ValuesList.ItemTemplate.FindName("ContractValue", cp) as EllipticBit.Controls.WPF.TextBox;
 			if (ts == null) return;
 
 			if (e.LeftButton != MouseButtonState.Pressed || IsDragging) return;
@@ -126,13 +126,13 @@ namespace NETPath.Interface.Enum
 		{
 			ContentPresenter cp = GetValuesListBoxItemPresenter();
 			if (cp == null) return;
-			var ts = ValuesList.ItemTemplate.FindName("ValueName", cp) as Prospective.Controls.TextBox;
+			var ts = ValuesList.ItemTemplate.FindName("ValueName", cp) as EllipticBit.Controls.WPF.TextBox;
 			if (ts == null) return;
 			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("Value", cp) as Prospective.Controls.TextBox;
+			ts = ValuesList.ItemTemplate.FindName("Value", cp) as EllipticBit.Controls.WPF.TextBox;
 			if (ts == null) return;
 			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("ContractValue", cp) as Prospective.Controls.TextBox;
+			ts = ValuesList.ItemTemplate.FindName("ContractValue", cp) as EllipticBit.Controls.WPF.TextBox;
 			if (ts == null) return;
 
 			if (DragAdorner != null)
@@ -207,7 +207,7 @@ namespace NETPath.Interface.Enum
 
 		private void ServerValue_Validate(object sender, ValidateEventArgs e)
 		{
-			var ServerValue = sender as Prospective.Controls.TextBox;
+			var ServerValue = sender as EllipticBit.Controls.WPF.TextBox;
 			e.IsValid = true;
 			if (ServerValue == null) return;
 			if (string.IsNullOrEmpty(ServerValue.Text)) return;
@@ -222,7 +222,7 @@ namespace NETPath.Interface.Enum
 
 		private void ClientValue_Validate(object sender, ValidateEventArgs e)
 		{
-			var ClientValue = sender as Prospective.Controls.TextBox;
+			var ClientValue = sender as EllipticBit.Controls.WPF.TextBox;
 			e.IsValid = true;
 			if (ClientValue == null) return;
 			if (string.IsNullOrEmpty(ClientValue.Text)) return;

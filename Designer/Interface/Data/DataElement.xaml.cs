@@ -36,9 +36,9 @@ namespace NETPath.Interface.Data
 			DataType.Project = Project;
 		}
 
-		private void ElementName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void ElementName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
-			var elementName = sender as Prospective.Controls.TextBox;
+			var elementName = sender as EllipticBit.Controls.WPF.TextBox;
 			if (elementName == null) return;
 			if(string.IsNullOrEmpty(elementName.Text)) return;
 
@@ -46,9 +46,9 @@ namespace NETPath.Interface.Data
 			e.IsValid = RegExs.MatchCodeName.IsMatch(t);
 		}
 
-		private void Order_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void Order_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
-			var order = sender as Prospective.Controls.TextBox;
+			var order = sender as EllipticBit.Controls.WPF.TextBox;
 			if (order == null) return;
 			if (string.IsNullOrEmpty(order.Text)) return;
 

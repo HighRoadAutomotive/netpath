@@ -12,8 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using NETPath.Projects.Helpers;
-using Prospective.Controls;
-using Prospective.Controls.Dialogs;
+using EllipticBit.Controls.WPF;
+using EllipticBit.Controls.WPF.Dialogs;
 using NETPath.Projects;
 
 namespace NETPath.Interface.Rest
@@ -162,7 +162,7 @@ namespace NETPath.Interface.Rest
 			AddServiceMethod.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && !AddServiceMemberName.IsInvalid && AddServiceMemberType.IsValid);
 		}
 
-		private void AddServiceMemberName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void AddServiceMemberName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
 			e.IsValid = true;
 			if (string.IsNullOrEmpty(AddServiceMemberName.Text)) return;
@@ -230,7 +230,7 @@ namespace NETPath.Interface.Rest
 
 		#region - Client Configuration Screen -
 
-		private void AddHttpConfigurationName_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void AddHttpConfigurationName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
 			AddHttpConfiguration.IsEnabled = false;
 

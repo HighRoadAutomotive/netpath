@@ -10,7 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Prospective.Controls.Dialogs;
+using EllipticBit.Controls.WPF.Dialogs;
 using NETPath.Projects.Helpers;
 
 namespace NETPath.Interface.Host
@@ -45,7 +45,7 @@ namespace NETPath.Interface.Host
 			Data.Name = RegExs.ReplaceSpaces.Replace(DisplayName.Text, "");
 		}
 
-		private void Name_Validate(object sender, Prospective.Controls.ValidateEventArgs e)
+		private void Name_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
 			e.IsValid = RegExs.MatchCodeName.IsMatch(DisplayName.Text);
 		}
