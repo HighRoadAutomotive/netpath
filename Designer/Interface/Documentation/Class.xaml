@@ -1,10 +1,9 @@
 ﻿<Grid
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-	xmlns:sf="http://schemas.syncfusion.com/wpf" 
-	x:Class="NETPath.Interface.Documentation.Class" 
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	x:Class="NETPath.Interface.Documentation.Class"
 	mc:Ignorable="d" d:DesignHeight="150" d:DesignWidth="700">
 	<Grid.RowDefinitions>
 		<RowDefinition Height="Auto" />

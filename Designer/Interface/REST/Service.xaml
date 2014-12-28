@@ -4,14 +4,13 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d"
 	xmlns:Service="clr-namespace:NETPath.Interface.Service"
-	xmlns:Rest="clr-namespace:NETPath.Interface.Rest"
 	xmlns:Data="clr-namespace:NETPath.Interface.Data"
 	xmlns:Projects="clr-namespace:NETPath.Projects;assembly=NETPath.Projects"
 	xmlns:Docs="clr-namespace:NETPath.Interface.Documentation"
 	xmlns:pc="http://schemas.ellipticbit.com/controls"
-	xmlns:sf="http://schemas.syncfusion.com/wpf" xmlns:Host="clr-namespace:NETPath.Interface.Host"
-	  xmlns:Bindings="clr-namespace:NETPath.Interface.Bindings"
-	  d:DesignHeight="950" d:DesignWidth="1000" DataContext="{Binding RelativeSource={RelativeSource Self}}" UseLayoutRounding="True" >
+	xmlns:Host="clr-namespace:NETPath.Interface.Host"
+	xmlns:Bindings="clr-namespace:NETPath.Interface.Bindings"
+	d:DesignHeight="950" d:DesignWidth="1000" DataContext="{Binding RelativeSource={RelativeSource Self}}" UseLayoutRounding="True" >
 	<Grid.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
