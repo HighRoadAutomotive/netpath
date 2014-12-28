@@ -105,6 +105,11 @@ namespace NETPath.Interface
 			}
 		}
 
+		private void Main_OnSizeChanged(object Sender, SizeChangedEventArgs E)
+		{
+			DialogViewer.SetMaxSize(BaseGrid.ActualHeight, BaseGrid.ActualWidth);
+		}
+
 		private void Main_KeyUp(object sender, KeyEventArgs e)
 		{
 			if (e.Key == Key.Escape)
@@ -192,7 +197,7 @@ namespace NETPath.Interface
 		{
 			var NP = new Projects.Project(Name, Path);
 			Projects.Project.Save(NP, Path);
-			
+
 			Globals.Project = NP;
 			SelectProjectScreen(new Navigator(NP));
 		}

@@ -103,6 +103,9 @@
     <Reference Include="EllipticBit.Controls.WPF">
       <HintPath>..\EllipticBit.Controls\Build\EllipticBit.Controls.WPF.dll</HintPath>
     </Reference>
+    <Reference Include="EllipticBit.Controls.WPF.Themes.Dark">
+      <HintPath>..\EllipticBit.Controls\Build\EllipticBit.Controls.WPF.Themes.Dark.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\winapicp.1.1\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
@@ -220,12 +223,6 @@
     </Compile>
     <Compile Include="Interface\Data\TypeSelector.xaml.cs">
       <DependentUpon>TypeSelector.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Dialogs\SetTrial.xaml.cs">
-      <DependentUpon>SetTrial.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Dialogs\SetLicense.xaml.cs">
-      <DependentUpon>SetLicense.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interface\Dialogs\ReportSuggestion.xaml.cs">
       <DependentUpon>ReportSuggestion.xaml</DependentUpon>
@@ -399,14 +396,6 @@
     <Page Include="Interface\Data\TypeSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Dialogs\SetTrial.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Dialogs\SetLicense.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Interface\Dialogs\ReportSuggestion.xaml">
       <Generator>MSBuild:Compile</Generator>

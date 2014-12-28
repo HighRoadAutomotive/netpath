@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle("NETPath Designer")]
 [assembly: AssemblyDescription("A design environment and code generator for WCF and Rest Web Services.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("High Road Automotive Inc.")]
+[assembly: AssemblyCompany("Dr. Honda Inc.")]
 [assembly: AssemblyProduct("NETPath")]
-[assembly: AssemblyCopyright("Copyright © 2012-2014 High Road Automotive Inc.")]
+[assembly: AssemblyCopyright("Copyright © 2012-2015 Dr. Honda Inc.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -51,5 +51,5 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.2.0")]
+[assembly: AssemblyVersion("2.0.0.0")]
+[assembly: AssemblyFileVersion("2.0.0")]

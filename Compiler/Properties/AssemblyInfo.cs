@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("NETPath Compiler")]
 [assembly: AssemblyDescription("The compiler for NETPath")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("High Road Automotive Inc.")]
+[assembly: AssemblyCompany("Dr. Honda Inc.")]
 [assembly: AssemblyProduct("NETPath")]
-[assembly: AssemblyCopyright("Copyright © 2012-2014 High Road Automotive Inc.")]
+[assembly: AssemblyCopyright("Copyright © 2012-2015 Dr. Honda Inc.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.2.0")]
+[assembly: AssemblyVersion("2.0.0.0")]
+[assembly: AssemblyFileVersion("2.0.0")]

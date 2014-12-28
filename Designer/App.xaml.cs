@@ -27,7 +27,7 @@ namespace NETPath
 			Globals.ApplicationVersion = new Version(System.Diagnostics.FileVersionInfo.GetVersionInfo(Globals.ApplicationPath + "NETPath.exe").FileVersion);
 
 			//Check to see if the User Profile path exists and make a folder if it does not.
-			Globals.UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Prospective Software\\NETPath\\";
+			Globals.UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\EllipticBit\\NETPath\\";
 			if (!Directory.Exists(Globals.UserProfilePath)) Directory.CreateDirectory(Globals.UserProfilePath);
 
 			//Load the user profile if it exists or make a new one if it doesn't.
@@ -88,7 +88,7 @@ namespace NETPath
 			// For use in debugging.
 			//DialogService.ShowMessageDialog(null, "We've Encountered an Unknown Problem.", e.Exception.ToString(), new DialogAction("Dismiss", false, true));
 			Clipboard.SetText(e.Exception.ToString());
-			System.IO.File.WriteAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Prospective Software", "NETPath", "NPError.txt"), e.Exception.ToString());
+			System.IO.File.WriteAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dr. Honda", "NETPath", "NPError.txt"), e.Exception.ToString());
 
 			if (Globals.MainScreen == null || !Globals.MainScreen.IsLoaded) return;
 
