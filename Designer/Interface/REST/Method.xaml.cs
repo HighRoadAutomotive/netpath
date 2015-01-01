@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using EllipticBit.Controls.WPF.Dialogs;
+using NETPath.Projects;
 using NETPath.Projects.Helpers;
 
 namespace NETPath.Interface.Rest
@@ -49,28 +50,29 @@ namespace NETPath.Interface.Rest
 
 			InitializeComponent();
 
-			ValuesList.ItemsSource = Data.Parameters;
+			RouteList.ItemsSource = Data.RouteParameters;
+			QueryList.ItemsSource = Data.QueryParameters;
 			DataContext = this;
 		}
 
-		#region - Drag/Drop Support -
+		#region - Route Drag/Drop Support -
 
-		private void ValuesList_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		private void RouteList_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			DragStartPos = e.GetPosition(null);
 		}
 
-		private void ValuesList_PreviewMouseMove(object sender, MouseEventArgs e)
+		private void RouteList_PreviewMouseMove(object sender, MouseEventArgs e)
 		{
-			ContentPresenter cp = GetListBoxItemPresenter();
+			ContentPresenter cp = RouteGetListBoxItemPresenter();
 			if (cp == null) return;
-			var tds = ValuesList.ItemTemplate.FindName("OperationParameterDataType", cp) as NETPath.Interface.Data.TypeSelector;
+			var tds = RouteList.ItemTemplate.FindName("OperationParameterDataType", cp) as NETPath.Interface.Data.TypeSelector;
 			if (tds == null) return;
 			if (tds.IsKeyboardFocusWithin) return;
-			var ts = ValuesList.ItemTemplate.FindName("OperationParameterElementName", cp) as EllipticBit.Controls.WPF.TextBox;
+			var ts = RouteList.ItemTemplate.FindName("OperationParameterElementName", cp) as EllipticBit.Controls.WPF.TextBox;
 			if (ts == null) return;
 			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("OperationParameterDocumentation", cp) as EllipticBit.Controls.WPF.TextBox;
+			ts = RouteList.ItemTemplate.FindName("OperationParameterDocumentation", cp) as EllipticBit.Controls.WPF.TextBox;
 			if (ts == null) return;
 			if (ts.IsKeyboardFocusWithin) return;
 
@@ -86,31 +88,31 @@ namespace NETPath.Interface.Rest
 		private void StartValueDrag(MouseEventArgs e)
 		{
 			//Here we create our adorner..
-			DragElement = ValuesList.SelectedItem as Projects.MethodParameter;
-			DragItemStartIndex = ValuesList.SelectedIndex;
-			var tuie = (UIElement)ValuesList.ItemContainerGenerator.ContainerFromItem(ValuesList.SelectedItem);
+			DragElement = RouteList.SelectedItem as Projects.MethodParameter;
+			DragItemStartIndex = RouteList.SelectedIndex;
+			var tuie = (UIElement)RouteList.ItemContainerGenerator.ContainerFromItem(RouteList.SelectedItem);
 			if (tuie == null) return;
 			try
-			{ DragAdorner = new Themes.DragAdorner(ValuesList, tuie, true, 0.5); }
+			{ DragAdorner = new Themes.DragAdorner(RouteList, tuie, true, 0.5); }
 			catch
 			{ return; }
-			DragLayer = AdornerLayer.GetAdornerLayer(ValuesList);
+			DragLayer = AdornerLayer.GetAdornerLayer(RouteList);
 			DragLayer.Add(DragAdorner);
 
 			IsDragging = true;
 			DragHasLeftScope = false;
 
 			var data = new DataObject(DataFormats.Text, "");
-			DragDropEffects de = DragDrop.DoDragDrop(ValuesList, data, DragDropEffects.Move);
+			DragDropEffects de = DragDrop.DoDragDrop(RouteList, data, DragDropEffects.Move);
 
 			// Clean up our mess :)
-			AdornerLayer.GetAdornerLayer(ValuesList).Remove(DragAdorner);
+			AdornerLayer.GetAdornerLayer(RouteList).Remove(DragAdorner);
 			DragAdorner = null;
 
 			IsDragging = false;
 		}
 
-		private void ValuesList_QueryContinueDrag(object sender, QueryContinueDragEventArgs e)
+		private void RouteList_QueryContinueDrag(object sender, QueryContinueDragEventArgs e)
 		{
 			if (DragHasLeftScope)
 			{
@@ -119,51 +121,51 @@ namespace NETPath.Interface.Rest
 			}
 		}
 
-		private void ValuesList_DragLeave(object sender, DragEventArgs e)
+		private void RouteList_DragLeave(object sender, DragEventArgs e)
 		{
-			if (!Equals(e.OriginalSource, ValuesList)) return;
-			Point p = e.GetPosition(ValuesList);
-			Rect r = VisualTreeHelper.GetContentBounds(ValuesList);
+			if (!Equals(e.OriginalSource, RouteList)) return;
+			Point p = e.GetPosition(RouteList);
+			Rect r = VisualTreeHelper.GetContentBounds(RouteList);
 			if (r.Contains(p)) return;
 			DragHasLeftScope = true;
 			e.Handled = true;
 
-			foreach (Projects.RestMethodParameter O in MethodData.Parameters)
+			foreach (Projects.RestMethodParameter O in MethodData.RouteParameters)
 			{
-				var lbi = (ListBoxItem)ValuesList.ItemContainerGenerator.ContainerFromItem(O);
+				var lbi = (ListBoxItem)RouteList.ItemContainerGenerator.ContainerFromItem(O);
 				if (lbi == null) continue;
 				lbi.Margin = new Thickness(0);
 				lbi.Padding = new Thickness(0);
 			}
 		}
 
-		private void ValuesList_PreviewDragOver(object sender, DragEventArgs e)
+		private void RouteList_PreviewDragOver(object sender, DragEventArgs e)
 		{
-			ContentPresenter cp = GetListBoxItemPresenter();
+			ContentPresenter cp = RouteGetListBoxItemPresenter();
 			if (cp == null) return;
-			var tds = ValuesList.ItemTemplate.FindName("OperationParameterDataType", cp) as NETPath.Interface.Data.TypeSelector;
+			var tds = RouteList.ItemTemplate.FindName("OperationParameterDataType", cp) as NETPath.Interface.Data.TypeSelector;
 			if (tds == null) return;
 			if (tds.IsKeyboardFocusWithin) return;
-			var ts = ValuesList.ItemTemplate.FindName("OperationParameterElementName", cp) as EllipticBit.Controls.WPF.TextBox;
+			var ts = RouteList.ItemTemplate.FindName("OperationParameterElementName", cp) as EllipticBit.Controls.WPF.TextBox;
 			if (ts == null) return;
 			if (ts.IsKeyboardFocusWithin) return;
-			ts = ValuesList.ItemTemplate.FindName("OperationParameterDocumentation", cp) as EllipticBit.Controls.WPF.TextBox;
+			ts = RouteList.ItemTemplate.FindName("OperationParameterDocumentation", cp) as EllipticBit.Controls.WPF.TextBox;
 			if (ts == null) return;
 			if (ts.IsKeyboardFocusWithin) return;
 
 			if (DragAdorner != null)
 			{
-				DragAdorner.LeftOffset = e.GetPosition(ValuesList).X;
-				DragAdorner.TopOffset = e.GetPosition(ValuesList).Y;
+				DragAdorner.LeftOffset = e.GetPosition(RouteList).X;
+				DragAdorner.TopOffset = e.GetPosition(RouteList).Y;
 			}
 
-			Point MP = e.GetPosition(ValuesList);
-			HitTestResult htr = VisualTreeHelper.HitTest(ValuesList, MP);
+			Point MP = e.GetPosition(RouteList);
+			HitTestResult htr = VisualTreeHelper.HitTest(RouteList, MP);
 			if (htr != null)
 			{
-				foreach (Projects.RestMethodParameter O in MethodData.Parameters)
+				foreach (Projects.RestMethodParameter O in MethodData.RouteParameters)
 				{
-					var lbi = (ListBoxItem)ValuesList.ItemContainerGenerator.ContainerFromItem(O);
+					var lbi = (ListBoxItem)RouteList.ItemContainerGenerator.ContainerFromItem(O);
 					var lbiht = Globals.GetVisualParent<ListBoxItem>(htr.VisualHit);
 					if (lbi == null) continue;
 					if (lbiht == null) continue;
@@ -176,19 +178,19 @@ namespace NETPath.Interface.Rest
 					{
 						if (DragAdorner != null) lbi.Margin = new Thickness(0, DragAdorner.ActualHeight, 0, 0);
 						lbi.Padding = new Thickness(0);
-						DragItemNewIndex = ValuesList.ItemContainerGenerator.IndexFromContainer(lbi);
+						DragItemNewIndex = RouteList.ItemContainerGenerator.IndexFromContainer(lbi);
 					}
 				}
 			}
 		}
 
-		private void ValuesList_Drop(object sender, DragEventArgs e)
+		private void RouteList_Drop(object sender, DragEventArgs e)
 		{
-			MethodData.Parameters.Move(DragItemStartIndex, DragItemNewIndex);
+			MethodData.RouteParameters.Move(DragItemStartIndex, DragItemNewIndex);
 
-			foreach (Projects.RestMethodParameter O in MethodData.Parameters)
+			foreach (Projects.RestMethodParameter O in MethodData.RouteParameters)
 			{
-				var lbi = (ListBoxItem)ValuesList.ItemContainerGenerator.ContainerFromItem(O);
+				var lbi = (ListBoxItem)RouteList.ItemContainerGenerator.ContainerFromItem(O);
 				if (lbi == null) continue;
 				lbi.Margin = new Thickness(0);
 				lbi.Padding = new Thickness(0);
@@ -197,81 +199,116 @@ namespace NETPath.Interface.Rest
 
 		#endregion
 
-		private ContentPresenter GetListBoxItemPresenter()
+		#region - Route Event Handling -
+
+		private ContentPresenter RouteGetListBoxItemPresenter()
 		{
-			if (ValuesList.SelectedItem == null) return null;
-			var lbi = ValuesList.ItemContainerGenerator.ContainerFromIndex(ValuesList.SelectedIndex) as ListBoxItem;
+			if (RouteList.SelectedItem == null) return null;
+			var lbi = RouteList.ItemContainerGenerator.ContainerFromIndex(RouteList.SelectedIndex) as ListBoxItem;
 			return Globals.GetVisualChild<ContentPresenter>(lbi);
 		}
 
-		private void AddParameterType_KeyUp(object sender, KeyEventArgs e)
+		private void AddRouteParameterType_KeyUp(object sender, KeyEventArgs e)
 		{
 			if (e.Key == Key.Enter)
-				AddParameterName.Focus();
+				AddRouteParameterName.Focus();
 		}
 
-		private void AddParameterType_ValidationChanged(object Sender, RoutedEventArgs E)
+		private void AddRouteParameterType_ValidationChanged(object Sender, RoutedEventArgs E)
 		{
-			AddParameter.IsEnabled = (!string.IsNullOrEmpty(AddParameterName.Text) && !AddParameterName.IsInvalid && AddParameterType.IsValid);
+			AddRouteParameter.IsEnabled = (!string.IsNullOrEmpty(AddRouteParameterName.Text) && !AddRouteParameterName.IsInvalid && AddRouteParameterType.IsValid);
 		}
 
-		private void AddParameterName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
+		private void AddRouteParameterName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
 			e.IsValid = true;
-			if (string.IsNullOrEmpty(AddParameterName.Text)) return;
+			if (string.IsNullOrEmpty(AddRouteParameterName.Text)) return;
 
-			e.IsValid = RegExs.MatchCodeName.IsMatch(AddParameterName.Text);
-			AddParameter.IsEnabled = (!string.IsNullOrEmpty(AddParameterName.Text) && e.IsValid && AddParameterType.IsValid);
+			e.IsValid = RegExs.MatchCodeName.IsMatch(AddRouteParameterName.Text);
+			AddRouteParameter.IsEnabled = (!string.IsNullOrEmpty(AddRouteParameterName.Text) && e.IsValid && AddRouteParameterType.IsValid);
 		}
 
-		private void AddParameterName_KeyUp(object sender, KeyEventArgs e)
+		private void AddRouteParameterName_KeyUp(object sender, KeyEventArgs e)
 		{
 			if (e.Key == Key.Enter)
-				if (!string.IsNullOrEmpty(AddParameterName.Text))
-					AddParameter_Click(sender, null);
+				if (!string.IsNullOrEmpty(AddRouteParameterName.Text))
+					AddRouteParameter_Click(sender, null);
 		}
 
-		private void AddParameterName_TextChanged(object sender, TextChangedEventArgs e)
+		private void AddRouteParameterName_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			if (AddParameterName.IsInvalid == false)
+			if (AddRouteParameterName.IsInvalid == false)
 			{
-				AddParameter.IsEnabled = false;
+				AddRouteParameter.IsEnabled = false;
 				return;
 			}
-			if (AddParameterType.OpenType != null && AddParameterName.Text != "") AddParameter.IsEnabled = true;
-			else AddParameter.IsEnabled = false;
+			if (AddRouteParameterType.OpenType != null && AddRouteParameterName.Text != "") AddRouteParameter.IsEnabled = true;
+			else AddRouteParameter.IsEnabled = false;
 		}
 
-		private void AddParameter_Click(object sender, RoutedEventArgs e)
+		private void AddRouteParameter_Click(object sender, RoutedEventArgs e)
 		{
-			if (AddParameter.IsEnabled == false) return;
-			MethodData.Parameters.Add(new Projects.RestMethodParameter(AddParameterType.OpenType, AddParameterName.Text, MethodData.Owner, MethodData));
-			AddParameterType.OpenType = null;
-			AddParameterType.Focus();
-			AddParameterName.Text = "";
+			if (AddRouteParameter.IsEnabled == false) return;
+			MethodData.RouteParameters.Add(new Projects.RestMethodParameter(AddRouteParameterType.OpenType, AddRouteParameterName.Text, MethodData.Owner, MethodData));
+			AddRouteParameterType.OpenType = null;
+			AddRouteParameterType.Focus();
+			AddRouteParameterName.Text = "";
 		}
 
-		private void OperationParameterElementName_PreviewKeyDown(object sender, KeyEventArgs e)
+		private void AddRouteFixedName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
-			if (e.Key == Key.Up) if (ValuesList.SelectedIndex == 0) ValuesList.SelectedIndex = MethodData.Parameters.Count - 1; else ValuesList.SelectedIndex--;
-			if (e.Key == Key.Down) if (ValuesList.SelectedIndex == MethodData.Parameters.Count - 1) ValuesList.SelectedIndex = 0; else ValuesList.SelectedIndex++;
+			e.IsValid = true;
+			if (string.IsNullOrEmpty(AddRouteFixedName.Text)) return;
+
+			e.IsValid = RegExs.MatchCodeName.IsMatch(AddRouteFixedName.Text);
+			AddRouteFixed.IsEnabled = (!string.IsNullOrEmpty(AddRouteFixedName.Text) && e.IsValid );
+		}
+
+		private void AddRouteFixedName_KeyUp(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Enter)
+				if (!string.IsNullOrEmpty(AddRouteFixedName.Text))
+					AddRouteFixed_Click(sender, null);
+		}
+
+		private void AddRouteFixedName_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			if (AddRouteFixedName.IsInvalid == false)
+			{
+				AddRouteFixed.IsEnabled = false;
+				return;
+			}
+			AddRouteFixed.IsEnabled = AddRouteFixedName.Text != "";
+		}
+
+		private void AddRouteFixed_Click(object sender, RoutedEventArgs e)
+		{
+			if (AddRouteFixed.IsEnabled == false) return;
+			MethodData.RouteParameters.Add(new Projects.RestRouteParameter(AddRouteFixedName.Text, MethodData.Owner, MethodData));
+			AddRouteFixedName.Text = "";
+		}
+
+		private void RouteParameterElementName_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Up) if (RouteList.SelectedIndex == 0) RouteList.SelectedIndex = MethodData.RouteParameters.Count - 1; else RouteList.SelectedIndex--;
+			if (e.Key == Key.Down) if (RouteList.SelectedIndex == MethodData.RouteParameters.Count - 1) RouteList.SelectedIndex = 0; else RouteList.SelectedIndex++;
 
 			if (e.Key != Key.Up && e.Key != Key.Down) return;
-			var ts = ValuesList.ItemTemplate.FindName("OperationParameterElementName", GetListBoxItemPresenter()) as EllipticBit.Controls.WPF.TextBox;
+			var ts = RouteList.ItemTemplate.FindName("OperationParameterElementName", RouteGetListBoxItemPresenter()) as EllipticBit.Controls.WPF.TextBox;
 			ts?.Focus();
 		}
 
-		private void OperationParameterDocumentation_PreviewKeyDown(object sender, KeyEventArgs e)
+		private void RouteParameterDocumentation_PreviewKeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.Key == Key.Up) if (ValuesList.SelectedIndex == 0) ValuesList.SelectedIndex = MethodData.Parameters.Count - 1; else ValuesList.SelectedIndex--;
-			if (e.Key == Key.Down) if (ValuesList.SelectedIndex == MethodData.Parameters.Count - 1) ValuesList.SelectedIndex = 0; else ValuesList.SelectedIndex++;
+			if (e.Key == Key.Up) if (RouteList.SelectedIndex == 0) RouteList.SelectedIndex = MethodData.RouteParameters.Count - 1; else RouteList.SelectedIndex--;
+			if (e.Key == Key.Down) if (RouteList.SelectedIndex == MethodData.RouteParameters.Count - 1) RouteList.SelectedIndex = 0; else RouteList.SelectedIndex++;
 
 			if (e.Key != Key.Up && e.Key != Key.Down) return;
-			var ts = ValuesList.ItemTemplate.FindName("OperationParameterDocumentation", GetListBoxItemPresenter()) as EllipticBit.Controls.WPF.TextBox;
+			var ts = RouteList.ItemTemplate.FindName("OperationParameterDocumentation", RouteGetListBoxItemPresenter()) as EllipticBit.Controls.WPF.TextBox;
 			ts?.Focus();
 		}
 
-		private void OperationParameterElementName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
+		private void RouteParameterElementName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
 			var ElementName = sender as EllipticBit.Controls.WPF.TextBox;
 			if (ElementName == null) return;
@@ -280,13 +317,269 @@ namespace NETPath.Interface.Rest
 			e.IsValid = RegExs.MatchCodeName.IsMatch(t);
 		}
 
-		private void DeleteOperationParameter_Click(object sender, RoutedEventArgs e)
+		private void DeleteRouteParameter_Click(object sender, RoutedEventArgs e)
 		{
 			var lbi = Globals.GetVisualParent<ListBoxItem>(sender);
 			var OP = lbi.Content as Projects.RestMethodParameter;
 			if (OP == null) return;
 
-			DialogService.ShowMessageDialog("NETPath", "Delete Method Parameter?", "Are you sure you want to delete the '" + OP.Type + " " + OP.Name + "' method parameter?", new DialogAction("Yes", () => MethodData.Parameters.Remove(OP), true), new DialogAction("No", false, true));
+			DialogService.ShowMessageDialog("NETPath", "Delete Route Parameter?", "Are you sure you want to delete the '" + OP.Type + " " + OP.Name + "' method parameter?", new DialogAction("Yes", () => MethodData.RouteParameters.Remove(OP), true), new DialogAction("No", false, true));
+		}
+
+		#endregion
+
+		#region - Query Drag/Drop Support -
+
+		private void QueryList_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			DragStartPos = e.GetPosition(null);
+		}
+
+		private void QueryList_PreviewMouseMove(object sender, MouseEventArgs e)
+		{
+			ContentPresenter cp = QueryGetListBoxItemPresenter();
+			if (cp == null) return;
+			var tds = QueryList.ItemTemplate.FindName("OperationParameterDataType", cp) as NETPath.Interface.Data.TypeSelector;
+			if (tds == null) return;
+			if (tds.IsKeyboardFocusWithin) return;
+			var ts = QueryList.ItemTemplate.FindName("OperationParameterElementName", cp) as EllipticBit.Controls.WPF.TextBox;
+			if (ts == null) return;
+			if (ts.IsKeyboardFocusWithin) return;
+			ts = QueryList.ItemTemplate.FindName("OperationParameterDocumentation", cp) as EllipticBit.Controls.WPF.TextBox;
+			if (ts == null) return;
+			if (ts.IsKeyboardFocusWithin) return;
+
+			if (e.LeftButton != MouseButtonState.Pressed || IsDragging) return;
+			Point position = e.GetPosition(null);
+
+			if (Math.Abs(position.X - DragStartPos.X) > SystemParameters.MinimumHorizontalDragDistance || Math.Abs(position.Y - DragStartPos.Y) > SystemParameters.MinimumVerticalDragDistance)
+			{
+				QueryStartValueDrag(e);
+			}
+		}
+
+		private void QueryStartValueDrag(MouseEventArgs e)
+		{
+			//Here we create our adorner..
+			DragElement = QueryList.SelectedItem as Projects.MethodParameter;
+			DragItemStartIndex = QueryList.SelectedIndex;
+			var tuie = (UIElement)QueryList.ItemContainerGenerator.ContainerFromItem(QueryList.SelectedItem);
+			if (tuie == null) return;
+			try
+			{ DragAdorner = new Themes.DragAdorner(QueryList, tuie, true, 0.5); }
+			catch
+			{ return; }
+			DragLayer = AdornerLayer.GetAdornerLayer(QueryList);
+			DragLayer.Add(DragAdorner);
+
+			IsDragging = true;
+			DragHasLeftScope = false;
+
+			var data = new DataObject(DataFormats.Text, "");
+			DragDropEffects de = DragDrop.DoDragDrop(QueryList, data, DragDropEffects.Move);
+
+			// Clean up our mess :)
+			AdornerLayer.GetAdornerLayer(QueryList).Remove(DragAdorner);
+			DragAdorner = null;
+
+			IsDragging = false;
+		}
+
+		private void QueryList_QueryContinueDrag(object sender, QueryContinueDragEventArgs e)
+		{
+			if (DragHasLeftScope)
+			{
+				e.Action = DragAction.Cancel;
+				e.Handled = true;
+			}
+		}
+
+		private void QueryList_DragLeave(object sender, DragEventArgs e)
+		{
+			if (!Equals(e.OriginalSource, QueryList)) return;
+			Point p = e.GetPosition(QueryList);
+			Rect r = VisualTreeHelper.GetContentBounds(QueryList);
+			if (r.Contains(p)) return;
+			DragHasLeftScope = true;
+			e.Handled = true;
+
+			foreach (Projects.RestMethodParameter O in MethodData.QueryParameters)
+			{
+				var lbi = (ListBoxItem)QueryList.ItemContainerGenerator.ContainerFromItem(O);
+				if (lbi == null) continue;
+				lbi.Margin = new Thickness(0);
+				lbi.Padding = new Thickness(0);
+			}
+		}
+
+		private void QueryList_PreviewDragOver(object sender, DragEventArgs e)
+		{
+			ContentPresenter cp = QueryGetListBoxItemPresenter();
+			if (cp == null) return;
+			var tds = QueryList.ItemTemplate.FindName("OperationParameterDataType", cp) as NETPath.Interface.Data.TypeSelector;
+			if (tds == null) return;
+			if (tds.IsKeyboardFocusWithin) return;
+			var ts = QueryList.ItemTemplate.FindName("OperationParameterElementName", cp) as EllipticBit.Controls.WPF.TextBox;
+			if (ts == null) return;
+			if (ts.IsKeyboardFocusWithin) return;
+			ts = QueryList.ItemTemplate.FindName("OperationParameterDocumentation", cp) as EllipticBit.Controls.WPF.TextBox;
+			if (ts == null) return;
+			if (ts.IsKeyboardFocusWithin) return;
+
+			if (DragAdorner != null)
+			{
+				DragAdorner.LeftOffset = e.GetPosition(QueryList).X;
+				DragAdorner.TopOffset = e.GetPosition(QueryList).Y;
+			}
+
+			Point MP = e.GetPosition(QueryList);
+			HitTestResult htr = VisualTreeHelper.HitTest(QueryList, MP);
+			if (htr != null)
+			{
+				foreach (Projects.RestMethodParameter O in MethodData.QueryParameters)
+				{
+					var lbi = (ListBoxItem)QueryList.ItemContainerGenerator.ContainerFromItem(O);
+					var lbiht = Globals.GetVisualParent<ListBoxItem>(htr.VisualHit);
+					if (lbi == null) continue;
+					if (lbiht == null) continue;
+					if (!Equals(lbi, lbiht))
+					{
+						lbi.Margin = new Thickness(0);
+						lbi.Padding = new Thickness(0);
+					}
+					else
+					{
+						if (DragAdorner != null) lbi.Margin = new Thickness(0, DragAdorner.ActualHeight, 0, 0);
+						lbi.Padding = new Thickness(0);
+						DragItemNewIndex = QueryList.ItemContainerGenerator.IndexFromContainer(lbi);
+					}
+				}
+			}
+		}
+
+		private void QueryList_Drop(object sender, DragEventArgs e)
+		{
+			MethodData.QueryParameters.Move(DragItemStartIndex, DragItemNewIndex);
+
+			foreach (Projects.RestMethodParameter O in MethodData.QueryParameters)
+			{
+				var lbi = (ListBoxItem)QueryList.ItemContainerGenerator.ContainerFromItem(O);
+				if (lbi == null) continue;
+				lbi.Margin = new Thickness(0);
+				lbi.Padding = new Thickness(0);
+			}
+		}
+
+		#endregion
+
+		#region - Query Event Handling -
+
+		private ContentPresenter QueryGetListBoxItemPresenter()
+		{
+			if (QueryList.SelectedItem == null) return null;
+			var lbi = QueryList.ItemContainerGenerator.ContainerFromIndex(QueryList.SelectedIndex) as ListBoxItem;
+			return Globals.GetVisualChild<ContentPresenter>(lbi);
+		}
+
+		private void AddQueryParameterType_KeyUp(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Enter)
+				AddQueryParameterName.Focus();
+		}
+
+		private void AddQueryParameterType_ValidationChanged(object Sender, RoutedEventArgs E)
+		{
+			AddQueryParameter.IsEnabled = (!string.IsNullOrEmpty(AddQueryParameterName.Text) && !AddQueryParameterName.IsInvalid && AddQueryParameterType.IsValid);
+		}
+
+		private void AddQueryParameterName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
+		{
+			e.IsValid = true;
+			if (string.IsNullOrEmpty(AddQueryParameterName.Text)) return;
+
+			e.IsValid = RegExs.MatchCodeName.IsMatch(AddQueryParameterName.Text);
+			AddQueryParameter.IsEnabled = (!string.IsNullOrEmpty(AddQueryParameterName.Text) && e.IsValid && AddQueryParameterType.IsValid);
+		}
+
+		private void AddQueryParameterName_KeyUp(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Enter)
+				if (!string.IsNullOrEmpty(AddQueryParameterName.Text))
+					AddQueryParameter_Click(sender, null);
+		}
+
+		private void AddQueryParameterName_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			if (AddQueryParameterName.IsInvalid == false)
+			{
+				AddQueryParameter.IsEnabled = false;
+				return;
+			}
+			if (AddQueryParameterType.OpenType != null && AddQueryParameterName.Text != "") AddQueryParameter.IsEnabled = true;
+			else AddQueryParameter.IsEnabled = false;
+		}
+
+		private void AddQueryParameter_Click(object sender, RoutedEventArgs e)
+		{
+			if (AddQueryParameter.IsEnabled == false) return;
+			MethodData.QueryParameters.Add(new Projects.RestMethodParameter(AddQueryParameterType.OpenType, AddQueryParameterName.Text, MethodData.Owner, MethodData));
+			AddQueryParameterType.OpenType = null;
+			AddQueryParameterType.Focus();
+			AddQueryParameterName.Text = "";
+		}
+
+		private void QueryParameterElementName_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Up) if (QueryList.SelectedIndex == 0) QueryList.SelectedIndex = MethodData.QueryParameters.Count - 1; else QueryList.SelectedIndex--;
+			if (e.Key == Key.Down) if (QueryList.SelectedIndex == MethodData.QueryParameters.Count - 1) QueryList.SelectedIndex = 0; else QueryList.SelectedIndex++;
+
+			if (e.Key != Key.Up && e.Key != Key.Down) return;
+			var ts = QueryList.ItemTemplate.FindName("OperationParameterElementName", QueryGetListBoxItemPresenter()) as EllipticBit.Controls.WPF.TextBox;
+			ts?.Focus();
+		}
+
+		private void QueryParameterDocumentation_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Up) if (QueryList.SelectedIndex == 0) QueryList.SelectedIndex = MethodData.QueryParameters.Count - 1; else QueryList.SelectedIndex--;
+			if (e.Key == Key.Down) if (QueryList.SelectedIndex == MethodData.QueryParameters.Count - 1) QueryList.SelectedIndex = 0; else QueryList.SelectedIndex++;
+
+			if (e.Key != Key.Up && e.Key != Key.Down) return;
+			var ts = QueryList.ItemTemplate.FindName("OperationParameterDocumentation", QueryGetListBoxItemPresenter()) as EllipticBit.Controls.WPF.TextBox;
+			ts?.Focus();
+		}
+
+		private void QueryParameterElementName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
+		{
+			var ElementName = sender as EllipticBit.Controls.WPF.TextBox;
+			if (ElementName == null) return;
+			string t = RegExs.ReplaceSpaces.Replace(string.IsNullOrEmpty(ElementName.Text) ? "" : ElementName.Text, @"");
+
+			e.IsValid = RegExs.MatchCodeName.IsMatch(t);
+		}
+
+		private void DeleteQueryParameter_Click(object sender, RoutedEventArgs e)
+		{
+			var lbi = Globals.GetVisualParent<ListBoxItem>(sender);
+			var OP = lbi.Content as Projects.RestMethodParameter;
+			if (OP == null) return;
+
+			DialogService.ShowMessageDialog("NETPath", "Delete Query Parameter?", "Are you sure you want to delete the '" + OP.Type + " " + OP.Name + "' method parameter?", new DialogAction("Yes", () => MethodData.QueryParameters.Remove(OP), true), new DialogAction("No", false, true));
+		}
+
+		#endregion
+	}
+
+	public class RouteParameterTemplateSelector : DataTemplateSelector
+	{
+		public DataTemplate FixedTemplate { get; set; }
+		public DataTemplate ParameterTemplate { get; set; }
+
+		public override DataTemplate SelectTemplate(object item, DependencyObject container)
+		{
+			if (item == null) return FixedTemplate;
+			if (item.GetType() == typeof(RestRouteParameter)) return FixedTemplate;
+			if (item.GetType() == typeof(RestMethodParameter)) return ParameterTemplate;
+			return FixedTemplate;
 		}
 	}
 }

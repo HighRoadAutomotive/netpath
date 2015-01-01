@@ -23,7 +23,7 @@ namespace NETPath.Projects
 				typeof(ServiceBinding), typeof(ServiceBindingBasicHTTP), typeof(ServiceBindingBasicHTTPS), typeof(ServiceBindingMSMQ), typeof(ServiceBindingMSMQIntegration), typeof(ServiceBindingNamedPipe), typeof(ServiceBindingNetHTTP), typeof(ServiceBindingNetHTTPS), typeof(ServiceBindingPeerTCP), typeof(ServiceBindingTCP), typeof(ServiceBindingUDP), typeof(ServiceBindingWebHTTP), typeof(ServiceBindingWS2007FederationHTTP), typeof(ServiceBindingWS2007HTTP), typeof(ServiceBindingWSDualHTTP), typeof(ServiceBindingWSFederationHTTP), typeof(ServiceBindingWSHTTP),
 				typeof(Host), typeof(HostBehavior), typeof(HostCredentials), typeof(HostDebugBehavior), typeof(HostEndpoint), typeof(HostEndpointAddressHeader), typeof(HostMetadataBehavior), typeof(HostThrottlingBehavior), typeof(HostWebHTTPBehavior),
 				typeof(Service), typeof(Operation), typeof(Method), typeof(Callback), typeof(DataChangeMethod), typeof(MethodParameter), typeof(Property),
-				typeof(RestService), typeof(RestMethod), typeof(RestHttpConfiguration),
+				typeof(RestService), typeof(RestMethod), typeof(RestHttpConfiguration), typeof(RestRouteParameter), typeof(RestMethodParameter),
 				typeof(Enum), typeof(EnumElement),
 				typeof(Data), typeof(DataElement)
 			});
@@ -53,7 +53,7 @@ namespace NETPath.Projects
 				typeof(ServiceBinding), typeof(ServiceBindingBasicHTTP), typeof(ServiceBindingBasicHTTPS), typeof(ServiceBindingMSMQ), typeof(ServiceBindingMSMQIntegration), typeof(ServiceBindingNamedPipe), typeof(ServiceBindingNetHTTP), typeof(ServiceBindingNetHTTPS), typeof(ServiceBindingPeerTCP), typeof(ServiceBindingTCP), typeof(ServiceBindingUDP), typeof(ServiceBindingWebHTTP), typeof(ServiceBindingWS2007FederationHTTP), typeof(ServiceBindingWS2007HTTP), typeof(ServiceBindingWSDualHTTP), typeof(ServiceBindingWSFederationHTTP), typeof(ServiceBindingWSHTTP),
 				typeof(Host), typeof(HostBehavior), typeof(HostCredentials), typeof(HostDebugBehavior), typeof(HostEndpoint), typeof(HostEndpointAddressHeader), typeof(HostMetadataBehavior), typeof(HostThrottlingBehavior), typeof(HostWebHTTPBehavior),
 				typeof(Service), typeof(Operation), typeof(Method), typeof(Callback), typeof(DataChangeMethod), typeof(MethodParameter), typeof(Property),
-				typeof(RestService), typeof(RestMethod), typeof(RestHttpConfiguration),
+				typeof(RestService), typeof(RestMethod), typeof(RestHttpConfiguration), typeof(RestRouteParameter), typeof(RestMethodParameter),
 				typeof(Enum), typeof(EnumElement),
 				typeof(Data), typeof(DataElement)
 			});
@@ -74,7 +74,7 @@ namespace NETPath.Projects
 				typeof(ServiceBinding), typeof(ServiceBindingBasicHTTP), typeof(ServiceBindingBasicHTTPS), typeof(ServiceBindingMSMQ), typeof(ServiceBindingMSMQIntegration), typeof(ServiceBindingNamedPipe), typeof(ServiceBindingNetHTTP), typeof(ServiceBindingNetHTTPS), typeof(ServiceBindingPeerTCP), typeof(ServiceBindingTCP), typeof(ServiceBindingUDP), typeof(ServiceBindingWebHTTP), typeof(ServiceBindingWS2007FederationHTTP), typeof(ServiceBindingWS2007HTTP), typeof(ServiceBindingWSDualHTTP), typeof(ServiceBindingWSFederationHTTP), typeof(ServiceBindingWSHTTP),
 				typeof(Host), typeof(HostBehavior), typeof(HostCredentials), typeof(HostDebugBehavior), typeof(HostEndpoint), typeof(HostEndpointAddressHeader), typeof(HostMetadataBehavior), typeof(HostThrottlingBehavior), typeof(HostWebHTTPBehavior),
 				typeof(Service), typeof(Operation), typeof(Method), typeof(Callback), typeof(DataChangeMethod), typeof(MethodParameter), typeof(Property),
-				typeof(RestService), typeof(RestMethod), typeof(RestHttpConfiguration),
+				typeof(RestService), typeof(RestMethod), typeof(RestHttpConfiguration), typeof(RestRouteParameter), typeof(RestMethodParameter),
 				typeof(Enum), typeof(EnumElement),
 				typeof(Data), typeof(DataElement)
 			});

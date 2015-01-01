@@ -66,7 +66,7 @@
 								<StackPanel Orientation="Vertical" Margin="3">
 									<StackPanel Orientation="Horizontal">
 										<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/Method.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
-										<TextBlock Text="{Binding Path=ServerName}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="11pt" />
+										<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="11pt" />
 									</StackPanel>
 								</StackPanel>
 								<Button Grid.Column="1" x:Name="DeleteOperation" Visibility="Collapsed" Margin="0" Padding="0" Width="30" Style="{StaticResource ListItemButtonRight}" Click="DeleteOperation_Click">

@@ -53,7 +53,19 @@ namespace NETPath.Generators.CS
 				if (m.RequestConfiguration == null)
 					AddMessage(new CompileMessage("GS2017", "The Request Configuration type in method '" + m.Name + "' in the '" + o.Name + "' service is not set. A Request Configuration MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
 
-				foreach (var mp in m.Parameters)
+				foreach (var mp in m.RouteParameters)
+				{
+					if (string.IsNullOrEmpty(mp.Name))
+						AddMessage(new CompileMessage("GS2008", "The method parameter '" + m.Name + "' in the '" + o.Name + "' service has a blank parameter name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
+					if (string.IsNullOrEmpty(mp.Name))
+						AddMessage(new CompileMessage("GS20018", "The method parameter '" + m.Name + "' in the '" + o.Name + "' service has a blank route name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
+					//if (mp.IsRestInvalid)
+					//	AddMessage(new CompileMessage("GS2009", "The method Rest parameter '" + m.Name + "' in the '" + m.Name + "' method is not a valid Rest parameter. Please specify a valid Rest parameter.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
+					if (mp.Name == "__callback")
+						AddMessage(new CompileMessage("GS2016", "The name of the method parameter '" + mp.Name + "' in the '" + m.Name + "' method is invalid. Please rename it.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
+				}
+
+				foreach (var mp in m.QueryParameters)
 				{
 					if (string.IsNullOrEmpty(mp.Name))
 						AddMessage(new CompileMessage("GS2008", "The method parameter '" + m.Name + "' in the '" + o.Name + "' service has a blank parameter name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType(), o.Parent.Owner.ID));
@@ -222,14 +234,14 @@ namespace NETPath.Generators.CS
 		{
 			var uriBuilder = new StringBuilder(512);
 
-			foreach (var pp in o.Parameters.Where(a => a.IsPath))
+			foreach (var pp in o.RouteParameters)
 				uriBuilder.AppendFormat("/{{{0}}}", pp.RouteName);
 
-			if (!o.Parameters.OfType<RestMethodParameter>().Any(a => a.IsQuery)) return uriBuilder.ToString();
+			if (!o.QueryParameters.Any()) return uriBuilder.ToString();
 
 			uriBuilder.Append("?");
 
-			foreach (var pq in o.Parameters.OfType<RestMethodParameter>().Where(a => a.IsQuery))
+			foreach (var pq in o.QueryParameters)
 				uriBuilder.AppendFormat("&{0}={{{0}}}", pq.RouteName);
 
 			uriBuilder.Replace("?&", "?");
@@ -245,14 +257,18 @@ namespace NETPath.Generators.CS
 			if (o.Documentation != null)
 			{
 				code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-				foreach (var mp in o.Parameters.OfType<RestMethodParameter>().Where(mp => mp.Documentation != null))
+				foreach (var mp in o.RouteParameters.OfType<RestMethodParameter>().Where(mp => mp.Documentation != null))
+					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
+				foreach (var mp in o.QueryParameters.Where(mp => mp.Documentation != null))
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 			}
 			code.AppendLine(string.Format("\t\t[System.Web.Http.Route(\"{0}\")]", BuildUriTemplate(o)));
 			code.AppendFormat("\t\tpublic abstract {0} {1}(", o.ServerAsync ? o.ReturnType.IsVoid ? "Task" : string.Format("Task<{0}>", DataTypeGenerator.GenerateType(o.ReturnType)) : DataTypeGenerator.GenerateType(o.ReturnType), o.Name);
-			foreach (var op in o.Parameters.OfType<RestMethodParameter>())
+			foreach (var op in o.RouteParameters.OfType<RestMethodParameter>())
 				code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
-			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+			foreach (var op in o.QueryParameters)
+				code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
+			if (o.RouteParameters.OfType<RestMethodParameter>().Any() || o.QueryParameters.Any()) code.Remove(code.Length - 2, 2);
 			code.AppendLine(");");
 			return code.ToString();
 		}
@@ -271,31 +287,35 @@ namespace NETPath.Generators.CS
 			if (o.Documentation != null)
 			{
 				code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-				foreach (var mp in o.Parameters.OfType<RestMethodParameter>().Where(mp => mp.Documentation != null))
+				foreach (var mp in o.RouteParameters.OfType<RestMethodParameter>().Where(mp => mp.Documentation != null))
+					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
+				foreach (var mp in o.QueryParameters.Where(mp => mp.Documentation != null))
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 			}
 
 			//Construct method declaration
 			code.AppendFormat("\t\tpublic virtual async void {0}(", o.Name);
-			foreach (var op in o.Parameters.OfType<RestMethodParameter>())
+			foreach (var op in o.RouteParameters.OfType<RestMethodParameter>())
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
-			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+			foreach (var op in o.QueryParameters)
+				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+			if (o.RouteParameters.OfType<RestMethodParameter>().Any() || o.QueryParameters.Any()) code.Remove(code.Length - 2, 2);
 			code.AppendLine(")");
 			code.AppendLine("\t\t{");
 			GenerateMethodPreamble(code, o.ClientPreambleCode, 3);
 
 			//Construct the URI
 			code.AppendLine("\t\t\tvar uri = StringBuilder(_baseUri, 2048);");
-			foreach (var op in o.Parameters.Where(a => a.IsPath))
+			foreach (var op in o.RouteParameters)
 			{
 				if (op.GetType() == typeof (RestRouteParameter))
 					code.AppendLine(string.Format("\t\t\turi.Append(\"/{0}\");", op.RouteName));
 				if (op.GetType() == typeof (RestMethodParameter))
 					code.AppendLine(string.Format("\t\t\turi.Append(\"/{{0}}\", {0});", op.Name));
 			}
-			if (o.Parameters.OfType<RestMethodParameter>().Any(a => a.IsQuery && !a.Serialize))
+			if (o.QueryParameters.Any(a => !a.Serialize))
 				code.AppendLine("\t\t\turi.Append(\"?\"");
-			foreach (var op in o.Parameters.OfType<RestMethodParameter>().Where(a => a.IsQuery && !a.Serialize))
+			foreach (var op in o.QueryParameters.Where(a => !a.Serialize))
 				code.AppendLine(string.Format(!op.Nullable ? "\t\t\turi.Append(\"&{0}={{0}}\", {1});" : "\t\t\tif ({1} != null) uri.Append(\"&{0}={{0}}\", {1});", op.RouteName, op.Name));
 			code.AppendLine("\t\t\turi.Replace(\"?&\", \"?\"");
 
@@ -320,9 +340,9 @@ namespace NETPath.Generators.CS
 			code.AppendLine(string.Format("\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"application/{0}\"));", conf.ResponseFormat == RestSerialization.Json ? "json" : conf.ResponseFormat == RestSerialization.Bson ? "bson" : "xml"));
 
 			//Serialize any parameters
-			if (o.Parameters.OfType<RestMethodParameter>().Any(a => a.Serialize))
+			if (o.QueryParameters.Any(a => a.Serialize))
 			{
-				var p = o.Parameters.OfType<RestMethodParameter>().First(a => a.Serialize);
+				var p = o.QueryParameters.First(a => a.Serialize);
 				var pt = p.Type;
 				code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.ObjectContent<{0}>({1}, new {2}());", DataTypeGenerator.GenerateType(pt), p.Name, conf.RequestFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.RequestFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
 				code.AppendLine(string.Format("\t\t\tforeach (var x in _contentHeaders) rm.Content.Headers.Add(x.Key, x.Value);"));
@@ -363,7 +383,9 @@ namespace NETPath.Generators.CS
 			if (o.Documentation != null)
 			{
 				code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-				foreach (var mp in o.Parameters.OfType<RestMethodParameter>().Where(mp => mp.Documentation != null))
+				foreach (var mp in o.RouteParameters.OfType<RestMethodParameter>().Where(mp => mp.Documentation != null))
+					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
+				foreach (var mp in o.QueryParameters.Where(mp => mp.Documentation != null))
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 			}
 
@@ -378,25 +400,27 @@ namespace NETPath.Generators.CS
 				if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendFormat("\t\tpublic async virtual System.Threading.Tasks.Task {0}Async(", o.Name);
 				else code.AppendFormat("\t\tpublic async virtual System.Threading.Tasks.Task<{0}> {1}Async(", DataTypeGenerator.GenerateType(o.ReturnType), o.Name);
 			}
-			foreach (var op in o.Parameters.OfType<RestMethodParameter>())
+			foreach (var op in o.RouteParameters.OfType<RestMethodParameter>())
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
-			if (o.Parameters.Count > 0) code.Remove(code.Length - 2, 2);
+			foreach (var op in o.QueryParameters)
+				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+			if (o.RouteParameters.OfType<RestMethodParameter>().Any() || o.QueryParameters.Any()) code.Remove(code.Length - 2, 2);
 			code.AppendLine(")");
 			code.AppendLine("\t\t{");
 			GenerateMethodPreamble(code, o.ClientPreambleCode, 3);
 
 			//Construct the URI
 			code.AppendLine("\t\t\tvar uri = StringBuilder(_baseUri, 2048);");
-			foreach (var op in o.Parameters.Where(a => a.IsPath))
+			foreach (var op in o.RouteParameters)
 			{
-				if (op.GetType() == typeof(RestRouteParameter))
+				if (op.GetType() == typeof (RestRouteParameter))
 					code.AppendLine(string.Format("\t\t\turi.Append(\"/{0}\");", op.RouteName));
-				if (op.GetType() == typeof(RestMethodParameter))
+				if (op.GetType() == typeof (RestMethodParameter))
 					code.AppendLine(string.Format("\t\t\turi.Append(\"/{{0}}\", {0});", op.Name));
 			}
-			if (o.Parameters.OfType<RestMethodParameter>().Any(a => a.IsQuery && !a.Serialize))
+			if (o.QueryParameters.Any(a => !a.Serialize))
 				code.AppendLine("\t\t\turi.Append(\"?\"");
-			foreach (var op in o.Parameters.OfType<RestMethodParameter>().Where(a => a.IsQuery && !a.Serialize))
+			foreach (var op in o.QueryParameters.Where(a => !a.Serialize))
 				code.AppendLine(string.Format(!op.Nullable ? "\t\t\turi.Append(\"&{0}={{0}}\", {1});" : "\t\t\tif ({1} != null) uri.Append(\"&{0}={{0}}\", {1});", op.RouteName, op.Name));
 			code.AppendLine("\t\t\turi.Replace(\"?&\", \"?\"");
 
@@ -421,9 +445,9 @@ namespace NETPath.Generators.CS
 			code.AppendLine(string.Format("\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"application/{0}\"));", conf.ResponseFormat == RestSerialization.Json ? "json" : conf.ResponseFormat == RestSerialization.Bson ? "bson" : "xml"));
 
 			//Serialize any parameters
-			if (o.Parameters.OfType<RestMethodParameter>().Any(a => a.Serialize))
+			if (o.QueryParameters.Any(a => a.Serialize))
 			{
-				var p = o.Parameters.OfType<RestMethodParameter>().First(a => a.Serialize);
+				var p = o.QueryParameters.First(a => a.Serialize);
 				var pt = p.Type;
 				code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.ObjectContent<{0}>({1}, new {2}());", DataTypeGenerator.GenerateType(pt), p.Name, conf.RequestFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.RequestFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
 				code.AppendLine(string.Format("\t\t\tforeach (var x in _contentHeaders) rm.Content.Headers.Add(x.Key, x.Value);"));

@@ -8,6 +8,7 @@
 	xmlns:Service="clr-namespace:NETPath.Interface.Service"
 	mc:Ignorable="d" d:DesignHeight="750" d:DesignWidth="750" UseLayoutRounding="True" >
 	<Grid.Resources>
+		<Rest:RestSerializationConverter x:Key="RestSerializationConverter" />
 		<Rest:AuthenticationLevelConverter x:Key="AuthenticationLevelConverter" />
 		<Rest:ClientCertificateOptionConverter x:Key="ClientCertificateOptionConverter" />
 		<Rest:CookieContainerModeConverter x:Key="CookieContainerModeConverter" />
@@ -15,7 +16,6 @@
 		<Rest:DecompressionMethodsConverter x:Key="DecompressionMethodsConverter" />
 		<Rest:ContentModeConverter x:Key="ContentModeConverter" />
 		<Rest:RequestCacheLevelConverter x:Key="RequestCacheLevelConverter" />
-		<Service:RestMethodVerbsConverter x:Key="RestMethodVerbsConverter" />
 		<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
 		<pc:NotBoolVisibilityConverter x:Key="NotBoolVisibilityConverter" />
 	</Grid.Resources>
@@ -40,18 +40,31 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
-		<ToggleButton Content="Allow Automatic Redirects" IsChecked="{Binding Path=AllowAutoRedirects}" Margin="5" Grid.Column="0" Grid.Row="0" />
-		<Label Content="Max Automatic Redirections:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0" />
-		<pc:IntegerTextBox Value="{Binding Path=MaxAutomaticRedirections}" Margin="175,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Grid.Column="1" Grid.Row="0" FontSize="10pt" />
-		<Label Content="Automatic Decompression:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" />
-		<ComboBox Height="23" Margin="165,5,5,5" SelectedIndex="{Binding Path=AutomaticDecompression, Converter={StaticResource DecompressionMethodsConverter}}" Grid.Column="0" Grid.Row="2" >
+		<Label Content="Request Format:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" />
+		<ComboBox Height="23" Margin="130,5,5,5" SelectedIndex="{Binding Path=RequestFormat, Converter={StaticResource RestSerializationConverter}}" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" >
+			<ComboBoxItem Content="JSON" />
+			<ComboBoxItem Content="BSON" />
+			<ComboBoxItem Content="XML" />
+		</ComboBox>
+		<Label Content="Response Format:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="1" />
+		<ComboBox Height="23" Margin="130,5,5,5" SelectedIndex="{Binding Path=ResponseFormat, Converter={StaticResource RestSerializationConverter}}" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="1" >
+			<ComboBoxItem Content="JSON" />
+			<ComboBoxItem Content="BSON" />
+			<ComboBoxItem Content="XML" />
+		</ComboBox>
+		<ToggleButton Content="Allow Automatic Redirects" IsChecked="{Binding Path=AllowAutoRedirects}" Margin="5" Grid.Column="0" Grid.Row="1" />
+		<Label Content="Max Automatic Redirections:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
+		<pc:IntegerTextBox Value="{Binding Path=MaxAutomaticRedirections}" Margin="175,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Grid.Column="1" Grid.Row="1" FontSize="10pt" />
+		<ToggleButton Content="Use Proxy" IsChecked="{Binding Path=UseProxy}" Margin="5" Grid.Column="1" Grid.Row="2" />
+		<ToggleButton Content="Use HTTP 1.0" IsChecked="{Binding Path=UseHTTP10}" Margin="5" Grid.Column="0" Grid.Row="2" />
+		<Label Content="Automatic Decompression:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="3" />
+		<ComboBox Height="23" Margin="165,5,5,5" SelectedIndex="{Binding Path=AutomaticDecompression, Converter={StaticResource DecompressionMethodsConverter}}" Grid.Column="0" Grid.Row="3" >
 			<ComboBoxItem Content="None" />
 			<ComboBoxItem Content="GZip" />
 			<ComboBoxItem Content="Deflate" />
 		</ComboBox>
-		<ToggleButton Content="Use Proxy" IsChecked="{Binding Path=UseProxy}" Margin="5" Grid.Column="1" Grid.Row="1" />
-		<ToggleButton Content="Use HTTP 1.0" IsChecked="{Binding Path=UseHTTP10}" Margin="5" Grid.Column="0" Grid.Row="1" />
 	</Grid>
 	<Label Grid.Row="3" Content="Security" FontSize="12pt" Margin="0,5,0,0" />
 	<Grid Grid.Row="4">
