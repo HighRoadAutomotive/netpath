@@ -17,6 +17,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using EllipticBit.Controls.WPF.Dialogs;
 using NETPath.Projects;
+using NETPath.Projects.Wcf;
+using NETPath.Projects.WebApi;
 
 namespace NETPath.Interface
 {
@@ -31,18 +33,10 @@ namespace NETPath.Interface
 		public int? ErrorCount { get { return (int?)GetValue(ErrorCountProperty); } set { SetValue(ErrorCountProperty, value); } }
 		public static readonly DependencyProperty ErrorCountProperty = DependencyProperty.Register("ErrorCount", typeof(int?), typeof(Navigator), new PropertyMetadata(0));
 
-		public ObservableCollection<FindReplaceResult> FindResults { get { return (ObservableCollection<FindReplaceResult>)GetValue(FindResultsProperty); } set { SetValue(FindResultsProperty, value); } }
-		public static readonly DependencyProperty FindResultsProperty = DependencyProperty.Register("FindResults", typeof(ObservableCollection<FindReplaceResult>), typeof(Navigator));
-
-		public int? FindResultsCount { get { return (int?)GetValue(FindResultsCountProperty); } set { SetValue(FindResultsCountProperty, value); } }
-		public static readonly DependencyProperty FindResultsCountProperty = DependencyProperty.Register("FindResultsCount", typeof(int?), typeof(Navigator), new PropertyMetadata(0));
-
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")]
 		public static readonly RoutedCommand ChangeActivePageCommand = new RoutedCommand();
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")]
 		public static readonly RoutedCommand DeleteCommand = new RoutedCommand();
-
-		public Compiler Compiler { get; private set; }
 
 		static Navigator()
 		{
@@ -56,47 +50,68 @@ namespace NETPath.Interface
 			if (s == null) return;
 
 			Type dt = e.Parameter.GetType();
-			if (dt == typeof(Projects.Namespace))
+			if (dt == typeof(WcfNamespace))
 			{
-				var t = e.Parameter as Projects.Namespace;
-				if (t == null) return;
-				DialogService.ShowMessageDialog("NETPath", "Delete Namespace?", "Are you sure you want to delete the '" + t.FullName + "' namespace?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Children.Remove(t); }, true), new DialogAction("No", false, true));
+				var t = e.Parameter as WcfNamespace;
+				var tp = t?.Parent as WcfNamespace;
+				if (t == null || tp == null) return;
+				DialogService.ShowMessageDialog("NETPath", "Delete Namespace?", "Are you sure you want to delete the '" + t.FullName + "' namespace?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); tp.Children.Remove(t); }, true), new DialogAction("No", false, true));
 			}
-			if (dt == typeof(Projects.Service))
+			if (dt == typeof(WcfService))
 			{
-				var t = e.Parameter as Projects.Service;
-				if (t == null) return;
-				DialogService.ShowMessageDialog("NETPath", "Delete Service?", "Are you sure you want to delete the '" + t.Declaration + "' service?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Services.Remove(t); foreach (var x in t.Parent.Owner.ServerGenerationTargets) x.TargetTypes.Remove(t); foreach (var x in t.Parent.Owner.ClientGenerationTargets) x.TargetTypes.Remove(t); }, true), new DialogAction("No", false, true));
+				var t = e.Parameter as WcfService;
+				var tp = t?.Parent as WcfNamespace;
+				if (t == null || tp == null) return;
+				DialogService.ShowMessageDialog("NETPath", "Delete Service?", "Are you sure you want to delete the '" + t.Declaration + "' service?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); tp.Services.Remove(t); foreach (var x in t.Parent.Owner.ServerGenerationTargets) x.TargetTypes.Remove(t); foreach (var x in t.Parent.Owner.ClientGenerationTargets) x.TargetTypes.Remove(t); }, true), new DialogAction("No", false, true));
 			}
-			if (dt == typeof(Projects.RestService))
+			if (dt == typeof(WcfData))
 			{
-				var t = e.Parameter as Projects.RestService;
-				if (t == null) return;
-				DialogService.ShowMessageDialog("NETPath", "Delete Rest Service?", "Are you sure you want to delete the '" + t.Declaration + "' Rest service?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.RestServices.Remove(t); foreach (var x in t.Parent.Owner.ServerGenerationTargets) x.TargetTypes.Remove(t); foreach (var x in t.Parent.Owner.ClientGenerationTargets) x.TargetTypes.Remove(t); }, true), new DialogAction("No", false, true));
-			}
-			if (dt == typeof(Projects.Data))
-			{
-				var t = e.Parameter as Projects.Data;
-				if (t == null) return;
-				DialogService.ShowMessageDialog("NETPath", "Delete Data?", "Are you sure you want to delete the '" + t.Declaration + "' data?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Data.Remove(t); foreach (var x in t.Parent.Owner.ServerGenerationTargets) x.TargetTypes.Remove(t); foreach (var x in t.Parent.Owner.ClientGenerationTargets) x.TargetTypes.Remove(t); }, true), new DialogAction("No", false, true));
+				var t = e.Parameter as WcfData;
+				var tp = t?.Parent as WcfNamespace;
+				if (t == null || tp == null) return;
+				DialogService.ShowMessageDialog("NETPath", "Delete Data?", "Are you sure you want to delete the '" + t.Declaration + "' data?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); tp.Data.Remove(t); foreach (var x in t.Parent.Owner.ServerGenerationTargets) x.TargetTypes.Remove(t); foreach (var x in t.Parent.Owner.ClientGenerationTargets) x.TargetTypes.Remove(t); }, true), new DialogAction("No", false, true));
 			}
 			if (dt == typeof(Projects.Enum))
 			{
 				var t = e.Parameter as Projects.Enum;
-				if (t == null) return;
-				DialogService.ShowMessageDialog("NETPath", "Delete Enumeration?", "Are you sure you want to delete the '" + t.Declaration + "' enumeration?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Enums.Remove(t); foreach (var x in t.Parent.Owner.ServerGenerationTargets) x.TargetTypes.Remove(t); foreach (var x in t.Parent.Owner.ClientGenerationTargets) x.TargetTypes.Remove(t); }, true), new DialogAction("No", false, true));
+				var tp = t?.Parent;
+				if (t == null || tp == null) return;
+				DialogService.ShowMessageDialog("NETPath", "Delete Enumeration?", "Are you sure you want to delete the '" + t.Declaration + "' enumeration?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); tp.Enums.Remove(t); foreach (var x in t.Parent.Owner.ServerGenerationTargets) x.TargetTypes.Remove(t); foreach (var x in t.Parent.Owner.ClientGenerationTargets) x.TargetTypes.Remove(t); }, true), new DialogAction("No", false, true));
 			}
-			if (dt == typeof(ServiceBindingBasicHTTP) || dt == typeof(ServiceBindingBasicHTTPS) || dt == typeof(ServiceBindingNetHTTP) || dt == typeof(ServiceBindingNetHTTPS) || dt == typeof(ServiceBindingWSHTTP) || dt == typeof(ServiceBindingWS2007HTTP) || dt == typeof(ServiceBindingWSDualHTTP) || dt == typeof(ServiceBindingWSFederationHTTP) || dt == typeof(ServiceBindingWS2007FederationHTTP) || dt == typeof(ServiceBindingTCP) || dt == typeof(ServiceBindingNamedPipe) || dt == typeof(ServiceBindingMSMQ) || dt == typeof(ServiceBindingPeerTCP) || dt == typeof(ServiceBindingWebHTTP) || dt == typeof(ServiceBindingMSMQIntegration))
+			if (dt == typeof(WcfBindingBasicHTTP) || dt == typeof(WcfBindingBasicHTTPS) || dt == typeof(WcfBindingNetHTTP) || dt == typeof(WcfBindingNetHTTPS) || dt == typeof(WcfBindingWSHTTP) || dt == typeof(WcfBindingWS2007HTTP) || dt == typeof(WcfBindingWSDualHTTP) || dt == typeof(WcfBindingWSFederationHTTP) || dt == typeof(WcfBindingWS2007FederationHTTP) || dt == typeof(WcfBindingTCP) || dt == typeof(WcfBindingNamedPipe) || dt == typeof(WcfBindingMSMQ) || dt == typeof(WcfBindingPeerTCP) || dt == typeof(WcfBindingWebHTTP) || dt == typeof(WcfBindingMSMQIntegration))
 			{
-				var t = e.Parameter as ServiceBinding;
-				if (t == null) return;
-				DialogService.ShowMessageDialog("NETPath", "Delete Binding?", "Are you sure you want to delete the '" + t.Declaration + "' binding?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Bindings.Remove(t); foreach (var x in t.Parent.Owner.ServerGenerationTargets) x.TargetTypes.Remove(t); foreach (var x in t.Parent.Owner.ClientGenerationTargets) x.TargetTypes.Remove(t); }, true), new DialogAction("No", false, true));
+				var t = e.Parameter as WcfBinding;
+				var tp = t?.Parent as WcfNamespace;
+				if (t == null || tp == null) return;
+				DialogService.ShowMessageDialog("NETPath", "Delete Binding?", "Are you sure you want to delete the '" + t.Declaration + "' binding?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); tp.Bindings.Remove(t); foreach (var x in t.Parent.Owner.ServerGenerationTargets) x.TargetTypes.Remove(t); foreach (var x in t.Parent.Owner.ClientGenerationTargets) x.TargetTypes.Remove(t); }, true), new DialogAction("No", false, true));
 			}
-			if (dt == typeof(Projects.Host))
+			if (dt == typeof(WcfHost))
 			{
-				var t = e.Parameter as Projects.Host;
-				if (t == null) return;
-				DialogService.ShowMessageDialog("NETPath", "Delete Host?", "Are you sure you want to delete the '" + t.Declaration + "' host?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); t.Parent.Hosts.Remove(t); foreach (var x in t.Parent.Owner.ServerGenerationTargets) x.TargetTypes.Remove(t); foreach (var x in t.Parent.Owner.ClientGenerationTargets) x.TargetTypes.Remove(t); }, true), new DialogAction("No", false, true));
+				var t = e.Parameter as WcfHost;
+				var tp = t?.Parent as WcfNamespace;
+				if (t == null || tp == null) return;
+				DialogService.ShowMessageDialog("NETPath", "Delete Host?", "Are you sure you want to delete the '" + t.Declaration + "' host?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); tp.Hosts.Remove(t); foreach (var x in t.Parent.Owner.ServerGenerationTargets) x.TargetTypes.Remove(t); foreach (var x in t.Parent.Owner.ClientGenerationTargets) x.TargetTypes.Remove(t); }, true), new DialogAction("No", false, true));
+			}
+			if (dt == typeof(WebApiNamespace))
+			{
+				var t = e.Parameter as WebApiNamespace;
+				var tp = t?.Parent as WebApiNamespace;
+				if (t == null || tp == null) return;
+				DialogService.ShowMessageDialog("NETPath", "Delete Namespace?", "Are you sure you want to delete the '" + t.FullName + "' namespace?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); tp.Children.Remove(t); }, true), new DialogAction("No", false, true));
+			}
+			if (dt == typeof(WebApiService))
+			{
+				var t = e.Parameter as WebApiService;
+				var tp = t?.Parent as WebApiNamespace;
+				if (t == null || tp == null) return;
+				DialogService.ShowMessageDialog("NETPath", "Delete Service?", "Are you sure you want to delete the '" + t.Declaration + "' service?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); tp.Services.Remove(t); foreach (var x in t.Parent.Owner.ServerGenerationTargets) x.TargetTypes.Remove(t); foreach (var x in t.Parent.Owner.ClientGenerationTargets) x.TargetTypes.Remove(t); }, true), new DialogAction("No", false, true));
+			}
+			if (dt == typeof(WebApiData))
+			{
+				var t = e.Parameter as WebApiData;
+				var tp = t?.Parent as WebApiNamespace;
+				if (t == null || tp == null) return;
+				DialogService.ShowMessageDialog("NETPath", "Delete Data?", "Are you sure you want to delete the '" + t.Declaration + "' data?", new DialogAction("Yes", () => { s.OpenProjectItemBelow(t); tp.Data.Remove(t); foreach (var x in t.Parent.Owner.ServerGenerationTargets) x.TargetTypes.Remove(t); foreach (var x in t.Parent.Owner.ClientGenerationTargets) x.TargetTypes.Remove(t); }, true), new DialogAction("No", false, true));
 			}
 		}
 
@@ -113,418 +128,217 @@ namespace NETPath.Interface
 		{
 			InitializeComponent();
 
-			FindResults = new ObservableCollection<FindReplaceResult>();
-			FindResultsCount = null;
 			ErrorCount = null;
-			Compiler = new Compiler(this);
+			Globals.Compiler = new Compiler(this);
 		}
 
 		public Navigator(Projects.Project Project)
 		{
 			InitializeComponent();
 
-			FindResults = new ObservableCollection<FindReplaceResult>();
-			FindResultsCount = null;
 			ErrorCount = null;
 			this.Project = Project;
-			Compiler = new Compiler(this);
+			Globals.Compiler = new Compiler(this);
 
-			OpenProjectItem(Project.Namespace.GetLastSelectedItem() ?? this.Project);
+			if (Project.GetType() == typeof(WcfProject))
+				OpenProjectItem((Project as WcfProject)?.Namespace.GetLastSelectedItem() ?? this.Project);
+			if (Project.GetType() == typeof(WebApiProject))
+				OpenProjectItem((Project as WebApiProject)?.Namespace.GetLastSelectedItem() ?? this.Project);
 		}
 
 		public void AddNewItem()
 		{
-			DialogService.ShowContentDialog(Project, "New Item", new Dialogs.NewItem(Project, OpenProjectItem));
+			if (Project.GetType() == typeof(WcfProject))
+				DialogService.ShowContentDialog(Project, "New Item", new Wcf.Dialogs.NewItem(Project as WcfProject, OpenProjectItem));
+			if (Project.GetType() == typeof(WebApiProject))
+				DialogService.ShowContentDialog(Project, "New Item", new WebApi.Dialogs.NewItem(Project as WebApiProject, OpenProjectItem));
 		}
 
 		public void BuildProject()
 		{
 			ShowOutput.IsChecked = true;
-			Compiler.Build();
+			Globals.Compiler.Build();
 		}
 
 		internal void OpenProjectItem(OpenableDocument Item)
 		{
 			if (Item == null) return;
 
-			if (Item.GetType() == typeof(Projects.Project))
-				ActivePage = new Project.Project(Item as Projects.Project);
+			if (Item.GetType() == typeof(WcfProject))
+				ActivePage = new Wcf.Project(Item as WcfProject);
 
-			if (Item.GetType() == typeof(Projects.Namespace))
-				ActivePage = new Namespace.Namespace(Item as Projects.Namespace);
+			if (Item.GetType() == typeof(WcfNamespace))
+				ActivePage = new Wcf.Namespace.Namespace(Item as WcfNamespace);
 
-			if (Item.GetType() == typeof(Projects.Service))
-				ActivePage = new Service.Service(Item as Projects.Service);
+			if (Item.GetType() == typeof(WcfService))
+				ActivePage = new Wcf.Service.Service(Item as WcfService);
 
-			if (Item.GetType() == typeof(Projects.RestService))
-				ActivePage = new Rest.Service(Item as Projects.RestService);
+			if (Item.GetType() == typeof(WcfData))
+				ActivePage = new Wcf.Data.Data(Item as WcfData);
 
-			if (Item.GetType() == typeof(Projects.Data))
-				ActivePage = new Data.Data(Item as Projects.Data);
+			if (Item.GetType() == typeof(WcfHost))
+				ActivePage = new Wcf.Host.Host(Item as WcfHost);
+
+			if (Item.GetType() == typeof(WcfBindingBasicHTTP))
+				ActivePage = new Wcf.Bindings.BasicHTTP(Item as WcfBindingBasicHTTP);
+
+			if (Item.GetType() == typeof(WcfBindingBasicHTTPS))
+				ActivePage = new Wcf.Bindings.BasicHTTPS(Item as WcfBindingBasicHTTPS);
+
+			if (Item.GetType() == typeof(WcfBindingNetHTTP))
+				ActivePage = new Wcf.Bindings.NetHTTP(Item as WcfBindingNetHTTP);
+
+			if (Item.GetType() == typeof(WcfBindingNetHTTPS))
+				ActivePage = new Wcf.Bindings.NetHTTPS(Item as WcfBindingNetHTTPS);
+
+			if (Item.GetType() == typeof(WcfBindingWSHTTP))
+				ActivePage = new Wcf.Bindings.WSHTTP(Item as WcfBindingWSHTTP);
+
+			if (Item.GetType() == typeof(WcfBindingWS2007HTTP))
+				ActivePage = new Wcf.Bindings.WS2007HTTP(Item as WcfBindingWS2007HTTP);
+
+			if (Item.GetType() == typeof(WcfBindingWSFederationHTTP))
+				ActivePage = new Wcf.Bindings.WSFederationHTTP(Item as WcfBindingWSFederationHTTP);
+
+			if (Item.GetType() == typeof(WcfBindingWS2007FederationHTTP))
+				ActivePage = new Wcf.Bindings.WS2007FederationHTTP(Item as WcfBindingWS2007FederationHTTP);
+
+			if (Item.GetType() == typeof(WcfBindingWSDualHTTP))
+				ActivePage = new Wcf.Bindings.WSDualHTTP(Item as WcfBindingWSDualHTTP);
+
+			if (Item.GetType() == typeof(WcfBindingTCP))
+				ActivePage = new Wcf.Bindings.TCP(Item as WcfBindingTCP);
+
+			if (Item.GetType() == typeof(WcfBindingUDP))
+				ActivePage = new Wcf.Bindings.UDP(Item as WcfBindingUDP);
+
+			if (Item.GetType() == typeof(WcfBindingNamedPipe))
+				ActivePage = new Wcf.Bindings.NamedPipe(Item as WcfBindingNamedPipe);
+
+			if (Item.GetType() == typeof(WcfBindingPeerTCP))
+				ActivePage = new Wcf.Bindings.PeerTCP(Item as WcfBindingPeerTCP);
+
+			if (Item.GetType() == typeof(WcfBindingMSMQ))
+				ActivePage = new Wcf.Bindings.MSMQ(Item as WcfBindingMSMQ);
+
+			if (Item.GetType() == typeof(WcfBindingMSMQIntegration))
+				ActivePage = new Wcf.Bindings.MSMQIntegration(Item as WcfBindingMSMQIntegration);
+
 
 			if (Item.GetType() == typeof(Projects.Enum))
 				ActivePage = new Enum.Enum(Item as Projects.Enum);
 
-			if (Item.GetType() == typeof(Projects.Host))
-				ActivePage = new Host.Host(Item as Projects.Host);
-
-			if (Item.GetType() == typeof(ServiceBindingBasicHTTP))
-				ActivePage = new Bindings.BasicHTTP(Item as ServiceBindingBasicHTTP);
-
-			if (Item.GetType() == typeof(ServiceBindingBasicHTTPS))
-				ActivePage = new Bindings.BasicHTTPS(Item as ServiceBindingBasicHTTPS);
-
-			if (Item.GetType() == typeof(ServiceBindingNetHTTP))
-				ActivePage = new Bindings.NetHTTP(Item as ServiceBindingNetHTTP);
-
-			if (Item.GetType() == typeof(ServiceBindingNetHTTPS))
-				ActivePage = new Bindings.NetHTTPS(Item as ServiceBindingNetHTTPS);
-
-			if (Item.GetType() == typeof(ServiceBindingWSHTTP))
-				ActivePage = new Bindings.WSHTTP(Item as ServiceBindingWSHTTP);
-
-			if (Item.GetType() == typeof(ServiceBindingWS2007HTTP))
-				ActivePage = new Bindings.WS2007HTTP(Item as ServiceBindingWS2007HTTP);
-
-			if (Item.GetType() == typeof(ServiceBindingWSFederationHTTP))
-				ActivePage = new Bindings.WSFederationHTTP(Item as ServiceBindingWSFederationHTTP);
-
-			if (Item.GetType() == typeof(ServiceBindingWS2007FederationHTTP))
-				ActivePage = new Bindings.WS2007FederationHTTP(Item as ServiceBindingWS2007FederationHTTP);
-
-			if (Item.GetType() == typeof(ServiceBindingWSDualHTTP))
-				ActivePage = new Bindings.WSDualHTTP(Item as ServiceBindingWSDualHTTP);
-
-			if (Item.GetType() == typeof(ServiceBindingWebHTTP))
-				ActivePage = new Bindings.WebHTTP(Item as ServiceBindingWebHTTP);
-
-			if (Item.GetType() == typeof(ServiceBindingTCP))
-				ActivePage = new Bindings.TCP(Item as ServiceBindingTCP);
-
-			if (Item.GetType() == typeof(ServiceBindingUDP))
-				ActivePage = new Bindings.UDP(Item as ServiceBindingUDP);
-
-			if (Item.GetType() == typeof(ServiceBindingNamedPipe))
-				ActivePage = new Bindings.NamedPipe(Item as ServiceBindingNamedPipe);
-
-			if (Item.GetType() == typeof(ServiceBindingPeerTCP))
-				ActivePage = new Bindings.PeerTCP(Item as ServiceBindingPeerTCP);
-
-			if (Item.GetType() == typeof(ServiceBindingMSMQ))
-				ActivePage = new Bindings.MSMQ(Item as ServiceBindingMSMQ);
-
-			if (Item.GetType() == typeof(ServiceBindingMSMQIntegration))
-				ActivePage = new Bindings.MSMQIntegration(Item as ServiceBindingMSMQIntegration);
-
 			//TODO: Finish adding screens as they are made.
 
-			Project.Namespace.SetSelectedItem(Item);
+			if (Project.GetType() == typeof(WcfProject))
+				(Project as WcfProject)?.Namespace.SetSelectedItem(Item);
+			if (Project.GetType() == typeof(WebApiProject))
+				(Project as WebApiProject)?.Namespace.SetSelectedItem(Item);
 		}
 
 		private void OpenProjectItemBelow(OpenableDocument Item)
 		{
 			if (Item == null) return;
 			Type dt = Item.GetType();
-			if (dt == typeof(Projects.Namespace))
+			if (dt == typeof(WcfNamespace))
 			{
-				var t = Item as Projects.Namespace;
-				if (t == null) return;
-				int idx = t.Parent.Children.IndexOf(t);
-				int ic = t.Parent.Children.Count - 1;
+				var t = Item as WcfNamespace;
+				var tp = t?.Parent as WcfNamespace;
+				if (t == null || tp == null) return;
+				int idx = tp.Children.IndexOf(t);
+				int ic = tp.Children.Count - 1;
 				if (idx < ic)
-					OpenProjectItem(t.Parent.Children[idx + 1]);
+					OpenProjectItem(tp.Children[idx + 1]);
+				else if (idx == ic && tp.Services.Count > 0)
+					OpenProjectItem(tp.Children[0]);
 				else
 				{
-					if (t.Parent.Services.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Services[0]);
-						return;
-					}
-					if (t.Parent.RestServices.Count > 0)
-					{
-						OpenProjectItem(t.Parent.RestServices[0]);
-						return;
-					}
-					if (t.Parent.Data.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Data[0]);
-						return;
-					}
-					if (t.Parent.Enums.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Enums[0]);
-						return;
-					}
-					if (t.Parent.Bindings.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Bindings[0]);
-						return;
-					}
-					if (t.Parent.Hosts.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Hosts[0]);
-						return;
-					}
-					if (t.Parent != null && !Equals(t.Parent, t.Owner.Namespace)) OpenProjectItem(t.Parent);
+					if (t.Parent != null && !Equals(t.Parent, (t.Parent.Owner as WcfProject)?.Namespace)) OpenProjectItem(t.Parent);
 					else OpenProjectItem(Project);
 				}
 			}
-			if (dt == typeof(Projects.Service))
+			if (dt == typeof(WcfService))
 			{
-				var t = Item as Projects.Service;
-				if (t == null) return;
-				int idx = t.Parent.Services.IndexOf(t);
-				int ic = t.Parent.Services.Count - 1;
+				var t = Item as WcfService;
+				var tp = t?.Parent as WcfNamespace;
+				if (t == null || tp == null) return;
+				int idx = tp.Services.IndexOf(t);
+				int ic = tp.Services.Count - 1;
 				if (idx < ic)
-					OpenProjectItem(t.Parent.Services[idx + 1]);
+					OpenProjectItem(tp.Services[idx + 1]);
+				else if (idx == ic && tp.Services.Count > 0)
+					OpenProjectItem(tp.Services[0]);
 				else
 				{
-					if (t.Parent.RestServices.Count > 0)
-					{
-						OpenProjectItem(t.Parent.RestServices[0]);
-						return;
-					}
-					if (t.Parent.Data.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Data[0]);
-						return;
-					}
-					if (t.Parent.Enums.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Enums[0]);
-						return;
-					}
-					if (t.Parent.Bindings.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Bindings[0]);
-						return;
-					}
-					if (t.Parent.Hosts.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Hosts[0]);
-						return;
-					}
-					if (t.Parent.Children.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Children[0]);
-						return;
-					}
-					if (t.Parent != null && !Equals(t.Parent, t.Parent.Owner.Namespace)) OpenProjectItem(t.Parent);
+					if (t.Parent != null && !Equals(t.Parent, (t.Parent.Owner as WcfProject)?.Namespace)) OpenProjectItem(t.Parent);
 					else OpenProjectItem(Project);
 				}
 			}
-			if (dt == typeof(Projects.RestService))
+			if (dt == typeof(WcfData))
 			{
-				var t = Item as Projects.RestService;
-				if (t == null) return;
-				int idx = t.Parent.RestServices.IndexOf(t);
-				int ic = t.Parent.RestServices.Count - 1;
+				var t = Item as WcfData;
+				var tp = t?.Parent as WcfNamespace;
+				if (t == null || tp == null) return;
+				int idx = tp.Data.IndexOf(t);
+				int ic = tp.Data.Count - 1;
 				if (idx < ic)
-					OpenProjectItem(t.Parent.RestServices[idx + 1]);
+					OpenProjectItem(tp.Data[idx + 1]);
+				else if (idx == ic && tp.Services.Count > 0)
+					OpenProjectItem(tp.Data[0]);
 				else
 				{
-					if (t.Parent.Data.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Data[0]);
-						return;
-					}
-					if (t.Parent.Enums.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Enums[0]);
-						return;
-					}
-					if (t.Parent.Bindings.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Bindings[0]);
-						return;
-					}
-					if (t.Parent.Hosts.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Hosts[0]);
-						return;
-					}
-					if (t.Parent.Children.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Children[0]);
-						return;
-					}
-					if (t.Parent != null && !Equals(t.Parent, t.Parent.Owner.Namespace)) OpenProjectItem(t.Parent);
-					else OpenProjectItem(Project);
-				}
-			}
-			if (dt == typeof(Projects.Data))
-			{
-				var t = Item as Projects.Data;
-				if (t == null) return;
-				int idx = t.Parent.Data.IndexOf(t);
-				int ic = t.Parent.Data.Count - 1;
-				if (idx < ic)
-					OpenProjectItem(t.Parent.Data[idx + 1]);
-				else
-				{
-					if (t.Parent.Enums.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Enums[0]);
-						return;
-					}
-					if (t.Parent.Bindings.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Bindings[0]);
-						return;
-					}
-					if (t.Parent.Hosts.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Hosts[0]);
-						return;
-					}
-					if (t.Parent.Children.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Children[0]);
-						return;
-					}
-					if (t.Parent.Services.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Services[0]);
-						return;
-					}
-					if (t.Parent.RestServices.Count > 0)
-					{
-						OpenProjectItem(t.Parent.RestServices[0]);
-						return;
-					}
-					if (t.Parent != null && !Equals(t.Parent, t.Parent.Owner.Namespace)) OpenProjectItem(t.Parent);
+					if (t.Parent != null && !Equals(t.Parent, (t.Parent.Owner as WcfProject)?.Namespace)) OpenProjectItem(t.Parent);
 					else OpenProjectItem(Project);
 				}
 			}
 			if (dt == typeof(Projects.Enum))
 			{
 				var t = Item as Projects.Enum;
-				if (t == null) return;
-				int idx = t.Parent.Enums.IndexOf(t);
-				int ic = t.Parent.Enums.Count - 1;
+				var tp = t?.Parent as WcfNamespace;
+				if (t == null || tp == null) return;
+				int idx = tp.Enums.IndexOf(t);
+				int ic = tp.Enums.Count - 1;
 				if (idx < ic)
-					OpenProjectItem(t.Parent.Enums[idx + 1]);
+					OpenProjectItem(tp.Enums[idx + 1]);
+				else if (idx == ic && tp.Services.Count > 0)
+					OpenProjectItem(tp.Enums[0]);
 				else
 				{
-					if (t.Parent.Bindings.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Bindings[0]);
-						return;
-					}
-					if (t.Parent.Hosts.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Hosts[0]);
-						return;
-					}
-					if (t.Parent.Children.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Children[0]);
-						return;
-					}
-					if (t.Parent.Services.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Services[0]);
-						return;
-					}
-					if (t.Parent.RestServices.Count > 0)
-					{
-						OpenProjectItem(t.Parent.RestServices[0]);
-						return;
-					}
-					if (t.Parent.Data.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Data[0]);
-						return;
-					}
-					if (t.Parent != null && !Equals(t.Parent, t.Parent.Owner.Namespace)) OpenProjectItem(t.Parent);
+					if (t.Parent != null && !Equals(t.Parent, (t.Parent.Owner as WcfProject)?.Namespace)) OpenProjectItem(t.Parent);
 					else OpenProjectItem(Project);
 				}
 			}
-			if (dt == typeof(Projects.ServiceBinding))
+			if (dt == typeof(WcfBinding))
 			{
-				var t = Item as Projects.ServiceBinding;
-				if (t == null) return;
-				int idx = t.Parent.Bindings.IndexOf(t);
-				int ic = t.Parent.Bindings.Count - 1;
+				var t = Item as WcfBinding;
+				var tp = t?.Parent as WcfNamespace;
+				if (t == null || tp == null) return;
+				int idx = tp.Bindings.IndexOf(t);
+				int ic = tp.Bindings.Count - 1;
 				if (idx < ic)
-					OpenProjectItem(t.Parent.Bindings[idx + 1]);
+					OpenProjectItem(tp.Bindings[idx + 1]);
+				else if (idx == ic && tp.Services.Count > 0)
+					OpenProjectItem(tp.Bindings[0]);
 				else
 				{
-					if (t.Parent.Hosts.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Hosts[0]);
-						return;
-					}
-					if (t.Parent.Children.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Children[0]);
-						return;
-					}
-					if (t.Parent.Services.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Services[0]);
-						return;
-					}
-					if (t.Parent.RestServices.Count > 0)
-					{
-						OpenProjectItem(t.Parent.RestServices[0]);
-						return;
-					}
-					if (t.Parent.Data.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Data[0]);
-						return;
-					}
-					if (t.Parent.Enums.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Enums[0]);
-						return;
-					}
-					if (t.Parent != null && !Equals(t.Parent, t.Parent.Owner.Namespace)) OpenProjectItem(t.Parent);
+					if (t.Parent != null && !Equals(t.Parent, (t.Parent.Owner as WcfProject)?.Namespace)) OpenProjectItem(t.Parent);
 					else OpenProjectItem(Project);
 				}
 			}
-			if (dt == typeof(Projects.Host))
+			if (dt == typeof(WcfHost))
 			{
-				var t = Item as Projects.Host;
-				if (t == null) return;
-				int idx = t.Parent.Hosts.IndexOf(t);
-				int ic = t.Parent.Hosts.Count - 1;
+				var t = Item as WcfHost;
+				var tp = t?.Parent as WcfNamespace;
+				if (t == null || tp == null) return;
+				int idx = tp.Hosts.IndexOf(t);
+				int ic = tp.Hosts.Count - 1;
 				if (idx < ic)
-					OpenProjectItem(t.Parent.Hosts[idx + 1]);
+					OpenProjectItem(tp.Hosts[idx + 1]);
+				else if (idx == ic && tp.Services.Count > 0)
+					OpenProjectItem(tp.Hosts[0]);
 				else
 				{
-					if (t.Parent.Children.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Children[0]);
-						return;
-					}
-					if (t.Parent.Services.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Services[0]);
-						return;
-					}
-					if (t.Parent.RestServices.Count > 0)
-					{
-						OpenProjectItem(t.Parent.RestServices[0]);
-						return;
-					}
-					if (t.Parent.Data.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Data[0]);
-						return;
-					}
-					if (t.Parent.Enums.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Enums[0]);
-						return;
-					}
-					if (t.Parent.Bindings.Count > 0)
-					{
-						OpenProjectItem(t.Parent.Bindings[0]);
-						return;
-					}
-					if (t.Parent != null && !Equals(t.Parent, t.Parent.Owner.Namespace)) OpenProjectItem(t.Parent);
+					if (t.Parent != null && !Equals(t.Parent, (t.Parent.Owner as WcfProject)?.Namespace)) OpenProjectItem(t.Parent);
 					else OpenProjectItem(Project);
 				}
 			}
@@ -532,167 +346,26 @@ namespace NETPath.Interface
 
 		private void ShowProject_Click(object sender, RoutedEventArgs e)
 		{
-			ShowFindReplace.IsChecked = false;
 			ShowOutput.IsChecked = false;
 			ShowErrors.IsChecked = false;
-			FindReplaceGrid.Visibility = Visibility.Collapsed;
 			ErrorGrid.Visibility = Visibility.Collapsed;
 			OutputGrid.Visibility = Visibility.Collapsed;
 		}
 
-		private void ShowFindReplace_Checked(object sender, RoutedEventArgs e)
-		{
-			ShowOutput.IsChecked = false;
-			ShowErrors.IsChecked = false;
-			FindReplaceGrid.Visibility = Visibility.Visible;
-			ErrorGrid.Visibility = Visibility.Collapsed;
-			OutputGrid.Visibility = Visibility.Collapsed;
-		}
 
 		private void ShowErrors_Checked(object sender, RoutedEventArgs e)
 		{
-			ShowFindReplace.IsChecked = false;
 			ShowOutput.IsChecked = false;
-			FindReplaceGrid.Visibility = Visibility.Collapsed;
 			ErrorGrid.Visibility = Visibility.Visible;
 			OutputGrid.Visibility = Visibility.Collapsed;
 		}
 
 		private void ShowOutput_Checked(object sender, RoutedEventArgs e)
 		{
-			ShowFindReplace.IsChecked = false;
 			ShowErrors.IsChecked = false;
-			FindReplaceGrid.Visibility = Visibility.Collapsed;
 			ErrorGrid.Visibility = Visibility.Collapsed;
 			OutputGrid.Visibility = Visibility.Visible;
 		}
-
-		#region " Find / Replace "
-
-		private void FindNext_Click(object sender, RoutedEventArgs e)
-		{
-			if (FindResultsCount == 0) FindAll_Click(null, null);
-			if (FindList.SelectedIndex == FindResults.Count - 1) FindList.SelectedIndex = 0;
-			else FindList.SelectedIndex++;
-		}
-
-		private void FindReplace_Click(object sender, RoutedEventArgs e)
-		{
-			Globals.IsFinding = true;
-
-			FindReplaceResult frr = FindResults[FindList.SelectedIndex];
-			Type valueType = frr.Item.GetType();
-			if (valueType == typeof(Projects.Namespace))
-			{
-				var T = frr.Item as Projects.Namespace;
-				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
-			}
-			if (valueType == typeof(Projects.Service))
-			{
-				var T = frr.Item as Projects.Service;
-				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
-			}
-			if (valueType == typeof(Operation))
-			{
-				var T = frr.Item as Operation;
-				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
-			}
-			if (valueType == typeof(MethodParameter))
-			{
-				var T = frr.Item as MethodParameter;
-				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
-			}
-			if (valueType == typeof(Property))
-			{
-				var T = frr.Item as Property;
-				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
-			}
-			if (valueType == typeof(Projects.Data))
-			{
-				var T = frr.Item as Projects.Data;
-				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
-			}
-			if (valueType == typeof(DataElement))
-			{
-				var T = frr.Item as DataElement;
-				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
-			}
-			if (valueType == typeof(Projects.Enum))
-			{
-				var T = frr.Item as Projects.Enum;
-				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
-			}
-			if (valueType == typeof(EnumElement))
-			{
-				var T = frr.Item as EnumElement;
-				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
-			}
-			if (valueType == typeof(ServiceBinding))
-			{
-				var T = frr.Item as ServiceBinding;
-				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
-			}
-			if (valueType == typeof(Projects.Host))
-			{
-				var T = frr.Item as Projects.Host;
-				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
-			}
-			if (valueType == typeof(HostEndpoint))
-			{
-				var T = frr.Item as HostEndpoint;
-				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
-			}
-			if (valueType == typeof(HostBehavior))
-			{
-				var T = frr.Item as HostBehavior;
-				if (T != null) T.Replace(new FindReplaceInfo(FindItems.Any, FindLocations.EntireSolution, FindValue.Text, FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked.Value, FindReplaceValue.Text), frr.Field);
-			}
-
-			Globals.IsFinding = false;
-		}
-
-		private void FindAll_Click(object sender, RoutedEventArgs e)
-		{
-			Globals.IsFinding = true;
-
-			FindResults.Clear();
-			var findInfo = new FindReplaceInfo((FindItems)FindItem.SelectedIndex, (FindLocations)FindLocation.SelectedIndex, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value);
-			var results = new List<FindReplaceResult>();
-
-			results.AddRange(Project.FindReplace(findInfo));
-
-			foreach (FindReplaceResult frr in results)
-				FindResults.Add(frr);
-			FindResultsCount = FindResults.Count;
-			if (FindResultsCount == 0) FindResultsCount = null;
-
-			Globals.IsFinding = false;
-		}
-
-		private void FindReplaceAll_Click(object sender, RoutedEventArgs e)
-		{
-			Globals.IsFinding = true;
-
-			FindResults.Clear();
-			var findInfo = new FindReplaceInfo((FindItems)FindItem.SelectedIndex, (FindLocations)FindLocation.SelectedIndex, FindValue.Text, FindMatchCase.IsChecked != null && FindMatchCase.IsChecked.Value, FindUseRegex.IsChecked != null && FindUseRegex.IsChecked.Value, FindReplaceValue.Text);
-			var results = new List<FindReplaceResult>();
-
-			results.AddRange(Project.FindReplace(findInfo));
-
-			foreach (FindReplaceResult frr in results)
-				FindResults.Add(frr);
-			FindResultsCount = FindResults.Count;
-			if (FindResultsCount == 0) FindResultsCount = null;
-
-			Globals.IsFinding = false;
-		}
-
-		private void FindList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			//TODO: Add code to open the selected item when all screens are finished.
-		}
-
-		#endregion
 
 		private void ErrorShowErrors_Checked(object sender, RoutedEventArgs e)
 		{
@@ -768,17 +441,17 @@ namespace NETPath.Interface
 		public override DataTemplate SelectTemplate(object item, DependencyObject container)
 		{
 			if (item == null) return BasicHTTPTemplate;
-			if (item.GetType() == typeof(BindingSecurityBasicHTTP)) return BasicHTTPTemplate;
-			if (item.GetType() == typeof(BindingSecurityBasicHTTP)) return BasicHTTPSTemplate;
-			if (item.GetType() == typeof(BindingSecurityMSMQ)) return MSMQTemplate;
-			if (item.GetType() == typeof(BindingSecurityMSMQIntegration)) return MSMQIntegrationTemplate;
-			if (item.GetType() == typeof(BindingSecurityNamedPipe)) return NamedPipeTemplate;
-			if (item.GetType() == typeof(BindingSecurityPeerTCP)) return PeerTCPTemplate;
-			if (item.GetType() == typeof(BindingSecurityTCP)) return TCPTemplate;
-			if (item.GetType() == typeof(BindingSecurityWebHTTP)) return WebHTTPTemplate;
-			if (item.GetType() == typeof(BindingSecurityWSDualHTTP)) return WSDualHTTPTemplate;
-			if (item.GetType() == typeof(BindingSecurityWSFederationHTTP)) return WSFederationHTTPTemplate;
-			if (item.GetType() == typeof(BindingSecurityWSHTTP)) return WSHTTPTemplate;
+			if (item.GetType() == typeof(WcfSecurityBasicHTTP)) return BasicHTTPTemplate;
+			if (item.GetType() == typeof(WcfSecurityBasicHTTP)) return BasicHTTPSTemplate;
+			if (item.GetType() == typeof(WcfSecurityMSMQ)) return MSMQTemplate;
+			if (item.GetType() == typeof(WcfSecurityMSMQIntegration)) return MSMQIntegrationTemplate;
+			if (item.GetType() == typeof(WcfSecurityNamedPipe)) return NamedPipeTemplate;
+			if (item.GetType() == typeof(WcfSecurityPeerTCP)) return PeerTCPTemplate;
+			if (item.GetType() == typeof(WcfSecurityTCP)) return TCPTemplate;
+			if (item.GetType() == typeof(WcfSecurityWebHTTP)) return WebHTTPTemplate;
+			if (item.GetType() == typeof(WcfSecurityWSDualHTTP)) return WSDualHTTPTemplate;
+			if (item.GetType() == typeof(WcfSecurityWSFederationHTTP)) return WSFederationHTTPTemplate;
+			if (item.GetType() == typeof(WcfSecurityWSHTTP)) return WSHTTPTemplate;
 			return BasicHTTPTemplate;
 		}
 	}
@@ -805,22 +478,22 @@ namespace NETPath.Interface
 		public override DataTemplate SelectTemplate(object item, DependencyObject container)
 		{
 			if (item == null) return BasicHTTPTemplate;
-			if (item.GetType() == typeof(ServiceBindingBasicHTTP)) return BasicHTTPTemplate;
-			if (item.GetType() == typeof(ServiceBindingBasicHTTPS)) return BasicHTTPSTemplate;
-			if (item.GetType() == typeof(ServiceBindingNetHTTP)) return NetHTTPTemplate;
-			if (item.GetType() == typeof(ServiceBindingNetHTTPS)) return NetHTTPSTemplate;
-			if (item.GetType() == typeof(ServiceBindingMSMQ)) return MSMQTemplate;
-			if (item.GetType() == typeof(ServiceBindingMSMQIntegration)) return MSMQIntegrationTemplate;
-			if (item.GetType() == typeof(ServiceBindingNamedPipe)) return NamedPipeTemplate;
-			if (item.GetType() == typeof(ServiceBindingPeerTCP)) return PeerTCPTemplate;
-			if (item.GetType() == typeof(ServiceBindingTCP)) return TCPTemplate;
-			if (item.GetType() == typeof(ServiceBindingUDP)) return UDPTemplate;
-			if (item.GetType() == typeof(ServiceBindingWebHTTP)) return WebHTTPTemplate;
-			if (item.GetType() == typeof(ServiceBindingWSDualHTTP)) return WSDualHTTPTemplate;
-			if (item.GetType() == typeof(ServiceBindingWSFederationHTTP)) return WSFederationHTTPTemplate;
-			if (item.GetType() == typeof(ServiceBindingWS2007FederationHTTP)) return WS2007FederationHTTPTemplate;
-			if (item.GetType() == typeof(ServiceBindingWSHTTP)) return WSHTTPTemplate;
-			if (item.GetType() == typeof(ServiceBindingWS2007HTTP)) return WS2007HTTPTemplate;
+			if (item.GetType() == typeof(WcfBindingBasicHTTP)) return BasicHTTPTemplate;
+			if (item.GetType() == typeof(WcfBindingBasicHTTPS)) return BasicHTTPSTemplate;
+			if (item.GetType() == typeof(WcfBindingNetHTTP)) return NetHTTPTemplate;
+			if (item.GetType() == typeof(WcfBindingNetHTTPS)) return NetHTTPSTemplate;
+			if (item.GetType() == typeof(WcfBindingMSMQ)) return MSMQTemplate;
+			if (item.GetType() == typeof(WcfBindingMSMQIntegration)) return MSMQIntegrationTemplate;
+			if (item.GetType() == typeof(WcfBindingNamedPipe)) return NamedPipeTemplate;
+			if (item.GetType() == typeof(WcfBindingPeerTCP)) return PeerTCPTemplate;
+			if (item.GetType() == typeof(WcfBindingTCP)) return TCPTemplate;
+			if (item.GetType() == typeof(WcfBindingUDP)) return UDPTemplate;
+			if (item.GetType() == typeof(WcfBindingWebHTTP)) return WebHTTPTemplate;
+			if (item.GetType() == typeof(WcfBindingWSDualHTTP)) return WSDualHTTPTemplate;
+			if (item.GetType() == typeof(WcfBindingWSFederationHTTP)) return WSFederationHTTPTemplate;
+			if (item.GetType() == typeof(WcfBindingWS2007FederationHTTP)) return WS2007FederationHTTPTemplate;
+			if (item.GetType() == typeof(WcfBindingWSHTTP)) return WSHTTPTemplate;
+			if (item.GetType() == typeof(WcfBindingWS2007HTTP)) return WS2007HTTPTemplate;
 			return BasicHTTPTemplate;
 		}
 	}
@@ -832,8 +505,8 @@ namespace NETPath.Interface
 
 		public override DataTemplate SelectTemplate(object item, DependencyObject container)
 		{
-			if (item != null && item.GetType() == typeof(Method)) return MethodTemplate;
-			if (item != null && item.GetType() == typeof(Property)) return PropertyTemplate;
+			if (item != null && item.GetType() == typeof(WcfMethod)) return MethodTemplate;
+			if (item != null && item.GetType() == typeof(WcfProperty)) return PropertyTemplate;
 			return MethodTemplate;
 		}
 	}
@@ -866,80 +539,73 @@ namespace NETPath.Interface
 			Type valueType = value.GetType();
 
 			if (valueType == typeof(string)) return value;
-			if (valueType == typeof(Projects.Project))
+			if (valueType == typeof(WcfProject))
 			{
-				var T = value as Projects.Project;
+				var T = value as WcfProject;
 				if (T != null) return string.IsNullOrEmpty(T.Name) ? "Project Settings" : T.Name;
 			}
-			if (valueType == typeof(ServiceBinding))
+			if (valueType == typeof(WcfNamespace))
 			{
-				var T = value as ServiceBinding;
-				if (T != null && string.IsNullOrEmpty(T.Name))
-					return "Service Binding";
-				if (T != null) return T.Name;
-			}
-			if (valueType == typeof(Projects.Host))
-			{
-				var T = value as Projects.Host;
-				if (T != null && string.IsNullOrEmpty(T.Name))
-					return "Host";
-				if (T != null) return T.Name;
-			}
-			if (valueType == typeof(Projects.Namespace))
-			{
-				var T = value as Projects.Namespace;
+				var T = value as WcfNamespace;
 				if (T != null && string.IsNullOrEmpty(T.Name))
 					return "Namespace";
 				if (T != null) return T.Name;
 			}
-			if (valueType == typeof(Projects.Service))
+			if (valueType == typeof(WcfService))
 			{
-				var T = value as Projects.Service;
+				var T = value as WcfService;
 				if (T != null && string.IsNullOrEmpty(T.Name))
 					return "Service";
 				if (T != null) return T.Name;
 			}
-			if (valueType == typeof(Projects.RestService))
+			if (valueType == typeof(WcfMethod))
 			{
-				var T = value as Projects.RestService;
-				if (T != null && string.IsNullOrEmpty(T.Name))
-					return "Rest Service";
-				if (T != null) return T.Name;
-			}
-			if (valueType == typeof(Method))
-			{
-				var T = value as Operation;
+				var T = value as WcfOperation;
 				if (T != null && string.IsNullOrEmpty(T.ServerName))
 					return "Operation";
 				if (T != null) return T.ServerName;
 			}
-			if (valueType == typeof(MethodParameter))
+			if (valueType == typeof(WcfMethodParameter))
 			{
-				var T = value as MethodParameter;
+				var T = value as WcfMethodParameter;
 				if (T != null && string.IsNullOrEmpty(T.Name))
 					return "Operation Parameter";
 				if (T != null) return T.Name;
 			}
-			if (valueType == typeof(Property))
+			if (valueType == typeof(WcfProperty))
 			{
-				var T = value as Property;
+				var T = value as WcfProperty;
 				if (T != null && string.IsNullOrEmpty(T.ServerName))
 					return "Property";
 				if (T != null) return T.ServerName;
 			}
-			if (valueType == typeof(Projects.Data))
+			if (valueType == typeof(WcfData))
 			{
-				var T = value as Projects.Data;
+				var T = value as WcfData;
 				if (T != null && string.IsNullOrEmpty(T.Name))
 					return "Data";
 				if (T != null) return T.Name;
 			}
-			if (valueType == typeof(DataElement))
+			if (valueType == typeof(WcfDataElement))
 			{
-				var T = value as DataElement;
+				var T = value as WcfDataElement;
 				if (T != null && string.IsNullOrEmpty(T.DataType.Name))
 					return "Data Value";
 				if (T != null) return T.DataType.Name;
+			}
+			if (valueType == typeof(WcfBinding))
+			{
+				var T = value as WcfBinding;
+				if (T != null && string.IsNullOrEmpty(T.Name))
+					return "Service Binding";
+				if (T != null) return T.Name;
+			}
+			if (valueType == typeof(WcfHost))
+			{
+				var T = value as WcfHost;
+				if (T != null && string.IsNullOrEmpty(T.Name))
+					return "Host";
+				if (T != null) return T.Name;
 			}
 			if (valueType == typeof(Projects.Enum))
 			{
@@ -950,6 +616,53 @@ namespace NETPath.Interface
 			{
 				var T = value as EnumElement;
 				return string.IsNullOrEmpty(T.Name) ? "Enum Value" : T.Name;
+			}
+			if (valueType == typeof(WcfProject))
+			{
+				var T = value as WcfProject;
+				if (T != null) return string.IsNullOrEmpty(T.Name) ? "Project Settings" : T.Name;
+			}
+			if (valueType == typeof(WebApiNamespace))
+			{
+				var T = value as WebApiNamespace;
+				if (T != null && string.IsNullOrEmpty(T.Name))
+					return "Namespace";
+				if (T != null) return T.Name;
+			}
+			if (valueType == typeof(WebApiService))
+			{
+				var T = value as WebApiService;
+				if (T != null && string.IsNullOrEmpty(T.Name))
+					return "Service";
+				if (T != null) return T.Name;
+			}
+			if (valueType == typeof(WebApiMethod))
+			{
+				var T = value as WebApiMethod;
+				if (T != null && string.IsNullOrEmpty(T.Name))
+					return "Operation";
+				if (T != null) return T.Name;
+			}
+			if (valueType == typeof(WebApiMethodParameter))
+			{
+				var T = value as WebApiMethodParameter;
+				if (T != null && string.IsNullOrEmpty(T.Name))
+					return "Operation Parameter";
+				if (T != null) return T.Name;
+			}
+			if (valueType == typeof(WebApiData))
+			{
+				var T = value as WebApiData;
+				if (T != null && string.IsNullOrEmpty(T.Name))
+					return "Data";
+				if (T != null) return T.Name;
+			}
+			if (valueType == typeof(WebApiDataElement))
+			{
+				var T = value as WebApiDataElement;
+				if (T != null && string.IsNullOrEmpty(T.DataType.Name))
+					return "Data Value";
+				if (T != null) return T.DataType.Name;
 			}
 			return "";
 		}
@@ -976,53 +689,67 @@ namespace NETPath.Interface
 					return "Project Settings";
 				if (T != null) return T.Name;
 			}
-			if (valueType == typeof(ServiceBinding))
+			if (valueType == typeof(WcfNamespace))
 			{
-				var T = value as ServiceBinding;
-				if (T != null && string.IsNullOrEmpty(T.Parent.Name))
-					return "Service Binding";
-				if (T != null) return T.Parent.Name;
-			}
-			if (valueType == typeof(Projects.Host))
-			{
-				var T = value as Projects.Host;
-				if (T != null && (T.Parent != null && string.IsNullOrEmpty(T.Parent.Name)))
-					return "Host";
-				if (T != null && T.Parent != null) return T.Parent.Name;
-			}
-			if (valueType == typeof(Projects.Namespace))
-			{
-				var T = value as Projects.Namespace;
+				var T = value as WcfNamespace;
 				if (T != null && string.IsNullOrEmpty(T.Owner.Name))
 					return "Namespace";
 				if (T != null) return T.Owner.Name;
 			}
-			if (valueType == typeof(Projects.Service))
+			if (valueType == typeof(WcfService))
 			{
-				var T = value as Projects.Service;
+				var T = value as WcfService;
 				if (T != null && string.IsNullOrEmpty(T.Parent.Owner.Name))
 					return "Service";
 				if (T != null) return T.Parent.Owner.Name;
 			}
-			if (valueType == typeof(Projects.RestService))
+			if (valueType == typeof(WcfData))
 			{
-				var T = value as Projects.RestService;
-				if (T != null && string.IsNullOrEmpty(T.Parent.Owner.Name))
-					return "Rest Service";
-				if (T != null) return T.Parent.Owner.Name;
-			}
-			if (valueType == typeof(Projects.Data))
-			{
-				var T = value as Projects.Data;
+				var T = value as WcfData;
 				if (T != null && string.IsNullOrEmpty(T.Parent.Owner.Name))
 					return "Data";
 				if (T != null) return T.Parent.Owner.Name;
+			}
+			if (valueType == typeof(WcfBinding))
+			{
+				var T = value as WcfBinding;
+				if (T != null && string.IsNullOrEmpty(T.Parent.Name))
+					return "Service Binding";
+				if (T != null) return T.Parent.Name;
+			}
+			if (valueType == typeof(WcfHost))
+			{
+				var T = value as WcfHost;
+				if (T != null && (T.Parent != null && string.IsNullOrEmpty(T.Parent.Name)))
+					return "Host";
+				if (T != null && T.Parent != null) return T.Parent.Name;
 			}
 			if (valueType == typeof(Projects.Enum))
 			{
 				var T = value as Projects.Enum;
 				if (T != null && string.IsNullOrEmpty(T.Parent.Owner.Name))
 					return "Enum";
+				if (T != null) return T.Parent.Owner.Name;
+			}
+			if (valueType == typeof(WebApiNamespace))
+			{
+				var T = value as WebApiNamespace;
+				if (T != null && string.IsNullOrEmpty(T.Owner.Name))
+					return "Namespace";
+				if (T != null) return T.Owner.Name;
+			}
+			if (valueType == typeof(WebApiService))
+			{
+				var T = value as WebApiService;
+				if (T != null && string.IsNullOrEmpty(T.Parent.Owner.Name))
+					return "Service";
+				if (T != null) return T.Parent.Owner.Name;
+			}
+			if (valueType == typeof(WebApiData))
+			{
+				var T = value as WebApiData;
+				if (T != null && string.IsNullOrEmpty(T.Parent.Owner.Name))
+					return "Data";
 				if (T != null) return T.Parent.Owner.Name;
 			}
 			return "";
@@ -1041,15 +768,15 @@ namespace NETPath.Interface
 		{
 			if (value == null) return "pack://application:,,,/NETPath;component/Icons/X16/Project.png";
 			Type valueType = value.GetType();
-			if (valueType == typeof(Projects.Project)) return "pack://application:,,,/NETPath;component/Icons/X16/Project.png";
-			if (valueType == typeof(Projects.Namespace)) return "pack://application:,,,/NETPath;component/Icons/X16/Namespace.png";
-			if (valueType == typeof(Projects.Service)) return "pack://application:,,,/NETPath;component/Icons/X16/Service.png";
-			if (valueType == typeof(Projects.RestService)) return "pack://application:,,,/NETPath;component/Icons/X16/Rest.png";
-			if (valueType == typeof(Operation)) return "pack://application:,,,/NETPath;component/Icons/X16/Method.png";
-			if (valueType == typeof(MethodParameter)) return "pack://application:,,,/NETPath;component/Icons/X16/Property.png";
-			if (valueType == typeof(Property)) return "pack://application:,,,/NETPath;component/Icons/X16/Property.png";
-			if (valueType == typeof(Projects.Data)) return "pack://application:,,,/NETPath;component/Icons/X16/Data.png";
-			if (valueType == typeof(DataElement)) return "pack://application:,,,/NETPath;component/Icons/X16/Property.png";
+			if (valueType == typeof(WcfProject) || valueType == typeof(WebApiProject)) return "pack://application:,,,/NETPath;component/Icons/X16/Project.png";
+			if (valueType == typeof(WcfNamespace) || valueType == typeof(WebApiNamespace)) return "pack://application:,,,/NETPath;component/Icons/X16/Namespace.png";
+			if (valueType == typeof(WcfService)) return "pack://application:,,,/NETPath;component/Icons/X16/Service.png";
+			if (valueType == typeof(WebApiService)) return "pack://application:,,,/NETPath;component/Icons/X16/Rest.png";
+			if (valueType == typeof(WcfOperation)) return "pack://application:,,,/NETPath;component/Icons/X16/Method.png";
+			if (valueType == typeof(WcfMethodParameter) || valueType == typeof(WebApiRouteParameter) || valueType == typeof(WebApiMethodParameter)) return "pack://application:,,,/NETPath;component/Icons/X16/Property.png";
+			if (valueType == typeof(WcfProperty)) return "pack://application:,,,/NETPath;component/Icons/X16/Property.png";
+			if (valueType == typeof(WcfData) || valueType == typeof(WebApiData)) return "pack://application:,,,/NETPath;component/Icons/X16/Data.png";
+			if (valueType == typeof(WcfDataElement) || valueType == typeof(WebApiDataElement)) return "pack://application:,,,/NETPath;component/Icons/X16/Property.png";
 			if (valueType == typeof(Projects.Enum)) return "pack://application:,,,/NETPath;component/Icons/X16/Enum.png";
 			if (valueType == typeof(EnumElement)) return "pack://application:,,,/NETPath;component/Icons/X16/Property.png";
 			return "pack://application:,,,/NETPath;component/Icons/X16/Project.png";

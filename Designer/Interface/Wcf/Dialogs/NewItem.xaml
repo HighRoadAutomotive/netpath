@@ -1,0 +1,207 @@
+﻿<Grid x:Class="NETPath.Interface.Wcf.Dialogs.NewItem"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:pc="http://schemas.ellipticbit.com/controls"
+	xmlns:Root="clr-namespace:NETPath.Interface"
+	xmlns:Projects="clr-namespace:NETPath.Projects;assembly=NETPath.Projects"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	mc:Ignorable="d" d:DesignHeight="400" d:DesignWidth="1200" >
+	<Grid.Resources>
+		<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
+		<DataTemplate x:Key="ListBoxItemTemplate">
+			<Border Name="BG" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" CornerRadius="0" >
+				<Grid >
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="40" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="5" />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<Image Source="{Binding Path=ImageSource}" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="32" Width="32" Stretch="Uniform" Grid.Column="0" Grid.RowSpan="2"/>
+					<StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="0,2,0,0">
+						<TextBlock Text="{Binding Path=Title}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="14pt" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" Grid.Row="0"/>
+						<TextBlock Text="{Binding Path=Description}" Padding="0,0,0,5" Foreground="{StaticResource DisabledFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="12pt" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Grid.Row="1"/>
+					</StackPanel>
+				</Grid>
+			</Border>
+			<DataTemplate.Triggers>
+				<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
+					<Setter TargetName="BG" Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
+				</DataTrigger>
+				<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
+					<Setter TargetName="BG" Property="Background" Value="{StaticResource DefaultSelectionColor}" />
+				</DataTrigger>
+			</DataTemplate.Triggers>
+		</DataTemplate>
+		<PathGeometry x:Key="TreeArrow" Figures="M0,0 L0,6 L6,0 z"/>
+		<Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
+			<Setter Property="Focusable" Value="False"/>
+			<Setter Property="Width" Value="16"/>
+			<Setter Property="Height" Value="16"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type ToggleButton}">
+						<Border Width="16" Height="16" Background="Transparent" Padding="5,5,5,5">
+							<Path x:Name="ExpandPath" Fill="Transparent" Stroke="#FF989898" Data="{StaticResource TreeArrow}">
+								<Path.RenderTransform>
+									<RotateTransform Angle="135" CenterX="3" CenterY="3"/>
+								</Path.RenderTransform>
+							</Path>
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter Property="Stroke" TargetName="ExpandPath" Value="#FF1BBBFA"/>
+								<Setter Property="Fill" TargetName="ExpandPath" Value="#FF1BBBFA"/>
+							</Trigger>
+							<Trigger Property="IsChecked" Value="True">
+								<Setter Property="RenderTransform" TargetName="ExpandPath">
+									<Setter.Value>
+										<RotateTransform Angle="180" CenterX="3" CenterY="3"/>
+									</Setter.Value>
+								</Setter>
+								<Setter Property="Fill" TargetName="ExpandPath" Value="#FF595959"/>
+								<Setter Property="Stroke" TargetName="ExpandPath" Value="#FF262626"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<Style x:Key="NamespaceTreeViewItemStyle" TargetType="{x:Type TreeViewItem}">
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch" />
+			<Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+			<Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+			<Setter Property="Padding" Value="1,0,0,0"/>
+			<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+			<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type TreeViewItem}">
+						<ControlTemplate.Resources>
+							<pc:TreeViewMarginMultiplierConverter Length="19" x:Key="TreeViewMarginMultiplierConverter" />
+						</ControlTemplate.Resources>
+						<StackPanel>
+							<Border x:Name="Bd" UseLayoutRounding="true" Background="{TemplateBinding Background}" BorderBrush="Transparent" BorderThickness="0" Padding="{TemplateBinding Padding}">
+								<Grid Margin="{Binding Converter={StaticResource TreeViewMarginMultiplierConverter}, RelativeSource={RelativeSource AncestorType={x:Type TreeViewItem}}}">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="19"/>
+										<ColumnDefinition Width="*"/>
+									</Grid.ColumnDefinitions>
+									<ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"/>
+									<ContentPresenter Grid.Column="1" x:Name="PART_Header" HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" ContentSource="Header"/>
+								</Grid>
+							</Border>
+							<ItemsPresenter x:Name="ItemsHost"/>
+						</StackPanel>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsExpanded" Value="false">
+								<Setter Property="Visibility" TargetName="ItemsHost" Value="Collapsed"/>
+							</Trigger>
+							<Trigger Property="HasItems" Value="false">
+								<Setter Property="Visibility" TargetName="Expander" Value="Hidden"/>
+							</Trigger>
+							<Trigger Property="IsSelected" Value="true">
+								<Setter Property="Background" TargetName="Bd" Value="{StaticResource DefaultSelectionColor}"/>
+							</Trigger>
+							<Trigger Property="pc:TreeViewHelper.IsMouseDirectlyOverItem" Value="true">
+								<Setter Property="Background" TargetName="Bd" Value="{StaticResource MouseOverBackgroundColor}"/>
+							</Trigger>
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsSelected" Value="true"/>
+									<Condition Property="IsSelectionActive" Value="false"/>
+								</MultiTrigger.Conditions>
+								<Setter Property="Background" TargetName="Bd" Value="{StaticResource DefaultBackgroundColor}"/>
+							</MultiTrigger>
+							<Trigger Property="IsEnabled" Value="false">
+								<Setter Property="Foreground" Value="{StaticResource DisabledFontColor}"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+			<Style.Triggers>
+				<Trigger Property="VirtualizingStackPanel.IsVirtualizing" Value="true">
+					<Setter Property="ItemsPanel">
+						<Setter.Value>
+							<ItemsPanelTemplate>
+								<VirtualizingStackPanel/>
+							</ItemsPanelTemplate>
+						</Setter.Value>
+					</Setter>
+				</Trigger>
+			</Style.Triggers>
+		</Style>
+	</Grid.Resources>
+
+	<Border BorderThickness="0">
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+			<Grid Grid.Row="0" Margin="2.5,0">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<ListBox HorizontalAlignment="Stretch" Margin="2.5,0,2.5,0" Grid.Column="0" BorderThickness="0" Background="Transparent" VerticalAlignment="Stretch" Name="NewItemTypesList" SelectionMode="Single" ItemTemplate="{StaticResource ListBoxItemTemplate}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" SelectionChanged="NewItemTypesList_SelectionChanged">
+					<ListBox.Resources>
+						<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+					</ListBox.Resources>
+					<ListBox.Items>
+						<Root:NewItemType DataType="1" Title="Namespace" Description="Namespaces are used to organize services in WCF." ImageSource="pack://application:,,,/NETPath;component/Icons/X32/Namespace.png" />
+						<Root:NewItemType DataType="2" Title="Service" Description="Services are used to organize service operations in WCF." ImageSource="pack://application:,,,/NETPath;component/Icons/X32/Service.png" />
+						<Root:NewItemType DataType="3" Title="Data" Description="Data contracts are used to send data in WCF." ImageSource="pack://application:,,,/NETPath;component/Icons/X32/Data.png" />
+						<Root:NewItemType DataType="4" Title="Enumeration" Description="Enumeration contracts are used to create enums for WCF." ImageSource="pack://application:,,,/NETPath;component/Icons/X32/Enum.png" />
+						<Root:NewItemType DataType="5" Title="Binding" Description="Bindings in WCF determine how a service will communicate." ImageSource="pack://application:,,,/NETPath;component/Icons/X32/Binding.png" />
+						<Root:NewItemType DataType="6" Title="Host" Description="Hosts are used to host WCF Services." ImageSource="pack://application:,,,/NETPath;component/Icons/X32/Host.png" />
+					</ListBox.Items>
+				</ListBox>
+				<ListBox HorizontalAlignment="Stretch" Margin="2.5,0,2.5,0" Grid.Column="1" Visibility="Collapsed" BorderThickness="0" Background="Transparent" VerticalAlignment="Stretch" Name="NewItemBindingTypesList" SelectionMode="Single" ItemTemplate="{StaticResource ListBoxItemTemplate}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" SelectionChanged="NewItemBindingTypesList_SelectionChanged">
+					<ListBox.Resources>
+						<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00FFFFFF"/>
+					</ListBox.Resources>
+				</ListBox>
+				<Border Name="NewItemProjectNamespaces" Margin="2.5,0,2.5,0" Grid.Column="2" Visibility="Collapsed">
+					<Grid>
+						<ToggleButton Name="NewItemProjectNamespaceRoot" Margin="0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="30" Checked="NewItemProjectNamespaceRoot_Checked" />
+						<TreeView Name="NewItemProjectNamespaceList" Background="Transparent" BorderThickness="0" Margin="0,35,0,0" ItemContainerStyle="{StaticResource NamespaceTreeViewItemStyle}" HorizontalContentAlignment="Stretch" SelectedItemChanged="NewItemProjectNamespaceRoot_SelectedItemChanged">
+							<TreeView.ItemTemplate>
+								<HierarchicalDataTemplate DataType="{x:Type Projects:Namespace}" ItemsSource="{Binding Path=Children}">
+									<Grid>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="20" />
+											<ColumnDefinition Width="*" />
+										</Grid.ColumnDefinitions>
+										<Image Name="ItemImage" Source="pack://application:,,,/NETPath;component/Icons/X16/Namespace.png" HorizontalAlignment="Right" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Margin="0,1" Stretch="Uniform" Visibility="Visible" Grid.Column="0"/>
+										<TextBlock Name="ItemTitle" Grid.Column="1" Text="{Binding Path=Name}" ToolTip="{Binding Path=URI}" Padding="3,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" />
+									</Grid>
+									<HierarchicalDataTemplate.Triggers>
+										<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TreeViewItem}},Path=IsExpanded}" Value="True">
+											<Setter TargetName="ItemImage" Property="Source" Value="pack://application:,,,/NETPath;component/Icons/X16/NamespaceOpen.png" />
+										</DataTrigger>
+									</HierarchicalDataTemplate.Triggers>
+								</HierarchicalDataTemplate>
+							</TreeView.ItemTemplate>
+						</TreeView>
+					</Grid>
+				</Border>
+			</Grid>
+			<Grid Margin="5" Grid.Row="1">
+				<TextBox Name="NewItemName" Margin="70,0,0,0" HorizontalAlignment="Stretch" FontSize="12pt" KeyUp="NewItemName_KeyUp" TextChanged="NewItemName_TextChanged" />
+				<Label Content="Name:" Padding="5,0" HorizontalAlignment="Left" FontSize="12pt" VerticalAlignment="Center" />
+			</Grid>
+			<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5,0">
+				<Button Name="NewItemAdd" Content="ADD" Width="100" FontSize="14pt" Margin="0,0,5,0" HorizontalAlignment="Right" IsEnabled="False" Click="NewItemAdd_Click" />
+				<Button Name="NewItemCancel" Content="CANCEL" Width="100" FontSize="14pt" HorizontalAlignment="Right" Click="NewItemCancel_Click" />
+			</StackPanel>
+		</Grid>
+	</Border>
+</Grid>

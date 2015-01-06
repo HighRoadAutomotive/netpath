@@ -15,6 +15,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using NETPath.Projects;
+using NETPath.Projects.Wcf;
+using NETPath.Projects.WebApi;
 
 namespace NETPath.Interface.Data
 {
@@ -37,19 +39,20 @@ namespace NETPath.Interface.Data
 				return;
 			}
 
-			if (e.NewValue.GetType() == typeof(Projects.Project))
+			//WCF
+			if (e.NewValue.GetType() == typeof(WcfProject))
 			{
-				var v = e.NewValue as Projects.Project;
+				var v = e.NewValue as WcfProject;
 				if (v != null) t.IntProject = v;
 			}
-			if (e.NewValue.GetType() == typeof(Method) || e.NewValue.GetType() == typeof(Property))
+			if (e.NewValue.GetType() == typeof(WcfMethod) || e.NewValue.GetType() == typeof(WcfProperty))
 			{
-				var v = e.NewValue as Operation;
+				var v = e.NewValue as WcfOperation;
 				if (v != null) t.IntProject = v.Owner.Parent.Owner;
 			}
-			if (e.NewValue.GetType() == typeof(MethodParameter))
+			if (e.NewValue.GetType() == typeof(WcfMethodParameter))
 			{
-				var v = e.NewValue as MethodParameter;
+				var v = e.NewValue as WcfMethodParameter;
 				if (v != null) t.IntProject = v.Owner.Parent.Owner;
 			}
 			if (e.NewValue.GetType() == typeof(DataType))
@@ -57,14 +60,46 @@ namespace NETPath.Interface.Data
 				var v = e.NewValue as DataType;
 				if (v != null) t.IntProject = v.Parent.Owner;
 			}
-			if (e.NewValue.GetType() == typeof(Projects.Data))
+			if (e.NewValue.GetType() == typeof(WcfData))
 			{
-				var v = e.NewValue as Projects.Data;
+				var v = e.NewValue as WcfData;
 				if (v != null) t.IntProject = v.Parent.Owner;
 			}
-			if (e.NewValue.GetType() == typeof(Projects.DataElement))
+			if (e.NewValue.GetType() == typeof(WcfDataElement))
 			{
-				var v = e.NewValue as Projects.DataElement;
+				var v = e.NewValue as WcfDataElement;
+				if (v != null) t.IntProject = v.Owner.Parent.Owner;
+			}
+
+			//WebApi
+			if (e.NewValue.GetType() == typeof(WebApiProject))
+			{
+				var v = e.NewValue as WebApiProject;
+				if (v != null) t.IntProject = v;
+			}
+			if (e.NewValue.GetType() == typeof(WebApiMethod))
+			{
+				var v = e.NewValue as WebApiMethod;
+				if (v != null) t.IntProject = v.Owner.Parent.Owner;
+			}
+			if (e.NewValue.GetType() == typeof(WebApiMethodParameter))
+			{
+				var v = e.NewValue as WebApiMethodParameter;
+				if (v != null) t.IntProject = v.Owner.Parent.Owner;
+			}
+			if (e.NewValue.GetType() == typeof(DataType))
+			{
+				var v = e.NewValue as DataType;
+				if (v != null) t.IntProject = v.Parent.Owner;
+			}
+			if (e.NewValue.GetType() == typeof(WebApiData))
+			{
+				var v = e.NewValue as WebApiData;
+				if (v != null) t.IntProject = v.Parent.Owner;
+			}
+			if (e.NewValue.GetType() == typeof(WebApiDataElement))
+			{
+				var v = e.NewValue as WebApiDataElement;
 				if (v != null) t.IntProject = v.Owner.Parent.Owner;
 			}
 		}
@@ -310,7 +345,6 @@ namespace NETPath.Interface.Data
 			if (TypesList.SelectedItem == null) return;
 			var sdt = TypesList.SelectedItem as DataType;
 			if (sdt == null) return;
-			if (sdt.Parent != null && sdt.Parent.Owner != null && sdt.Parent.Owner.ID != IntProject.ID) sdt = sdt.Reference() ?? sdt;		//If the owner project of sdt is NOT the same as IntProject, create a reference link to it.
 			IsSettingType = true;
 
 			if (OpenType != null)

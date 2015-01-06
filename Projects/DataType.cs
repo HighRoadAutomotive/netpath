@@ -9,6 +9,13 @@ using System.Runtime.Serialization;
 
 namespace NETPath.Projects
 {
+	public enum DataScope
+	{
+		Public,
+		Internal,
+		Disabled,
+	}
+
 	public enum DataTypeMode
 	{
 		Primitive,
@@ -56,13 +63,8 @@ namespace NETPath.Projects
 	public enum SupportedFrameworks
 	{
 		None = 0x0,
-		NET30 = 0x1,
-		NET35 = 0x2,
-		NET40 = 0x4,
-		NET45 = 0x8,
-		SL40 = 0x10,
-		SL50 = 0x20,
-		WIN8 = 0x40
+		NET45 = 0x1,
+		WINRT = 0x2
 	}
 
 	public class DataType : OpenableDocument
@@ -83,7 +85,7 @@ namespace NETPath.Projects
 			{
 				if (t.ClientType == null)
 				{
-					t.ClientType = Convert.ToBoolean(e.NewValue) == false ? null : new DataType(t.TypeMode) { ID = t.ID, Parent = t.Parent, Name = t.Name, Scope = t.Scope, Partial = t.Partial, Abstract = t.Abstract, Sealed = t.Sealed };
+					t.ClientType = Convert.ToBoolean(e.NewValue) == false ? null : new DataType(t.TypeMode) { ID = t.ID, Name = t.Name, Scope = t.Scope, Partial = t.Partial, Abstract = t.Abstract, Sealed = t.Sealed };
 					if (t.ClientType != null)
 					{
 						if (t.IsDataObject) t.ClientType.InheritedTypes.Add(new DataType("System.Runtime.Serialization.IExtensibleDataObject", DataTypeMode.Interface));
@@ -121,6 +123,9 @@ namespace NETPath.Projects
 			t.Declaration = t.ToDeclarationString();
 		}
 
+		public Namespace Parent { get { return (Namespace)GetValue(ParentProperty); } set { SetValue(ParentProperty, value); } }
+		public static readonly DependencyProperty ParentProperty = DependencyProperty.Register("Parent", typeof(Namespace), typeof(DataType));
+
 		public ObservableCollection<DataType> InheritedTypes { get { return (ObservableCollection<DataType>)GetValue(InheritedTypesProperty); } set { SetValue(InheritedTypesProperty, value); } }
 		public static readonly DependencyProperty InheritedTypesProperty = DependencyProperty.Register("InheritedTypes", typeof(ObservableCollection<DataType>), typeof(DataType));
 
@@ -135,9 +140,6 @@ namespace NETPath.Projects
 
 		public DataType DictionaryValueGenericType { get { return (DataType)GetValue(DictionaryValueGenericTypeProperty); } set { SetValue(DictionaryValueGenericTypeProperty, value); } }
 		public static readonly DependencyProperty DictionaryValueGenericTypeProperty = DependencyProperty.Register("DictionaryValueGenericType", typeof(DataType), typeof(DataType), new PropertyMetadata(null, DataTypePropertyChangedCallback));
-
-		public Namespace Parent { get { return (Namespace)GetValue(ParentProperty); } set { SetValue(ParentProperty, value); } }
-		public static readonly DependencyProperty ParentProperty = DependencyProperty.Register("Parent", typeof(Namespace), typeof(DataType));
 
 		public bool IsNullable { get { return (bool)GetValue(IsNullableProperty); } set { SetValue(IsNullableProperty, value); } }
 		public static readonly DependencyProperty IsNullableProperty = DependencyProperty.Register("IsNullable", typeof(bool), typeof(DataType), new PropertyMetadata(false));
@@ -337,8 +339,6 @@ namespace NETPath.Projects
 				if (Primitive == PrimitiveTypes.Version) return string.Format("{0} Version{1}", ToScopeString(), IsNullable ? "?" : "");
 				if (Primitive == PrimitiveTypes.ByteArray) return string.Format("{0} byte[]{1}", ToScopeString(), IsNullable ? "?" : "");
 			}
-			else if (TypeMode == DataTypeMode.Namespace)
-				return Parent == null ? string.Format("namespace {0}", Name) : string.Format("namespace {0}.{1}", Parent.FullName, Name);
 			else if (IsExternalType == false && (TypeMode == DataTypeMode.Class || TypeMode == DataTypeMode.Struct || TypeMode == DataTypeMode.Enum))
 				return string.Format("{0} {2}{3}{1}{4} {5}{6}", ToScopeString(), Partial ? "partial " : "", Abstract ? "abstract " : "", Sealed ? "sealed " : "", ToStorageClassString(), Name, ToInheritedString());
 			else if (TypeMode == DataTypeMode.Array)
@@ -382,16 +382,16 @@ namespace NETPath.Projects
 				if (Primitive == PrimitiveTypes.Version) return string.Format("Version{0}", IsNullable ? "?" : "");
 				if (Primitive == PrimitiveTypes.ByteArray) return string.Format("byte[]{0}", IsNullable ? "?" : "");
 			}
-			else if (TypeMode == DataTypeMode.Namespace)
-				return Parent == null ? Name : string.Format("{0}.{1}{2}", Parent.FullName, Name, IsNullable ? "?" : "");
-			else if (TypeMode == DataTypeMode.Class || TypeMode == DataTypeMode.Struct || TypeMode == DataTypeMode.Enum)
+			else if (TypeMode == DataTypeMode.Class || TypeMode == DataTypeMode.Namespace)
+				return Parent != null ? string.Format("{0}.{1}", Parent.FullName, Name) : Name;
+			else if (TypeMode == DataTypeMode.Struct || TypeMode == DataTypeMode.Enum)
 				return Parent != null ? string.Format("{0}.{1}{2}", Parent.FullName, Name, IsNullable ? "?" : "") : Name;
 			else if (TypeMode == DataTypeMode.Array)
 				return string.Format("{0}[]{1}", CollectionGenericType, IsNullable ? "?" : "");
 			else if (TypeMode == DataTypeMode.Collection || TypeMode == DataTypeMode.Stack || TypeMode == DataTypeMode.Queue)
-				return string.Format("{0}<{1}{2}>", Name, CollectionGenericType != null ? CollectionGenericType.ToString() : "", IsNullable ? "?" : "");
+				return string.Format("{0}<{1}}>", Name, CollectionGenericType != null ? CollectionGenericType.ToString() : "");
 			else if (TypeMode == DataTypeMode.Dictionary)
-				return string.Format("{0}<{1}, {2}>{3}", Name, DictionaryKeyGenericType != null ? DictionaryKeyGenericType.ToString() : "", DictionaryValueGenericType != null ? DictionaryValueGenericType.ToString() : "", IsNullable ? "?" : "");
+				return string.Format("{0}<{1}, {2}>", Name, DictionaryKeyGenericType != null ? DictionaryKeyGenericType.ToString() : "", DictionaryValueGenericType != null ? DictionaryValueGenericType.ToString() : "");
 			return Name;
 		}
 
@@ -400,7 +400,7 @@ namespace NETPath.Projects
 			if (string.IsNullOrEmpty(Name)) return null;
 
 			if (TypeMode == DataTypeMode.Class || TypeMode == DataTypeMode.Struct || TypeMode == DataTypeMode.Enum)
-				return new DataType(TypeMode) { ID = ID, IsTypeReference = true, Name = string.Format("{0}.{1}", Parent.FullName, Name) };
+				return new DataType(TypeMode) { ID = ID, IsTypeReference = true, Name = ToString() };
 			return null;
 		}
 	}

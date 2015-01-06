@@ -40,84 +40,6 @@ namespace NETPath.Projects
 			BaseType = new DataType(PrimitiveTypes.Int);
 			Documentation = new Documentation { IsClass = true };
 		}
-
-
-		public IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
-		{
-			var results = new List<FindReplaceResult>();
-
-			if (Args.Items == FindItems.Enum || Args.Items == FindItems.Any)
-			{
-				if (Args.UseRegex == false)
-				{
-					if (Args.MatchCase == false)
-					{
-						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Server Name", Name, Parent.Owner, this));
-						if (HasClientType && !string.IsNullOrEmpty(ClientType.Name)) if (ClientType.Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) >= 0) results.Add(new FindReplaceResult("Client Name", ClientType.Name, Parent.Owner, this));
-					}
-					else
-					{
-						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Server Name", Name, Parent.Owner, this));
-						if (HasClientType && !string.IsNullOrEmpty(ClientType.Name)) if (ClientType.Name.IndexOf(Args.Search, StringComparison.CurrentCulture) >= 0) results.Add(new FindReplaceResult("Client Name", ClientType.Name, Parent.Owner, this));
-					}
-				}
-				else
-				{
-					if (!string.IsNullOrEmpty(Name)) if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Server Name", Name, Parent.Owner, this));
-					if (HasClientType && !string.IsNullOrEmpty(ClientType.Name)) if (Args.RegexSearch.IsMatch(ClientType.Name)) results.Add(new FindReplaceResult("Client Name", ClientType.Name, Parent.Owner, this));
-				}
-
-				if (Args.ReplaceAll)
-				{
-					if (Args.UseRegex == false)
-					{
-						if (Args.MatchCase == false)
-						{
-							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-							if (HasClientType && !string.IsNullOrEmpty(ClientType.Name)) ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-						}
-						else
-						{
-							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
-							if (HasClientType && !string.IsNullOrEmpty(ClientType.Name)) ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace);
-						}
-					}
-					else
-					{
-						if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
-						if (HasClientType && !string.IsNullOrEmpty(ClientType.Name)) ClientType.Name = Args.RegexSearch.Replace(ClientType.Name, Args.Replace);
-					}
-				}
-			}
-
-			foreach (EnumElement EE in Elements)
-				results.AddRange(EE.FindReplace(Args));
-
-			return results;
-		}
-
-		public void Replace(FindReplaceInfo Args, string Field)
-		{
-			if (!Args.ReplaceAll) return;
-			if (Args.UseRegex == false)
-			{
-				if (Args.MatchCase == false)
-				{
-					if (Field == "Server Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-					if (HasClientType && Field == "Client Name") ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-				}
-				else
-				{
-					if (Field == "Server Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
-					if (HasClientType && Field == "Client Name") ClientType.Name = Microsoft.VisualBasic.Strings.Replace(ClientType.Name, Args.Search, Args.Replace);
-				}
-			}
-			else
-			{
-				if (Field == "Server Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
-				if (HasClientType && Field == "Client Name") ClientType.Name = Args.RegexSearch.Replace(ClientType.Name, Args.Replace);
-			}
-		}
 	}
 
 	public class EnumElement : DependencyObject
@@ -222,53 +144,6 @@ namespace NETPath.Projects
 		public override string ToString()
 		{
 			return Name;
-		}
-
-		public IEnumerable<FindReplaceResult> FindReplace(FindReplaceInfo Args)
-		{
-			var results = new List<FindReplaceResult>();
-
-			if (Args.Items == FindItems.Enum || Args.Items == FindItems.Any)
-			{
-				if (Args.UseRegex == false)
-				{
-					if (Args.MatchCase == false)
-						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCultureIgnoreCase) > 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
-					else
-						if (!string.IsNullOrEmpty(Name)) if (Name.IndexOf(Args.Search, StringComparison.CurrentCulture) > 0) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
-				}
-				else
-					if (!string.IsNullOrEmpty(Name)) if (Args.RegexSearch.IsMatch(Name)) results.Add(new FindReplaceResult("Name", Name, Owner.Parent.Owner, this));
-
-				if (Args.ReplaceAll)
-				{
-					if (Args.UseRegex == false)
-					{
-						if (Args.MatchCase == false)
-							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-						else
-							if (!string.IsNullOrEmpty(Name)) Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
-					}
-					else
-						if (!string.IsNullOrEmpty(Name)) Name = Args.RegexSearch.Replace(Name, Args.Replace);
-				}
-			}
-
-			return results;
-		}
-
-		public void Replace(FindReplaceInfo Args, string Field)
-		{
-			if (Args.ReplaceAll != true) return;
-			if (Args.UseRegex == false)
-			{
-				if (Args.MatchCase == false)
-					if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace, 1, -1, Microsoft.VisualBasic.CompareMethod.Text);
-				else
-					if (Field == "Name") Name = Microsoft.VisualBasic.Strings.Replace(Name, Args.Search, Args.Replace);
-			}
-			else
-				if (Field == "Name") Name = Args.RegexSearch.Replace(Name, Args.Replace);
 		}
 	}
 }

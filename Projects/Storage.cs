@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NETPath.Projects.Wcf;
+using NETPath.Projects.WebApi;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
@@ -18,14 +20,16 @@ namespace NETPath.Projects
 				throw new FileNotFoundException("Unable to locate file '" + Path + "'");
 
 			var kt = new List<Type>(new Type[] {
-				typeof(Project), typeof(ProjectGenerationTarget), typeof(DataType), typeof(Namespace), typeof(Documentation),
-				typeof(BindingSecurity), typeof(BindingSecurityBasicHTTP), typeof(BindingSecurityBasicHTTPS), typeof(BindingSecurityMSMQ), typeof(BindingSecurityMSMQIntegration), typeof(BindingSecurityNamedPipe), typeof(BindingSecurityPeerTCP), typeof(BindingSecurityTCP), typeof(BindingSecurityWebHTTP), typeof(BindingSecurityWSDualHTTP), typeof(BindingSecurityWSFederationHTTP), typeof(BindingSecurityWSHTTP),
-				typeof(ServiceBinding), typeof(ServiceBindingBasicHTTP), typeof(ServiceBindingBasicHTTPS), typeof(ServiceBindingMSMQ), typeof(ServiceBindingMSMQIntegration), typeof(ServiceBindingNamedPipe), typeof(ServiceBindingNetHTTP), typeof(ServiceBindingNetHTTPS), typeof(ServiceBindingPeerTCP), typeof(ServiceBindingTCP), typeof(ServiceBindingUDP), typeof(ServiceBindingWebHTTP), typeof(ServiceBindingWS2007FederationHTTP), typeof(ServiceBindingWS2007HTTP), typeof(ServiceBindingWSDualHTTP), typeof(ServiceBindingWSFederationHTTP), typeof(ServiceBindingWSHTTP),
-				typeof(Host), typeof(HostBehavior), typeof(HostCredentials), typeof(HostDebugBehavior), typeof(HostEndpoint), typeof(HostEndpointAddressHeader), typeof(HostMetadataBehavior), typeof(HostThrottlingBehavior), typeof(HostWebHTTPBehavior),
-				typeof(Service), typeof(Operation), typeof(Method), typeof(Callback), typeof(DataChangeMethod), typeof(MethodParameter), typeof(Property),
-				typeof(RestService), typeof(RestMethod), typeof(RestHttpConfiguration), typeof(RestRouteParameter), typeof(RestMethodParameter),
+				typeof(ProjectGenerationTarget), typeof(DataType), typeof(Documentation),
+				typeof(Project), typeof(WcfProject), typeof(WebApiProject),
+				typeof(Namespace), typeof(WcfNamespace), typeof(WebApiNamespace),
+				typeof(WcfSecurity), typeof(WcfSecurityBasicHTTP), typeof(WcfSecurityBasicHTTPS), typeof(WcfSecurityMSMQ), typeof(WcfSecurityMSMQIntegration), typeof(WcfSecurityNamedPipe), typeof(WcfSecurityPeerTCP), typeof(WcfSecurityTCP), typeof(WcfSecurityWebHTTP), typeof(WcfSecurityWSDualHTTP), typeof(WcfSecurityWSFederationHTTP), typeof(WcfSecurityWSHTTP),
+				typeof(WcfBinding), typeof(WcfBindingBasicHTTP), typeof(WcfBindingBasicHTTPS), typeof(WcfBindingMSMQ), typeof(WcfBindingMSMQIntegration), typeof(WcfBindingNamedPipe), typeof(WcfBindingNetHTTP), typeof(WcfBindingNetHTTPS), typeof(WcfBindingPeerTCP), typeof(WcfBindingTCP), typeof(WcfBindingUDP), typeof(WcfBindingWebHTTP), typeof(WcfBindingWS2007FederationHTTP), typeof(WcfBindingWS2007HTTP), typeof(WcfBindingWSDualHTTP), typeof(WcfBindingWSFederationHTTP), typeof(WcfBindingWSHTTP),
+				typeof(WcfHost), typeof(WcfHostBehavior), typeof(WcfHostCredentials), typeof(WcfHostDebugBehavior), typeof(WcfHostEndpoint), typeof(WcfHostEndpointAddressHeader), typeof(WcfHostMetadataBehavior), typeof(WcfHostThrottlingBehavior),
+				typeof(WcfService), typeof(WcfOperation), typeof(WcfMethod), typeof(WcfCallback), typeof(WcfDataChangeMethod), typeof(WcfMethodParameter), typeof(WcfProperty),
+				typeof(WcfData), typeof(WcfDataElement),
+				typeof(WebApiService), typeof(WebApiMethod), typeof(WebApiHttpConfiguration), typeof(WebApiRouteParameter), typeof(WebApiMethodParameter),
 				typeof(Enum), typeof(EnumElement),
-				typeof(Data), typeof(DataElement)
 			});
 
 			var dcs = new DataContractSerializer(typeof(T), new DataContractSerializerSettings() { KnownTypes = kt, MaxItemsInObjectGraph = Int32.MaxValue, IgnoreExtensionDataObject = true, SerializeReadOnlyTypes = true, PreserveObjectReferences = true });
@@ -48,14 +52,16 @@ namespace NETPath.Projects
 			}
 
 			var kt = new List<Type>(new Type[] {
-				typeof(Project), typeof(ProjectGenerationTarget), typeof(DataType), typeof(Namespace), typeof(Documentation),
-				typeof(BindingSecurity), typeof(BindingSecurityBasicHTTP), typeof(BindingSecurityBasicHTTPS), typeof(BindingSecurityMSMQ), typeof(BindingSecurityMSMQIntegration), typeof(BindingSecurityNamedPipe), typeof(BindingSecurityPeerTCP), typeof(BindingSecurityTCP), typeof(BindingSecurityWebHTTP), typeof(BindingSecurityWSDualHTTP), typeof(BindingSecurityWSFederationHTTP), typeof(BindingSecurityWSHTTP),
-				typeof(ServiceBinding), typeof(ServiceBindingBasicHTTP), typeof(ServiceBindingBasicHTTPS), typeof(ServiceBindingMSMQ), typeof(ServiceBindingMSMQIntegration), typeof(ServiceBindingNamedPipe), typeof(ServiceBindingNetHTTP), typeof(ServiceBindingNetHTTPS), typeof(ServiceBindingPeerTCP), typeof(ServiceBindingTCP), typeof(ServiceBindingUDP), typeof(ServiceBindingWebHTTP), typeof(ServiceBindingWS2007FederationHTTP), typeof(ServiceBindingWS2007HTTP), typeof(ServiceBindingWSDualHTTP), typeof(ServiceBindingWSFederationHTTP), typeof(ServiceBindingWSHTTP),
-				typeof(Host), typeof(HostBehavior), typeof(HostCredentials), typeof(HostDebugBehavior), typeof(HostEndpoint), typeof(HostEndpointAddressHeader), typeof(HostMetadataBehavior), typeof(HostThrottlingBehavior), typeof(HostWebHTTPBehavior),
-				typeof(Service), typeof(Operation), typeof(Method), typeof(Callback), typeof(DataChangeMethod), typeof(MethodParameter), typeof(Property),
-				typeof(RestService), typeof(RestMethod), typeof(RestHttpConfiguration), typeof(RestRouteParameter), typeof(RestMethodParameter),
+				typeof(ProjectGenerationTarget), typeof(DataType), typeof(Documentation),
+				typeof(Project), typeof(WcfProject), typeof(WebApiProject),
+				typeof(Namespace), typeof(WcfNamespace), typeof(WebApiNamespace),
+				typeof(WcfSecurity), typeof(WcfSecurityBasicHTTP), typeof(WcfSecurityBasicHTTPS), typeof(WcfSecurityMSMQ), typeof(WcfSecurityMSMQIntegration), typeof(WcfSecurityNamedPipe), typeof(WcfSecurityPeerTCP), typeof(WcfSecurityTCP), typeof(WcfSecurityWebHTTP), typeof(WcfSecurityWSDualHTTP), typeof(WcfSecurityWSFederationHTTP), typeof(WcfSecurityWSHTTP),
+				typeof(WcfBinding), typeof(WcfBindingBasicHTTP), typeof(WcfBindingBasicHTTPS), typeof(WcfBindingMSMQ), typeof(WcfBindingMSMQIntegration), typeof(WcfBindingNamedPipe), typeof(WcfBindingNetHTTP), typeof(WcfBindingNetHTTPS), typeof(WcfBindingPeerTCP), typeof(WcfBindingTCP), typeof(WcfBindingUDP), typeof(WcfBindingWebHTTP), typeof(WcfBindingWS2007FederationHTTP), typeof(WcfBindingWS2007HTTP), typeof(WcfBindingWSDualHTTP), typeof(WcfBindingWSFederationHTTP), typeof(WcfBindingWSHTTP),
+				typeof(WcfHost), typeof(WcfHostBehavior), typeof(WcfHostCredentials), typeof(WcfHostDebugBehavior), typeof(WcfHostEndpoint), typeof(WcfHostEndpointAddressHeader), typeof(WcfHostMetadataBehavior), typeof(WcfHostThrottlingBehavior),
+				typeof(WcfService), typeof(WcfOperation), typeof(WcfMethod), typeof(WcfCallback), typeof(WcfDataChangeMethod), typeof(WcfMethodParameter), typeof(WcfProperty),
+				typeof(WcfData), typeof(WcfDataElement),
+				typeof(WebApiService), typeof(WebApiMethod), typeof(WebApiHttpConfiguration), typeof(WebApiRouteParameter), typeof(WebApiMethodParameter),
 				typeof(Enum), typeof(EnumElement),
-				typeof(Data), typeof(DataElement)
 			});
 
 			var dcs = new DataContractSerializer(typeof(T), new DataContractSerializerSettings() { KnownTypes = kt, MaxItemsInObjectGraph = Int32.MaxValue, IgnoreExtensionDataObject = true, SerializeReadOnlyTypes = true, PreserveObjectReferences = true });
@@ -69,14 +75,16 @@ namespace NETPath.Projects
 		public static byte[] Dump<T>(T Data)
 		{
 			var kt = new List<Type>(new Type[] {
-				typeof(Project), typeof(ProjectGenerationTarget), typeof(DataType), typeof(Namespace), typeof(Documentation),
-				typeof(BindingSecurity), typeof(BindingSecurityBasicHTTP), typeof(BindingSecurityBasicHTTPS), typeof(BindingSecurityMSMQ), typeof(BindingSecurityMSMQIntegration), typeof(BindingSecurityNamedPipe), typeof(BindingSecurityPeerTCP), typeof(BindingSecurityTCP), typeof(BindingSecurityWebHTTP), typeof(BindingSecurityWSDualHTTP), typeof(BindingSecurityWSFederationHTTP), typeof(BindingSecurityWSHTTP),
-				typeof(ServiceBinding), typeof(ServiceBindingBasicHTTP), typeof(ServiceBindingBasicHTTPS), typeof(ServiceBindingMSMQ), typeof(ServiceBindingMSMQIntegration), typeof(ServiceBindingNamedPipe), typeof(ServiceBindingNetHTTP), typeof(ServiceBindingNetHTTPS), typeof(ServiceBindingPeerTCP), typeof(ServiceBindingTCP), typeof(ServiceBindingUDP), typeof(ServiceBindingWebHTTP), typeof(ServiceBindingWS2007FederationHTTP), typeof(ServiceBindingWS2007HTTP), typeof(ServiceBindingWSDualHTTP), typeof(ServiceBindingWSFederationHTTP), typeof(ServiceBindingWSHTTP),
-				typeof(Host), typeof(HostBehavior), typeof(HostCredentials), typeof(HostDebugBehavior), typeof(HostEndpoint), typeof(HostEndpointAddressHeader), typeof(HostMetadataBehavior), typeof(HostThrottlingBehavior), typeof(HostWebHTTPBehavior),
-				typeof(Service), typeof(Operation), typeof(Method), typeof(Callback), typeof(DataChangeMethod), typeof(MethodParameter), typeof(Property),
-				typeof(RestService), typeof(RestMethod), typeof(RestHttpConfiguration), typeof(RestRouteParameter), typeof(RestMethodParameter),
+				typeof(ProjectGenerationTarget), typeof(DataType), typeof(Documentation),
+				typeof(Project), typeof(WcfProject), typeof(WebApiProject),
+				typeof(Namespace), typeof(WcfNamespace), typeof(WebApiNamespace),
+				typeof(WcfSecurity), typeof(WcfSecurityBasicHTTP), typeof(WcfSecurityBasicHTTPS), typeof(WcfSecurityMSMQ), typeof(WcfSecurityMSMQIntegration), typeof(WcfSecurityNamedPipe), typeof(WcfSecurityPeerTCP), typeof(WcfSecurityTCP), typeof(WcfSecurityWebHTTP), typeof(WcfSecurityWSDualHTTP), typeof(WcfSecurityWSFederationHTTP), typeof(WcfSecurityWSHTTP),
+				typeof(WcfBinding), typeof(WcfBindingBasicHTTP), typeof(WcfBindingBasicHTTPS), typeof(WcfBindingMSMQ), typeof(WcfBindingMSMQIntegration), typeof(WcfBindingNamedPipe), typeof(WcfBindingNetHTTP), typeof(WcfBindingNetHTTPS), typeof(WcfBindingPeerTCP), typeof(WcfBindingTCP), typeof(WcfBindingUDP), typeof(WcfBindingWebHTTP), typeof(WcfBindingWS2007FederationHTTP), typeof(WcfBindingWS2007HTTP), typeof(WcfBindingWSDualHTTP), typeof(WcfBindingWSFederationHTTP), typeof(WcfBindingWSHTTP),
+				typeof(WcfHost), typeof(WcfHostBehavior), typeof(WcfHostCredentials), typeof(WcfHostDebugBehavior), typeof(WcfHostEndpoint), typeof(WcfHostEndpointAddressHeader), typeof(WcfHostMetadataBehavior), typeof(WcfHostThrottlingBehavior),
+				typeof(WcfService), typeof(WcfOperation), typeof(WcfMethod), typeof(WcfCallback), typeof(WcfDataChangeMethod), typeof(WcfMethodParameter), typeof(WcfProperty),
+				typeof(WcfData), typeof(WcfDataElement),
+				typeof(WebApiService), typeof(WebApiMethod), typeof(WebApiHttpConfiguration), typeof(WebApiRouteParameter), typeof(WebApiMethodParameter),
 				typeof(Enum), typeof(EnumElement),
-				typeof(Data), typeof(DataElement)
 			});
 
 			var dcs = new DataContractSerializer(typeof(T), new DataContractSerializerSettings() { KnownTypes = kt, MaxItemsInObjectGraph = Int32.MaxValue, IgnoreExtensionDataObject = true, SerializeReadOnlyTypes = true, PreserveObjectReferences = true });

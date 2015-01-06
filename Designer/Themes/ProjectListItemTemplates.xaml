@@ -1,6 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-					xmlns:wap="clr-namespace:NETPath.Projects;assembly=NETPath.Projects"
+					xmlns:np="clr-namespace:NETPath.Projects;assembly=NETPath.Projects"
+					xmlns:wp="clr-namespace:NETPath.Projects.Wcf;assembly=NETPath.Projects"
+					xmlns:wap="clr-namespace:NETPath.Projects.WebApi;assembly=NETPath.Projects"
 					xmlns:pc="http://schemas.ellipticbit.com/controls"
 					xmlns:local="clr-namespace:NETPath.Interface">
 	<ResourceDictionary.MergedDictionaries>
@@ -9,7 +11,7 @@
 
 	<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
 	<pc:NotBoolVisibilityConverter x:Key="NotBoolVisibilityConverter" />
-	
+
 	<SolidColorBrush x:Key="MouseOverContainerColor" Color="#33FFFFFF" />
 	<SolidColorBrush x:Key="PressedContainerColor" Color="#33000000" />
 
@@ -79,7 +81,7 @@
 		</Setter>
 	</Style>
 
-	
+
 	<!-- Service Templates -->
 	<Style x:Key="ServiceContainerTemplate" TargetType="{x:Type ToggleButton}">
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
@@ -139,7 +141,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	<DataTemplate x:Key="ServiceItemTemplate" DataType="{x:Type wap:Service}">
+	<DataTemplate x:Key="ServiceItemTemplate" DataType="{x:Type wp:WcfService}">
 		<Border Background="#01FFFFFF">
 			<Border.ToolTip>
 				<StackPanel Orientation="Vertical">
@@ -214,7 +216,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	<DataTemplate x:Key="RestItemTemplate" DataType="{x:Type wap:RestService}">
+	<DataTemplate x:Key="RestItemTemplate" DataType="{x:Type wap:WebApiService}">
 		<Border Background="#01FFFFFF">
 			<Border.ToolTip>
 				<StackPanel Orientation="Vertical">
@@ -288,7 +290,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	<DataTemplate x:Key="DataItemTemplate" DataType="{x:Type wap:Data}">
+	<DataTemplate x:Key="DataItemTemplate" DataType="{x:Type wp:WcfData}">
 		<Border Background="#01FFFFFF">
 			<Border.ToolTip>
 				<StackPanel Orientation="Vertical">
@@ -304,7 +306,7 @@
 		</Border>
 	</DataTemplate>
 
-	
+
 	<!-- Enum Templates -->
 	<Style x:Key="EnumContainerTemplate" TargetType="{x:Type ToggleButton}">
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
@@ -365,7 +367,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	<DataTemplate x:Key="EnumItemTemplate" DataType="{x:Type wap:Enum}">
+	<DataTemplate x:Key="EnumItemTemplate" DataType="{x:Type np:Enum}">
 		<Border Background="#01FFFFFF">
 			<Border.ToolTip>
 				<StackPanel Orientation="Vertical">
@@ -380,7 +382,7 @@
 		</Border>
 	</DataTemplate>
 
-	
+
 	<!-- Binding Templates -->
 	<Style x:Key="BindingContainerTemplate" TargetType="{x:Type ToggleButton}">
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
@@ -441,7 +443,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	<DataTemplate x:Key="ServiceBindingBasicHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingBasicHTTP}">
+	<DataTemplate x:Key="WcfBindingBasicHTTPItemTemplate" DataType="{x:Type wp:WcfBindingBasicHTTP}">
 		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal">
 				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/BasicHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
@@ -450,7 +452,7 @@
 			<TextBlock Text="WCF Binding Type: BasicHttpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
-	<DataTemplate x:Key="ServiceBindingBasicHTTPSItemTemplate" DataType="{x:Type wap:ServiceBindingBasicHTTPS}">
+	<DataTemplate x:Key="WcfBindingBasicHTTPSItemTemplate" DataType="{x:Type wp:WcfBindingBasicHTTPS}">
 		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal" >
 				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/BasicHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
@@ -459,7 +461,7 @@
 			<TextBlock Text="WCF Binding Type: BasicHttpsBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
-	<DataTemplate x:Key="ServiceBindingNetHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingNetHTTP}">
+	<DataTemplate x:Key="WcfBindingNetHTTPItemTemplate" DataType="{x:Type wp:WcfBindingNetHTTP}">
 		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal">
 				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/NetHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
@@ -468,7 +470,7 @@
 			<TextBlock Text="WCF Binding Type: NetHttpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
-	<DataTemplate x:Key="ServiceBindingNetHTTPSItemTemplate" DataType="{x:Type wap:ServiceBindingNetHTTPS}">
+	<DataTemplate x:Key="WcfBindingNetHTTPSItemTemplate" DataType="{x:Type wp:WcfBindingNetHTTPS}">
 		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal">
 				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/NetHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
@@ -477,7 +479,7 @@
 			<TextBlock Text="WCF Binding Type: NetHttpsBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
-	<DataTemplate x:Key="ServiceBindingMSMQItemTemplate" DataType="{x:Type wap:ServiceBindingMSMQ}">
+	<DataTemplate x:Key="WcfBindingMSMQItemTemplate" DataType="{x:Type wp:WcfBindingMSMQ}">
 		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal" >
 				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/MSMQ.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
@@ -486,7 +488,7 @@
 			<TextBlock Text="WCF Binding Type: NetMsmqBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
-	<DataTemplate x:Key="ServiceBindingMSMQIntegrationItemTemplate" DataType="{x:Type wap:ServiceBindingMSMQIntegration}">
+	<DataTemplate x:Key="WcfBindingMSMQIntegrationItemTemplate" DataType="{x:Type wp:WcfBindingMSMQIntegration}">
 		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal" >
 				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/MSMQ.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
@@ -495,7 +497,7 @@
 			<TextBlock Text="WCF Binding Type: MsmqIntegrationBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
-	<DataTemplate x:Key="ServiceBindingNamedPipeItemTemplate" DataType="{x:Type wap:ServiceBindingNamedPipe}">
+	<DataTemplate x:Key="WcfBindingNamedPipeItemTemplate" DataType="{x:Type wp:WcfBindingNamedPipe}">
 		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal">
 				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/NamedPipe.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
@@ -504,7 +506,7 @@
 			<TextBlock Text="WCF Binding Type: NetNamedPipeBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
-	<DataTemplate x:Key="ServiceBindingPeerTCPItemTemplate" DataType="{x:Type wap:ServiceBindingPeerTCP}">
+	<DataTemplate x:Key="WcfBindingPeerTCPItemTemplate" DataType="{x:Type wp:WcfBindingPeerTCP}">
 		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal" >
 				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/PeerTCP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
@@ -513,7 +515,7 @@
 			<TextBlock Text="WCF Binding Type: NetPeerTcpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
-	<DataTemplate x:Key="ServiceBindingTCPItemTemplate" DataType="{x:Type wap:ServiceBindingTCP}">
+	<DataTemplate x:Key="WcfBindingTCPItemTemplate" DataType="{x:Type wp:WcfBindingTCP}">
 		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal" >
 				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/TCP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
@@ -522,7 +524,7 @@
 			<TextBlock Text="WCF Binding Type: NetTcpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
-	<DataTemplate x:Key="ServiceBindingUDPItemTemplate" DataType="{x:Type wap:ServiceBindingUDP}">
+	<DataTemplate x:Key="WcfBindingUDPItemTemplate" DataType="{x:Type wp:WcfBindingUDP}">
 		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal" >
 				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/UDP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
@@ -531,7 +533,7 @@
 			<TextBlock Text="WCF Binding Type: UdpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
-	<DataTemplate x:Key="ServiceBindingWebHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingWebHTTP}">
+	<DataTemplate x:Key="WcfBindingWebHTTPItemTemplate" DataType="{x:Type wp:WcfBindingWebHTTP}">
 		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal" >
 				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/WebHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
@@ -540,7 +542,7 @@
 			<TextBlock Text="WCF Binding Type: WebHttpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
-	<DataTemplate x:Key="ServiceBindingWSDualHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingWSDualHTTP}">
+	<DataTemplate x:Key="WcfBindingWSDualHTTPItemTemplate" DataType="{x:Type wp:WcfBindingWSDualHTTP}">
 		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal" >
 				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/WSDualHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
@@ -549,7 +551,7 @@
 			<TextBlock Text="WCF Binding Type: WSDualHttpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
-	<DataTemplate x:Key="ServiceBindingWSFederationHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingWSFederationHTTP}">
+	<DataTemplate x:Key="WcfBindingWSFederationHTTPItemTemplate" DataType="{x:Type wp:WcfBindingWSFederationHTTP}">
 		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal" >
 				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/WSFederationHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
@@ -558,7 +560,7 @@
 			<TextBlock Text="WCF Binding Type: WSFederationHttpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
-	<DataTemplate x:Key="ServiceBindingWS2007FederationHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingWS2007FederationHTTP}">
+	<DataTemplate x:Key="WcfBindingWS2007FederationHTTPItemTemplate" DataType="{x:Type wp:WcfBindingWS2007FederationHTTP}">
 		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal" >
 				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/WSFederationHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
@@ -567,7 +569,7 @@
 			<TextBlock Text="WCF Binding Type: WS2007FederationHttpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
-	<DataTemplate x:Key="ServiceBindingWSHTTPItemTemplate" DataType="{x:Type wap:ServiceBindingWSHTTP}">
+	<DataTemplate x:Key="WcfBindingWSHTTPItemTemplate" DataType="{x:Type wp:WcfBindingWSHTTP}">
 		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal">
 				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/WSHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
@@ -576,7 +578,7 @@
 			<TextBlock Text="WCF Binding Type: WSHttpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
-	<DataTemplate x:Key="ServiceBindingWS2007HTTPItemTemplate" DataType="{x:Type wap:ServiceBindingWS2007HTTP}">
+	<DataTemplate x:Key="WcfBindingWS2007HTTPItemTemplate" DataType="{x:Type wp:WcfBindingWS2007HTTP}">
 		<StackPanel Orientation="Vertical">
 			<StackPanel Orientation="Horizontal" >
 				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/WSHTTP.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
@@ -585,12 +587,12 @@
 			<TextBlock Text="WCF Binding Type: WS2007HttpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
-	<local:ProjectListBindingTemplateSelector x:Key="ProjectListBindingTemplateSelector" BasicHTTPTemplate="{StaticResource ServiceBindingBasicHTTPItemTemplate}" BasicHTTPSTemplate="{StaticResource ServiceBindingBasicHTTPSItemTemplate}" NetHTTPTemplate="{StaticResource ServiceBindingNetHTTPItemTemplate}" 
-	NetHTTPSTemplate="{StaticResource ServiceBindingNetHTTPSItemTemplate}" MSMQTemplate="{StaticResource ServiceBindingMSMQItemTemplate}" MSMQIntegrationTemplate="{StaticResource ServiceBindingMSMQIntegrationItemTemplate}" NamedPipeTemplate="{StaticResource ServiceBindingNamedPipeItemTemplate}" 
-	PeerTCPTemplate="{StaticResource ServiceBindingPeerTCPItemTemplate}" TCPTemplate="{StaticResource ServiceBindingTCPItemTemplate}" UDPTemplate="{StaticResource ServiceBindingUDPItemTemplate}" WebHTTPTemplate="{StaticResource ServiceBindingWebHTTPItemTemplate}" WSDualHTTPTemplate="{StaticResource ServiceBindingWSDualHTTPItemTemplate}" 
-	WSFederationHTTPTemplate="{StaticResource ServiceBindingWSFederationHTTPItemTemplate}" WSHTTPTemplate="{StaticResource ServiceBindingWSHTTPItemTemplate}" WS2007FederationHTTPTemplate="{StaticResource ServiceBindingWS2007FederationHTTPItemTemplate}" WS2007HTTPTemplate="{StaticResource ServiceBindingWS2007HTTPItemTemplate}" />
+	<local:ProjectListBindingTemplateSelector x:Key="ProjectListBindingTemplateSelector" BasicHTTPTemplate="{StaticResource WcfBindingBasicHTTPItemTemplate}" BasicHTTPSTemplate="{StaticResource WcfBindingBasicHTTPSItemTemplate}" NetHTTPTemplate="{StaticResource WcfBindingNetHTTPItemTemplate}" 
+	NetHTTPSTemplate="{StaticResource WcfBindingNetHTTPSItemTemplate}" MSMQTemplate="{StaticResource WcfBindingMSMQItemTemplate}" MSMQIntegrationTemplate="{StaticResource WcfBindingMSMQIntegrationItemTemplate}" NamedPipeTemplate="{StaticResource WcfBindingNamedPipeItemTemplate}" 
+	PeerTCPTemplate="{StaticResource WcfBindingPeerTCPItemTemplate}" TCPTemplate="{StaticResource WcfBindingTCPItemTemplate}" UDPTemplate="{StaticResource WcfBindingUDPItemTemplate}" WebHTTPTemplate="{StaticResource WcfBindingWebHTTPItemTemplate}" WSDualHTTPTemplate="{StaticResource WcfBindingWSDualHTTPItemTemplate}" 
+	WSFederationHTTPTemplate="{StaticResource WcfBindingWSFederationHTTPItemTemplate}" WSHTTPTemplate="{StaticResource WcfBindingWSHTTPItemTemplate}" WS2007FederationHTTPTemplate="{StaticResource WcfBindingWS2007FederationHTTPItemTemplate}" WS2007HTTPTemplate="{StaticResource WcfBindingWS2007HTTPItemTemplate}" />
 
-	
+
 	<!-- Host Templates -->
 	<Style x:Key="HostContainerTemplate" TargetType="{x:Type ToggleButton}">
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
@@ -651,7 +653,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	<DataTemplate x:Key="HostItemTemplate" DataType="{x:Type wap:Host}">
+	<DataTemplate x:Key="HostItemTemplate" DataType="{x:Type wp:WcfHost}">
 		<StackPanel Orientation="Vertical" Margin="3">
 			<StackPanel Orientation="Horizontal">
 				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/Host.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
@@ -661,7 +663,7 @@
 		</StackPanel>
 	</DataTemplate>
 
-	
+
 	<!-- Namespace Templates -->
 	<Style x:Key="NamespaceContainerTemplate" TargetType="{x:Type ToggleButton}">
 		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
@@ -709,7 +711,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	<DataTemplate x:Key="NamespaceItemTemplate" DataType="{x:Type wap:Namespace}">
+	<DataTemplate x:Key="NamespaceItemTemplate" DataType="{x:Type wp:WcfNamespace}">
 		<Border Background="#01FFFFFF">
 			<Border.ToolTip>
 				<StackPanel Orientation="Vertical">
@@ -737,7 +739,7 @@
 				<StackPanel Orientation="Vertical" Margin="5,5,0,5">
 					<local:ProjectList x:Name="SubItems1" ItemsSource="{Binding Path=Children}" ItemContainerStyle="{StaticResource NamespaceContainerTemplate}" ItemTemplate="{DynamicResource NamespaceItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
 					<local:ProjectList x:Name="SubItems2" ItemsSource="{Binding Path=Services}" ItemContainerStyle="{StaticResource ServiceContainerTemplate}" ItemTemplate="{StaticResource ServiceItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
-					<local:ProjectList x:Name="SubItems7" ItemsSource="{Binding Path=RestServices}" ItemContainerStyle="{StaticResource RestContainerTemplate}" ItemTemplate="{StaticResource RestItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
+					<local:ProjectList x:Name="SubItems7" ItemsSource="{Binding Path=WebApiServices}" ItemContainerStyle="{StaticResource RestContainerTemplate}" ItemTemplate="{StaticResource RestItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
 					<local:ProjectList x:Name="SubItems3" ItemsSource="{Binding Path=Data}" ItemContainerStyle="{StaticResource DataContainerTemplate}" ItemTemplate="{StaticResource DataItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
 					<local:ProjectList x:Name="SubItems4" ItemsSource="{Binding Path=Enums}" ItemContainerStyle="{StaticResource EnumContainerTemplate}" ItemTemplate="{StaticResource EnumItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
 					<local:ProjectItemList x:Name="SubItems5" ItemsSource="{Binding Path=Bindings}" ItemContainerStyle="{StaticResource BindingContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListBindingTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />

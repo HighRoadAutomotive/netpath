@@ -8,6 +8,7 @@ using System.Xml;
 using NETPath.Options;
 using NETPath.Projects;
 using NETPath.Generators.Interfaces;
+using NETPath.Projects.WebApi;
 
 namespace NETPath.Compiler
 {
@@ -45,20 +46,22 @@ namespace NETPath.Compiler
 			ErrorStream = Console.OpenStandardError();
 
 			OpenProject = Project.Open(ProjectPath);
+			GenerationType pt = GenerationType.Wcf;
+			if (OpenProject.GetType() == typeof (WebApiProject)) pt = GenerationType.WebApi;
 
-			IGenerator NET = Loader.LoadModule(GenerationModule.NET, GenerationLanguage.CSharp);
-			NET.Initialize(OutputHandler, AddMessage);
-			IGenerator WinRT = Loader.LoadModule(GenerationModule.WindowsRuntime, GenerationLanguage.CSharp);
-			WinRT.Initialize(OutputHandler, AddMessage);
+			IGenerator NET = Loader.LoadModule(GenerationModule.NET, GenerationLanguage.CSharp, pt);
+			NET.Initialize(OpenProject, Path.Combine(Environment.CurrentDirectory, ProjectPath), OutputHandler, AddMessage);
+			IGenerator WinRT = Loader.LoadModule(GenerationModule.WindowsRuntime, GenerationLanguage.CSharp, pt);
+			WinRT.Initialize(OpenProject, Path.Combine(Environment.CurrentDirectory, ProjectPath), OutputHandler, AddMessage);
 
 			//Run project code generation
 			if (NET.IsInitialized && WinRT.IsInitialized)
 			{
-				NET.Build(OpenProject, Path.Combine(Environment.CurrentDirectory, ProjectPath));
-				if (OpenProject.ClientGenerationTargets.Any(a => a.Framework == ProjectGenerationFramework.WIN8)) WinRT.Build(OpenProject, Path.Combine(Environment.CurrentDirectory, ProjectPath), true);
+				NET.Build();
+				if (OpenProject.ClientGenerationTargets.Any(a => a.Framework == ProjectGenerationFramework.WINRT)) WinRT.Build(true);
 			}
 			else if (WinRT.IsInitialized)
-				WinRT.Build(OpenProject, Path.Combine(Environment.CurrentDirectory, ProjectPath));
+				WinRT.Build();
 			else
 			{
 				Console.WriteLine("FATAL ERROR: Unable to initialize any code generators.");
@@ -73,12 +76,12 @@ namespace NETPath.Compiler
 			Environment.ExitCode = 0;
 		}
 
-		private static void OutputHandler(Guid ID, string S)
+		private static void OutputHandler(string S)
 		{
 			Console.WriteLine(S);
 		}
 
-		internal static void AddMessage(Guid ID, CompileMessage Message)
+		internal static void AddMessage(CompileMessage Message)
 		{
 			Messages.Add(Message);
 			if (Message.Severity == CompileMessageSeverity.ERROR && HighestSeverity != CompileMessageSeverity.ERROR) HighestSeverity = CompileMessageSeverity.ERROR;

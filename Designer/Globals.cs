@@ -14,6 +14,8 @@ using NETPath.Interface;
 using EllipticBit.Controls.WPF.Dialogs;
 using NETPath.Projects;
 using NETPath.Generators.Interfaces;
+using NETPath.Projects.Wcf;
+using NETPath.Projects.WebApi;
 
 namespace NETPath
 {
@@ -38,7 +40,7 @@ namespace NETPath
 		public static WindowsVersion WindowsLevel { get; set; }
 
 		public static IGenerator NETGenerator { get; internal set; }
-		public static ConcurrentDictionary<Guid, Compiler> Compilers { get; internal set; }
+		public static Compiler Compiler { get; internal set; }
 
 		public static string ProjectPath { get; set; }
 		public static Project Project { get; set; }
@@ -53,11 +55,6 @@ namespace NETPath
 
 		public static T GetVisualParent<T>(object childObject) where T : Visual { var child = childObject as DependencyObject; while ((child != null) && !(child is T)) { child = VisualTreeHelper.GetParent(child); } return child as T; }
 		public static T GetVisualChild<T>(Visual parent) where T : Visual { T child = default(T); int numVisuals = VisualTreeHelper.GetChildrenCount(parent); for (int i = 0; i < numVisuals; i++) { var v = (Visual)VisualTreeHelper.GetChild(parent, i); child = v as T; if (child == null) { child = GetVisualChild<T>(v); } if (child != null) { break; } } return child; }
-
-		static Globals()
-		{
-			Compilers = new ConcurrentDictionary<Guid, Compiler>();
-		}
 
 		public static string GetRelativePath(string BasePath, string FilePath)
 		{
@@ -75,31 +72,23 @@ namespace NETPath
 			OpenNavigator.OpenProjectItem(doc);
 		}
 
-		public static List<ServiceBinding> GetBindings()
+		public static List<WcfBinding> GetBindings()
 		{
-			return Project.Namespace.GetBindings();
+			return (Project as WcfProject)?.Namespace.GetBindings() ?? new List<WcfBinding>();
 		}
 
 		public static void InitializeCodeGenerators()
 		{
-			//Initialize the compilers
-			Compilers = new ConcurrentDictionary<Guid, Compiler>();
-			NETGenerator = Loader.LoadModule(GenerationModule.NET, GenerationLanguage.CSharp);
-			NETGenerator.Initialize(GeneratorOutput, GeneratorMessage);
 		}
 
-		internal static void GeneratorOutput(Guid ID, string output)
+		internal static void GeneratorOutput(string output)
 		{
-			Compiler t;
-			if (Compilers.TryGetValue(ID, out t))
-				t.GeneratorOutput(output);
+			Compiler.GeneratorOutput(output);
 		}
 
-		internal static void GeneratorMessage(Guid ID, CompileMessage message)
+		internal static void GeneratorMessage(CompileMessage message)
 		{
-			Compiler t;
-			if (Compilers.TryGetValue(ID, out t))
-				t.GeneratorMessage(message);
+			Compiler.GeneratorMessage(message);
 		}
 
 		public static void OpenProject(string Path, Action<bool> FinishedAction)
@@ -134,7 +123,11 @@ namespace NETPath
 				return;
 			}
 
-			InitializeCodeGenerators();
+			//Initialize the compilers
+			var pt = GenerationType.Wcf;
+			if (Project.GetType() == typeof(WebApiProject)) pt = GenerationType.WebApi;
+			NETGenerator = Loader.LoadModule(GenerationModule.NET, GenerationLanguage.CSharp, pt);
+			NETGenerator.Initialize(Project, Path, GeneratorOutput, GeneratorMessage);
 
 			if (UserProfile.AutomaticBackupsEnabled)
 				BackupTimer = new System.Threading.Timer(BackupProject, null, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds);
@@ -147,8 +140,7 @@ namespace NETPath
 		public static void BuildProject()
 		{
 			MainScreen.IsBuilding = true;
-			foreach (var p in Compilers)
-				p.Value.Build();
+			Compiler.Build();
 			MainScreen.IsBuilding = false;
 		}
 

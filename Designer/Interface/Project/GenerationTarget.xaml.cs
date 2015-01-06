@@ -73,7 +73,7 @@ namespace NETPath.Interface.Project
 		{
 			var lt = (Projects.ProjectGenerationFramework)value;
 			//Uncomment to enable Silverlight support
-			//if (lt == Projects.ProjectGenerationFramework.WIN8) return 0;
+			//if (lt == Projects.ProjectGenerationFramework.WINRT) return 0;
 			//if (lt == Projects.ProjectGenerationFramework.SL50) return 1;
 			//if (lt == Projects.ProjectGenerationFramework.SL40) return 2;
 			//if (lt == Projects.ProjectGenerationFramework.NET45) return 3;
@@ -82,7 +82,7 @@ namespace NETPath.Interface.Project
 			//if (lt == Projects.ProjectGenerationFramework.NET35) return 6;
 			//if (lt == Projects.ProjectGenerationFramework.NET35Client) return 7;
 			//if (lt == Projects.ProjectGenerationFramework.NET30) return 8;
-			if (lt == Projects.ProjectGenerationFramework.WIN8) return 0;
+			if (lt == Projects.ProjectGenerationFramework.WINRT) return 0;
 			if (lt == Projects.ProjectGenerationFramework.NET45) return 1;
 			//if (lt == Projects.ProjectGenerationFramework.NET40) return 2;
 			//if (lt == Projects.ProjectGenerationFramework.NET40Client) return 3;
@@ -96,7 +96,7 @@ namespace NETPath.Interface.Project
 		{
 			int lt = (int)value;
 			//Uncomment to enable Silverlight support
-			//if (lt == 0) return Projects.ProjectGenerationFramework.WIN8;
+			//if (lt == 0) return Projects.ProjectGenerationFramework.WINRT;
 			//if (lt == 1) return Projects.ProjectGenerationFramework.SL50;
 			//if (lt == 2) return Projects.ProjectGenerationFramework.SL40;
 			//if (lt == 3) return Projects.ProjectGenerationFramework.NET45;
@@ -105,7 +105,7 @@ namespace NETPath.Interface.Project
 			//if (lt == 6) return Projects.ProjectGenerationFramework.NET35;
 			//if (lt == 7) return Projects.ProjectGenerationFramework.NET35Client;
 			//if (lt == 8) return Projects.ProjectGenerationFramework.NET30;
-			if (lt == 0) return Projects.ProjectGenerationFramework.WIN8;
+			if (lt == 0) return Projects.ProjectGenerationFramework.WINRT;
 			if (lt == 1) return Projects.ProjectGenerationFramework.NET45;
 			//if (lt == 2) return Projects.ProjectGenerationFramework.NET40;
 			//if (lt == 3) return Projects.ProjectGenerationFramework.NET40Client;
@@ -122,7 +122,7 @@ namespace NETPath.Interface.Project
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			Projects.ProjectGenerationFramework lt = (Projects.ProjectGenerationFramework)value;
-			if (lt == Projects.ProjectGenerationFramework.WIN8) return "Windows 8 Runtime";
+			if (lt == Projects.ProjectGenerationFramework.WINRT) return "Windows 8 Runtime";
 			//Uncomment to enable Silverlight support
 			//if (lt == Projects.ProjectGenerationFramework.SL50) return "Silverlight 5.0";
 			//if (lt == Projects.ProjectGenerationFramework.SL40) return "Silverlight 4.0";

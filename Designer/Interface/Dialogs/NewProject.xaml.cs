@@ -58,7 +58,10 @@ namespace NETPath.Interface.Dialogs
 
 		internal void Create()
 		{
-			Globals.MainScreen.NewProject(NewProjectName.Text, FileName);
+			if (ProjectType == typeof (Projects.Wcf.WcfProject))
+				Globals.MainScreen.NewWcfProject(NewProjectName.Text, FileName);
+			else if (ProjectType == typeof(Projects.WebApi.WebApiProject))
+				Globals.MainScreen.NewWebApiProject(NewProjectName.Text, FileName);
 		}
 
 		private void NewProjectName_TextChanged(object Sender, TextChangedEventArgs E)

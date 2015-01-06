@@ -99,26 +99,27 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Binding.cs" />
+    <Compile Include="Namespace.cs" />
+    <Compile Include="Wcf\Binding.cs" />
     <Compile Include="CompilerMessages.cs" />
-    <Compile Include="RestService.cs" />
-    <Compile Include="Data.cs" />
+    <Compile Include="Wcf\Project.cs" />
+    <Compile Include="WebApi\Data.cs" />
+    <Compile Include="WebApi\Namespace.cs" />
+    <Compile Include="WebApi\Project.cs" />
+    <Compile Include="WebApi\Service.cs" />
+    <Compile Include="Wcf\Data.cs" />
     <Compile Include="DataType.cs" />
     <Compile Include="Documentation.cs" />
     <Compile Include="Enum.cs" />
-    <Compile Include="FindReplace.cs" />
-    <Compile Include="Host.cs" />
-    <Compile Include="Namespace.cs" />
+    <Compile Include="Wcf\Host.cs" />
+    <Compile Include="Wcf\Namespace.cs" />
     <Compile Include="Project.cs" />
-    <Compile Include="Security.cs" />
-    <Compile Include="Service.cs" />
+    <Compile Include="Wcf\Security.cs" />
+    <Compile Include="Wcf\Service.cs" />
     <Compile Include="Helpers\GACUtil.cs" />
     <Compile Include="Helpers\RegExs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Storage.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Projects.cd" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

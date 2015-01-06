@@ -1,0 +1,479 @@
+﻿<Grid x:Class="NETPath.Interface.Wcf.Host.Host" x:ClassModifier="internal"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d"
+	xmlns:pc="http://schemas.ellipticbit.com/controls"
+	xmlns:Host="clr-namespace:NETPath.Interface.Wcf.Host"
+	xmlns:Data="clr-namespace:NETPath.Interface.Data"
+	xmlns:Projects="clr-namespace:NETPath.Projects.Wcf;assembly=NETPath.Projects"
+	xmlns:Docs="clr-namespace:NETPath.Interface.Documentation"
+	d:DesignHeight="950" d:DesignWidth="1000" DataContext="{Binding RelativeSource={RelativeSource Self}}"  UseLayoutRounding="True" >
+	<Grid.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/Colors.xaml" />
+				<ResourceDictionary>
+					<Host:PrincipalPermissionModeConverter x:Key="PrincipalPermissionModeConverter" />
+					<Host:X509CertificateValidationModeConverter x:Key="X509CertificateValidationModeConverter" />
+					<Host:X509RevocationModeConverter x:Key="X509RevocationModeConverter" />
+					<Host:StoreLocationConverter x:Key="StoreLocationConverter" />
+					<Host:UserNamePasswordValidationModeConverter x:Key="UserNamePasswordValidationModeConverter" />
+					<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
+					<!-- Endpoint Template -->
+					<DataTemplate x:Key="{x:Type Projects:WcfHostEndpoint}" DataType="{x:Type Projects:WcfHostEndpoint}">
+						<Grid Name="ItemGrid" >
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
+							<Border x:Name="ItemBG" Grid.ColumnSpan="2" Background="Transparent" CornerRadius="5" />
+							<StackPanel Orientation="Vertical" Margin="3">
+								<StackPanel Orientation="Horizontal">
+									<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Endpoint.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform" Grid.Column="0"/>
+									<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="11pt" />
+								</StackPanel>
+								<TextBlock Text="{Binding Path=Binding, StringFormat='Binding: {0}'}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
+							</StackPanel>
+							<Button Grid.Column="1" x:Name="DeleteEndpoint" Visibility="Collapsed" Margin="0" Padding="0" Width="30" Style="{StaticResource ListItemButtonRight}" Click="DeleteEndpoint_Click">
+								<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+							</Button>
+						</Grid>
+						<DataTemplate.Triggers>
+							<MultiDataTrigger>
+								<MultiDataTrigger.Conditions>
+									<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True" />
+									<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="False" />
+								</MultiDataTrigger.Conditions>
+								<Setter TargetName="ItemBG" Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
+							</MultiDataTrigger>
+							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True" >
+								<Setter TargetName="DeleteEndpoint" Property="Visibility" Value="Visible" />
+							</DataTrigger>
+							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True" >
+								<Setter TargetName="ItemBG" Property="Background" Value="{StaticResource DefaultSelectionColor}" />
+							</DataTrigger>
+						</DataTemplate.Triggers>
+					</DataTemplate>
+					<!-- Debug Behavior Template -->
+					<DataTemplate x:Key="{x:Type Projects:WcfHostDebugBehavior}" DataType="{x:Type Projects:WcfHostDebugBehavior}">
+						<Grid Name="ItemGrid" >
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
+							<Border x:Name="ItemBG" Grid.ColumnSpan="2" Background="Transparent" CornerRadius="5" />
+							<StackPanel Orientation="Vertical" Margin="3">
+								<StackPanel Orientation="Horizontal">
+									<Image Source="pack://application:,,,/NETPath;component/Icons/X16/BehaviorDebug.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform" Grid.Column="0"/>
+									<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="11pt" />
+								</StackPanel>
+								<TextBlock Text="ServiceDebugBehavior" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
+							</StackPanel>
+							<Button Grid.Column="1" x:Name="DeleteBehavior" Visibility="Collapsed" Margin="0" Padding="0" Width="30" Style="{StaticResource ListItemButtonRight}" Click="DeleteBehavior_Click">
+								<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+							</Button>
+						</Grid>
+						<DataTemplate.Triggers>
+							<MultiDataTrigger>
+								<MultiDataTrigger.Conditions>
+									<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True" />
+									<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="False" />
+								</MultiDataTrigger.Conditions>
+								<Setter TargetName="ItemBG" Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
+							</MultiDataTrigger>
+							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True" >
+								<Setter TargetName="DeleteBehavior" Property="Visibility" Value="Visible" />
+							</DataTrigger>
+							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True" >
+								<Setter TargetName="ItemBG" Property="Background" Value="{StaticResource DefaultSelectionColor}" />
+							</DataTrigger>
+						</DataTemplate.Triggers>
+					</DataTemplate>
+					<!-- Debug Behavior Template -->
+					<DataTemplate x:Key="{x:Type Projects:WcfHostMetadataBehavior}" DataType="{x:Type Projects:WcfHostMetadataBehavior}">
+						<Grid Name="ItemGrid" >
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
+							<Border x:Name="ItemBG" Grid.ColumnSpan="2" Background="Transparent" CornerRadius="5" />
+							<StackPanel Orientation="Vertical" Margin="3">
+								<StackPanel Orientation="Horizontal">
+									<Image Source="pack://application:,,,/NETPath;component/Icons/X16/BehaviorMetadata.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform" Grid.Column="0"/>
+									<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="11pt" />
+								</StackPanel>
+								<TextBlock Text="ServiceMetadataBehavior" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
+							</StackPanel>
+							<Button Grid.Column="1" x:Name="DeleteBehavior" Visibility="Collapsed" Margin="0" Padding="0" Width="30" Style="{StaticResource ListItemButtonRight}" Click="DeleteBehavior_Click">
+								<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+							</Button>
+						</Grid>
+						<DataTemplate.Triggers>
+							<MultiDataTrigger>
+								<MultiDataTrigger.Conditions>
+									<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True" />
+									<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="False" />
+								</MultiDataTrigger.Conditions>
+								<Setter TargetName="ItemBG" Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
+							</MultiDataTrigger>
+							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True" >
+								<Setter TargetName="DeleteBehavior" Property="Visibility" Value="Visible" />
+							</DataTrigger>
+							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True" >
+								<Setter TargetName="ItemBG" Property="Background" Value="{StaticResource DefaultSelectionColor}" />
+							</DataTrigger>
+						</DataTemplate.Triggers>
+					</DataTemplate>
+					<!-- Debug Behavior Template -->
+					<DataTemplate x:Key="{x:Type Projects:WcfHostThrottlingBehavior}" DataType="{x:Type Projects:WcfHostThrottlingBehavior}">
+						<Grid Name="ItemGrid" >
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
+							<Border x:Name="ItemBG" Grid.ColumnSpan="2" Background="Transparent" CornerRadius="5" />
+							<StackPanel Orientation="Vertical" Margin="3">
+								<StackPanel Orientation="Horizontal">
+									<Image Source="pack://application:,,,/NETPath;component/Icons/X16/BehaviorThrottling.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform" Grid.Column="0"/>
+									<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="11pt" />
+								</StackPanel>
+								<TextBlock Text="ServiceThrottlingBehavior" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
+							</StackPanel>
+							<Button Grid.Column="1" x:Name="DeleteBehavior" Visibility="Collapsed" Margin="0" Padding="0" Width="30" Style="{StaticResource ListItemButtonRight}" Click="DeleteBehavior_Click">
+								<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+							</Button>
+						</Grid>
+						<DataTemplate.Triggers>
+							<MultiDataTrigger>
+								<MultiDataTrigger.Conditions>
+									<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True" />
+									<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="False" />
+								</MultiDataTrigger.Conditions>
+								<Setter TargetName="ItemBG" Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
+							</MultiDataTrigger>
+							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True" >
+								<Setter TargetName="DeleteBehavior" Property="Visibility" Value="Visible" />
+							</DataTrigger>
+							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True" >
+								<Setter TargetName="ItemBG" Property="Background" Value="{StaticResource DefaultSelectionColor}" />
+							</DataTrigger>
+						</DataTemplate.Triggers>
+					</DataTemplate>
+				</ResourceDictionary>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Grid.Resources>
+	<Grid.RowDefinitions>
+		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
+		<RowDefinition Height="Auto" />
+		<RowDefinition Height="*" />
+	</Grid.RowDefinitions>
+	<Grid.ColumnDefinitions>
+		<ColumnDefinition Width="130" />
+		<ColumnDefinition Width="*" />
+	</Grid.ColumnDefinitions>
+	<Label Grid.Row="0" Padding="10,0" Content="Server Class:" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" />
+	<Data:TypeEditor OpenType="{Binding Path=Data}" CanSetType="False" SupportInheritedTypes="False" SupportKnownTypes="True" Grid.Row="0" Grid.Column="1" Margin="0" />
+	<Data:TargetSelector Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" OpenType="{Binding Path=Data}" IsServerType="True" Visibility="Visible" />
+	<Label Content="Service Contract:" HorizontalAlignment="Left"  Margin="5" Padding="0,2" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" />
+	<ComboBox x:Name="Service" Margin="5" Grid.Row="3" Grid.Column="1" DisplayMemberPath="TypeName" SelectionChanged="Service_SelectionChanged" />
+	<Label Content="Namespace URI:" Height="Auto" Margin="5" Padding="0,2" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Grid.Row="4" Grid.Column="0" />
+	<pc:TextBox Text="{Binding Path=Data.Namespace}" Name="Namespace" Height="23" Margin="5" VerticalAlignment="Top" Grid.Row="4" Grid.Column="1" TextChanged="Namespace_TextChanged" Validate="Namespace_Validate" ToolTip="{Binding Path=Data.Namespace}" />
+	<Label Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Content="Options" FontSize="12pt" Margin="0,5,0,0" />
+	<Grid Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" >
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		<Label Content="Open Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" />
+		<pc:TimeSpanTextBox Value="{Binding Path=Data.OpenTimeout, Mode=TwoWay}" Name="OpenTimeout" HorizontalAlignment="Left" Margin="100,5,5,5" Grid.Row="0" Grid.Column="0" VerticalContentAlignment="Center" Width="60" />
+		<Label Content="Close Timeout:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="1"  />
+		<pc:TimeSpanTextBox Value="{Binding Path=Data.CloseTimeout, Mode=TwoWay}" Name="CloseTimeout" HorizontalAlignment="Left" Margin="100,5,5,5" Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center" Width="60" />
+		<ToggleButton IsChecked="{Binding Path=Data.AuthorizationImpersonateCallerForAllOperations}" Name="AuthorizationImpersonateCallerForAllOperations" Content="Impersonate Caller for all Operations" Margin="5" Grid.Row="1" Grid.Column="2" />
+		<Label Content="Manual Flow Control Limit:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="1" Grid.ColumnSpan="2" />
+		<pc:IntegerTextBox Value="{Binding Path=Data.ManualFlowControlLimit}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Margin="5" Grid.Row="1" Grid.Column="1" Name="ManualFlowControlLimit" />
+		<Label Content="Permission Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="3" />
+		<ComboBox Margin="120,5,5,5" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="3" SelectedIndex="{Binding Path=Data.AuthorizationPrincipalPermissionMode, Converter={StaticResource PrincipalPermissionModeConverter}}" >
+			<ComboBox.Items>
+				<ComboBoxItem Content="None" />
+				<ComboBoxItem Content="Use Windows Groups" />
+				<ComboBoxItem Content="Use ASP.NET Roles" />
+				<ComboBoxItem Content="Custom" />
+			</ComboBox.Items>
+		</ComboBox>
+		<Label Content="Configuration Name:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="2" />
+		<pc:TextBox Text="{Binding Path=Data.ConfigurationName}" Margin="138,5,5,5" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="2" ToolTip="{Binding Path=Data.ConfigurationName}" />
+	</Grid>
+	<TabControl Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,10,0,0" >
+		<TabItem IsSelected="True">
+			<TabItem.Header>
+				<TextBlock Text="Endpoints" FontSize="12pt"/>
+			</TabItem.Header>
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="120" />
+				</Grid.ColumnDefinitions>
+				<Label Grid.Column="0" Margin="0" Content="Add Endpoint:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" />
+				<pc:TextBox x:Name="AddEndpointName" LabelText="Name" Grid.Column="1" Margin="5" Validate="AddEndpointName_Validate" TextChanged="AddEndpointName_TextChanged" KeyUp="AddEndpointName_KeyUp" />
+				<Button x:Name="AddEndpoint" Grid.Column="2" Margin="5" Content="Add Endpoint" IsEnabled="False" Click="AddEndpoint_Click" />
+				<Grid Grid.Row="1" Grid.ColumnSpan="3">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="220" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<ListBox x:Name="EndpointList" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Path=Data.Endpoints}" SelectionMode="Single" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" SelectionChanged="EndpointList_SelectionChanged" Background="Transparent" BorderThickness="0" />
+					<ContentPresenter Grid.Column="1" Grid.Row="1" Margin="5,0,0,0" Content="{Binding Path=ActiveEndpoint}" />
+				</Grid>
+			</Grid>
+		</TabItem>
+		<TabItem>
+			<TabItem.Header>
+				<TextBlock Text="Behaviors" FontSize="12pt"/>
+			</TabItem.Header>
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="100" />
+					<ColumnDefinition Width="100" />
+					<ColumnDefinition Width="100" />
+				</Grid.ColumnDefinitions>
+				<Label Grid.Column="0" Margin="0" Content="Add Behavior:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" />
+				<pc:TextBox x:Name="AddBehaviorName" LabelText="Name" Grid.Column="1" Margin="5" Validate="AddBehaviorName_Validate" TextChanged="AddBehaviorName_TextChanged" KeyUp="AddBehaviorName_KeyUp" />
+				<Button x:Name="AddThrottlingBehavior" Grid.Column="2" Margin="5" Content="Throttling" IsEnabled="False" Click="AddThrottlingBehavior_Click" />
+				<Button x:Name="AddDebugBehavior" Grid.Column="3" Margin="5" Content="Debug" IsEnabled="False" Click="AddDebugBehavior_Click" />
+				<Button x:Name="AddMetadataBehavior" Grid.Column="4" Margin="5" Content="Metadata" IsEnabled="False" Click="AddMetadataBehavior_Click" />
+				<Grid Grid.Row="1" Grid.ColumnSpan="6" >
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="220" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<ListBox x:Name="BehaviorList" Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Path=Data.Behaviors}" SelectionMode="Single" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" SelectionChanged="BehaviorList_SelectionChanged" Background="Transparent" BorderThickness="0" />
+					<ContentPresenter Grid.Column="1" Grid.Row="1" Margin="5,0,0,0" Content="{Binding Path=ActiveBehavior}" />
+				</Grid>
+			</Grid>
+		</TabItem>
+		<TabItem>
+			<TabItem.Header>
+				<TextBlock Text="Security" FontSize="12pt"/>
+			</TabItem.Header>
+			<Grid DataContext="{Binding Path=Data.Credentials}" >
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+				<Grid Grid.Row="0" Grid.ColumnSpan="3">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<ToggleButton IsChecked="{Binding Path=UseCertificatesSecurity}" Content="Certificate" Margin="5" Grid.Column="0" />
+					<ToggleButton IsChecked="{Binding Path=UseIssuedTokenSecurity}" Content="Issued Token" Margin="5" Grid.Column="1" />
+					<ToggleButton IsChecked="{Binding Path=UsePeerSecurity}" Content="Peer" Margin="5" Grid.Column="2" />
+					<ToggleButton IsChecked="{Binding Path=UseUserNamePasswordSecurity}" Content="Username/Password" Margin="5" Grid.Column="3" />
+					<ToggleButton IsChecked="{Binding Path=UseWindowsServiceSecurity}" Content="Windows Service" Margin="5" Grid.Column="4" />
+				</Grid>
+				<GroupBox Grid.Column="0" Grid.Row="1" Header="Certificate" Margin="5" Visibility="{Binding Path=UseCertificatesSecurity, Converter={StaticResource BoolVisibilityConverter}}">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<ToggleButton Content="Include Windows Groups" Height="23" IsChecked="{Binding Path=ClientCertificateAuthenticationIncludeWindowsGroups}" Margin="5" Name="ClientCertificateAuthenticationIncludeWindowsGroups" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" />
+						<ToggleButton Content="Map to Windows Account" Height="23" IsChecked="{Binding Path=ClientCertificateAuthenticationMapClientCertificateToWindowsAccount}" Margin="5" Name="ClientCertificateAuthenticationMapClientCertificateToWindowsAccount" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0" />
+						<Label Content="Validation Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" />
+						<ComboBox Height="23" Margin="126,5,5,5" SelectedIndex="{Binding Path=ClientCertificateAuthenticationValidationMode, Converter={StaticResource X509CertificateValidationModeConverter}}" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" >
+							<ComboBoxItem Content="None" />
+							<ComboBoxItem Content="Peer Trust" />
+							<ComboBoxItem Content="Chain Trust" />
+							<ComboBoxItem Content="Peer or Chain Trust" />
+							<ComboBoxItem Content="Custom" />
+						</ComboBox>
+						<Label Content="Revocation Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" />
+						<ComboBox Height="23" Margin="126,5,5,5" SelectedIndex="{Binding Path=ClientCertificateAuthenticationRevocationMode, Converter={StaticResource X509RevocationModeConverter}}" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" >
+							<ComboBoxItem Content="No Check" />
+							<ComboBoxItem Content="Online" />
+							<ComboBoxItem Content="Offline" />
+						</ComboBox>
+						<Label Content="Store Location:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="0" />
+						<ComboBox Height="23" Margin="126,5,5,5" SelectedIndex="{Binding Path=ClientCertificateAuthenticationStoreLocation, Converter={StaticResource StoreLocationConverter}}" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="0" >
+							<ComboBoxItem Content="Current User" />
+							<ComboBoxItem Content="Local Machine" />
+						</ComboBox>
+					</Grid>
+				</GroupBox>
+				<GroupBox Grid.Column="0" Grid.Row="2" Header="Issued Token" Margin="5" Visibility="{Binding Path=UseIssuedTokenSecurity, Converter={StaticResource BoolVisibilityConverter}}">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<ToggleButton Content="Allow Untrusted Issuers" Height="23" IsChecked="{Binding Path=IssuedTokenAllowUntrustedRsaIssuers}" Margin="5" Name="IssuedTokenAllowUntrustedRsaIssuers" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" />
+						<Label Content="Validation Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0" />
+						<ComboBox Height="23" Margin="126,5,5,5" SelectedIndex="{Binding Path=IssuedTokenCertificateValidationMode, Converter={StaticResource X509CertificateValidationModeConverter}}" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0" >
+							<ComboBoxItem Content="None" />
+							<ComboBoxItem Content="Peer Trust" />
+							<ComboBoxItem Content="Chain Trust" />
+							<ComboBoxItem Content="Peer or Chain Trust" />
+							<ComboBoxItem Content="Custom" />
+						</ComboBox>
+						<Label Content="Revocation Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" />
+						<ComboBox Height="23" Margin="126,5,5,5" SelectedIndex="{Binding Path=IssuedTokenRevocationMode, Converter={StaticResource X509RevocationModeConverter}}" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" >
+							<ComboBoxItem Content="No Check" />
+							<ComboBoxItem Content="Online" />
+							<ComboBoxItem Content="Offline" />
+						</ComboBox>
+						<Label Content="Store Location:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" />
+						<ComboBox Height="23" Margin="126,5,5,5" SelectedIndex="{Binding Path=IssuedTokenTrustedStoreLocation, Converter={StaticResource StoreLocationConverter}}" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" >
+							<ComboBoxItem Content="Current User" />
+							<ComboBoxItem Content="Local Machine" />
+						</ComboBox>
+					</Grid>
+				</GroupBox>
+				<GroupBox Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Header="Peer" Margin="5" Visibility="{Binding Path=UsePeerSecurity, Converter={StaticResource BoolVisibilityConverter}}">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<Label Content="Mesh Password:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" />
+						<pc:TextBox Text="{Binding Path=PeerMeshPassword}" Height="23" Margin="135,5,5,5" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" />
+						<Label Content="Sender Validation:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0" />
+						<ComboBox Height="23" Margin="135,5,5,5" SelectedIndex="{Binding Path=PeerMessageSenderAuthenticationCertificateValidationMode, Converter={StaticResource X509CertificateValidationModeConverter}}" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0" >
+							<ComboBoxItem Content="None" />
+							<ComboBoxItem Content="Peer Trust" />
+							<ComboBoxItem Content="Chain Trust" />
+							<ComboBoxItem Content="Peer or Chain Trust" />
+							<ComboBoxItem Content="Custom" />
+						</ComboBox>
+						<Label Content="Sender Revocation:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" />
+						<ComboBox Height="23" Margin="135,5,5,5" SelectedIndex="{Binding Path=PeerMessageSenderAuthenticationRevocationMode, Converter={StaticResource X509RevocationModeConverter}}" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" >
+							<ComboBoxItem Content="No Check" />
+							<ComboBoxItem Content="Online" />
+							<ComboBoxItem Content="Offline" />
+						</ComboBox>
+						<Label Content="Sender Store:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" />
+						<ComboBox Height="23" Margin="135,5,5,5" SelectedIndex="{Binding Path=PeerMessageSenderAuthenticationTrustedStoreLocation, Converter={StaticResource StoreLocationConverter}}" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" >
+							<ComboBoxItem Content="Current User" />
+							<ComboBoxItem Content="Local Machine" />
+						</ComboBox>
+						<Label Content="Peer Validation:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="0" />
+						<ComboBox Height="23" Margin="135,5,5,5" SelectedIndex="{Binding Path=PeerAuthenticationCertificateValidationMode, Converter={StaticResource X509CertificateValidationModeConverter}}" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="0" >
+							<ComboBoxItem Content="None" />
+							<ComboBoxItem Content="Peer Trust" />
+							<ComboBoxItem Content="Chain Trust" />
+							<ComboBoxItem Content="Peer or Chain Trust" />
+							<ComboBoxItem Content="Custom" />
+						</ComboBox>
+						<Label Content="Peer Revocation:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="5" Grid.Column="0" />
+						<ComboBox Height="23" Margin="135,5,5,5" SelectedIndex="{Binding Path=PeerAuthenticationRevocationMode, Converter={StaticResource X509RevocationModeConverter}}" VerticalContentAlignment="Center" Grid.Row="5" Grid.Column="0" >
+							<ComboBoxItem Content="No Check" />
+							<ComboBoxItem Content="Online" />
+							<ComboBoxItem Content="Offline" />
+						</ComboBox>
+						<Label Content="Peer Store:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="6" Grid.Column="0" />
+						<ComboBox Height="23" Margin="135,5,5,5" SelectedIndex="{Binding Path=PeerAuthenticationTrustedStoreLocation, Converter={StaticResource StoreLocationConverter}}" VerticalContentAlignment="Center" Grid.Row="6" Grid.Column="0" >
+							<ComboBoxItem Content="Current User" />
+							<ComboBoxItem Content="Local Machine" />
+						</ComboBox>
+					</Grid>
+				</GroupBox>
+				<GroupBox Grid.Column="2" Grid.Row="1" Header="Username/Password" Margin="5" Visibility="{Binding Path=UseUserNamePasswordSecurity, Converter={StaticResource BoolVisibilityConverter}}">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<ToggleButton Content="Include Windows Groups" Height="23" Grid.Row="0" IsChecked="{Binding Path=UserNamePasswordCacheLogonTokens}" Margin="5" Name="UserNamePasswordCacheLogonTokens" />
+						<ToggleButton Content="Cache Logon Tokens" Height="23" Grid.Row="1" IsChecked="{Binding Path=UserNamePasswordIncludeWindowsGroups}" Margin="5" Name="UserNamePasswordIncludeWindowsGroups" />
+						<Label Content="Cached Token Lifetime:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" />
+						<pc:TimeSpanTextBox Height="24" Margin="176,5,5,5" Value="{Binding Path=UserNamePasswordCachedLogonTokenLifetime, Mode=TwoWay}" Name="UserNamePasswordCachedLogonTokenLifetime" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0"  />
+						<Label Content="Max Cached Logon Tokens:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" />
+						<pc:IntegerTextBox Margin="176,5,5,5" Value="{Binding Path=UserNamePasswordMaxCachedLogonTokens}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Grid.Row="3" Grid.Column="0" Name="UserNamePasswordMaxCachedLogonTokens" />
+						<Label Content="Validation Mode:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="0" />
+						<ComboBox Height="23" Margin="115,5,5,5" SelectedIndex="{Binding Path=UserNamePasswordValidationMode, Converter={StaticResource UserNamePasswordValidationModeConverter}}" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="0"  >
+							<ComboBoxItem Content="None" />
+							<ComboBoxItem Content="Peer Trust" />
+							<ComboBoxItem Content="Chain Trust" />
+							<ComboBoxItem Content="Peer or Chain Trust" />
+							<ComboBoxItem Content="Custom" />
+						</ComboBox>
+					</Grid>
+				</GroupBox>
+				<GroupBox Grid.Column="2" Grid.Row="2" Header="Windows Service" Margin="5" Visibility="{Binding Path=UseWindowsServiceSecurity, Converter={StaticResource BoolVisibilityConverter}}">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<ToggleButton Content="Allow Anonymous Logon" Grid.Row="0"  IsChecked="{Binding Path=WindowsServiceIncludeWindowsGroups}" Margin="5" Name="WindowsServiceIncludeWindowsGroups" VerticalAlignment="Top" />
+						<ToggleButton Content="Include Windows Groups" Grid.Row="1" IsChecked="{Binding Path=WindowsServiceAllowAnonymousLogons}" Margin="5" Name="WindowsServiceAllowAnonymousLogons" VerticalAlignment="Top" />
+					</Grid>
+				</GroupBox>
+			</Grid>
+		</TabItem>
+		<TabItem>
+			<TabItem.Header>
+				<TextBlock Text="Documentation" FontSize="12pt"/>
+			</TabItem.Header>
+			<Docs:Class x:Name="Docs" Margin="5" Documentation="{Binding Path=Data.Documentation}" />
+		</TabItem>
+	</TabControl>
+</Grid>

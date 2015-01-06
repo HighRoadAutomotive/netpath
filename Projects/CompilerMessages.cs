@@ -22,11 +22,10 @@ namespace NETPath.Projects
 		[IgnoreDataMember] public object Owner { get; private set; }
 		[IgnoreDataMember] public object ErrorObject { get; private set; }
 		[IgnoreDataMember] public Type ErrorObjectType { get; private set; }
-		public Guid ProjectID { get; private set; }
 
 		public CompileMessage() { }
 
-		public CompileMessage(string Code, string Description, CompileMessageSeverity Severity, object Owner, object ErrorObject, Type ErrorObjectType, Guid ProjectID)
+		public CompileMessage(string Code, string Description, CompileMessageSeverity Severity, object Owner, object ErrorObject, Type ErrorObjectType)
 		{
 			this.Code = Code;
 			this.Description = Description;
@@ -34,7 +33,6 @@ namespace NETPath.Projects
 			this.Owner = Owner;
 			this.ErrorObject = ErrorObject;
 			this.ErrorObjectType = ErrorObjectType;
-			this.ProjectID = ProjectID;
 		}
 	}
 }

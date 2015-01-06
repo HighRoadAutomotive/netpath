@@ -12,6 +12,7 @@ using System.Runtime.Serialization;
 using System.Windows.Threading;
 using System.Xml;
 using NETPath.Projects;
+using NETPath.Projects.Wcf;
 using NETPath.Generators.Interfaces;
 using EllipticBit.Controls.WPF.Dialogs;
 
@@ -32,8 +33,6 @@ namespace NETPath
 			this.NavWindow.OutputBox.Document.Blocks.Add(OutputBlock);
 
 			NET = Globals.NETGenerator;
-
-			Globals.Compilers.TryAdd(NavWindow.Project.ID, this);
 		}
 
 		public async void Build()
@@ -45,12 +44,9 @@ namespace NETPath
 			NavWindow.ErrorCount = 0;
 			NavWindow.ErrorList.Items.Clear();
 
-			//Rebuild DRE Service name lists
-			RebuildDREServiceList();
-
 			//Run project code generation
 			if (NET.IsInitialized)
-				await NET.BuildAsync(NavWindow.Project, Globals.ProjectPath);
+				await NET.BuildAsync();
 			else
 				GeneratorOutput("FATAL ERROR: Unable to initialize any code generators.");
 
@@ -63,12 +59,9 @@ namespace NETPath
 		{
 			IGenerator NET = Globals.NETGenerator;
 
-			//Rebuild DRE Service name lists
-			RebuildDREServiceList();
-
 			//Run project code generation
 			if (NET.IsInitialized)
-				await NET.BuildAsync(Project, Globals.ProjectPath);
+				await NET.BuildAsync();
 			else
 				DialogService.ShowMessageDialog("COMPILER", "FATAL ERROR: Unable to initialize any code generators.", "NETPath was unable to initialize any code generators. This is usually caused by a corrupted installation or an invalid license. Please reinstall the software to continue.");
 		}
@@ -94,54 +87,6 @@ namespace NETPath
 				NavWindow.ErrorList.Items.Add(message);
 				NavWindow.ErrorCount++;
 			}, DispatcherPriority.Send);
-		}
-
-		internal static void RebuildDREServiceList()
-		{
-			//Get all services with DRE in the solution.
-			var sl = new List<Service>();
-			sl.AddRange(DataRevisionServiceScan(Globals.Project.Namespace));
-
-			//Clean all DataRevisionServiceNames lists
-			ResetDRSNames(Globals.Project.Namespace);
-
-			//Rebuild DRE service name lists
-			foreach (var sv in sl)
-				foreach (var dre in sv.ServiceOperations.Where(a => a.GetType() == typeof(DataChangeMethod)).Cast<DataChangeMethod>())
-				{
-					Data t = DataReivsionReferenceRetrieve(sv.Parent.Owner, sv.Parent.Owner.Namespace, dre.ReturnType.ID);
-					if (t == null) continue;
-					if (dre.IsHidden) continue;
-					t.DataRevisionServiceNames.Add(new DataRevisionName(string.Format("{0}.{1}", sv.Parent, sv.Name), true, dre.UseServerAwaitPattern, dre.UseClientAwaitPattern, sv.Parent.Owner.ID));
-					t.DataRevisionServiceNames.Add(new DataRevisionName(string.Format("{0}.{1}", sv.Parent, sv.HasClientType ? sv.ClientType.Name : sv.Name), false, dre.UseServerAwaitPattern, dre.UseClientAwaitPattern, sv.Parent.Owner.ID));
-				}
-		}
-
-		internal static List<Service> DataRevisionServiceScan(Namespace Namespace)
-		{
-			List<Service> sl = Namespace.Services.Where(sv => sv.HasDCMOperations).ToList();
-
-			foreach (var n in Namespace.Children)
-				sl.AddRange(DataRevisionServiceScan(n));
-
-			return sl;
-		}
-
-		internal static void ResetDRSNames(Namespace Namespace)
-		{
-			foreach (var drs in Namespace.Data)
-				drs.DataRevisionServiceNames = new List<DataRevisionName>();
-
-			foreach (var n in Namespace.Children)
-				ResetDRSNames(n);
-		}
-
-		internal static Data DataReivsionReferenceRetrieve(Project Project, Namespace Namespace, Guid TypeID)
-		{
-			var d = Namespace.Data.FirstOrDefault(a => a.ID == TypeID);
-			if (d != null) return d;
-
-			return Namespace.Children.Select(n => DataReivsionReferenceRetrieve(Project, n, TypeID)).FirstOrDefault(t => t != null);
 		}
 	}
 }
