@@ -130,8 +130,8 @@
 									</Grid.ColumnDefinitions>
 									<Image Source="pack://application:,,,/NETPath;component/Icons/X64/Project.png" Margin="10,5" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="64" Width="64" Stretch="None" Grid.Column="0" />
 									<StackPanel Grid.Column="1" Margin="10">
-										<TextBlock Text="New Project" Foreground="Gray" FontSize="14pt" FontWeight="Bold" Padding="0"/>
-										<TextBlock Text="Creates a new project." Padding="0" TextWrapping="Wrap" FontSize="10pt" />
+										<TextBlock Text="New WCF Project" Foreground="Gray" FontSize="14pt" FontWeight="Bold" Padding="0"/>
+										<TextBlock Text="Creates a new Windows Communication Foundation project." Padding="0" TextWrapping="Wrap" FontSize="10pt" />
 									</StackPanel>
 								</Grid>
 							</Button>
@@ -143,8 +143,8 @@
 									</Grid.ColumnDefinitions>
 									<Image Source="pack://application:,,,/NETPath;component/Icons/X64/Project.png" Margin="10,5" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="64" Width="64" Stretch="None" Grid.Column="0" />
 									<StackPanel Grid.Column="1" Margin="10">
-										<TextBlock Text="New Project" Foreground="Gray" FontSize="14pt" FontWeight="Bold" Padding="0"/>
-										<TextBlock Text="Creates a new project." Padding="0" TextWrapping="Wrap" FontSize="10pt" />
+										<TextBlock Text="New Web API Project" Foreground="Gray" FontSize="14pt" FontWeight="Bold" Padding="0"/>
+										<TextBlock Text="Creates a new Web API 2 project." Padding="0" TextWrapping="Wrap" FontSize="10pt" />
 									</StackPanel>
 								</Grid>
 							</Button>

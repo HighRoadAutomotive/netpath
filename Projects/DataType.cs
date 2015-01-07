@@ -389,9 +389,9 @@ namespace NETPath.Projects
 			else if (TypeMode == DataTypeMode.Array)
 				return string.Format("{0}[]{1}", CollectionGenericType, IsNullable ? "?" : "");
 			else if (TypeMode == DataTypeMode.Collection || TypeMode == DataTypeMode.Stack || TypeMode == DataTypeMode.Queue)
-				return string.Format("{0}<{1}}>", Name, CollectionGenericType != null ? CollectionGenericType.ToString() : "");
+				return string.Format("{0}<{1}>", Name, CollectionGenericType?.ToString() ?? "");
 			else if (TypeMode == DataTypeMode.Dictionary)
-				return string.Format("{0}<{1}, {2}>", Name, DictionaryKeyGenericType != null ? DictionaryKeyGenericType.ToString() : "", DictionaryValueGenericType != null ? DictionaryValueGenericType.ToString() : "");
+				return string.Format("{0}<{1}, {2}>", Name, DictionaryKeyGenericType?.ToString() ?? "", DictionaryValueGenericType?.ToString() ?? "");
 			return Name;
 		}
 

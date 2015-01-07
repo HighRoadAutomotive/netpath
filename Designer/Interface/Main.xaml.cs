@@ -198,9 +198,7 @@ namespace NETPath.Interface
 			var NP = new Projects.Wcf.WcfProject(Name, Path);
 			Projects.Project.Save(NP, Path);
 
-			Globals.Project = NP;
-
-			OpenProjectFinished(true);
+			Globals.OpenProject(Path, OpenProjectFinished);
 		}
 
 		public void NewWebApiProject(string Name, string Path)
@@ -208,9 +206,7 @@ namespace NETPath.Interface
 			var NP = new Projects.WebApi.WebApiProject(Name, Path);
 			Projects.Project.Save(NP, Path);
 
-			Globals.Project = NP;
-
-			OpenProjectFinished(true);
+			Globals.OpenProject(Path, OpenProjectFinished);
 		}
 
 		public void OpenProject(string Path)
