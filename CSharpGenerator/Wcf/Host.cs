@@ -7,7 +7,7 @@ using NETPath.Projects;
 using NETPath.Projects.Wcf;
 using NETPath.Projects.Helpers;
 
-namespace NETPath.Generators.CS
+namespace NETPath.Generators.CS.Wcf
 {
 	internal static class HostGenerator
 	{

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -50,21 +51,15 @@ namespace NETPath.Projects.WebApi
 		public string EntityContext { get { return (string)GetValue(EntityContextProperty); } set { SetValue(EntityContextProperty, value); } }
 		public static readonly DependencyProperty EntityContextProperty = DependencyProperty.Register("EntityContext", typeof(string), typeof(WebApiData), new PropertyMetadata(""));
 
-		[IgnoreDataMember]
-		public List<DataRevisionName> DataRevisionServiceNames { get; set; }
-
 		//System
 		[IgnoreDataMember]
 		public bool HasWinFormsBindings { get { return Elements.Any(a => a.GenerateWinFormsSupport); } }
-		[IgnoreDataMember]
-		public bool XAMLHasExtensionData { get { return HasXAMLType && (XAMLType.InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0)); } }
 
 		public WebApiData()
 			: base(DataTypeMode.Class)
 		{
-			Documentation = new Documentation { IsClass = true };
+			Documentation = new Documentation {IsClass = true};
 			IsDataObject = true;
-			DataRevisionServiceNames = new List<DataRevisionName>();
 		}
 
 		public WebApiData(string Name, Namespace Parent)
@@ -81,7 +76,6 @@ namespace NETPath.Projects.WebApi
 			XAMLType.InheritedTypes.Add(new DataType("DependencyObject", DataTypeMode.Class));
 			this.Parent = Parent;
 			Documentation = new Documentation { IsClass = true };
-			DataRevisionServiceNames = new List<DataRevisionName>();
 		}
 
 		public void AddKnownType(DataType Type, bool IsClientType = false, bool IsXAMLType = false)

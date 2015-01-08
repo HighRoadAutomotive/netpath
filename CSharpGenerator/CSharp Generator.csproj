@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="Globals.cs" />
     <Compile Include="Wcf\Bindings.cs" />
+    <Compile Include="WebApi\Data.cs" />
     <Compile Include="WebApi\Service.cs" />
     <Compile Include="Wcf\Data.cs" />
     <Compile Include="DataType.cs" />

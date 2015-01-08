@@ -110,6 +110,12 @@ namespace NETPath.Projects.Wcf
 		public bool HasWinFormsBindings { get { return Elements.Any(a => a.GenerateWinFormsSupport); } }
 		[IgnoreDataMember]
 		public bool XAMLHasExtensionData { get { return HasXAMLType && (XAMLType.InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0)); } }
+		[IgnoreDataMember]
+		public bool DataHasExtensionData { get { return InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0); } }
+		[IgnoreDataMember]
+		public bool ClientHasExtensionData { get { return HasClientType && (ClientType.InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0)); } }
+		[IgnoreDataMember]
+		public bool ClientHasImpliedExtensionData { get { return !HasClientType; } }
 
 		public WcfData()
 			: base(DataTypeMode.Class)
@@ -134,6 +140,7 @@ namespace NETPath.Projects.Wcf
 			this.Parent = Parent;
 			Documentation = new Documentation { IsClass = true };
 			DataRevisionServiceNames = new List<DataRevisionName>();
+			ClientType.InheritedTypes.Add(new DataType("System.Runtime.Serialization.IExtensibleDataObject", DataTypeMode.Interface));
 		}
 
 		public void AddKnownType(DataType Type, bool IsClientType = false, bool IsXAMLType = false)

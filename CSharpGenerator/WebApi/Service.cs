@@ -15,9 +15,9 @@ using NETPath.Projects;
 using NETPath.Projects.WebApi;
 using NETPath.Projects.Helpers;
 
-namespace NETPath.Generators.CS
+namespace NETPath.Generators.CS.WebApi
 {
-	internal static class WebApiServiceGenerator
+	internal static class ServiceGenerator
 	{
 
 		public static void VerifyCode(WebApiService o, Action<CompileMessage> AddMessage)

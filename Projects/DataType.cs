@@ -88,7 +88,6 @@ namespace NETPath.Projects
 					t.ClientType = Convert.ToBoolean(e.NewValue) == false ? null : new DataType(t.TypeMode) { ID = t.ID, Name = t.Name, Scope = t.Scope, Partial = t.Partial, Abstract = t.Abstract, Sealed = t.Sealed };
 					if (t.ClientType != null)
 					{
-						if (t.IsDataObject) t.ClientType.InheritedTypes.Add(new DataType("System.Runtime.Serialization.IExtensibleDataObject", DataTypeMode.Interface));
 						t.ClientType.KnownTypes = new ObservableCollection<DataType>(t.KnownTypes);
 					}
 				}
@@ -162,12 +161,6 @@ namespace NETPath.Projects
 		public bool IsTypeReference { get; set; }
 		public SupportedFrameworks SupportedFrameworks { get; set; }
 
-		[IgnoreDataMember]
-		public bool DataHasExtensionData { get { return InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0); } }
-		[IgnoreDataMember]
-		public bool ClientHasExtensionData { get { return HasClientType && (ClientType.InheritedTypes.Any(a => a.Name.IndexOf("IExtensibleDataObject", StringComparison.CurrentCultureIgnoreCase) >= 0)); } }
-		[IgnoreDataMember]
-		public bool ClientHasImpliedExtensionData { get { return !HasClientType; } }
 		[IgnoreDataMember]
 		public bool IsDataObject { get; set; }
 		[IgnoreDataMember]

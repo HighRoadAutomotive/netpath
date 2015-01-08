@@ -7,7 +7,7 @@ using NETPath.Projects;
 using NETPath.Projects.Helpers;
 using NETPath.Projects.Wcf;
 
-namespace NETPath.Generators.CS
+namespace NETPath.Generators.CS.Wcf
 {
 	internal static class NamespaceGenerator
 	{
