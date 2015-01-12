@@ -228,7 +228,18 @@ namespace NETPath.Interface
 			if (Item.GetType() == typeof(Projects.Enum))
 				ActivePage = new Enum.Enum(Item as Projects.Enum);
 
-			//TODO: Finish adding screens as they are made.
+
+			if (Item.GetType() == typeof(WebApiProject))
+				ActivePage = new WebApi.Project(Item as WebApiProject);
+
+			if (Item.GetType() == typeof(WebApiNamespace))
+				ActivePage = new WebApi.Namespace.Namespace(Item as WebApiNamespace);
+
+			if (Item.GetType() == typeof(WebApiService))
+				ActivePage = new WebApi.Service.Service(Item as WebApiService);
+
+			if (Item.GetType() == typeof(WebApiData))
+				ActivePage = new WebApi.Data.Data(Item as WebApiData);
 
 			if (Project.GetType() == typeof(WcfProject))
 				(Project as WcfProject)?.Namespace.SetSelectedItem(Item);
@@ -424,35 +435,29 @@ namespace NETPath.Interface
 		}
 	}
 
-	public class ProjectListSecurityTemplateSelector : DataTemplateSelector
+	public class ProjectListItemTemplateSelector : DataTemplateSelector
 	{
-		public DataTemplate BasicHTTPTemplate { get; set; }
-		public DataTemplate BasicHTTPSTemplate { get; set; }
-		public DataTemplate MSMQTemplate { get; set; }
-		public DataTemplate MSMQIntegrationTemplate { get; set; }
-		public DataTemplate NamedPipeTemplate { get; set; }
-		public DataTemplate PeerTCPTemplate { get; set; }
-		public DataTemplate TCPTemplate { get; set; }
-		public DataTemplate WebHTTPTemplate { get; set; }
-		public DataTemplate WSDualHTTPTemplate { get; set; }
-		public DataTemplate WSFederationHTTPTemplate { get; set; }
-		public DataTemplate WSHTTPTemplate { get; set; }
+		public DataTemplate WcfNamespaceTemplate { get; set; }
+		public DataTemplate WcfServiceTemplate { get; set; }
+		public DataTemplate WcfDataTemplate { get; set; }
+		public DataTemplate WcfHostTemplate { get; set; }
+		public DataTemplate WebApiNamespaceTemplate { get; set; }
+		public DataTemplate WebApiServiceTemplate { get; set; }
+		public DataTemplate WebApiDataTemplate { get; set; }
+		public DataTemplate EnumTemplate { get; set; }
 
 		public override DataTemplate SelectTemplate(object item, DependencyObject container)
 		{
-			if (item == null) return BasicHTTPTemplate;
-			if (item.GetType() == typeof(WcfSecurityBasicHTTP)) return BasicHTTPTemplate;
-			if (item.GetType() == typeof(WcfSecurityBasicHTTP)) return BasicHTTPSTemplate;
-			if (item.GetType() == typeof(WcfSecurityMSMQ)) return MSMQTemplate;
-			if (item.GetType() == typeof(WcfSecurityMSMQIntegration)) return MSMQIntegrationTemplate;
-			if (item.GetType() == typeof(WcfSecurityNamedPipe)) return NamedPipeTemplate;
-			if (item.GetType() == typeof(WcfSecurityPeerTCP)) return PeerTCPTemplate;
-			if (item.GetType() == typeof(WcfSecurityTCP)) return TCPTemplate;
-			if (item.GetType() == typeof(WcfSecurityWebHTTP)) return WebHTTPTemplate;
-			if (item.GetType() == typeof(WcfSecurityWSDualHTTP)) return WSDualHTTPTemplate;
-			if (item.GetType() == typeof(WcfSecurityWSFederationHTTP)) return WSFederationHTTPTemplate;
-			if (item.GetType() == typeof(WcfSecurityWSHTTP)) return WSHTTPTemplate;
-			return BasicHTTPTemplate;
+			if (item == null) return EnumTemplate;
+			if (item.GetType() == typeof(Projects.Enum)) return EnumTemplate;
+			if (item.GetType() == typeof(WcfNamespace)) return WcfNamespaceTemplate;
+			if (item.GetType() == typeof(WcfService)) return WcfServiceTemplate;
+			if (item.GetType() == typeof(WcfData)) return WcfDataTemplate;
+			if (item.GetType() == typeof(WcfHost)) return WcfHostTemplate;
+			if (item.GetType() == typeof(WebApiNamespace)) return WebApiNamespaceTemplate;
+			if (item.GetType() == typeof(WebApiService)) return WebApiServiceTemplate;
+			if (item.GetType() == typeof(WebApiData)) return WebApiDataTemplate;
+			return EnumTemplate;
 		}
 	}
 
@@ -770,8 +775,8 @@ namespace NETPath.Interface
 			Type valueType = value.GetType();
 			if (valueType == typeof(WcfProject) || valueType == typeof(WebApiProject)) return "pack://application:,,,/NETPath;component/Icons/X16/Project.png";
 			if (valueType == typeof(WcfNamespace) || valueType == typeof(WebApiNamespace)) return "pack://application:,,,/NETPath;component/Icons/X16/Namespace.png";
-			if (valueType == typeof(WcfService)) return "pack://application:,,,/NETPath;component/Icons/X16/Service.png";
-			if (valueType == typeof(WebApiService)) return "pack://application:,,,/NETPath;component/Icons/X16/Rest.png";
+			if (valueType == typeof(WcfService) || valueType == typeof(WebApiService)) return "pack://application:,,,/NETPath;component/Icons/X16/Service.png";
+			//if (valueType == typeof(WebApiService)) return "pack://application:,,,/NETPath;component/Icons/X16/Rest.png";
 			if (valueType == typeof(WcfOperation)) return "pack://application:,,,/NETPath;component/Icons/X16/Method.png";
 			if (valueType == typeof(WcfMethodParameter) || valueType == typeof(WebApiRouteParameter) || valueType == typeof(WebApiMethodParameter)) return "pack://application:,,,/NETPath;component/Icons/X16/Property.png";
 			if (valueType == typeof(WcfProperty)) return "pack://application:,,,/NETPath;component/Icons/X16/Property.png";

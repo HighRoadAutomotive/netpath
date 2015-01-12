@@ -262,8 +262,20 @@
     <Compile Include="Interface\Wcf\Project.xaml.cs">
       <DependentUpon>Project.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interface\WebApi\Data\Data.xaml.cs">
+      <DependentUpon>Data.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\WebApi\Data\DataElement.xaml.cs">
+      <DependentUpon>DataElement.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interface\WebApi\Dialogs\NewItem.xaml.cs">
       <DependentUpon>NewItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\WebApi\Namespace\Namespace.xaml.cs">
+      <DependentUpon>Namespace.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\WebApi\Project.xaml.cs">
+      <DependentUpon>Project.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interface\WebApi\Service\Converters.cs" />
     <Compile Include="Interface\WebApi\Service\HttpClientConfig.xaml.cs">
@@ -446,7 +458,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Interface\WebApi\Data\Data.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\WebApi\Data\DataElement.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Interface\WebApi\Dialogs\NewItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\WebApi\Namespace\Namespace.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interface\WebApi\Project.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -16,16 +16,16 @@ using Microsoft.Win32;
 using EllipticBit.Controls.WPF.Dialogs;
 using NETPath.Interface.Project;
 using NETPath.Projects;
-using NETPath.Projects.Wcf;
+using NETPath.Projects.WebApi;
 
-namespace NETPath.Interface.Wcf
+namespace NETPath.Interface.WebApi
 {
 	internal partial class Project : Grid
 	{
-		public WcfProject Settings { get { return (WcfProject)GetValue(SettingsProperty); } set { SetValue(SettingsProperty, value); } }
-		public static readonly DependencyProperty SettingsProperty = DependencyProperty.Register("Settings", typeof(WcfProject), typeof(Project));
+		public WebApiProject Settings { get { return (WebApiProject)GetValue(SettingsProperty); } set { SetValue(SettingsProperty, value); } }
+		public static readonly DependencyProperty SettingsProperty = DependencyProperty.Register("Settings", typeof(WebApiProject), typeof(Project));
 
-		public Project(WcfProject Project)
+		public Project(WebApiProject Project)
 		{
 			Settings = Project;
 
@@ -142,48 +142,6 @@ namespace NETPath.Interface.Wcf
 		}
 
 		#endregion
-	}
-
-	[ValueConversion(typeof(ProjectServiceSerializerType), typeof(int))]
-	public class ProjectServiceSerializerTypeConverter : IValueConverter
-	{
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			var lt = (ProjectServiceSerializerType)value;
-			if (lt == ProjectServiceSerializerType.Auto) return 0;
-			if (lt == ProjectServiceSerializerType.DataContract) return 1;
-			if (lt == ProjectServiceSerializerType.XML) return 2;
-			return 0;
-		}
-
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			var lt = (int)value;
-			if (lt == 0) return ProjectServiceSerializerType.Auto;
-			if (lt == 1) return ProjectServiceSerializerType.DataContract;
-			if (lt == 2) return ProjectServiceSerializerType.XML;
-			return ProjectServiceSerializerType.Auto;
-		}
-	}
-
-	[ValueConversion(typeof(ProjectCollectionSerializationOverride), typeof(int))]
-	public class ProjectCollectionSerializationOverrideConverter : IValueConverter
-	{
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			var lt = (ProjectCollectionSerializationOverride)value;
-			if (lt == ProjectCollectionSerializationOverride.List) return 1;
-			if (lt == ProjectCollectionSerializationOverride.Array) return 2;
-			return 0;
-		}
-
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			var lt = (int)value;
-			if (lt == 1) return ProjectCollectionSerializationOverride.List;
-			if (lt == 2) return ProjectCollectionSerializationOverride.Array;
-			return ProjectCollectionSerializationOverride.None;
-		}
 	}
 
 	[ValueConversion(typeof(DataTypeMode), typeof(bool))]

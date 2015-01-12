@@ -12,16 +12,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using NETPath.Projects;
-using NETPath.Projects.Wcf;
+using NETPath.Projects.WebApi;
 using NETPath.Projects.Helpers;
 
-namespace NETPath.Interface.Wcf.Namespace
+namespace NETPath.Interface.WebApi.Namespace
 {
 	internal partial class Namespace : Grid
 	{
-		public WcfNamespace Data { get; set; }
+		public WebApiNamespace Data { get; set; }
 
-		public Namespace(WcfNamespace Data)
+		public Namespace(WebApiNamespace Data)
 		{
 			this.Data = Data;
 
@@ -78,16 +78,6 @@ namespace NETPath.Interface.Wcf.Namespace
 			Globals.OpenProjectItem(EnumList.SelectedItem as OpenableDocument);
 		}
 
-		private void HostList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-		{
-			Globals.OpenProjectItem(HostList.SelectedItem as OpenableDocument);
-		}
-
-		private void BindingList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-		{
-			Globals.OpenProjectItem(BindingList.SelectedItem as OpenableDocument);
-		}
-
 		private void NamespaceList_LostFocus(object sender, RoutedEventArgs e)
 		{
 			NamespaceList.SelectedItem = null;
@@ -106,16 +96,6 @@ namespace NETPath.Interface.Wcf.Namespace
 		private void EnumList_LostFocus(object sender, RoutedEventArgs e)
 		{
 			EnumList.SelectedItem = null;
-		}
-
-		private void HostList_LostFocus(object sender, RoutedEventArgs e)
-		{
-			HostList.SelectedItem = null;
-		}
-
-		private void BindingList_LostFocus(object sender, RoutedEventArgs e)
-		{
-			BindingList.SelectedItem = null;
 		}
 	}
 }

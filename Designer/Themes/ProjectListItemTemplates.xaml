@@ -141,7 +141,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	<DataTemplate x:Key="ServiceItemTemplate" DataType="{x:Type wp:WcfService}">
+	<DataTemplate x:Key="WcfServiceItemTemplate" DataType="{x:Type wp:WcfService}">
 		<Border Background="#01FFFFFF">
 			<Border.ToolTip>
 				<StackPanel Orientation="Vertical">
@@ -155,76 +155,16 @@
 			</StackPanel>
 		</Border>
 	</DataTemplate>
-
-
-	<!-- Rest Templates -->
-	<Style x:Key="RestContainerTemplate" TargetType="{x:Type ToggleButton}">
-		<Setter Property="Foreground" Value="{StaticResource DefaultFontColor}" />
-		<Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}" />
-		<Setter Property="FontWeight" Value="{StaticResource DefaultFontWeight}" />
-		<Setter Property="Background" Value="{StaticResource RestContainerColor}"/>
-		<Setter Property="BorderBrush" Value="{StaticResource DefaultBorderColor}"/>
-		<Setter Property="IsChecked" Value="{Binding Path=IsTreeExpanded}" />
-		<Setter Property="HorizontalAlignment" Value="Stretch" />
-		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-		<Setter Property="VerticalContentAlignment" Value="Center" />
-		<Setter Property="UseLayoutRounding" Value="True" />
-		<Setter Property="Padding" Value="4" />
-		<Setter Property="Margin" Value="0,2,0,0" />
-		<Setter Property="Command" Value="{x:Static local:Navigator.ChangeActivePageCommand}" />
-		<Setter Property="CommandParameter" Value="{Binding}" />
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type ToggleButton}">
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="Auto" />
-						</Grid.ColumnDefinitions>
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
-						</Grid.RowDefinitions>
-						<Border x:Name="PART_Border" Grid.ColumnSpan="2" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="0" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" />
-						<Border x:Name="Overlay" Grid.ColumnSpan="2" BorderThickness="0" Background="Transparent" BorderBrush="Transparent" Padding="5,0,0,0" />
-						<Border x:Name="Selected" Grid.ColumnSpan="2" Background="{StaticResource FocusedBackgroundColor}" BorderThickness="0" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" Visibility="{Binding Path=IsSelected, Converter={StaticResource BoolVisibilityConverter}}" />
-						<ContentPresenter Grid.Column="0" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" UseLayoutRounding="{TemplateBinding UseLayoutRounding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
-						<Button x:Name="Delete" Visibility="Collapsed" Grid.Column="1" Grid.RowSpan="2" Margin="0" Padding="0" Width="30" Style="{StaticResource ListItemButton}" Command="{x:Static local:Navigator.DeleteCommand}" CommandParameter="{Binding}" >
-							<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
-						</Button>
-					</Grid>
-					<ControlTemplate.Triggers>
-						<MultiTrigger>
-							<MultiTrigger.Conditions>
-								<Condition Property="IsEnabled" Value="True" />
-								<Condition Property="IsMouseOver" Value="True" />
-							</MultiTrigger.Conditions>
-							<Setter TargetName="Overlay" Property="Background" Value="{StaticResource MouseOverContainerColor}" />
-							<Setter TargetName="Delete" Property="Visibility" Value="Visible" />
-						</MultiTrigger>
-						<MultiTrigger>
-							<MultiTrigger.Conditions>
-								<Condition Property="IsEnabled" Value="True" />
-								<Condition Property="IsPressed" Value="True" />
-							</MultiTrigger.Conditions>
-							<Setter TargetName="Overlay" Property="Background" Value="{StaticResource PressedContainerColor}" />
-						</MultiTrigger>
-						<Trigger Property="IsEnabled" Value="False">
-							<Setter Property="Opacity" Value="0.75"/>
-						</Trigger>
-					</ControlTemplate.Triggers>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>
-	<DataTemplate x:Key="RestItemTemplate" DataType="{x:Type wap:WebApiService}">
+	<DataTemplate x:Key="WebApiServiceItemTemplate" DataType="{x:Type wap:WebApiService}">
 		<Border Background="#01FFFFFF">
 			<Border.ToolTip>
 				<StackPanel Orientation="Vertical">
 					<TextBlock Text="{Binding Path=Declaration, StringFormat='Server: {0}'}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+					<TextBlock Text="{Binding Path=ClientType.Declaration, StringFormat='Client: {0}'}" Visibility="{Binding Path=HasClientType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 				</StackPanel>
 			</Border.ToolTip>
 			<StackPanel Orientation="Horizontal" >
-				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/Rest.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
+				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/Service.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="11pt" />
 			</StackPanel>
 		</Border>
@@ -290,7 +230,22 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	<DataTemplate x:Key="DataItemTemplate" DataType="{x:Type wp:WcfData}">
+	<DataTemplate x:Key="WcfDataItemTemplate" DataType="{x:Type wp:WcfData}">
+		<Border Background="#01FFFFFF">
+			<Border.ToolTip>
+				<StackPanel Orientation="Vertical">
+					<TextBlock Text="{Binding Path=Declaration, StringFormat='Server: {0}'}" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+					<TextBlock Text="{Binding Path=ClientType.Declaration, StringFormat='Client: {0}'}" Grid.Row="2" Visibility="{Binding Path=HasClientType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+					<TextBlock Text="{Binding Path=XAMLType.Declaration, StringFormat='XAML: {0}'}" Grid.Row="3" Visibility="{Binding Path=HasXAMLType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+				</StackPanel>
+			</Border.ToolTip>
+			<StackPanel Orientation="Horizontal">
+				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/Data.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
+				<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="11pt" />
+			</StackPanel>
+		</Border>
+	</DataTemplate>
+	<DataTemplate x:Key="WebApiDataItemTemplate" DataType="{x:Type wap:WebApiData}">
 		<Border Background="#01FFFFFF">
 			<Border.ToolTip>
 				<StackPanel Orientation="Vertical">
@@ -653,7 +608,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	<DataTemplate x:Key="HostItemTemplate" DataType="{x:Type wp:WcfHost}">
+	<DataTemplate x:Key="WcfHostItemTemplate" DataType="{x:Type wp:WcfHost}">
 		<StackPanel Orientation="Vertical" Margin="3">
 			<StackPanel Orientation="Horizontal">
 				<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/Host.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
@@ -711,7 +666,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	<DataTemplate x:Key="NamespaceItemTemplate" DataType="{x:Type wp:WcfNamespace}">
+	<DataTemplate x:Key="WcfNamespaceItemTemplate" DataType="{x:Type wp:WcfNamespace}">
 		<Border Background="#01FFFFFF">
 			<Border.ToolTip>
 				<StackPanel Orientation="Vertical">
@@ -737,13 +692,12 @@
 					</Button>
 				</Grid>
 				<StackPanel Orientation="Vertical" Margin="5,5,0,5">
-					<local:ProjectList x:Name="SubItems1" ItemsSource="{Binding Path=Children}" ItemContainerStyle="{StaticResource NamespaceContainerTemplate}" ItemTemplate="{DynamicResource NamespaceItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
-					<local:ProjectList x:Name="SubItems2" ItemsSource="{Binding Path=Services}" ItemContainerStyle="{StaticResource ServiceContainerTemplate}" ItemTemplate="{StaticResource ServiceItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
-					<local:ProjectList x:Name="SubItems7" ItemsSource="{Binding Path=WebApiServices}" ItemContainerStyle="{StaticResource RestContainerTemplate}" ItemTemplate="{StaticResource RestItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
-					<local:ProjectList x:Name="SubItems3" ItemsSource="{Binding Path=Data}" ItemContainerStyle="{StaticResource DataContainerTemplate}" ItemTemplate="{StaticResource DataItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
-					<local:ProjectList x:Name="SubItems4" ItemsSource="{Binding Path=Enums}" ItemContainerStyle="{StaticResource EnumContainerTemplate}" ItemTemplate="{StaticResource EnumItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
+					<local:ProjectList x:Name="SubItems1" ItemsSource="{Binding Path=Children}" ItemContainerStyle="{StaticResource NamespaceContainerTemplate}" ItemTemplateSelector="{DynamicResource ProjectListItemTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
+					<local:ProjectList x:Name="SubItems2" ItemsSource="{Binding Path=Services}" ItemContainerStyle="{StaticResource ServiceContainerTemplate}" ItemTemplateSelector="{DynamicResource ProjectListItemTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
+					<local:ProjectList x:Name="SubItems3" ItemsSource="{Binding Path=Data}" ItemContainerStyle="{StaticResource DataContainerTemplate}" ItemTemplateSelector="{DynamicResource ProjectListItemTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
+					<local:ProjectList x:Name="SubItems4" ItemsSource="{Binding Path=Enums}" ItemContainerStyle="{StaticResource EnumContainerTemplate}" ItemTemplateSelector="{DynamicResource ProjectListItemTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
 					<local:ProjectItemList x:Name="SubItems5" ItemsSource="{Binding Path=Bindings}" ItemContainerStyle="{StaticResource BindingContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListBindingTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
-					<local:ProjectItemList x:Name="SubItems6" ItemsSource="{Binding Path=Hosts}" ItemContainerStyle="{StaticResource HostContainerTemplate}" ItemTemplate="{StaticResource HostItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
+					<local:ProjectItemList x:Name="SubItems6" ItemsSource="{Binding Path=Hosts}" ItemContainerStyle="{StaticResource HostContainerTemplate}" ItemTemplateSelector="{DynamicResource ProjectListItemTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
 				</StackPanel>
 			</StackPanel>
 		</Border>
@@ -756,5 +710,50 @@
 			</DataTrigger>
 		</DataTemplate.Triggers>
 	</DataTemplate>
+	<DataTemplate x:Key="WebApiNamespaceItemTemplate" DataType="{x:Type wap:WebApiNamespace}">
+		<Border Background="#01FFFFFF">
+			<Border.ToolTip>
+				<StackPanel Orientation="Vertical">
+					<TextBlock Text="{Binding Path=Declaration}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+				</StackPanel>
+			</Border.ToolTip>
+			<StackPanel Orientation="Vertical">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" Margin="3">
+						<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/Namespace.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
+						<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="11pt" />
+					</StackPanel>
+					<Button x:Name="Delete" Grid.Column="1" Grid.Row="0" Visibility="Collapsed" Margin="0" Padding="0" Width="30" Style="{StaticResource ListItemButton}" Command="{x:Static local:Navigator.DeleteCommand}" CommandParameter="{Binding}" >
+						<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+					</Button>
+				</Grid>
+				<StackPanel Orientation="Vertical" Margin="5,5,0,5">
+					<local:ProjectList x:Name="SubItems1" ItemsSource="{Binding Path=Children}" ItemContainerStyle="{StaticResource NamespaceContainerTemplate}" ItemTemplateSelector="{DynamicResource ProjectListItemTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
+					<local:ProjectList x:Name="SubItems2" ItemsSource="{Binding Path=Services}" ItemContainerStyle="{StaticResource ServiceContainerTemplate}" ItemTemplateSelector="{DynamicResource ProjectListItemTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
+					<local:ProjectList x:Name="SubItems3" ItemsSource="{Binding Path=Data}" ItemContainerStyle="{StaticResource DataContainerTemplate}" ItemTemplateSelector="{DynamicResource ProjectListItemTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
+					<local:ProjectList x:Name="SubItems4" ItemsSource="{Binding Path=Enums}" ItemContainerStyle="{StaticResource EnumContainerTemplate}" ItemTemplateSelector="{DynamicResource ProjectListItemTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
+				</StackPanel>
+			</StackPanel>
+		</Border>
+		<DataTemplate.Triggers>
+			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}},Path=IsChecked}" Value="True" >
+				<Setter TargetName="Icon" Property="Source" Value="pack://application:,,,/NETPath;component/Icons/X16/NamespaceOpen.png" />
+			</DataTrigger>
+			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}},Path=IsMouseOver}" Value="True" >
+				<Setter TargetName="Delete" Property="Visibility" Value="Visible" />
+			</DataTrigger>
+		</DataTemplate.Triggers>
+	</DataTemplate>
+
+	<local:ProjectListItemTemplateSelector x:Key="ProjectListItemTemplateSelector" WcfNamespaceTemplate="{StaticResource WcfNamespaceItemTemplate}" WcfServiceTemplate="{StaticResource WcfServiceItemTemplate}" WcfDataTemplate="{StaticResource WcfDataItemTemplate}" WcfHostTemplate="{StaticResource WcfHostItemTemplate}"
+										   WebApiNamespaceTemplate="{StaticResource WebApiNamespaceItemTemplate}" WebApiServiceTemplate="{StaticResource WebApiServiceItemTemplate}" WebApiDataTemplate="{StaticResource WebApiDataItemTemplate}" EnumTemplate="{StaticResource EnumItemTemplate}" />
 
 </ResourceDictionary>

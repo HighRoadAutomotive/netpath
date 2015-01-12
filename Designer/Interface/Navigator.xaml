@@ -15,7 +15,6 @@
 						<local:CompileMessageSeverityImageConverter x:Key="CompileMessageSeverityImageConverter" />
 						<local:ErrorObjectNameConverter x:Key="ErrorObjectNameConverter" />
 						<local:ErrorObjectOwnerNameConverter x:Key="ErrorObjectOwnerNameConverter" />
-						<local:DocumentTypeImage16Converter x:Key="DocumentTypeImage16Converter" />
 					</ResourceDictionary>
 				</ResourceDictionary.MergedDictionaries>
 			</ResourceDictionary>
@@ -39,12 +38,12 @@
 		</Button>
 		<ScrollViewer Grid.Column="0" Grid.Row="1" Margin="0,0,5,0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" >
 			<StackPanel Orientation="Vertical" >
-				<local:ProjectList ItemsSource="{Binding Path=Project.Namespace.Services}" ItemContainerStyle="{StaticResource ServiceContainerTemplate}" ItemTemplate="{StaticResource ServiceItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
-				<local:ProjectList ItemsSource="{Binding Path=Project.Namespace.Data}" ItemContainerStyle="{StaticResource DataContainerTemplate}" ItemTemplate="{StaticResource DataItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
-				<local:ProjectList ItemsSource="{Binding Path=Project.Namespace.Enums}" ItemContainerStyle="{StaticResource EnumContainerTemplate}" ItemTemplate="{StaticResource EnumItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+				<local:ProjectList ItemsSource="{Binding Path=Project.Namespace.Services}" ItemContainerStyle="{StaticResource ServiceContainerTemplate}" ItemTemplateSelector="{DynamicResource ProjectListItemTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+				<local:ProjectList ItemsSource="{Binding Path=Project.Namespace.Data}" ItemContainerStyle="{StaticResource DataContainerTemplate}" ItemTemplateSelector="{DynamicResource ProjectListItemTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+				<local:ProjectList ItemsSource="{Binding Path=Project.Namespace.Enums}" ItemContainerStyle="{StaticResource EnumContainerTemplate}" ItemTemplateSelector="{DynamicResource ProjectListItemTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
 				<local:ProjectItemList ItemsSource="{Binding Path=Project.Namespace.Bindings}" ItemContainerStyle="{StaticResource BindingContainerTemplate}" ItemTemplateSelector="{StaticResource ProjectListBindingTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
-				<local:ProjectItemList ItemsSource="{Binding Path=Project.Namespace.Hosts}" ItemContainerStyle="{StaticResource HostContainerTemplate}" ItemTemplate="{StaticResource HostItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
-				<local:ProjectList ItemsSource="{Binding Path=Project.Namespace.Children}" ItemContainerStyle="{StaticResource NamespaceContainerTemplate}" ItemTemplate="{StaticResource NamespaceItemTemplate}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+				<local:ProjectItemList ItemsSource="{Binding Path=Project.Namespace.Hosts}" ItemContainerStyle="{StaticResource HostContainerTemplate}" ItemTemplateSelector="{DynamicResource ProjectListItemTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
+				<local:ProjectList ItemsSource="{Binding Path=Project.Namespace.Children}" ItemContainerStyle="{StaticResource NamespaceContainerTemplate}" ItemTemplateSelector="{DynamicResource ProjectListItemTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" />
 			</StackPanel>
 		</ScrollViewer>
 		<GridSplitter ResizeDirection="Columns" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Width="5" Height="Auto" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0" Background="Transparent" />
