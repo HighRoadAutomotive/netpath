@@ -49,9 +49,6 @@ namespace NETPath.Interface.WebApi.Service
 
 			WebApiMethod s = ServiceType.ServiceOperations.FirstOrDefault(a => a.IsSelected);
 			if (s != null) ServiceOperationsList.SelectedItem = s;
-
-			WebApiHttpConfiguration c = ServiceType.RequestConfigurations.FirstOrDefault(a => a.IsSelected);
-			if (c != null) ConfigurationList.SelectedItem = c;
 		}
 
 		#region - Operations Screen -
@@ -224,55 +221,6 @@ namespace NETPath.Interface.WebApi.Service
 			if (OP == null) return;
 
 			DialogService.ShowMessageDialog("NETPath", "Delete Method?", "Are you sure you want to delete the '" + OP.ReturnType + " " + OP.Name + "' method?", new DialogAction("Yes", () => ServiceType.ServiceOperations.Remove(OP), true), new DialogAction("No", false, true));
-		}
-
-		#endregion
-
-		#region - Client Configuration Screen -
-
-		private void AddHttpConfigurationName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
-		{
-			AddHttpConfiguration.IsEnabled = false;
-
-			e.IsValid = true;
-			if (string.IsNullOrEmpty(AddHttpConfigurationName.Text)) return;
-
-			e.IsValid = RegExs.MatchCodeName.IsMatch(RegExs.ReplaceSpaces.Replace(AddHttpConfigurationName.Text, ""));
-
-			AddHttpConfiguration.IsEnabled = e.IsValid;
-		}
-
-		private void AddHttpConfiguration_Click(object Sender, RoutedEventArgs E)
-		{
-			var t = new WebApiHttpConfiguration(AddHttpConfigurationName.Text);
-			ServiceType.RequestConfigurations.Add(t);
-
-			AddHttpConfigurationName.Focus();
-			AddHttpConfigurationName.Text = "";
-
-			ConfigurationList.SelectedItem = t;
-		}
-
-		private void ConfigurationList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			var c = ConfigurationList.SelectedItem as WebApiHttpConfiguration;
-			if (c == null) return;
-
-
-			//Set the new item as selected.
-			foreach (WebApiHttpConfiguration o in ServiceType.RequestConfigurations)
-				o.IsSelected = false;
-			c.IsSelected = true;
-			ActiveConfiguration = new HttpClientConfig(c);
-		}
-
-		private void DeleteConfiguration_Click(object sender, RoutedEventArgs e)
-		{
-			var lbi = Globals.GetVisualParent<ListBoxItem>(sender);
-			var OP = lbi.Content as WebApiHttpConfiguration;
-			if (OP == null) return;
-
-			DialogService.ShowMessageDialog("NETPath", "Delete HTTP Configuration?", "Are you sure you want to delete the '" + OP.Name + "' HTTP Configuration?", new DialogAction("Yes", () => ServiceType.RequestConfigurations.Remove(OP), true), new DialogAction("No", false, true));
 		}
 
 		#endregion

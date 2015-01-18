@@ -114,6 +114,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\winapicp.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="ReachFramework" />
     <Reference Include="System" />
@@ -278,9 +282,6 @@
       <DependentUpon>Project.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interface\WebApi\Service\Converters.cs" />
-    <Compile Include="Interface\WebApi\Service\HttpClientConfig.xaml.cs">
-      <DependentUpon>HttpClientConfig.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Interface\WebApi\Service\Method.xaml.cs">
       <DependentUpon>Method.xaml</DependentUpon>
     </Compile>
@@ -477,10 +478,6 @@
     <Page Include="Interface\WebApi\Project.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\WebApi\Service\HttpClientConfig.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Interface\WebApi\Service\Method.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows.Data;
+using NETPath.Projects;
 using NETPath.Projects.Wcf;
 
 namespace NETPath.Interface.Wcf.Bindings
@@ -50,29 +51,29 @@ namespace NETPath.Interface.Wcf.Bindings
 		}
 	}
 
-	[ValueConversion(typeof(WcfBindingTextEncoding), typeof(int))]
-	public class WcfBindingTextEncodingConverter : IValueConverter
+	[ValueConversion(typeof(TextEncoding), typeof(int))]
+	public class TextEncodingConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			var lt = (WcfBindingTextEncoding)value;
-			if (lt == WcfBindingTextEncoding.ASCII) return 0;
-			if (lt == WcfBindingTextEncoding.UTF7) return 1;
-			if (lt == WcfBindingTextEncoding.UTF8) return 2;
-			if (lt == WcfBindingTextEncoding.Unicode) return 3;
-			if (lt == WcfBindingTextEncoding.UTF32) return 4;
+			var lt = (TextEncoding)value;
+			if (lt == TextEncoding.ASCII) return 0;
+			if (lt == TextEncoding.UTF7) return 1;
+			if (lt == TextEncoding.UTF8) return 2;
+			if (lt == TextEncoding.Unicode) return 3;
+			if (lt == TextEncoding.UTF32) return 4;
 			return 0;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			var lt = (int)value;
-			if (lt == 0) return WcfBindingTextEncoding.ASCII;
-			if (lt == 1) return WcfBindingTextEncoding.UTF7;
-			if (lt == 2) return WcfBindingTextEncoding.UTF8;
-			if (lt == 3) return WcfBindingTextEncoding.Unicode;
-			if (lt == 4) return WcfBindingTextEncoding.UTF32;
-			return WcfBindingTextEncoding.UTF8;
+			if (lt == 0) return TextEncoding.ASCII;
+			if (lt == 1) return TextEncoding.UTF7;
+			if (lt == 2) return TextEncoding.UTF8;
+			if (lt == 3) return TextEncoding.Unicode;
+			if (lt == 4) return TextEncoding.UTF32;
+			return TextEncoding.UTF8;
 		}
 	}
 

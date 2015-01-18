@@ -6,9 +6,9 @@ using System.Text;
 using System.Windows;
 using System.Runtime.Serialization;
 
-namespace NETPath.Projects.Wcf
+namespace NETPath.Projects
 {
-	public enum WcfBindingTextEncoding
+	public enum TextEncoding
 	{
 		ASCII = 1,
 		UTF7 = 2,
@@ -16,7 +16,10 @@ namespace NETPath.Projects.Wcf
 		Unicode = 3,
 		UTF32 = 4
 	}
+}
 
+namespace NETPath.Projects.Wcf
+{
 	public enum WcfBindingTransactionProtocol
 	{
 		Default = 0,
@@ -83,8 +86,8 @@ namespace NETPath.Projects.Wcf
 		public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
 		public static readonly DependencyProperty ProxyAddressProperty = DependencyProperty.Register("ProxyAddress", typeof(string), typeof(WcfBindingBasicHTTP));
 
-		public WcfBindingTextEncoding TextEncoding { get { return (WcfBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
-		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(WcfBindingTextEncoding), typeof(WcfBindingBasicHTTP));
+		public TextEncoding TextEncoding { get { return (TextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
+		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(TextEncoding), typeof(WcfBindingBasicHTTP));
 
 		public System.ServiceModel.TransferMode TransferMode { get { return (System.ServiceModel.TransferMode)GetValue(TransferModeProperty); } set { SetValue(TransferModeProperty, value); } }
 		public static readonly DependencyProperty TransferModeProperty = DependencyProperty.Register("TransferMode", typeof(System.ServiceModel.TransferMode), typeof(WcfBindingBasicHTTP));
@@ -153,7 +156,7 @@ namespace NETPath.Projects.Wcf
 			MaxBufferSize = 65536;
 			MaxReceivedMessageSize = 65536;
 			MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
-			TextEncoding = WcfBindingTextEncoding.UTF8;
+			TextEncoding = TextEncoding.UTF8;
 			TransferMode = System.ServiceModel.TransferMode.Buffered;
 			UseDefaultWebProxy = true;
 		}
@@ -192,8 +195,8 @@ namespace NETPath.Projects.Wcf
 		public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
 		public static readonly DependencyProperty ProxyAddressProperty = DependencyProperty.Register("ProxyAddress", typeof(string), typeof(WcfBindingBasicHTTPS));
 
-		public WcfBindingTextEncoding TextEncoding { get { return (WcfBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
-		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(WcfBindingTextEncoding), typeof(WcfBindingBasicHTTPS));
+		public TextEncoding TextEncoding { get { return (TextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
+		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(TextEncoding), typeof(WcfBindingBasicHTTPS));
 
 		public System.ServiceModel.TransferMode TransferMode { get { return (System.ServiceModel.TransferMode)GetValue(TransferModeProperty); } set { SetValue(TransferModeProperty, value); } }
 		public static readonly DependencyProperty TransferModeProperty = DependencyProperty.Register("TransferMode", typeof(System.ServiceModel.TransferMode), typeof(WcfBindingBasicHTTPS));
@@ -224,7 +227,7 @@ namespace NETPath.Projects.Wcf
 			MaxBufferSize = 65536;
 			MaxReceivedMessageSize = 65536;
 			MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
-			TextEncoding = WcfBindingTextEncoding.UTF8;
+			TextEncoding = TextEncoding.UTF8;
 			TransferMode = System.ServiceModel.TransferMode.Buffered;
 			UseDefaultWebProxy = true;
 		}
@@ -263,8 +266,8 @@ namespace NETPath.Projects.Wcf
 		public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
 		public static readonly DependencyProperty ProxyAddressProperty = DependencyProperty.Register("ProxyAddress", typeof(string), typeof(WcfBindingNetHTTP));
 
-		public WcfBindingTextEncoding TextEncoding { get { return (WcfBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
-		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(WcfBindingTextEncoding), typeof(WcfBindingNetHTTP));
+		public TextEncoding TextEncoding { get { return (TextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
+		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(TextEncoding), typeof(WcfBindingNetHTTP));
 
 		public System.ServiceModel.TransferMode TransferMode { get { return (System.ServiceModel.TransferMode)GetValue(TransferModeProperty); } set { SetValue(TransferModeProperty, value); } }
 		public static readonly DependencyProperty TransferModeProperty = DependencyProperty.Register("TransferMode", typeof(System.ServiceModel.TransferMode), typeof(WcfBindingNetHTTP));
@@ -330,7 +333,7 @@ namespace NETPath.Projects.Wcf
 			MaxBufferSize = 65536;
 			MaxReceivedMessageSize = 65536;
 			MessageEncoding = System.ServiceModel.NetHttpMessageEncoding.Text;
-			TextEncoding = WcfBindingTextEncoding.UTF8;
+			TextEncoding = TextEncoding.UTF8;
 			TransferMode = System.ServiceModel.TransferMode.Buffered;
 			UseDefaultWebProxy = true;
 			CreateNotificationOnConnection = false;
@@ -376,8 +379,8 @@ namespace NETPath.Projects.Wcf
 		public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
 		public static readonly DependencyProperty ProxyAddressProperty = DependencyProperty.Register("ProxyAddress", typeof(string), typeof(WcfBindingNetHTTPS));
 
-		public WcfBindingTextEncoding TextEncoding { get { return (WcfBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
-		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(WcfBindingTextEncoding), typeof(WcfBindingNetHTTPS));
+		public TextEncoding TextEncoding { get { return (TextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
+		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(TextEncoding), typeof(WcfBindingNetHTTPS));
 
 		public System.ServiceModel.TransferMode TransferMode { get { return (System.ServiceModel.TransferMode)GetValue(TransferModeProperty); } set { SetValue(TransferModeProperty, value); } }
 		public static readonly DependencyProperty TransferModeProperty = DependencyProperty.Register("TransferMode", typeof(System.ServiceModel.TransferMode), typeof(WcfBindingNetHTTPS));
@@ -443,7 +446,7 @@ namespace NETPath.Projects.Wcf
 			MaxBufferSize = 65536;
 			MaxReceivedMessageSize = 65536;
 			MessageEncoding = System.ServiceModel.NetHttpMessageEncoding.Text;
-			TextEncoding = WcfBindingTextEncoding.UTF8;
+			TextEncoding = TextEncoding.UTF8;
 			TransferMode = System.ServiceModel.TransferMode.Buffered;
 			UseDefaultWebProxy = true;
 			CreateNotificationOnConnection = false;
@@ -495,8 +498,8 @@ namespace NETPath.Projects.Wcf
 		public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
 		public static readonly DependencyProperty ProxyAddressProperty = DependencyProperty.Register("ProxyAddress", typeof(string), typeof(WcfBindingWSHTTP));
 
-		public WcfBindingTextEncoding TextEncoding { get { return (WcfBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
-		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(WcfBindingTextEncoding), typeof(WcfBindingWSHTTP));
+		public TextEncoding TextEncoding { get { return (TextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
+		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(TextEncoding), typeof(WcfBindingWSHTTP));
 
 		public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
 		public static readonly DependencyProperty UseDefaultWebProxyProperty = DependencyProperty.Register("UseDefaultWebProxy", typeof(bool), typeof(WcfBindingWSHTTP));
@@ -570,7 +573,7 @@ namespace NETPath.Projects.Wcf
 			ReliableSessionEnabled = false;
 			ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
 			ReliableSessionsOrdered = false;
-			TextEncoding = WcfBindingTextEncoding.UTF8;
+			TextEncoding = TextEncoding.UTF8;
 			TransactionFlow = true;
 			UseDefaultWebProxy = true;
 		}
@@ -615,8 +618,8 @@ namespace NETPath.Projects.Wcf
 		public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
 		public static readonly DependencyProperty ProxyAddressProperty = DependencyProperty.Register("ProxyAddress", typeof(string), typeof(WcfBindingWS2007HTTP));
 
-		public WcfBindingTextEncoding TextEncoding { get { return (WcfBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
-		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(WcfBindingTextEncoding), typeof(WcfBindingWS2007HTTP));
+		public TextEncoding TextEncoding { get { return (TextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
+		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(TextEncoding), typeof(WcfBindingWS2007HTTP));
 
 		public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
 		public static readonly DependencyProperty UseDefaultWebProxyProperty = DependencyProperty.Register("UseDefaultWebProxy", typeof(bool), typeof(WcfBindingWS2007HTTP));
@@ -649,7 +652,7 @@ namespace NETPath.Projects.Wcf
 			ReliableSessionEnabled = false;
 			ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
 			ReliableSessionsOrdered = false;
-			TextEncoding = WcfBindingTextEncoding.UTF8;
+			TextEncoding = TextEncoding.UTF8;
 			TransactionFlow = true;
 			UseDefaultWebProxy = true;
 		}
@@ -691,8 +694,8 @@ namespace NETPath.Projects.Wcf
 		public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
 		public static readonly DependencyProperty ProxyAddressProperty = DependencyProperty.Register("ProxyAddress", typeof(string), typeof(WcfBindingWS2007HTTP));
 
-		public WcfBindingTextEncoding TextEncoding { get { return (WcfBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
-		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(WcfBindingTextEncoding), typeof(WcfBindingWS2007HTTP));
+		public TextEncoding TextEncoding { get { return (TextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
+		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(TextEncoding), typeof(WcfBindingWS2007HTTP));
 
 		public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
 		public static readonly DependencyProperty UseDefaultWebProxyProperty = DependencyProperty.Register("UseDefaultWebProxy", typeof(bool), typeof(WcfBindingWS2007HTTP));
@@ -723,7 +726,7 @@ namespace NETPath.Projects.Wcf
 			MessageEncoding = System.ServiceModel.WSMessageEncoding.Text;
 			ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
 			ReliableSessionsOrdered = false;
-			TextEncoding = WcfBindingTextEncoding.UTF8;
+			TextEncoding = TextEncoding.UTF8;
 			TransactionFlow = true;
 			UseDefaultWebProxy = true;
 		}
@@ -765,8 +768,8 @@ namespace NETPath.Projects.Wcf
 		public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
 		public static readonly DependencyProperty ProxyAddressProperty = DependencyProperty.Register("ProxyAddress", typeof(string), typeof(WcfBindingWSFederationHTTP));
 
-		public WcfBindingTextEncoding TextEncoding { get { return (WcfBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
-		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(WcfBindingTextEncoding), typeof(WcfBindingWSFederationHTTP));
+		public TextEncoding TextEncoding { get { return (TextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
+		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(TextEncoding), typeof(WcfBindingWSFederationHTTP));
 
 		public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
 		public static readonly DependencyProperty UseDefaultWebProxyProperty = DependencyProperty.Register("UseDefaultWebProxy", typeof(bool), typeof(WcfBindingWSFederationHTTP));
@@ -804,7 +807,7 @@ namespace NETPath.Projects.Wcf
 			ReliableSessionEnabled = false;
 			ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
 			ReliableSessionsOrdered = false;
-			TextEncoding = WcfBindingTextEncoding.UTF8;
+			TextEncoding = TextEncoding.UTF8;
 			TransactionFlow = true;
 			UseDefaultWebProxy = true;
 		}
@@ -846,8 +849,8 @@ namespace NETPath.Projects.Wcf
 		public string ProxyAddress { get { return (string)GetValue(ProxyAddressProperty); } set { SetValue(ProxyAddressProperty, value); } }
 		public static readonly DependencyProperty ProxyAddressProperty = DependencyProperty.Register("ProxyAddress", typeof(string), typeof(WcfBindingWS2007FederationHTTP));
 
-		public WcfBindingTextEncoding TextEncoding { get { return (WcfBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
-		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(WcfBindingTextEncoding), typeof(WcfBindingWS2007FederationHTTP));
+		public TextEncoding TextEncoding { get { return (TextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
+		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(TextEncoding), typeof(WcfBindingWS2007FederationHTTP));
 
 		public bool UseDefaultWebProxy { get { return (bool)GetValue(UseDefaultWebProxyProperty); } set { SetValue(UseDefaultWebProxyProperty, value); } }
 		public static readonly DependencyProperty UseDefaultWebProxyProperty = DependencyProperty.Register("UseDefaultWebProxy", typeof(bool), typeof(WcfBindingWS2007FederationHTTP));
@@ -885,7 +888,7 @@ namespace NETPath.Projects.Wcf
 			ReliableSessionEnabled = false;
 			ReliableSessionInactivityTimeout = new TimeSpan(0, 10, 0);
 			ReliableSessionsOrdered = false;
-			TextEncoding = WcfBindingTextEncoding.UTF8;
+			TextEncoding = TextEncoding.UTF8;
 			TransactionFlow = true;
 			UseDefaultWebProxy = true;
 		}
@@ -1249,8 +1252,8 @@ namespace NETPath.Projects.Wcf
 		public bool CrossDomainScriptAccessEnabled { get { return (bool)GetValue(CrossDomainScriptAccessEnabledProperty); } set { SetValue(CrossDomainScriptAccessEnabledProperty, value); } }
 		public static readonly DependencyProperty CrossDomainScriptAccessEnabledProperty = DependencyProperty.Register("CrossDomainScriptAccessEnabled", typeof(bool), typeof(WcfBindingWebHTTP));
 
-		public WcfBindingTextEncoding WriteEncoding { get { return (WcfBindingTextEncoding)GetValue(WriteEncodingProperty); } set { SetValue(WriteEncodingProperty, value); } }
-		public static readonly DependencyProperty WriteEncodingProperty = DependencyProperty.Register("WriteEncoding", typeof(WcfBindingTextEncoding), typeof(WcfBindingWebHTTP));
+		public TextEncoding WriteEncoding { get { return (TextEncoding)GetValue(WriteEncodingProperty); } set { SetValue(WriteEncodingProperty, value); } }
+		public static readonly DependencyProperty WriteEncodingProperty = DependencyProperty.Register("WriteEncoding", typeof(TextEncoding), typeof(WcfBindingWebHTTP));
 
 		public WcfBindingWebHTTP() : base()
 		{
@@ -1271,7 +1274,7 @@ namespace NETPath.Projects.Wcf
 			MaxReceivedMessageSize = 65536;
 			TransferMode = System.ServiceModel.TransferMode.Buffered;
 			UseDefaultWebProxy = true;
-			WriteEncoding = WcfBindingTextEncoding.UTF8;
+			WriteEncoding = TextEncoding.UTF8;
 		}
 
 		public WcfBindingWebHTTP(string Name, Namespace Parent) : base()
@@ -1297,7 +1300,7 @@ namespace NETPath.Projects.Wcf
 			MaxReceivedMessageSize = 65536;
 			TransferMode = System.ServiceModel.TransferMode.Buffered;
 			UseDefaultWebProxy = true;
-			WriteEncoding = WcfBindingTextEncoding.UTF8;
+			WriteEncoding = TextEncoding.UTF8;
 		}
 	}
 
@@ -1407,8 +1410,8 @@ namespace NETPath.Projects.Wcf
 		public int MaxRetransmitCount { get { return (int)GetValue(MaxRetransmitCountProperty); } set { SetValue(MaxRetransmitCountProperty, value); } }
 		public static readonly DependencyProperty MaxRetransmitCountProperty = DependencyProperty.Register("MaxRetransmitCount", typeof(int), typeof(WcfBindingUDP));
 
-		public WcfBindingTextEncoding TextEncoding { get { return (WcfBindingTextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
-		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(WcfBindingTextEncoding), typeof(WcfBindingUDP));
+		public TextEncoding TextEncoding { get { return (TextEncoding)GetValue(TextEncodingProperty); } set { SetValue(TextEncodingProperty, value); } }
+		public static readonly DependencyProperty TextEncodingProperty = DependencyProperty.Register("TextEncoding", typeof(TextEncoding), typeof(WcfBindingUDP));
 
 		public int TimeToLive { get { return (int)GetValue(TimeToLiveProperty); } set { SetValue(TimeToLiveProperty, value); } }
 		public static readonly DependencyProperty TimeToLiveProperty = DependencyProperty.Register("TimeToLive", typeof(int), typeof(WcfBindingUDP), new PropertyMetadata(64));
@@ -1433,7 +1436,7 @@ namespace NETPath.Projects.Wcf
 			MaxPendingMessagesTotalSize = 65536;
 			MaxReceivedMessageSize = 65536;
 			MaxRetransmitCount = 10;
-			TextEncoding = WcfBindingTextEncoding.UTF8;
+			TextEncoding = TextEncoding.UTF8;
 			TimeToLive = 64;
 		}
 	}

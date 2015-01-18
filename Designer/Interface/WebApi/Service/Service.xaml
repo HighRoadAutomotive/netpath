@@ -3,10 +3,10 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d"
-	xmlns:Service="clr-namespace:NETPath.Interface.Wcf.Service"
 	xmlns:Data="clr-namespace:NETPath.Interface.Data"
 	xmlns:Projects="clr-namespace:NETPath.Projects.WebApi;assembly=NETPath.Projects"
 	xmlns:Docs="clr-namespace:NETPath.Interface.Documentation"
+	xmlns:Rest="clr-namespace:NETPath.Interface.WebApi.Service"
 	xmlns:pc="http://schemas.ellipticbit.com/controls"
 	d:DesignHeight="950" d:DesignWidth="1000" DataContext="{Binding RelativeSource={RelativeSource Self}}" UseLayoutRounding="True" >
 	<Grid.Resources>
@@ -14,9 +14,11 @@
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="pack://application:,,,/NETPath;component/Themes/Colors.xaml" />
 				<ResourceDictionary>
-					<pc:LongConverter x:Key="LongConverter" />
-					<pc:IntConverter x:Key="IntConverter" />
-					<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
+					<Rest:RestSerializationConverter x:Key="RestSerializationConverter" />
+					<Rest:ClientCertificateOptionConverter x:Key="ClientCertificateOptionConverter" />
+					<Rest:CookieContainerModeConverter x:Key="CookieContainerModeConverter" />
+					<Rest:CredentialsModeConverter x:Key="CredentialsModeConverter" />
+					<Rest:DecompressionMethodsConverter x:Key="DecompressionMethodsConverter" />
 
 					<DataTemplate x:Key="{x:Type Projects:WebApiMethod}" DataType="{x:Type Projects:WebApiMethod}">
 						<Border Background="#01FFFFFF">
@@ -68,51 +70,12 @@
 							</DataTrigger>
 						</DataTemplate.Triggers>
 					</DataTemplate>
-
-					<DataTemplate x:Key="WebApiHttpConfigurationTemplate" DataType="{x:Type Projects:WebApiHttpConfiguration}">
-						<Grid Name="ItemGrid" >
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="Auto" />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
-							<Border x:Name="ItemBG" Grid.ColumnSpan="2" Background="Transparent" CornerRadius="5" />
-							<StackPanel Orientation="Vertical" Margin="3">
-								<StackPanel Orientation="Horizontal">
-									<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/HttpClientConfig.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
-									<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="11pt" />
-								</StackPanel>
-							</StackPanel>
-							<Button Grid.Column="1" x:Name="DeleteOperation" Visibility="Collapsed" Margin="0" Padding="0" Width="30" Style="{StaticResource ListItemButtonRight}" Click="DeleteConfiguration_Click">
-								<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
-							</Button>
-						</Grid>
-						<DataTemplate.Triggers>
-							<MultiDataTrigger>
-								<MultiDataTrigger.Conditions>
-									<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True" />
-									<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="False" />
-								</MultiDataTrigger.Conditions>
-								<Setter TargetName="ItemBG" Property="Background" Value="{StaticResource MouseOverBackgroundColor}" />
-							</MultiDataTrigger>
-							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True" >
-								<Setter TargetName="DeleteOperation" Property="Visibility" Value="Visible" />
-							</DataTrigger>
-							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True" >
-								<Setter TargetName="ItemBG" Property="Background" Value="{StaticResource DefaultSelectionColor}" />
-							</DataTrigger>
-						</DataTemplate.Triggers>
-					</DataTemplate>
 				</ResourceDictionary>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Grid.Resources>
 
 	<Grid.RowDefinitions>
-		<RowDefinition Height="Auto" />
-		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
 		<RowDefinition Height="Auto" />
@@ -126,18 +89,7 @@
 	<Data:TypeEditor OpenType="{Binding Path=ServiceType}" CanSetType="False" SupportInheritedTypes="False" SupportKnownTypes="True" Grid.Row="0" Grid.Column="1" Margin="0" />
 	<Data:TargetSelector Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" OpenType="{Binding Path=ServiceType}" IsServerType="True" Visibility="Visible" />
 	<Data:TargetSelector Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" OpenType="{Binding Path=ServiceType}" IsServerType="False" Visibility="Visible" />
-	<Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Content="Options" FontSize="12pt" Margin="0,5,0,0" />
-	<Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
-		<ToggleButton IsChecked="{Binding Path=ServiceType.GenerateServer}" Content="Generate Server Code" Margin="5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="0" />
-		<ToggleButton IsChecked="{Binding Path=ServiceType.GenerateClient}" Content="Generate Client Code" Margin="5" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0" />
-	</Grid>
-	<TabControl Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,10,0,0">
+	<TabControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,10,0,0">
 		<TabItem Padding="10,5" IsSelected="True">
 			<TabItem.Header>
 				<TextBlock Text="Operations" FontSize="12pt"/>
@@ -167,37 +119,117 @@
 				</Grid>
 			</Grid>
 		</TabItem>
-		<TabItem Padding="10,5" IsSelected="True">
+		<TabItem Padding="10,5">
 			<TabItem.Header>
-				<TextBlock Text="Client Configurations" FontSize="12pt"/>
+				<TextBlock Text="Server" FontSize="12pt"/>
 			</TabItem.Header>
-			<Grid Margin="0,5,5,0">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-				</Grid.ColumnDefinitions>
+			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="*" />
 				</Grid.RowDefinitions>
-				<Label Grid.Row="0" Grid.Column="0" Margin="0,5,0,5" Padding="8,2,0,2" Content="Add Configuration:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="Auto" />
-				<pc:TextBox x:Name="AddHttpConfigurationName" LabelText="Name" Grid.Row="0" Grid.Column="1" Margin="5" Validate="AddHttpConfigurationName_Validate" />
-				<Button x:Name="AddHttpConfiguration" Grid.Row="0" Grid.Column="3" Margin="5" Content="Add HttpClient Configuration" HorizontalAlignment="Right" IsEnabled="False" Click="AddHttpConfiguration_Click" />
-				<Grid Grid.Row="1" Margin="0,5,0,0" Grid.ColumnSpan="4">
+			</Grid>
+		</TabItem>
+		<TabItem Padding="10,5">
+			<TabItem.Header>
+				<TextBlock Text="Client" FontSize="12pt"/>
+			</TabItem.Header>
+			<Grid DataContext="{Binding Path=ServiceType.RequestConfiguration}">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+				<Label Grid.Row="0" Content="Request" FontSize="12pt" Margin="0,5,0,0" />
+				<Grid Grid.Row="1">
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="230" />
-						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
 					</Grid.ColumnDefinitions>
-					<ListBox x:Name="ConfigurationList" Grid.Column="0" ItemsSource="{Binding Path=ServiceType.RequestConfigurations}" ItemTemplate="{StaticResource WebApiHttpConfigurationTemplate}" AllowDrop="True" BorderThickness="0" Background="Transparent" Margin="0" SelectionMode="Single" Padding="-1,0" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.IsVirtualizing="False" SelectionChanged="ConfigurationList_SelectionChanged" />
-					<ContentPresenter Grid.Column="1" Margin="5,0,0,0" Content="{Binding Path=ActiveConfiguration}" />
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<Label Content="Request Format:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" />
+					<ComboBox Height="23" Margin="130,5,5,5" SelectedIndex="{Binding Path=RequestFormat, Converter={StaticResource RestSerializationConverter}}" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" >
+						<ComboBoxItem Content="JSON" />
+						<ComboBoxItem Content="BSON" />
+						<ComboBoxItem Content="XML" />
+					</ComboBox>
+					<Label Content="Response Format:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="1" />
+					<ComboBox Height="23" Margin="130,5,5,5" SelectedIndex="{Binding Path=ResponseFormat, Converter={StaticResource RestSerializationConverter}}" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="1" >
+						<ComboBoxItem Content="JSON" />
+						<ComboBoxItem Content="BSON" />
+						<ComboBoxItem Content="XML" />
+					</ComboBox>
+					<ToggleButton Content="Allow Automatic Redirects" IsChecked="{Binding Path=AllowAutoRedirect}" Margin="5" Grid.Column="0" Grid.Row="1" />
+					<Label Content="Max Automatic Redirections:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
+					<pc:IntegerTextBox Value="{Binding Path=MaxAutomaticRedirections}" Margin="175,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Grid.Column="1" Grid.Row="1" FontSize="10pt" />
+					<ToggleButton Content="Use Proxy" IsChecked="{Binding Path=UseProxy}" Margin="5" Grid.Column="1" Grid.Row="2" />
+					<ToggleButton Content="Use HTTP 1.0" IsChecked="{Binding Path=UseHTTP10}" Margin="5" Grid.Column="0" Grid.Row="2" />
+					<Label Content="Automatic Decompression:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="3" />
+					<ComboBox Height="23" Margin="165,5,5,5" SelectedIndex="{Binding Path=AutomaticDecompression, Converter={StaticResource DecompressionMethodsConverter}}" Grid.Column="0" Grid.Row="3" >
+						<ComboBoxItem Content="None" />
+						<ComboBoxItem Content="GZip" />
+						<ComboBoxItem Content="Deflate" />
+					</ComboBox>
+				</Grid>
+				<Label Grid.Row="2" Content="Security" FontSize="12pt" Margin="0,5,0,0" />
+				<Grid Grid.Row="3">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<ToggleButton Content="Use Default Credentials" IsChecked="{Binding Path=UseDefaultCredentials}" Margin="5" Grid.Column="0" Grid.Row="0" />
+					<Label Content="Credentials Mode:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0" />
+					<ComboBox Height="23" Margin="120,5,5,5" SelectedIndex="{Binding Path=CredentialsMode, Converter={StaticResource CredentialsModeConverter}}" Grid.Column="1" Grid.Row="0" >
+						<ComboBoxItem Content="None" />
+						<ComboBoxItem Content="Allowed" />
+						<ComboBoxItem Content="Required" />
+					</ComboBox>
+					<Label Content="Client Certificate Mode:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="2" Grid.Row="0" />
+					<ComboBox Height="23" Margin="150,5,5,5" SelectedIndex="{Binding Path=ClientCertificateOptions, Converter={StaticResource ClientCertificateOptionConverter}}" Grid.Column="2" Grid.Row="0" >
+						<ComboBoxItem Content="Manual" />
+						<ComboBoxItem Content="Automatic" />
+					</ComboBox>
+					<ToggleButton Content="Pre-Authenticate" IsChecked="{Binding Path=PreAuthenticate}" Margin="5" Grid.Column="0" Grid.Row="1" />
+					<Label Content="Cookie Container:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
+					<ComboBox Height="23" Margin="120,5,5,5" SelectedIndex="{Binding Path=CookieContainerMode, Converter={StaticResource CookieContainerModeConverter}}" Grid.Column="1" Grid.Row="1" >
+						<ComboBoxItem Content="None" />
+						<ComboBoxItem Content="Instance" />
+						<ComboBoxItem Content="Global" />
+						<ComboBoxItem Content="Custom" />
+					</ComboBox>
+				</Grid>
+				<Label Grid.Row="4" Content="Content" FontSize="12pt" Margin="0,5,0,0" />
+				<Grid Grid.Row="5">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<Label Content="Max Request Content Buffer Size:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="0" />
+					<pc:IntegerTextBox Value="{Binding Path=MaxRequestContentBufferSize}" Margin="205,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Grid.Column="0" Grid.Row="0" FontSize="10pt" />
 				</Grid>
 			</Grid>
 		</TabItem>
 		<TabItem Padding="10,5">
 			<TabItem.Header>
-				<TextBlock Text="Host" FontSize="12pt"/>
+				<TextBlock Text="Formatting" FontSize="12pt"/>
 			</TabItem.Header>
 			<Grid>
 				<Grid.RowDefinitions>

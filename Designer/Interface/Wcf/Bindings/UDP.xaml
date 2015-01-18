@@ -9,7 +9,7 @@
 	xmlns:Bindings="clr-namespace:NETPath.Interface.Wcf.Bindings"
 	d:DesignHeight="950" d:DesignWidth="1000" DataContext="{Binding RelativeSource={RelativeSource Self}}" UseLayoutRounding="True" >
 	<Grid.Resources>
-		<Bindings:WcfBindingTextEncodingConverter x:Key="WcfBindingTextEncodingConverter" />
+		<Bindings:TextEncodingConverter x:Key="TextEncodingConverter" />
 		<pc:LongConverter x:Key="LongConverter" />
 		<pc:IntConverter x:Key="IntConverter" />
 	</Grid.Resources>
@@ -91,7 +91,7 @@
 		<Label Content="Time To Live:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
 		<pc:TextBox Text="{Binding Path=Binding.TimeToLive, Converter={StaticResource IntConverter}}" Name="TimeToLive" Height="23" Margin="100,5,5,5" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" Validate="TimeToLive_Validate" />
 		<Label Content="Text Encoding:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
-		<ComboBox Height="23" Margin="100,5,5,5" SelectedIndex="{Binding Path=Binding.TextEncoding, Converter={StaticResource WcfBindingTextEncodingConverter}}" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" >
+		<ComboBox Height="23" Margin="100,5,5,5" SelectedIndex="{Binding Path=Binding.TextEncoding, Converter={StaticResource TextEncodingConverter}}" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" >
 			<ComboBox.Items>
 				<ComboBoxItem Content="ASCII" />
 				<ComboBoxItem Content="UTF7" />

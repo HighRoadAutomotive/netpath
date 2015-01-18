@@ -12,7 +12,7 @@
 		<pc:LongConverter x:Key="LongConverter" />
 		<Bindings:HostNameComparisonModeConverter x:Key="HostNameComparisonModeConverter" />
 		<Bindings:WSMessageEncodingConverter x:Key="WSMessageEncodingConverter" />
-		<Bindings:WcfBindingTextEncodingConverter x:Key="WcfBindingTextEncodingConverter" />
+		<Bindings:TextEncodingConverter x:Key="TextEncodingConverter" />
 		<Bindings:SecurityModeConverter x:Key="SecurityModeConverter" />
 		<Bindings:WcfSecurityAlgorithmSuiteConverter x:Key="WcfSecurityAlgorithmSuiteConverter" />
 		<Bindings:MessageCredentialTypeConverter x:Key="MessageCredentialTypeConverter" />
@@ -124,7 +124,7 @@
 			</ComboBox.Items>
 		</ComboBox>
 		<Label Content="Text Encoding:" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="3" />
-		<ComboBox Height="23" Margin="200,5,5,5" SelectedIndex="{Binding Path=Binding.TextEncoding, Converter={StaticResource WcfBindingTextEncodingConverter}}" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="3" >
+		<ComboBox Height="23" Margin="200,5,5,5" SelectedIndex="{Binding Path=Binding.TextEncoding, Converter={StaticResource TextEncodingConverter}}" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="3" >
 			<ComboBox.Items>
 				<ComboBoxItem Content="ASCII" />
 				<ComboBoxItem Content="UTF7" />

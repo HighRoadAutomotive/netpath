@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.CodeDom;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ using System.ServiceModel.Web;
 using System.Net;
 using System.Net.Http;
 using System.Net.Cache;
+using System.Xml;
 
 namespace NETPath.Projects.WebApi
 {
@@ -21,8 +23,11 @@ namespace NETPath.Projects.WebApi
 		public ObservableCollection<WebApiMethod> ServiceOperations { get { return (ObservableCollection<WebApiMethod>)GetValue(ServiceOperationsProperty); } set { SetValue(ServiceOperationsProperty, value); } }
 		public static readonly DependencyProperty ServiceOperationsProperty = DependencyProperty.Register("ServiceOperations", typeof(ObservableCollection<WebApiMethod>), typeof(WebApiService));
 
-		public ObservableCollection<WebApiHttpConfiguration> RequestConfigurations { get { return (ObservableCollection<WebApiHttpConfiguration>)GetValue(RequestConfigurationsProperty); } set { SetValue(RequestConfigurationsProperty, value); } }
-		public static readonly DependencyProperty RequestConfigurationsProperty = DependencyProperty.Register("RequestConfigurations", typeof(ObservableCollection<WebApiHttpConfiguration>), typeof(ObservableCollection<WebApiHttpConfiguration>));
+		public WebApiHttpConfiguration RequestConfiguration { get { return (WebApiHttpConfiguration)GetValue(RequestConfigurationProperty); } set { SetValue(RequestConfigurationProperty, value); } }
+		public static readonly DependencyProperty RequestConfigurationProperty = DependencyProperty.Register("RequestConfiguration", typeof(WebApiHttpConfiguration), typeof(WebApiService));
+
+		public WebApiJsonSettings JsonConfiguration { get { return (WebApiJsonSettings)GetValue(JsonConfigurationProperty); } set { SetValue(JsonConfigurationProperty, value); } }
+		public static readonly DependencyProperty JsonConfigurationProperty = DependencyProperty.Register("JsonConfiguration", typeof(WebApiJsonSettings), typeof(WebApiService));
 
 		public Documentation ServiceDocumentation { get { return (Documentation)GetValue(ServiceDocumentationProperty); } set { SetValue(ServiceDocumentationProperty, value); } }
 		public static readonly DependencyProperty ServiceDocumentationProperty = DependencyProperty.Register("ServiceDocumentation", typeof(Documentation), typeof(WebApiService));
@@ -36,7 +41,6 @@ namespace NETPath.Projects.WebApi
 		{
 			ID = Guid.NewGuid();
 			ServiceOperations = new ObservableCollection<WebApiMethod>();
-			RequestConfigurations = new ObservableCollection<WebApiHttpConfiguration>();
 			ServiceDocumentation = new Documentation { IsClass = true };
 		}
 
@@ -45,7 +49,7 @@ namespace NETPath.Projects.WebApi
 			this.Name = Name;
 			this.Parent = Parent;
 			ServiceOperations = new ObservableCollection<WebApiMethod>();
-			RequestConfigurations = new ObservableCollection<WebApiHttpConfiguration>();
+			RequestConfiguration = new WebApiHttpConfiguration();
 			ID = Guid.NewGuid();
 			ServiceDocumentation = new Documentation { IsClass = true };
 		}
@@ -130,9 +134,6 @@ namespace NETPath.Projects.WebApi
 		public WebApiMethodVerbs Method { get { return (WebApiMethodVerbs)GetValue(MethodProperty); } set { SetValue(MethodProperty, value); } }
 		public static readonly DependencyProperty MethodProperty = DependencyProperty.Register("Method", typeof(WebApiMethodVerbs), typeof(WebApiMethod), new PropertyMetadata(WebApiMethodVerbs.Get));
 
-		public WebApiHttpConfiguration RequestConfiguration { get { return (WebApiHttpConfiguration)GetValue(RequestConfigurationProperty); } set { SetValue(RequestConfigurationProperty, value); } }
-		public static readonly DependencyProperty RequestConfigurationProperty = DependencyProperty.Register("RequestConfiguration", typeof(WebApiHttpConfiguration), typeof(WebApiMethod), new PropertyMetadata(null));
-
 		public bool DeserializeContent { get { return (bool)GetValue(DeserializeContentProperty); } set { SetValue(DeserializeContentProperty, value); } }
 		public static readonly DependencyProperty DeserializeContentProperty = DependencyProperty.Register("DeserializeContent", typeof(bool), typeof(WebApiMethod), new PropertyMetadata(true));
 
@@ -176,7 +177,6 @@ namespace NETPath.Projects.WebApi
 			QueryParameters.CollectionChanged += Parameters_CollectionChanged;
 			ReturnType = new DataType(PrimitiveTypes.Void);
 			Documentation = new Documentation { IsMethod = true };
-			RequestConfiguration = Owner.RequestConfigurations.FirstOrDefault();
 		}
 
 		public WebApiMethod(DataType ReturnType, string Name, WebApiService Owner)
@@ -191,7 +191,6 @@ namespace NETPath.Projects.WebApi
 			QueryParameters.CollectionChanged += Parameters_CollectionChanged;
 			this.ReturnType = ReturnType;
 			Documentation = new Documentation { IsMethod = true };
-			RequestConfiguration = Owner.RequestConfigurations.FirstOrDefault();
 		}
 
 		public override string ToString()
@@ -377,15 +376,6 @@ namespace NETPath.Projects.WebApi
 
 	public class WebApiHttpConfiguration : DependencyObject
 	{
-		//System
-		public Guid ID { get; set; }
-
-		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
-		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(WebApiHttpConfiguration), new PropertyMetadata(""));
-
-		public bool IsSelected { get { return (bool)GetValue(IsSelectedProperty); } set { SetValue(IsSelectedProperty, value); } }
-		public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.Register("IsSelected", typeof(bool), typeof(WebApiHttpConfiguration), new PropertyMetadata(false));
-
 		//HTTP Request Configuration
 		public bool AllowAutoRedirect { get { return (bool)GetValue(AllowAutoRedirectProperty); } set { SetValue(AllowAutoRedirectProperty, value); } }
 		public static readonly DependencyProperty AllowAutoRedirectProperty = DependencyProperty.Register("AllowAutoRedirect", typeof(bool), typeof(WebApiHttpConfiguration), new PropertyMetadata(true));
@@ -427,15 +417,75 @@ namespace NETPath.Projects.WebApi
 		public long MaxRequestContentBufferSize { get { return (long)GetValue(MaxRequestContentBufferSizeProperty); } set { SetValue(MaxRequestContentBufferSizeProperty, value); } }
 		public static readonly DependencyProperty MaxRequestContentBufferSizeProperty = DependencyProperty.Register("MaxRequestContentBufferSize", typeof(long), typeof(WebApiHttpConfiguration), new PropertyMetadata(2147483647L));
 
-		public WebApiHttpConfiguration()
-		{
-			ID = Guid.NewGuid();
-		}
+		public WebApiHttpConfiguration() { }
+	}
 
-		public WebApiHttpConfiguration(string Name)
-		{
-			ID = Guid.NewGuid();
-			this.Name = Name;
-		}
+	public class WebApiJsonSettings : DependencyObject
+	{
+		public ConstructorHandling ConstructorHandling { get { return (ConstructorHandling)GetValue(ConstructorHandlingProperty); } set { SetValue(ConstructorHandlingProperty, value); } }
+		public static readonly DependencyProperty ConstructorHandlingProperty = DependencyProperty.Register("ConstructorHandling", typeof(ConstructorHandling), typeof(WebApiJsonSettings), new PropertyMetadata(ConstructorHandling.Default));
+
+		public DateFormatHandling DateFormatHandling { get { return (DateFormatHandling)GetValue(DateFormatHandlingProperty); } set { SetValue(DateFormatHandlingProperty, value); } }
+		public static readonly DependencyProperty DateFormatHandlingProperty = DependencyProperty.Register("DateFormatHandling", typeof(DateFormatHandling), typeof(WebApiJsonSettings), new PropertyMetadata(DateFormatHandling.IsoDateFormat));
+
+		public string DateFormatString { get { return (string)GetValue(DateFormatStringProperty); } set { SetValue(DateFormatStringProperty, value); } }
+		public static readonly DependencyProperty DateFormatStringProperty = DependencyProperty.Register("DateFormatString", typeof(string), typeof(WebApiJsonSettings), new PropertyMetadata("s"));
+
+		public DateParseHandling DateParseHandling { get { return (DateParseHandling)GetValue(DateParseHandlingProperty); } set { SetValue(DateParseHandlingProperty, value); } }
+		public static readonly DependencyProperty DateParseHandlingProperty = DependencyProperty.Register("DateParseHandling", typeof(DateParseHandling), typeof(WebApiJsonSettings), new PropertyMetadata(DateParseHandling.DateTime));
+
+		public DateTimeZoneHandling DateTimeZoneHandling { get { return (DateTimeZoneHandling)GetValue(DateTimeZoneHandlingProperty); } set { SetValue(DateTimeZoneHandlingProperty, value); } }
+		public static readonly DependencyProperty DateTimeZoneHandlingProperty = DependencyProperty.Register("DateTimeZoneHandling", typeof(DateTimeZoneHandling), typeof(WebApiJsonSettings), new PropertyMetadata(DateTimeZoneHandling.Local));
+
+		public DefaultValueHandling DefaultValueHandling { get { return (DefaultValueHandling)GetValue(DefaultValueHandlingProperty); } set { SetValue(DefaultValueHandlingProperty, value); } }
+		public static readonly DependencyProperty DefaultValueHandlingProperty = DependencyProperty.Register("DefaultValueHandling", typeof(DefaultValueHandling), typeof(WebApiJsonSettings), new PropertyMetadata(DefaultValueHandling.Ignore));
+
+		public FloatFormatHandling FloatFormatHandling { get { return (FloatFormatHandling)GetValue(FloatFormatHandlingProperty); } set { SetValue(FloatFormatHandlingProperty, value); } }
+		public static readonly DependencyProperty FloatFormatHandlingProperty = DependencyProperty.Register("FloatFormatHandling ", typeof(FloatFormatHandling), typeof(WebApiJsonSettings), new PropertyMetadata(FloatFormatHandling.String));
+
+		public FloatParseHandling FloatParseHandling { get { return (FloatParseHandling)GetValue(FloatParseHandlingProperty); } set { SetValue(FloatParseHandlingProperty, value); } }
+		public static readonly DependencyProperty FloatParseHandlingProperty = DependencyProperty.Register("FloatParseHandling ", typeof(FloatParseHandling), typeof(WebApiJsonSettings), new PropertyMetadata(FloatParseHandling.Decimal));
+
+		public Newtonsoft.Json.Formatting Formatting { get { return (Newtonsoft.Json.Formatting)GetValue(FormattingProperty); } set { SetValue(FormattingProperty, value); } }
+		public static readonly DependencyProperty FormattingProperty = DependencyProperty.Register("Formatting ", typeof(Newtonsoft.Json.Formatting), typeof(WebApiJsonSettings), new PropertyMetadata(Newtonsoft.Json.Formatting.None));
+
+		public int MaxDepth { get { return (int)GetValue(MaxDepthProperty); } set { SetValue(MaxDepthProperty, value); } }
+		public static readonly DependencyProperty MaxDepthProperty = DependencyProperty.Register("MaxDepth ", typeof(int), typeof(WebApiJsonSettings), new PropertyMetadata(int.MaxValue));
+
+		public MetadataPropertyHandling MetadataPropertyHandling { get { return (MetadataPropertyHandling)GetValue(MetadataPropertyHandlingProperty); } set { SetValue(MetadataPropertyHandlingProperty, value); } }
+		public static readonly DependencyProperty MetadataPropertyHandlingProperty = DependencyProperty.Register("MetadataPropertyHandling ", typeof(MetadataPropertyHandling), typeof(WebApiJsonSettings), new PropertyMetadata(MetadataPropertyHandling.Default));
+
+		public MissingMemberHandling MissingMemberHandling { get { return (MissingMemberHandling)GetValue(MissingMemberHandlingProperty); } set { SetValue(MissingMemberHandlingProperty, value); } }
+		public static readonly DependencyProperty MissingMemberHandlingProperty = DependencyProperty.Register("MissingMemberHandling ", typeof(MissingMemberHandling), typeof(WebApiJsonSettings), new PropertyMetadata(MissingMemberHandling.Ignore));
+
+		public NullValueHandling NullValueHandling { get { return (NullValueHandling)GetValue(NullValueHandlingProperty); } set { SetValue(NullValueHandlingProperty, value); } }
+		public static readonly DependencyProperty NullValueHandlingProperty = DependencyProperty.Register("NullValueHandling ", typeof(NullValueHandling), typeof(WebApiJsonSettings), new PropertyMetadata(NullValueHandling.Ignore));
+
+		public ObjectCreationHandling ObjectCreationHandling { get { return (ObjectCreationHandling)GetValue(ObjectCreationHandlingProperty); } set { SetValue(ObjectCreationHandlingProperty, value); } }
+		public static readonly DependencyProperty ObjectCreationHandlingProperty = DependencyProperty.Register("NullValueHandling ", typeof(ObjectCreationHandling), typeof(WebApiJsonSettings), new PropertyMetadata(ObjectCreationHandling.Auto));
+
+		public PreserveReferencesHandling PreserveReferencesHandling { get { return (PreserveReferencesHandling)GetValue(PreserveReferencesHandlingProperty); } set { SetValue(PreserveReferencesHandlingProperty, value); } }
+		public static readonly DependencyProperty PreserveReferencesHandlingProperty = DependencyProperty.Register("PreserveReferencesHandling ", typeof(PreserveReferencesHandling), typeof(WebApiJsonSettings), new PropertyMetadata(PreserveReferencesHandling.None));
+
+		public ReferenceLoopHandling ReferenceLoopHandling { get { return (ReferenceLoopHandling)GetValue(ReferenceLoopHandlingProperty); } set { SetValue(ReferenceLoopHandlingProperty, value); } }
+		public static readonly DependencyProperty ReferenceLoopHandlingProperty = DependencyProperty.Register("ReferenceLoopHandling ", typeof(ReferenceLoopHandling), typeof(WebApiJsonSettings), new PropertyMetadata(ReferenceLoopHandling.Ignore));
+
+		public StringEscapeHandling StringEscapeHandling { get { return (StringEscapeHandling)GetValue(StringEscapeHandlingProperty); } set { SetValue(StringEscapeHandlingProperty, value); } }
+		public static readonly DependencyProperty StringEscapeHandlingProperty = DependencyProperty.Register("StringEscapeHandling ", typeof(StringEscapeHandling), typeof(WebApiJsonSettings), new PropertyMetadata(StringEscapeHandling.Default));
+
+		public System.Runtime.Serialization.Formatters.FormatterAssemblyStyle TypeNameAssemblyFormat { get { return (System.Runtime.Serialization.Formatters.FormatterAssemblyStyle)GetValue(TypeNameAssemblyFormatProperty); } set { SetValue(TypeNameAssemblyFormatProperty, value); } }
+		public static readonly DependencyProperty TypeNameAssemblyFormatProperty = DependencyProperty.Register("TypeNameAssemblyFormat ", typeof(System.Runtime.Serialization.Formatters.FormatterAssemblyStyle), typeof(WebApiJsonSettings), new PropertyMetadata(System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple));
+
+		public TypeNameHandling TypeNameHandling { get { return (TypeNameHandling)GetValue(TypeNameHandlingProperty); } set { SetValue(TypeNameHandlingProperty, value); } }
+		public static readonly DependencyProperty TypeNameHandlingProperty = DependencyProperty.Register("TypeNameHandling ", typeof(TypeNameHandling), typeof(WebApiJsonSettings), new PropertyMetadata(TypeNameHandling.Auto));
+	}
+
+	public class WebApiXmlSettings : DependencyObject
+	{
+		public bool CheckCharacters { get { return (bool)GetValue(CheckCharactersProperty); } set { SetValue(CheckCharactersProperty, value); } }
+		public static readonly DependencyProperty CheckCharactersProperty = DependencyProperty.Register("CheckCharacters", typeof(bool), typeof(WebApiXmlSettings), new PropertyMetadata(false));
+
+		public ConformanceLevel ConformanceLevel { get { return (ConformanceLevel)GetValue(ConformanceLevelProperty); } set { SetValue(ConformanceLevelProperty, value); } }
+		public static readonly DependencyProperty ConformanceLevelProperty = DependencyProperty.Register("ConformanceLevel ", typeof(ConformanceLevel), typeof(WebApiXmlSettings), new PropertyMetadata(ConformanceLevel.Auto));
 	}
 }

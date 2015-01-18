@@ -51,8 +51,6 @@ namespace NETPath.Generators.CS.WebApi
 					AddMessage(new CompileMessage("GS2012", "The method return type '" + m.ReturnType + "' in the '" + o.Name + "' service is not a valid Rest return type. Please specify a valid Rest return type.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
 				if (m.ReturnType.TypeMode == DataTypeMode.Namespace || m.ReturnType.TypeMode == DataTypeMode.Interface)
 					AddMessage(new CompileMessage("GS2013", "The method return type '" + m.ReturnType + "' in the '" + o.Name + "' service is not a valid return type. Please specify a valid return type.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
-				if (m.RequestConfiguration == null)
-					AddMessage(new CompileMessage("GS2017", "The Request Configuration type in method '" + m.Name + "' in the '" + o.Name + "' service is not set. A Request Configuration MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
 
 				foreach (var mp in m.RouteParameters)
 				{
@@ -97,8 +95,6 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t\t#region Constructors");
 				code.AppendLine();
 			}
-
-			var conf = o.RequestConfigurations.FirstOrDefault();
 
 			code.AppendLine(string.Format("\t\tpublic {0}Controller() : base()", o.Name));
 			code.AppendLine("\t\t{");
@@ -168,11 +164,8 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t\t#region Request Configurations");
 				code.AppendLine();
 			}
-			foreach (WebApiHttpConfiguration c in o.RequestConfigurations.Where(a => a.GetType() == typeof(WebApiHttpConfiguration)).Select(t => t).Where(c => o.ServiceOperations.Any(a => Equals(a.RequestConfiguration, c))))
-			{
-				code.AppendLine(string.Format("\t\tprivate System.Net.Http.HttpClient _{0}Client;", RegExs.ReplaceSpaces.Replace(c.Name, "")));
-				code.AppendLine(string.Format("\t\tprotected System.Net.Http.HttpClient {0}Client {{ get {{ return _{0}Client; }} }}", RegExs.ReplaceSpaces.Replace(c.Name, "")));
-			}
+			code.AppendLine(string.Format("\t\tprivate readonly System.Net.Http.HttpClient _HttpClient;"));
+			code.AppendLine(string.Format("\t\tprotected System.Net.Http.HttpClient HttpClient {{ get {{ return _HttpClient; }} }}"));
 			code.AppendLine();
 			if (o.Parent.Owner.GenerateRegions)
 			{
@@ -192,17 +185,12 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\t\t_credentials = credentials;");
 			code.AppendLine("\t\t\t_credentialCache = credentialCache;");
 			code.AppendLine("\t\t\t_proxy = proxy;");
-			code.AppendLine("\t\t\tInitialize();");
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t\tprivate void Initialize()");
-			code.AppendLine("\t\t{");
-			foreach (WebApiHttpConfiguration c in o.RequestConfigurations.Where(a => a.GetType() == typeof(WebApiHttpConfiguration)).Select(t => t).Where(c => o.ServiceOperations.Any(a => Equals(a.RequestConfiguration, c))))
-				code.AppendLine(string.Format("\t\t\t_{0}Client = new System.Net.Http.HttpClient(new System.Net.Http.HttpClientHandler() {{ AllowAutoRedirect = {1}, AutomaticDecompression = System.Net.DecompressionMethods.{2}, ClientCertificateOptions = System.Net.Http.ClientCertificateOption.{3}, CookieContainer = {4}, Credentials = (this.Credentials == null) ? (ICredentials)this.CredentialCache : (ICredentials)this.Credentials, MaxAutomaticRedirections = {5}, MaxRequestContentBufferSize = {6}, PreAuthenticate = {7}, Proxy = this.Proxy, UseCookies = {8}, UseDefaultCredentials = {9}, UseProxy = {10} }});",
-					RegExs.ReplaceSpaces.Replace(c.Name, ""), c.AllowAutoRedirect ? bool.TrueString.ToLower() : bool.FalseString.ToLower(), c.AutomaticDecompression, c.ClientCertificateOptions,
-					c.CookieContainerMode == CookieContainerMode.None ? "null" : c.CookieContainerMode == CookieContainerMode.Instance ? "new CookieContainer()" : "Cookies",
-					c.MaxAutomaticRedirections, c.MaxRequestContentBufferSize, c.PreAuthenticate ? bool.TrueString.ToLower() : bool.FalseString.ToLower(),
-					(c.CookieContainerMode == CookieContainerMode.None || c.CookieContainerMode == CookieContainerMode.Custom) ? bool.FalseString.ToLower() : bool.TrueString.ToLower(),
-					c.UseDefaultCredentials ? bool.TrueString.ToLower() : bool.FalseString.ToLower(), c.UseProxy ? bool.TrueString.ToLower() : bool.FalseString.ToLower()));
+			code.AppendLine(string.Format("\t\t\t_HttpClient = new System.Net.Http.HttpClient(new System.Net.Http.HttpClientHandler() {{ AllowAutoRedirect = {0}, AutomaticDecompression = System.Net.DecompressionMethods.{1}, ClientCertificateOptions = System.Net.Http.ClientCertificateOption.{2}, CookieContainer = {3}, Credentials = (this.Credentials == null) ? (ICredentials)this.CredentialCache : (ICredentials)this.Credentials, MaxAutomaticRedirections = {4}, MaxRequestContentBufferSize = {5}, PreAuthenticate = {6}, Proxy = this.Proxy, UseCookies = {7}, UseDefaultCredentials = {8}, UseProxy = {9} }});",
+				o.RequestConfiguration.AllowAutoRedirect ? bool.TrueString.ToLower() : bool.FalseString.ToLower(), o.RequestConfiguration.AutomaticDecompression, o.RequestConfiguration.ClientCertificateOptions,
+				o.RequestConfiguration.CookieContainerMode == CookieContainerMode.None ? "null" : o.RequestConfiguration.CookieContainerMode == CookieContainerMode.Instance ? "new CookieContainer()" : "Cookies",
+				o.RequestConfiguration.MaxAutomaticRedirections, o.RequestConfiguration.MaxRequestContentBufferSize, o.RequestConfiguration.PreAuthenticate ? bool.TrueString.ToLower() : bool.FalseString.ToLower(),
+				(o.RequestConfiguration.CookieContainerMode == CookieContainerMode.None || o.RequestConfiguration.CookieContainerMode == CookieContainerMode.Custom) ? bool.FalseString.ToLower() : bool.TrueString.ToLower(),
+				o.RequestConfiguration.UseDefaultCredentials ? bool.TrueString.ToLower() : bool.FalseString.ToLower(), o.RequestConfiguration.UseProxy ? bool.TrueString.ToLower() : bool.FalseString.ToLower()));
 			code.AppendLine("\t\t}");
 			code.AppendLine();
 			if (o.Parent.Owner.GenerateRegions)
@@ -215,7 +203,7 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t\t#region Methods");
 				code.AppendLine();
 			}
-			foreach (WebApiMethod m in o.ServiceOperations.Where(a => a.RequestConfiguration.GetType() == typeof(WebApiHttpConfiguration)))
+			foreach (WebApiMethod m in o.ServiceOperations)
 				code.AppendLine(m.ClientAsync ? GenerateClientMethodClientAsync45(m) : GenerateClientMethodClient45(m));
 			if (o.Parent.Owner.GenerateRegions)
 			{
@@ -281,7 +269,7 @@ namespace NETPath.Generators.CS.WebApi
 		public static string GenerateClientMethodClient45(WebApiMethod o)
 		{
 			if (o.IsHidden) return "";
-			var conf = o.RequestConfiguration;
+			var conf = o.Owner.RequestConfiguration;
 			var code = new StringBuilder();
 
 			//Generate documentation
@@ -349,7 +337,7 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine(string.Format("\t\t\tforeach (var x in _contentHeaders) rm.Content.Headers.Add(x.Key, x.Value);"));
 			}
 
-			code.AppendLine(string.Format("\t\t\tvar rr = await {0}Client.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);", RegExs.ReplaceSpaces.Replace(o.RequestConfiguration.Name, "")));
+			code.AppendLine(string.Format("\t\t\tvar rr = await _HttpClient.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);"));
 			if (o.EnsureSuccessStatusCode) code.AppendLine("\t\t\trr.EnsureSuccessStatusCode();");
 			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent)
 			{
@@ -377,7 +365,7 @@ namespace NETPath.Generators.CS.WebApi
 		public static string GenerateClientMethodClientAsync45(WebApiMethod o)
 		{
 			if (o.IsHidden) return "";
-			var conf = o.RequestConfiguration;
+			var conf = o.Owner.RequestConfiguration;
 			var code = new StringBuilder();
 
 			//Generate documentation
@@ -454,7 +442,7 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine(string.Format("\t\t\tforeach (var x in _contentHeaders) rm.Content.Headers.Add(x.Key, x.Value);"));
 			}
 
-			code.AppendLine(string.Format("\t\t\tvar rr = await {0}Client.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);", RegExs.ReplaceSpaces.Replace(o.RequestConfiguration.Name, "")));
+			code.AppendLine(string.Format("\t\t\tvar rr = await _HttpClient.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);"));
 			if (o.EnsureSuccessStatusCode) code.AppendLine("\t\t\trr.EnsureSuccessStatusCode();");
 			if ((o.ReturnType.TypeMode != DataTypeMode.Primitive && o.ReturnType.Primitive != PrimitiveTypes.Void) || !o.DeserializeContent)
 			{
