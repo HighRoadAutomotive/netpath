@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.Serialization.Formatters;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
@@ -251,4 +253,461 @@ namespace NETPath.Interface.WebApi.Service
 			return System.Security.Principal.TokenImpersonationLevel.None;
 		}
 	}
+
+	[ValueConversion(typeof(System.Xml.ConformanceLevel), typeof(int))]
+	public class XmlConformanceLevelConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (System.Xml.ConformanceLevel)value;
+			if (lt == System.Xml.ConformanceLevel.Auto) return 0;
+			if (lt == System.Xml.ConformanceLevel.Document) return 1;
+			if (lt == System.Xml.ConformanceLevel.Fragment) return 2;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return System.Xml.ConformanceLevel.Auto;
+			if (lt == 1) return System.Xml.ConformanceLevel.Document;
+			if (lt == 2) return System.Xml.ConformanceLevel.Fragment;
+			return System.Xml.ConformanceLevel.Auto;
+		}
+	}
+
+	[ValueConversion(typeof(System.Xml.NamespaceHandling), typeof(int))]
+	public class XmlNamespaceHandlingConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (System.Xml.NamespaceHandling)value;
+			if (lt == System.Xml.NamespaceHandling.Default) return 0;
+			if (lt == System.Xml.NamespaceHandling.OmitDuplicates) return 1;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return System.Xml.NamespaceHandling.Default;
+			if (lt == 1) return System.Xml.NamespaceHandling.OmitDuplicates;
+			return System.Xml.NamespaceHandling.Default;
+		}
+	}
+
+	[ValueConversion(typeof(System.Xml.NewLineHandling), typeof(int))]
+	public class XmlNewLineHandlingConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (System.Xml.NewLineHandling)value;
+			if (lt == System.Xml.NewLineHandling.None) return 0;
+			if (lt == System.Xml.NewLineHandling.Entitize) return 1;
+			if (lt == System.Xml.NewLineHandling.Replace) return 2;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return System.Xml.NewLineHandling.None;
+			if (lt == 1) return System.Xml.NewLineHandling.Entitize;
+			if (lt == 2) return System.Xml.NewLineHandling.Replace;
+			return System.Xml.NewLineHandling.None;
+		}
+	}
+
+	[ValueConversion(typeof(ConstructorHandling), typeof(int))]
+	public class JsonConstructorHandlingConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (ConstructorHandling)value;
+			if (lt == ConstructorHandling.Default) return 0;
+			if (lt == ConstructorHandling.AllowNonPublicDefaultConstructor) return 1;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return ConstructorHandling.Default;
+			if (lt == 1) return ConstructorHandling.AllowNonPublicDefaultConstructor;
+			return ConstructorHandling.Default;
+		}
+	}
+
+	[ValueConversion(typeof(DateFormatHandling), typeof(int))]
+	public class JsonDateFormatHandlingConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (DateFormatHandling)value;
+			if (lt == DateFormatHandling.IsoDateFormat) return 0;
+			if (lt == DateFormatHandling.MicrosoftDateFormat) return 1;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return DateFormatHandling.IsoDateFormat;
+			if (lt == 1) return DateFormatHandling.MicrosoftDateFormat;
+			return DateFormatHandling.IsoDateFormat;
+		}
+	}
+
+	[ValueConversion(typeof(DateParseHandling), typeof(int))]
+	public class JsonDateParseHandlingConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (DateParseHandling)value;
+			if (lt == DateParseHandling.None) return 0;
+			if (lt == DateParseHandling.DateTime) return 1;
+			if (lt == DateParseHandling.DateTimeOffset) return 2;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return DateParseHandling.None;
+			if (lt == 1) return DateParseHandling.DateTime;
+			if (lt == 2) return DateParseHandling.DateTimeOffset;
+			return DateParseHandling.None;
+		}
+	}
+
+	[ValueConversion(typeof(DateTimeZoneHandling), typeof(int))]
+	public class JsonDateTimeZoneHandlingConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (DateTimeZoneHandling)value;
+			if (lt == DateTimeZoneHandling.Local) return 0;
+			if (lt == DateTimeZoneHandling.Utc) return 1;
+			if (lt == DateTimeZoneHandling.Unspecified) return 2;
+			if (lt == DateTimeZoneHandling.RoundtripKind) return 3;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return DateTimeZoneHandling.Local;
+			if (lt == 1) return DateTimeZoneHandling.Utc;
+			if (lt == 2) return DateTimeZoneHandling.Unspecified;
+			if (lt == 3) return DateTimeZoneHandling.RoundtripKind;
+			return DateTimeZoneHandling.Local;
+		}
+	}
+
+	[ValueConversion(typeof(DefaultValueHandling), typeof(int))]
+	public class JsonDefaultValueHandlingConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (DefaultValueHandling)value;
+			if (lt == DefaultValueHandling.Include) return 0;
+			if (lt == DefaultValueHandling.Ignore) return 1;
+			if (lt == DefaultValueHandling.Populate) return 2;
+			if (lt == DefaultValueHandling.IgnoreAndPopulate) return 3;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return DefaultValueHandling.Include;
+			if (lt == 1) return DefaultValueHandling.Ignore;
+			if (lt == 2) return DefaultValueHandling.Populate;
+			if (lt == 3) return DefaultValueHandling.IgnoreAndPopulate;
+			return DefaultValueHandling.Ignore;
+		}
+	}
+
+	[ValueConversion(typeof(FloatFormatHandling), typeof(int))]
+	public class JsonFloatFormatHandlingConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (FloatFormatHandling)value;
+			if (lt == FloatFormatHandling.String) return 0;
+			if (lt == FloatFormatHandling.Symbol) return 1;
+			if (lt == FloatFormatHandling.DefaultValue) return 2;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return FloatFormatHandling.String;
+			if (lt == 1) return FloatFormatHandling.Symbol;
+			if (lt == 2) return FloatFormatHandling.DefaultValue;
+			return FloatFormatHandling.String;
+		}
+	}
+
+	[ValueConversion(typeof(FloatParseHandling), typeof(int))]
+	public class JsonFloatParseHandlingConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (FloatParseHandling)value;
+			if (lt == FloatParseHandling.Double) return 0;
+			if (lt == FloatParseHandling.Decimal) return 1;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return FloatParseHandling.Double;
+			if (lt == 1) return FloatParseHandling.Decimal;
+			return FloatParseHandling.Double;
+		}
+	}
+
+	[ValueConversion(typeof(Formatting), typeof(int))]
+	public class JsonFormattingConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (Formatting)value;
+			if (lt == Formatting.None) return 0;
+			if (lt == Formatting.Indented) return 1;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return Formatting.None;
+			if (lt == 1) return Formatting.Indented;
+			return Formatting.None;
+		}
+	}
+
+	[ValueConversion(typeof(MemberSerialization), typeof(int))]
+	public class JsonMemberSerializationConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (MemberSerialization)value;
+			if (lt == MemberSerialization.OptOut) return 0;
+			if (lt == MemberSerialization.OptIn) return 1;
+			if (lt == MemberSerialization.Fields) return 2;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return MemberSerialization.OptOut;
+			if (lt == 1) return MemberSerialization.OptIn;
+			if (lt == 2) return MemberSerialization.Fields;
+			return MemberSerialization.OptOut;
+		}
+	}
+
+	[ValueConversion(typeof(MetadataPropertyHandling), typeof(int))]
+	public class JsonMetadataPropertyHandlingConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (MetadataPropertyHandling)value;
+			if (lt == MetadataPropertyHandling.Default) return 0;
+			if (lt == MetadataPropertyHandling.ReadAhead) return 1;
+			if (lt == MetadataPropertyHandling.Ignore) return 2;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return MetadataPropertyHandling.Default;
+			if (lt == 1) return MetadataPropertyHandling.ReadAhead;
+			if (lt == 2) return MetadataPropertyHandling.Ignore;
+			return MetadataPropertyHandling.Default;
+		}
+	}
+
+	[ValueConversion(typeof(MissingMemberHandling), typeof(int))]
+	public class JsonMissingMemberHandlingConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (MissingMemberHandling)value;
+			if (lt == MissingMemberHandling.Ignore) return 0;
+			if (lt == MissingMemberHandling.Error) return 1;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return MissingMemberHandling.Ignore;
+			if (lt == 1) return MissingMemberHandling.Error;
+			return MissingMemberHandling.Ignore;
+		}
+	}
+
+	[ValueConversion(typeof(NullValueHandling), typeof(int))]
+	public class JsonNullValueHandlingConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (NullValueHandling)value;
+			if (lt == NullValueHandling.Include) return 0;
+			if (lt == NullValueHandling.Ignore) return 1;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return NullValueHandling.Include;
+			if (lt == 1) return NullValueHandling.Ignore;
+			return NullValueHandling.Include;
+		}
+	}
+
+	[ValueConversion(typeof(ObjectCreationHandling), typeof(int))]
+	public class JsonObjectCreationHandlingConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (ObjectCreationHandling)value;
+			if (lt == ObjectCreationHandling.Auto) return 0;
+			if (lt == ObjectCreationHandling.Reuse) return 1;
+			if (lt == ObjectCreationHandling.Replace) return 2;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return ObjectCreationHandling.Auto;
+			if (lt == 1) return ObjectCreationHandling.Reuse;
+			if (lt == 2) return ObjectCreationHandling.Replace;
+			return ObjectCreationHandling.Auto;
+		}
+	}
+
+	[ValueConversion(typeof(PreserveReferencesHandling), typeof(int))]
+	public class JsonPreserveReferencesHandlingConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (PreserveReferencesHandling)value;
+			if (lt == PreserveReferencesHandling.None) return 0;
+			if (lt == PreserveReferencesHandling.Objects) return 1;
+			if (lt == PreserveReferencesHandling.Arrays) return 2;
+			if (lt == PreserveReferencesHandling.All) return 3;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return PreserveReferencesHandling.None;
+			if (lt == 1) return PreserveReferencesHandling.Objects;
+			if (lt == 2) return PreserveReferencesHandling.Arrays;
+			if (lt == 3) return PreserveReferencesHandling.All;
+			return PreserveReferencesHandling.None;
+		}
+	}
+
+	[ValueConversion(typeof(ReferenceLoopHandling), typeof(int))]
+	public class JsonReferenceLoopHandlingConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (ReferenceLoopHandling)value;
+			if (lt == ReferenceLoopHandling.Error) return 0;
+			if (lt == ReferenceLoopHandling.Ignore) return 1;
+			if (lt == ReferenceLoopHandling.Serialize) return 2;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return ReferenceLoopHandling.Error;
+			if (lt == 1) return ReferenceLoopHandling.Ignore;
+			if (lt == 2) return ReferenceLoopHandling.Serialize;
+			return ReferenceLoopHandling.Error;
+		}
+	}
+
+	[ValueConversion(typeof(StringEscapeHandling), typeof(int))]
+	public class JsonStringEscapeHandlingConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (StringEscapeHandling)value;
+			if (lt == StringEscapeHandling.Default) return 0;
+			if (lt == StringEscapeHandling.EscapeNonAscii) return 1;
+			if (lt == StringEscapeHandling.EscapeHtml) return 2;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return StringEscapeHandling.Default;
+			if (lt == 1) return StringEscapeHandling.EscapeNonAscii;
+			if (lt == 2) return StringEscapeHandling.EscapeHtml;
+			return StringEscapeHandling.Default;
+		}
+	}
+
+	[ValueConversion(typeof(FormatterAssemblyStyle), typeof(int))]
+	public class JsonFormatterAssemblyStyleConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (FormatterAssemblyStyle)value;
+			if (lt == FormatterAssemblyStyle.Simple) return 0;
+			if (lt == FormatterAssemblyStyle.Full) return 1;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return FormatterAssemblyStyle.Simple;
+			if (lt == 1) return FormatterAssemblyStyle.Full;
+			return FormatterAssemblyStyle.Simple;
+		}
+	}
+
+	[ValueConversion(typeof(TypeNameHandling), typeof(int))]
+	public class JsonTypeNameHandlingConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (TypeNameHandling)value;
+			if (lt == TypeNameHandling.None) return 0;
+			if (lt == TypeNameHandling.Objects) return 1;
+			if (lt == TypeNameHandling.Arrays) return 2;
+			if (lt == TypeNameHandling.All) return 3;
+			if (lt == TypeNameHandling.Auto) return 4;
+			return 0;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (int)value;
+			if (lt == 0) return TypeNameHandling.None;
+			if (lt == 1) return TypeNameHandling.Objects;
+			if (lt == 2) return TypeNameHandling.Arrays;
+			if (lt == 3) return TypeNameHandling.All;
+			if (lt == 4) return TypeNameHandling.Auto;
+			return TypeNameHandling.None;
+		}
+	}
+
 }

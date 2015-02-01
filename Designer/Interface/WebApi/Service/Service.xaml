@@ -19,6 +19,29 @@
 					<Rest:CookieContainerModeConverter x:Key="CookieContainerModeConverter" />
 					<Rest:CredentialsModeConverter x:Key="CredentialsModeConverter" />
 					<Rest:DecompressionMethodsConverter x:Key="DecompressionMethodsConverter" />
+                    
+                    <Rest:XmlConformanceLevelConverter x:Key="XmlConformanceLevelConverter" />
+                    <Rest:XmlNamespaceHandlingConverter x:Key="XmlNamespaceHandlingConverter" />
+                    <Rest:XmlNewLineHandlingConverter x:Key="XmlNewLineHandlingConverter" />
+                    
+                    <Rest:JsonConstructorHandlingConverter x:Key="JsonConstructorHandlingConverter" />
+                    <Rest:JsonDateFormatHandlingConverter x:Key="JsonDateFormatHandlingConverter" />
+                    <Rest:JsonDateParseHandlingConverter x:Key="JsonDateParseHandlingConverter" />
+                    <Rest:JsonDateTimeZoneHandlingConverter x:Key="JsonDateTimeZoneHandlingConverter" />
+                    <Rest:JsonDefaultValueHandlingConverter x:Key="JsonDefaultValueHandlingConverter" />
+                    <Rest:JsonFloatFormatHandlingConverter x:Key="JsonFloatFormatHandlingConverter" />
+                    <Rest:JsonFloatParseHandlingConverter x:Key="JsonFloatParseHandlingConverter" />
+                    <Rest:JsonFormatterAssemblyStyleConverter x:Key="JsonFormatterAssemblyStyleConverter" />
+                    <Rest:JsonFormattingConverter x:Key="JsonFormattingConverter" />
+                    <Rest:JsonMemberSerializationConverter x:Key="JsonMemberSerializationConverter" />
+                    <Rest:JsonMetadataPropertyHandlingConverter x:Key="JsonMetadataPropertyHandlingConverter" />
+                    <Rest:JsonMissingMemberHandlingConverter x:Key="JsonMissingMemberHandlingConverter" />
+                    <Rest:JsonNullValueHandlingConverter x:Key="JsonNullValueHandlingConverter" />
+                    <Rest:JsonObjectCreationHandlingConverter x:Key="JsonObjectCreationHandlingConverter" />
+                    <Rest:JsonPreserveReferencesHandlingConverter x:Key="JsonPreserveReferencesHandlingConverter" />
+                    <Rest:JsonReferenceLoopHandlingConverter x:Key="JsonReferenceLoopHandlingConverter" />
+                    <Rest:JsonStringEscapeHandlingConverter x:Key="JsonStringEscapeHandlingConverter" />
+                    <Rest:JsonTypeNameHandlingConverter x:Key="JsonTypeNameHandlingConverter" />
 
 					<DataTemplate x:Key="{x:Type Projects:WebApiMethod}" DataType="{x:Type Projects:WebApiMethod}">
 						<Border Background="#01FFFFFF">
@@ -234,8 +257,16 @@
 			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
 					<RowDefinition Height="*" />
 				</Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ToggleButton Content="JSON/BSON Formatting" Margin="10" Grid.Row="0" Grid.Column="0" />
+
+                <ToggleButton Content="XML Formatting" Margin="10" Grid.Row="1" Grid.Column="0" />
 			</Grid>
 		</TabItem>
 		<TabItem Padding="10,5">
