@@ -183,7 +183,7 @@
 		<ComboBoxItem Content="DELETE" />
 		<ComboBoxItem Content="HEAD" />
 		<ComboBoxItem Content="OPTIONS" />
-		<ComboBoxItem Content="TRACE" />
+		<ComboBoxItem Content="PATCH" />
 		<ComboBoxItem Content="CUSTOM" />
 	</ComboBox>
 	<TabControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,10,0,0">

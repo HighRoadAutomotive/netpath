@@ -44,7 +44,7 @@ namespace NETPath.Interface.WebApi.Service
 			if (lt == Projects.WebApi.WebApiMethodVerbs.Delete) return 3;
 			if (lt == Projects.WebApi.WebApiMethodVerbs.Head) return 4;
 			if (lt == Projects.WebApi.WebApiMethodVerbs.Options) return 5;
-			if (lt == Projects.WebApi.WebApiMethodVerbs.Trace) return 6;
+			if (lt == Projects.WebApi.WebApiMethodVerbs.Patch) return 6;
 			if (lt == Projects.WebApi.WebApiMethodVerbs.Custom) return 7;
 			return 0;
 		}
@@ -58,7 +58,7 @@ namespace NETPath.Interface.WebApi.Service
 			if (lt == 3) return Projects.WebApi.WebApiMethodVerbs.Delete;
 			if (lt == 4) return Projects.WebApi.WebApiMethodVerbs.Head;
 			if (lt == 5) return Projects.WebApi.WebApiMethodVerbs.Options;
-			if (lt == 6) return Projects.WebApi.WebApiMethodVerbs.Trace;
+			if (lt == 6) return Projects.WebApi.WebApiMethodVerbs.Patch;
 			if (lt == 7) return Projects.WebApi.WebApiMethodVerbs.Custom;
 			return Projects.WebApi.WebApiMethodVerbs.Get;
 		}

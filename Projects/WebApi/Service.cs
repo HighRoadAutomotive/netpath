@@ -79,7 +79,7 @@ namespace NETPath.Projects.WebApi
 		Delete,
 		Head,
 		Options,
-		Trace,
+		Patch,
 		Custom,
 	}
 

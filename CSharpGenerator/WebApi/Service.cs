@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.Cache;
 using System.Net.Security;
 using System.Security.Principal;
@@ -83,6 +84,16 @@ namespace NETPath.Generators.CS.WebApi
 		public static string GenerateServerCode(WebApiService o)
 		{
 			var code = new StringBuilder();
+
+			code.AppendLine(string.Format("\t{0} class {1}Configuration", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
+			code.AppendLine("\t{");
+			code.AppendLine("\t\tpublic void Configuration(IAppBuilder appBuilder)");
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tvar config = new HttpConfiguration();");
+			code.AppendLine("\t\t\tconfig.MapHttpAttributeRoutes();");
+			code.AppendLine("\t\t\tappBuilder.UseWebApi(config);");
+			code.AppendLine("\t\t}");
+			code.AppendLine("\t}");
 
 			//Generate the service proxy
 			if (o.ServiceDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.ServiceDocumentation));
@@ -252,6 +263,8 @@ namespace NETPath.Generators.CS.WebApi
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 			}
 			code.AppendLine(string.Format("\t\t[System.Web.Http.Route(\"{0}\")]", BuildUriTemplate(o)));
+			if (o.Method != WebApiMethodVerbs.Custom)
+				code.AppendLine(string.Format("\t\t[System.Web.Http.Http{0}]", o.Method));
 			code.AppendFormat("\t\tpublic abstract {0} {1}(", o.ServerAsync ? o.ReturnType.IsVoid ? "Task" : string.Format("Task<{0}>", DataTypeGenerator.GenerateType(o.ReturnType)) : DataTypeGenerator.GenerateType(o.ReturnType), o.Name);
 			foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>())
 				code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
