@@ -26,6 +26,8 @@ namespace NETPath.Projects.WebApi
 			UsingNamespaces.AddRange(new []
 								  {
 									  new ProjectUsingNamespace("System.Net.Http", true, true, true, true),
+									  new ProjectUsingNamespace("System.Net.Http.Headers", true, true, true, true),
+									  new ProjectUsingNamespace("System.Net.Http.Formatting", true, true, true, true),
 									  new ProjectUsingNamespace("System.ServiceModel.Description", true, true, true, true),
 								  });
 			UsingNamespaces.Sort(a => a.Namespace, StringComparer.OrdinalIgnoreCase);

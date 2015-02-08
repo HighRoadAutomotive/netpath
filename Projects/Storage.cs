@@ -29,6 +29,7 @@ namespace NETPath.Projects
 				typeof(WcfService), typeof(WcfOperation), typeof(WcfMethod), typeof(WcfCallback), typeof(WcfDataChangeMethod), typeof(WcfMethodParameter), typeof(WcfProperty),
 				typeof(WcfData), typeof(WcfDataElement),
 				typeof(WebApiService), typeof(WebApiMethod), typeof(WebApiHttpConfiguration), typeof(WebApiRouteParameter), typeof(WebApiMethodParameter),
+				typeof(WebApiData), typeof(WebApiDataElement),
 				typeof(Enum), typeof(EnumElement),
 			});
 
@@ -61,6 +62,7 @@ namespace NETPath.Projects
 				typeof(WcfService), typeof(WcfOperation), typeof(WcfMethod), typeof(WcfCallback), typeof(WcfDataChangeMethod), typeof(WcfMethodParameter), typeof(WcfProperty),
 				typeof(WcfData), typeof(WcfDataElement),
 				typeof(WebApiService), typeof(WebApiMethod), typeof(WebApiHttpConfiguration), typeof(WebApiRouteParameter), typeof(WebApiMethodParameter),
+				typeof(WebApiData), typeof(WebApiDataElement),
 				typeof(Enum), typeof(EnumElement),
 			});
 
@@ -84,6 +86,7 @@ namespace NETPath.Projects
 				typeof(WcfService), typeof(WcfOperation), typeof(WcfMethod), typeof(WcfCallback), typeof(WcfDataChangeMethod), typeof(WcfMethodParameter), typeof(WcfProperty),
 				typeof(WcfData), typeof(WcfDataElement),
 				typeof(WebApiService), typeof(WebApiMethod), typeof(WebApiHttpConfiguration), typeof(WebApiRouteParameter), typeof(WebApiMethodParameter),
+				typeof(WebApiData), typeof(WebApiDataElement),
 				typeof(Enum), typeof(EnumElement),
 			});
 

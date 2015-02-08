@@ -165,7 +165,7 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\tpublic string BaseUri { get { return _baseUri; } }");
 			code.AppendLine("\t\tpublic CookieContainer Cookies { get { return _cookies; } }");
 			code.AppendLine("\t\tpublic CredentialCache CredentialCache { get { return _credentialCache; } }");
-			code.AppendLine("\t\tpublic NetworkCredential Credentials { get { return _credentials; } ");
+			code.AppendLine("\t\tpublic NetworkCredential Credentials { get { return _credentials; } }");
 			code.AppendLine("\t\tpublic IWebProxy Proxy { get { return _proxy; } }");
 			code.AppendLine("\t\tpublic HttpRequestHeaders DefaultRequestHeaders { get { return _requestHeaders; } }");
             code.AppendLine("\t\tpublic HttpContentHeaders DefaultContentHeaders { get { return _contentHeaders; } }");
@@ -307,7 +307,7 @@ namespace NETPath.Generators.CS.WebApi
 			GenerateMethodPreamble(code, o.ClientPreambleCode, 3);
 
 			//Construct the URI
-			code.AppendLine("\t\t\tvar uri = StringBuilder(_baseUri, 2048);");
+			code.AppendLine("\t\t\tvar uri = new StringBuilder(_baseUri, 2048);");
 			foreach (var op in o.RouteParameters)
 			{
 				if (op.GetType() == typeof (WebApiRouteParameter))
@@ -319,7 +319,7 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t\t\turi.Append(\"?\"");
 			foreach (var op in o.QueryParameters.Where(a => !a.Serialize))
 				code.AppendLine(string.Format(!op.Nullable ? "\t\t\turi.Append(\"&{0}={{0}}\", {1});" : "\t\t\tif ({1} != null) uri.Append(\"&{0}={{0}}\", {1});", op.RouteName, op.Name));
-			code.AppendLine("\t\t\turi.Replace(\"?&\", \"?\"");
+			code.AppendLine("\t\t\turi.Replace(\"?&\", \"?\");");
 
 			//Create the HttpRequestMessage
 			code.AppendLine(string.Format("\t\t\tvar rm = new HttpRequestMessage(HttpMethod.{0}, new Uri(uri.ToString(), UriKind.RelativeOrAbsolute));", o.Method));
@@ -338,7 +338,7 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\t\trm.Headers.MaxForwards = _requestHeaders.MaxForwards;");
 			code.AppendLine("\t\t\trm.Headers.ProxyAuthorization = _requestHeaders.ProxyAuthorization;");
 			code.AppendLine("\t\t\trm.Headers.Range = _requestHeaders.Range;");
-			code.AppendLine("\t\t\trm.Headers.Accept.Clear()");
+			code.AppendLine("\t\t\trm.Headers.Accept.Clear();");
 			code.AppendLine(string.Format("\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"application/{0}\"));", conf.ResponseFormat == RestSerialization.Json ? "json" : conf.ResponseFormat == RestSerialization.Bson ? "bson" : "xml"));
 
 			//Serialize any parameters
@@ -412,7 +412,7 @@ namespace NETPath.Generators.CS.WebApi
 			GenerateMethodPreamble(code, o.ClientPreambleCode, 3);
 
 			//Construct the URI
-			code.AppendLine("\t\t\tvar uri = StringBuilder(_baseUri, 2048);");
+			code.AppendLine("\t\t\tvar uri = new StringBuilder(_baseUri, 2048);");
 			foreach (var op in o.RouteParameters)
 			{
 				if (op.GetType() == typeof (WebApiRouteParameter))
@@ -424,7 +424,7 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t\t\turi.Append(\"?\"");
 			foreach (var op in o.QueryParameters.Where(a => !a.Serialize))
 				code.AppendLine(string.Format(!op.Nullable ? "\t\t\turi.Append(\"&{0}={{0}}\", {1});" : "\t\t\tif ({1} != null) uri.Append(\"&{0}={{0}}\", {1});", op.RouteName, op.Name));
-			code.AppendLine("\t\t\turi.Replace(\"?&\", \"?\"");
+			code.AppendLine("\t\t\turi.Replace(\"?&\", \"?\");");
 
 			//Create the HttpRequestMessage
 			code.AppendLine(string.Format("\t\t\tvar rm = new HttpRequestMessage(HttpMethod.{0}, new Uri(uri.ToString(), UriKind.RelativeOrAbsolute));", o.Method));
@@ -443,7 +443,7 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\t\trm.Headers.MaxForwards = _requestHeaders.MaxForwards;");
 			code.AppendLine("\t\t\trm.Headers.ProxyAuthorization = _requestHeaders.ProxyAuthorization;");
 			code.AppendLine("\t\t\trm.Headers.Range = _requestHeaders.Range;");
-			code.AppendLine("\t\t\trm.Headers.Accept.Clear()");
+			code.AppendLine("\t\t\trm.Headers.Accept.Clear();");
 			code.AppendLine(string.Format("\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"application/{0}\"));", conf.ResponseFormat == RestSerialization.Json ? "json" : conf.ResponseFormat == RestSerialization.Bson ? "bson" : "xml"));
 
 			//Serialize any parameters
