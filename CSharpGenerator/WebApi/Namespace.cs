@@ -127,16 +127,16 @@ namespace NETPath.Generators.CS.WebApi
 					code.AppendLine("\tpublic static class ServiceController");
 					code.AppendLine("\t{");
 					foreach (var se in target.TargetTypes.Intersect(o.Services))
-						code.AppendLine(string.Format("\t\tprivate static IDisposable _service{0}", se.Name));
-					code.AppendLine("\t\tpublic static void Start()");
+						code.AppendLine(string.Format("\t\tprivate static IDisposable _service{0};", se.Name));
+					code.AppendLine("\t\tpublic static void Start(string baseUri)");
 					code.AppendLine("\t\t{");
 					foreach (var se in target.TargetTypes.Intersect(o.Services))
-						code.AppendLine(string.Format("\t\t\t_service{0} = WebApp.Start<{0}Configuration>(\"{1}\")", se.Name, o.Parent.URI));
+						code.AppendLine(string.Format("\t\t\t_service{0} = WebApp.Start<{0}Configuration>(baseUri);", se.Name));
 					code.AppendLine("\t\t}");
 					code.AppendLine("\t\tpublic static void Stop()");
 					code.AppendLine("\t\t{");
 					foreach (var se in target.TargetTypes.Intersect(o.Services))
-						code.AppendLine(string.Format("\t\t\tif (_service{0} != null) _service{0}.Dispose()", se.Name));
+						code.AppendLine(string.Format("\t\t\tif (_service{0} != null) _service{0}.Dispose();", se.Name));
 					code.AppendLine("\t\t}");
 					code.AppendLine("\t}");
 					code.AppendLine();

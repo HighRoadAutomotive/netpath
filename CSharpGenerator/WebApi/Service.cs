@@ -53,7 +53,7 @@ namespace NETPath.Generators.CS.WebApi
 				if (m.ReturnType.TypeMode == DataTypeMode.Namespace || m.ReturnType.TypeMode == DataTypeMode.Interface)
 					AddMessage(new CompileMessage("GS2013", "The method return type '" + m.ReturnType + "' in the '" + o.Name + "' service is not a valid return type. Please specify a valid return type.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
 
-				foreach (var mp in m.RouteParameters)
+				foreach (var mp in m.RouteParameters.OfType<WebApiMethodParameter>())
 				{
 					if (string.IsNullOrEmpty(mp.Name))
 						AddMessage(new CompileMessage("GS2008", "The method parameter '" + m.Name + "' in the '" + o.Name + "' service has a blank parameter name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
@@ -97,7 +97,7 @@ namespace NETPath.Generators.CS.WebApi
 
 			//Generate the service proxy
 			if (o.ServiceDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.ServiceDocumentation));
-			code.AppendLine(string.Format("\t{0} abstract class {1}Controller<T> : ApiController, where T : {1}Controller<T>", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
+			code.AppendLine(string.Format("\t{0} abstract class {1}Controller : ApiController", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
 			code.AppendLine("\t{");
 
 			code.AppendLine();
@@ -234,7 +234,12 @@ namespace NETPath.Generators.CS.WebApi
 		{
 			var uriBuilder = new StringBuilder(512);
 
-			foreach (var pp in o.RouteParameters)
+			foreach (var pp in o.RouteParameters.Where(a => !(a is WebApiMethodParameter)))
+				uriBuilder.AppendFormat("/{0}", pp.RouteName);
+
+			uriBuilder.AppendFormat("/{0}", o.Name);
+
+			foreach (var pp in o.RouteParameters.OfType<WebApiMethodParameter>())
 				uriBuilder.AppendFormat("/{{{0}}}", pp.RouteName);
 
 			if (!o.QueryParameters.Any()) return uriBuilder.ToString();
