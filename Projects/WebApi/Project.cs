@@ -25,10 +25,13 @@ namespace NETPath.Projects.WebApi
 			//Default Using Namespaces
 			UsingNamespaces.AddRange(new []
 								  {
+									  new ProjectUsingNamespace("Microsoft.Owin.Hosting", true, true, true, true),
 									  new ProjectUsingNamespace("System.Net.Http", true, true, true, true),
 									  new ProjectUsingNamespace("System.Net.Http.Headers", true, true, true, true),
 									  new ProjectUsingNamespace("System.Net.Http.Formatting", true, true, true, true),
 									  new ProjectUsingNamespace("System.ServiceModel.Description", true, true, true, true),
+									  new ProjectUsingNamespace("System.Web.Http", true, true, true, true),
+									  new ProjectUsingNamespace("Owin", true, true, true, true),
 								  });
 			UsingNamespaces.Sort(a => a.Namespace, StringComparer.OrdinalIgnoreCase);
 		}

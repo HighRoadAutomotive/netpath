@@ -270,6 +270,8 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine(string.Format("\t\t[System.Web.Http.Route(\"{0}\")]", BuildUriTemplate(o)));
 			if (o.Method != WebApiMethodVerbs.Custom)
 				code.AppendLine(string.Format("\t\t[System.Web.Http.Http{0}]", o.Method));
+			else
+				code.AppendLine(string.Format("\t\t[System.Web.Http.AcceptVerbs(\"{0}\")]", o.Method));
 			code.AppendFormat("\t\tpublic abstract {0} {1}(", o.ServerAsync ? o.ReturnType.IsVoid ? "Task" : string.Format("Task<{0}>", DataTypeGenerator.GenerateType(o.ReturnType)) : DataTypeGenerator.GenerateType(o.ReturnType), o.Name);
 			foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>())
 				code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));

@@ -6,10 +6,27 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 
 namespace NETPath.Interface.WebApi.Service
 {
+	[ValueConversion(typeof(Projects.WebApi.WebApiMethodVerbs), typeof(Visibility))]
+	public class MethodVerbsVisibilityConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var lt = (Projects.WebApi.WebApiMethodVerbs)value;
+			if (lt == Projects.WebApi.WebApiMethodVerbs.Custom) return Visibility.Visible;
+			return Visibility.Collapsed;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			return null;
+		}
+	}
+
 	[ValueConversion(typeof(Projects.WebApi.RestSerialization), typeof(int))]
 	public class RestSerializationConverter : IValueConverter
 	{
@@ -31,7 +48,6 @@ namespace NETPath.Interface.WebApi.Service
 			return Projects.WebApi.RestSerialization.Json;
 		}
 	}
-
 	[ValueConversion(typeof(Projects.WebApi.WebApiMethodVerbs), typeof(int))]
 	public class WebApiMethodVerbsConverter : IValueConverter
 	{

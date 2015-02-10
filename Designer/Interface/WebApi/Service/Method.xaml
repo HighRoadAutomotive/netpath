@@ -11,6 +11,7 @@
 	d:DesignHeight="750" d:DesignWidth="750" UseLayoutRounding="True" >
 	<Grid.Resources>
 		<Rest:WebApiMethodVerbsConverter x:Key="WebApiMethodVerbsConverter" />
+        <Rest:MethodVerbsVisibilityConverter x:Key="MethodVerbsVisibilityConverter" />
 		<pc:NotBoolConverter x:Key="NotBoolConverter" />
 		<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
 
@@ -174,7 +175,7 @@
 	<Label Grid.Column="0" Grid.Row="1" Content="Return Type:" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="100" />
 	<Data:TypeSelector OpenType="{Binding Path=MethodData.ReturnType, Mode=TwoWay}" Project="{Binding Path=ServiceProject}" AllowVoid="True" Grid.Column="0" Grid.Row="1" Margin="90,5,5,5" />
 	<Label Content="Name:" Grid.Column="1" Grid.Row="1" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="50" />
-	<pc:TextBox Text="{Binding Path=MethodData.Name}" Grid.Column="1" Grid.Row="1" Height="23" Margin="50,5,5,5" ToolTip="{Binding Path=MethodData.ServerName}" />
+	<pc:TextBox Text="{Binding Path=MethodData.Name}" Grid.Column="1" Grid.Row="1" Height="23" Margin="65,5,5,5" ToolTip="{Binding Path=MethodData.ServerName}" />
 	<Label Content="HTTP Verb:" HorizontalAlignment="Left" Margin="0,5" VerticalContentAlignment="Center" VerticalAlignment="Top" Grid.Row="2" Grid.Column="0" />
 	<ComboBox Height="23" Margin="90,5,5,5" SelectedIndex="{Binding Path=MethodData.Method, Converter={StaticResource WebApiMethodVerbsConverter}}" VerticalContentAlignment="Center" VerticalAlignment="Top" Grid.Row="2" Grid.Column="0" >
 		<ComboBoxItem Content="GET" />
@@ -186,6 +187,8 @@
 		<ComboBoxItem Content="PATCH" />
 		<ComboBoxItem Content="CUSTOM" />
 	</ComboBox>
+	<Label Content="Method:" Grid.Column="1" Grid.Row="2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="60" Visibility="{Binding Path=MethodData.Method, Converter={StaticResource MethodVerbsVisibilityConverter}}" />
+	<pc:TextBox Text="{Binding Path=MethodData.CustomMethod}" Grid.Column="1" Grid.Row="2" Height="23" Margin="65,5,5,5" Visibility="{Binding Path=MethodData.Method, Converter={StaticResource MethodVerbsVisibilityConverter}}" />
 	<TabControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,10,0,0">
 		<TabItem Padding="10,5" IsSelected="True">
 			<TabItem.Header>

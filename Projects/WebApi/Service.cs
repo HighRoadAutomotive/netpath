@@ -137,6 +137,9 @@ namespace NETPath.Projects.WebApi
 		public WebApiMethodVerbs Method { get { return (WebApiMethodVerbs)GetValue(MethodProperty); } set { SetValue(MethodProperty, value); } }
 		public static readonly DependencyProperty MethodProperty = DependencyProperty.Register("Method", typeof(WebApiMethodVerbs), typeof(WebApiMethod), new PropertyMetadata(WebApiMethodVerbs.Get));
 
+		public string CustomMethod { get { return (string)GetValue(CustomMethodProperty); } set { SetValue(CustomMethodProperty, value); } }
+		public static readonly DependencyProperty CustomMethodProperty = DependencyProperty.Register("CustomMethod", typeof(string), typeof(WebApiMethod));
+
 		public bool DeserializeContent { get { return (bool)GetValue(DeserializeContentProperty); } set { SetValue(DeserializeContentProperty, value); } }
 		public static readonly DependencyProperty DeserializeContentProperty = DependencyProperty.Register("DeserializeContent", typeof(bool), typeof(WebApiMethod), new PropertyMetadata(true));
 
