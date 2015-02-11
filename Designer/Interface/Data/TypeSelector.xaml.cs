@@ -138,6 +138,9 @@ namespace NETPath.Interface.Data
 		public static readonly RoutedEvent ValidationChangedEvent = EventManager.RegisterRoutedEvent("ValidationChanged", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TypeSelector));
 		public event RoutedEventHandler ValidationChanged { add { AddHandler(ValidationChangedEvent, value); } remove { RemoveHandler(ValidationChangedEvent, value); } }
 
+		public bool AllowNullable { get { return (bool)GetValue(AllowNullableProperty); } set { SetValue(AllowNullableProperty, value); } }
+		public static readonly DependencyProperty AllowNullableProperty = DependencyProperty.Register("AllowNullable", typeof(bool), typeof(TypeSelector), new PropertyMetadata(true));
+
 		public bool IsInheriting { get { return (bool)GetValue(IsInheritingProperty); } set { SetValue(IsInheritingProperty, value); } }
 		public static readonly DependencyProperty IsInheritingProperty = DependencyProperty.Register("IsInheriting", typeof(bool), typeof(TypeSelector), new PropertyMetadata(false));
 
@@ -272,11 +275,26 @@ namespace NETPath.Interface.Data
 				if (OpenType != null && TypeName.Text.EndsWith("[]") && TypeName.Text != "byte[]" && OpenType.TypeMode != DataTypeMode.Array)
 					OpenType = new DataType(DataTypeMode.Array) {CollectionGenericType = OpenType};
 
-				if (OpenType != null && TypeName.Text.EndsWith("?") && (OpenType.TypeMode == DataTypeMode.Primitive && !(OpenType.Primitive == PrimitiveTypes.ByteArray || OpenType.Primitive == PrimitiveTypes.String || OpenType.Primitive == PrimitiveTypes.Object || OpenType.Primitive == PrimitiveTypes.URI || OpenType.Primitive == PrimitiveTypes.Version || OpenType.Primitive == PrimitiveTypes.Void)))
-					OpenType = new DataType(OpenType.Primitive, IsNullable = true);
-				else if (OpenType != null && (OpenType.TypeMode == DataTypeMode.Primitive && !(OpenType.Primitive == PrimitiveTypes.ByteArray || OpenType.Primitive == PrimitiveTypes.String || OpenType.Primitive == PrimitiveTypes.Object || OpenType.Primitive == PrimitiveTypes.URI || OpenType.Primitive == PrimitiveTypes.Version || OpenType.Primitive == PrimitiveTypes.Void)))
+				if (AllowNullable)
 				{
-					OpenType = new DataType(OpenType.Primitive, IsNullable = false);
+					if (OpenType != null && TypeName.Text.EndsWith("?") &&
+					    (OpenType.TypeMode == DataTypeMode.Primitive &&
+					     !(OpenType.Primitive == PrimitiveTypes.ByteArray || OpenType.Primitive == PrimitiveTypes.String ||
+					       OpenType.Primitive == PrimitiveTypes.Object || OpenType.Primitive == PrimitiveTypes.URI ||
+					       OpenType.Primitive == PrimitiveTypes.Version || OpenType.Primitive == PrimitiveTypes.Void)))
+						OpenType = new DataType(OpenType.Primitive, IsNullable = true);
+					else if (OpenType != null &&
+					         (OpenType.TypeMode == DataTypeMode.Primitive &&
+					          !(OpenType.Primitive == PrimitiveTypes.ByteArray || OpenType.Primitive == PrimitiveTypes.String ||
+					            OpenType.Primitive == PrimitiveTypes.Object || OpenType.Primitive == PrimitiveTypes.URI ||
+					            OpenType.Primitive == PrimitiveTypes.Version || OpenType.Primitive == PrimitiveTypes.Void)))
+					{
+						OpenType = new DataType(OpenType.Primitive, IsNullable = false);
+						TypeName.Text = TypeName.Text.Replace("?", "");
+					}
+				}
+				else
+				{
 					TypeName.Text = TypeName.Text.Replace("?", "");
 				}
 			}

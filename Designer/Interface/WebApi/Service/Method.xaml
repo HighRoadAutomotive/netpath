@@ -130,7 +130,7 @@
 							<ColumnDefinition Width="*" />
 						</Grid.ColumnDefinitions>
 						<Data:TypeSelector x:Name="RouteParameterDataType" OpenType="{Binding Path=Type, Mode=TwoWay}" Project="{Binding ElementName=ProjectBinding, Path=DataContext}" Grid.Column="0" Margin="0,5,5,5" VerticalContentAlignment="Center" ToolTip="{Binding Path=Type}"  />
-						<CheckBox Content="Nullable" IsChecked="{Binding Path=Nullable}" Grid.Column="1" Margin="5" IsEnabled="{Binding Path=IsNullable}" />
+						<CheckBox Content="Optional" IsChecked="{Binding Path=Optional}" Grid.Column="1" Margin="5" IsEnabled="{Binding Path=IsNullable}" />
 						<pc:TextBox Name="RouteParameterElementName" Text="{Binding Path=Name}" Grid.Column="2" Margin="5" VerticalContentAlignment="Center" PreviewKeyDown="RouteParameterElementName_PreviewKeyDown" Validate="RouteParameterElementName_Validate" ToolTip="{Binding Path=Name}" />
 						<Label Content="=" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="3" />
 						<pc:TextBox Name="RouteParameterElementDefaultValue" Text="{Binding Path=DefaultValue}" LabelText="Default Value" Grid.Column="4" Margin="5" VerticalContentAlignment="Center" PreviewKeyDown="RouteParameterElementName_PreviewKeyDown" ToolTip="{Binding Path=Name}" />
@@ -206,33 +206,40 @@
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
 						</Grid.RowDefinitions>
 						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="50" />
+							<ColumnDefinition Width="70" />
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="*" />
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="*" />
 							<ColumnDefinition Width="95" />
 						</Grid.ColumnDefinitions>
-						<Label Content="FIXED" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="0" />
-						<Label Content="Name:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0" />
-						<pc:TextBox Height="23" Margin="5,5,5,5" Name="AddRouteFixedName" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="3" KeyUp="AddRouteFixedName_KeyUp" TextChanged="AddRouteFixedName_TextChanged" Validate="AddRouteFixedName_Validate" />
-						<Button Grid.Column="5" Grid.Row="0" Name="AddRouteFixed" Click="AddRouteFixed_Click" Height="23" Margin="5,0" IsEnabled="False" >
+						<Label Content="CONTENT" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="0" />
+						<Label Content="Type:" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0" />
+						<Data:TypeSelector OpenType="{Binding Path=ContentType}" Project="{Binding Path=ServiceProject}" AllowNullable="False" Height="23" Margin="5,5,5,5" Grid.Column="2" Grid.Row="0" IsEnabled="{Binding Path=HasContent}" ValidationChanged="AddRouteParameterType_ValidationChanged" />
+						<Label Content="Name:" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="0" />
+						<pc:TextBox Height="23" Margin="5,5,5,5" Text="{Binding Path=ContentParameterName}" Grid.Column="4" Grid.Row="0" IsEnabled="{Binding Path=HasContent}" Validate="AddRouteParameterName_Validate" />
+						<ToggleButton IsChecked="{Binding Path=HasContent}" Content="Enabled" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" Margin="5" Grid.Column="5" Grid.Row="0" />
+						<Label Content="FIXED" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
+						<Label Content="Name:" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
+						<pc:TextBox Height="23" Margin="5,5,5,5" Name="AddRouteFixedName" Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="3" KeyUp="AddRouteFixedName_KeyUp" TextChanged="AddRouteFixedName_TextChanged" Validate="AddRouteFixedName_Validate" />
+						<Button Grid.Column="5" Grid.Row="1" Name="AddRouteFixed" Click="AddRouteFixed_Click" Height="23" Margin="5,0" IsEnabled="False" >
 							<StackPanel Orientation="Horizontal">
 								<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Add.png" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
-								<TextBlock Padding="3,0,0,0" Text="Add" Height="Auto" VerticalAlignment="Center" />
+								<TextBlock Padding="3,0,0,0" Text="Add" VerticalAlignment="Center" />
 							</StackPanel>
 						</Button>
-						<Label Content="ROUTE" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
-						<Label Content="Type:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
-						<Data:TypeSelector OpenType="{Binding Path=Type}" Project="{Binding Path=ServiceProject}" Height="23" Margin="5,5,5,5" x:Name="AddRouteParameterType" Grid.Column="2" Grid.Row="1" KeyUp="AddRouteParameterType_KeyUp" ValidationChanged="AddRouteParameterType_ValidationChanged" />
-						<Label Content="Name:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="1" />
-						<pc:TextBox Height="23" Margin="5,5,5,5" Name="AddRouteParameterName" Grid.Column="4" Grid.Row="1" KeyUp="AddRouteParameterName_KeyUp" TextChanged="AddRouteParameterName_TextChanged" Validate="AddRouteParameterName_Validate" />
-						<Button Grid.Column="5" Grid.Row="1" Name="AddRouteParameter" Click="AddRouteParameter_Click" Height="23" Margin="5,0" IsEnabled="False" >
+						<Label Content="ROUTE" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" />
+						<Label Content="Type:" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="2" />
+						<Data:TypeSelector OpenType="{Binding Path=Type}" Project="{Binding Path=ServiceProject}" AllowNullable="False" Height="23" Margin="5,5,5,5" x:Name="AddRouteParameterType" Grid.Column="2" Grid.Row="2" KeyUp="AddRouteParameterType_KeyUp" ValidationChanged="AddRouteParameterType_ValidationChanged" />
+						<Label Content="Name:" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="2" />
+						<pc:TextBox Height="23" Margin="5,5,5,5" Name="AddRouteParameterName" Grid.Column="4" Grid.Row="2" KeyUp="AddRouteParameterName_KeyUp" TextChanged="AddRouteParameterName_TextChanged" Validate="AddRouteParameterName_Validate" />
+						<Button Grid.Column="5" Grid.Row="2" Name="AddRouteParameter" Click="AddRouteParameter_Click" Height="23" Margin="5,0" IsEnabled="False" >
 							<StackPanel Orientation="Horizontal">
 								<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Add.png" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
-								<TextBlock Padding="3,0,0,0" Text="Add" Height="Auto" VerticalAlignment="Center" />
+								<TextBlock Padding="3,0,0,0" Text="Add" VerticalAlignment="Center" />
 							</StackPanel>
 						</Button>
 					</Grid>
@@ -241,22 +248,22 @@
 				<Border Grid.Row="2" >
 					<Grid>
 						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="50" />
+							<ColumnDefinition Width="70" />
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="*" />
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="*" />
 							<ColumnDefinition Width="95" />
 						</Grid.ColumnDefinitions>
-						<Label Content="QUERY" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="0" />
-						<Label Content="Type:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0" />
-						<Data:TypeSelector OpenType="{Binding Path=Type}" Project="{Binding Path=ServiceProject}" Height="23" Margin="5,5,5,5" x:Name="AddQueryParameterType" Grid.Column="2" Grid.Row="0" KeyUp="AddQueryParameterType_KeyUp" ValidationChanged="AddQueryParameterType_ValidationChanged" />
-						<Label Content="Name:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="0" />
+						<Label Content="QUERY" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="0" />
+						<Label Content="Type:" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0" />
+						<Data:TypeSelector OpenType="{Binding Path=Type}" Project="{Binding Path=ServiceProject}" AllowNullable="False" Height="23" Margin="5,5,5,5" x:Name="AddQueryParameterType" Grid.Column="2" Grid.Row="0" KeyUp="AddQueryParameterType_KeyUp" ValidationChanged="AddQueryParameterType_ValidationChanged" />
+						<Label Content="Name:" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="0" />
 						<pc:TextBox Height="23" Margin="5,5,5,5" Name="AddQueryParameterName" Grid.Column="4" Grid.Row="0" KeyUp="AddQueryParameterName_KeyUp" TextChanged="AddQueryParameterName_TextChanged" Validate="AddQueryParameterName_Validate" />
 						<Button Grid.Column="5" Grid.Row="0" Name="AddQueryParameter" Click="AddQueryParameter_Click" Height="23" Margin="5,0" IsEnabled="False" >
 							<StackPanel Orientation="Horizontal">
 								<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Add.png" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
-								<TextBlock Padding="3,0,0,0" Text="Add" Height="Auto" VerticalAlignment="Center" />
+								<TextBlock Padding="3,0,0,0" Text="Add" VerticalAlignment="Center" />
 							</StackPanel>
 						</Button>
 					</Grid>

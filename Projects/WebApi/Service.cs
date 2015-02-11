@@ -149,6 +149,31 @@ namespace NETPath.Projects.WebApi
 		public bool EnsureSuccessStatusCode { get { return (bool)GetValue(EnsureSuccessStatusCodeProperty); } set { SetValue(EnsureSuccessStatusCodeProperty, value); } }
 		public static readonly DependencyProperty EnsureSuccessStatusCodeProperty = DependencyProperty.Register("EnsureSuccessStatusCode", typeof(bool), typeof(WebApiMethod), new PropertyMetadata(false));
 
+		//Content
+		public bool HasContent { get { return (bool)GetValue(HasContentProperty); } set { SetValue(HasContentProperty, value); } }
+		public static readonly DependencyProperty HasContentProperty = DependencyProperty.Register("HasContent", typeof(bool), typeof(WebApiMethod), new PropertyMetadata(false));
+
+		public DataType ContentType { get { return (DataType)GetValue(ContentTypeProperty); } set { SetValue(ContentTypeProperty, value); } }
+		public static readonly DependencyProperty ContentTypeProperty = DependencyProperty.Register("ContentType", typeof(DataType), typeof(WebApiMethod), new PropertyMetadata(ContentTypeChangedCallback));
+
+		private static void ContentTypeChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs p)
+		{
+			var de = o as WebApiMethod;
+			if (de == null) return;
+			var nt = p.NewValue as DataType;
+			if (nt == null) return;
+			var ot = p.OldValue as DataType;
+			if (ot == null) return;
+
+			if (ot.TypeMode == DataTypeMode.Array && ot.CollectionGenericType.TypeMode == DataTypeMode.Primitive) de.Owner.RemoveKnownType(nt);
+			if (nt.TypeMode == DataTypeMode.Array && nt.CollectionGenericType.TypeMode == DataTypeMode.Primitive) de.Owner.AddKnownType(nt);
+			if (ot.TypeMode == DataTypeMode.Primitive && ot.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.RemoveKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
+			if (nt.TypeMode == DataTypeMode.Primitive && nt.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.AddKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
+		}
+
+		public string ContentParameterName { get { return (string)GetValue(ContentParameterNameProperty); } set { SetValue(ContentParameterNameProperty, value); } }
+		public static readonly DependencyProperty ContentParameterNameProperty = DependencyProperty.Register("ContentParameterName", typeof(string), typeof(WebApiMethod));
+
 		//System
 		[IgnoreDataMember]
 		public string Declaration { get { return (string)GetValue(DeclarationProperty); } protected set { SetValue(DeclarationPropertyKey, value); } }
@@ -275,45 +300,14 @@ namespace NETPath.Projects.WebApi
 			if (nt.TypeMode == DataTypeMode.Array && nt.CollectionGenericType.TypeMode == DataTypeMode.Primitive) de.Owner.AddKnownType(nt);
 			if (ot.TypeMode == DataTypeMode.Primitive && ot.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.RemoveKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
 			if (nt.TypeMode == DataTypeMode.Primitive && nt.Primitive == PrimitiveTypes.DateTimeOffset) de.Owner.AddKnownType(new DataType(PrimitiveTypes.DateTimeOffset));
-
-			de.IsSerializable = false;
-			de.IsNullable = false;
-			if (nt.TypeMode == DataTypeMode.Array || nt.TypeMode == DataTypeMode.Class || nt.TypeMode == DataTypeMode.Collection || nt.TypeMode == DataTypeMode.Dictionary || nt.TypeMode == DataTypeMode.Struct || nt.TypeMode == DataTypeMode.Queue || nt.TypeMode == DataTypeMode.Stack) de.IsSerializable = true;
-			if (nt.TypeMode == DataTypeMode.Primitive && (nt.Primitive == PrimitiveTypes.ByteArray || nt.Primitive == PrimitiveTypes.String)) de.IsSerializable = true;
-			if (nt.TypeMode == DataTypeMode.Primitive && nt.Primitive != PrimitiveTypes.ByteArray && nt.Primitive != PrimitiveTypes.String && nt.Primitive != PrimitiveTypes.Object) de.IsNullable = true;
-			if (nt.TypeMode == DataTypeMode.Struct || nt.TypeMode == DataTypeMode.Enum) de.IsNullable = true;
 		}
 
 		public string DefaultValue { get { return (string)GetValue(DefaultValueProperty); } set { SetValue(DefaultValueProperty, Helpers.RegExs.ReplaceSpaces.Replace(value ?? "", @"")); } }
 		public static readonly DependencyProperty DefaultValueProperty = DependencyProperty.Register("DefaultValue", typeof(string), typeof(WebApiMethodParameter));
 
 		//Rest Specific
-		[IgnoreDataMember]
-		public bool IsSerializable { get { return (bool)GetValue(IsSerializableProperty); } protected set { SetValue(IsSerializablePropertyKey, value); } }
-		private static readonly DependencyPropertyKey IsSerializablePropertyKey = DependencyProperty.RegisterReadOnly("IsSerializable", typeof(bool), typeof(WebApiMethodParameter), new PropertyMetadata(false));
-		public static readonly DependencyProperty IsSerializableProperty = IsSerializablePropertyKey.DependencyProperty;
-
-		public bool Serialize { get { return (bool)GetValue(SerializeProperty); } set { SetValue(SerializeProperty, value); } }
-		public static readonly DependencyProperty SerializeProperty = DependencyProperty.Register("Serialize", typeof(bool), typeof(WebApiMethodParameter), new PropertyMetadata(false, SerializeChangedCallback));
-
-		private static void SerializeChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
-		{
-			var de = o as WebApiMethodParameter;
-			if (de == null) return;
-			if (Convert.ToBoolean(e.NewValue) == false) return;
-
-			foreach (var t in de.Parent.QueryParameters.Where(a => !Equals(a, de)))
-				t.Serialize = false;
-			de.Serialize = true;
-		}
-
-		[IgnoreDataMember]
-		public bool IsNullable { get { return (bool)GetValue(IsNullableProperty); } protected set { SetValue(IsNullablePropertyKey, value); } }
-		private static readonly DependencyPropertyKey IsNullablePropertyKey = DependencyProperty.RegisterReadOnly("IsNullable", typeof(bool), typeof(WebApiMethodParameter), new PropertyMetadata(false));
-		public static readonly DependencyProperty IsNullableProperty = IsNullablePropertyKey.DependencyProperty;
-
-		public bool Nullable { get { return (bool)GetValue(NullableProperty); } set { SetValue(NullableProperty, value); } }
-		public static readonly DependencyProperty NullableProperty = DependencyProperty.Register("Nullable", typeof(bool), typeof(WebApiMethodParameter), new PropertyMetadata(false));
+		public bool Optional { get { return (bool)GetValue(OptionalProperty); } set { SetValue(OptionalProperty, value); } }
+		public static readonly DependencyProperty OptionalProperty = DependencyProperty.Register("Optional", typeof(bool), typeof(WebApiMethodParameter), new PropertyMetadata(false));
 
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(WebApiMethodParameter));
@@ -329,13 +323,7 @@ namespace NETPath.Projects.WebApi
 			RouteName = Name.ToLowerInvariant();
 			Documentation = new Documentation { IsParameter = true };
 
-			IsSerializable = false;
-			IsNullable = false;
 			IsHidden = false;
-			if (Type.TypeMode == DataTypeMode.Array || Type.TypeMode == DataTypeMode.Class || Type.TypeMode == DataTypeMode.Collection || Type.TypeMode == DataTypeMode.Dictionary || Type.TypeMode == DataTypeMode.Struct || Type.TypeMode == DataTypeMode.Queue || Type.TypeMode == DataTypeMode.Stack) IsSerializable = true;
-			if (Type.TypeMode == DataTypeMode.Primitive && (Type.Primitive == PrimitiveTypes.ByteArray || Type.Primitive == PrimitiveTypes.String)) IsSerializable = true;
-			if ((Type.TypeMode == DataTypeMode.Primitive && Type.Primitive != PrimitiveTypes.ByteArray && Type.Primitive != PrimitiveTypes.String && Type.Primitive != PrimitiveTypes.Object)) IsNullable = true;
-			if (Type.TypeMode == DataTypeMode.Struct || Type.TypeMode == DataTypeMode.Enum) IsNullable = true;
 		}
 
 		protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -347,7 +335,7 @@ namespace NETPath.Projects.WebApi
 
 		public override string ToString()
 		{
-			return string.Format("{0}{3} {1}{2}", Type, Name, string.IsNullOrWhiteSpace(DefaultValue) ? "" : string.Format(" = {0}", DefaultValue), Nullable ? "?" : "");
+			return string.Format("{0}{3} {1}{2}", Type, Name, string.IsNullOrWhiteSpace(DefaultValue) ? "" : string.Format(" = {0}", DefaultValue), Optional ? "?" : "");
 		}
 	}
 
