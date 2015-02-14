@@ -197,7 +197,7 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
 				code.AppendLine("\t\t{");
 				code.AppendLine("\t\t\tif (Data == null) return null;");
-				code.AppendLine(string.Format("\t\t\treturn new {0}(Data);", o.ClientType.Name));
+				code.AppendLine(string.Format("\t\t\treturn new {0}(Data);", o.ClientType?.Name ?? o.Name));
 				code.AppendLine("\t\t}");
 				code.AppendLine();
 			}

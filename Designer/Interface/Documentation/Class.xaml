@@ -15,7 +15,7 @@
 		<ColumnDefinition Width="*" />
 	</Grid.ColumnDefinitions>
 	<Label Content="Summary" Grid.Row="0" Grid.Column="0" />
-	<TextBox Text="{Binding Documentation.Summary}" SpellCheck.IsEnabled="True" Grid.Row="1" Grid.Column="0" Margin="0,0,5,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" />
+	<TextBox Text="{Binding Documentation.Summary}" Grid.Row="1" Grid.Column="0" Margin="0,0,5,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" />
 	<Label Content="Remarks" Grid.Row="0" Grid.Column="1" />
 	<TextBox Text="{Binding Documentation.Remarks}" Grid.Row="1" Grid.Column="1" Margin="5,0" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" />
 	<Label Content="Example" Grid.Row="0" Grid.Column="2" />
