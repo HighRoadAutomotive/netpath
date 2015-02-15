@@ -322,14 +322,14 @@ namespace NETPath.Generators.CS.WebApi
 			foreach (var op in o.RouteParameters)
 			{
 				if (op.GetType() == typeof (WebApiRouteParameter))
-					code.AppendLine(string.Format("\t\t\turi.Append(\"/{0}\");", op.RouteName));
+					code.AppendLine(string.Format("\t\t\turi.AppendFormat(\"/{0}\");", op.RouteName));
 				if (op.GetType() == typeof (WebApiMethodParameter))
-					code.AppendLine(string.Format("\t\t\turi.Append(\"/{{0}}\", {0});", op.Name));
+					code.AppendLine(string.Format("\t\t\turi.AppendFormat(\"/{{0}}\", {0});", op.Name));
 			}
 			if (o.QueryParameters.Any())
 				code.AppendLine("\t\t\turi.Append(\"?\"");
 			foreach (var op in o.QueryParameters)
-				code.AppendLine(string.Format(!op.Optional ? "\t\t\turi.Append(\"&{0}={{0}}\", {1});" : "\t\t\tif ({1} != null) uri.Append(\"&{0}={{0}}\", {1});", op.RouteName, op.Name));
+				code.AppendLine(string.Format(!op.Optional ? "\t\t\turi.AppendFormat(\"&{0}={{0}}\", {1});" : "\t\t\tif ({1} != null) uri.Append(\"&{0}={{0}}\", {1});", op.RouteName, op.Name));
 			code.AppendLine("\t\t\turi.Replace(\"?&\", \"?\");");
 
 			//Create the HttpRequestMessage
@@ -428,14 +428,14 @@ namespace NETPath.Generators.CS.WebApi
 			foreach (var op in o.RouteParameters)
 			{
 				if (op.GetType() == typeof (WebApiRouteParameter))
-					code.AppendLine(string.Format("\t\t\turi.Append(\"/{0}\");", op.RouteName));
+					code.AppendLine(string.Format("\t\t\turi.AppendFormat(\"/{0}\");", op.RouteName));
 				if (op.GetType() == typeof (WebApiMethodParameter))
-					code.AppendLine(string.Format("\t\t\turi.Append(\"/{{0}}\", {0});", op.Name));
+					code.AppendLine(string.Format("\t\t\turi.AppendFormat(\"/{{0}}\", {0});", op.Name));
 			}
 			if (o.QueryParameters.Any())
 				code.AppendLine("\t\t\turi.Append(\"?\"");
 			foreach (var op in o.QueryParameters)
-				code.AppendLine(string.Format(!op.Optional ? "\t\t\turi.Append(\"&{0}={{0}}\", {1});" : "\t\t\tif ({1} != null) uri.Append(\"&{0}={{0}}\", {1});", op.RouteName, op.Name));
+				code.AppendLine(string.Format(!op.Optional ? "\t\t\turi.AppendFormat(\"&{0}={{0}}\", {1});" : "\t\t\tif ({1} != null) uri.Append(\"&{0}={{0}}\", {1});", op.RouteName, op.Name));
 			code.AppendLine("\t\t\turi.Replace(\"?&\", \"?\");");
 
 			//Create the HttpRequestMessage

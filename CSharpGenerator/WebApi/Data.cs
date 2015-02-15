@@ -276,7 +276,7 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
 				code.AppendLine("\t\t{");
 				code.AppendLine("\t\t\tif (Data == null) return null;");
-				code.AppendLine(string.Format("\t\t\treturn new {0}(Data);", o.ClientType.Name));
+				code.AppendLine(string.Format("\t\t\treturn new {0}(Data);", o.ClientType?.Name ?? o.Name));
 				code.AppendLine("\t\t}");
 				code.AppendLine();
 			}
@@ -291,7 +291,7 @@ namespace NETPath.Generators.CS.WebApi
 					code.AppendLine(string.Format("\t\t\t_{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.DataType)), de.HasXAMLType ? de.XAMLName : de.HasClientType ? de.ClientName : de.DataName));
 				else if (de.DataType.TypeMode == DataTypeMode.Array)
 					code.AppendLine(string.Format("\t\t\t_{1} = new {0}[0];", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.DataType.CollectionGenericType)), de.HasXAMLType ? de.XAMLName : de.HasClientType ? de.ClientName : de.DataName));
-			if (o.HasXAMLType) code.AppendLine(string.Format("\t\t\tWindow.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {{ BaseXAMLObject = new {0}(this); }}).GetResults();", o.XAMLType.Name));
+			//if (o.HasXAMLType) code.AppendLine(string.Format("\t\t\tWindow.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {{ BaseXAMLObject = new {0}(this); }}).GetResults();", o.XAMLType.Name));
 			code.AppendLine("\t\t}");
 			if (o.HasXAMLType)
 			{
@@ -525,8 +525,9 @@ namespace NETPath.Generators.CS.WebApi
 					code.AppendLine(string.Format("\t\t\t{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredXAMLType(de.DataType)), de.XAMLName));
 				else if (de.DataType.TypeMode == DataTypeMode.Array)
 					code.AppendLine(string.Format("\t\t\t{1} = new {0}[0];", DataTypeGenerator.GenerateType(GetPreferredXAMLType(de.DataType.CollectionGenericType)), de.XAMLName));
+			code.AppendLine("\t\t}");
 			code.AppendLine();
-			code.AppendLine(string.Format("\t\tpublic {0}({1} Data)", o.XAMLType.Name, o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine(string.Format("\t\tprivate {0}({1} Data)", o.XAMLType.Name, o.HasClientType ? o.ClientType.Name : o.Name));
 			code.AppendLine("\t\t{");
 			foreach (var de in o.Elements)
 				code.Append(GenerateElementXAMLConstructorCode45(de, o));
@@ -553,7 +554,7 @@ namespace NETPath.Generators.CS.WebApi
 			var code = new StringBuilder();
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return ({0})GetValue({1}Property); }} {2}set {{ SetValue({1}Property, value); }} }}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.DataType)), o.XAMLName, o.IsReadOnly ? "protected " : ""));
-			code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty {1}Property = DependencyProperty.Register(\"{1}\", typeof({0}), typeof({2}));", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.DataType)), o.XAMLName, o.Owner.XAMLType.Name));
+			code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty {1}Property = DependencyProperty.Register(\"{1}\", typeof({0}), typeof({2}), new PropertyMetadata(default({0})));", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.DataType)), o.XAMLName, o.Owner.XAMLType.Name));
 			return code.ToString();
 		}
 
