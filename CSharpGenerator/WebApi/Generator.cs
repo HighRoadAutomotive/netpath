@@ -124,6 +124,11 @@ namespace NETPath.Generators.CS.WebApi
 						code.AppendLine(string.Format("using {0};", pun.Namespace));
 				}
 				if (Data.EnableEntityFramework && Server) code.AppendLine("using System.Data.Entity.Core.Objects;");
+				if (Target.TargetTypes.OfType<WebApiData>().Any(a => a.HasSql))
+				{
+					code.AppendLine("using System.Data;");
+					code.AppendLine("using System.Data.SqlClient;");
+				}
 				code.AppendLine();
 				if (Data.GenerateRegions)
 				{
@@ -137,6 +142,68 @@ namespace NETPath.Generators.CS.WebApi
 
 			//Disable XML documentation warnings
 			code.AppendLine(string.Format("#pragma warning disable 0649{0}", !Data.EnableDocumentationWarnings ? ", 1591" : ""));
+
+			//Generate globally required code
+			if (Data.Namespace.HasServices())
+			{
+				code.AppendFormat("namespace {0}{1}", Data.Namespace.FullName, Environment.NewLine);
+				code.AppendLine("{");
+				code.AppendLine();
+				code.AppendLine("\tpublic static class ServiceController");
+				code.AppendLine("\t{");
+				foreach (var se in Target.TargetTypes.OfType<WebApiService>())
+					code.AppendLine(string.Format("\t\tprivate static IDisposable _service{0};", se.Name));
+				if (Target.TargetTypes.OfType<WebApiData>().Any(a => a.HasSql))
+				{
+					code.AppendLine("\t\tprivate static string _sqlConnectionString;");
+					code.AppendLine("\t\tprivate static SqlCredential _sqlCredential;");
+					code.AppendLine("\t\tpublic static void Start(string baseUri, SqlConnectionStringBuilder sqlBuilder)");
+					code.AppendLine("\t\t{");
+					code.AppendLine("\t\t\t//Configure SQL Server Connections");
+					code.AppendLine("\t\t\tvar secure = new SecureString();");
+					code.AppendLine("\t\t\tforeach(var c in sqlBuilder.Password.ToCharArray()) secure.AppendChar(c);");
+					code.AppendLine("\t\t\tsecure.MakeReadOnly();");
+					code.AppendLine("\t\t\t_sqlCredential = new SqlCredential(sqlBuilder.UserID, secure);");
+					code.AppendLine("\t\t\tsqlBuidler.UserID = string.Empty;");
+					code.AppendLine("\t\t\tsqlBuidler.Password = string.Empty;");
+					code.AppendLine("\t\t\t_sqlConnectionString = sqlBuilder.ToString();");
+					code.AppendLine();
+					code.AppendLine("\t\t\t//Start Web Services");
+					foreach (var se in Target.TargetTypes.OfType<WebApiService>())
+						code.AppendLine(string.Format("\t\t\t_service{0} = WebApp.Start<{0}Configuration>(baseUri);", se.TypeName));
+					code.AppendLine("\t\t}");
+				}
+				else
+				{
+					code.AppendLine("\t\tpublic static void Start(string baseUri)");
+					code.AppendLine("\t\t{");
+					foreach (var se in Target.TargetTypes.OfType<WebApiService>())
+						code.AppendLine(string.Format("\t\t\t_service{0} = WebApp.Start<{0}Configuration>(baseUri);", se.TypeName));
+					code.AppendLine("\t\t}");
+				}
+				code.AppendLine();
+				code.AppendLine("\t\tpublic static void Stop()");
+				code.AppendLine("\t\t{");
+				foreach (var se in Target.TargetTypes.OfType<WebApiService>())
+					code.AppendLine(string.Format("\t\t\tif (_service{0} != null) _service{0}.Dispose();", se.Name));
+				code.AppendLine("\t\t}");
+				code.AppendLine();
+				code.AppendLine("\t\tpublic static SqlConnection CreateAndOpen()");
+				code.AppendLine("\t\t{");
+				code.AppendLine("\t\t\tvar sql = new SqlConnection(_sqlConnectionString, _sqlCredential);");
+				code.AppendLine("\t\t\tsql.Open();");
+				code.AppendLine("\t\t\treturn sql;");
+				code.AppendLine("\t\t}");
+				code.AppendLine("\t\tpublic static async Task<SqlConnection> CreateAndOpenAsync()");
+				code.AppendLine("\t\t{");
+				code.AppendLine("\t\t\tvar sql = new SqlConnection(_sqlConnectionString, _sqlCredential);");
+				code.AppendLine("\t\t\tawait sql.OpenAsync();");
+				code.AppendLine("\t\t\treturn sql;");
+				code.AppendLine("\t\t}");
+				code.AppendLine("\t}");
+				code.AppendLine();
+				code.AppendLine("}");
+			}
 
 			//Generate project
 			if (Server)

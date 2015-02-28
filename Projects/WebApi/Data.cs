@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -50,6 +51,44 @@ namespace NETPath.Projects.WebApi
 
 		public string EntityContext { get { return (string)GetValue(EntityContextProperty); } set { SetValue(EntityContextProperty, value); } }
 		public static readonly DependencyProperty EntityContextProperty = DependencyProperty.Register("EntityContext", typeof(string), typeof(WebApiData), new PropertyMetadata(""));
+
+		public bool HasSql { get { return (bool)GetValue(HasSqlProperty); } set { SetValue(HasSqlProperty, value); } }
+		public static readonly DependencyProperty HasSqlProperty = DependencyProperty.Register("HasSql", typeof(bool), typeof(WebApiData), new PropertyMetadata(false, HasSqlChangedCallback));
+
+		private static void HasSqlChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as WebApiData;
+			if (t == null) return;
+
+			if (Convert.ToBoolean(e.NewValue))
+			{
+				if (t.SchemaName == "") t.SchemaName = t.Parent.Name;
+				if (t.TableName == "") t.TableName = t.Name;
+			}
+			else
+			{
+				t.SchemaName = "";
+				t.TableName = "";
+			}
+		}
+
+		public string SchemaName { get { return (string)GetValue(SchemaNameProperty); } set { SetValue(SchemaNameProperty, value); } }
+		public static readonly DependencyProperty SchemaNameProperty = DependencyProperty.Register("SchemaName", typeof(string), typeof(WebApiData), new PropertyMetadata(""));
+
+		public string TableName { get { return (string)GetValue(TableNameProperty); } set { SetValue(TableNameProperty, value); } }
+		public static readonly DependencyProperty TableNameProperty = DependencyProperty.Register("TableName", typeof(string), typeof(WebApiData), new PropertyMetadata(""));
+
+		public bool CanSelect { get { return (bool)GetValue(CanSelectProperty); } set { SetValue(CanSelectProperty, value); } }
+		public static readonly DependencyProperty CanSelectProperty = DependencyProperty.Register("CanSelect", typeof(bool), typeof(WebApiData), new PropertyMetadata(false));
+
+		public bool CanInsert { get { return (bool)GetValue(CanInsertProperty); } set { SetValue(CanInsertProperty, value); } }
+		public static readonly DependencyProperty CanInsertProperty = DependencyProperty.Register("CanInsert", typeof(bool), typeof(WebApiData), new PropertyMetadata(false));
+
+		public bool CanUpdate { get { return (bool)GetValue(CanUpdateProperty); } set { SetValue(CanUpdateProperty, value); } }
+		public static readonly DependencyProperty CanUpdateProperty = DependencyProperty.Register("CanUpdate", typeof(bool), typeof(WebApiData), new PropertyMetadata(false));
+
+		public bool CanDelete { get { return (bool)GetValue(CanDeleteProperty); } set { SetValue(CanDeleteProperty, value); } }
+		public static readonly DependencyProperty CanDeleteProperty = DependencyProperty.Register("CanDelete", typeof(bool), typeof(WebApiData), new PropertyMetadata(false));
 
 		//System
 		[IgnoreDataMember]
@@ -192,16 +231,16 @@ namespace NETPath.Projects.WebApi
 
 			if (Convert.ToBoolean(e.NewValue))
 			{
-				if (t.XAMLName == "") t.XAMLName = t.DataName;
+				if (t.XamlName == "") t.XamlName = t.DataName;
 			}
 			else
 			{
-				t.XAMLName = "";
+				t.XamlName = "";
 			}
 		}
 
-		public string XAMLName { get { return (string)GetValue(XAMLNameProperty); } set { SetValue(XAMLNameProperty, value); } }
-		public static readonly DependencyProperty XAMLNameProperty = DependencyProperty.Register("XAMLName", typeof(string), typeof(WebApiDataElement), new PropertyMetadata(""));
+		public string XamlName { get { return (string)GetValue(XamlNameProperty); } set { SetValue(XamlNameProperty, value); } }
+		public static readonly DependencyProperty XamlNameProperty = DependencyProperty.Register("XamlName", typeof(string), typeof(WebApiDataElement), new PropertyMetadata(""));
 
 		public bool HasEntity { get { return (bool)GetValue(HasEntityProperty); } set { SetValue(HasEntityProperty, value); } }
 		public static readonly DependencyProperty HasEntityProperty = DependencyProperty.Register("HasEntity", typeof(bool), typeof(WebApiDataElement), new PropertyMetadata(false, HasEntityChangedCallback));
@@ -258,6 +297,37 @@ namespace NETPath.Projects.WebApi
 
 		public int Order { get { return (int)GetValue(OrderProperty); } set { SetValue(OrderProperty, value); } }
 		public static readonly DependencyProperty OrderProperty = DependencyProperty.Register("Order", typeof(int), typeof(WebApiDataElement), new PropertyMetadata(-1));
+
+		//SQL Support
+		public bool HasSql { get { return (bool)GetValue(HasSqlProperty); } set { SetValue(HasSqlProperty, value); } }
+		public static readonly DependencyProperty HasSqlProperty = DependencyProperty.Register("HasSql", typeof(bool), typeof(WebApiDataElement), new PropertyMetadata(false, HasSqlChangedCallback));
+
+		private static void HasSqlChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
+		{
+			var t = o as WebApiDataElement;
+			if (t == null) return;
+
+			if (Convert.ToBoolean(e.NewValue))
+			{
+				if (t.SqlName == "") t.SqlName = t.DataName;
+			}
+			else
+			{
+				t.SqlName = "";
+			}
+		}
+
+		public string SqlName { get { return (string)GetValue(SqlNameProperty); } set { SetValue(SqlNameProperty, value); } }
+		public static readonly DependencyProperty SqlNameProperty = DependencyProperty.Register("SqlName", typeof(string), typeof(WebApiDataElement), new PropertyMetadata(""));
+
+		public SqlDbType SqlType { get { return (SqlDbType)GetValue(SqlTypeProperty); } set { SetValue(SqlTypeProperty, value); } }
+		public static readonly DependencyProperty SqlTypeProperty = DependencyProperty.Register("SqlType", typeof(SqlDbType), typeof(WebApiDataElement), new PropertyMetadata(SqlDbType.Int));
+
+		public bool IsSqlPrimaryKey { get { return (bool)GetValue(IsSqlPrimaryKeyProperty); } set { SetValue(IsSqlPrimaryKeyProperty, value); } }
+		public static readonly DependencyProperty IsSqlPrimaryKeyProperty = DependencyProperty.Register("IsSqlPrimaryKey", typeof(bool), typeof(WebApiDataElement), new PropertyMetadata(false));
+
+		public bool IsSqlPrimaryKeyComputed { get { return (bool)GetValue(IsSqlPrimaryKeyComputedProperty); } set { SetValue(IsSqlPrimaryKeyComputedProperty, value); } }
+		public static readonly DependencyProperty IsSqlPrimaryKeyComputedProperty = DependencyProperty.Register("IsSqlPrimaryKeyComputed", typeof(bool), typeof(WebApiDataElement), new PropertyMetadata(true));
 
 		//XAML Class Settings
 		public bool AttachedBrowsable { get { return (bool)GetValue(AttachedBrowsableProperty); } set { SetValue(AttachedBrowsableProperty, value); } }
