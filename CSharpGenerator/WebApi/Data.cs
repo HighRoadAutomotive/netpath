@@ -166,6 +166,30 @@ namespace NETPath.Generators.CS.WebApi
 		{
 			if (!o.Elements.Any(a => a.IsSqlPrimaryKey)) return "";
 			var code = new StringBuilder();
+			var prj = o.Parent.Owner as WebApiProject;
+
+			code.AppendLine("\t\tpublic void Insert()");
+			code.AppendLine("\t\t{");
+			code.Append(string.Format("\t\t\tstring cmdstr = \"INSERT INTO {0}{1} (", string.IsNullOrWhiteSpace(o.SchemaName) ? "" : string.Format("[{0}].", o.SchemaName), o.TableName));
+			foreach (var de in o.Elements.Where(a => a.HasSql))
+				code.Append(string.Format("[{0}], ", de.SqlName));
+			code.Remove(code.Length - 2, 2);
+			code.Append(string.Format(") OUTPUT INSERTED.{0} VALUES (", o.Elements.First(a => a.IsSqlPrimaryKey).SqlName));
+			foreach (var de in o.Elements.Where(a => a.HasSql))
+				code.Append(string.Format("@{0}, ", de.DataName));
+			code.Remove(code.Length - 2, 2);
+			code.AppendLine(")\";");
+			code.AppendLine(string.Format("\t\t\tusing(var con = {0}.ServiceController.CreateAndOpen())", prj?.Namespace.FullName ?? ""));
+			code.AppendLine("\t\t\tusing(var cmd = con.CreateCommand())");
+			code.AppendLine("\t\t\t{");
+			code.AppendLine("\t\t\t\tcmd.CommandText = cmdstr;");
+			code.AppendLine("\t\t\t\tcmd.CommandType = CommandType.Text;");
+			foreach (var de in o.Elements.Where(a => a.HasSql))
+				code.AppendLine(string.Format("\t\t\t\tcmd.Parameters.Add(\"@{0}\", SqlDbType.{1}).Value = {0};", de.DataName, de.SqlType.ToString()));
+			code.AppendLine("\t\t\t\tcmd.ExecuteNonQuery();");
+			code.AppendLine("\t\t\t}");
+			code.AppendLine("\t\t}");
+			code.AppendLine();
 
 			code.AppendLine("\t\tpublic async Task InsertAsync()");
 			code.AppendLine("\t\t{");
@@ -178,7 +202,6 @@ namespace NETPath.Generators.CS.WebApi
 				code.Append(string.Format("@{0}, ", de.DataName));
 			code.Remove(code.Length - 2, 2);
 			code.AppendLine(")\";");
-			var prj = o.Parent.Owner as WebApiProject;
 			code.AppendLine(string.Format("\t\t\tusing(var con = await {0}.ServiceController.CreateAndOpenAsync())", prj?.Namespace.FullName ?? ""));
 			code.AppendLine("\t\t\tusing(var cmd = con.CreateCommand())");
 			code.AppendLine("\t\t\t{");
@@ -189,6 +212,7 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\t\t\tawait cmd.ExecuteNonQueryAsync();");
 			code.AppendLine("\t\t\t}");
 			code.AppendLine("\t\t}");
+			code.AppendLine();
 
 			return code.ToString();
 		}
