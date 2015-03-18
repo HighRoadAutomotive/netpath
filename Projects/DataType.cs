@@ -168,7 +168,7 @@ namespace NETPath.Projects
 		[IgnoreDataMember]
 		public bool IsValueType { get { return TypeMode == DataTypeMode.Primitive || TypeMode == DataTypeMode.Enum || TypeMode == DataTypeMode.Struct; } }
 		[IgnoreDataMember]
-		public bool IsReferenceType { get { return (TypeMode == DataTypeMode.Primitive || TypeMode == DataTypeMode.Enum || TypeMode == DataTypeMode.Struct || TypeMode == DataTypeMode.Namespace); } }
+		public bool IsReferenceType { get { return ((TypeMode == DataTypeMode.Primitive && Primitive == PrimitiveTypes.Object) || TypeMode == DataTypeMode.Class || TypeMode == DataTypeMode.Interface); } }
 		[IgnoreDataMember]
 		public bool IsVoid { get { return TypeMode == DataTypeMode.Primitive && Primitive == PrimitiveTypes.Void; } }
 
@@ -390,6 +390,35 @@ namespace NETPath.Projects
 			else if (TypeMode == DataTypeMode.Dictionary)
 				return string.Format("{0}<{1}, {2}>", Name, DictionaryKeyGenericType?.ToString() ?? "", DictionaryValueGenericType?.ToString() ?? "");
 			return Name;
+		}
+
+		public string GetSqlAdoName()
+		{
+			if (TypeMode == DataTypeMode.Primitive)
+			{
+				if (Primitive == PrimitiveTypes.Byte) return "Byte";
+				if (Primitive == PrimitiveTypes.SByte) return "Byte";
+				if (Primitive == PrimitiveTypes.Short) return "Int16";
+				if (Primitive == PrimitiveTypes.Int) return "Int32";
+				if (Primitive == PrimitiveTypes.Long) return "Int64";
+				if (Primitive == PrimitiveTypes.UShort) return "Int16";
+				if (Primitive == PrimitiveTypes.UInt) return "Int32";
+				if (Primitive == PrimitiveTypes.ULong) return "Int64";
+				if (Primitive == PrimitiveTypes.Float) return "Single";
+				if (Primitive == PrimitiveTypes.Double) return "Double";
+				if (Primitive == PrimitiveTypes.Decimal) return "Decimal";
+				if (Primitive == PrimitiveTypes.Bool) return "Boolean";
+				if (Primitive == PrimitiveTypes.Char) return "Byte";
+				if (Primitive == PrimitiveTypes.String) return "String";
+				if (Primitive == PrimitiveTypes.DateTime) return "DateTime";
+				if (Primitive == PrimitiveTypes.DateTimeOffset) return "DateTimeOffset";
+				if (Primitive == PrimitiveTypes.TimeSpan) return "TimeSpan";
+				if (Primitive == PrimitiveTypes.GUID) return "Guid";
+				if (Primitive == PrimitiveTypes.URI) return "String";
+				if (Primitive == PrimitiveTypes.Version) return "String";
+				if (Primitive == PrimitiveTypes.ByteArray) return "Bytes";
+			}
+			return "";
 		}
 
 		public DataType Reference()

@@ -2,6 +2,7 @@
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
 using System.ServiceModel.Security.Tokens;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 using NETPath.Projects;
 using NETPath.Projects.WebApi;
 using NETPath.Projects.Helpers;
+using NETPath.Projects.Wcf;
 
 namespace NETPath.Generators.CS.WebApi
 {
@@ -162,54 +164,117 @@ namespace NETPath.Generators.CS.WebApi
 			return code.ToString();
 		}
 
-		private static string GenerateSqlInsert(WebApiData o)
+		private static string GenerateSqlMerge(WebApiData o)
 		{
 			if (!o.Elements.Any(a => a.IsSqlPrimaryKey)) return "";
 			var code = new StringBuilder();
 			var prj = o.Parent.Owner as WebApiProject;
 
-			code.AppendLine("\t\tpublic void Insert()");
-			code.AppendLine("\t\t{");
-			code.Append(string.Format("\t\t\tstring cmdstr = \"INSERT INTO {0}{1} (", string.IsNullOrWhiteSpace(o.SchemaName) ? "" : string.Format("[{0}].", o.SchemaName), o.TableName));
-			foreach (var de in o.Elements.Where(a => a.HasSql))
+			//Generate SQL Command
+			var sql = new StringBuilder();
+			code.Append(string.Format("\t\t\tstring cmdstr = \"MERGE INTO {0}{1} AS tgt USING (SELECT ", string.IsNullOrWhiteSpace(o.SchemaName) ? "" : string.Format("[{0}].", o.SchemaName), o.TableName));
+			foreach (var de in o.Elements.Where(a => a.HasSql && !a.IsSqlPrimaryKeyIdentity && !a.IsSqlComputed))
+				code.Append(string.Format("[{0}] = @{0}, ", de.SqlName));
+			code.Remove(code.Length - 2, 2);
+			code.Append(") AS src ON ");
+			foreach (var de in o.Elements.Where(a => a.HasSql && !a.IsSqlPrimaryKey))
+				code.Append(string.Format("src.[{0}] = tgt.[{0}] AND ", de.DataName));
+			code.Remove(code.Length - 4, 4);
+			code.Append("WHEN NOT MATCHED BY TARGET THEN INSERT (");
+			foreach (var de in o.Elements.Where(a => a.HasSql && !a.IsSqlPrimaryKeyIdentity && !a.IsSqlComputed))
 				code.Append(string.Format("[{0}], ", de.SqlName));
 			code.Remove(code.Length - 2, 2);
-			code.Append(string.Format(") OUTPUT INSERTED.{0} VALUES (", o.Elements.First(a => a.IsSqlPrimaryKey).SqlName));
-			foreach (var de in o.Elements.Where(a => a.HasSql))
-				code.Append(string.Format("@{0}, ", de.DataName));
+			code.Append(") VALUES (");
+			foreach (var de in o.Elements.Where(a => a.HasSql && !a.IsSqlPrimaryKeyIdentity && !a.IsSqlComputed))
+				code.Append(string.Format("src.[{0}], ", de.SqlName));
 			code.Remove(code.Length - 2, 2);
-			code.AppendLine(")\";");
+			code.Append(") WHEN MATCHED THEN UPDATE SET ");
+			foreach (var de in o.Elements.Where(a => a.HasSql && !a.IsSqlPrimaryKeyIdentity && !a.IsSqlComputed))
+				code.Append(string.Format("[{0}] = @{0}, ", de.SqlName));
+			code.Remove(code.Length - 2, 2);
+			if (o.Elements.Any(a => a.IsSqlPrimaryKeyIdentity || a.IsSqlComputed))
+			{
+				code.Append(" OUTPUT ");
+				foreach (var de in o.Elements.Where(a => a.IsSqlPrimaryKeyIdentity || a.IsSqlComputed))
+					code.Append(string.Format("INSERTED.[{0}], ", de.SqlName));
+				code.Remove(code.Length - 2, 2);
+			}
+			code.AppendLine("\";");
+
+			//Generate Synchronous MERGE command
+			code.AppendLine("\t\tpublic void Merge()");
+			code.AppendLine("\t\t{");
+			code.Append(sql.ToString());
 			code.AppendLine(string.Format("\t\t\tusing(var con = {0}.ServiceController.CreateAndOpen())", prj?.Namespace.FullName ?? ""));
 			code.AppendLine("\t\t\tusing(var cmd = con.CreateCommand())");
 			code.AppendLine("\t\t\t{");
-			code.AppendLine("\t\t\t\tcmd.CommandText = cmdstr;");
+			code.AppendLine("\t\t\t\tcmd.Connection = con;");
+			code.AppendLine(string.Format("\t\t\t\tcmd.Transaction = con.BeginTransaction({0}{1});", o.MergeTransactionLevel != null ? string.Format("IsolationLevel.{0}, ", o.MergeTransactionLevel) : "", o.MergeTransactionName, !string.IsNullOrWhiteSpace(o.MergeTransactionName) ? string.Format("{0}\"{1}\"", o.MergeTransactionLevel != null ? ", " : "", o.MergeTransactionName) : ""));
+            code.AppendLine("\t\t\t\tcmd.CommandText = cmdstr;");
 			code.AppendLine("\t\t\t\tcmd.CommandType = CommandType.Text;");
-			foreach (var de in o.Elements.Where(a => a.HasSql))
-				code.AppendLine(string.Format("\t\t\t\tcmd.Parameters.Add(\"@{0}\", SqlDbType.{1}).Value = {0};", de.DataName, de.SqlType.ToString()));
-			code.AppendLine("\t\t\t\tcmd.ExecuteNonQuery();");
+			foreach (var de in o.Elements.Where(a => a.HasSql && !a.IsSqlPrimaryKeyIdentity && !a.IsSqlComputed))
+				code.AppendLine(string.Format("\t\t\t\tcmd.Parameters.Add(\"{0}\", SqlDbType.{1}).Value = {0};", de.SqlName, de.SqlType.ToString()));
+			code.AppendLine("\t\t\t\ttry");
+			code.AppendLine("\t\t\t\t{");
+			if (o.Elements.Any(a => a.HasSql && (a.IsSqlPrimaryKeyIdentity || a.IsSqlComputed)))
+			{
+				code.AppendLine("\t\t\t\t\tvar res = cmd.ExecuteReader(CommandBehavior.SingleResult | CommandBehavior.SingleRow);");
+				code.AppendLine("\t\t\t\t\tif (res.Read())");
+				code.AppendLine("\t\t\t\t\t{");
+				int cc = 0;
+				foreach (var de in o.Elements.Where(a => a.HasSql && (a.IsSqlPrimaryKeyIdentity || a.IsSqlComputed)))
+					code.AppendLine(de.DataType.IsNullable ? string.Format("\t\t\t\t\t\tif (res.IsDBNull({2})) {{ {0} = null; }} else {{ {0} = res.Get{1}({2}); }}", de.DataName, de.DataType.GetSqlAdoName(), cc++) : string.Format("\t\t\t\t\t\t{0} = res.Get{1}({2});", de.DataName, de.DataType.GetSqlAdoName(), cc++));
+				code.AppendLine("\t\t\t\t\t}");
+			}
+			else
+			{
+				code.AppendLine("\t\t\t\t\tcmd.ExecuteNonQuery();");
+			}
+			code.AppendLine("\t\t\t\t\tif (tran == null) cmd.Transaction.Commit();");
+			code.AppendLine("\t\t\t\t}");
+			code.AppendLine("\t\t\t\tcatch (Exception ex)");
+			code.AppendLine("\t\t\t\t{");
+			code.AppendLine("\t\t\t\t\tcmd.Transaction.Rollback();");
+			code.AppendLine("\t\t\t\t}");
 			code.AppendLine("\t\t\t}");
 			code.AppendLine("\t\t}");
 			code.AppendLine();
 
-			code.AppendLine("\t\tpublic async Task InsertAsync()");
+			//Generate Asynchronous MERGE command
+			code.AppendLine("\t\tpublic async Task MergeAsync()");
 			code.AppendLine("\t\t{");
-			code.Append(string.Format("\t\t\tstring cmdstr = \"INSERT INTO {0}{1} (", string.IsNullOrWhiteSpace(o.SchemaName) ? "" : string.Format("[{0}].", o.SchemaName), o.TableName));
-			foreach (var de in o.Elements.Where(a => a.HasSql))
-				code.Append(string.Format("[{0}], ", de.SqlName));
-			code.Remove(code.Length - 2, 2);
-			code.Append(string.Format(") OUTPUT INSERTED.{0} VALUES (", o.Elements.First(a => a.IsSqlPrimaryKey).SqlName));
-			foreach (var de in o.Elements.Where(a => a.HasSql))
-				code.Append(string.Format("@{0}, ", de.DataName));
-			code.Remove(code.Length - 2, 2);
-			code.AppendLine(")\";");
+			code.Append(sql.ToString());
 			code.AppendLine(string.Format("\t\t\tusing(var con = await {0}.ServiceController.CreateAndOpenAsync())", prj?.Namespace.FullName ?? ""));
 			code.AppendLine("\t\t\tusing(var cmd = con.CreateCommand())");
 			code.AppendLine("\t\t\t{");
+			code.AppendLine("\t\t\t\tcmd.Connection = con;");
+			code.AppendLine(string.Format("\t\t\t\tcmd.Transaction = con.BeginTransaction({0}{1});", o.MergeTransactionLevel != null ? string.Format("IsolationLevel.{0}, ", o.MergeTransactionLevel) : "", o.MergeTransactionName, !string.IsNullOrWhiteSpace(o.MergeTransactionName) ? string.Format("{0}\"{1}\"", o.MergeTransactionLevel != null ? ", " : "", o.MergeTransactionName) : ""));
 			code.AppendLine("\t\t\t\tcmd.CommandText = cmdstr;");
 			code.AppendLine("\t\t\t\tcmd.CommandType = CommandType.Text;");
-			foreach (var de in o.Elements.Where(a => a.HasSql))
-				code.AppendLine(string.Format("\t\t\t\tcmd.Parameters.Add(\"@{0}\", SqlDbType.{1}).Value = {0};", de.DataName, de.SqlType.ToString()));
-			code.AppendLine("\t\t\t\tawait cmd.ExecuteNonQueryAsync();");
+			foreach (var de in o.Elements.Where(a => a.HasSql && !a.IsSqlPrimaryKeyIdentity && !a.IsSqlComputed))
+				code.AppendLine(string.Format("\t\t\t\tcmd.Parameters.Add(\"{0}\", SqlDbType.{1}).Value = {0};", de.SqlName, de.SqlType.ToString()));
+			code.AppendLine("\t\t\t\ttry");
+			code.AppendLine("\t\t\t\t{");
+			if (o.Elements.Any(a => a.IsSqlPrimaryKeyIdentity))
+			{
+				code.AppendLine("\t\t\t\t\tvar res = await cmd.ExecuteReaderAsync(CommandBehavior.SingleResult | CommandBehavior.SingleRow);");
+				code.AppendLine("\t\t\t\t\tif (await res.ReadAsync())");
+				code.AppendLine("\t\t\t\t\t{");
+				int cc = 0;
+				foreach (var de in o.Elements.Where(a => a.HasSql && (a.IsSqlPrimaryKeyIdentity || a.IsSqlComputed)))
+					code.AppendLine(de.DataType.IsNullable ? string.Format("\t\t\t\t\t\tif (res.IsDBNull({2})) {{ {0} = null; }} else {{ {0} = res.Get{1}({2}); }}", de.DataName, de.DataType.GetSqlAdoName(), cc++) : string.Format("\t\t\t\t\t\t{0} = res.Get{1}({2});", de.DataName, de.DataType.GetSqlAdoName(), cc++));
+				code.AppendLine("\t\t\t\t\t}");
+			}
+			else
+			{
+				code.AppendLine("\t\t\t\t\tawait cmd.ExecuteNonQueryAsync();");
+			}
+			code.AppendLine("\t\t\t\t\tif(tran == null) cmd.Transaction.Commit();");
+			code.AppendLine("\t\t\t\t}");
+			code.AppendLine("\t\t\t\tcatch (Exception ex)");
+			code.AppendLine("\t\t\t\t{");
+			code.AppendLine("\t\t\t\t\tcmd.Transaction.Rollback();");
+			code.AppendLine("\t\t\t\t}");
 			code.AppendLine("\t\t\t}");
 			code.AppendLine("\t\t}");
 			code.AppendLine();

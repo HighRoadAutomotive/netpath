@@ -81,14 +81,23 @@ namespace NETPath.Projects.WebApi
 		public bool CanSelect { get { return (bool)GetValue(CanSelectProperty); } set { SetValue(CanSelectProperty, value); } }
 		public static readonly DependencyProperty CanSelectProperty = DependencyProperty.Register("CanSelect", typeof(bool), typeof(WebApiData), new PropertyMetadata(false));
 
-		public bool CanInsert { get { return (bool)GetValue(CanInsertProperty); } set { SetValue(CanInsertProperty, value); } }
-		public static readonly DependencyProperty CanInsertProperty = DependencyProperty.Register("CanInsert", typeof(bool), typeof(WebApiData), new PropertyMetadata(false));
+		public bool CanMerge { get { return (bool)GetValue(CanMergeProperty); } set { SetValue(CanMergeProperty, value); } }
+		public static readonly DependencyProperty CanMergeProperty = DependencyProperty.Register("CanMerge", typeof(bool), typeof(WebApiData), new PropertyMetadata(false));
 
-		public bool CanUpdate { get { return (bool)GetValue(CanUpdateProperty); } set { SetValue(CanUpdateProperty, value); } }
-		public static readonly DependencyProperty CanUpdateProperty = DependencyProperty.Register("CanUpdate", typeof(bool), typeof(WebApiData), new PropertyMetadata(false));
+		public string MergeTransactionName { get { return (string)GetValue(MergeTransactionNameProperty); } set { SetValue(MergeTransactionNameProperty, value); } }
+		public static readonly DependencyProperty MergeTransactionNameProperty = DependencyProperty.Register("MergeTransactionName", typeof(string), typeof(WebApiData), new PropertyMetadata(""));
+
+		public IsolationLevel? MergeTransactionLevel { get { return (IsolationLevel?)GetValue(MergeTransactionLevelProperty); } set { SetValue(MergeTransactionLevelProperty, value); } }
+		public static readonly DependencyProperty MergeTransactionLevelProperty = DependencyProperty.Register("MergeTransactionLevel", typeof(IsolationLevel?), typeof(WebApiData), new PropertyMetadata(null));
 
 		public bool CanDelete { get { return (bool)GetValue(CanDeleteProperty); } set { SetValue(CanDeleteProperty, value); } }
 		public static readonly DependencyProperty CanDeleteProperty = DependencyProperty.Register("CanDelete", typeof(bool), typeof(WebApiData), new PropertyMetadata(false));
+
+		public string DeleteTransactionName { get { return (string)GetValue(DeleteTransactionNameProperty); } set { SetValue(DeleteTransactionNameProperty, value); } }
+		public static readonly DependencyProperty DeleteTransactionNameProperty = DependencyProperty.Register("DeleteTransactionName", typeof(string), typeof(WebApiData), new PropertyMetadata(""));
+
+		public IsolationLevel? DeleteTransactionLevel { get { return (IsolationLevel?)GetValue(DeleteTransactionLevelProperty); } set { SetValue(DeleteTransactionLevelProperty, value); } }
+		public static readonly DependencyProperty DeleteTransactionLevelProperty = DependencyProperty.Register("DeleteTransactionLevel", typeof(IsolationLevel?), typeof(WebApiData), new PropertyMetadata(null));
 
 		//System
 		[IgnoreDataMember]
@@ -326,26 +335,16 @@ namespace NETPath.Projects.WebApi
 		public bool IsSqlPrimaryKey { get { return (bool)GetValue(IsSqlPrimaryKeyProperty); } set { SetValue(IsSqlPrimaryKeyProperty, value); } }
 		public static readonly DependencyProperty IsSqlPrimaryKeyProperty = DependencyProperty.Register("IsSqlPrimaryKey", typeof(bool), typeof(WebApiDataElement), new PropertyMetadata(false));
 
-		public bool IsSqlPrimaryKeyComputed { get { return (bool)GetValue(IsSqlPrimaryKeyComputedProperty); } set { SetValue(IsSqlPrimaryKeyComputedProperty, value); } }
-		public static readonly DependencyProperty IsSqlPrimaryKeyComputedProperty = DependencyProperty.Register("IsSqlPrimaryKeyComputed", typeof(bool), typeof(WebApiDataElement), new PropertyMetadata(true));
+		public bool IsSqlPrimaryKeyIdentity { get { return (bool)GetValue(IsSqlPrimaryKeyIdentityProperty); } set { SetValue(IsSqlPrimaryKeyIdentityProperty, value); } }
+		public static readonly DependencyProperty IsSqlPrimaryKeyIdentityProperty = DependencyProperty.Register("IsSqlPrimaryKeyIdentity", typeof(bool), typeof(WebApiDataElement), new PropertyMetadata(false));
 
-		//XAML Class Settings
-		public bool AttachedBrowsable { get { return (bool)GetValue(AttachedBrowsableProperty); } set { SetValue(AttachedBrowsableProperty, value); } }
-		public static readonly DependencyProperty AttachedBrowsableProperty = DependencyProperty.Register("AttachedBrowsable", typeof(bool), typeof(WebApiDataElement), new PropertyMetadata(false));
+		public bool IsSqlComputed { get { return (bool)GetValue(IsSqlComputedProperty); } set { SetValue(IsSqlComputedProperty, value); } }
+		public static readonly DependencyProperty IsSqlComputedProperty = DependencyProperty.Register("IsSqlComputed", typeof(bool), typeof(WebApiDataElement), new PropertyMetadata(false));
 
-		public bool AttachedBrowsableIncludeDescendants { get { return (bool)GetValue(AttachedBrowsableIncludeDescendantsProperty); } set { SetValue(AttachedBrowsableIncludeDescendantsProperty, value); } }
-		public static readonly DependencyProperty AttachedBrowsableIncludeDescendantsProperty = DependencyProperty.Register("AttachedBrowsableIncludeDescendants", typeof(bool), typeof(WebApiDataElement), new PropertyMetadata(false));
-
-		public string AttachedTargetTypes { get { return (string)GetValue(AttachedTargetTypesProperty); } set { SetValue(AttachedTargetTypesProperty, value); } }
-		public static readonly DependencyProperty AttachedTargetTypesProperty = DependencyProperty.Register("AttachedTargetTypes", typeof(string), typeof(WebApiDataElement), new PropertyMetadata(""));
-
-		public string AttachedAttributeTypes { get { return (string)GetValue(AttachedAttributeTypesProperty); } set { SetValue(AttachedAttributeTypesProperty, value); } }
-		public static readonly DependencyProperty AttachedAttributeTypesProperty = DependencyProperty.Register("AttachedAttributeTypes", typeof(string), typeof(WebApiDataElement), new PropertyMetadata(""));
-
+		//System
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(WebApiDataElement));
 
-		//System
 		public bool IsSelected { get { return (bool)GetValue(IsSelectedProperty); } set { SetValue(IsSelectedProperty, value); } }
 		public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.Register("IsSelected", typeof(bool), typeof(WebApiDataElement), new PropertyMetadata(false));
 
@@ -355,8 +354,6 @@ namespace NETPath.Projects.WebApi
 		{
 			ID = Guid.NewGuid();
 			DataType = new DataType(PrimitiveTypes.String);
-			AttachedTargetTypes = "";
-			AttachedAttributeTypes = "";
 			EmitDefaultValue = false;
 			Order = -1;
 			Documentation = new Documentation { IsProperty = true };
@@ -371,8 +368,6 @@ namespace NETPath.Projects.WebApi
 			this.DataType = DataType;
 			this.Owner = Owner;
 			DataName = Name;
-			AttachedTargetTypes = "";
-			AttachedAttributeTypes = "";
 			EmitDefaultValue = false;
 			Order = -1;
 			Documentation = new Documentation { IsProperty = true };
