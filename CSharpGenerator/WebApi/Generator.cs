@@ -152,7 +152,7 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\tpublic static class ServiceController");
 				code.AppendLine("\t{");
 				foreach (var se in Target.TargetTypes.OfType<WebApiService>())
-					code.AppendLine(string.Format("\t\tprivate static IDisposable _service{0};", se.TypeName));
+					code.AppendLine(string.Format("\t\tprivate static IDisposable _service{0};", se.Name));
 				if (Target.TargetTypes.OfType<WebApiData>().Any(a => a.HasSql))
 				{
 					code.AppendLine("\t\tprivate static string _sqlConnectionString;");
@@ -167,10 +167,22 @@ namespace NETPath.Generators.CS.WebApi
 					code.AppendLine("\t\t\tsqlBuidler.UserID = string.Empty;");
 					code.AppendLine("\t\t\tsqlBuidler.Password = string.Empty;");
 					code.AppendLine("\t\t\t_sqlConnectionString = sqlBuilder.ToString();");
-					code.AppendLine();
-					code.AppendLine("\t\t\t//Start Web Services");
 					foreach (var se in Target.TargetTypes.OfType<WebApiService>())
-						code.AppendLine(string.Format("\t\t\t_service{0} = WebApp.Start<{0}Configuration>(baseUri);", se.TypeName));
+						code.AppendLine(string.Format("\t\t\t_service{0} = WebApp.Start<{1}Configuration>(baseUri);", se.Name, se.TypeName));
+					code.AppendLine("\t\t}");
+					code.AppendLine();
+					code.AppendLine("\t\tpublic static SqlConnection CreateAndOpen()");
+					code.AppendLine("\t\t{");
+					code.AppendLine("\t\t\tvar sql = new SqlConnection(_sqlConnectionString, _sqlCredential);");
+					code.AppendLine("\t\t\tsql.Open();");
+					code.AppendLine("\t\t\treturn sql;");
+					code.AppendLine("\t\t}");
+					code.AppendLine();
+					code.AppendLine("\t\tpublic static async Task<SqlConnection> CreateAndOpenAsync()");
+					code.AppendLine("\t\t{");
+					code.AppendLine("\t\t\tvar sql = new SqlConnection(_sqlConnectionString, _sqlCredential);");
+					code.AppendLine("\t\t\tawait sql.OpenAsync();");
+					code.AppendLine("\t\t\treturn sql;");
 					code.AppendLine("\t\t}");
 				}
 				else
@@ -178,30 +190,16 @@ namespace NETPath.Generators.CS.WebApi
 					code.AppendLine("\t\tpublic static void Start(string baseUri)");
 					code.AppendLine("\t\t{");
 					foreach (var se in Target.TargetTypes.OfType<WebApiService>())
-						code.AppendLine(string.Format("\t\t\t_service{0} = WebApp.Start<{0}Configuration>(baseUri);", se.TypeName));
+						code.AppendLine(string.Format("\t\t\t_service{0} = WebApp.Start<{1}Configuration>(baseUri);", se.Name, se.TypeName));
 					code.AppendLine("\t\t}");
 				}
 				code.AppendLine();
 				code.AppendLine("\t\tpublic static void Stop()");
 				code.AppendLine("\t\t{");
 				foreach (var se in Target.TargetTypes.OfType<WebApiService>())
-					code.AppendLine(string.Format("\t\t\tif (_service{0} != null) _service{0}.Dispose();", se.TypeName));
-				code.AppendLine("\t\t}");
-				code.AppendLine();
-				code.AppendLine("\t\tpublic static SqlConnection CreateAndOpen()");
-				code.AppendLine("\t\t{");
-				code.AppendLine("\t\t\tvar sql = new SqlConnection(_sqlConnectionString, _sqlCredential);");
-				code.AppendLine("\t\t\tsql.Open();");
-				code.AppendLine("\t\t\treturn sql;");
-				code.AppendLine("\t\t}");
-				code.AppendLine("\t\tpublic static async Task<SqlConnection> CreateAndOpenAsync()");
-				code.AppendLine("\t\t{");
-				code.AppendLine("\t\t\tvar sql = new SqlConnection(_sqlConnectionString, _sqlCredential);");
-				code.AppendLine("\t\t\tawait sql.OpenAsync();");
-				code.AppendLine("\t\t\treturn sql;");
+					code.AppendLine(string.Format("\t\t\tif (_service{0} != null) _service{0}.Dispose();", se.Name));
 				code.AppendLine("\t\t}");
 				code.AppendLine("\t}");
-				code.AppendLine();
 				code.AppendLine("}");
 			}
 
