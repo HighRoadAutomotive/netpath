@@ -152,7 +152,7 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\tpublic static class ServiceController");
 				code.AppendLine("\t{");
 				foreach (var se in Target.TargetTypes.OfType<WebApiService>())
-					code.AppendLine(string.Format("\t\tprivate static IDisposable _service{0};", se.Name));
+					code.AppendLine(string.Format("\t\tprivate static IDisposable _service{0};", se.TypeName));
 				if (Target.TargetTypes.OfType<WebApiData>().Any(a => a.HasSql))
 				{
 					code.AppendLine("\t\tprivate static string _sqlConnectionString;");
@@ -185,7 +185,7 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t\tpublic static void Stop()");
 				code.AppendLine("\t\t{");
 				foreach (var se in Target.TargetTypes.OfType<WebApiService>())
-					code.AppendLine(string.Format("\t\t\tif (_service{0} != null) _service{0}.Dispose();", se.Name));
+					code.AppendLine(string.Format("\t\t\tif (_service{0} != null) _service{0}.Dispose();", se.TypeName));
 				code.AppendLine("\t\t}");
 				code.AppendLine();
 				code.AppendLine("\t\tpublic static SqlConnection CreateAndOpen()");

@@ -279,7 +279,7 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
 			if (o.RouteParameters.OfType<WebApiMethodParameter>().Any() || o.QueryParameters.Any()) code.Remove(code.Length - 2, 2);
 			if (o.HasContent)
-				code.AppendFormat(", [FromBody] {0} {1}", DataTypeGenerator.GenerateType(o.ContentType), o.ContentParameterName);
+				code.AppendFormat("{2}[FromBody] {0} {1}", DataTypeGenerator.GenerateType(o.ContentType), o.ContentParameterName, (o.QueryParameters.Any() || o.RouteParameters.Any()) ? ", " : "");
 			code.AppendLine(");");
 			return code.ToString();
 		}
