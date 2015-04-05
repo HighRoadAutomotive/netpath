@@ -85,16 +85,6 @@ namespace NETPath.Generators.CS.WebApi
 		{
 			var code = new StringBuilder();
 
-			code.AppendLine(string.Format("\t{0} class {1}Configuration", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
-			code.AppendLine("\t{");
-			code.AppendLine("\t\tpublic void Configuration(IAppBuilder appBuilder)");
-			code.AppendLine("\t\t{");
-			code.AppendLine("\t\t\tvar config = new HttpConfiguration();");
-			code.AppendLine("\t\t\tconfig.MapHttpAttributeRoutes();");
-			code.AppendLine("\t\t\tappBuilder.UseWebApi(config);");
-			code.AppendLine("\t\t}");
-			code.AppendLine("\t}");
-
 			//Generate the service proxy
 			if (o.ServiceDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.ServiceDocumentation));
 			code.AppendLine(string.Format("\t{0} abstract class {1}Controller : ApiController", DataTypeGenerator.GenerateScope(o.Scope), o.Name));

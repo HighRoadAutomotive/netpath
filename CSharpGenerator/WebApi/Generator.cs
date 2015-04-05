@@ -148,11 +148,29 @@ namespace NETPath.Generators.CS.WebApi
 			{
 				code.AppendFormat("namespace {0}{1}", Data.Namespace.FullName, Environment.NewLine);
 				code.AppendLine("{");
+				code.AppendLine("\tpublic class WebAppConfiguration");
+				code.AppendLine("\t{");
+				code.AppendLine("\t\tpublic void Configuration(IAppBuilder appBuilder)");
+				code.AppendLine("\t\t{");
+				code.AppendLine("\t\t\tvar config = new HttpConfiguration(new InheritedDirectRouteProvider());");
+				code.AppendLine("\t\t\tconfig.MapHttpAttributeRoutes();");
+				code.AppendLine("\t\t\tappBuilder.UseWebApi(config);");
+				code.AppendLine("\t\t}");
+				code.AppendLine("\t}");
+				code.AppendLine();
+                code.AppendLine("\tpublic class InheritedDirectRouteProvider : DefaultDirectRouteProvider");
+				code.AppendLine("\t{");
+				code.AppendLine("\t\tprotected override IReadOnlyList<IDirectRouteFactory>");
+				code.AppendLine("\t\tGetActionRouteFactories(HttpActionDescriptor actionDescriptor)");
+				code.AppendLine("\t\t{");
+				code.AppendLine("\t\t\treturn actionDescriptor.GetCustomAttributes<IDirectRouteFactory>");
+				code.AppendLine("\t\t\t(inherit: true);");
+				code.AppendLine("\t\t}");
+				code.AppendLine("\t}");
 				code.AppendLine();
 				code.AppendLine("\tpublic static class ServiceController");
 				code.AppendLine("\t{");
-				foreach (var se in Target.TargetTypes.OfType<WebApiService>())
-					code.AppendLine(string.Format("\t\tprivate static IDisposable _service{0};", se.Name));
+				code.AppendLine("\t\tprivate static IDisposable _serviceConfig;");
 				if (Target.TargetTypes.OfType<WebApiData>().Any(a => a.HasSql))
 				{
 					code.AppendLine("\t\tprivate static string _sqlConnectionString;");
@@ -167,8 +185,7 @@ namespace NETPath.Generators.CS.WebApi
 					code.AppendLine("\t\t\tsqlBuidler.UserID = string.Empty;");
 					code.AppendLine("\t\t\tsqlBuidler.Password = string.Empty;");
 					code.AppendLine("\t\t\t_sqlConnectionString = sqlBuilder.ToString();");
-					foreach (var se in Target.TargetTypes.OfType<WebApiService>())
-						code.AppendLine(string.Format("\t\t\t_service{0} = WebApp.Start<{1}Configuration>(baseUri);", se.Name, se.TypeName));
+					code.AppendLine("\t\t\t_serviceConfig = WebApp.Start<WebAppConfiguration>(baseUri);");
 					code.AppendLine("\t\t}");
 					code.AppendLine();
 					code.AppendLine("\t\tpublic static SqlConnection CreateAndOpen()");
@@ -189,15 +206,13 @@ namespace NETPath.Generators.CS.WebApi
 				{
 					code.AppendLine("\t\tpublic static void Start(string baseUri)");
 					code.AppendLine("\t\t{");
-					foreach (var se in Target.TargetTypes.OfType<WebApiService>())
-						code.AppendLine(string.Format("\t\t\t_service{0} = WebApp.Start<{1}Configuration>(baseUri);", se.Name, se.TypeName));
+					code.AppendLine("\t\t\t_serviceConfig = WebApp.Start<WebAppConfiguration>(baseUri);");
 					code.AppendLine("\t\t}");
 				}
 				code.AppendLine();
 				code.AppendLine("\t\tpublic static void Stop()");
 				code.AppendLine("\t\t{");
-				foreach (var se in Target.TargetTypes.OfType<WebApiService>())
-					code.AppendLine(string.Format("\t\t\tif (_service{0} != null) _service{0}.Dispose();", se.Name));
+				code.AppendLine("\t\t\tif (_serviceConfig != null) _serviceConfig.Dispose();");
 				code.AppendLine("\t\t}");
 				code.AppendLine("\t}");
 				code.AppendLine("}");
