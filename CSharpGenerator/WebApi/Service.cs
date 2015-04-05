@@ -87,7 +87,7 @@ namespace NETPath.Generators.CS.WebApi
 
 			//Generate the service proxy
 			if (o.ServiceDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.ServiceDocumentation));
-			code.AppendLine(string.Format("\t{0} abstract class {1}Controller : ApiController", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
+			code.AppendLine(string.Format("\t{0} abstract class {1}Base : ApiController", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
 			code.AppendLine("\t{");
 
 			code.AppendLine();
@@ -97,7 +97,7 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine();
 			}
 
-			code.AppendLine(string.Format("\t\tpublic {0}Controller() : base()", o.Name));
+			code.AppendLine(string.Format("\t\tpublic {0}Base() : base()", o.Name));
 			code.AppendLine("\t\t{");
 			code.AppendLine("\t\t\tInitialize();");
 			code.AppendLine("\t\t}");

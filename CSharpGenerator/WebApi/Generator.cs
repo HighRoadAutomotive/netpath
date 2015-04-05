@@ -160,11 +160,9 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine();
                 code.AppendLine("\tpublic class InheritedDirectRouteProvider : DefaultDirectRouteProvider");
 				code.AppendLine("\t{");
-				code.AppendLine("\t\tprotected override IReadOnlyList<IDirectRouteFactory>");
-				code.AppendLine("\t\tGetActionRouteFactories(HttpActionDescriptor actionDescriptor)");
+				code.AppendLine("\t\tprotected override IReadOnlyList<IDirectRouteFactory> GetActionRouteFactories(HttpActionDescriptor actionDescriptor)");
 				code.AppendLine("\t\t{");
-				code.AppendLine("\t\t\treturn actionDescriptor.GetCustomAttributes<IDirectRouteFactory>");
-				code.AppendLine("\t\t\t(inherit: true);");
+				code.AppendLine("\t\t\treturn actionDescriptor.GetCustomAttributes<IDirectRouteFactory>(inherit: true);");
 				code.AppendLine("\t\t}");
 				code.AppendLine("\t}");
 				code.AppendLine();
