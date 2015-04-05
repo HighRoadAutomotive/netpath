@@ -152,8 +152,8 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t{");
 				code.AppendLine("\t\tpublic void Configuration(IAppBuilder appBuilder)");
 				code.AppendLine("\t\t{");
-				code.AppendLine("\t\t\tvar config = new HttpConfiguration(new InheritedDirectRouteProvider());");
-				code.AppendLine("\t\t\tconfig.MapHttpAttributeRoutes();");
+				code.AppendLine("\t\t\tvar config = new HttpConfiguration();");
+				code.AppendLine("\t\t\tconfig.MapHttpAttributeRoutes(new InheritedDirectRouteProvider());");
 				code.AppendLine("\t\t\tappBuilder.UseWebApi(config);");
 				code.AppendLine("\t\t}");
 				code.AppendLine("\t}");

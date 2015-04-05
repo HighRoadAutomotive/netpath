@@ -31,6 +31,8 @@ namespace NETPath.Projects.WebApi
 									  new ProjectUsingNamespace("System.Net.Http.Formatting", true, true, true, true),
 									  new ProjectUsingNamespace("System.ServiceModel.Description", true, true, true, true),
 									  new ProjectUsingNamespace("System.Web.Http", true, true, false, true),
+									  new ProjectUsingNamespace("System.Web.Http.Routing", true, false, true, true),
+									  new ProjectUsingNamespace("System.Web.Http.Controllers", true, false, true, true),
 									  new ProjectUsingNamespace("Owin", true, true, false, true),
 								  });
 			UsingNamespaces.Sort(a => a.Namespace, StringComparer.OrdinalIgnoreCase);
