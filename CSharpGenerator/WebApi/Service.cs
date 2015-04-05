@@ -232,6 +232,8 @@ namespace NETPath.Generators.CS.WebApi
 			foreach (var pp in o.RouteParameters.OfType<WebApiMethodParameter>())
 				uriBuilder.AppendFormat("/{{{0}{1}}}", pp.RouteName, pp.Optional ? "?" : "");
 
+			uriBuilder.Remove(0, 1); //Remove the beginning slant from the Route
+
 			if (!o.QueryParameters.Any()) return uriBuilder.ToString();
 
 			uriBuilder.Append("?");
@@ -239,9 +241,7 @@ namespace NETPath.Generators.CS.WebApi
 			foreach (var pq in o.QueryParameters)
 				uriBuilder.AppendFormat("&{0}={{{0}{1}}}", pq.RouteName, pq.Optional ? "?" : "");
 
-			//Clean up the URI to Web API's standards
 			uriBuilder.Replace("?&", "?");
-			uriBuilder.Remove(0, 1); //Remove the beginning slant from the Route
 
 			return uriBuilder.ToString();
 		}
