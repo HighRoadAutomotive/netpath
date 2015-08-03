@@ -11,7 +11,7 @@
 	d:DesignHeight="750" d:DesignWidth="750" UseLayoutRounding="True" >
 	<Grid.Resources>
 		<Rest:WebApiMethodVerbsConverter x:Key="WebApiMethodVerbsConverter" />
-        <Rest:MethodVerbsVisibilityConverter x:Key="MethodVerbsVisibilityConverter" />
+		<Rest:MethodVerbsVisibilityConverter x:Key="MethodVerbsVisibilityConverter" />
 		<pc:NotBoolConverter x:Key="NotBoolConverter" />
 		<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
 

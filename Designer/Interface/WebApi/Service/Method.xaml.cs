@@ -67,15 +67,6 @@ namespace NETPath.Interface.WebApi.Service
 		{
 			ContentPresenter cp = RouteGetListBoxItemPresenter();
 			if (cp == null) return;
-			var tds = RouteList.ItemTemplate.FindName("OperationParameterDataType", cp) as NETPath.Interface.Data.TypeSelector;
-			if (tds == null) return;
-			if (tds.IsKeyboardFocusWithin) return;
-			var ts = RouteList.ItemTemplate.FindName("OperationParameterElementName", cp) as EllipticBit.Controls.WPF.TextBox;
-			if (ts == null) return;
-			if (ts.IsKeyboardFocusWithin) return;
-			ts = RouteList.ItemTemplate.FindName("OperationParameterDocumentation", cp) as EllipticBit.Controls.WPF.TextBox;
-			if (ts == null) return;
-			if (ts.IsKeyboardFocusWithin) return;
 
 			if (e.LeftButton != MouseButtonState.Pressed || IsDragging) return;
 			Point position = e.GetPosition(null);
@@ -144,15 +135,6 @@ namespace NETPath.Interface.WebApi.Service
 		{
 			ContentPresenter cp = RouteGetListBoxItemPresenter();
 			if (cp == null) return;
-			var tds = RouteList.ItemTemplate.FindName("OperationParameterDataType", cp) as NETPath.Interface.Data.TypeSelector;
-			if (tds == null) return;
-			if (tds.IsKeyboardFocusWithin) return;
-			var ts = RouteList.ItemTemplate.FindName("OperationParameterElementName", cp) as EllipticBit.Controls.WPF.TextBox;
-			if (ts == null) return;
-			if (ts.IsKeyboardFocusWithin) return;
-			ts = RouteList.ItemTemplate.FindName("OperationParameterDocumentation", cp) as EllipticBit.Controls.WPF.TextBox;
-			if (ts == null) return;
-			if (ts.IsKeyboardFocusWithin) return;
 
 			if (DragAdorner != null)
 			{
