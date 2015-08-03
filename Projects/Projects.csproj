@@ -103,6 +103,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Data.cs" />
+    <Compile Include="Data\Namespace.cs" />
+    <Compile Include="Data\Project.cs" />
     <Compile Include="Namespace.cs" />
     <Compile Include="Wcf\Binding.cs" />
     <Compile Include="CompilerMessages.cs" />

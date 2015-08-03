@@ -144,7 +144,7 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine(string.Format("#pragma warning disable 0649{0}", !Data.EnableDocumentationWarnings ? ", 1591" : ""));
 
 			//Generate globally required code
-			if (Data.Namespace.HasServices())
+			if (Data.Namespace.HasServices() && Server && Data.IsSelfHosted)
 			{
 				code.AppendFormat("namespace {0}{1}", Data.Namespace.FullName, Environment.NewLine);
 				code.AppendLine("{");
@@ -158,7 +158,7 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t\t}");
 				code.AppendLine("\t}");
 				code.AppendLine();
-                code.AppendLine("\tpublic class InheritedDirectRouteProvider : DefaultDirectRouteProvider");
+				code.AppendLine("\tpublic class InheritedDirectRouteProvider : DefaultDirectRouteProvider");
 				code.AppendLine("\t{");
 				code.AppendLine("\t\tprotected override IReadOnlyList<IDirectRouteFactory> GetActionRouteFactories(HttpActionDescriptor actionDescriptor)");
 				code.AppendLine("\t\t{");

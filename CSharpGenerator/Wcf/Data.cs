@@ -145,7 +145,7 @@ namespace NETPath.Generators.CS.Wcf
 				code.AppendLine(string.Format("\t\t\tvar t = new {0}()", o.Name));
 				code.AppendLine("\t\t\t{");
 				foreach (var efe in o.Elements.Where(a => a.HasEntity && !(a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
-					code.AppendLine(string.Format("\t\t\t\t{0} = DBType.{1},", efe.DataName, efe.EntityName));
+					code.AppendLine(string.Format("\t\t\t\t{0} = {2}DBType.{1},", efe.DataName, efe.EntityName, efe.DataType.TypeMode == DataTypeMode.Enum ? $"({efe.DataType})" : ""));
 				code.AppendLine("\t\t\t};");
 				foreach (var efe in o.Elements.Where(a => a.HasEntity && a.DataType.TypeMode == DataTypeMode.Collection))
 					code.AppendLine(string.Format("\t\t\tif (DBType.{0} != null) foreach(var x in DBType.{0}) t.{1}.Add(x);", efe.EntityName, efe.DataName));
@@ -161,7 +161,7 @@ namespace NETPath.Generators.CS.Wcf
 				code.AppendLine(string.Format("\t\t\tvar t = new {0}()", o.EntityType));
 				code.AppendLine("\t\t\t{");
 				foreach (var efe in o.Elements.Where(a => a.HasEntity && !a.IsReadOnly && !(a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
-					code.AppendLine(string.Format("\t\t\t\t{0} = NetworkType.{1},", efe.EntityName, efe.DataName));
+					code.AppendLine(string.Format("\t\t\t\t{0} = {2}NetworkType.{1},", efe.EntityName, efe.DataName, efe.DataType.TypeMode == DataTypeMode.Enum ? ((Projects.Enum)efe.DataType).IsFlags ? "(long)" : "(short)" : ""));
 				code.AppendLine("\t\t\t};");
 				foreach (var efe in o.Elements.Where(a => a.HasEntity && !a.IsReadOnly && a.DataType.TypeMode == DataTypeMode.Collection))
 					code.AppendLine(string.Format("\t\t\tif (NetworkType.{0} != null) foreach(var x in NetworkType.{0}) t.{1}.Add(x);", efe.DataName, efe.EntityName));

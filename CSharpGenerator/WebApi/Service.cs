@@ -319,7 +319,7 @@ namespace NETPath.Generators.CS.WebApi
 					code.AppendLine(string.Format("\t\t\turi.AppendFormat(\"/{{0}}\", {0});", op.Name));
 			}
 			if (o.QueryParameters.Any())
-				code.AppendLine("\t\t\turi.Append(\"?\"");
+				code.AppendLine("\t\t\turi.Append(\"?\");");
 			foreach (var op in o.QueryParameters)
 				code.AppendLine(string.Format(!op.Optional ? "\t\t\turi.AppendFormat(\"&{0}={{0}}\", {1});" : "\t\t\tif ({1} != null) uri.Append(\"&{0}={{0}}\", {1});", op.RouteName, op.Name));
 			code.AppendLine("\t\t\turi.Replace(\"?&\", \"?\");");
@@ -425,7 +425,7 @@ namespace NETPath.Generators.CS.WebApi
 					code.AppendLine(string.Format("\t\t\turi.AppendFormat(\"/{{0}}\", {0});", op.Name));
 			}
 			if (o.QueryParameters.Any())
-				code.AppendLine("\t\t\turi.Append(\"?\"");
+				code.AppendLine("\t\t\turi.Append(\"?\");");
 			foreach (var op in o.QueryParameters)
 				code.AppendLine(string.Format(!op.Optional ? "\t\t\turi.AppendFormat(\"&{0}={{0}}\", {1});" : "\t\t\tif ({1} != null) uri.Append(\"&{0}={{0}}\", {1});", op.RouteName, op.Name));
 			code.AppendLine("\t\t\turi.Replace(\"?&\", \"?\");");

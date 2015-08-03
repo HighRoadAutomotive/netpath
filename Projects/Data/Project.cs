@@ -7,23 +7,20 @@ using System.Windows;
 using System.Runtime.Serialization;
 using System.Windows.Threading;
 
-namespace NETPath.Projects.WebApi
+namespace NETPath.Projects.Data
 {
-	public class WebApiProject : Project
+	public class DataProject : Project
 	{
-		public WebApiNamespace Namespace { get { return (WebApiNamespace)GetValue(NamespaceProperty); } set { SetValue(NamespaceProperty, value); } }
-		public static readonly DependencyProperty NamespaceProperty = DependencyProperty.Register("Namespace", typeof(WebApiNamespace), typeof(Project));
+		public DataNamespace Namespace { get { return (DataNamespace)GetValue(NamespaceProperty); } set { SetValue(NamespaceProperty, value); } }
+		public static readonly DependencyProperty NamespaceProperty = DependencyProperty.Register("Namespace", typeof(DataNamespace), typeof(Project));
 
-		public bool IsSelfHosted { get { return (bool)GetValue(IsSelfHostedProperty); } set { SetValue(IsSelfHostedProperty, value); } }
-		public static readonly DependencyProperty IsSelfHostedProperty = DependencyProperty.Register("IsSelfHosted", typeof(bool), typeof(WebApiProject), new PropertyMetadata(true));
-
-		public WebApiProject()
+		public DataProject()
 		{
 		}
 
-		public WebApiProject(string Name, string Path) : base(Name, Path)
+		public DataProject(string Name, string Path) : base(Name, Path)
 		{
-			Namespace = new WebApiNamespace(Helpers.RegExs.ReplaceSpaces.Replace(Name, "."), null, this) { URI = "http://tempuri.org/" };
+			Namespace = new DataNamespace(Helpers.RegExs.ReplaceSpaces.Replace(Name, "."), null, this) { URI = "http://tempuri.org/" };
 
 			//Default Using Namespaces
 			UsingNamespaces.AddRange(new []
@@ -45,18 +42,14 @@ namespace NETPath.Projects.WebApi
 		{
 			if (Type == null) return;
 			var tt = Type.GetType();
-			var ns = nameSpace as WebApiNamespace ?? Namespace;
+			var ns = nameSpace as DataNamespace ?? Namespace;
 
 			if (tt == typeof(Enum))
 				foreach (var t in ns.Enums)
 					t.IsSelected = false;
 
-			if (tt == typeof(WebApiData))
+			if (tt == typeof(DataData))
 				foreach (var t in ns.Data)
-					t.IsSelected = false;
-
-			if (tt == typeof(WebApiService))
-				foreach (var t in ns.Services)
 					t.IsSelected = false;
 
 			foreach (var tn in ns.Children)

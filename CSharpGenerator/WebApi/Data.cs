@@ -105,7 +105,7 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine(string.Format("\t\t\tvar t = new {0}()", o.Name));
 				code.AppendLine("\t\t\t{");
 				foreach (var efe in o.Elements.Where(a => a.HasEntity && !(a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
-					code.AppendLine(string.Format("\t\t\t\t{0} = DBType.{1},", efe.DataName, efe.EntityName));
+					code.AppendLine(string.Format("\t\t\t\t{0} = {2}DBType.{1},", efe.DataName, efe.EntityName, efe.DataType.TypeMode == DataTypeMode.Enum ? $"({efe.DataType})" : ""));
 				code.AppendLine("\t\t\t};");
 				foreach (var efe in o.Elements.Where(a => a.HasEntity && a.DataType.TypeMode == DataTypeMode.Collection))
 					code.AppendLine(string.Format("\t\t\tif (DBType.{0} != null) foreach(var x in DBType.{0}) t.{1}.Add(x);", efe.EntityName, efe.DataName));
@@ -121,7 +121,7 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine(string.Format("\t\t\tvar t = new {0}()", o.EntityType));
 				code.AppendLine("\t\t\t{");
 				foreach (var efe in o.Elements.Where(a => a.HasEntity && !a.IsReadOnly && !(a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
-					code.AppendLine(string.Format("\t\t\t\t{0} = NetworkType.{1},", efe.EntityName, efe.DataName));
+					code.AppendLine(string.Format("\t\t\t\t{0} = {2}NetworkType.{1},", efe.EntityName, efe.DataName, efe.DataType.TypeMode == DataTypeMode.Enum ? ((Projects.Enum)efe.DataType).IsFlags ? "(long)" : "(short)" : ""));
 				code.AppendLine("\t\t\t};");
 				foreach (var efe in o.Elements.Where(a => a.HasEntity && !a.IsReadOnly && a.DataType.TypeMode == DataTypeMode.Collection))
 					code.AppendLine(string.Format("\t\t\tif (NetworkType.{0} != null) foreach(var x in NetworkType.{0}) t.{1}.Add(x);", efe.DataName, efe.EntityName));
@@ -210,7 +210,7 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\t\t{");
 			code.AppendLine("\t\t\t\tcmd.Connection = con;");
 			code.AppendLine(string.Format("\t\t\t\tcmd.Transaction = con.BeginTransaction({0}{1});", o.MergeTransactionLevel != null ? string.Format("IsolationLevel.{0}, ", o.MergeTransactionLevel) : "", o.MergeTransactionName, !string.IsNullOrWhiteSpace(o.MergeTransactionName) ? string.Format("{0}\"{1}\"", o.MergeTransactionLevel != null ? ", " : "", o.MergeTransactionName) : ""));
-            code.AppendLine("\t\t\t\tcmd.CommandText = cmdstr;");
+			code.AppendLine("\t\t\t\tcmd.CommandText = cmdstr;");
 			code.AppendLine("\t\t\t\tcmd.CommandType = CommandType.Text;");
 			foreach (var de in o.Elements.Where(a => a.HasSql && !a.IsSqlPrimaryKeyIdentity && !a.IsSqlComputed))
 				code.AppendLine(string.Format("\t\t\t\tcmd.Parameters.Add(\"{0}\", SqlDbType.{1}).Value = {0};", de.SqlName, de.SqlType.ToString()));
