@@ -158,7 +158,7 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\tpublic NetworkCredential Credentials { get { return _credentials; } }");
 			code.AppendLine("\t\tpublic IWebProxy Proxy { get { return _proxy; } }");
 			code.AppendLine("\t\tpublic HttpRequestHeaders DefaultRequestHeaders { get { return _requestHeaders; } }");
-            code.AppendLine("\t\tpublic HttpContentHeaders DefaultContentHeaders { get { return _contentHeaders; } }");
+			code.AppendLine("\t\tpublic HttpContentHeaders DefaultContentHeaders { get { return _contentHeaders; } }");
 
 			if (o.Parent.Owner.GenerateRegions)
 			{
@@ -329,7 +329,7 @@ namespace NETPath.Generators.CS.WebApi
 			if (conf.UseHTTP10)
 				code.AppendLine("\t\t\trm.Version = new Version(1, 0););");
 			code.AppendLine("\t\t\trm.Headers.Clear();");
-            code.AppendLine("\t\t\tforeach (var x in _requestHeaders) rm.Headers.Add(x.Key, x.Value);");
+			code.AppendLine("\t\t\tforeach (var x in _requestHeaders) rm.Headers.Add(x.Key, x.Value);");
 			code.AppendLine("\t\t\trm.Headers.Authorization = _requestHeaders.Authorization;");
 			code.AppendLine("\t\t\trm.Headers.CacheControl = _requestHeaders.CacheControl;");
 			code.AppendLine("\t\t\trm.Headers.Date = _requestHeaders.Date;");
@@ -455,12 +455,12 @@ namespace NETPath.Generators.CS.WebApi
 			{
 				var pt = o.ContentType;
 				code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.ObjectContent<{0}>({1}, new {2}());", DataTypeGenerator.GenerateType(pt), o.ContentParameterName, conf.RequestFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.RequestFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
-				code.AppendLine(string.Format("\t\t\tforeach (var x in _contentHeaders) rm.Content.Headers.Add(x.Key, x.Value);"));
+				code.AppendLine("\t\t\tforeach (var x in _contentHeaders) rm.Content.Headers.Add(x.Key, x.Value);");
 			}
 
-			code.AppendLine(string.Format("\t\t\tvar rr = await _HttpClient.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);"));
+			code.AppendLine("\t\t\tvar rr = await _HttpClient.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);");
 			if (o.EnsureSuccessStatusCode) code.AppendLine("\t\t\trr.EnsureSuccessStatusCode();");
-			if ((o.ReturnType.TypeMode != DataTypeMode.Primitive && o.ReturnType.Primitive != PrimitiveTypes.Void) || !o.DeserializeContent)
+			if (o.ReturnType.Primitive != PrimitiveTypes.Void || !o.DeserializeContent)
 			{
 				if (o.ReturnResponseData)
 				{
