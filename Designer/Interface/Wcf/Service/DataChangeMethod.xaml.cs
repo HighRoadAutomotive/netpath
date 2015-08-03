@@ -277,15 +277,10 @@ namespace NETPath.Interface.Wcf.Service
 			return Globals.GetVisualChild<ContentPresenter>(lbi);
 		}
 
-		private void AddParameterType_KeyUp(object sender, KeyEventArgs e)
-		{
-			if (e.Key == Key.Enter)
-				AddParameterName.Focus();
-		}
-
-		private void AddParameterType_ValidationChanged(object Sender, RoutedEventArgs E)
+		private void AddParameterType_Selected(object Sender, RoutedEventArgs E)
 		{
 			AddParameter.IsEnabled = (!string.IsNullOrEmpty(AddParameterName.Text) && !AddParameterName.IsInvalid && AddParameterType.IsValid);
+			AddParameterName.Focus();
 		}
 
 		private void AddParameterName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)

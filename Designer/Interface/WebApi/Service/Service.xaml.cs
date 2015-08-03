@@ -153,10 +153,11 @@ namespace NETPath.Interface.WebApi.Service
 
 		#endregion
 
-		private void AddServiceMemberType_ValidationChanged(object Sender, RoutedEventArgs E)
+		private void AddServiceMemberType_Selected(object Sender, RoutedEventArgs E)
 		{
 			if (AddServiceMemberType.OpenType == null) return;
 			AddServiceMethod.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && !AddServiceMemberName.IsInvalid && AddServiceMemberType.IsValid);
+			AddServiceMemberName.Focus();
 		}
 
 		private void AddServiceMemberName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)

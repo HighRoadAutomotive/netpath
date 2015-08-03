@@ -255,12 +255,13 @@ namespace NETPath.Interface.Wcf.Service
 
 		#region - Service Operation Handlers -
 
-		private void AddServiceMemberType_ValidationChanged(object Sender, RoutedEventArgs E)
+		private void AddServiceMemberType_Selected(object Sender, RoutedEventArgs E)
 		{
 			if (AddServiceMemberType.OpenType == null) return;
 			AddServiceMethod.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && !AddServiceMemberName.IsInvalid && AddServiceMemberType.IsValid);
 			AddServiceDCMethod.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && (AddServiceMemberType.OpenType.TypeMode == DataTypeMode.Class || AddServiceMemberType.OpenType.TypeMode == DataTypeMode.Struct) && !AddServiceMemberName.IsInvalid && AddServiceMemberType.IsValid);
 			AddServiceProperty.IsEnabled = (!string.IsNullOrEmpty(AddServiceMemberName.Text) && AddServiceMemberType.OpenType.Primitive != PrimitiveTypes.Void && !AddServiceMemberName.IsInvalid && AddServiceMemberType.IsValid);
+			AddServiceMemberName.Focus();
 		}
 
 		private void AddServiceMemberName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
@@ -376,11 +377,12 @@ namespace NETPath.Interface.Wcf.Service
 
 		#region - Callback Operation Handlers -
 
-		private void AddCallbackMemberType_ValidationChanged(object Sender, RoutedEventArgs E)
+		private void AddCallbackMemberType_Selected(object Sender, RoutedEventArgs E)
 		{
 			if (AddCallbackMemberType.OpenType == null) return;
 			AddCallbackMethod.IsEnabled = (!string.IsNullOrEmpty(AddCallbackMemberName.Text) && !AddCallbackMemberName.IsInvalid && AddCallbackMemberType.IsValid);
 			AddCallbackProperty.IsEnabled = (!string.IsNullOrEmpty(AddCallbackMemberName.Text) && AddCallbackMemberType.OpenType.Primitive != PrimitiveTypes.Void && !AddCallbackMemberName.IsInvalid && AddCallbackMemberType.IsValid);
+			AddCallbackMemberName.Focus();
 		}
 
 		private void AddCallbackMemberName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)

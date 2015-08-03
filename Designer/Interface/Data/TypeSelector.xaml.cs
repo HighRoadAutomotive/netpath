@@ -115,9 +115,15 @@ namespace NETPath.Interface.Data
 			t.IsSettingType = true;
 			var bindingExpression = t.TypeName.GetBindingExpression(TextBox.TextProperty);
 			if (bindingExpression != null) bindingExpression.UpdateTarget();
+			//TODO: Fix bug here that will cause the TypeName to not be displayed if OpenType is not bound.
+			else if (t.OpenType != null /*&& t.OpenType.TypeMode != DataTypeMode.Collection && t.OpenType.TypeMode != DataTypeMode.Dictionary*/) t.TypeName.Text = t.OpenType.ToString();
 			t.IsSettingType = false;
 			t.HasResults = false;
-			if (e.NewValue == null && t.Results != null) t.Results.Clear();
+			if (e.NewValue == null && t.Results != null)
+			{
+				t.Results.Clear();
+				t.TypeName.Text = "";
+			}
 		}
 
 		public bool HasResults { get { return (bool)GetValue(HasResultsProperty); } set { SetValue(HasResultsProperty, value); } }
@@ -135,9 +141,6 @@ namespace NETPath.Interface.Data
 		public static readonly RoutedEvent SelectedEvent = EventManager.RegisterRoutedEvent("Selected", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TypeSelector));
 		public event RoutedEventHandler Selected { add { AddHandler(SelectedEvent, value); } remove { RemoveHandler(SelectedEvent, value); } }
 
-		public static readonly RoutedEvent ValidationChangedEvent = EventManager.RegisterRoutedEvent("ValidationChanged", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TypeSelector));
-		public event RoutedEventHandler ValidationChanged { add { AddHandler(ValidationChangedEvent, value); } remove { RemoveHandler(ValidationChangedEvent, value); } }
-
 		public bool AllowNullable { get { return (bool)GetValue(AllowNullableProperty); } set { SetValue(AllowNullableProperty, value); } }
 		public static readonly DependencyProperty AllowNullableProperty = DependencyProperty.Register("AllowNullable", typeof(bool), typeof(TypeSelector), new PropertyMetadata(true));
 
@@ -151,7 +154,7 @@ namespace NETPath.Interface.Data
 		private bool SelectCollectionType { get; set; }
 		private bool SelectDictionaryKey { get; set; }
 		private bool SelectDictionaryType { get; set; }
-		
+
 		public TypeSelector()
 		{
 			IsInitializing = true;
@@ -423,6 +426,7 @@ namespace NETPath.Interface.Data
 
 			var bindingExpression = TypeName.GetBindingExpression(TextBox.TextProperty);
 			if (bindingExpression != null) bindingExpression.UpdateTarget();
+			else if (OpenType != null /*&& OpenType.TypeMode != DataTypeMode.Collection && OpenType.TypeMode != DataTypeMode.Dictionary*/) TypeName.Text = OpenType.ToString();
 
 			TypeName.Focus();
 			TypeName.SelectionStart = tnss == -1 ? OpenType.TypeName.Length : tnss;
@@ -450,8 +454,6 @@ namespace NETPath.Interface.Data
 			}
 			else
 				IsValid = false;
-
-			RaiseEvent(new RoutedEventArgs(ValidationChangedEvent, this));
 		}
 
 		private void ContentControl_GotFocus(object sender, RoutedEventArgs e)

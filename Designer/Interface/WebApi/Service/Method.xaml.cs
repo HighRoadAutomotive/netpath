@@ -191,15 +191,10 @@ namespace NETPath.Interface.WebApi.Service
 			return Globals.GetVisualChild<ContentPresenter>(lbi);
 		}
 
-		private void AddRouteParameterType_KeyUp(object sender, KeyEventArgs e)
-		{
-			if (e.Key == Key.Enter)
-				AddRouteParameterName.Focus();
-		}
-
-		private void AddRouteParameterType_ValidationChanged(object Sender, RoutedEventArgs E)
+		private void AddRouteParameterType_Selected(object Sender, RoutedEventArgs E)
 		{
 			AddRouteParameter.IsEnabled = (!string.IsNullOrEmpty(AddRouteParameterName.Text) && !AddRouteParameterName.IsInvalid && AddRouteParameterType.IsValid);
+			AddRouteParameterName.Focus();
 		}
 
 		private void AddRouteParameterName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
@@ -233,8 +228,8 @@ namespace NETPath.Interface.WebApi.Service
 		{
 			if (AddRouteParameter.IsEnabled == false) return;
 			MethodData.RouteParameters.Add(new WebApiMethodParameter(AddRouteParameterType.OpenType, AddRouteParameterName.Text, MethodData.Owner, MethodData));
-			AddRouteParameterType.OpenType = null;
 			AddRouteParameterType.Focus();
+			AddRouteParameterType.OpenType = null;
 			AddRouteParameterName.Text = "";
 		}
 
@@ -322,15 +317,6 @@ namespace NETPath.Interface.WebApi.Service
 		{
 			ContentPresenter cp = QueryGetListBoxItemPresenter();
 			if (cp == null) return;
-			var tds = QueryList.ItemTemplate.FindName("OperationParameterDataType", cp) as NETPath.Interface.Data.TypeSelector;
-			if (tds == null) return;
-			if (tds.IsKeyboardFocusWithin) return;
-			var ts = QueryList.ItemTemplate.FindName("OperationParameterElementName", cp) as EllipticBit.Controls.WPF.TextBox;
-			if (ts == null) return;
-			if (ts.IsKeyboardFocusWithin) return;
-			ts = QueryList.ItemTemplate.FindName("OperationParameterDocumentation", cp) as EllipticBit.Controls.WPF.TextBox;
-			if (ts == null) return;
-			if (ts.IsKeyboardFocusWithin) return;
 
 			if (e.LeftButton != MouseButtonState.Pressed || IsDragging) return;
 			Point position = e.GetPosition(null);
@@ -399,15 +385,6 @@ namespace NETPath.Interface.WebApi.Service
 		{
 			ContentPresenter cp = QueryGetListBoxItemPresenter();
 			if (cp == null) return;
-			var tds = QueryList.ItemTemplate.FindName("OperationParameterDataType", cp) as NETPath.Interface.Data.TypeSelector;
-			if (tds == null) return;
-			if (tds.IsKeyboardFocusWithin) return;
-			var ts = QueryList.ItemTemplate.FindName("OperationParameterElementName", cp) as EllipticBit.Controls.WPF.TextBox;
-			if (ts == null) return;
-			if (ts.IsKeyboardFocusWithin) return;
-			ts = QueryList.ItemTemplate.FindName("OperationParameterDocumentation", cp) as EllipticBit.Controls.WPF.TextBox;
-			if (ts == null) return;
-			if (ts.IsKeyboardFocusWithin) return;
 
 			if (DragAdorner != null)
 			{
@@ -464,15 +441,10 @@ namespace NETPath.Interface.WebApi.Service
 			return Globals.GetVisualChild<ContentPresenter>(lbi);
 		}
 
-		private void AddQueryParameterType_KeyUp(object sender, KeyEventArgs e)
-		{
-			if (e.Key == Key.Enter)
-				AddQueryParameterName.Focus();
-		}
-
-		private void AddQueryParameterType_ValidationChanged(object Sender, RoutedEventArgs E)
+		private void AddQueryParameterType_Selected(object Sender, RoutedEventArgs E)
 		{
 			AddQueryParameter.IsEnabled = (!string.IsNullOrEmpty(AddQueryParameterName.Text) && !AddQueryParameterName.IsInvalid && AddQueryParameterType.IsValid);
+			AddQueryParameterName.Focus();
 		}
 
 		private void AddQueryParameterName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)

@@ -8,7 +8,7 @@
 	xmlns:Projects="clr-namespace:NETPath.Projects.Wcf;assembly=NETPath.Projects"
 	xmlns:Docs="clr-namespace:NETPath.Interface.Documentation"
 	xmlns:pc="http://schemas.ellipticbit.com/controls"
-	d:DesignHeight="620" d:DesignWidth="1390" UseLayoutRounding="True" >
+	d:DesignHeight="620" d:DesignWidth="1390" UseLayoutRounding="True" DataContext="{Binding RelativeSource={RelativeSource Self}}" >
 	<Grid.Resources>
 		<Service:ProtectionLevelConverter x:Key="ProtectionLevelConverter" />
 		<Service:ImpersonationOptionConverter x:Key="ImpersonationOptionConverter" />
@@ -52,7 +52,7 @@
 						<ColumnDefinition Width="95" />
 					</Grid.ColumnDefinitions>
 					<Label Content="Type:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" />
-					<Data:TypeSelector OpenType="{Binding Path=Type}" Project="{Binding Path=ServiceProject}" Height="23" Margin="46,5,5,5" x:Name="AddParameterType" Grid.Column="0" KeyUp="AddParameterType_KeyUp" ValidationChanged="AddParameterType_ValidationChanged" />
+                    <Data:TypeSelector Project="{Binding Path=ServiceProject}" Height="23" Margin="46,5,5,5" x:Name="AddParameterType" Grid.Column="0" Selected="AddParameterType_Selected" />
 					<Label Content="Name:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" />
 					<pc:TextBox Height="23" Margin="53,5,5,5" Name="AddParameterName" Grid.Column="1" KeyUp="AddParameterName_KeyUp" TextChanged="AddParameterName_TextChanged" Validate="AddParameterName_Validate" />
 					<Button Grid.Column="2" Name="AddParameter" Click="AddParameter_Click" Height="23" Margin="5,0" IsEnabled="False" >

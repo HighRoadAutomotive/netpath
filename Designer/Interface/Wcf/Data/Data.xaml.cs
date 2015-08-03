@@ -39,9 +39,10 @@ namespace NETPath.Interface.Wcf.Data
 			if (t != null) ValuesList.SelectedItem = t;
 		}
 
-		private void AddMemberType_ValidationChanged(object Sender, RoutedEventArgs E)
+		private void AddMemberType_Selected(object Sender, RoutedEventArgs E)
 		{
 			AddMember.IsEnabled = (!string.IsNullOrEmpty(AddMemberName.Text) && !AddMemberName.IsInvalid && AddMemberType.IsValid);
+			AddMemberName.Focus();
 		}
 
 		private void AddMemberName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)

@@ -325,7 +325,7 @@
 							<RowDefinition Height="*" />
 						</Grid.RowDefinitions>
 						<Label Grid.Row="0" Grid.Column="0" Margin="0,5,5,5" Padding="8,2,0,2" FontSize="11pt" Content="Add Operation:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" />
-						<Data:TypeSelector Project="{Binding ServiceProject}" AllowVoid="True" x:Name="AddServiceMemberType" LabelText="Type" Grid.Row="0" Grid.Column="1" FontSize="11pt" Margin="5" ValidationChanged="AddServiceMemberType_ValidationChanged" />
+						<Data:TypeSelector Project="{Binding ServiceProject}" AllowVoid="True" x:Name="AddServiceMemberType" LabelText="Type" Grid.Row="0" Grid.Column="1" FontSize="11pt" Margin="5" Selected="AddServiceMemberType_Selected" />
 						<pc:TextBox x:Name="AddServiceMemberName" LabelText="Name" Grid.Row="0" Grid.Column="2" FontSize="11pt" Margin="5" Validate="AddServiceMemberName_Validate" TextChanged="AddServiceMemberName_TextChanged" KeyUp="AddServiceMemberName_KeyUp" />
 						<Button x:Name="AddServiceMethod" Grid.Row="0" Grid.Column="3" Margin="5" FontSize="11pt" Content="Method" HorizontalAlignment="Right" IsEnabled="False" Click="AddServiceMethod_Click" />
 						<Button x:Name="AddServiceDCMethod" Grid.Row="0" Grid.Column="4" Margin="5" FontSize="11pt" Content="Data Revision Method" HorizontalAlignment="Right" IsEnabled="False" Click="AddServiceDCMethod_Click" />
@@ -423,7 +423,7 @@
 							<RowDefinition Height="*" />
 						</Grid.RowDefinitions>
 						<Label Grid.Row="0" Margin="0,5,0,5" Padding="8,2,0,2" Content="Add Operation:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="100" />
-						<Data:TypeSelector Project="{Binding ServiceProject}" AllowVoid="True" x:Name="AddCallbackMemberType" LabelText="Type" Grid.Row="0" Margin="105,5,0,5" HorizontalAlignment="Left" Width="325" ValidationChanged="AddCallbackMemberType_ValidationChanged" />
+						<Data:TypeSelector Project="{Binding ServiceProject}" AllowVoid="True" x:Name="AddCallbackMemberType" LabelText="Type" Grid.Row="0" Margin="105,5,0,5" HorizontalAlignment="Left" Width="325" Selected="AddCallbackMemberType_Selected" />
 						<pc:TextBox x:Name="AddCallbackMemberName" LabelText="Name" Grid.Row="0" Margin="440,5,205,5" Validate="AddCallbackMemberName_Validate" TextChanged="AddCallbackMemberName_TextChanged" KeyUp="AddCallbackMemberName_KeyUp" />
 						<Button x:Name="AddCallbackMethod" Grid.Row="0" Margin="0,5,105,5" Content="Method" HorizontalAlignment="Right" Width="90" IsEnabled="False" Click="AddCallbackMethod_Click" />
 						<Button x:Name="AddCallbackProperty" Grid.Row="0" Margin="5" Content="Property" HorizontalAlignment="Right" Width="90" IsEnabled="False" Click="AddCallbackProperty_Click" />

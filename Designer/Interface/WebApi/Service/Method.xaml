@@ -8,7 +8,7 @@
 	xmlns:Projects="clr-namespace:NETPath.Projects.WebApi;assembly=NETPath.Projects"
 	xmlns:Docs="clr-namespace:NETPath.Interface.Documentation"
 	xmlns:pc="http://schemas.ellipticbit.com/controls"
-	d:DesignHeight="750" d:DesignWidth="750" UseLayoutRounding="True" >
+	d:DesignHeight="750" d:DesignWidth="750" UseLayoutRounding="True" DataContext="{Binding RelativeSource={RelativeSource Self}}" >
 	<Grid.Resources>
 		<Rest:WebApiMethodVerbsConverter x:Key="WebApiMethodVerbsConverter" />
 		<Rest:MethodVerbsVisibilityConverter x:Key="MethodVerbsVisibilityConverter" />
@@ -218,7 +218,7 @@
 						</Grid.ColumnDefinitions>
 						<Label Content="CONTENT" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="0" />
 						<Label Content="Type:" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0" />
-						<Data:TypeSelector OpenType="{Binding Path=MethodData.ContentType, Mode=TwoWay}" Project="{Binding Path=ServiceProject}" AllowNullable="False" Height="23" Margin="5,5,5,5" Grid.Column="2" Grid.Row="0" IsEnabled="{Binding Path=MethodData.HasContent}" ValidationChanged="AddRouteParameterType_ValidationChanged" />
+                        <Data:TypeSelector Project="{Binding Path=ServiceProject}" AllowNullable="False" Height="23" Margin="5,5,5,5" Grid.Column="2" Grid.Row="0" IsEnabled="{Binding Path=MethodData.HasContent}" Selected="AddRouteParameterType_Selected" />
 						<Label Content="Name:" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="0" />
 						<pc:TextBox Height="23" Margin="5,5,5,5" Text="{Binding Path=MethodData.ContentParameterName}" Grid.Column="4" Grid.Row="0" IsEnabled="{Binding Path=MethodData.HasContent}" Validate="AddRouteParameterName_Validate" />
 						<ToggleButton IsChecked="{Binding Path=MethodData.HasContent}" Content="Enabled" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" Margin="5" Grid.Column="5" Grid.Row="0" />
@@ -233,7 +233,7 @@
 						</Button>
 						<Label Content="ROUTE" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="2" />
 						<Label Content="Type:" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="2" />
-						<Data:TypeSelector Project="{Binding Path=ServiceProject}" AllowNullable="False" Height="23" Margin="5,5,5,5" x:Name="AddRouteParameterType" Grid.Column="2" Grid.Row="2" KeyUp="AddRouteParameterType_KeyUp" ValidationChanged="AddRouteParameterType_ValidationChanged" />
+						<Data:TypeSelector Project="{Binding Path=ServiceProject}" AllowNullable="False" Height="23" Margin="5,5,5,5" x:Name="AddRouteParameterType" Grid.Column="2" Grid.Row="2" Selected="AddRouteParameterType_Selected" />
 						<Label Content="Name:" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="2" />
 						<pc:TextBox Height="23" Margin="5,5,5,5" Name="AddRouteParameterName" Grid.Column="4" Grid.Row="2" KeyUp="AddRouteParameterName_KeyUp" TextChanged="AddRouteParameterName_TextChanged" Validate="AddRouteParameterName_Validate" />
 						<Button Grid.Column="5" Grid.Row="2" Name="AddRouteParameter" Click="AddRouteParameter_Click" Height="23" Margin="5,0" IsEnabled="False" >
@@ -257,7 +257,7 @@
 						</Grid.ColumnDefinitions>
 						<Label Content="QUERY" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="0" />
 						<Label Content="Type:" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0" />
-						<Data:TypeSelector Project="{Binding Path=ServiceProject}" AllowNullable="True" Height="23" Margin="5,5,5,5" x:Name="AddQueryParameterType" Grid.Column="2" Grid.Row="0" KeyUp="AddQueryParameterType_KeyUp" ValidationChanged="AddQueryParameterType_ValidationChanged" />
+                        <Data:TypeSelector Project="{Binding Path=ServiceProject}" AllowNullable="True" Height="23" Margin="5,5,5,5" x:Name="AddQueryParameterType" Grid.Column="2" Grid.Row="0" Selected="AddQueryParameterType_Selected" />
 						<Label Content="Name:" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="0" />
 						<pc:TextBox Height="23" Margin="5,5,5,5" Name="AddQueryParameterName" Grid.Column="4" Grid.Row="0" KeyUp="AddQueryParameterName_KeyUp" TextChanged="AddQueryParameterName_TextChanged" Validate="AddQueryParameterName_Validate" />
 						<Button Grid.Column="5" Grid.Row="0" Name="AddQueryParameter" Click="AddQueryParameter_Click" Height="23" Margin="5,0" IsEnabled="False" >
