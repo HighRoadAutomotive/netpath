@@ -184,6 +184,19 @@ namespace NETPath.Interface.WebApi.Service
 
 		#region - Route Event Handling -
 
+		private void AddContentParameterType_Selected(object Sender, RoutedEventArgs E)
+		{
+			AddContentParameterName.Focus();
+		}
+
+		private void AddContentParameterName_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
+		{
+			e.IsValid = true;
+			if (string.IsNullOrEmpty(AddContentParameterName.Text)) return;
+
+			e.IsValid = RegExs.MatchCodeName.IsMatch(AddContentParameterName.Text);
+		}
+
 		private ContentPresenter RouteGetListBoxItemPresenter()
 		{
 			if (RouteList.SelectedItem == null) return null;

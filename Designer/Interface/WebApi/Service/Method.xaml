@@ -131,9 +131,9 @@
 						</Grid.ColumnDefinitions>
 						<Data:TypeSelector x:Name="RouteParameterDataType" OpenType="{Binding Path=Type, Mode=TwoWay}" Project="{Binding ElementName=ProjectBinding, Path=DataContext}" Grid.Column="0" Margin="0,5,5,5" VerticalContentAlignment="Center" ToolTip="{Binding Path=Type}"  />
 						<CheckBox Content="Optional" IsChecked="{Binding Path=Optional}" Grid.Column="1" Margin="5" IsEnabled="{Binding Path=IsNullable}" />
-						<pc:TextBox Name="RouteParameterElementName" Text="{Binding Path=Name}" Grid.Column="2" Margin="5" VerticalContentAlignment="Center" PreviewKeyDown="RouteParameterElementName_PreviewKeyDown" Validate="RouteParameterElementName_Validate" ToolTip="{Binding Path=Name}" />
+						<pc:TextBox Name="RouteParameterElementName" Text="{Binding Path=Name}" Grid.Column="2" Margin="5" VerticalContentAlignment="Center" PreviewKeyDown="QueryParameterElementName_PreviewKeyDown" Validate="QueryParameterElementName_Validate" ToolTip="{Binding Path=Name}" />
 						<Label Content="=" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="3" />
-						<pc:TextBox Name="RouteParameterElementDefaultValue" Text="{Binding Path=DefaultValue}" LabelText="Default Value" Grid.Column="4" Margin="5" VerticalContentAlignment="Center" PreviewKeyDown="RouteParameterElementName_PreviewKeyDown" ToolTip="{Binding Path=Name}" />
+						<pc:TextBox Name="RouteParameterElementDefaultValue" Text="{Binding Path=DefaultValue}" LabelText="Default Value" Grid.Column="4" Margin="5" VerticalContentAlignment="Center" PreviewKeyDown="QueryParameterElementName_PreviewKeyDown" ToolTip="{Binding Path=Name}" />
 					</Grid>
 					<Grid Grid.Row="1" Grid.Column="0">
 						<Grid.ColumnDefinitions>
@@ -141,13 +141,13 @@
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="2*" />
 						</Grid.ColumnDefinitions>
-						<pc:TextBox Name="RouteParameterName" Text="{Binding Path=RouteName}" LabelText="Query Name" Margin="0,5,5,5" Grid.Column="0" VerticalContentAlignment="Center" PreviewKeyDown="RouteParameterDocumentation_PreviewKeyDown" />
+						<pc:TextBox Name="RouteParameterName" Text="{Binding Path=RouteName}" LabelText="Query Name" Margin="0,5,5,5" Grid.Column="0" VerticalContentAlignment="Center" PreviewKeyDown="QueryParameterDocumentation_PreviewKeyDown" />
 						<CheckBox Content="Serialize" IsChecked="{Binding Path=Serialize}" Grid.Column="1" Margin="5" IsEnabled="{Binding Path=IsSerializable}" />
-						<pc:TextBox Name="RouteParameterDocumentation" Text="{Binding Path=Documentation.Summary}" LabelText="Documentation" Margin="5" Grid.Column="2" VerticalContentAlignment="Center" PreviewKeyDown="RouteParameterDocumentation_PreviewKeyDown" ToolTip="{Binding Path=Name}" />
+						<pc:TextBox Name="RouteParameterDocumentation" Text="{Binding Path=Documentation.Summary}" LabelText="Documentation" Margin="5" Grid.Column="2" VerticalContentAlignment="Center" PreviewKeyDown="QueryParameterDocumentation_PreviewKeyDown" ToolTip="{Binding Path=Name}" />
 					</Grid>
 					<ToggleButton Content="Hidden" IsChecked="{Binding Path=IsHidden}" Margin="5" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" />
 					<Label Content="Click to Move" FontSize="10" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" />
-					<Button Name="DeleteRouteParameter" Visibility="Hidden" Grid.Column="3" Grid.Row="0" Grid.RowSpan="2" Margin="1,1,2,1" Padding="0" Click="DeleteRouteParameter_Click">
+					<Button Name="DeleteRouteParameter" Visibility="Hidden" Grid.Column="3" Grid.Row="0" Grid.RowSpan="2" Margin="1,1,2,1" Padding="0" Click="DeleteQueryParameter_Click">
 						<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
 					</Button>
 				</Grid>
@@ -218,9 +218,9 @@
 						</Grid.ColumnDefinitions>
 						<Label Content="CONTENT" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="0" />
 						<Label Content="Type:" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0" />
-                        <Data:TypeSelector Project="{Binding Path=ServiceProject}" AllowNullable="False" Height="23" Margin="5,5,5,5" Grid.Column="2" Grid.Row="0" IsEnabled="{Binding Path=MethodData.HasContent}" Selected="AddRouteParameterType_Selected" />
+						<Data:TypeSelector OpenType="{Binding Path=MethodData.ContentType, Mode=TwoWay}" Project="{Binding Path=ServiceProject}" AllowNullable="False" Height="23" Margin="5,5,5,5" Grid.Column="2" Grid.Row="0" IsEnabled="{Binding Path=MethodData.HasContent}" Selected="AddContentParameterType_Selected" />
 						<Label Content="Name:" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="0" />
-						<pc:TextBox Height="23" Margin="5,5,5,5" Text="{Binding Path=MethodData.ContentParameterName}" Grid.Column="4" Grid.Row="0" IsEnabled="{Binding Path=MethodData.HasContent}" Validate="AddRouteParameterName_Validate" />
+						<pc:TextBox Name="AddContentParameterName" Height="23" Margin="5,5,5,5" Text="{Binding Path=MethodData.ContentParameterName}" Grid.Column="4" Grid.Row="0" IsEnabled="{Binding Path=MethodData.HasContent}" Validate="AddContentParameterName_Validate" />
 						<ToggleButton IsChecked="{Binding Path=MethodData.HasContent}" Content="Enabled" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" Margin="5" Grid.Column="5" Grid.Row="0" />
 						<Label Content="FIXED" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="1" />
 						<Label Content="Name:" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="1" />
@@ -257,7 +257,7 @@
 						</Grid.ColumnDefinitions>
 						<Label Content="QUERY" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="0" />
 						<Label Content="Type:" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0" />
-                        <Data:TypeSelector Project="{Binding Path=ServiceProject}" AllowNullable="True" Height="23" Margin="5,5,5,5" x:Name="AddQueryParameterType" Grid.Column="2" Grid.Row="0" Selected="AddQueryParameterType_Selected" />
+						<Data:TypeSelector Project="{Binding Path=ServiceProject}" AllowNullable="True" Height="23" Margin="5,5,5,5" x:Name="AddQueryParameterType" Grid.Column="2" Grid.Row="0" Selected="AddQueryParameterType_Selected" />
 						<Label Content="Name:" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="0" />
 						<pc:TextBox Height="23" Margin="5,5,5,5" Name="AddQueryParameterName" Grid.Column="4" Grid.Row="0" KeyUp="AddQueryParameterName_KeyUp" TextChanged="AddQueryParameterName_TextChanged" Validate="AddQueryParameterName_Validate" />
 						<Button Grid.Column="5" Grid.Row="0" Name="AddQueryParameter" Click="AddQueryParameter_Click" Height="23" Margin="5,0" IsEnabled="False" >

@@ -59,8 +59,6 @@ namespace NETPath.Generators.CS.WebApi
 						AddMessage(new CompileMessage("GS2008", "The method parameter '" + m.Name + "' in the '" + o.Name + "' service has a blank parameter name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
 					if (string.IsNullOrEmpty(mp.Name))
 						AddMessage(new CompileMessage("GS20018", "The method parameter '" + m.Name + "' in the '" + o.Name + "' service has a blank route name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
-					//if (mp.IsRestInvalid)
-					//	AddMessage(new CompileMessage("GS2009", "The method Rest parameter '" + m.Name + "' in the '" + m.Name + "' method is not a valid Rest parameter. Please specify a valid Rest parameter.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
 					if (mp.Name == "__callback")
 						AddMessage(new CompileMessage("GS2016", "The name of the method parameter '" + mp.Name + "' in the '" + m.Name + "' method is invalid. Please rename it.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
 				}
@@ -71,8 +69,8 @@ namespace NETPath.Generators.CS.WebApi
 						AddMessage(new CompileMessage("GS2008", "The method parameter '" + m.Name + "' in the '" + o.Name + "' service has a blank parameter name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
 					if (string.IsNullOrEmpty(mp.Name))
 						AddMessage(new CompileMessage("GS20018", "The method parameter '" + m.Name + "' in the '" + o.Name + "' service has a blank route name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
-					//if (mp.IsRestInvalid)
-					//	AddMessage(new CompileMessage("GS2009", "The method Rest parameter '" + m.Name + "' in the '" + m.Name + "' method is not a valid Rest parameter. Please specify a valid Rest parameter.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
+					//if (string.IsNullOrEmpty(mp.DefaultValue))
+					//	AddMessage(new CompileMessage("GS2009", "The method  parameter '" + m.Name + "' in the '" + o.Name + "' method does not have a default value. Please specify a default value for this parameter.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
 					if (mp.Name == "__callback")
 						AddMessage(new CompileMessage("GS2016", "The name of the method parameter '" + mp.Name + "' in the '" + m.Name + "' method is invalid. Please rename it.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
 				}
@@ -233,7 +231,7 @@ namespace NETPath.Generators.CS.WebApi
 				uriBuilder.AppendFormat("/{{{0}{1}}}", pp.RouteName, pp.Optional ? "?" : "");
 
 			uriBuilder.Remove(0, 1); //Remove the beginning slant from the Route
-
+/*
 			if (!o.QueryParameters.Any()) return uriBuilder.ToString();
 
 			uriBuilder.Append("?");
@@ -242,7 +240,7 @@ namespace NETPath.Generators.CS.WebApi
 				uriBuilder.AppendFormat("&{0}={{{0}{1}}}", pq.RouteName, pq.Optional ? "?" : "");
 
 			uriBuilder.Replace("?&", "?");
-
+*/
 			return uriBuilder.ToString();
 		}
 
@@ -267,7 +265,9 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendFormat("\t\tpublic abstract {0} {1}(", o.ServerAsync ? o.ReturnType.IsVoid ? "Task" : string.Format("Task<{0}>", DataTypeGenerator.GenerateType(o.ReturnType)) : DataTypeGenerator.GenerateType(o.ReturnType), o.Name);
 			foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>())
 				code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
-			foreach (var op in o.QueryParameters)
+			foreach (var op in o.QueryParameters.Where(a => string.IsNullOrEmpty(a.DefaultValue)))
+				code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
+			foreach (var op in o.QueryParameters.Where(a => !string.IsNullOrEmpty(a.DefaultValue)))
 				code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
 			if (o.RouteParameters.OfType<WebApiMethodParameter>().Any() || o.QueryParameters.Any()) code.Remove(code.Length - 2, 2);
 			if (o.HasContent)
@@ -497,7 +497,7 @@ namespace NETPath.Generators.CS.WebApi
 
 		public static string GenerateMethodParameterServerCode(WebApiMethodParameter o)
 		{
-			return o.IsHidden ? "" : string.Format("{0}{2} {1}", DataTypeGenerator.GenerateType(o.Type), o.Name, (o.Optional && o.Type.IsValueType) ? "?" : "");
+			return o.IsHidden ? "" : string.Format("{0}{2} {1}{3}", DataTypeGenerator.GenerateType(o.Type), o.Name, (o.Optional && o.Type.IsValueType) ? "?" : "", string.IsNullOrEmpty(o.DefaultValue) ? "" : $" = {o.DefaultValue}");
 		}
 
 		public static string GenerateMethodParameterClientCode(WebApiMethodParameter o)
