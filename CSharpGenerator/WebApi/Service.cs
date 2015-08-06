@@ -271,7 +271,7 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
 			if (o.RouteParameters.OfType<WebApiMethodParameter>().Any() || o.QueryParameters.Any()) code.Remove(code.Length - 2, 2);
 			if (o.HasContent)
-				code.AppendFormat("{2}[FromBody] {0} {1}", DataTypeGenerator.GenerateType(o.ContentType), o.ContentParameterName, (o.QueryParameters.Any() || o.RouteParameters.Any()) ? ", " : "");
+				code.AppendFormat("{2}[FromBody] {0} {1}", DataTypeGenerator.GenerateType(o.ContentType), o.ContentParameterName, (o.QueryParameters.Any() || o.RouteParameters.OfType<WebApiMethodParameter>().Any()) ? ", " : "");
 			code.AppendLine(");");
 			return code.ToString();
 		}
@@ -302,9 +302,9 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 			foreach (var op in o.QueryParameters)
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
-			if (o.RouteParameters.OfType<WebApiMethodParameter>().Any() || o.QueryParameters.Any()) code.Remove(code.Length - 2, 2);
+			if (!o.HasContent && (o.RouteParameters.OfType<WebApiMethodParameter>().Any() || o.QueryParameters.Any())) code.Remove(code.Length - 2, 2);
 			if (o.HasContent)
-				code.AppendFormat(", {0} {1}", DataTypeGenerator.GenerateType(o.ContentType), o.ContentParameterName);
+				code.AppendFormat("{0} {1}", DataTypeGenerator.GenerateType(o.ContentType), o.ContentParameterName);
 			code.AppendLine(")");
 			code.AppendLine("\t\t{");
 			GenerateMethodPreamble(code, o.ClientPreambleCode, 3);
@@ -408,9 +408,9 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 			foreach (var op in o.QueryParameters)
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
-			if (o.RouteParameters.OfType<WebApiMethodParameter>().Any() || o.QueryParameters.Any()) code.Remove(code.Length - 2, 2);
+			if (!o.HasContent && (o.RouteParameters.OfType<WebApiMethodParameter>().Any() || o.QueryParameters.Any())) code.Remove(code.Length - 2, 2);
 			if (o.HasContent)
-				code.AppendFormat(", {0} {1}", DataTypeGenerator.GenerateType(o.ContentType), o.ContentParameterName);
+				code.AppendFormat("{0} {1}", DataTypeGenerator.GenerateType(o.ContentType), o.ContentParameterName);
 			code.AppendLine(")");
 			code.AppendLine("\t\t{");
 			GenerateMethodPreamble(code, o.ClientPreambleCode, 3);
