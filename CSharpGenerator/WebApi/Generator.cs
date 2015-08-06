@@ -62,7 +62,7 @@ namespace NETPath.Generators.CS.WebApi
 			string projdir = System.IO.Path.GetDirectoryName(ProjectPath);
 			Console.WriteLine("Project Directory: {0}", projdir);
 
-			foreach (ProjectGenerationTarget t in Data.ServerGenerationTargets)
+			foreach (ProjectGenerationTarget t in Data.ServerGenerationTargets.Where(a => a.IsEnabled))
 			{
 				Console.WriteLine("Output Relative Path: {0}", t.Path);
 				string op = System.IO.Path.Combine(projdir, t.Path.Replace("/", "\\"));
@@ -71,7 +71,7 @@ namespace NETPath.Generators.CS.WebApi
 				System.IO.File.WriteAllText(op, Generate(t, true));
 			}
 
-			foreach (ProjectGenerationTarget t in Data.ClientGenerationTargets)
+			foreach (ProjectGenerationTarget t in Data.ClientGenerationTargets.Where(a => a.IsEnabled))
 			{
 				Console.WriteLine("Output Relative Path: {0}", t.Path);
 				string op = System.IO.Path.Combine(projdir, t.Path.Replace("/", "\\"));

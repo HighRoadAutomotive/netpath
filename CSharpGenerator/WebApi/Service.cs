@@ -314,7 +314,12 @@ namespace NETPath.Generators.CS.WebApi
 			foreach (var op in o.RouteParameters)
 			{
 				if (op.GetType() == typeof (WebApiRouteParameter))
-					code.AppendLine(string.Format("\t\t\turi.AppendFormat(\"/{0}\");", op.RouteName));
+					code.AppendLine(string.Format("\t\t\turi.Append(\"/{0}\");", op.RouteName));
+			}
+			code.AppendLine(string.Format("\t\t\turi.Append(\"/{0}\");", o.Name));
+			foreach (var op in o.RouteParameters)
+			{
+
 				if (op.GetType() == typeof (WebApiMethodParameter))
 					code.AppendLine(string.Format("\t\t\turi.AppendFormat(\"/{{0}}\", {0});", op.Name));
 			}
@@ -419,9 +424,14 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\t\tvar uri = new StringBuilder(_baseUri, 2048);");
 			foreach (var op in o.RouteParameters)
 			{
-				if (op.GetType() == typeof (WebApiRouteParameter))
-					code.AppendLine(string.Format("\t\t\turi.AppendFormat(\"/{0}\");", op.RouteName));
-				if (op.GetType() == typeof (WebApiMethodParameter))
+				if (op.GetType() == typeof(WebApiRouteParameter))
+					code.AppendLine(string.Format("\t\t\turi.Append(\"/{0}\");", op.RouteName));
+			}
+			code.AppendLine(string.Format("\t\t\turi.Append(\"/{0}\");", o.Name));
+			foreach (var op in o.RouteParameters)
+			{
+
+				if (op.GetType() == typeof(WebApiMethodParameter))
 					code.AppendLine(string.Format("\t\t\turi.AppendFormat(\"/{{0}}\", {0});", op.Name));
 			}
 			if (o.QueryParameters.Any())
