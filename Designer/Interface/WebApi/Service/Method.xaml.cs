@@ -490,7 +490,7 @@ namespace NETPath.Interface.WebApi.Service
 		private void AddQueryParameter_Click(object sender, RoutedEventArgs e)
 		{
 			if (AddQueryParameter.IsEnabled == false) return;
-			MethodData.QueryParameters.Add(new WebApiMethodParameter(AddQueryParameterType.OpenType, AddQueryParameterName.Text, MethodData.Owner, MethodData));
+			MethodData.QueryParameters.Add(new WebApiMethodParameter(AddQueryParameterType.OpenType.MakeNullable(), AddQueryParameterName.Text, MethodData.Owner, MethodData) { DefaultValue = "null"});
 			AddQueryParameterType.OpenType = null;
 			AddQueryParameterType.Focus();
 			AddQueryParameterName.Text = "";

@@ -65,6 +65,9 @@ namespace NETPath.Generators.CS.WebApi
 
 				foreach (var mp in m.QueryParameters)
 				{
+					//Automatically enforce query parameter config
+					mp.Type.IsNullable = true;
+					mp.DefaultValue = "null";
 					if (string.IsNullOrEmpty(mp.Name))
 						AddMessage(new CompileMessage("GS2008", "The method parameter '" + m.Name + "' in the '" + o.Name + "' service has a blank parameter name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
 					if (string.IsNullOrEmpty(mp.Name))
@@ -223,24 +226,18 @@ namespace NETPath.Generators.CS.WebApi
 			var uriBuilder = new StringBuilder(512);
 
 			foreach (var pp in o.RouteParameters.Where(a => !(a is WebApiMethodParameter)))
-				uriBuilder.AppendFormat("/{0}", pp.RouteName);
+				uriBuilder.AppendFormat("/{0}", pp.RouteName.ToLowerInvariant());
 
-			uriBuilder.AppendFormat("/{0}", o.Name);
+			uriBuilder.AppendFormat("/{0}", o.Name.ToLowerInvariant());
 
-			foreach (var pp in o.RouteParameters.OfType<WebApiMethodParameter>())
-				uriBuilder.AppendFormat("/{{{0}{1}}}", pp.RouteName, pp.Optional ? "?" : "");
+			foreach (var pp in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => string.IsNullOrEmpty(a.DefaultValue)))
+				uriBuilder.AppendFormat("/{{{0}}}", pp.RouteName.ToLowerInvariant());
+
+			foreach (var pp in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => !string.IsNullOrEmpty(a.DefaultValue)))
+				uriBuilder.AppendFormat("/{{{0}?}}", pp.RouteName.ToLowerInvariant());
 
 			uriBuilder.Remove(0, 1); //Remove the beginning slant from the Route
-/*
-			if (!o.QueryParameters.Any()) return uriBuilder.ToString();
 
-			uriBuilder.Append("?");
-
-			foreach (var pq in o.QueryParameters)
-				uriBuilder.AppendFormat("&{0}={{{0}{1}}}", pq.RouteName, pq.Optional ? "?" : "");
-
-			uriBuilder.Replace("?&", "?");
-*/
 			return uriBuilder.ToString();
 		}
 
@@ -263,11 +260,11 @@ namespace NETPath.Generators.CS.WebApi
 			else
 				code.AppendLine(string.Format("\t\t[System.Web.Http.AcceptVerbs(\"{0}\")]", o.Method));
 			code.AppendFormat("\t\tpublic abstract {0} {1}(", o.ServerAsync ? o.ReturnType.IsVoid ? "Task" : string.Format("Task<{0}>", DataTypeGenerator.GenerateType(o.ReturnType)) : DataTypeGenerator.GenerateType(o.ReturnType), o.Name);
-			foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>())
+			foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => string.IsNullOrEmpty(a.DefaultValue)))
 				code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
-			foreach (var op in o.QueryParameters.Where(a => string.IsNullOrEmpty(a.DefaultValue)))
+			foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => !string.IsNullOrEmpty(a.DefaultValue)))
 				code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
-			foreach (var op in o.QueryParameters.Where(a => !string.IsNullOrEmpty(a.DefaultValue)))
+			foreach (var op in o.QueryParameters)
 				code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
 			if (o.RouteParameters.OfType<WebApiMethodParameter>().Any() || o.QueryParameters.Any()) code.Remove(code.Length - 2, 2);
 			if (o.HasContent)
@@ -298,7 +295,9 @@ namespace NETPath.Generators.CS.WebApi
 
 			//Construct method declaration
 			code.AppendFormat("\t\tpublic virtual async void {0}(", o.Name);
-			foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>())
+			foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => string.IsNullOrEmpty(a.DefaultValue)))
+				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+			foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => !string.IsNullOrEmpty(a.DefaultValue)))
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 			foreach (var op in o.QueryParameters)
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
@@ -311,12 +310,14 @@ namespace NETPath.Generators.CS.WebApi
 
 			//Construct the URI
 			code.AppendLine("\t\t\tvar uri = new StringBuilder(_baseUri, 2048);");
+			code.Append("\t\t\turi.Append(\"");
 			foreach (var op in o.RouteParameters)
 			{
 				if (op.GetType() == typeof (WebApiRouteParameter))
-					code.AppendLine(string.Format("\t\t\turi.Append(\"/{0}\");", op.RouteName));
+					code.Append(string.Format("/{0}", op.RouteName.ToLowerInvariant()));
 			}
-			code.AppendLine(string.Format("\t\t\turi.Append(\"/{0}\");", o.Name));
+			code.Append(string.Format("/{0}", o.Name.ToLowerInvariant()));
+			code.AppendLine("\");");
 			foreach (var op in o.RouteParameters)
 			{
 
@@ -326,8 +327,9 @@ namespace NETPath.Generators.CS.WebApi
 			if (o.QueryParameters.Any())
 				code.AppendLine("\t\t\turi.Append(\"?\");");
 			foreach (var op in o.QueryParameters)
-				code.AppendLine(string.Format(!op.Optional ? "\t\t\turi.AppendFormat(\"&{0}={{0}}\", {1});" : "\t\t\tif ({1} != null) uri.Append(\"&{0}={{0}}\", {1});", op.RouteName, op.Name));
-			code.AppendLine("\t\t\turi.Replace(\"?&\", \"?\");");
+				code.AppendLine(string.Format("\t\t\tif ({1} != null) uri.AppendFormat(\"&{0}={{0}}\", {1});", op.RouteName.ToLowerInvariant(), op.Name));
+			if (o.QueryParameters.Any())
+				code.AppendLine("\t\t\turi.Replace(\"?&\", \"?\");");
 
 			//Create the HttpRequestMessage
 			code.AppendLine(string.Format("\t\t\tvar rm = new HttpRequestMessage(HttpMethod.{0}, new Uri(uri.ToString(), UriKind.RelativeOrAbsolute));", o.Method));
@@ -409,7 +411,9 @@ namespace NETPath.Generators.CS.WebApi
 				if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendFormat("\t\tpublic async virtual System.Threading.Tasks.Task {0}Async(", o.Name);
 				else code.AppendFormat("\t\tpublic async virtual System.Threading.Tasks.Task<{0}> {1}Async(", DataTypeGenerator.GenerateType(o.ReturnType), o.Name);
 			}
-			foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>())
+			foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => string.IsNullOrEmpty(a.DefaultValue)))
+				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
+			foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => !string.IsNullOrEmpty(a.DefaultValue)))
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 			foreach (var op in o.QueryParameters)
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
@@ -422,12 +426,14 @@ namespace NETPath.Generators.CS.WebApi
 
 			//Construct the URI
 			code.AppendLine("\t\t\tvar uri = new StringBuilder(_baseUri, 2048);");
+			code.Append("\t\t\turi.Append(\"");
 			foreach (var op in o.RouteParameters)
 			{
 				if (op.GetType() == typeof(WebApiRouteParameter))
-					code.AppendLine(string.Format("\t\t\turi.Append(\"/{0}\");", op.RouteName));
+					code.Append(string.Format("/{0}", op.RouteName.ToLowerInvariant()));
 			}
-			code.AppendLine(string.Format("\t\t\turi.Append(\"/{0}\");", o.Name));
+			code.Append(string.Format("/{0}", o.Name.ToLowerInvariant()));
+			code.AppendLine("\");");
 			foreach (var op in o.RouteParameters)
 			{
 
@@ -437,8 +443,9 @@ namespace NETPath.Generators.CS.WebApi
 			if (o.QueryParameters.Any())
 				code.AppendLine("\t\t\turi.Append(\"?\");");
 			foreach (var op in o.QueryParameters)
-				code.AppendLine(string.Format(!op.Optional ? "\t\t\turi.AppendFormat(\"&{0}={{0}}\", {1});" : "\t\t\tif ({1} != null) uri.Append(\"&{0}={{0}}\", {1});", op.RouteName, op.Name));
-			code.AppendLine("\t\t\turi.Replace(\"?&\", \"?\");");
+				code.AppendLine(string.Format("\t\t\tif ({1} != null) uri.AppendFormat(\"&{0}={{0}}\", {1});", op.RouteName.ToLowerInvariant(), op.Name));
+			if (o.QueryParameters.Any())
+				code.AppendLine("\t\t\turi.Replace(\"?&\", \"?\");");
 
 			//Create the HttpRequestMessage
 			code.AppendLine(string.Format("\t\t\tvar rm = new HttpRequestMessage(HttpMethod.{0}, new Uri(uri.ToString(), UriKind.RelativeOrAbsolute));", o.Method));
@@ -507,30 +514,20 @@ namespace NETPath.Generators.CS.WebApi
 
 		public static string GenerateMethodParameterServerCode(WebApiMethodParameter o)
 		{
-			return o.IsHidden ? "" : string.Format("{0}{2} {1}{3}", DataTypeGenerator.GenerateType(o.Type), o.Name, (o.Optional && o.Type.IsValueType) ? "?" : "", string.IsNullOrEmpty(o.DefaultValue) ? "" : $" = {o.DefaultValue}");
+			return o.IsHidden ? "" : string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(o.Type), o.Name, string.IsNullOrEmpty(o.DefaultValue) ? "" : $" = {o.DefaultValue}");
 		}
 
 		public static string GenerateMethodParameterClientCode(WebApiMethodParameter o)
 		{
 			if (o.IsHidden) return "";
 
-			if (o.Type.TypeMode == DataTypeMode.Class)
+			if (o.Type.TypeMode == DataTypeMode.Class || o.Type.TypeMode == DataTypeMode.Struct || o.Type.TypeMode == DataTypeMode.Enum)
 			{
 				var ptype = o.Type as WebApiData;
-				return string.Format("{0}{3} {1}{2}", ptype != null && ptype.HasClientType ? DataTypeGenerator.GenerateType(ptype.ClientType) : DataTypeGenerator.GenerateType(o.Type), o.Name, string.IsNullOrWhiteSpace(o.DefaultValue) ? "" : string.Format(" = {0}", o.DefaultValue), o.Optional ? "?" : "");
-			}
-			if (o.Type.TypeMode == DataTypeMode.Struct)
-			{
-				var ptype = o.Type as WebApiData;
-				return string.Format("{0}{3} {1}{2}", ptype != null && ptype.HasClientType ? DataTypeGenerator.GenerateType(ptype.ClientType) : DataTypeGenerator.GenerateType(o.Type), o.Name, string.IsNullOrWhiteSpace(o.DefaultValue) ? "" : string.Format(" = {0}", o.DefaultValue), o.Optional ? "?" : "");
-			}
-			if (o.Type.TypeMode == DataTypeMode.Enum)
-			{
-				var ptype = o.Type as Projects.Enum;
-				return string.Format("{0}{3} {1}{2}", ptype != null && ptype.HasClientType ? DataTypeGenerator.GenerateType(ptype.ClientType) : DataTypeGenerator.GenerateType(o.Type), o.Name, string.IsNullOrWhiteSpace(o.DefaultValue) ? "" : string.Format(" = {0}", o.DefaultValue), o.Optional ? "?" : "");
+				return string.Format("{0} {1}{2}", ptype != null && ptype.HasClientType ? DataTypeGenerator.GenerateType(ptype.ClientType) : DataTypeGenerator.GenerateType(o.Type), o.Name, string.IsNullOrWhiteSpace(o.DefaultValue) ? "" : string.Format(" = {0}", o.DefaultValue));
 			}
 
-			return string.Format("{0}{3} {1}{2}", DataTypeGenerator.GenerateType(o.Type), o.Name, string.IsNullOrWhiteSpace(o.DefaultValue) ? "" : string.Format(" = {0}", o.DefaultValue), o.Optional ? "?" : "");
+			return string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(o.Type), o.Name, string.IsNullOrWhiteSpace(o.DefaultValue) ? "" : string.Format(" = {0}", o.DefaultValue));
 		}
 
 		#endregion

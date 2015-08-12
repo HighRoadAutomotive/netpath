@@ -306,9 +306,6 @@ namespace NETPath.Projects.WebApi
 		public static readonly DependencyProperty DefaultValueProperty = DependencyProperty.Register("DefaultValue", typeof(string), typeof(WebApiMethodParameter));
 
 		//Rest Specific
-		public bool Optional { get { return (bool)GetValue(OptionalProperty); } set { SetValue(OptionalProperty, value); } }
-		public static readonly DependencyProperty OptionalProperty = DependencyProperty.Register("Optional", typeof(bool), typeof(WebApiMethodParameter), new PropertyMetadata(false));
-
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(WebApiMethodParameter));
 
@@ -335,7 +332,7 @@ namespace NETPath.Projects.WebApi
 
 		public override string ToString()
 		{
-			return string.Format("{0}{3} {1}{2}", Type, Name, string.IsNullOrWhiteSpace(DefaultValue) ? "" : string.Format(" = {0}", DefaultValue), Optional ? "?" : "");
+			return string.Format("{0} {1}{2}", Type, Name, string.IsNullOrWhiteSpace(DefaultValue) ? "" : string.Format(" = {0}", DefaultValue));
 		}
 	}
 

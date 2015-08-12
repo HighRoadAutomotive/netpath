@@ -84,7 +84,7 @@
 						<Data:TypeSelector x:Name="RouteParameterDataType" OpenType="{Binding Path=Type, Mode=TwoWay}" Project="{Binding ElementName=ProjectBinding, Path=DataContext}" Grid.Column="0" Margin="0,5,5,5" VerticalContentAlignment="Center" ToolTip="{Binding Path=Type}"  />
 						<pc:TextBox Name="RouteParameterElementName" Text="{Binding Path=Name}" Grid.Column="1" Margin="5" VerticalContentAlignment="Center" PreviewKeyDown="RouteParameterElementName_PreviewKeyDown" Validate="RouteParameterElementName_Validate" ToolTip="{Binding Path=Name}" />
 						<Label Content="=" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" />
-						<pc:TextBox Name="RouteParameterElementDefaultValue" Text="{Binding Path=DefaultValue}" LabelText="Default Value" Grid.Column="3" Margin="5" VerticalContentAlignment="Center" PreviewKeyDown="RouteParameterElementName_PreviewKeyDown" ToolTip="{Binding Path=Name}" />
+						<pc:TextBox Name="RouteParameterElementDefaultValue" Text="{Binding Path=DefaultValue}" LabelText="Client Default Value" Grid.Column="3" Margin="5" VerticalContentAlignment="Center" PreviewKeyDown="RouteParameterElementName_PreviewKeyDown" ToolTip="{Binding Path=Name}" />
 					</Grid>
 					<Grid Grid.Row="1" Grid.Column="0">
 						<Grid.ColumnDefinitions>
@@ -123,27 +123,19 @@
 					</Grid.ColumnDefinitions>
 					<Grid Grid.Row="0" Grid.Column="0">
 						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width=".5*" />
-							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="2*" />
 						</Grid.ColumnDefinitions>
 						<Data:TypeSelector x:Name="RouteParameterDataType" OpenType="{Binding Path=Type, Mode=TwoWay}" Project="{Binding ElementName=ProjectBinding, Path=DataContext}" Grid.Column="0" Margin="0,5,5,5" VerticalContentAlignment="Center" ToolTip="{Binding Path=Type}"  />
-						<CheckBox Content="Optional" IsChecked="{Binding Path=Optional}" Grid.Column="1" Margin="5" IsEnabled="{Binding Path=IsNullable}" />
-						<pc:TextBox Name="RouteParameterElementName" Text="{Binding Path=Name}" Grid.Column="2" Margin="5" VerticalContentAlignment="Center" PreviewKeyDown="QueryParameterElementName_PreviewKeyDown" Validate="QueryParameterElementName_Validate" ToolTip="{Binding Path=Name}" />
-						<Label Content="=" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="3" />
-						<pc:TextBox Name="RouteParameterElementDefaultValue" Text="{Binding Path=DefaultValue}" LabelText="Default Value" Grid.Column="4" Margin="5" VerticalContentAlignment="Center" PreviewKeyDown="QueryParameterElementName_PreviewKeyDown" ToolTip="{Binding Path=Name}" />
+						<pc:TextBox Name="RouteParameterElementName" Text="{Binding Path=Name}" Grid.Column="1" Margin="5" VerticalContentAlignment="Center" PreviewKeyDown="QueryParameterElementName_PreviewKeyDown" Validate="QueryParameterElementName_Validate" ToolTip="{Binding Path=Name}" />
 					</Grid>
 					<Grid Grid.Row="1" Grid.Column="0">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="2*" />
 						</Grid.ColumnDefinitions>
 						<pc:TextBox Name="RouteParameterName" Text="{Binding Path=RouteName}" LabelText="Query Name" Margin="0,5,5,5" Grid.Column="0" VerticalContentAlignment="Center" PreviewKeyDown="QueryParameterDocumentation_PreviewKeyDown" />
-						<CheckBox Content="Serialize" IsChecked="{Binding Path=Serialize}" Grid.Column="1" Margin="5" IsEnabled="{Binding Path=IsSerializable}" />
-						<pc:TextBox Name="RouteParameterDocumentation" Text="{Binding Path=Documentation.Summary}" LabelText="Documentation" Margin="5" Grid.Column="2" VerticalContentAlignment="Center" PreviewKeyDown="QueryParameterDocumentation_PreviewKeyDown" ToolTip="{Binding Path=Name}" />
+						<pc:TextBox Name="RouteParameterDocumentation" Text="{Binding Path=Documentation.Summary}" LabelText="Documentation" Margin="5" Grid.Column="1" VerticalContentAlignment="Center" PreviewKeyDown="QueryParameterDocumentation_PreviewKeyDown" ToolTip="{Binding Path=Name}" />
 					</Grid>
 					<ToggleButton Content="Hidden" IsChecked="{Binding Path=IsHidden}" Margin="5" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" />
 					<Label Content="Click to Move" FontSize="10" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" />

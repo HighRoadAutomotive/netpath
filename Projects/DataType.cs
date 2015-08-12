@@ -71,8 +71,14 @@ namespace NETPath.Projects
 	{
 		public Guid ID { get; set; }
 
-		public bool HasClientType { get { return (bool)GetValue(HasClientTypeProperty); } set { SetValue(HasClientTypeProperty, value); } }
-		public static readonly DependencyProperty HasClientTypeProperty = DependencyProperty.Register("HasClientType", typeof(bool), typeof(DataType), new PropertyMetadata(false, HasClientTypeChangedCallback));
+		public bool HasClientType
+		{
+			get { return (bool) GetValue(HasClientTypeProperty); }
+			set { SetValue(HasClientTypeProperty, value); }
+		}
+
+		public static readonly DependencyProperty HasClientTypeProperty = DependencyProperty.Register("HasClientType",
+			typeof (bool), typeof (DataType), new PropertyMetadata(false, HasClientTypeChangedCallback));
 
 		private static void HasClientTypeChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
 		{
@@ -85,7 +91,17 @@ namespace NETPath.Projects
 			{
 				if (t.ClientType == null)
 				{
-					t.ClientType = Convert.ToBoolean(e.NewValue) == false ? null : new DataType(t.TypeMode) { ID = t.ID, Name = t.Name, Scope = t.Scope, Partial = t.Partial, Abstract = t.Abstract, Sealed = t.Sealed };
+					t.ClientType = Convert.ToBoolean(e.NewValue) == false
+						? null
+						: new DataType(t.TypeMode)
+						{
+							ID = t.ID,
+							Name = t.Name,
+							Scope = t.Scope,
+							Partial = t.Partial,
+							Abstract = t.Abstract,
+							Sealed = t.Sealed
+						};
 					if (t.ClientType != null)
 					{
 						t.ClientType.KnownTypes = new ObservableCollection<DataType>(t.KnownTypes);
@@ -94,23 +110,59 @@ namespace NETPath.Projects
 			}
 		}
 
-		public DataType ClientType { get { return (DataType)GetValue(ClientTypeProperty); } set { SetValue(ClientTypeProperty, value); } }
-		public static readonly DependencyProperty ClientTypeProperty = DependencyProperty.Register("ClientType", typeof(DataType), typeof(DataType));
+		public DataType ClientType
+		{
+			get { return (DataType) GetValue(ClientTypeProperty); }
+			set { SetValue(ClientTypeProperty, value); }
+		}
 
-		public DataScope Scope { get { return (DataScope)GetValue(ScopeProperty); } set { SetValue(ScopeProperty, value); } }
-		public static readonly DependencyProperty ScopeProperty = DependencyProperty.Register("Scope", typeof(DataScope), typeof(DataType), new PropertyMetadata(DataScope.Public, DataTypePropertyChangedCallback));
+		public static readonly DependencyProperty ClientTypeProperty = DependencyProperty.Register("ClientType",
+			typeof (DataType), typeof (DataType));
 
-		public bool Partial { get { return (bool)GetValue(PartialProperty); } set { SetValue(PartialProperty, value); } }
-		public static readonly DependencyProperty PartialProperty = DependencyProperty.Register("Partial", typeof(bool), typeof(DataType), new PropertyMetadata(true, DataTypePropertyChangedCallback));
+		public DataScope Scope
+		{
+			get { return (DataScope) GetValue(ScopeProperty); }
+			set { SetValue(ScopeProperty, value); }
+		}
 
-		public bool Abstract { get { return (bool)GetValue(AbstractProperty); } set { SetValue(AbstractProperty, value); } }
-		public static readonly DependencyProperty AbstractProperty = DependencyProperty.Register("Abstract", typeof(bool), typeof(DataType), new PropertyMetadata(false, DataTypePropertyChangedCallback));
+		public static readonly DependencyProperty ScopeProperty = DependencyProperty.Register("Scope", typeof (DataScope),
+			typeof (DataType), new PropertyMetadata(DataScope.Public, DataTypePropertyChangedCallback));
 
-		public bool Sealed { get { return (bool)GetValue(SealedProperty); } set { SetValue(SealedProperty, value); } }
-		public static readonly DependencyProperty SealedProperty = DependencyProperty.Register("Sealed", typeof(bool), typeof(DataType), new PropertyMetadata(false, DataTypePropertyChangedCallback));
+		public bool Partial
+		{
+			get { return (bool) GetValue(PartialProperty); }
+			set { SetValue(PartialProperty, value); }
+		}
 
-		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, value); } }
-		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(DataType), new PropertyMetadata("", NameChangedCallback));
+		public static readonly DependencyProperty PartialProperty = DependencyProperty.Register("Partial", typeof (bool),
+			typeof (DataType), new PropertyMetadata(true, DataTypePropertyChangedCallback));
+
+		public bool Abstract
+		{
+			get { return (bool) GetValue(AbstractProperty); }
+			set { SetValue(AbstractProperty, value); }
+		}
+
+		public static readonly DependencyProperty AbstractProperty = DependencyProperty.Register("Abstract", typeof (bool),
+			typeof (DataType), new PropertyMetadata(false, DataTypePropertyChangedCallback));
+
+		public bool Sealed
+		{
+			get { return (bool) GetValue(SealedProperty); }
+			set { SetValue(SealedProperty, value); }
+		}
+
+		public static readonly DependencyProperty SealedProperty = DependencyProperty.Register("Sealed", typeof (bool),
+			typeof (DataType), new PropertyMetadata(false, DataTypePropertyChangedCallback));
+
+		public string Name
+		{
+			get { return (string) GetValue(NameProperty); }
+			set { SetValue(NameProperty, value); }
+		}
+
+		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof (string),
+			typeof (DataType), new PropertyMetadata("", NameChangedCallback));
 
 		private static void NameChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
 		{
@@ -122,39 +174,104 @@ namespace NETPath.Projects
 			t.Declaration = t.ToDeclarationString();
 		}
 
-		public Namespace Parent { get { return (Namespace)GetValue(ParentProperty); } set { SetValue(ParentProperty, value); } }
-		public static readonly DependencyProperty ParentProperty = DependencyProperty.Register("Parent", typeof(Namespace), typeof(DataType));
+		public Namespace Parent
+		{
+			get { return (Namespace) GetValue(ParentProperty); }
+			set { SetValue(ParentProperty, value); }
+		}
 
-		public ObservableCollection<DataType> InheritedTypes { get { return (ObservableCollection<DataType>)GetValue(InheritedTypesProperty); } set { SetValue(InheritedTypesProperty, value); } }
-		public static readonly DependencyProperty InheritedTypesProperty = DependencyProperty.Register("InheritedTypes", typeof(ObservableCollection<DataType>), typeof(DataType));
+		public static readonly DependencyProperty ParentProperty = DependencyProperty.Register("Parent", typeof (Namespace),
+			typeof (DataType));
 
-		public ObservableCollection<DataType> KnownTypes { get { return (ObservableCollection<DataType>)GetValue(KnownTypesProperty); } set { SetValue(KnownTypesProperty, value); } }
-		public static readonly DependencyProperty KnownTypesProperty = DependencyProperty.Register("KnownTypes", typeof(ObservableCollection<DataType>), typeof(DataType));
+		public ObservableCollection<DataType> InheritedTypes
+		{
+			get { return (ObservableCollection<DataType>) GetValue(InheritedTypesProperty); }
+			set { SetValue(InheritedTypesProperty, value); }
+		}
 
-		public DataType CollectionGenericType { get { return (DataType)GetValue(CollectionGenericTypeProperty); } set { SetValue(CollectionGenericTypeProperty, value); } }
-		public static readonly DependencyProperty CollectionGenericTypeProperty = DependencyProperty.Register("CollectionGenericType", typeof(DataType), typeof(DataType), new PropertyMetadata(null, DataTypePropertyChangedCallback));
+		public static readonly DependencyProperty InheritedTypesProperty = DependencyProperty.Register("InheritedTypes",
+			typeof (ObservableCollection<DataType>), typeof (DataType));
 
-		public DataType DictionaryKeyGenericType { get { return (DataType)GetValue(DictionaryKeyGenericTypeProperty); } set { SetValue(DictionaryKeyGenericTypeProperty, value); } }
-		public static readonly DependencyProperty DictionaryKeyGenericTypeProperty = DependencyProperty.Register("DictionaryKeyGenericType", typeof(DataType), typeof(DataType), new PropertyMetadata(null, DataTypePropertyChangedCallback));
+		public ObservableCollection<DataType> KnownTypes
+		{
+			get { return (ObservableCollection<DataType>) GetValue(KnownTypesProperty); }
+			set { SetValue(KnownTypesProperty, value); }
+		}
 
-		public DataType DictionaryValueGenericType { get { return (DataType)GetValue(DictionaryValueGenericTypeProperty); } set { SetValue(DictionaryValueGenericTypeProperty, value); } }
-		public static readonly DependencyProperty DictionaryValueGenericTypeProperty = DependencyProperty.Register("DictionaryValueGenericType", typeof(DataType), typeof(DataType), new PropertyMetadata(null, DataTypePropertyChangedCallback));
+		public static readonly DependencyProperty KnownTypesProperty = DependencyProperty.Register("KnownTypes",
+			typeof (ObservableCollection<DataType>), typeof (DataType));
 
-		public bool IsNullable { get { return (bool)GetValue(IsNullableProperty); } set { SetValue(IsNullableProperty, value); } }
-		public static readonly DependencyProperty IsNullableProperty = DependencyProperty.Register("IsNullable", typeof(bool), typeof(DataType), new PropertyMetadata(false));
+		public DataType CollectionGenericType
+		{
+			get { return (DataType) GetValue(CollectionGenericTypeProperty); }
+			set { SetValue(CollectionGenericTypeProperty, value); }
+		}
+
+		public static readonly DependencyProperty CollectionGenericTypeProperty =
+			DependencyProperty.Register("CollectionGenericType", typeof (DataType), typeof (DataType),
+				new PropertyMetadata(null, DataTypePropertyChangedCallback));
+
+		public DataType DictionaryKeyGenericType
+		{
+			get { return (DataType) GetValue(DictionaryKeyGenericTypeProperty); }
+			set { SetValue(DictionaryKeyGenericTypeProperty, value); }
+		}
+
+		public static readonly DependencyProperty DictionaryKeyGenericTypeProperty =
+			DependencyProperty.Register("DictionaryKeyGenericType", typeof (DataType), typeof (DataType),
+				new PropertyMetadata(null, DataTypePropertyChangedCallback));
+
+		public DataType DictionaryValueGenericType
+		{
+			get { return (DataType) GetValue(DictionaryValueGenericTypeProperty); }
+			set { SetValue(DictionaryValueGenericTypeProperty, value); }
+		}
+
+		public static readonly DependencyProperty DictionaryValueGenericTypeProperty =
+			DependencyProperty.Register("DictionaryValueGenericType", typeof (DataType), typeof (DataType),
+				new PropertyMetadata(null, DataTypePropertyChangedCallback));
+
+		public bool IsNullable
+		{
+			get { return (bool) GetValue(IsNullableProperty); }
+			set { SetValue(IsNullableProperty, value); }
+		}
+
+		public static readonly DependencyProperty IsNullableProperty = DependencyProperty.Register("IsNullable", typeof (bool),
+			typeof (DataType), new PropertyMetadata(false));
 
 		[IgnoreDataMember]
-		public string TypeName { get { return (string)GetValue(TypeNameProperty); } private set { SetValue(TypeNamePropertyKey, value); } }
-		private static readonly DependencyPropertyKey TypeNamePropertyKey = DependencyProperty.RegisterReadOnly("TypeName", typeof(string), typeof(DataType), new PropertyMetadata(""));
+		public string TypeName
+		{
+			get { return (string) GetValue(TypeNameProperty); }
+			private set { SetValue(TypeNamePropertyKey, value); }
+		}
+
+		private static readonly DependencyPropertyKey TypeNamePropertyKey = DependencyProperty.RegisterReadOnly("TypeName",
+			typeof (string), typeof (DataType), new PropertyMetadata(""));
+
 		public static readonly DependencyProperty TypeNameProperty = TypeNamePropertyKey.DependencyProperty;
 
 		[IgnoreDataMember]
-		public string Declaration { get { return (string)GetValue(DeclarationProperty); } private set { SetValue(DeclarationPropertyKey, value); } }
-		private static readonly DependencyPropertyKey DeclarationPropertyKey = DependencyProperty.RegisterReadOnly("Declaration", typeof(string), typeof(DataType), new PropertyMetadata(""));
+		public string Declaration
+		{
+			get { return (string) GetValue(DeclarationProperty); }
+			private set { SetValue(DeclarationPropertyKey, value); }
+		}
+
+		private static readonly DependencyPropertyKey DeclarationPropertyKey =
+			DependencyProperty.RegisterReadOnly("Declaration", typeof (string), typeof (DataType), new PropertyMetadata(""));
+
 		public static readonly DependencyProperty DeclarationProperty = DeclarationPropertyKey.DependencyProperty;
 
-		public DataTypeMode TypeMode { get { return (DataTypeMode)GetValue(TypeModeProperty); } set { SetValue(TypeModeProperty, value); } }
-		public static readonly DependencyProperty TypeModeProperty = DependencyProperty.Register("TypeMode", typeof(DataTypeMode), typeof(DataType), new PropertyMetadata(DataTypeMode.Class));
+		public DataTypeMode TypeMode
+		{
+			get { return (DataTypeMode) GetValue(TypeModeProperty); }
+			set { SetValue(TypeModeProperty, value); }
+		}
+
+		public static readonly DependencyProperty TypeModeProperty = DependencyProperty.Register("TypeMode",
+			typeof (DataTypeMode), typeof (DataType), new PropertyMetadata(DataTypeMode.Class));
 
 		public bool IsExternalType { get; set; }
 		public PrimitiveTypes Primitive { get; set; }
@@ -163,14 +280,41 @@ namespace NETPath.Projects
 
 		[IgnoreDataMember]
 		public bool IsDataObject { get; set; }
+
 		[IgnoreDataMember]
-		public bool IsCollectionType { get { return TypeMode == DataTypeMode.Array || TypeMode == DataTypeMode.Collection || TypeMode == DataTypeMode.Dictionary || TypeMode == DataTypeMode.Queue || TypeMode == DataTypeMode.Stack; } }
+		public bool IsCollectionType
+		{
+			get
+			{
+				return TypeMode == DataTypeMode.Array || TypeMode == DataTypeMode.Collection || TypeMode == DataTypeMode.Dictionary ||
+				       TypeMode == DataTypeMode.Queue || TypeMode == DataTypeMode.Stack;
+			}
+		}
+
 		[IgnoreDataMember]
-		public bool IsValueType { get { return TypeMode == DataTypeMode.Primitive || TypeMode == DataTypeMode.Enum || TypeMode == DataTypeMode.Struct; } }
+		public bool IsValueType
+		{
+			get
+			{
+				return TypeMode == DataTypeMode.Primitive || TypeMode == DataTypeMode.Enum || TypeMode == DataTypeMode.Struct;
+			}
+		}
+
 		[IgnoreDataMember]
-		public bool IsReferenceType { get { return ((TypeMode == DataTypeMode.Primitive && Primitive == PrimitiveTypes.Object) || TypeMode == DataTypeMode.Class || TypeMode == DataTypeMode.Interface); } }
+		public bool IsReferenceType
+		{
+			get
+			{
+				return ((TypeMode == DataTypeMode.Primitive && Primitive == PrimitiveTypes.Object) || TypeMode == DataTypeMode.Class ||
+				        TypeMode == DataTypeMode.Interface);
+			}
+		}
+
 		[IgnoreDataMember]
-		public bool IsVoid { get { return TypeMode == DataTypeMode.Primitive && Primitive == PrimitiveTypes.Void; } }
+		public bool IsVoid
+		{
+			get { return TypeMode == DataTypeMode.Primitive && Primitive == PrimitiveTypes.Void; }
+		}
 
 		private static void DataTypePropertyChangedCallback(DependencyObject o, DependencyPropertyChangedEventArgs e)
 		{
@@ -199,10 +343,18 @@ namespace NETPath.Projects
 
 		public DataType(DataTypeMode Mode)
 		{
-			if (Mode == DataTypeMode.Primitive) throw new ArgumentException("Cannot use DataTypeMode.Primitive without specifying a Primitive. Please use the Primitive Type constructor.");
-			if (Mode == DataTypeMode.Interface) throw new ArgumentException("Cannot use DataTypeMode.Interface without specifying an external Interface. Please use the External Type constructor.");
-			if (Mode == DataTypeMode.Collection) throw new ArgumentException("Cannot use DataTypeMode.Collection without specifying an external Collection. Please use the External Type constructor.");
-			if (Mode == DataTypeMode.Dictionary) throw new ArgumentException("Cannot use DataTypeMode.Dictionary without specifying an external Dictionary. Please use the External Type constructor.");
+			if (Mode == DataTypeMode.Primitive)
+				throw new ArgumentException(
+					"Cannot use DataTypeMode.Primitive without specifying a Primitive. Please use the Primitive Type constructor.");
+			if (Mode == DataTypeMode.Interface)
+				throw new ArgumentException(
+					"Cannot use DataTypeMode.Interface without specifying an external Interface. Please use the External Type constructor.");
+			if (Mode == DataTypeMode.Collection)
+				throw new ArgumentException(
+					"Cannot use DataTypeMode.Collection without specifying an external Collection. Please use the External Type constructor.");
+			if (Mode == DataTypeMode.Dictionary)
+				throw new ArgumentException(
+					"Cannot use DataTypeMode.Dictionary without specifying an external Dictionary. Please use the External Type constructor.");
 			ID = Guid.NewGuid();
 			Scope = DataScope.Public;
 			TypeMode = Mode;
@@ -218,7 +370,9 @@ namespace NETPath.Projects
 
 		public DataType(PrimitiveTypes Primitive, bool IsNullable = false)
 		{
-			if (Primitive == PrimitiveTypes.None) throw new ArgumentException("Cannot set PrimitiveTypes.None using the Primitive DataType constructor. Please use the Mode Type constructor.");
+			if (Primitive == PrimitiveTypes.None)
+				throw new ArgumentException(
+					"Cannot set PrimitiveTypes.None using the Primitive DataType constructor. Please use the Mode Type constructor.");
 			ID = Guid.NewGuid();
 			this.Primitive = Primitive;
 			this.IsNullable = IsNullable;
@@ -255,11 +409,17 @@ namespace NETPath.Projects
 			if (this.Primitive == PrimitiveTypes.ByteArray) Name = "byte[]";
 		}
 
-		public DataType(string External, DataTypeMode ExternalType, SupportedFrameworks SupportedFrameworks = SupportedFrameworks.None)
+		public DataType(string External, DataTypeMode ExternalType,
+			SupportedFrameworks SupportedFrameworks = SupportedFrameworks.None)
 		{
-			if (ExternalType == DataTypeMode.Primitive) throw new ArgumentException("Cannot use DataTypeMode.Primitive as an external type. Please use the Primitive Type constructor.");
-			if (ExternalType == DataTypeMode.Namespace) throw new ArgumentException("Cannot use DataTypeMode.Namespace as an external type. Please use the Mode Type constructor.");
-			if (ExternalType == DataTypeMode.Array) throw new ArgumentException("Cannot use DataTypeMode.Array as an external type.");
+			if (ExternalType == DataTypeMode.Primitive)
+				throw new ArgumentException(
+					"Cannot use DataTypeMode.Primitive as an external type. Please use the Primitive Type constructor.");
+			if (ExternalType == DataTypeMode.Namespace)
+				throw new ArgumentException(
+					"Cannot use DataTypeMode.Namespace as an external type. Please use the Mode Type constructor.");
+			if (ExternalType == DataTypeMode.Array)
+				throw new ArgumentException("Cannot use DataTypeMode.Array as an external type.");
 			ID = Guid.NewGuid();
 			Name = External;
 			Scope = DataScope.Public;
@@ -312,38 +472,47 @@ namespace NETPath.Projects
 
 			if (TypeMode == DataTypeMode.Primitive)
 			{
-				if (Primitive == PrimitiveTypes.Void) return string.Format("{0} void{1}", ToScopeString(), IsNullable ? "?" : "");
-				if (Primitive == PrimitiveTypes.Object) return string.Format("{0} object{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Void) return string.Format("{0} void", ToScopeString());
+				if (Primitive == PrimitiveTypes.Object) return string.Format("{0} object", ToScopeString());
 				if (Primitive == PrimitiveTypes.Byte) return string.Format("{0} byte{1}", ToScopeString(), IsNullable ? "?" : "");
 				if (Primitive == PrimitiveTypes.SByte) return string.Format("{0} sbyte{1}", ToScopeString(), IsNullable ? "?" : "");
 				if (Primitive == PrimitiveTypes.Short) return string.Format("{0} short{1}", ToScopeString(), IsNullable ? "?" : "");
 				if (Primitive == PrimitiveTypes.Int) return string.Format("{0} int{1}", ToScopeString(), IsNullable ? "?" : "");
 				if (Primitive == PrimitiveTypes.Long) return string.Format("{0} long{1}", ToScopeString(), IsNullable ? "?" : "");
-				if (Primitive == PrimitiveTypes.UShort) return string.Format("{0} ushort{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.UShort)
+					return string.Format("{0} ushort{1}", ToScopeString(), IsNullable ? "?" : "");
 				if (Primitive == PrimitiveTypes.UInt) return string.Format("{0} uint{1}", ToScopeString(), IsNullable ? "?" : "");
 				if (Primitive == PrimitiveTypes.ULong) return string.Format("{0} ulong{1}", ToScopeString(), IsNullable ? "?" : "");
 				if (Primitive == PrimitiveTypes.Float) return string.Format("{0} float{1}", ToScopeString(), IsNullable ? "?" : "");
-				if (Primitive == PrimitiveTypes.Double) return string.Format("{0} double{1}", ToScopeString(), IsNullable ? "?" : "");
-				if (Primitive == PrimitiveTypes.Decimal) return string.Format("{0} decimal{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Double)
+					return string.Format("{0} double{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Decimal)
+					return string.Format("{0} decimal{1}", ToScopeString(), IsNullable ? "?" : "");
 				if (Primitive == PrimitiveTypes.Bool) return string.Format("{0} bool{1}", ToScopeString(), IsNullable ? "?" : "");
 				if (Primitive == PrimitiveTypes.Char) return string.Format("{0} char{1}", ToScopeString(), IsNullable ? "?" : "");
-				if (Primitive == PrimitiveTypes.String) return string.Format("{0} string{1}", ToScopeString(), IsNullable ? "?" : "");
-				if (Primitive == PrimitiveTypes.DateTime) return string.Format("{0} DateTime{1}", ToScopeString(), IsNullable ? "?" : "");
-				if (Primitive == PrimitiveTypes.DateTimeOffset) return string.Format("{0} DateTimeOffset{1}", ToScopeString(), IsNullable ? "?" : "");
-				if (Primitive == PrimitiveTypes.TimeSpan) return string.Format("{0} TimeSpan{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.String) return string.Format("{0} string", ToScopeString());
+				if (Primitive == PrimitiveTypes.DateTime)
+					return string.Format("{0} DateTime{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.DateTimeOffset)
+					return string.Format("{0} DateTimeOffset{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.TimeSpan)
+					return string.Format("{0} TimeSpan{1}", ToScopeString(), IsNullable ? "?" : "");
 				if (Primitive == PrimitiveTypes.GUID) return string.Format("{0} Guid{1}", ToScopeString(), IsNullable ? "?" : "");
-				if (Primitive == PrimitiveTypes.URI) return string.Format("{0} Uri{1}", ToScopeString(), IsNullable ? "?" : "");
-				if (Primitive == PrimitiveTypes.Version) return string.Format("{0} Version{1}", ToScopeString(), IsNullable ? "?" : "");
-				if (Primitive == PrimitiveTypes.ByteArray) return string.Format("{0} byte[]{1}", ToScopeString(), IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.URI) return string.Format("{0} Uri", ToScopeString());
+				if (Primitive == PrimitiveTypes.Version) return string.Format("{0} Version", ToScopeString());
+				if (Primitive == PrimitiveTypes.ByteArray) return string.Format("{0} byte[]", ToScopeString());
 			}
-			else if (IsExternalType == false && (TypeMode == DataTypeMode.Class || TypeMode == DataTypeMode.Struct || TypeMode == DataTypeMode.Enum))
-				return string.Format("{0} {2}{3}{1}{4} {5}{6}", ToScopeString(), Partial ? "partial " : "", Abstract ? "abstract " : "", Sealed ? "sealed " : "", ToStorageClassString(), Name, ToInheritedString());
+			else if (IsExternalType == false &&
+			         (TypeMode == DataTypeMode.Class || TypeMode == DataTypeMode.Struct || TypeMode == DataTypeMode.Enum))
+				return string.Format("{0} {2}{3}{1}{4} {5}{6}", ToScopeString(), Partial ? "partial " : "",
+					Abstract ? "abstract " : "", Sealed ? "sealed " : "", ToStorageClassString(), Name, ToInheritedString());
 			else if (TypeMode == DataTypeMode.Array)
-				return string.Format("{0} {1}[]{3} {2}", ToScopeString(), CollectionGenericType, Name, IsNullable ? "?" : "");
+				return string.Format("{0} {1}[] {2}", ToScopeString(), CollectionGenericType, Name);
 			else if (TypeMode == DataTypeMode.Collection || TypeMode == DataTypeMode.Stack || TypeMode == DataTypeMode.Queue)
-				return string.Format("{0} {1}<{2}>{3}", ToScopeString(), Name, CollectionGenericType, IsNullable ? "?" : "");
+				return string.Format("{0} {1}<{2}>", ToScopeString(), Name, CollectionGenericType);
 			else if (TypeMode == DataTypeMode.Dictionary)
-				return string.Format("{0} {1}<{2}, {3}>{4}", ToScopeString(), Name, DictionaryKeyGenericType, DictionaryValueGenericType, IsNullable ? "?" : "");
+				return string.Format("{0} {1}<{2}, {3}>", ToScopeString(), Name, DictionaryKeyGenericType,
+					DictionaryValueGenericType);
 			else if (IsExternalType)
 				return Name;
 			return Name;
@@ -356,7 +525,7 @@ namespace NETPath.Projects
 			if (TypeMode == DataTypeMode.Primitive)
 			{
 				if (Primitive == PrimitiveTypes.Void) return "void";
-				if (Primitive == PrimitiveTypes.Object) return string.Format("object{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.Object) return "object";
 				if (Primitive == PrimitiveTypes.Byte) return string.Format("byte{0}", IsNullable ? "?" : "");
 				if (Primitive == PrimitiveTypes.SByte) return string.Format("sbyte{0}", IsNullable ? "?" : "");
 				if (Primitive == PrimitiveTypes.Short) return string.Format("short{0}", IsNullable ? "?" : "");
@@ -370,25 +539,26 @@ namespace NETPath.Projects
 				if (Primitive == PrimitiveTypes.Decimal) return string.Format("decimal{0}", IsNullable ? "?" : "");
 				if (Primitive == PrimitiveTypes.Bool) return string.Format("bool{0}", IsNullable ? "?" : "");
 				if (Primitive == PrimitiveTypes.Char) return string.Format("char{0}", IsNullable ? "?" : "");
-				if (Primitive == PrimitiveTypes.String) return string.Format("string{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.String) return "string";
 				if (Primitive == PrimitiveTypes.DateTime) return string.Format("DateTime{0}", IsNullable ? "?" : "");
 				if (Primitive == PrimitiveTypes.DateTimeOffset) return string.Format("DateTimeOffset{0}", IsNullable ? "?" : "");
 				if (Primitive == PrimitiveTypes.TimeSpan) return string.Format("TimeSpan{0}", IsNullable ? "?" : "");
 				if (Primitive == PrimitiveTypes.GUID) return string.Format("Guid{0}", IsNullable ? "?" : "");
-				if (Primitive == PrimitiveTypes.URI) return string.Format("Uri{0}", IsNullable ? "?" : "");
-				if (Primitive == PrimitiveTypes.Version) return string.Format("Version{0}", IsNullable ? "?" : "");
-				if (Primitive == PrimitiveTypes.ByteArray) return string.Format("byte[]{0}", IsNullable ? "?" : "");
+				if (Primitive == PrimitiveTypes.URI) return "Uri";
+				if (Primitive == PrimitiveTypes.Version) return "Version";
+				if (Primitive == PrimitiveTypes.ByteArray) return "byte[]";
 			}
 			else if (TypeMode == DataTypeMode.Class || TypeMode == DataTypeMode.Namespace)
 				return Parent != null ? string.Format("{0}.{1}", Parent.FullName, Name) : Name;
 			else if (TypeMode == DataTypeMode.Struct || TypeMode == DataTypeMode.Enum)
 				return Parent != null ? string.Format("{0}.{1}{2}", Parent.FullName, Name, IsNullable ? "?" : "") : Name;
 			else if (TypeMode == DataTypeMode.Array)
-				return string.Format("{0}[]{1}", CollectionGenericType, IsNullable ? "?" : "");
+				return string.Format("{0}[]", CollectionGenericType);
 			else if (TypeMode == DataTypeMode.Collection || TypeMode == DataTypeMode.Stack || TypeMode == DataTypeMode.Queue)
 				return string.Format("{0}<{1}>", Name, CollectionGenericType?.ToString() ?? "");
 			else if (TypeMode == DataTypeMode.Dictionary)
-				return string.Format("{0}<{1}, {2}>", Name, DictionaryKeyGenericType?.ToString() ?? "", DictionaryValueGenericType?.ToString() ?? "");
+				return string.Format("{0}<{1}, {2}>", Name, DictionaryKeyGenericType?.ToString() ?? "",
+					DictionaryValueGenericType?.ToString() ?? "");
 			return Name;
 		}
 
@@ -426,8 +596,14 @@ namespace NETPath.Projects
 			if (string.IsNullOrEmpty(Name)) return null;
 
 			if (TypeMode == DataTypeMode.Class || TypeMode == DataTypeMode.Struct || TypeMode == DataTypeMode.Enum)
-				return new DataType(TypeMode) { ID = ID, IsTypeReference = true, Name = ToString() };
+				return new DataType(TypeMode) {ID = ID, IsTypeReference = true, Name = ToString()};
 			return null;
+		}
+
+		public DataType MakeNullable()
+		{
+			IsNullable = true;
+			return this;
 		}
 	}
 }
