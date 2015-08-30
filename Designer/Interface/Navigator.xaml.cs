@@ -37,11 +37,34 @@ namespace NETPath.Interface
 		public static readonly RoutedCommand ChangeActivePageCommand = new RoutedCommand();
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")]
 		public static readonly RoutedCommand DeleteCommand = new RoutedCommand();
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211")]
+		public static readonly RoutedCommand CollapseCommand = new RoutedCommand();
 
 		static Navigator()
 		{
 			CommandManager.RegisterClassCommandBinding(typeof(Navigator), new CommandBinding(ChangeActivePageCommand, OnChangeActivePageCommandExecuted));
+			CommandManager.RegisterClassCommandBinding(typeof(Navigator), new CommandBinding(CollapseCommand, OnCollapseCommand));
 			CommandManager.RegisterClassCommandBinding(typeof(Navigator), new CommandBinding(DeleteCommand, OnDeleteCommand));
+		}
+
+		private static void OnCollapseCommand(object sender, ExecutedRoutedEventArgs e)
+		{
+			var s = sender as Navigator;
+			if (s == null) return;
+
+			Type dt = e.Parameter.GetType();
+			if (dt == typeof(WcfNamespace))
+			{
+				var t = e.Parameter as WcfNamespace;
+				if (t == null) return;
+				t.Collapsed = !t.Collapsed;
+			}
+			if (dt == typeof(WebApiNamespace))
+			{
+				var t = e.Parameter as WebApiNamespace;
+				if (t == null) return;
+				t.Collapsed = !t.Collapsed;
+			}
 		}
 
 		private static void OnDeleteCommand(object sender, ExecutedRoutedEventArgs e)
@@ -816,6 +839,22 @@ namespace NETPath.Interface
 			this.Title = Title;
 			this.Description = Description;
 			this.DataType = DataType;
+		}
+	}
+
+	[ValueConversion(typeof(CompileMessageSeverity), typeof(string))]
+	public class NamespaceCollapsedStateConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if (value == null) return "";
+			var lt = (bool)value;
+			return lt ? "pack://application:,,,/NETPath;component/Icons/X16/ListExpand.png" : "pack://application:,,,/NETPath;component/Icons/X16/ListCollapse.png";
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

@@ -11,6 +11,7 @@
 
 	<pc:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
 	<pc:NotBoolVisibilityConverter x:Key="NotBoolVisibilityConverter" />
+	<local:NamespaceCollapsedStateConverter x:Key="NamespaceCollapsedStateConverter" />
 
 	<SolidColorBrush x:Key="MouseOverContainerColor" Color="#33FFFFFF" />
 	<SolidColorBrush x:Key="PressedContainerColor" Color="#33000000" />
@@ -542,9 +543,9 @@
 			<TextBlock Text="WCF Binding Type: WS2007HttpBinding" Grid.Row="1" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="20,0,0,0" />
 		</StackPanel>
 	</DataTemplate>
-	<local:ProjectListBindingTemplateSelector x:Key="ProjectListBindingTemplateSelector" BasicHTTPTemplate="{StaticResource WcfBindingBasicHTTPItemTemplate}" BasicHTTPSTemplate="{StaticResource WcfBindingBasicHTTPSItemTemplate}" NetHTTPTemplate="{StaticResource WcfBindingNetHTTPItemTemplate}" 
-	NetHTTPSTemplate="{StaticResource WcfBindingNetHTTPSItemTemplate}" MSMQTemplate="{StaticResource WcfBindingMSMQItemTemplate}" MSMQIntegrationTemplate="{StaticResource WcfBindingMSMQIntegrationItemTemplate}" NamedPipeTemplate="{StaticResource WcfBindingNamedPipeItemTemplate}" 
-	PeerTCPTemplate="{StaticResource WcfBindingPeerTCPItemTemplate}" TCPTemplate="{StaticResource WcfBindingTCPItemTemplate}" UDPTemplate="{StaticResource WcfBindingUDPItemTemplate}" WebHTTPTemplate="{StaticResource WcfBindingWebHTTPItemTemplate}" WSDualHTTPTemplate="{StaticResource WcfBindingWSDualHTTPItemTemplate}" 
+	<local:ProjectListBindingTemplateSelector x:Key="ProjectListBindingTemplateSelector" BasicHTTPTemplate="{StaticResource WcfBindingBasicHTTPItemTemplate}" BasicHTTPSTemplate="{StaticResource WcfBindingBasicHTTPSItemTemplate}" NetHTTPTemplate="{StaticResource WcfBindingNetHTTPItemTemplate}"
+	NetHTTPSTemplate="{StaticResource WcfBindingNetHTTPSItemTemplate}" MSMQTemplate="{StaticResource WcfBindingMSMQItemTemplate}" MSMQIntegrationTemplate="{StaticResource WcfBindingMSMQIntegrationItemTemplate}" NamedPipeTemplate="{StaticResource WcfBindingNamedPipeItemTemplate}"
+	PeerTCPTemplate="{StaticResource WcfBindingPeerTCPItemTemplate}" TCPTemplate="{StaticResource WcfBindingTCPItemTemplate}" UDPTemplate="{StaticResource WcfBindingUDPItemTemplate}" WebHTTPTemplate="{StaticResource WcfBindingWebHTTPItemTemplate}" WSDualHTTPTemplate="{StaticResource WcfBindingWSDualHTTPItemTemplate}"
 	WSFederationHTTPTemplate="{StaticResource WcfBindingWSFederationHTTPItemTemplate}" WSHTTPTemplate="{StaticResource WcfBindingWSHTTPItemTemplate}" WS2007FederationHTTPTemplate="{StaticResource WcfBindingWS2007FederationHTTPItemTemplate}" WS2007HTTPTemplate="{StaticResource WcfBindingWS2007HTTPItemTemplate}" />
 
 
@@ -678,6 +679,7 @@
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
@@ -687,11 +689,14 @@
 						<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/Namespace.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 						<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="11pt" />
 					</StackPanel>
-					<Button x:Name="Delete" Grid.Column="1" Grid.Row="0" Visibility="Collapsed" Margin="0" Padding="0" Width="30" Style="{StaticResource ListItemButton}" Command="{x:Static local:Navigator.DeleteCommand}" CommandParameter="{Binding}" >
+					<Button x:Name="Collapse" Grid.Column="1" Grid.Row="0" Visibility="Collapsed" Margin="0" Padding="0" Width="30" Style="{StaticResource ListItemButton}" Command="{x:Static local:Navigator.CollapseCommand}" CommandParameter="{Binding}" >
+						<Image Source="{Binding Path=Collapsed, Converter={StaticResource NamespaceCollapsedStateConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+					</Button>
+					<Button x:Name="Delete" Grid.Column="2" Grid.Row="0" Visibility="Collapsed" Margin="0" Padding="0" Width="30" Style="{StaticResource ListItemButton}" Command="{x:Static local:Navigator.DeleteCommand}" CommandParameter="{Binding}" >
 						<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
 					</Button>
 				</Grid>
-				<StackPanel Orientation="Vertical" Margin="5,5,0,5">
+				<StackPanel Orientation="Vertical" Margin="5,5,0,5" Visibility="{Binding Path=Collapsed, Converter={StaticResource NotBoolVisibilityConverter}}">
 					<local:ProjectList x:Name="SubItems1" ItemsSource="{Binding Path=Children}" ItemContainerStyle="{StaticResource NamespaceContainerTemplate}" ItemTemplateSelector="{DynamicResource ProjectListItemTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
 					<local:ProjectList x:Name="SubItems2" ItemsSource="{Binding Path=Services}" ItemContainerStyle="{StaticResource ServiceContainerTemplate}" ItemTemplateSelector="{DynamicResource ProjectListItemTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
 					<local:ProjectList x:Name="SubItems3" ItemsSource="{Binding Path=Data}" ItemContainerStyle="{StaticResource DataContainerTemplate}" ItemTemplateSelector="{DynamicResource ProjectListItemTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
@@ -702,10 +707,8 @@
 			</StackPanel>
 		</Border>
 		<DataTemplate.Triggers>
-			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}},Path=IsChecked}" Value="True" >
-				<Setter TargetName="Icon" Property="Source" Value="pack://application:,,,/NETPath;component/Icons/X16/NamespaceOpen.png" />
-			</DataTrigger>
 			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}},Path=IsMouseOver}" Value="True" >
+				<Setter TargetName="Collapse" Property="Visibility" Value="Visible" />
 				<Setter TargetName="Delete" Property="Visibility" Value="Visible" />
 			</DataTrigger>
 		</DataTemplate.Triggers>
@@ -722,6 +725,7 @@
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
@@ -731,11 +735,14 @@
 						<Image x:Name="Icon" Source="pack://application:,,,/NETPath;component/Icons/X16/Namespace.png" Width="16" Height="16" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,4,0" />
 						<TextBlock Text="{Binding Path=Name}" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="11pt" />
 					</StackPanel>
-					<Button x:Name="Delete" Grid.Column="1" Grid.Row="0" Visibility="Collapsed" Margin="0" Padding="0" Width="30" Style="{StaticResource ListItemButton}" Command="{x:Static local:Navigator.DeleteCommand}" CommandParameter="{Binding}" >
+					<Button x:Name="Collapse" Grid.Column="1" Grid.Row="0" Visibility="Collapsed" Margin="0" Padding="0" Width="30" Style="{StaticResource ListItemButton}" Command="{x:Static local:Navigator.CollapseCommand}" CommandParameter="{Binding}" >
+						<Image Source="{Binding Path=Collapsed, Converter={StaticResource NamespaceCollapsedStateConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
+					</Button>
+					<Button x:Name="Delete" Grid.Column="2" Grid.Row="0" Visibility="Collapsed" Margin="0" Padding="0" Width="30" Style="{StaticResource ListItemButton}" Command="{x:Static local:Navigator.DeleteCommand}" CommandParameter="{Binding}" >
 						<Image Source="pack://application:,,,/NETPath;component/Icons/X16/Delete.png" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Stretch="Uniform"/>
 					</Button>
 				</Grid>
-				<StackPanel Orientation="Vertical" Margin="5,5,0,5">
+				<StackPanel Orientation="Vertical" Margin="5,5,0,5" Visibility="{Binding Path=Collapsed, Converter={StaticResource NotBoolVisibilityConverter}}">
 					<local:ProjectList x:Name="SubItems1" ItemsSource="{Binding Path=Children}" ItemContainerStyle="{StaticResource NamespaceContainerTemplate}" ItemTemplateSelector="{DynamicResource ProjectListItemTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
 					<local:ProjectList x:Name="SubItems2" ItemsSource="{Binding Path=Services}" ItemContainerStyle="{StaticResource ServiceContainerTemplate}" ItemTemplateSelector="{DynamicResource ProjectListItemTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
 					<local:ProjectList x:Name="SubItems3" ItemsSource="{Binding Path=Data}" ItemContainerStyle="{StaticResource DataContainerTemplate}" ItemTemplateSelector="{DynamicResource ProjectListItemTemplateSelector}" ItemsPanel="{StaticResource ProjectListPanelTemplate}" HorizontalAlignment="Stretch" />
@@ -744,10 +751,8 @@
 			</StackPanel>
 		</Border>
 		<DataTemplate.Triggers>
-			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}},Path=IsChecked}" Value="True" >
-				<Setter TargetName="Icon" Property="Source" Value="pack://application:,,,/NETPath;component/Icons/X16/NamespaceOpen.png" />
-			</DataTrigger>
 			<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}},Path=IsMouseOver}" Value="True" >
+				<Setter TargetName="Collapse" Property="Visibility" Value="Visible" />
 				<Setter TargetName="Delete" Property="Visibility" Value="Visible" />
 			</DataTrigger>
 		</DataTemplate.Triggers>

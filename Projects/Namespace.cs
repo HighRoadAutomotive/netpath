@@ -17,6 +17,9 @@ namespace NETPath.Projects
 		public string URI { get { return (string)GetValue(URIProperty); } set { SetValue(URIProperty, value); } }
 		public static readonly DependencyProperty URIProperty = DependencyProperty.Register("URI", typeof(string), typeof(Namespace));
 
+		public bool Collapsed { get { return (bool)GetValue(CollapsedProperty); } set { SetValue(CollapsedProperty, value); } }
+		public static readonly DependencyProperty CollapsedProperty = DependencyProperty.Register("Collapsed", typeof(bool), typeof(Namespace), new UIPropertyMetadata(false));
+
 		public Project Owner { get { return (Project)GetValue(OwnerProperty); } set { SetValue(OwnerProperty, value); } }
 		public static readonly DependencyProperty OwnerProperty = DependencyProperty.Register("Owner", typeof(Project), typeof(Namespace));
 
@@ -32,7 +35,7 @@ namespace NETPath.Projects
 
 		protected abstract string GetNamespaceString();
 		protected abstract string GetFullURI(Namespace ns);
-        public abstract void UpdateURI();
+		public abstract void UpdateURI();
 		public abstract void UpdateFullNamespace();
 
 		public abstract OpenableDocument GetLastSelectedItem();
