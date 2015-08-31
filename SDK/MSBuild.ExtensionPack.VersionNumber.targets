@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <!-- Properties for controlling the Assembly Version -->
+    <PropertyGroup>
+        <AssemblyMajorVersion>1</AssemblyMajorVersion>
+        <AssemblyMinorVersion>1</AssemblyMinorVersion>
+        <AssemblyBuildNumber>0</AssemblyBuildNumber>
+        <AssemblyRevision>0</AssemblyRevision>
+        <AssemblyBuildNumberType>NoIncrement</AssemblyBuildNumberType>
+        <AssemblyBuildNumberFormat></AssemblyBuildNumberFormat>
+        <AssemblyRevisionType>NoIncrement</AssemblyRevisionType>
+        <AssemblyRevisionFormat></AssemblyRevisionFormat>
+    </PropertyGroup>
+
+    <!-- Properties for controlling the Assembly File Version -->
+    <PropertyGroup>
+        <AssemblyFileMajorVersion>1</AssemblyFileMajorVersion>
+        <AssemblyFileMinorVersion>1</AssemblyFileMinorVersion>
+        <AssemblyFileBuildNumber></AssemblyFileBuildNumber>
+        <AssemblyFileRevision>0</AssemblyFileRevision>
+        <AssemblyFileBuildNumberType>NoIncrement</AssemblyFileBuildNumberType>
+        <AssemblyFileBuildNumberFormat>0</AssemblyFileBuildNumberFormat>
+        <AssemblyFileRevisionType>YearWeekDay</AssemblyFileRevisionType>
+        <AssemblyFileRevisionFormat></AssemblyFileRevisionFormat>
+    </PropertyGroup>
+
+    <!-- Properties for controlling COM visibility -->
+    <PropertyGroup>
+        <AssemblyComVisible></AssemblyComVisible>
+        <AssemblyGuid></AssemblyGuid>
+    </PropertyGroup>
+
+    <!-- Propeties for controlling extended assembly attributes -->
+    <PropertyGroup>
+        <AssemblyCompany>Prospective Software Inc.</AssemblyCompany>
+        <AssemblyConfiguration></AssemblyConfiguration>
+        <AssemblyCopyright>Copyright © 2012-2013 Prospective Software Inc.</AssemblyCopyright>
+        <AssemblyCulture></AssemblyCulture>
+        <AssemblyDescription></AssemblyDescription>
+        <AssemblyProduct>NETPath 2</AssemblyProduct>
+        <AssemblyTitle></AssemblyTitle>
+    </PropertyGroup>
+
+    <!-- Properties for controlling key signing through assemblyinfo files -->
+    <PropertyGroup>
+        <AssemblyIncludeSigningInformation>false</AssemblyIncludeSigningInformation>
+        <AssemblyDelaySign>false</AssemblyDelaySign>
+        <AssemblyKeyFile></AssemblyKeyFile>
+        <AssemblyKeyName></AssemblyKeyName>
+    </PropertyGroup>
+
+    <!-- The items that get processed by the task -->
+    <ItemGroup>
+        <AssemblyInfoFiles Include="**\AssemblyInfo.*"/>
+    </ItemGroup>
+
+    <!-- Import the task -->
+    <UsingTask AssemblyFile="$(MSBuildExtensionsPath)\ExtensionPack\4.0\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Framework.AssemblyInfo"/>
+
+    <!-- Re-define CoreCompileDependsOn to ensure the assemblyinfo files are updated before compilation. -->
+    <PropertyGroup>
+        <CoreCompileDependsOn>
+            $(CoreCompileDependsOn);
+            UpdateAssemblyInfoFiles
+        </CoreCompileDependsOn>
+    </PropertyGroup>
+
+    <!-- The target that actually does all the work. The inputs are the same as the CoreCompileDependsOn target
+  (with the addition of @(AssemblyInfoFiles) to ensure that we only ever update the AssemblyInfo files if a 
+  compile is actually going to take place. The outputs are the AssemblyInfoFiles that were passed in for update. -->
+    <Target Name="UpdateAssemblyInfoFiles"
+            Inputs="$(MSBuildAllProjects);
+                @(Compile);
+                @(ManifestResourceWithNoCulture);
+                $(ApplicationIcon);
+                $(AssemblyOriginatorKeyFile);
+                @(ManifestNonResxWithNoCultureOnDisk);
+                @(ReferencePath);
+                @(CompiledLicenseFile);
+                @(EmbeddedDocumentation);                
+                @(CustomAdditionalCompileInputs);
+                @(AssemblyInfoFiles)"
+            Outputs="@(AssemblyInfoFiles);@(IntermediateAssembly)">
+        <AssemblyInfo AssemblyInfoFiles="@(AssemblyInfoFiles)"
+                      AssemblyMajorVersion="$(AssemblyMajorVersion)"
+                      AssemblyMinorVersion="$(AssemblyMinorVersion)"
+                      AssemblyBuildNumber="$(AssemblyBuildNumber)"
+                      AssemblyRevision="$(AssemblyRevision)"
+                      AssemblyBuildNumberType="$(AssemblyBuildNumberType)"
+                      AssemblyBuildNumberFormat="$(AssemblyBuildNumberFormat)"
+                      AssemblyRevisionType="$(AssemblyRevisionType)"
+                      AssemblyRevisionFormat="$(AssemblyRevisionFormat)"
+                      AssemblyFileMajorVersion="$(AssemblyFileMajorVersion)"
+                      AssemblyFileMinorVersion="$(AssemblyFileMinorVersion)"
+                      AssemblyFileBuildNumber="$(AssemblyFileBuildNumber)"
+                      AssemblyFileRevision="$(AssemblyFileRevision)"
+                      AssemblyFileBuildNumberType="$(AssemblyFileBuildNumberType)"
+                      AssemblyFileBuildNumberFormat="$(AssemblyFileBuildNumberFormat)"
+                      AssemblyFileRevisionType="$(AssemblyFileRevisionType)"
+                      AssemblyFileRevisionFormat="$(AssemblyFileRevisionFormat)"
+                      ComVisible="$(AssemblyComVisible)"
+                      Guid="$(AssemblyGuid)"
+                      AssemblyCompany="$(AssemblyCompany)"
+                      AssemblyConfiguration="$(AssemblyConfiguration)"
+                      AssemblyCopyright="$(AssemblyCopyright)"
+                      AssemblyCulture="$(AssemblyCulture)"
+                      AssemblyDescription="$(AssemblyDescription)"
+                      AssemblyProduct="$(AssemblyProduct)"
+                      AssemblyTitle="$(AssemblyTitle)"
+                      AssemblyIncludeSigningInformation="$(AssemblyIncludeSigningInformation)"
+                      AssemblyDelaySign="$(AssemblyDelaySign)"
+                      AssemblyKeyFile="$(AssemblyKeyFile)"
+                      AssemblyKeyName="$(AssemblyKeyName)">
+            <Output TaskParameter="MaxAssemblyVersion" PropertyName="MaxAssemblyVersion"/>
+            <Output TaskParameter="MaxAssemblyFileVersion" PropertyName="MaxAssemblyFileVersion"/>
+        </AssemblyInfo>
+    </Target>
+</Project>
