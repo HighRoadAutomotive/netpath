@@ -49,19 +49,14 @@ namespace NETPath.Compiler
 			GenerationType pt = GenerationType.Wcf;
 			if (OpenProject.GetType() == typeof (WebApiProject)) pt = GenerationType.WebApi;
 
-			IGenerator NET = Loader.LoadModule(GenerationModule.NET, GenerationLanguage.CSharp, pt);
-			NET.Initialize(OpenProject, Path.Combine(Environment.CurrentDirectory, ProjectPath), OutputHandler, AddMessage);
-			IGenerator WinRT = Loader.LoadModule(GenerationModule.WindowsRuntime, GenerationLanguage.CSharp, pt);
-			WinRT.Initialize(OpenProject, Path.Combine(Environment.CurrentDirectory, ProjectPath), OutputHandler, AddMessage);
+			IGenerator CSharp = Loader.LoadModule(GenerationLanguage.CSharp, pt);
+			CSharp.Initialize(OpenProject, Path.Combine(Environment.CurrentDirectory, ProjectPath), OutputHandler, AddMessage);
 
 			//Run project code generation
-			if (NET.IsInitialized && WinRT.IsInitialized)
+			if (CSharp.IsInitialized)
 			{
-				NET.Build();
-				if (OpenProject.ClientGenerationTargets.Any(a => a.Framework == ProjectGenerationFramework.WINRT)) WinRT.Build(true);
+				CSharp.Build();
 			}
-			else if (WinRT.IsInitialized)
-				WinRT.Build();
 			else
 			{
 				Console.WriteLine("FATAL ERROR: Unable to initialize any code generators.");
@@ -69,7 +64,7 @@ namespace NETPath.Compiler
 			}
 
 			//If the code generation produced any errors we need to exit with an error code.
-			if (NET.HighestSeverity == CompileMessageSeverity.ERROR || WinRT.HighestSeverity == CompileMessageSeverity.ERROR)
+			if (CSharp.HighestSeverity == CompileMessageSeverity.ERROR)
 				Environment.Exit(3);
 
 			//Everything completed successfully

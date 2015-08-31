@@ -15,25 +15,26 @@ namespace NETPath.Generators.Interfaces
 		VisualBasic,
 		CPPCX,
 		FSharp,
+		DLang,
 	}
 
 	public enum GenerationModule
 	{
 		NET,
-		Silverlight,
 		WindowsRuntime,
 	}
 
 	public enum GenerationType {
 		Wcf,
-		WebApi
+		WebApi,
+		VibeD
 	}
 
 	public static class Loader
 	{
 		public static readonly ConcurrentDictionary<string, IGenerator> LoadedModules = new ConcurrentDictionary<string, IGenerator>();
 
-		public static IGenerator LoadModule(GenerationModule Module, GenerationLanguage Language, GenerationType ProjectType)
+		public static IGenerator LoadModule(GenerationLanguage Language, GenerationType ProjectType)
 		{
 			//Build the module path and and determine if it is available on this system.
 			string asmfp = System.IO.Path.GetDirectoryName(new Uri(System.Reflection.Assembly.GetCallingAssembly().CodeBase).LocalPath);
@@ -52,9 +53,9 @@ namespace NETPath.Generators.Interfaces
 			return cm;
 		}
 
-		public static Task<IGenerator> LoadModuleAsync(GenerationModule Module, GenerationLanguage Language, GenerationType ProjectType)
+		public static Task<IGenerator> LoadModuleAsync(GenerationLanguage Language, GenerationType ProjectType)
 		{
-			return Task.Run(() => LoadModule(Module, Language, ProjectType));
+			return Task.Run(() => LoadModule(Language, ProjectType));
 		}
 	}
 

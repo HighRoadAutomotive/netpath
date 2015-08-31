@@ -32,7 +32,7 @@ namespace NETPath
 			OutputBlock = new Paragraph();
 			this.NavWindow.OutputBox.Document.Blocks.Add(OutputBlock);
 
-			NET = Globals.NETGenerator;
+			NET = Globals.CSharpGenerator;
 		}
 
 		public async void Build()
@@ -57,7 +57,7 @@ namespace NETPath
 
 		public async static void BuildProject(Projects.Project Project)
 		{
-			IGenerator NET = Globals.NETGenerator;
+			IGenerator NET = Globals.CSharpGenerator;
 
 			//Run project code generation
 			if (NET.IsInitialized)

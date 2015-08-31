@@ -39,7 +39,7 @@ namespace NETPath
 		}
 		public static WindowsVersion WindowsLevel { get; set; }
 
-		public static IGenerator NETGenerator { get; internal set; }
+		public static IGenerator CSharpGenerator { get; internal set; }
 		public static Compiler Compiler { get; internal set; }
 
 		public static string ProjectPath { get; set; }
@@ -126,8 +126,8 @@ namespace NETPath
 			//Initialize the compilers
 			var pt = GenerationType.Wcf;
 			if (Project.GetType() == typeof(WebApiProject)) pt = GenerationType.WebApi;
-			NETGenerator = Loader.LoadModule(GenerationModule.NET, GenerationLanguage.CSharp, pt);
-			NETGenerator.Initialize(Project, Path, GeneratorOutput, GeneratorMessage);
+			CSharpGenerator = Loader.LoadModule(GenerationLanguage.CSharp, pt);
+			CSharpGenerator.Initialize(Project, Path, GeneratorOutput, GeneratorMessage);
 
 			if (UserProfile.AutomaticBackupsEnabled)
 				BackupTimer = new System.Threading.Timer(BackupProject, null, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds, (long)UserProfile.AutomaticBackupsInterval.TotalMilliseconds);
