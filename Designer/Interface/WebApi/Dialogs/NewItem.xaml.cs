@@ -130,8 +130,8 @@ namespace NETPath.Interface.WebApi.Dialogs
 				{
 					var NIN = NewItemProjectNamespaceList.SelectedItem as WebApiNamespace ?? ActiveProject.Namespace;
 					var NI = new WebApiService(NewItemName.Text, NIN);
-					foreach (var t in ActiveProject.ServerGenerationTargets) t.TargetTypes.Add(NI);
-					foreach (var t in ActiveProject.ClientGenerationTargets) t.TargetTypes.Add(NI);
+					foreach (var t in ActiveProject.ServerGenerationTargets.Where(a => a.IsDefaultIncluded)) t.TargetTypes.Add(NI);
+					foreach (var t in ActiveProject.ClientGenerationTargets.Where(a => a.IsDefaultIncluded)) t.TargetTypes.Add(NI);
 					NIN.Services.Add(NI);
 					Globals.IsLoading = false;
 					OpenProjectItem(NI);
@@ -140,8 +140,8 @@ namespace NETPath.Interface.WebApi.Dialogs
 				{
 					var NIN = NewItemProjectNamespaceList.SelectedItem as WebApiNamespace ?? ActiveProject.Namespace;
 					var NI = new WebApiData(NewItemName.Text, NIN);
-					foreach (var t in ActiveProject.ServerGenerationTargets) t.TargetTypes.Add(NI);
-					foreach (var t in ActiveProject.ClientGenerationTargets) t.TargetTypes.Add(NI);
+					foreach (var t in ActiveProject.ServerGenerationTargets.Where(a => a.IsDefaultIncluded)) t.TargetTypes.Add(NI);
+					foreach (var t in ActiveProject.ClientGenerationTargets.Where(a => a.IsDefaultIncluded)) t.TargetTypes.Add(NI);
 					NIN.Data.Add(NI);
 					Globals.IsLoading = false;
 					OpenProjectItem(NI);
@@ -150,8 +150,8 @@ namespace NETPath.Interface.WebApi.Dialogs
 				{
 					var NIN = NewItemProjectNamespaceList.SelectedItem as WebApiNamespace ?? ActiveProject.Namespace;
 					var NI = new Projects.Enum(NewItemName.Text, NIN);
-					foreach (var t in ActiveProject.ServerGenerationTargets) t.TargetTypes.Add(NI);
-					foreach (var t in ActiveProject.ClientGenerationTargets) t.TargetTypes.Add(NI);
+					foreach (var t in ActiveProject.ServerGenerationTargets.Where(a => a.IsDefaultIncluded)) t.TargetTypes.Add(NI);
+					foreach (var t in ActiveProject.ClientGenerationTargets.Where(a => a.IsDefaultIncluded)) t.TargetTypes.Add(NI);
 					NIN.Enums.Add(NI);
 					Globals.IsLoading = false;
 					OpenProjectItem(NI);

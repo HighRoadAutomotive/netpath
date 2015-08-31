@@ -32,6 +32,9 @@ namespace NETPath.Projects
 		public bool IsServerPath { get { return (bool)GetValue(IsServerPathProperty); } set { SetValue(IsServerPathProperty, value); } }
 		public static readonly DependencyProperty IsServerPathProperty = DependencyProperty.Register("IsServerPath", typeof(bool), typeof(ProjectGenerationTarget), new PropertyMetadata(true));
 
+		public bool IsDefaultIncluded { get { return (bool)GetValue(IsDefaultIncludedProperty); } set { SetValue(IsDefaultIncludedProperty, value); } }
+		public static readonly DependencyProperty IsDefaultIncludedProperty = DependencyProperty.Register("IsDefaultIncluded", typeof(bool), typeof(ProjectGenerationTarget), new PropertyMetadata(true));
+
 		public ObservableCollection<DataType> TargetTypes { get { return (ObservableCollection<DataType>)GetValue(TargetTypesProperty); } set { SetValue(TargetTypesProperty, value); } }
 		public static readonly DependencyProperty TargetTypesProperty = DependencyProperty.Register("TargetTypes", typeof(ObservableCollection<DataType>), typeof(ProjectGenerationTarget));
 

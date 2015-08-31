@@ -172,8 +172,8 @@ namespace NETPath.Interface.Wcf.Dialogs
 				{
 					var NIN = NewItemProjectNamespaceList.SelectedItem as WcfNamespace ?? ActiveProject.Namespace;
 					var NI = new WcfService(NewItemName.Text, NIN);
-					foreach (var t in ActiveProject.ServerGenerationTargets) t.TargetTypes.Add(NI);
-					foreach (var t in ActiveProject.ClientGenerationTargets) t.TargetTypes.Add(NI);
+					foreach (var t in ActiveProject.ServerGenerationTargets.Where(a => a.IsDefaultIncluded)) t.TargetTypes.Add(NI);
+					foreach (var t in ActiveProject.ClientGenerationTargets.Where(a => a.IsDefaultIncluded)) t.TargetTypes.Add(NI);
 					NIN.Services.Add(NI);
 					Globals.IsLoading = false;
 					OpenProjectItem(NI);
@@ -182,8 +182,8 @@ namespace NETPath.Interface.Wcf.Dialogs
 				{
 					var NIN = NewItemProjectNamespaceList.SelectedItem as WcfNamespace ?? ActiveProject.Namespace;
 					var NI = new WcfData(NewItemName.Text, NIN);
-					foreach (var t in ActiveProject.ServerGenerationTargets) t.TargetTypes.Add(NI);
-					foreach (var t in ActiveProject.ClientGenerationTargets) t.TargetTypes.Add(NI);
+					foreach (var t in ActiveProject.ServerGenerationTargets.Where(a => a.IsDefaultIncluded)) t.TargetTypes.Add(NI);
+					foreach (var t in ActiveProject.ClientGenerationTargets.Where(a => a.IsDefaultIncluded)) t.TargetTypes.Add(NI);
 					NIN.Data.Add(NI);
 					Globals.IsLoading = false;
 					OpenProjectItem(NI);
@@ -192,8 +192,8 @@ namespace NETPath.Interface.Wcf.Dialogs
 				{
 					var NIN = NewItemProjectNamespaceList.SelectedItem as WcfNamespace ?? ActiveProject.Namespace;
 					var NI = new Projects.Enum(NewItemName.Text, NIN);
-					foreach (var t in ActiveProject.ServerGenerationTargets) t.TargetTypes.Add(NI);
-					foreach (var t in ActiveProject.ClientGenerationTargets) t.TargetTypes.Add(NI);
+					foreach (var t in ActiveProject.ServerGenerationTargets.Where(a => a.IsDefaultIncluded)) t.TargetTypes.Add(NI);
+					foreach (var t in ActiveProject.ClientGenerationTargets.Where(a => a.IsDefaultIncluded)) t.TargetTypes.Add(NI);
 					NIN.Enums.Add(NI);
 					Globals.IsLoading = false;
 					OpenProjectItem(NI);
@@ -221,8 +221,8 @@ namespace NETPath.Interface.Wcf.Dialogs
 					if (NBT.DataType == 15) NI = new WcfBindingWS2007FederationHTTP(NewItemName.Text, NIN);
 					if (NBT.DataType == 16) NI = new WcfBindingUDP(NewItemName.Text, NIN);
 
-					foreach (var t in ActiveProject.ServerGenerationTargets) t.TargetTypes.Add(NI);
-					foreach (var t in ActiveProject.ClientGenerationTargets) t.TargetTypes.Add(NI);
+					foreach (var t in ActiveProject.ServerGenerationTargets.Where(a => a.IsDefaultIncluded)) t.TargetTypes.Add(NI);
+					foreach (var t in ActiveProject.ClientGenerationTargets.Where(a => a.IsDefaultIncluded)) t.TargetTypes.Add(NI);
 
 					NIN.Bindings.Add(NI);
 					Globals.IsLoading = false;
@@ -232,8 +232,8 @@ namespace NETPath.Interface.Wcf.Dialogs
 				{
 					var NIN = NewItemProjectNamespaceList.SelectedItem as WcfNamespace ?? ActiveProject.Namespace;
 					var NI = new WcfHost(NewItemName.Text, NIN);
-					foreach (var t in ActiveProject.ServerGenerationTargets) t.TargetTypes.Add(NI);
-					foreach (var t in ActiveProject.ClientGenerationTargets) t.TargetTypes.Add(NI);
+					foreach (var t in ActiveProject.ServerGenerationTargets.Where(a => a.IsDefaultIncluded)) t.TargetTypes.Add(NI);
+					foreach (var t in ActiveProject.ClientGenerationTargets.Where(a => a.IsDefaultIncluded)) t.TargetTypes.Add(NI);
 					NIN.Hosts.Add(NI);
 					Globals.IsLoading = false;
 					OpenProjectItem(NI);
