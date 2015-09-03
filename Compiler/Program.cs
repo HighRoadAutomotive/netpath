@@ -46,10 +46,11 @@ namespace NETPath.Compiler
 			ErrorStream = Console.OpenStandardError();
 
 			OpenProject = Project.Open(ProjectPath);
-			GenerationType pt = GenerationType.Wcf;
-			if (OpenProject.GetType() == typeof (WebApiProject)) pt = GenerationType.WebApi;
 
-			IGenerator CSharp = Loader.LoadModule(GenerationLanguage.CSharp, pt);
+			string project = "Wcf";
+			if (OpenProject.GetType() == typeof (WebApiProject)) project = "WebApi";
+			GeneratorLoader.LoadModules();
+			IGenerator CSharp = GeneratorLoader.LoadedModules.First(a => a.Value.Language == "CSharp" && string.Equals(a.Value.Type, project, StringComparison.InvariantCultureIgnoreCase)).Value;
 			CSharp.Initialize(OpenProject, Path.Combine(Environment.CurrentDirectory, ProjectPath), OutputHandler, AddMessage);
 
 			//Run project code generation

@@ -19,8 +19,8 @@ namespace NETPath.Generators.CS.Wcf
 		public ObservableCollection<CompileMessage> Messages { get; private set; }
 		public CompileMessageSeverity HighestSeverity { get; private set; }
 		public string Name { get; private set; }
-		public GenerationLanguage Language { get; private set; }
-		public GenerationModule Module { get; private set; }
+		public string Language { get; private set; }
+		public string Type { get; private set; }
 		public bool IsInitialized { get; private set; }
 
 		private WcfProject Data;
@@ -29,9 +29,9 @@ namespace NETPath.Generators.CS.Wcf
 		public Generator()
 		{
 			Messages = new ObservableCollection<CompileMessage>();
-			Name = "NETPath .NET CSharp Generator";
-			Language = GenerationLanguage.CSharp;
-			Module = GenerationModule.WindowsRuntime;
+			Name = "NETPath .NET CSharp WCF Generator";
+			Language = "CSharp";
+			Type = "Wcf";
 		}
 
 		public void Initialize(Project Data, string ProjectPath, Action<string> OutputHandler, Action<CompileMessage> CompileMessageHandler)
@@ -48,7 +48,8 @@ namespace NETPath.Generators.CS.Wcf
 		{
 			HighestSeverity = CompileMessageSeverity.INFO;
 			Messages.Clear();
-			NewOutput(Globals.ApplicationTitle);
+			Globals.ApplicationTitle = Name;
+			NewOutput(Name);
 			NewOutput(string.Format("Version: {0}", Globals.ApplicationVersion));
 			NewOutput("Copyright © 2012-2015 Dr. Honda Inc.");
 

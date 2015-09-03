@@ -10,9 +10,7 @@ namespace NETPath.Generators.CS
 	internal static class Globals
 	{
 		public static readonly Version ApplicationVersion;
-		public const string ApplicationTitle = "NETPath C# Generator";
-
-		public static Guid CurrentProjectID { get; set; }
+		public static string ApplicationTitle = "NETPath C# Generator";
 
 		static Globals()
 		{

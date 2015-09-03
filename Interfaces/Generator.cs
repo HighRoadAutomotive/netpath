@@ -9,53 +9,36 @@ using NETPath.Projects;
 
 namespace NETPath.Generators.Interfaces
 {
-	public enum GenerationLanguage
-	{
-		CSharp,
-		VisualBasic,
-		CPPCX,
-		FSharp,
-		DLang,
-	}
-
-	public enum GenerationModule
-	{
-		NET,
-		WindowsRuntime,
-	}
-
-	public enum GenerationType {
-		Wcf,
-		WebApi,
-		VibeD
-	}
-
-	public static class Loader
+	public static class GeneratorLoader
 	{
 		public static readonly ConcurrentDictionary<string, IGenerator> LoadedModules = new ConcurrentDictionary<string, IGenerator>();
 
-		public static IGenerator LoadModule(GenerationLanguage Language, GenerationType ProjectType)
+		public static void LoadModules()
 		{
 			//Build the module path and and determine if it is available on this system.
 			string asmfp = System.IO.Path.GetDirectoryName(new Uri(System.Reflection.Assembly.GetCallingAssembly().CodeBase).LocalPath);
-			if (asmfp == null) return null;
-			string lang = "CS";
-			if (Language == GenerationLanguage.VisualBasic) lang = "VB";
-			if (Language == GenerationLanguage.CPPCX) lang = "CPPCX";
-			if (Language == GenerationLanguage.FSharp) lang = "FS";
-			string modpath = System.IO.Path.Combine(asmfp, string.Format("NETPath.Generators.{0}.dll", lang));
-			if (!System.IO.File.Exists(modpath)) return null;
-			//Load and initialize the module
-			System.Reflection.Assembly moduleDLL = System.Reflection.Assembly.LoadFile(modpath);
-			var cm = moduleDLL.CreateInstance(string.Format("NETPath.Generators.{0}.{1}.Generator", lang, ProjectType)) as IGenerator;
-			if (cm == null) return null;
-			LoadedModules.TryAdd(cm.Name, cm);
-			return cm;
+			if (asmfp == null) return;
+
+			var gl = System.IO.Directory.EnumerateFiles(asmfp, "NETPath.Generators.*.dll");
+
+			foreach (var g in gl)
+			{
+				var moduleDLL = System.Reflection.Assembly.LoadFile(g);
+
+				var instances = from t in moduleDLL.GetExportedTypes()
+								where t.GetInterfaces().Contains(typeof(IGenerator)) && t.GetConstructor(Type.EmptyTypes) != null
+								select Activator.CreateInstance(t) as IGenerator;
+
+				foreach (var instance in instances)
+				{
+					LoadedModules.TryAdd(instance.Name, instance);
+				}
+			}
 		}
 
-		public static Task<IGenerator> LoadModuleAsync(GenerationLanguage Language, GenerationType ProjectType)
+		public static Task LoadModulesAsync()
 		{
-			return Task.Run(() => LoadModule(Language, ProjectType));
+			return Task.Run(() => LoadModules());
 		}
 	}
 
@@ -72,8 +55,8 @@ namespace NETPath.Generators.Interfaces
 		ObservableCollection<CompileMessage> Messages { get; }
 		CompileMessageSeverity HighestSeverity { get; }
 		string Name { get; }
-		GenerationLanguage Language { get; }
-		GenerationModule Module { get; }
+		string Language { get; }
+		string Type { get; }
 		bool IsInitialized { get; }
 	}
 }
