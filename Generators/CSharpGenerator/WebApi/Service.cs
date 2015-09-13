@@ -261,6 +261,30 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine(string.Format("\t\t[System.Web.Http.Http{0}]", o.Method));
 			else
 				code.AppendLine(string.Format("\t\t[System.Web.Http.AcceptVerbs(\"{0}\")]", o.Method));
+
+			if (o.HasContent && o.ContentType.TypeMode == DataTypeMode.Primitive && o.ContentType.Primitive == PrimitiveTypes.String)
+			{
+				code.AppendFormat("\t\tpublic async {0} {1}Base(", o.ServerAsync ? o.ReturnType.IsVoid ? "Task" : string.Format("Task<{0}>", DataTypeGenerator.GenerateType(o.ReturnType)) : DataTypeGenerator.GenerateType(o.ReturnType), o.Name);
+				foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => string.IsNullOrEmpty(a.DefaultValue)))
+					code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
+				foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => !string.IsNullOrEmpty(a.DefaultValue)))
+					code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
+				foreach (var op in o.QueryParameters)
+					code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
+				if (o.RouteParameters.OfType<WebApiMethodParameter>().Any() || o.QueryParameters.Any()) code.Remove(code.Length - 2, 2);
+				code.AppendLine(")");
+				code.AppendLine("\t\t{");
+				code.AppendFormat("\t\t\t{0}await {1}(", !o.ReturnType.IsVoid ? "return " : "", o.Name);
+				foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => string.IsNullOrEmpty(a.DefaultValue)))
+					code.AppendFormat("{0}, ", op.Name);
+				foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => !string.IsNullOrEmpty(a.DefaultValue)))
+					code.AppendFormat("{0}, ", op.Name);
+				foreach (var op in o.QueryParameters)
+					code.AppendFormat("{0}, ", op.Name);
+				code.AppendLine("await Request.Content.ReadAsStringAsync());");
+				code.AppendLine("\t\t}");
+			}
+
 			code.AppendFormat("\t\tpublic abstract {0} {1}(", o.ServerAsync ? o.ReturnType.IsVoid ? "Task" : string.Format("Task<{0}>", DataTypeGenerator.GenerateType(o.ReturnType)) : DataTypeGenerator.GenerateType(o.ReturnType), o.Name);
 			foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => string.IsNullOrEmpty(a.DefaultValue)))
 				code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
@@ -357,7 +381,10 @@ namespace NETPath.Generators.CS.WebApi
 			if (o.HasContent)
 			{
 				var pt = o.ContentType;
-				code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.ObjectContent<{0}>({1}, new {2}());", DataTypeGenerator.GenerateType(pt), o.ContentParameterName, conf.RequestFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.RequestFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
+				if(pt.TypeMode == DataTypeMode.Primitive && pt.Primitive == PrimitiveTypes.String)
+					code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.StringContent({0});", o.ContentParameterName));
+				else
+					code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.ObjectContent<{0}>({1}, new {2}());", DataTypeGenerator.GenerateType(pt), o.ContentParameterName, conf.RequestFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.RequestFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
 				//code.AppendLine(string.Format("\t\t\tforeach (var x in _contentHeaders) rm.Content.Headers.Add(x.Key, x.Value);"));
 			}
 
@@ -473,7 +500,10 @@ namespace NETPath.Generators.CS.WebApi
 			if (o.HasContent)
 			{
 				var pt = o.ContentType;
-				code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.ObjectContent<{0}>({1}, new {2}());", DataTypeGenerator.GenerateType(pt), o.ContentParameterName, conf.RequestFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.RequestFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
+				if (pt.TypeMode == DataTypeMode.Primitive && pt.Primitive == PrimitiveTypes.String)
+					code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.StringContent({0});", o.ContentParameterName));
+				else
+					code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.ObjectContent<{0}>({1}, new {2}());", DataTypeGenerator.GenerateType(pt), o.ContentParameterName, conf.RequestFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.RequestFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
 				//code.AppendLine("\t\t\tforeach (var x in _contentHeaders) rm.Content.Headers.Add(x.Key, x.Value);");
 			}
 
