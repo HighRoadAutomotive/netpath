@@ -563,5 +563,154 @@ namespace NETPath.Generators.CS.WebApi
 		}
 
 		#endregion
+
+		#region - Server Update Service -
+
+		public static void GenerateUpdateService(StringBuilder code, WebApiProject o)
+		{
+			if (!o.ClientGenerationTargets.OfType<WebApiData>().Any(a => a.HasUpdateService))
+				return;
+
+			code.AppendLine(string.Format("namespace {0}", o.Namespace.FullName));
+			code.AppendLine("{");
+
+			if (o.UsingInsideNamespace)
+			{
+				if (o.GenerateRegions)
+				{
+					code.AppendLine("\t#region Using");
+					code.AppendLine();
+				}
+				// Generate using namespaces
+				foreach (ProjectUsingNamespace pun in o.UsingNamespaces)
+				{
+					if (pun.Client && pun.NET)
+						code.AppendLine(string.Format("\tusing {0};", pun.Namespace));
+				}
+				code.AppendLine();
+				if (o.GenerateRegions)
+				{
+					code.AppendLine("\t#endregion");
+					code.AppendLine();
+				}
+			}
+
+			if (!o.GenerateRegions)
+			{
+				code.AppendLine("\t/**************************************************************************");
+				code.AppendLine("\t*\tData Update Service");
+				code.AppendLine("\t**************************************************************************/");
+			}
+
+			code.AppendLine("\t[RoutePrefix(\"__dus__\")]");
+			code.AppendLine("\tpublic sealed class DataUpdateServiceController : ApiController");
+			code.AppendLine("\t{");
+			foreach (var d in o.ClientGenerationTargets.OfType<WebApiData>().Where(a => a.HasUpdateService))
+			{
+				foreach (var e in d.Elements.Where(a => a.EnableUpdateService && a.DataType.TypeMode == DataTypeMode.Primitive && a.DataType.Primitive != PrimitiveTypes.Object))
+				{
+					code.AppendLine(string.Format("\t\t[System.Web.Http.Route(\"{0}/{1}", d.Name.ToLowerInvariant(), e.DataName.ToLowerInvariant()));
+					foreach (var l in d.Elements.Where(a => a.IsUpdateLookup))
+						code.AppendFormat("/{0}", l.DataName);
+					code.AppendLine("\")]");
+					code.AppendLine("\t\t[System.Web.Http.AcceptVerbs(\"PUT\")]");
+					code.AppendFormat("\t\tpublic async Task Update{0}{1}(", d.Name, e.DataName);
+					foreach (var l in d.Elements.Where(a => a.IsUpdateLookup))
+						code.AppendFormat("{0} {1},  ", l.DataType, l.DataName);
+					code.Remove(code.Length - 2, 2);
+					code.AppendLine(")");
+					code.AppendLine("\t\t{");
+					if (e.DataType.Primitive == PrimitiveTypes.ByteArray)
+					{
+						code.AppendLine("\t\t\tvar value = await Request.Content.ReadAsByteArrayAsync();");
+					}
+					else
+					{
+						code.AppendLine(string.Format("\t\t\tvar {0} = await Request.Content.ReadAsStringAsync());", e.DataType.Primitive == PrimitiveTypes.String ? "value" : "payload"));
+						switch (e.DataType.Primitive)
+						{
+							case PrimitiveTypes.Bool:
+								code.AppendLine("\t\t\tvar value = Convert.ToBoolean(payload);");
+								break;
+							case PrimitiveTypes.Char:
+								code.AppendLine("\t\t\tvar value = Convert.ToChar(payload);");
+								break;
+							case PrimitiveTypes.Byte:
+								code.AppendLine("\t\t\tvar value = Convert.FromBase64String(payload)[0];");
+								break;
+							case PrimitiveTypes.SByte:
+								code.AppendLine("\t\t\tvar value = Convert.ToSByte(Convert.FromBase64String(payload)[0]);");
+								break;
+							case PrimitiveTypes.Short:
+								code.AppendLine("\t\t\tvar value = Convert.ToInt16(payload);");
+								break;
+							case PrimitiveTypes.Int:
+								code.AppendLine("\t\t\tvar value = Convert.ToInt32(payload);");
+								break;
+							case PrimitiveTypes.Long:
+								code.AppendLine("\t\t\tvar value = Convert.ToInt64(payload);");
+								break;
+							case PrimitiveTypes.UShort:
+								code.AppendLine("\t\t\tvar value = Convert.ToUInt16(payload);");
+								break;
+							case PrimitiveTypes.UInt:
+								code.AppendLine("\t\t\tvar value = Convert.ToUInt32(payload);");
+								break;
+							case PrimitiveTypes.ULong:
+								code.AppendLine("\t\t\tvar value = Convert.ToUInt64(payload);");
+								break;
+							case PrimitiveTypes.Float:
+								code.AppendLine("\t\t\tvar value = Convert.ToSingle(payload);");
+								break;
+							case PrimitiveTypes.Double:
+								code.AppendLine("\t\t\tvar value = Convert.ToDouble(payload);");
+								break;
+							case PrimitiveTypes.Decimal:
+								code.AppendLine("\t\t\tvar value = Convert.ToDecimal(payload);");
+								break;
+							case PrimitiveTypes.DateTime:
+								code.AppendLine("\t\t\tvar value = DateTime.Parse(payload, CultureInfo.InvariantCulture);");
+								break;
+							case PrimitiveTypes.DateTimeOffset:
+								code.AppendLine("\t\t\tvar value = DateTimeOffset.Parse(payload, CultureInfo.InvariantCulture);");
+								break;
+							case PrimitiveTypes.TimeSpan:
+								code.AppendLine("\t\t\tvar value = new TimeSpan(Convert.ToInt64(payload));");
+								break;
+							case PrimitiveTypes.GUID:
+								code.AppendLine("\t\t\tvar value = new Guid(payload);");
+								break;
+							case PrimitiveTypes.URI:
+								code.AppendLine("\t\t\tvar value = new Uri(payload);");
+								break;
+							case PrimitiveTypes.Version:
+								code.AppendLine("\t\t\tvar value = new Version(payload);");
+								break;
+						}
+					}
+
+					if (d.HasEntity)
+					{
+						code.AppendLine(string.Format("\t\t\tusing (var db = new {0}())", o.EnitityDatabaseType));
+						code.AppendLine("\t\t\t{");
+						code.AppendFormat("\t\t\t\tvar item = await db.{0}.Where(a => ", d.EntityContext);
+						foreach (var l in d.Elements.Where(a => a.IsUpdateLookup))
+							code.AppendFormat("a.{0} == {1} && ", l.EntityName, l.DataName);
+						code.Remove(code.Length - 4, 4);
+						code.AppendLine(").FirstOrDefaultAsync();");
+						code.AppendLine("\t\t\t\tif (item == null) throw new HttpResponseException(HttpStatusCode.NotFound);");
+						code.AppendLine(string.Format("\t\t\t\titem.{0} = Data.{1};", e.EntityName, e.DataName));
+						code.AppendLine("\t\t\t\tawait db.SaveChangesAsync();");
+						code.AppendLine("\t\t\t}");
+					}
+
+					code.AppendLine("\t\t}");
+				}
+			}
+			code.AppendLine("\t}");
+			code.AppendLine("}");
+		}
+
+		#endregion
 	}
 }

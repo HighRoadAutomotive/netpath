@@ -43,6 +43,9 @@ namespace NETPath.Projects.WebApi
 		public ObservableCollection<WebApiDataElement> Elements { get { return (ObservableCollection<WebApiDataElement>)GetValue(ElementsProperty); } set { SetValue(ElementsProperty, value); } }
 		public static readonly DependencyProperty ElementsProperty = DependencyProperty.Register("Elements", typeof(ObservableCollection<WebApiDataElement>), typeof(WebApiData));
 
+
+		// EntityFramework
+
 		public bool HasEntity { get { return (bool)GetValue(HasEntityProperty); } set { SetValue(HasEntityProperty, value); } }
 		public static readonly DependencyProperty HasEntityProperty = DependencyProperty.Register("HasEntity", typeof(bool), typeof(WebApiData), new PropertyMetadata(false));
 
@@ -51,6 +54,9 @@ namespace NETPath.Projects.WebApi
 
 		public string EntityContext { get { return (string)GetValue(EntityContextProperty); } set { SetValue(EntityContextProperty, value); } }
 		public static readonly DependencyProperty EntityContextProperty = DependencyProperty.Register("EntityContext", typeof(string), typeof(WebApiData), new PropertyMetadata(""));
+
+
+		// SQL Direct
 
 		public bool HasSql { get { return (bool)GetValue(HasSqlProperty); } set { SetValue(HasSqlProperty, value); } }
 		public static readonly DependencyProperty HasSqlProperty = DependencyProperty.Register("HasSql", typeof(bool), typeof(WebApiData), new PropertyMetadata(false, HasSqlChangedCallback));
@@ -99,7 +105,15 @@ namespace NETPath.Projects.WebApi
 		public IsolationLevel? DeleteTransactionLevel { get { return (IsolationLevel?)GetValue(DeleteTransactionLevelProperty); } set { SetValue(DeleteTransactionLevelProperty, value); } }
 		public static readonly DependencyProperty DeleteTransactionLevelProperty = DependencyProperty.Register("DeleteTransactionLevel", typeof(IsolationLevel?), typeof(WebApiData), new PropertyMetadata(null));
 
+
+		//Update Service
+
+		public bool HasUpdateService { get { return (bool)GetValue(HasUpdateServiceProperty); } set { SetValue(HasUpdateServiceProperty, value); } }
+		public static readonly DependencyProperty HasUpdateServiceProperty = DependencyProperty.Register("HasUpdateService", typeof(bool), typeof(WebApiData), new PropertyMetadata(false));
+
+
 		//System
+
 		[IgnoreDataMember]
 		public bool HasWinFormsBindings { get { return Elements.Any(a => a.GenerateWinFormsSupport); } }
 
@@ -153,9 +167,9 @@ namespace NETPath.Projects.WebApi
 
 	public class WebApiDataElement : DependencyObject
 	{
-		public Guid ID { get; set; }
 
 		//Basic Data-Type Settings
+
 		public DataType DataType { get { return (DataType)GetValue(DataTypeProperty); } set { SetValue(DataTypeProperty, value); } }
 		public static readonly DependencyProperty DataTypeProperty = DependencyProperty.Register("DataType", typeof(DataType), typeof(WebApiDataElement), new PropertyMetadata(DataTypeChangedCallback));
 
@@ -281,7 +295,9 @@ namespace NETPath.Projects.WebApi
 		public bool GenerateWinFormsSupport { get { return (bool)GetValue(GenerateWinFormsSupportProperty); } set { SetValue(GenerateWinFormsSupportProperty, value); } }
 		public static readonly DependencyProperty GenerateWinFormsSupportProperty = DependencyProperty.Register("GenerateWinFormsSupport", typeof(bool), typeof(WebApiDataElement), new PropertyMetadata(false));
 
+
 		//DataMember Settings
+
 		public bool IsDataMember { get { return (bool)GetValue(IsDataMemberProperty); } set { SetValue(IsDataMemberProperty, value); } }
 		public static readonly DependencyProperty IsDataMemberProperty = DependencyProperty.Register("IsDataMember", typeof(bool), typeof(WebApiDataElement), new UIPropertyMetadata(true, IsDataMemberChangedCallback));
 
@@ -307,7 +323,9 @@ namespace NETPath.Projects.WebApi
 		public int Order { get { return (int)GetValue(OrderProperty); } set { SetValue(OrderProperty, value); } }
 		public static readonly DependencyProperty OrderProperty = DependencyProperty.Register("Order", typeof(int), typeof(WebApiDataElement), new PropertyMetadata(-1));
 
+
 		//SQL Support
+
 		public bool HasSql { get { return (bool)GetValue(HasSqlProperty); } set { SetValue(HasSqlProperty, value); } }
 		public static readonly DependencyProperty HasSqlProperty = DependencyProperty.Register("HasSql", typeof(bool), typeof(WebApiDataElement), new PropertyMetadata(false, HasSqlChangedCallback));
 
@@ -341,7 +359,17 @@ namespace NETPath.Projects.WebApi
 		public bool IsSqlComputed { get { return (bool)GetValue(IsSqlComputedProperty); } set { SetValue(IsSqlComputedProperty, value); } }
 		public static readonly DependencyProperty IsSqlComputedProperty = DependencyProperty.Register("IsSqlComputed", typeof(bool), typeof(WebApiDataElement), new PropertyMetadata(false));
 
+
+		//Update Service
+
+		public bool EnableUpdateService { get { return (bool)GetValue(EnableUpdateServiceProperty); } set { SetValue(EnableUpdateServiceProperty, value); } }
+		public static readonly DependencyProperty EnableUpdateServiceProperty = DependencyProperty.Register("EnableUpdateService", typeof(bool), typeof(WebApiDataElement), new PropertyMetadata(false));
+
+		public bool IsUpdateLookup { get { return (bool)GetValue(IsUpdateLookupProperty); } set { SetValue(IsUpdateLookupProperty, value); } }
+		public static readonly DependencyProperty IsUpdateLookupProperty = DependencyProperty.Register("IsUpdateLookup", typeof(bool), typeof(WebApiDataElement), new PropertyMetadata(false));
+
 		//System
+
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(WebApiDataElement));
 
@@ -352,7 +380,6 @@ namespace NETPath.Projects.WebApi
 
 		public WebApiDataElement()
 		{
-			ID = Guid.NewGuid();
 			DataType = new DataType(PrimitiveTypes.String);
 			EmitDefaultValue = false;
 			Order = -1;
@@ -364,7 +391,6 @@ namespace NETPath.Projects.WebApi
 
 		public WebApiDataElement(DataType DataType, string Name, WebApiData Owner)
 		{
-			ID = Guid.NewGuid();
 			this.DataType = DataType;
 			this.Owner = Owner;
 			DataName = Name;
