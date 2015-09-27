@@ -151,24 +151,13 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine();
 			}
 			code.AppendLine("\t\tprivate readonly string _baseUri;");
-			//code.AppendLine("\t\tprivate readonly CookieContainer _cookies;");
-			//code.AppendLine("\t\tprivate readonly CredentialCache _credentialCache;");
-			//code.AppendLine("\t\tprivate readonly NetworkCredential _credentials;");
-			//code.AppendLine("\t\tprivate readonly IWebProxy _proxy;");
-			//code.AppendLine("\t\tprivate readonly System.Net.Http.Headers.HttpRequestHeaders _requestHeaders = new System.Net.Http.HttpRequestMessage().Headers;");
-			//code.AppendLine("\t\tprivate readonly System.Net.Http.Headers.HttpContentHeaders _contentHeaders = new System.Net.Http.StringContent(\"\").Headers;");
-
 			code.AppendLine("\t\tpublic string BaseUri { get { return _baseUri; } }");
-			//code.AppendLine("\t\tpublic CookieContainer Cookies { get { return _cookies; } }");
-			//code.AppendLine("\t\tpublic CredentialCache CredentialCache { get { return _credentialCache; } }");
-			//code.AppendLine("\t\tpublic NetworkCredential Credentials { get { return _credentials; } }");
-			//code.AppendLine("\t\tpublic IWebProxy Proxy { get { return _proxy; } }");
-			//code.AppendLine("\t\tpublic HttpRequestHeaders DefaultRequestHeaders { get { return _requestHeaders; } }");
-			//code.AppendLine("\t\tpublic HttpContentHeaders DefaultContentHeaders { get { return _contentHeaders; } }");
-
-			code.AppendLine(string.Format("\t\tprivate readonly System.Net.Http.HttpClient _HttpClient;"));
-			code.AppendLine(string.Format("\t\tprotected System.Net.Http.HttpClient HttpClient {{ get {{ return _HttpClient; }} }}"));
+			code.AppendLine("\t\tprivate readonly System.Net.Http.HttpClient _HttpClient;");
+			code.AppendLine("\t\tprotected System.Net.Http.HttpClient HttpClient {{ get {{ return _HttpClient; }} }}");
 			code.AppendLine();
+			code.AppendLine("\t\t\tpartial void SetCommonHeaders(System.Net.Http.Headers.HttpRequestHeaders headers);");
+			code.AppendLine();
+
 			if (o.Parent.Owner.GenerateRegions)
 			{
 				code.AppendLine("\t\t#endregion");
@@ -179,22 +168,11 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t\t#region Constructors");
 				code.AppendLine();
 			}
-			//code.AppendLine(string.Format("\t\t{1} {0}{2}(string BaseURI = \"{3}\", CookieContainer cookies = null, NetworkCredential credentials = null, CredentialCache credentialCache = null, IWebProxy proxy = null)", o.Name, o.Abstract ? "protected" : "public", o.Abstract ? "Base" : "", (o.Parent.Owner as WebApiProject)?.Namespace.URI));
 			code.AppendLine(string.Format("\t\t{1} {0}{2}(System.Net.Http.HttpClient client, string BaseURI = \"{3}\")", o.Name, o.Abstract ? "protected" : "public", o.Abstract ? "Base" : "", (o.Parent.Owner as WebApiProject)?.Namespace.URI));
 			code.AppendLine("\t\t{");
 			code.AppendLine("\t\t\t_baseUri = BaseURI;");
 			code.AppendLine("\t\t\tif (_baseUri.EndsWith(\"/\")) _baseUri = _baseUri.Remove(_baseUri.Length - 1, 1);");
 			code.AppendLine("\t\t\t_HttpClient = client;");
-			//code.AppendLine("\t\t\t_cookies = cookies ?? new CookieContainer();");
-			//code.AppendLine("\t\t\t_credentials = credentials;");
-			//code.AppendLine("\t\t\t_credentialCache = credentialCache;");
-			//code.AppendLine("\t\t\t_proxy = proxy;");
-			//code.AppendLine(string.Format("\t\t\t_HttpClient = new System.Net.Http.HttpClient(new System.Net.Http.HttpClientHandler() {{ AllowAutoRedirect = {0}, AutomaticDecompression = System.Net.DecompressionMethods.{1}, ClientCertificateOptions = System.Net.Http.ClientCertificateOption.{2}, CookieContainer = {3}, Credentials = (this.Credentials == null) ? (ICredentials)this.CredentialCache : (ICredentials)this.Credentials, MaxAutomaticRedirections = {4}, MaxRequestContentBufferSize = {5}, PreAuthenticate = {6}, Proxy = this.Proxy, UseCookies = {7}, UseDefaultCredentials = {8}, UseProxy = {9} }});",
-			//	o.RequestConfiguration.AllowAutoRedirect ? bool.TrueString.ToLower() : bool.FalseString.ToLower(), o.RequestConfiguration.AutomaticDecompression, o.RequestConfiguration.ClientCertificateOptions,
-			//	o.RequestConfiguration.CookieContainerMode == CookieContainerMode.None ? "null" : o.RequestConfiguration.CookieContainerMode == CookieContainerMode.Instance ? "new CookieContainer()" : "Cookies",
-			//	o.RequestConfiguration.MaxAutomaticRedirections, o.RequestConfiguration.MaxRequestContentBufferSize, o.RequestConfiguration.PreAuthenticate ? bool.TrueString.ToLower() : bool.FalseString.ToLower(),
-			//	(o.RequestConfiguration.CookieContainerMode == CookieContainerMode.None || o.RequestConfiguration.CookieContainerMode == CookieContainerMode.Custom) ? bool.FalseString.ToLower() : bool.TrueString.ToLower(),
-			//	o.RequestConfiguration.UseDefaultCredentials ? bool.TrueString.ToLower() : bool.FalseString.ToLower(), o.RequestConfiguration.UseProxy ? bool.TrueString.ToLower() : bool.FalseString.ToLower()));
 			code.AppendLine("\t\t}");
 			code.AppendLine();
 			if (o.Parent.Owner.GenerateRegions)
@@ -361,19 +339,8 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine(string.Format("\t\t\tvar rm = new HttpRequestMessage(HttpMethod.{0}, new Uri(uri.ToString(), UriKind.RelativeOrAbsolute));", o.Method));
 			if (conf.UseHTTP10)
 				code.AppendLine("\t\t\trm.Version = new Version(1, 0););");
-			//code.AppendLine("\t\t\trm.Headers.Clear();");
-			//code.AppendLine("\t\t\tforeach (var x in _requestHeaders) rm.Headers.Add(x.Key, x.Value);");
-			//code.AppendLine("\t\t\trm.Headers.Authorization = _requestHeaders.Authorization;");
-			//code.AppendLine("\t\t\trm.Headers.CacheControl = _requestHeaders.CacheControl;");
-			//code.AppendLine("\t\t\trm.Headers.Date = _requestHeaders.Date;");
-			//code.AppendLine("\t\t\trm.Headers.From = _requestHeaders.From;");
-			//code.AppendLine("\t\t\trm.Headers.Host = _requestHeaders.Host;");
-			//code.AppendLine("\t\t\trm.Headers.IfModifiedSince = _requestHeaders.IfModifiedSince;");
-			//code.AppendLine("\t\t\trm.Headers.IfRange = _requestHeaders.IfRange;");
-			//code.AppendLine("\t\t\trm.Headers.IfUnmodifiedSince = _requestHeaders.IfUnmodifiedSince;");
-			//code.AppendLine("\t\t\trm.Headers.MaxForwards = _requestHeaders.MaxForwards;");
-			//code.AppendLine("\t\t\trm.Headers.ProxyAuthorization = _requestHeaders.ProxyAuthorization;");
-			//code.AppendLine("\t\t\trm.Headers.Range = _requestHeaders.Range;");
+			code.AppendLine("\t\t\tSetCommonHeaders(rm.Headers);");
+			code.AppendLine(string.Format("\t\t\tSet{0}Headers(rm.Headers);", o.Name));
 			code.AppendLine("\t\t\trm.Headers.Accept.Clear();");
 			code.AppendLine(string.Format("\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"application/{0}\"));", conf.ResponseFormat == RestSerialization.Json ? "json" : conf.ResponseFormat == RestSerialization.Bson ? "bson" : "xml"));
 
@@ -410,6 +377,7 @@ namespace NETPath.Generators.CS.WebApi
 				if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine(string.Format("\t\tpublic abstract void {0}Result();", o.Name));
 				else code.AppendLine(string.Format("\t\tpublic abstract void {0}Result({1} Value);", o.Name, DataTypeGenerator.GenerateType(o.ReturnType)));
 			}
+			code.AppendLine(string.Format("\t\t\tpartial void Set{0}Headers(System.Net.Http.Headers.HttpRequestHeaders headers);", o.Name));
 			return code.ToString();
 		}
 
@@ -480,19 +448,8 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine(string.Format("\t\t\tvar rm = new HttpRequestMessage(HttpMethod.{0}, new Uri(uri.ToString(), UriKind.RelativeOrAbsolute));", o.Method));
 			if (conf.UseHTTP10)
 				code.AppendLine("\t\t\trm.Version = new Version(1, 0););");
-			//code.AppendLine("\t\t\trm.Headers.Clear();");
-			//code.AppendLine("\t\t\tforeach (var x in _requestHeaders) rm.Headers.Add(x.Key, x.Value);");
-			//code.AppendLine("\t\t\trm.Headers.Authorization = _requestHeaders.Authorization;");
-			//code.AppendLine("\t\t\trm.Headers.CacheControl = _requestHeaders.CacheControl;");
-			//code.AppendLine("\t\t\trm.Headers.Date = _requestHeaders.Date;");
-			//code.AppendLine("\t\t\trm.Headers.From = _requestHeaders.From;");
-			//code.AppendLine("\t\t\trm.Headers.Host = _requestHeaders.Host;");
-			//code.AppendLine("\t\t\trm.Headers.IfModifiedSince = _requestHeaders.IfModifiedSince;");
-			//code.AppendLine("\t\t\trm.Headers.IfRange = _requestHeaders.IfRange;");
-			//code.AppendLine("\t\t\trm.Headers.IfUnmodifiedSince = _requestHeaders.IfUnmodifiedSince;");
-			//code.AppendLine("\t\t\trm.Headers.MaxForwards = _requestHeaders.MaxForwards;");
-			//code.AppendLine("\t\t\trm.Headers.ProxyAuthorization = _requestHeaders.ProxyAuthorization;");
-			//code.AppendLine("\t\t\trm.Headers.Range = _requestHeaders.Range;");
+			code.AppendLine("\t\t\tSetCommonHeaders(rm.Headers);");
+			code.AppendLine(string.Format("\t\t\tSet{0}Headers(rm.Headers);", o.Name));
 			code.AppendLine("\t\t\trm.Headers.Accept.Clear();");
 			code.AppendLine(string.Format("\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"application/{0}\"));", conf.ResponseFormat == RestSerialization.Json ? "json" : conf.ResponseFormat == RestSerialization.Bson ? "bson" : "xml"));
 
@@ -520,6 +477,7 @@ namespace NETPath.Generators.CS.WebApi
 					code.AppendLine(string.Format("\t\t\treturn await rr.Content.ReadAsAsync<{0}>(new MediaTypeFormatter[] {{ new {1}() }});", DataTypeGenerator.GenerateType(o.ReturnType), conf.ResponseFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.ResponseFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
 			}
 			code.AppendLine("\t\t}");
+			code.AppendLine(string.Format("\t\t\tpartial void Set{0}Headers(System.Net.Http.Headers.HttpRequestHeaders headers);", o.Name));
 
 			return code.ToString();
 		}
