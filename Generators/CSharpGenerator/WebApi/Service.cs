@@ -701,7 +701,6 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\tpublic static partial class DataUpdateService");
 			code.AppendLine("\t{");
 			code.AppendLine(string.Format("\t\tprivate static readonly string _baseUri = \"{0}\";", o.Namespace.URI));
-			code.AppendLine("\t\tpublic static string BaseUri { get { return _baseUri; } }");
 			code.AppendLine("\t\tprivate static readonly System.Net.Http.HttpClient _httpClient = new HttpClient(new HttpClientHandler() { AllowAutoRedirect = false, AutomaticDecompression = DecompressionMethods.None });");
 			code.AppendLine();
 			code.AppendLine("\t\tstatic partial void SetCommonUpdateHeaders(System.Net.Http.Headers.HttpRequestHeaders headers);");
