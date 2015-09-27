@@ -222,11 +222,13 @@ namespace NETPath.Generators.CS.WebApi
 			{
 				if (Target.Framework == ProjectGenerationFramework.NET45 || Target.Framework == ProjectGenerationFramework.WINRT)
 					code.AppendLine(NamespaceGenerator.GenerateServerCode45(Data.Namespace, Target));
+				ServiceGenerator.GenerateServerUpdateService(code, Data);
 			}
 			else
 			{
 				if (Target.Framework == ProjectGenerationFramework.NET45) code.AppendLine(NamespaceGenerator.GenerateClientCode45(Data.Namespace, Target));
 				if (Target.Framework == ProjectGenerationFramework.WINRT) code.AppendLine(NamespaceGenerator.GenerateClientCodeRT8(Data.Namespace, Target));
+				ServiceGenerator.GenerateClientUpdateService(code, Data);
 			}
 
 			//Reenable XML documentation warnings
