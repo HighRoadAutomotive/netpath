@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
@@ -610,7 +611,10 @@ namespace NETPath.Generators.CS.WebApi
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 
 			code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return ({0})GetValue({1}Property); }} {2}set {{ SetValue({1}Property, value); }} }}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.DataType)), o.XamlName, o.IsReadOnly ? "protected " : ""));
-			code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty{4} {1}Property{4} = DependencyProperty.Register{3}(\"{1}\", typeof({0}), typeof({2}));", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.DataType)), o.XamlName, o.Owner.XAMLType.Name, o.IsReadOnly ? "ReadOnly" : "", o.IsReadOnly ? "Key" : ""));
+			if (!o.IsReadOnly && o.EnableUpdates && o.DataType.TypeMode == DataTypeMode.Primitive && o.DataType.Primitive != PrimitiveTypes.Void && o.DataType.Primitive != PrimitiveTypes.None)
+				code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty {1}Property = DependencyProperty.Register(\"{1}\", typeof({0}), typeof({2}), new PropertyMetadata({3}));", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.DataType)), o.XamlName, o.Owner.XAMLType.Name, GenerateDataUpdateDelegate(o)));
+			else
+				code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty{4} {1}Property{4} = DependencyProperty.Register{3}(\"{1}\", typeof({0}), typeof({2}));", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.DataType)), o.XamlName, o.Owner.XAMLType.Name, o.IsReadOnly ? "ReadOnly" : "", o.IsReadOnly ? "Key" : ""));
 			if (o.IsReadOnly) code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty {0}Property = {0}PropertyKey.DependencyProperty;", o.XamlName));
 
 			return code.ToString();
@@ -677,7 +681,10 @@ namespace NETPath.Generators.CS.WebApi
 			var code = new StringBuilder();
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 			code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return ({0})GetValue({1}Property); }} {2}set {{ SetValue({1}Property, value); }} }}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.DataType)), o.XamlName, o.IsReadOnly ? "protected " : ""));
-			code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty {1}Property = DependencyProperty.Register(\"{1}\", typeof({0}), typeof({2}), new PropertyMetadata(default({0})));", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.DataType)), o.XamlName, o.Owner.XAMLType.Name));
+			if (o.EnableUpdates && o.DataType.TypeMode == DataTypeMode.Primitive && o.DataType.Primitive != PrimitiveTypes.Void && o.DataType.Primitive != PrimitiveTypes.None)
+				code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty {1}Property = DependencyProperty.Register(\"{1}\", typeof({0}), typeof({2}), new PropertyMetadata(default({0}), {3}));", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.DataType)), o.XamlName, o.Owner.XAMLType.Name, GenerateDataUpdateDelegate(o)));
+			else
+				code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty {1}Property = DependencyProperty.Register(\"{1}\", typeof({0}), typeof({2}), new PropertyMetadata(default({0})));", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.DataType)), o.XamlName, o.Owner.XAMLType.Name));
 			return code.ToString();
 		}
 
@@ -771,6 +778,18 @@ namespace NETPath.Generators.CS.WebApi
 		#endregion
 
 		#region - Helpers -
+
+		private static string GenerateDataUpdateDelegate(WebApiDataElement o)
+		{
+			var code = new StringBuilder(256);
+
+			code.AppendFormat("async (o, args) => {{ var t = o as {0}; await {1}.DataUpdateService.Update{2}{3}(", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.DataType)), (o.Owner.Parent.Owner as WebApiProject)?.Namespace.FullName ?? "", o.Owner.Name, o.DataName);
+			foreach (var l in o.Owner.Elements.Where(a => a.IsUpdateLookup))
+				code.AppendLine(string.Format("t.{0}, ", l.XamlName));
+			code.AppendFormat("({0})args.NewValue); }}", o.DataType);
+
+			return code.ToString();
+		}
 
 		private static DataType GetPreferredDTOType(DataType value)
 		{
