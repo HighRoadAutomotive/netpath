@@ -144,17 +144,6 @@
 		</TabItem>
 		<TabItem Padding="10,5">
 			<TabItem.Header>
-				<TextBlock Text="Server" FontSize="12pt"/>
-			</TabItem.Header>
-			<Grid>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="*" />
-				</Grid.RowDefinitions>
-			</Grid>
-		</TabItem>
-		<TabItem Padding="10,5">
-			<TabItem.Header>
 				<TextBlock Text="Client" FontSize="12pt"/>
 			</TabItem.Header>
 			<Grid DataContext="{Binding Path=ServiceType.RequestConfiguration}">
@@ -248,25 +237,6 @@
 					<Label Content="Max Request Content Buffer Size:" Height="Auto" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="0" Grid.Row="0" />
 					<pc:IntegerTextBox Value="{Binding Path=MaxRequestContentBufferSize}" Margin="205,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Grid.Column="0" Grid.Row="0" FontSize="10pt" />
 				</Grid>
-			</Grid>
-		</TabItem>
-		<TabItem Padding="10,5">
-			<TabItem.Header>
-				<TextBlock Text="Formatting" FontSize="12pt"/>
-			</TabItem.Header>
-			<Grid>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="*" />
-				</Grid.RowDefinitions>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
-				<ToggleButton Content="JSON/BSON Formatting" Margin="10" Grid.Row="0" Grid.Column="0" />
-
-				<ToggleButton Content="XML Formatting" Margin="10" Grid.Row="1" Grid.Column="0" />
 			</Grid>
 		</TabItem>
 		<TabItem Padding="10,5">
