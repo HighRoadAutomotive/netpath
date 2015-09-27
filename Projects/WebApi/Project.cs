@@ -17,6 +17,9 @@ namespace NETPath.Projects.WebApi
 		public bool IsSelfHosted { get { return (bool)GetValue(IsSelfHostedProperty); } set { SetValue(IsSelfHostedProperty, value); } }
 		public static readonly DependencyProperty IsSelfHostedProperty = DependencyProperty.Register("IsSelfHosted", typeof(bool), typeof(WebApiProject), new PropertyMetadata(true));
 
+		public bool UseDefaultWebApiConfig { get { return (bool)GetValue(UseDefaultWebApiConfigProperty); } set { SetValue(UseDefaultWebApiConfigProperty, value); } }
+		public static readonly DependencyProperty UseDefaultWebApiConfigProperty = DependencyProperty.Register("UseDefaultWebApiConfig", typeof(bool), typeof(WebApiProject), new PropertyMetadata(true));
+
 		public WebApiProject()
 		{
 		}

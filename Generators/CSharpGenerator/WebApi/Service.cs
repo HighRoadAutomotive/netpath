@@ -94,27 +94,6 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine();
 			if (o.Parent.Owner.GenerateRegions)
 			{
-				code.AppendLine("\t\t#region Constructors");
-				code.AppendLine();
-			}
-
-			code.AppendLine(string.Format("\t\tpublic {0}Base() : base()", o.Name));
-			code.AppendLine("\t\t{");
-			code.AppendLine("\t\t\tInitialize();");
-			code.AppendLine("\t\t}");
-			code.AppendLine();
-			code.AppendLine();
-			code.AppendLine("\t\tprivate void Initialize()");
-			code.AppendLine("\t\t{");
-			code.AppendLine("\t\t}");
-			code.AppendLine();
-			if (o.Parent.Owner.GenerateRegions)
-			{
-				code.AppendLine("\t\t#endregion");
-				code.AppendLine();
-			}
-			if (o.Parent.Owner.GenerateRegions)
-			{
 				code.AppendLine("\t\t#region Methods");
 				code.AppendLine();
 			}
