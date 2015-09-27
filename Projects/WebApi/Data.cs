@@ -106,12 +106,6 @@ namespace NETPath.Projects.WebApi
 		public static readonly DependencyProperty DeleteTransactionLevelProperty = DependencyProperty.Register("DeleteTransactionLevel", typeof(IsolationLevel?), typeof(WebApiData), new PropertyMetadata(null));
 
 
-		//Update Service
-
-		public bool HasUpdateService { get { return (bool)GetValue(HasUpdateServiceProperty); } set { SetValue(HasUpdateServiceProperty, value); } }
-		public static readonly DependencyProperty HasUpdateServiceProperty = DependencyProperty.Register("HasUpdateService", typeof(bool), typeof(WebApiData), new PropertyMetadata(false));
-
-
 		//System
 
 		[IgnoreDataMember]
@@ -362,8 +356,8 @@ namespace NETPath.Projects.WebApi
 
 		//Update Service
 
-		public bool EnableUpdateService { get { return (bool)GetValue(EnableUpdateServiceProperty); } set { SetValue(EnableUpdateServiceProperty, value); } }
-		public static readonly DependencyProperty EnableUpdateServiceProperty = DependencyProperty.Register("EnableUpdateService", typeof(bool), typeof(WebApiDataElement), new PropertyMetadata(false));
+		public bool EnableUpdates { get { return (bool)GetValue(EnableUpdatesProperty); } set { SetValue(EnableUpdatesProperty, value); } }
+		public static readonly DependencyProperty EnableUpdatesProperty = DependencyProperty.Register("EnableUpdates", typeof(bool), typeof(WebApiDataElement), new PropertyMetadata(false));
 
 		public bool IsUpdateLookup { get { return (bool)GetValue(IsUpdateLookupProperty); } set { SetValue(IsUpdateLookupProperty, value); } }
 		public static readonly DependencyProperty IsUpdateLookupProperty = DependencyProperty.Register("IsUpdateLookup", typeof(bool), typeof(WebApiDataElement), new PropertyMetadata(false));

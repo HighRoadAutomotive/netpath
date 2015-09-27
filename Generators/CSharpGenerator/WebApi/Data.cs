@@ -57,7 +57,7 @@ namespace NETPath.Generators.CS.WebApi
 			if (o.HasClientType && o.ClientType.InheritedTypes.Any(a => a.Name.IndexOf("DependencyObject", StringComparison.CurrentCultureIgnoreCase) >= 0))
 				AddMessage(new CompileMessage("GS3008", "The client data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace is unable to inherit from DependencyObject.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType()));
 
-			if(o.HasUpdateService && !o.Elements.Any(a => a.IsUpdateLookup))
+			if(o.Elements.Any(a => a.EnableUpdates) && !o.Elements.Any(a => a.IsUpdateLookup))
 				AddMessage(new CompileMessage("GS3008", "The client data object '" + o.Name + "' in the '" + o.Parent.Name + "' namespace is defined as an Update Service object but no Lookup values are specified At least one lookup value must be specified.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType()));
 		}
 
