@@ -45,7 +45,7 @@
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
 			<pc:TextBox Text="{Binding Path=OpenType.EntityType, UpdateSourceTrigger=PropertyChanged}" x:Name="EntityType" Grid.Row="0" Grid.Column="0" Margin="5" LabelText="Entity Type Name" />
-			<pc:TextBox Text="{Binding Path=OpenType.EntityContext, UpdateSourceTrigger=PropertyChanged}" x:Name="EntityContext" Grid.Row="0" Grid.Column="1" Margin="5" LabelText="Entity Context Name" />
+			<pc:TextBox Text="{Binding Path=OpenType.EntityContext, UpdateSourceTrigger=PropertyChanged}" x:Name="EntityContext" Grid.Row="0" Grid.Column="1" Margin="5" LabelText="Entity Context Property" />
 		</Grid>
 		<Data:TargetSelector Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" OpenType="{Binding Path=OpenType}" IsServerType="True" Visibility="Visible" />
 		<Data:TargetSelector Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" OpenType="{Binding Path=OpenType}" IsServerType="False" Visibility="Visible" />

@@ -234,6 +234,10 @@ namespace NETPath.Generators.CS.WebApi
 				foreach (var mp in o.QueryParameters.Where(mp => mp.Documentation != null))
 					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
 			}
+			if (!string.IsNullOrWhiteSpace(o.AuthenticationFilter) || !string.IsNullOrWhiteSpace(o.Owner.AuthenticationFilter))
+				code.AppendLine(string.Format("\t\t[{0}]", !string.IsNullOrWhiteSpace(o.AuthenticationFilter) ? o.AuthenticationFilter : o.Owner.AuthenticationFilter));
+			if (!string.IsNullOrWhiteSpace(o.AuthorizationFilter) || !string.IsNullOrWhiteSpace(o.Owner.AuthorizationFilter))
+				code.AppendLine(string.Format("\t\t[{0}]", !string.IsNullOrWhiteSpace(o.AuthorizationFilter) ? o.AuthorizationFilter : o.Owner.AuthorizationFilter));
 			code.AppendLine(string.Format("\t\t[System.Web.Http.Route(\"{0}\")]", BuildUriTemplate(o)));
 			if (o.Method != WebApiMethodVerbs.Custom)
 				code.AppendLine(string.Format("\t\t[System.Web.Http.Http{0}]", o.Method));
@@ -567,6 +571,10 @@ namespace NETPath.Generators.CS.WebApi
 			{
 				foreach (var e in d.Elements.Where(a => a.EnableUpdates && a.DataType.TypeMode == DataTypeMode.Primitive && a.DataType.Primitive != PrimitiveTypes.Object))
 				{
+					if (!string.IsNullOrWhiteSpace(e.UpdateAuthenticationFilter))
+						code.AppendLine(string.Format("\t\t[{0}]", e.UpdateAuthenticationFilter));
+					if (!string.IsNullOrWhiteSpace(e.UpdateAuthorizationFilter))
+						code.AppendLine(string.Format("\t\t[{0}]", e.UpdateAuthorizationFilter));
 					code.AppendLine(string.Format("\t\t[System.Web.Http.Route(\"{0}/{1}", d.Name.ToLowerInvariant(), e.DataName.ToLowerInvariant()));
 					foreach (var l in d.Elements.Where(a => a.IsUpdateLookup))
 						code.AppendFormat("/{0}", l.DataName);

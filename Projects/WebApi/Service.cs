@@ -38,7 +38,12 @@ namespace NETPath.Projects.WebApi
 		public Documentation ClientDocumentation { get { return (Documentation)GetValue(ClientDocumentationProperty); } set { SetValue(ClientDocumentationProperty, value); } }
 		public static readonly DependencyProperty ClientDocumentationProperty = DependencyProperty.Register("ClientDocumentation", typeof(Documentation), typeof(WebApiService));
 
-		//Host
+		//Security
+		public string AuthenticationFilter { get { return (string)GetValue(AuthenticationFilterProperty); } set { SetValue(AuthenticationFilterProperty, value); } }
+		public static readonly DependencyProperty AuthenticationFilterProperty = DependencyProperty.Register("AuthenticationFilter", typeof(string), typeof(WebApiMethod), new PropertyMetadata(""));
+
+		public string AuthorizationFilter { get { return (string)GetValue(AuthorizationFilterProperty); } set { SetValue(AuthorizationFilterProperty, value); } }
+		public static readonly DependencyProperty AuthorizationFilterProperty = DependencyProperty.Register("AuthorizationFilter", typeof(string), typeof(WebApiMethod), new PropertyMetadata(""));
 
 		public WebApiService() : base(DataTypeMode.Class)
 		{
@@ -148,6 +153,12 @@ namespace NETPath.Projects.WebApi
 
 		public bool EnsureSuccessStatusCode { get { return (bool)GetValue(EnsureSuccessStatusCodeProperty); } set { SetValue(EnsureSuccessStatusCodeProperty, value); } }
 		public static readonly DependencyProperty EnsureSuccessStatusCodeProperty = DependencyProperty.Register("EnsureSuccessStatusCode", typeof(bool), typeof(WebApiMethod), new PropertyMetadata(false));
+
+		public string AuthenticationFilter { get { return (string)GetValue(AuthenticationFilterProperty); } set { SetValue(AuthenticationFilterProperty, value); } }
+		public static readonly DependencyProperty AuthenticationFilterProperty = DependencyProperty.Register("AuthenticationFilter", typeof(string), typeof(WebApiMethod), new PropertyMetadata(""));
+
+		public string AuthorizationFilter { get { return (string)GetValue(AuthorizationFilterProperty); } set { SetValue(AuthorizationFilterProperty, value); } }
+		public static readonly DependencyProperty AuthorizationFilterProperty = DependencyProperty.Register("AuthorizationFilter", typeof(string), typeof(WebApiMethod), new PropertyMetadata(""));
 
 		//Content
 		public bool HasContent { get { return (bool)GetValue(HasContentProperty); } set { SetValue(HasContentProperty, value); } }

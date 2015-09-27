@@ -362,6 +362,12 @@ namespace NETPath.Projects.WebApi
 		public bool IsUpdateLookup { get { return (bool)GetValue(IsUpdateLookupProperty); } set { SetValue(IsUpdateLookupProperty, value); } }
 		public static readonly DependencyProperty IsUpdateLookupProperty = DependencyProperty.Register("IsUpdateLookup", typeof(bool), typeof(WebApiDataElement), new PropertyMetadata(false));
 
+		public string UpdateAuthenticationFilter { get { return (string)GetValue(UpdateAuthenticationFilterProperty); } set { SetValue(UpdateAuthenticationFilterProperty, value); } }
+		public static readonly DependencyProperty UpdateAuthenticationFilterProperty = DependencyProperty.Register("UpdateAuthenticationFilter", typeof(string), typeof(WebApiDataElement), new PropertyMetadata(""));
+
+		public string UpdateAuthorizationFilter { get { return (string)GetValue(UpdateAuthorizationFilterProperty); } set { SetValue(UpdateAuthorizationFilterProperty, value); } }
+		public static readonly DependencyProperty UpdateAuthorizationFilterProperty = DependencyProperty.Register("UpdateAuthorizationFilter", typeof(string), typeof(WebApiDataElement), new PropertyMetadata(""));
+
 		//System
 
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
