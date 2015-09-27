@@ -124,7 +124,11 @@ namespace NETPath.Generators.CS.WebApi
 					if ((pun.Server && Server) || (pun.Client && !Server && ((pun.RT && Target.Framework == ProjectGenerationFramework.WINRT) || (pun.NET && Target.Framework == ProjectGenerationFramework.NET45))))
 						code.AppendLine(string.Format("using {0};", pun.Namespace));
 				}
-				if (Data.EnableEntityFramework && Server) code.AppendLine("using System.Data.Entity.Core.Objects;");
+				if (Data.EnableEntityFramework && Server)
+				{
+					code.AppendLine("\tusing System.Data.Entity;");
+					code.AppendLine("\tusing System.Data.Entity.Core.Objects;");
+				}
 				if (Target.TargetTypes.OfType<WebApiData>().Any(a => a.HasSql))
 				{
 					code.AppendLine("using System.Data;");
@@ -149,6 +153,32 @@ namespace NETPath.Generators.CS.WebApi
 			{
 				code.AppendLine(string.Format("namespace {0}", Data.Namespace.FullName));
 				code.AppendLine("{");
+
+				if (Data.UsingInsideNamespace)
+				{
+					if (Data.GenerateRegions)
+					{
+						code.AppendLine("\t#region Using");
+						code.AppendLine();
+					}
+					// Generate using namespaces
+					foreach (ProjectUsingNamespace pun in Data.UsingNamespaces)
+					{
+						if ((pun.Server))
+							code.AppendLine(string.Format("\tusing {0};", pun.Namespace));
+					}
+					if (Data.EnableEntityFramework)
+					{
+						code.AppendLine("\tusing System.Data.Entity;");
+						code.AppendLine("\tusing System.Data.Entity.Core.Objects;");
+					}
+					code.AppendLine();
+					if (Data.GenerateRegions)
+					{
+						code.AppendLine("\t#endregion");
+						code.AppendLine();
+					}
+				}
 				code.AppendLine("\tpublic class InheritedDirectRouteProvider : DefaultDirectRouteProvider");
 				code.AppendLine("\t{");
 				code.AppendLine("\t\tprotected override IReadOnlyList<IDirectRouteFactory> GetActionRouteFactories(HttpActionDescriptor actionDescriptor)");
@@ -229,19 +259,20 @@ namespace NETPath.Generators.CS.WebApi
 					code.AppendLine("\t}");
 				}
 				code.AppendLine("}");
+				code.AppendLine();
 			}
 
 			//Generate project
 			if (Server)
 			{
 				if (Target.Framework == ProjectGenerationFramework.NET45 || Target.Framework == ProjectGenerationFramework.WINRT)
-					code.AppendLine(NamespaceGenerator.GenerateServerCode45(Data.Namespace, Target));
+					code.Append(NamespaceGenerator.GenerateServerCode45(Data.Namespace, Target));
 				ServiceGenerator.GenerateServerUpdateService(code, Data);
 			}
 			else
 			{
-				if (Target.Framework == ProjectGenerationFramework.NET45) code.AppendLine(NamespaceGenerator.GenerateClientCode45(Data.Namespace, Target));
-				if (Target.Framework == ProjectGenerationFramework.WINRT) code.AppendLine(NamespaceGenerator.GenerateClientCodeRT8(Data.Namespace, Target));
+				if (Target.Framework == ProjectGenerationFramework.NET45) code.Append(NamespaceGenerator.GenerateClientCode45(Data.Namespace, Target));
+				if (Target.Framework == ProjectGenerationFramework.WINRT) code.Append(NamespaceGenerator.GenerateClientCodeRT8(Data.Namespace, Target));
 				ServiceGenerator.GenerateClientUpdateService(code, Data);
 			}
 

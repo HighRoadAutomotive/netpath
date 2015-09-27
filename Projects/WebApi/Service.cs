@@ -40,10 +40,10 @@ namespace NETPath.Projects.WebApi
 
 		//Security
 		public string AuthenticationFilter { get { return (string)GetValue(AuthenticationFilterProperty); } set { SetValue(AuthenticationFilterProperty, value); } }
-		public static readonly DependencyProperty AuthenticationFilterProperty = DependencyProperty.Register("AuthenticationFilter", typeof(string), typeof(WebApiMethod), new PropertyMetadata(""));
+		public static readonly DependencyProperty AuthenticationFilterProperty = DependencyProperty.Register("AuthenticationFilter", typeof(string), typeof(WebApiService), new PropertyMetadata(""));
 
 		public string AuthorizationFilter { get { return (string)GetValue(AuthorizationFilterProperty); } set { SetValue(AuthorizationFilterProperty, value); } }
-		public static readonly DependencyProperty AuthorizationFilterProperty = DependencyProperty.Register("AuthorizationFilter", typeof(string), typeof(WebApiMethod), new PropertyMetadata(""));
+		public static readonly DependencyProperty AuthorizationFilterProperty = DependencyProperty.Register("AuthorizationFilter", typeof(string), typeof(WebApiService), new PropertyMetadata(""));
 
 		public WebApiService() : base(DataTypeMode.Class)
 		{

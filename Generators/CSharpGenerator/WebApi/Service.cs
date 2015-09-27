@@ -132,9 +132,9 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\tprivate readonly string _baseUri;");
 			code.AppendLine("\t\tpublic string BaseUri { get { return _baseUri; } }");
 			code.AppendLine("\t\tprivate readonly System.Net.Http.HttpClient _HttpClient;");
-			code.AppendLine("\t\tprotected System.Net.Http.HttpClient HttpClient {{ get {{ return _HttpClient; }} }}");
+			code.AppendLine("\t\tprotected System.Net.Http.HttpClient HttpClient { get { return _HttpClient; } }");
 			code.AppendLine();
-			code.AppendLine("\t\t\tpartial void SetCommonHeaders(System.Net.Http.Headers.HttpRequestHeaders headers);");
+			code.AppendLine("\t\tpartial void SetCommonHeaders(System.Net.Http.Headers.HttpRequestHeaders headers);");
 			code.AppendLine();
 
 			if (o.Parent.Owner.GenerateRegions)
@@ -360,7 +360,7 @@ namespace NETPath.Generators.CS.WebApi
 				if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine(string.Format("\t\tpublic abstract void {0}Result();", o.Name));
 				else code.AppendLine(string.Format("\t\tpublic abstract void {0}Result({1} Value);", o.Name, DataTypeGenerator.GenerateType(o.ReturnType)));
 			}
-			code.AppendLine(string.Format("\t\t\tpartial void Set{0}Headers(System.Net.Http.Headers.HttpRequestHeaders headers);", o.Name));
+			code.AppendLine(string.Format("\t\tpartial void Set{0}Headers(System.Net.Http.Headers.HttpRequestHeaders headers);", o.Name));
 			return code.ToString();
 		}
 
@@ -460,7 +460,7 @@ namespace NETPath.Generators.CS.WebApi
 					code.AppendLine(string.Format("\t\t\treturn await rr.Content.ReadAsAsync<{0}>(new MediaTypeFormatter[] {{ new {1}() }});", DataTypeGenerator.GenerateType(o.ReturnType), conf.ResponseFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.ResponseFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
 			}
 			code.AppendLine("\t\t}");
-			code.AppendLine(string.Format("\t\t\tpartial void Set{0}Headers(System.Net.Http.Headers.HttpRequestHeaders headers);", o.Name));
+			code.AppendLine(string.Format("\t\tpartial void Set{0}Headers(System.Net.Http.Headers.HttpRequestHeaders headers);", o.Name));
 
 			return code.ToString();
 		}
@@ -509,7 +509,7 @@ namespace NETPath.Generators.CS.WebApi
 
 		public static void GenerateServerUpdateService(StringBuilder code, WebApiProject o)
 		{
-			if (!o.ClientGenerationTargets.OfType<WebApiData>().Any(a => a.Elements.Any(b => b.EnableUpdates)))
+			if (!o.ClientGenerationTargets.Any(c => c.TargetTypes.OfType<WebApiData>().Any(a => a.Elements.Any(b => b.EnableUpdates))))
 				return;
 
 			code.AppendLine(string.Format("namespace {0}", o.Namespace.FullName));
@@ -546,120 +546,125 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t[RoutePrefix(\"__dus__\")]");
 			code.AppendLine("\tpublic sealed class DataUpdateServiceController : ApiController");
 			code.AppendLine("\t{");
-			foreach (var d in o.ClientGenerationTargets.OfType<WebApiData>().Where(a => a.Elements.Any(b => b.EnableUpdates)))
+			foreach(var t in o.ClientGenerationTargets)
 			{
-				foreach (var e in d.Elements.Where(a => a.EnableUpdates && a.DataType.TypeMode == DataTypeMode.Primitive && a.DataType.Primitive != PrimitiveTypes.Object))
+				foreach (var d in t.TargetTypes.OfType<WebApiData>().Where(a => a.Elements.Any(b => b.EnableUpdates)))
 				{
-					if (!string.IsNullOrWhiteSpace(e.UpdateAuthenticationFilter))
-						code.AppendLine(string.Format("\t\t[{0}]", e.UpdateAuthenticationFilter));
-					if (!string.IsNullOrWhiteSpace(e.UpdateAuthorizationFilter))
-						code.AppendLine(string.Format("\t\t[{0}]", e.UpdateAuthorizationFilter));
-					code.AppendLine(string.Format("\t\t[System.Web.Http.Route(\"{0}/{1}", d.Name.ToLowerInvariant(), e.DataName.ToLowerInvariant()));
-					foreach (var l in d.Elements.Where(a => a.IsUpdateLookup))
-						code.AppendFormat("/{0}", l.DataName);
-					code.AppendLine("\")]");
-					code.AppendLine("\t\t[System.Web.Http.AcceptVerbs(\"PUT\")]");
-					code.AppendFormat("\t\tpublic async Task Update{0}{1}(", d.Name, e.DataName);
-					foreach (var l in d.Elements.Where(a => a.IsUpdateLookup))
-						code.AppendFormat("{0} {1},  ", l.DataType, l.DataName);
-					code.Remove(code.Length - 2, 2);
-					code.AppendLine(")");
-					code.AppendLine("\t\t{");
-					if (e.DataType.Primitive == PrimitiveTypes.ByteArray)
+					foreach (var e in d.Elements.Where(a => a.EnableUpdates && a.DataType.TypeMode == DataTypeMode.Primitive && a.DataType.Primitive != PrimitiveTypes.Object))
 					{
-						code.AppendLine("\t\t\tvar value = await Request.Content.ReadAsByteArrayAsync();");
-					}
-					else
-					{
-						code.AppendLine(string.Format("\t\t\tvar {0} = await Request.Content.ReadAsStringAsync());", e.DataType.Primitive == PrimitiveTypes.String ? "value" : "payload"));
-						switch (e.DataType.Primitive)
-						{
-						case PrimitiveTypes.Bool:
-							code.AppendLine("\t\t\tvar value = Convert.ToBoolean(payload);");
-							break;
-						case PrimitiveTypes.Char:
-							code.AppendLine("\t\t\tvar value = Convert.ToChar(payload);");
-							break;
-						case PrimitiveTypes.Byte:
-							code.AppendLine("\t\t\tvar value = Convert.FromBase64String(payload)[0];");
-							break;
-						case PrimitiveTypes.SByte:
-							code.AppendLine("\t\t\tvar value = Convert.ToSByte(Convert.FromBase64String(payload)[0]);");
-							break;
-						case PrimitiveTypes.Short:
-							code.AppendLine("\t\t\tvar value = Convert.ToInt16(payload);");
-							break;
-						case PrimitiveTypes.Int:
-							code.AppendLine("\t\t\tvar value = Convert.ToInt32(payload);");
-							break;
-						case PrimitiveTypes.Long:
-							code.AppendLine("\t\t\tvar value = Convert.ToInt64(payload);");
-							break;
-						case PrimitiveTypes.UShort:
-							code.AppendLine("\t\t\tvar value = Convert.ToUInt16(payload);");
-							break;
-						case PrimitiveTypes.UInt:
-							code.AppendLine("\t\t\tvar value = Convert.ToUInt32(payload);");
-							break;
-						case PrimitiveTypes.ULong:
-							code.AppendLine("\t\t\tvar value = Convert.ToUInt64(payload);");
-							break;
-						case PrimitiveTypes.Float:
-							code.AppendLine("\t\t\tvar value = Convert.ToSingle(payload);");
-							break;
-						case PrimitiveTypes.Double:
-							code.AppendLine("\t\t\tvar value = Convert.ToDouble(payload);");
-							break;
-						case PrimitiveTypes.Decimal:
-							code.AppendLine("\t\t\tvar value = Convert.ToDecimal(payload);");
-							break;
-						case PrimitiveTypes.DateTime:
-							code.AppendLine("\t\t\tvar value = DateTime.Parse(payload, \"O\", CultureInfo.InvariantCulture);");
-							break;
-						case PrimitiveTypes.DateTimeOffset:
-							code.AppendLine("\t\t\tvar value = DateTimeOffset.Parse(payload, \"O\", CultureInfo.InvariantCulture);");
-							break;
-						case PrimitiveTypes.TimeSpan:
-							code.AppendLine("\t\t\tvar value = new TimeSpan(Convert.ToInt64(payload));");
-							break;
-						case PrimitiveTypes.GUID:
-							code.AppendLine("\t\t\tvar value = new Guid(payload);");
-							break;
-						case PrimitiveTypes.URI:
-							code.AppendLine("\t\t\tvar value = new Uri(payload);");
-							break;
-						case PrimitiveTypes.Version:
-							code.AppendLine("\t\t\tvar value = new Version(payload);");
-							break;
-						}
-					}
-
-					if (d.HasEntity)
-					{
-						code.AppendLine(string.Format("\t\t\tusing (var db = new {0}())", o.EnitityDatabaseType));
-						code.AppendLine("\t\t\t{");
-						code.AppendFormat("\t\t\t\tvar item = await db.{0}.Where(a => ", d.EntityContext);
+						if (!string.IsNullOrWhiteSpace(e.UpdateAuthenticationFilter))
+							code.AppendLine(string.Format("\t\t[{0}]", e.UpdateAuthenticationFilter));
+						if (!string.IsNullOrWhiteSpace(e.UpdateAuthorizationFilter))
+							code.AppendLine(string.Format("\t\t[{0}]", e.UpdateAuthorizationFilter));
+						code.Append(string.Format("\t\t[System.Web.Http.Route(\"{0}/{1}", d.Name.ToLowerInvariant(), e.DataName.ToLowerInvariant()));
 						foreach (var l in d.Elements.Where(a => a.IsUpdateLookup))
-							code.AppendFormat("a.{0} == {1} && ", l.EntityName, l.DataName);
-						code.Remove(code.Length - 4, 4);
-						code.AppendLine(").FirstOrDefaultAsync();");
-						code.AppendLine("\t\t\t\tif (item == null) throw new HttpResponseException(HttpStatusCode.NotFound);");
-						code.AppendLine(string.Format("\t\t\t\titem.{0} = Data.{1};", e.EntityName, e.DataName));
-						code.AppendLine("\t\t\t\tawait db.SaveChangesAsync();");
-						code.AppendLine("\t\t\t}");
+							code.AppendFormat("/{{{0}}}", l.DataName);
+						code.AppendLine("\")]");
+						code.AppendLine("\t\t[System.Web.Http.AcceptVerbs(\"PUT\")]");
+						code.AppendFormat("\t\tpublic async Task Update{0}{1}(", d.Name, e.DataName);
+						foreach (var l in d.Elements.Where(a => a.IsUpdateLookup))
+							code.AppendFormat("{0} {1}, ", l.DataType, l.DataName);
+						code.Remove(code.Length - 2, 2);
+						code.AppendLine(")");
+						code.AppendLine("\t\t{");
+						if (e.DataType.Primitive == PrimitiveTypes.ByteArray)
+						{
+							code.AppendLine("\t\t\tvar value = await Request.Content.ReadAsByteArrayAsync();");
+						}
+						else
+						{
+							code.AppendLine(string.Format("\t\t\tvar {0} = await Request.Content.ReadAsStringAsync();", e.DataType.Primitive == PrimitiveTypes.String ? "value" : "payload"));
+							switch (e.DataType.Primitive)
+							{
+								case PrimitiveTypes.Bool:
+									code.AppendLine("\t\t\tvar value = Convert.ToBoolean(payload);");
+									break;
+								case PrimitiveTypes.Char:
+									code.AppendLine("\t\t\tvar value = Convert.ToChar(payload);");
+									break;
+								case PrimitiveTypes.Byte:
+									code.AppendLine("\t\t\tvar value = Convert.FromBase64String(payload)[0];");
+									break;
+								case PrimitiveTypes.SByte:
+									code.AppendLine("\t\t\tvar value = Convert.ToSByte(Convert.FromBase64String(payload)[0]);");
+									break;
+								case PrimitiveTypes.Short:
+									code.AppendLine("\t\t\tvar value = Int16.Parse(payload, System.Globalization.CultureInfo.InvariantCulture);");
+									break;
+								case PrimitiveTypes.Int:
+									code.AppendLine("\t\t\tvar value = Int32.Parse(payload, System.Globalization.CultureInfo.InvariantCulture);");
+									break;
+								case PrimitiveTypes.Long:
+									code.AppendLine("\t\t\tvar value = Int64.Parse(payload, System.Globalization.CultureInfo.InvariantCulture);");
+									break;
+								case PrimitiveTypes.UShort:
+									code.AppendLine("\t\t\tvar value = UInt16.Parse(payload, System.Globalization.CultureInfo.InvariantCulture);");
+									break;
+								case PrimitiveTypes.UInt:
+									code.AppendLine("\t\t\tvar value = UInt32.Parse(payload, System.Globalization.CultureInfo.InvariantCulture);");
+									break;
+								case PrimitiveTypes.ULong:
+									code.AppendLine("\t\t\tvar value = UInt64.Parse(payload, System.Globalization.CultureInfo.InvariantCulture);");
+									break;
+								case PrimitiveTypes.Float:
+									code.AppendLine("\t\t\tvar value = Single.Parse(payload, System.Globalization.CultureInfo.InvariantCulture);");
+									break;
+								case PrimitiveTypes.Double:
+									code.AppendLine("\t\t\tvar value = Double.Parse(payload, System.Globalization.CultureInfo.InvariantCulture);");
+									break;
+								case PrimitiveTypes.Decimal:
+									code.AppendLine("\t\t\tvar value = Decimal.Parse(payload, System.Globalization.CultureInfo.InvariantCulture);");
+									break;
+								case PrimitiveTypes.DateTime:
+									code.AppendLine("\t\t\tvar value = DateTime.Parse(payload, \"O\", System.Globalization.CultureInfo.InvariantCulture);");
+									break;
+								case PrimitiveTypes.DateTimeOffset:
+									code.AppendLine("\t\t\tvar value = DateTimeOffset.Parse(payload, \"O\", System.Globalization.CultureInfo.InvariantCulture);");
+									break;
+								case PrimitiveTypes.TimeSpan:
+									code.AppendLine("\t\t\tvar value = new TimeSpan(Convert.ToInt64(payload));");
+									break;
+								case PrimitiveTypes.GUID:
+									code.AppendLine("\t\t\tvar value = new Guid(payload);");
+									break;
+								case PrimitiveTypes.URI:
+									code.AppendLine("\t\t\tvar value = new Uri(payload);");
+									break;
+								case PrimitiveTypes.Version:
+									code.AppendLine("\t\t\tvar value = new Version(payload);");
+									break;
+							}
+						}
+
+						if (d.HasEntity)
+						{
+							code.AppendLine(string.Format("\t\t\tusing (var db = new {0}())", o.EnitityDatabaseType));
+							code.AppendLine("\t\t\t{");
+							code.AppendFormat("\t\t\t\tvar item = await db.{0}.Where(a => ", d.EntityContext);
+							foreach (var l in d.Elements.Where(a => a.IsUpdateLookup))
+								code.AppendFormat("a.{0} == {1} && ", l.EntityName, l.DataName);
+							code.Remove(code.Length - 4, 4);
+							code.AppendLine(").FirstOrDefaultAsync();");
+							code.AppendLine("\t\t\t\tif (item == null) throw new HttpResponseException(HttpStatusCode.NotFound);");
+							code.AppendLine(string.Format("\t\t\t\titem.{0} = value;", e.EntityName));
+							code.AppendLine("\t\t\t\tawait db.SaveChangesAsync();");
+							code.AppendLine("\t\t\t}");
+						}
+
+						code.AppendLine("\t\t}");
+						code.AppendLine();
 					}
 
-					code.AppendLine("\t\t}");
-					code.AppendLine();
 				}
 			}
 			code.AppendLine("\t}");
 			code.AppendLine("}");
+			code.AppendLine();
 		}
 
 		public static void GenerateClientUpdateService(StringBuilder code, WebApiProject o)
 		{
-			if (!o.ClientGenerationTargets.OfType<WebApiData>().Any(a => a.Elements.Any(b => b.EnableUpdates)))
+			if (!o.ClientGenerationTargets.Any(c => c.TargetTypes.OfType<WebApiData>().Any(a => a.Elements.Any(b => b.EnableUpdates))))
 				return;
 
 			code.AppendLine(string.Format("namespace {0}", o.Namespace.FullName));
@@ -695,66 +700,71 @@ namespace NETPath.Generators.CS.WebApi
 
 			code.AppendLine("\tpublic static partial class DataUpdateService");
 			code.AppendLine("\t{");
-			code.AppendLine(string.Format("\t\tprivate readonly string _baseUri = \"{0}\";", o.Namespace.URI));
-			code.AppendLine("\t\tpublic string BaseUri { get { return _baseUri; } }");
-			code.AppendLine("\t\tprivate readonly System.Net.Http.HttpClient _HttpClient= new HttpClient(new HttpClientHandler() { AllowAutoRedirect = false, AutomaticDecompression = DecompressionMethods.None});");
-			code.AppendLine("\t\tprotected System.Net.Http.HttpClient HttpClient {{ get {{ return _HttpClient; }} }}");
+			code.AppendLine(string.Format("\t\tprivate static readonly string _baseUri = \"{0}\";", o.Namespace.URI));
+			code.AppendLine("\t\tpublic static string BaseUri { get { return _baseUri; } }");
+			code.AppendLine("\t\tprivate static readonly System.Net.Http.HttpClient _httpClient = new HttpClient(new HttpClientHandler() { AllowAutoRedirect = false, AutomaticDecompression = DecompressionMethods.None });");
 			code.AppendLine();
-			code.AppendLine("\t\t\tpartial void SetCommonUpdateHeaders(System.Net.Http.Headers.HttpRequestHeaders headers);");
+			code.AppendLine("\t\tstatic partial void SetCommonUpdateHeaders(System.Net.Http.Headers.HttpRequestHeaders headers);");
 			code.AppendLine();
 
-			foreach (var d in o.ClientGenerationTargets.OfType<WebApiData>().Where(a => a.Elements.Any(b => b.EnableUpdates)))
+			foreach (var t in o.ClientGenerationTargets)
 			{
-				foreach (var e in d.Elements.Where(a => a.EnableUpdates && a.DataType.TypeMode == DataTypeMode.Primitive && a.DataType.Primitive != PrimitiveTypes.Object))
+				foreach (var d in t.TargetTypes.OfType<WebApiData>().Where(a => a.Elements.Any(b => b.EnableUpdates)))
 				{
-					code.AppendFormat("\t\tpublic async Task Update{0}{1}(", d.Name, e.DataName);
-					foreach (var l in d.Elements.Where(a => a.IsUpdateLookup))
-						code.AppendFormat("{0} {1}, ", l.DataType, l.DataName);
-					code.AppendLine(string.Format("{0} {1})", e.DataType, e.DataName));
-					code.AppendLine("\t\t{");
-					code.AppendLine("\t\t\tvar uri = new StringBuilder(_baseUri, 256);");
-					code.AppendLine(string.Format("\t\t\turi.Append(\"__dus__/{0}/{1}\");", d.Name.ToLowerInvariant(), e.DataName.ToLowerInvariant()));
-					foreach (var l in d.Elements.Where(a => a.IsUpdateLookup))
-						code.AppendLine(string.Format("\t\t\turi.AppendFormat(\"/{{0}}\", {0});", l.DataName));
-
-					code.AppendLine("\t\t\tvar rm = new HttpRequestMessage(HttpMethod.Put, new Uri(uri.ToString(), UriKind.RelativeOrAbsolute));");
-					code.AppendLine("\t\t\tSetCommonUpdateHeaders(rm.Headers);");
-					code.AppendLine(string.Format("\t\t\tSetUpdate{0}{1}Headers(rm.Headers);", d.Name, e.DataName));
-
-					if (e.DataType.Primitive == PrimitiveTypes.ByteArray)
+					foreach (var e in d.Elements.Where(a => a.EnableUpdates && a.DataType.TypeMode == DataTypeMode.Primitive && a.DataType.Primitive != PrimitiveTypes.Object))
 					{
-						code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.ByteArrayContent({0});", e.DataName));
-					}
-					else
-					{
-						switch (e.DataType.Primitive)
+						code.AppendFormat("\t\tpublic static async Task Update{0}{1}(", d.Name, e.DataName);
+						foreach (var l in d.Elements.Where(a => a.IsUpdateLookup))
+							code.AppendFormat("{0} {1}, ", l.DataType, l.DataName);
+						code.AppendLine(string.Format("{0} {1})", e.DataType, e.DataName));
+						code.AppendLine("\t\t{");
+						code.AppendLine("\t\t\tvar uri = new StringBuilder(_baseUri, 256);");
+						code.AppendLine(string.Format("\t\t\turi.Append(\"__dus__/{0}/{1}\");", d.Name.ToLowerInvariant(), e.DataName.ToLowerInvariant()));
+						foreach (var l in d.Elements.Where(a => a.IsUpdateLookup))
+							code.AppendLine(string.Format("\t\t\turi.AppendFormat(\"/{{0}}\", {0});", l.DataName));
+
+						code.AppendLine("\t\t\tvar rm = new HttpRequestMessage(HttpMethod.Put, new Uri(uri.ToString(), UriKind.RelativeOrAbsolute));");
+						code.AppendLine("\t\t\tSetCommonUpdateHeaders(rm.Headers);");
+						code.AppendLine(string.Format("\t\t\tSetUpdate{0}{1}Headers(rm.Headers);", d.Name, e.DataName));
+
+						if (e.DataType.Primitive == PrimitiveTypes.ByteArray)
 						{
-						case PrimitiveTypes.Byte:
-							code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.StringContent(Convert.ToBase64String(new byte[] {{ {0} }}));", e.DataName));
-							break;
-						case PrimitiveTypes.SByte:
-							code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.StringContent(Convert.ToBase64String(new byte[] {{ Convert.ToSByte({0}) }}));", e.DataName));
-							break;
-						case PrimitiveTypes.DateTime:
-						case PrimitiveTypes.DateTimeOffset:
-							code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.StringContent({0}.ToString(\"O\", CultureInfo.InvariantCulture));", e.DataName));
-							break;
-						case PrimitiveTypes.TimeSpan:
-							code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.StringContent({0}.Ticks);", e.DataName));
-							break;
-						default:
-							code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.StringContent({0});", e.DataName));
-							break;
+							code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.ByteArrayContent({0});", e.DataName));
 						}
-					}
+						else
+						{
+							switch (e.DataType.Primitive)
+							{
+								case PrimitiveTypes.Byte:
+									code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.StringContent(Convert.ToBase64String(new byte[] {{ {0} }}));", e.DataName));
+									break;
+								case PrimitiveTypes.SByte:
+									code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.StringContent(Convert.ToBase64String(new byte[] {{ Convert.ToSByte({0}) }}));", e.DataName));
+									break;
+								case PrimitiveTypes.DateTime:
+								case PrimitiveTypes.DateTimeOffset:
+									code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.StringContent({0}.ToString(\"O\", System.Globalization.CultureInfoCultureInfo.InvariantCulture));", e.DataName));
+									break;
+								case PrimitiveTypes.TimeSpan:
+									code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.StringContent({0}.Ticks);", e.DataName));
+									break;
+								default:
+									code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.StringContent({0}.ToString(System.Globalization.CultureInfo.InvariantCulture));", e.DataName));
+									break;
+							}
+						}
 
-					code.AppendLine("\t\t}");
-					code.AppendLine(string.Format("\t\t\tpartial void SetUpdate{0}{1}Headers(System.Net.Http.Headers.HttpRequestHeaders headers);", d.Name, e.DataName));
-					code.AppendLine();
+						code.AppendLine("\t\t\tawait _httpClient.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);");
+
+						code.AppendLine("\t\t}");
+						code.AppendLine(string.Format("\t\tstatic partial void SetUpdate{0}{1}Headers(System.Net.Http.Headers.HttpRequestHeaders headers);", d.Name, e.DataName));
+						code.AppendLine();
+					}
 				}
 			}
 			code.AppendLine("\t}");
 			code.AppendLine("}");
+			code.AppendLine();
 		}
 
 		#endregion

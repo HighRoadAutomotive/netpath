@@ -783,9 +783,9 @@ namespace NETPath.Generators.CS.WebApi
 		{
 			var code = new StringBuilder(256);
 
-			code.AppendFormat("async (o, args) => {{ var t = o as {0}; await {1}.DataUpdateService.Update{2}{3}(", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.DataType)), (o.Owner.Parent.Owner as WebApiProject)?.Namespace.FullName ?? "", o.Owner.Name, o.DataName);
+			code.AppendFormat("async (o, args) => {{ var t = o as {0}; await {1}.DataUpdateService.Update{2}{3}(", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.Owner.XAMLType)), (o.Owner.Parent.Owner as WebApiProject)?.Namespace.FullName ?? "", o.Owner.Name, o.DataName);
 			foreach (var l in o.Owner.Elements.Where(a => a.IsUpdateLookup))
-				code.AppendLine(string.Format("t.{0}, ", l.XamlName));
+				code.AppendFormat("t.{0}, ", l.XamlName);
 			code.AppendFormat("({0})args.NewValue); }}", o.DataType);
 
 			return code.ToString();
