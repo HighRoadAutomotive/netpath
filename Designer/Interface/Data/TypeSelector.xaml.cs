@@ -15,7 +15,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using NETPath.Projects;
-using NETPath.Projects.Wcf;
 using NETPath.Projects.WebApi;
 
 namespace NETPath.Interface.Data
@@ -37,38 +36,6 @@ namespace NETPath.Interface.Data
 			{
 				t.IntProject = null;
 				return;
-			}
-
-			//WCF
-			if (e.NewValue.GetType() == typeof(WcfProject))
-			{
-				var v = e.NewValue as WcfProject;
-				if (v != null) t.IntProject = v;
-			}
-			if (e.NewValue.GetType() == typeof(WcfMethod) || e.NewValue.GetType() == typeof(WcfProperty))
-			{
-				var v = e.NewValue as WcfOperation;
-				if (v != null) t.IntProject = v.Owner.Parent.Owner;
-			}
-			if (e.NewValue.GetType() == typeof(WcfMethodParameter))
-			{
-				var v = e.NewValue as WcfMethodParameter;
-				if (v != null) t.IntProject = v.Owner.Parent.Owner;
-			}
-			if (e.NewValue.GetType() == typeof(DataType))
-			{
-				var v = e.NewValue as DataType;
-				if (v != null) t.IntProject = v.Parent.Owner;
-			}
-			if (e.NewValue.GetType() == typeof(WcfData))
-			{
-				var v = e.NewValue as WcfData;
-				if (v != null) t.IntProject = v.Parent.Owner;
-			}
-			if (e.NewValue.GetType() == typeof(WcfDataElement))
-			{
-				var v = e.NewValue as WcfDataElement;
-				if (v != null) t.IntProject = v.Owner.Parent.Owner;
 			}
 
 			//WebApi

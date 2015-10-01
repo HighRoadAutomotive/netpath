@@ -4,7 +4,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d"
 	xmlns:Data="clr-namespace:NETPath.Interface.Data"
-	xmlns:Projects="clr-namespace:NETPath.Projects.Wcf;assembly=NETPath.Projects"
+	xmlns:Projects="clr-namespace:NETPath.Projects.WebApi;assembly=NETPath.Projects"
 	xmlns:Docs="clr-namespace:NETPath.Interface.Documentation"
 	xmlns:pc="http://schemas.ellipticbit.com/controls"
 	d:DesignHeight="970" d:DesignWidth="1640" DataContext="{Binding RelativeSource={RelativeSource Self}}" FontSize="10pt" >
@@ -73,7 +73,7 @@
 						</Grid.RowDefinitions>
 						<ListBox x:Name="ValuesList" ItemsSource="{Binding Path=OpenType.Elements}" AllowDrop="True" BorderThickness="0" Background="Transparent" Margin="0" SelectionMode="Single" Padding="-1,0" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.IsVirtualizing="False" SelectionChanged="ValuesList_SelectionChanged" PreviewMouseLeftButtonDown="ValuesList_PreviewMouseLeftButtonDown" PreviewMouseMove="ValuesList_PreviewMouseMove" QueryContinueDrag="ValuesList_QueryContinueDrag" DragLeave="ValuesList_DragLeave" PreviewDragOver="ValuesList_PreviewDragOver" PreviewDrop="ValuesList_Drop" >
 							<ListBox.ItemTemplate>
-								<DataTemplate DataType="{x:Type Projects:WcfDataElement}">
+								<DataTemplate DataType="{x:Type Projects:WebApiDataElement}">
 									<Border Background="#01FFFFFF">
 										<Border.ToolTip>
 											<StackPanel Orientation="Vertical">
@@ -94,7 +94,7 @@
 												<TextBlock Visibility="{Binding Path=HasXAMLType, Converter={StaticResource BoolVisibilityConverter}}" Foreground="{StaticResource ReadOnlyFontColor}" FontFamily="{StaticResource DefaultFontFamily}" FontSize="10pt" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" >
 													<TextBlock.Text>
 														<MultiBinding StringFormat="XAML: {0}">
-															<Binding Path="XAMLName" />
+															<Binding Path="XamlName" />
 														</MultiBinding>
 													</TextBlock.Text>
 												</TextBlock>

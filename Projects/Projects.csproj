@@ -45,9 +45,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -77,22 +77,15 @@
     <Compile Include="Data\Namespace.cs" />
     <Compile Include="Data\Project.cs" />
     <Compile Include="Namespace.cs" />
-    <Compile Include="Wcf\Binding.cs" />
     <Compile Include="CompilerMessages.cs" />
-    <Compile Include="Wcf\Project.cs" />
     <Compile Include="WebApi\Data.cs" />
     <Compile Include="WebApi\Namespace.cs" />
     <Compile Include="WebApi\Project.cs" />
     <Compile Include="WebApi\Service.cs" />
-    <Compile Include="Wcf\Data.cs" />
     <Compile Include="DataType.cs" />
     <Compile Include="Documentation.cs" />
     <Compile Include="Enum.cs" />
-    <Compile Include="Wcf\Host.cs" />
-    <Compile Include="Wcf\Namespace.cs" />
     <Compile Include="Project.cs" />
-    <Compile Include="Wcf\Security.cs" />
-    <Compile Include="Wcf\Service.cs" />
     <Compile Include="Helpers\GACUtil.cs" />
     <Compile Include="Helpers\RegExs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using NETPath.Projects;
 using NETPath.Projects.WebApi;
 using NETPath.Projects.Helpers;
-using NETPath.Projects.Wcf;
 
 namespace NETPath.Generators.CS.WebApi
 {

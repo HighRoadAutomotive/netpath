@@ -80,9 +80,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\winapicp.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="ReachFramework" />
@@ -118,58 +118,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Compiler.cs" />
-    <Compile Include="Interface\Wcf\Bindings\BasicHTTP.xaml.cs">
-      <DependentUpon>BasicHTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Bindings\BasicHTTPS.xaml.cs">
-      <DependentUpon>BasicHTTPS.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Bindings\Converters.cs" />
-    <Compile Include="Interface\Wcf\Bindings\UDP.xaml.cs">
-      <DependentUpon>UDP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Bindings\MSMQ.xaml.cs">
-      <DependentUpon>MSMQ.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Bindings\MSMQIntegration.xaml.cs">
-      <DependentUpon>MSMQIntegration.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Bindings\NamedPipe.xaml.cs">
-      <DependentUpon>NamedPipe.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Bindings\NetHTTP.xaml.cs">
-      <DependentUpon>NetHTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Bindings\NetHTTPS.xaml.cs">
-      <DependentUpon>NetHTTPS.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Bindings\PeerTCP.xaml.cs">
-      <DependentUpon>PeerTCP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Bindings\TCP.xaml.cs">
-      <DependentUpon>TCP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Bindings\WS2007FederationHTTP.xaml.cs">
-      <DependentUpon>WS2007FederationHTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Bindings\WS2007HTTP.xaml.cs">
-      <DependentUpon>WS2007HTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Bindings\WSDualHTTP.xaml.cs">
-      <DependentUpon>WSDualHTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Bindings\WSFederationHTTP.xaml.cs">
-      <DependentUpon>WSFederationHTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Bindings\WSHTTP.xaml.cs">
-      <DependentUpon>WSHTTP.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Data\Data.xaml.cs">
-      <DependentUpon>Data.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Data\DataElement.xaml.cs">
-      <DependentUpon>DataElement.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Interface\Data\TargetSelector.xaml.cs">
       <DependentUpon>TargetSelector.xaml</DependentUpon>
     </Compile>
@@ -181,9 +129,6 @@
     </Compile>
     <Compile Include="Interface\Dialogs\ReportSuggestion.xaml.cs">
       <DependentUpon>ReportSuggestion.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Dialogs\NewItem.xaml.cs">
-      <DependentUpon>NewItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interface\Dialogs\NewProject.xaml.cs">
       <DependentUpon>NewProject.xaml</DependentUpon>
@@ -200,37 +145,14 @@
     <Compile Include="Interface\Enum\Enum.xaml.cs">
       <DependentUpon>Enum.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Interface\Wcf\Host\Converters.cs" />
-    <Compile Include="Interface\Wcf\Host\DebugBehavior.xaml.cs">
-      <DependentUpon>DebugBehavior.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Host\Endpoint.xaml.cs">
-      <DependentUpon>Endpoint.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Host\Host.xaml.cs">
-      <DependentUpon>Host.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Interface\Wcf\Host\MetadataBehavior.xaml.cs">
-      <DependentUpon>MetadataBehavior.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Host\ThrottlingBehavior.xaml.cs">
-      <DependentUpon>ThrottlingBehavior.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Interface\Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Namespace\Namespace.xaml.cs">
-      <DependentUpon>Namespace.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interface\Navigator.xaml.cs">
       <DependentUpon>Navigator.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interface\Project\GenerationTarget.xaml.cs">
       <DependentUpon>GenerationTarget.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Project.xaml.cs">
-      <DependentUpon>Project.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interface\WebApi\Data\Data.xaml.cs">
       <DependentUpon>Data.xaml</DependentUpon>
@@ -254,22 +176,6 @@
     <Compile Include="Interface\WebApi\Service\Service.xaml.cs">
       <DependentUpon>Service.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Interface\Wcf\Service\Converters.cs" />
-    <Compile Include="Interface\Wcf\Service\DataChangeMethod.xaml.cs">
-      <DependentUpon>DataChangeMethod.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Service\Callback.xaml.cs">
-      <DependentUpon>Callback.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Service\Method.xaml.cs">
-      <DependentUpon>Method.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Service\Property.xaml.cs">
-      <DependentUpon>Property.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interface\Wcf\Service\Service.xaml.cs">
-      <DependentUpon>Service.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Options\UserProfile.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -277,74 +183,6 @@
     </Compile>
     <Compile Include="Globals.cs" />
     <Compile Include="Themes\DragAdorner.cs" />
-    <Page Include="Interface\Wcf\Bindings\BasicHTTP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Bindings\BasicHTTPS.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Bindings\UDP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Bindings\MSMQ.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Bindings\MSMQIntegration.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Bindings\NamedPipe.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Bindings\NetHTTP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Bindings\NetHTTPS.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Bindings\PeerTCP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Bindings\TCP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Bindings\WS2007FederationHTTP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Bindings\WS2007HTTP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Bindings\WSDualHTTP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Bindings\WSFederationHTTP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Bindings\WSHTTP.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Data\Data.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Wcf\Data\DataElement.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Interface\Data\TargetSelector.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -360,10 +198,6 @@
     <Page Include="Interface\Dialogs\ReportSuggestion.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Dialogs\NewItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Interface\Dialogs\NewProject.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -385,43 +219,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Interface\Wcf\Host\DebugBehavior.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Host\Endpoint.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Host\Host.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Wcf\Host\MetadataBehavior.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Host\ThrottlingBehavior.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Interface\Main.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Interface\Wcf\Namespace\Namespace.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Interface\Navigator.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Interface\Project\GenerationTarget.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Project.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -450,26 +256,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Interface\WebApi\Service\Service.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Service\DataChangeMethod.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Service\Callback.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Service\Method.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Service\Property.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Interface\Wcf\Service\Service.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

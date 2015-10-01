@@ -12,7 +12,6 @@ using System.Runtime.Serialization;
 using System.Windows.Threading;
 using System.Xml;
 using NETPath.Projects;
-using NETPath.Projects.Wcf;
 using NETPath.Generators.Interfaces;
 using EllipticBit.Controls.WPF.Dialogs;
 

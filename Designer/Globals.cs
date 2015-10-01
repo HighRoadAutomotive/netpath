@@ -14,7 +14,6 @@ using NETPath.Interface;
 using EllipticBit.Controls.WPF.Dialogs;
 using NETPath.Projects;
 using NETPath.Generators.Interfaces;
-using NETPath.Projects.Wcf;
 using NETPath.Projects.WebApi;
 
 namespace NETPath
@@ -75,11 +74,6 @@ namespace NETPath
 		{
 			if (OpenNavigator == null) return;
 			OpenNavigator.OpenProjectItem(doc);
-		}
-
-		public static List<WcfBinding> GetBindings()
-		{
-			return (Project as WcfProject)?.Namespace.GetBindings() ?? new List<WcfBinding>();
 		}
 
 		public static void InitializeCodeGenerators()

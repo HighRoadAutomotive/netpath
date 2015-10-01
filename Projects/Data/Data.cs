@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Runtime.Serialization;
-using NETPath.Projects.Wcf;
 
 namespace NETPath.Projects.Data
 {

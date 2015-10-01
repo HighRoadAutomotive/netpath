@@ -1,5 +1,4 @@
-﻿using NETPath.Projects.Wcf;
-using NETPath.Projects.WebApi;
+﻿using NETPath.Projects.WebApi;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,13 +20,8 @@ namespace NETPath.Projects
 
 			var kt = new List<Type>(new Type[] {
 				typeof(ProjectGenerationTarget), typeof(DataType), typeof(Documentation),
-				typeof(Project), typeof(WcfProject), typeof(WebApiProject),
-				typeof(Namespace), typeof(WcfNamespace), typeof(WebApiNamespace),
-				typeof(WcfSecurity), typeof(WcfSecurityBasicHTTP), typeof(WcfSecurityBasicHTTPS), typeof(WcfSecurityMSMQ), typeof(WcfSecurityMSMQIntegration), typeof(WcfSecurityNamedPipe), typeof(WcfSecurityPeerTCP), typeof(WcfSecurityTCP), typeof(WcfSecurityWebHTTP), typeof(WcfSecurityWSDualHTTP), typeof(WcfSecurityWSFederationHTTP), typeof(WcfSecurityWSHTTP),
-				typeof(WcfBinding), typeof(WcfBindingBasicHTTP), typeof(WcfBindingBasicHTTPS), typeof(WcfBindingMSMQ), typeof(WcfBindingMSMQIntegration), typeof(WcfBindingNamedPipe), typeof(WcfBindingNetHTTP), typeof(WcfBindingNetHTTPS), typeof(WcfBindingPeerTCP), typeof(WcfBindingTCP), typeof(WcfBindingUDP), typeof(WcfBindingWebHTTP), typeof(WcfBindingWS2007FederationHTTP), typeof(WcfBindingWS2007HTTP), typeof(WcfBindingWSDualHTTP), typeof(WcfBindingWSFederationHTTP), typeof(WcfBindingWSHTTP),
-				typeof(WcfHost), typeof(WcfHostBehavior), typeof(WcfHostCredentials), typeof(WcfHostDebugBehavior), typeof(WcfHostEndpoint), typeof(WcfHostEndpointAddressHeader), typeof(WcfHostMetadataBehavior), typeof(WcfHostThrottlingBehavior),
-				typeof(WcfService), typeof(WcfOperation), typeof(WcfMethod), typeof(WcfCallback), typeof(WcfDataChangeMethod), typeof(WcfMethodParameter), typeof(WcfProperty),
-				typeof(WcfData), typeof(WcfDataElement),
+				typeof(Project), typeof(WebApiProject),
+				typeof(Namespace), typeof(WebApiNamespace),
 				typeof(WebApiService), typeof(WebApiMethod), typeof(WebApiHttpConfiguration), typeof(WebApiRouteParameter), typeof(WebApiMethodParameter),
 				typeof(WebApiData), typeof(WebApiDataElement),
 				typeof(Enum), typeof(EnumElement),
@@ -54,13 +48,8 @@ namespace NETPath.Projects
 
 			var kt = new List<Type>(new Type[] {
 				typeof(ProjectGenerationTarget), typeof(DataType), typeof(Documentation),
-				typeof(Project), typeof(WcfProject), typeof(WebApiProject),
-				typeof(Namespace), typeof(WcfNamespace), typeof(WebApiNamespace),
-				typeof(WcfSecurity), typeof(WcfSecurityBasicHTTP), typeof(WcfSecurityBasicHTTPS), typeof(WcfSecurityMSMQ), typeof(WcfSecurityMSMQIntegration), typeof(WcfSecurityNamedPipe), typeof(WcfSecurityPeerTCP), typeof(WcfSecurityTCP), typeof(WcfSecurityWebHTTP), typeof(WcfSecurityWSDualHTTP), typeof(WcfSecurityWSFederationHTTP), typeof(WcfSecurityWSHTTP),
-				typeof(WcfBinding), typeof(WcfBindingBasicHTTP), typeof(WcfBindingBasicHTTPS), typeof(WcfBindingMSMQ), typeof(WcfBindingMSMQIntegration), typeof(WcfBindingNamedPipe), typeof(WcfBindingNetHTTP), typeof(WcfBindingNetHTTPS), typeof(WcfBindingPeerTCP), typeof(WcfBindingTCP), typeof(WcfBindingUDP), typeof(WcfBindingWebHTTP), typeof(WcfBindingWS2007FederationHTTP), typeof(WcfBindingWS2007HTTP), typeof(WcfBindingWSDualHTTP), typeof(WcfBindingWSFederationHTTP), typeof(WcfBindingWSHTTP),
-				typeof(WcfHost), typeof(WcfHostBehavior), typeof(WcfHostCredentials), typeof(WcfHostDebugBehavior), typeof(WcfHostEndpoint), typeof(WcfHostEndpointAddressHeader), typeof(WcfHostMetadataBehavior), typeof(WcfHostThrottlingBehavior),
-				typeof(WcfService), typeof(WcfOperation), typeof(WcfMethod), typeof(WcfCallback), typeof(WcfDataChangeMethod), typeof(WcfMethodParameter), typeof(WcfProperty),
-				typeof(WcfData), typeof(WcfDataElement),
+				typeof(Project), typeof(WebApiProject),
+				typeof(Namespace), typeof(WebApiNamespace),
 				typeof(WebApiService), typeof(WebApiMethod), typeof(WebApiHttpConfiguration), typeof(WebApiRouteParameter), typeof(WebApiMethodParameter),
 				typeof(WebApiData), typeof(WebApiDataElement),
 				typeof(Enum), typeof(EnumElement),
@@ -78,13 +67,8 @@ namespace NETPath.Projects
 		{
 			var kt = new List<Type>(new Type[] {
 				typeof(ProjectGenerationTarget), typeof(DataType), typeof(Documentation),
-				typeof(Project), typeof(WcfProject), typeof(WebApiProject),
-				typeof(Namespace), typeof(WcfNamespace), typeof(WebApiNamespace),
-				typeof(WcfSecurity), typeof(WcfSecurityBasicHTTP), typeof(WcfSecurityBasicHTTPS), typeof(WcfSecurityMSMQ), typeof(WcfSecurityMSMQIntegration), typeof(WcfSecurityNamedPipe), typeof(WcfSecurityPeerTCP), typeof(WcfSecurityTCP), typeof(WcfSecurityWebHTTP), typeof(WcfSecurityWSDualHTTP), typeof(WcfSecurityWSFederationHTTP), typeof(WcfSecurityWSHTTP),
-				typeof(WcfBinding), typeof(WcfBindingBasicHTTP), typeof(WcfBindingBasicHTTPS), typeof(WcfBindingMSMQ), typeof(WcfBindingMSMQIntegration), typeof(WcfBindingNamedPipe), typeof(WcfBindingNetHTTP), typeof(WcfBindingNetHTTPS), typeof(WcfBindingPeerTCP), typeof(WcfBindingTCP), typeof(WcfBindingUDP), typeof(WcfBindingWebHTTP), typeof(WcfBindingWS2007FederationHTTP), typeof(WcfBindingWS2007HTTP), typeof(WcfBindingWSDualHTTP), typeof(WcfBindingWSFederationHTTP), typeof(WcfBindingWSHTTP),
-				typeof(WcfHost), typeof(WcfHostBehavior), typeof(WcfHostCredentials), typeof(WcfHostDebugBehavior), typeof(WcfHostEndpoint), typeof(WcfHostEndpointAddressHeader), typeof(WcfHostMetadataBehavior), typeof(WcfHostThrottlingBehavior),
-				typeof(WcfService), typeof(WcfOperation), typeof(WcfMethod), typeof(WcfCallback), typeof(WcfDataChangeMethod), typeof(WcfMethodParameter), typeof(WcfProperty),
-				typeof(WcfData), typeof(WcfDataElement),
+				typeof(Project), typeof(WebApiProject),
+				typeof(Namespace), typeof(WebApiNamespace),
 				typeof(WebApiService), typeof(WebApiMethod), typeof(WebApiHttpConfiguration), typeof(WebApiRouteParameter), typeof(WebApiMethodParameter),
 				typeof(WebApiData), typeof(WebApiDataElement),
 				typeof(Enum), typeof(EnumElement),

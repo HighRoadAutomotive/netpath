@@ -122,19 +122,6 @@
 						</Grid.ColumnDefinitions>
 						<StackPanel Grid.Column="0" Grid.Row="1" Margin="5">
 							<TextBlock Text="Projects" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="0,0,0,0" />
-							<Button x:Name="AddWcfProject" Margin="0,10,0,0" HorizontalContentAlignment="Left" Click="AddWcfProject_Click" >
-								<Grid>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="Auto" />
-										<ColumnDefinition Width="*" />
-									</Grid.ColumnDefinitions>
-									<Image Source="pack://application:,,,/NETPath;component/Icons/X64/Project.png" Margin="10,5" HorizontalAlignment="Left" VerticalAlignment="Top" UseLayoutRounding="True" Height="64" Width="64" Stretch="None" Grid.Column="0" />
-									<StackPanel Grid.Column="1" Margin="10">
-										<TextBlock Text="New WCF Project" Foreground="Gray" FontSize="14pt" FontWeight="Bold" Padding="0"/>
-										<TextBlock Text="Creates a new Windows Communication Foundation project." Padding="0" TextWrapping="Wrap" FontSize="10pt" />
-									</StackPanel>
-								</Grid>
-							</Button>
 							<Button x:Name="AddWebApiProject" Margin="0,10,0,0" HorizontalContentAlignment="Left" Click="AddWebApiProject_Click" >
 								<Grid>
 									<Grid.ColumnDefinitions>

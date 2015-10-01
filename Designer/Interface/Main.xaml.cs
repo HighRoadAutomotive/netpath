@@ -193,14 +193,6 @@ namespace NETPath.Interface
 			SystemMenuHome.IsChecked = false;
 		}
 
-		public void NewWcfProject(string Name, string Path)
-		{
-			var NP = new Projects.Wcf.WcfProject(Name, Path);
-			Projects.Project.Save(NP, Path);
-
-			Globals.OpenProject(Path, OpenProjectFinished);
-		}
-
 		public void NewWebApiProject(string Name, string Path)
 		{
 			var NP = new Projects.WebApi.WebApiProject(Name, Path);
@@ -292,12 +284,6 @@ namespace NETPath.Interface
 		#endregion
 
 		#region - Home -
-
-		private void AddWcfProject_Click(object sender, RoutedEventArgs e)
-		{
-			var np = new Dialogs.NewProject(typeof(Projects.Wcf.WcfProject));
-			DialogService.ShowContentDialog(null, "New Project", np, new DialogAction("Create", np.Create, true), new DialogAction("Cancel", false, true));
-		}
 
 		private void AddWebApiProject_Click(object sender, RoutedEventArgs e)
 		{
