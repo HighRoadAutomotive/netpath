@@ -38,6 +38,9 @@ namespace RestForge.Solutions
 		[JsonProperty("name")]
 		public string Name { get; set; }
 
+		[JsonProperty("collapsed")]
+		public bool Collapsed { get; set; }
+
 		[JsonProperty("subfolders")]
 		public List<SolutionFolder> Folders { get; private set; }
 
@@ -46,6 +49,7 @@ namespace RestForge.Solutions
 
 		public SolutionFolder()
 		{
+			Collapsed = false;
 			Folders = new List<SolutionFolder>();
 			Projects = new List<Project>();
 		}
