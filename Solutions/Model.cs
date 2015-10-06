@@ -61,8 +61,8 @@ namespace RestForge.Solutions
 		[JsonProperty("id")]
 		public Guid ID { get; private set; }
 
-		[JsonProperty("name")]
-		public string Name { get; set; }
+		[JsonProperty("handler")]
+		public string ProjectHandler { get; set; }
 
 		[JsonProperty("path")]
 		public string Path { get; set; }
