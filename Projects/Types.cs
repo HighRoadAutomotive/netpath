@@ -53,6 +53,15 @@ namespace RestForge.Projects
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
+	public class TypeVoid : TypeBase
+	{
+		[JsonProperty("mode")]
+		public override TypeMode Mode { get { return TypeMode.Void; } }
+		[JsonProperty("primitive")]
+		public override TypePrimitive Primitive { get { return TypePrimitive.None; } }
+	}
+
+	[JsonObject(MemberSerialization.OptIn)]
 	public class TypeArray : TypeBase
 	{
 		[JsonProperty("mode")]
