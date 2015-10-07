@@ -48,7 +48,6 @@ namespace RestForge.Projects
 	public interface INamespace
 	{
 		string Name { get; }
-		bool Collapsed { get; }
 		List<INamespace> IChildren { get; }
 	}
 
@@ -71,7 +70,7 @@ namespace RestForge.Projects
 		public List<N> Children { get; private set; }
 
 		[JsonIgnore]
-		List<INamespace> INamespace.IChildren { get { return (List<INamespace>)Children.AsEnumerable(); } }
+		List<INamespace> INamespace.IChildren { get { return ((List<INamespace>)Children.AsEnumerable()).ToList(); } }
 
 
 		[JsonIgnore]

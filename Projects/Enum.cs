@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace RestForge.Projects
 {
-	public interface IEnum
+	public interface IEnum : IType
 	{
 		string Name { get; }
-		bool Collapsed { get; }
+		bool IsPacked { get; }
 		List<IEnumElement> IElements { get; }
 	}
 
@@ -36,6 +36,9 @@ namespace RestForge.Projects
 		[JsonProperty("collapsed")]
 		public bool Collapsed { get; set; }
 
+		[JsonProperty("packed")]
+		public bool IsPacked { get; set; }
+
 		[JsonProperty("project", ItemIsReference = true)]
 		public P Project { get; private set; }
 
@@ -46,7 +49,11 @@ namespace RestForge.Projects
 		public List<E> Elements { get; private set; }
 
 		[JsonIgnore]
-		List<IEnumElement> IEnum.IElements { get { return  (List<IEnumElement>) Elements.AsEnumerable(); } }
+		List<IEnumElement> IEnum.IElements { get { return ((List<IEnumElement>)Elements.AsEnumerable()).ToList(); } }
+
+		TypeMode IType.Mode { get { return TypeMode.Enum; } }
+
+		TypePrimitive IType.Primitive { get { return TypePrimitive.Int64; } }
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
@@ -83,7 +90,7 @@ namespace RestForge.Projects
 		public List<E> AggregateValues { get; private set; }
 
 		[JsonIgnore]
-		List<IEnumElement> IEnumElement.IAggregateValues { get { return (List<IEnumElement>)AggregateValues.AsEnumerable(); } }
+		List<IEnumElement> IEnumElement.IAggregateValues { get { return ((List<IEnumElement>)AggregateValues.AsEnumerable()).ToList(); } }
 
 		public EnumElementBase(P parent, string name)
 		{
