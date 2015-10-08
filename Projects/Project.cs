@@ -60,10 +60,10 @@ namespace RestForge.Projects
 		[JsonProperty("collapsed")]
 		public bool Collapsed { get; set; }
 
-		[JsonProperty("project", ItemIsReference = true)]
+		[JsonProperty("project", IsReference = true)]
 		public P Project { get; private set; }
 
-		[JsonProperty("parent", ItemIsReference = true)]
+		[JsonProperty("parent", IsReference = true)]
 		public N Parent { get; private set; }
 
 		[JsonProperty("children")]

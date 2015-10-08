@@ -17,7 +17,6 @@ namespace RestForge.Projects
 	public interface IEnumElement
 	{
 		string Name { get; }
-		bool IsExcluded { get; }
 		bool IsHidden { get; }
 		bool IsAuto { get; }
 		bool IsCustom { get; }
@@ -28,7 +27,7 @@ namespace RestForge.Projects
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
-	public abstract class EnumBase<P, N, E> : IEnum where P : ProjectBase<N> where N : NamespaceBase<ProjectBase<N>, N>
+	public abstract class EnumBase<P, N, E, EE> : IEnum where P : ProjectBase<N> where N : NamespaceBase<ProjectBase<N>, N> where E : EnumBase<P, N, E, EE> where EE : EnumElementBase<P, N, E, EE>
 	{
 		[JsonProperty("name")]
 		public string Name { get; set; }
@@ -39,34 +38,33 @@ namespace RestForge.Projects
 		[JsonProperty("packed")]
 		public bool IsPacked { get; set; }
 
-		[JsonProperty("project", ItemIsReference = true)]
+		[JsonProperty("project", IsReference = true)]
 		public P Project { get; private set; }
 
-		[JsonProperty("parent", ItemIsReference = true)]
+		[JsonProperty("parent", IsReference = true)]
 		public N Parent { get; private set; }
 
-		[JsonProperty("children")]
+		[JsonProperty("values")]
 		public List<E> Elements { get; private set; }
 
 		[JsonIgnore]
 		List<IEnumElement> IEnum.IElements { get { return ((List<IEnumElement>)Elements.AsEnumerable()).ToList(); } }
 
+		[JsonIgnore]
 		TypeMode IType.Mode { get { return TypeMode.Enum; } }
 
-		TypePrimitive IType.Primitive { get { return TypePrimitive.Int64; } }
+		[JsonProperty("primitive")]
+		public TypePrimitive Primitive { get { return TypePrimitive.Int64; } }
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
-	public abstract class EnumElementBase<P, N, E> : IEnumElement where E : EnumBase<P, N, EnumElementBase<P, N, E>> where P : ProjectBase<N> where N : NamespaceBase<ProjectBase<N>, N>
+	public abstract class EnumElementBase<P, N, E, EE> : IEnumElement where E : EnumBase<P, N, E, EE> where P : ProjectBase<N> where N : NamespaceBase<ProjectBase<N>, N> where EE : EnumElementBase<P, N, E, EE>
 	{
 		[JsonProperty("name")]
 		public string Name { get; set; }
 
-		[JsonProperty("parent", ItemIsReference = true)]
-		public P Parent { get; private set; }
-
-		[JsonProperty("excluded")]
-		public bool IsExcluded { get; set; }
+		[JsonProperty("parent", IsReference = true)]
+		public E Parent { get; private set; }
 
 		[JsonProperty("hidden")]
 		public bool IsHidden { get; set; }
@@ -87,12 +85,12 @@ namespace RestForge.Projects
 		public long? ClientValue { get; set; }
 
 		[JsonProperty("aggregates", ItemIsReference = true)]
-		public List<E> AggregateValues { get; private set; }
+		public List<EnumElementBase<P, N, E, EE>> AggregateValues { get; private set; }
 
 		[JsonIgnore]
 		List<IEnumElement> IEnumElement.IAggregateValues { get { return ((List<IEnumElement>)AggregateValues.AsEnumerable()).ToList(); } }
 
-		public EnumElementBase(P parent, string name)
+		public EnumElementBase(E parent, string name)
 		{
 			Name = name;
 			Parent = parent;
