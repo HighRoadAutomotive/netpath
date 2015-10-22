@@ -39,6 +39,11 @@ namespace RestForge.Projects
 
 		[JsonIgnore]
 		TypePrimitive IType.Primitive { get { return TypePrimitive.None; } }
+
+		public override string ToString()
+		{
+			return Name;
+		}
 	}
 
 	public interface IDataElement
@@ -78,5 +83,10 @@ namespace RestForge.Projects
 
 		[JsonProperty("updatelookup")]
 		public bool IsUpdateLookup { get; set; }
+
+		public override string ToString()
+		{
+			return Name;
+		}
 	}
 }

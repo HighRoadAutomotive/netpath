@@ -1,0 +1,40 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<Style x:Key="MessageSeverityInfo" TargetType="Path" >
+		<Setter Property="Data" Value="M284.333,203.151L203.222,284.332 302.909,384.017 203.151,483.775 284.26,564.849 384.09,465.164 483.74,564.849 564.849,483.775 465.199,384.017 564.849,284.332 483.74,203.151 384.09,302.874z M384.018,0C595.701,5E-06 768,172.264 768,384.017 768,595.738 595.701,768 384.018,768 172.226,768 -4E-06,595.738 0,384.017 -4E-06,172.264 172.226,5E-06 384.018,0z" />
+		<Setter Property="Stretch" Value="Uniform" />
+		<Setter Property="Fill" Value="#FFFFFFFF" />
+		<Setter Property="Width" Value="16" />
+		<Setter Property="Height" Value="16" />
+		<Setter Property="Margin" Value="0,0,0,0" />
+		<Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+		<Setter Property="HorizontalAlignment" Value="Center" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+	</Style>
+
+	<Style x:Key="MessageSeverityWarn" TargetType="Path" >
+		<Setter Property="Data" Value="M159.015,278.352L159.015,321.171 204.991,321.171 204.991,278.352z M159.015,117.752L159.015,246.219 204.991,246.219 204.991,117.752z M181.999,0C186.751,4E-06,191.128,2.84238,193.448,7.4577L362.318,342.176C364.596,346.714 364.561,352.264 362.207,356.764 359.852,361.244 355.535,364 350.869,364L13.1373,364C8.47071,364 4.14567,361.244 1.791,356.764 -0.563664,352.264 -0.598031,346.714 1.69675,342.176L170.558,7.4577C172.887,2.84238,177.264,4E-06,181.999,0z" />
+		<Setter Property="Stretch" Value="Uniform" />
+		<Setter Property="Fill" Value="#FFFFFFFF" />
+		<Setter Property="Width" Value="16" />
+		<Setter Property="Height" Value="16" />
+		<Setter Property="Margin" Value="0,0,0,0" />
+		<Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+		<Setter Property="HorizontalAlignment" Value="Center" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+	</Style>
+
+	<Style x:Key="MessageSeverityError" TargetType="Path" >
+		<Setter Property="Data" Value="M402.198,281.152C385.279,281.152 365.874,287.45 342.941,300.374 321.161,312.758 296.933,333.386 270.976,361.86L261.651,372.265 298.083,400.487 306.113,392.569C334.158,365.281 343.626,357.83 346.795,355.815 310.47,482.709 291.785,559.388 291.785,592.398 291.785,605.536 295.566,616.158 302.944,624.184 310.541,632.32 321.052,636.567 333.329,636.567 345.786,636.567 360.582,631.564 378.583,621.305 395.466,611.622 420.955,590.672 456.452,557.229L466.244,548.048 433.086,515.759 424.123,524.144C392.622,553.772 378.834,563.131 375.702,566.3 376.242,553.088 383.802,514.821 414.943,410.1 439.963,326.546 439.963,317.799 439.963,313.625 439.963,303.758 436.148,295.371 428.874,289.359 422.251,283.925 413.288,281.152 402.198,281.152z M401.478,133.629C372.787,133.629 349.601,156.885 349.601,185.43 349.601,214.159 372.787,237.341 401.478,237.341 430.17,237.341 453.392,214.159 453.392,185.43 453.392,156.885 430.17,133.629 401.478,133.629z M383.983,0C595.665,7E-06 768,172.256 768,384 768,595.711 595.665,768 383.983,768 172.192,768 -4E-06,595.711 0,384 -4E-06,172.256 172.192,7E-06 383.983,0z" />
+		<Setter Property="Stretch" Value="Uniform" />
+		<Setter Property="Fill" Value="#FFFFFFFF" />
+		<Setter Property="Width" Value="16" />
+		<Setter Property="Height" Value="16" />
+		<Setter Property="Margin" Value="0,0,0,0" />
+		<Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+		<Setter Property="HorizontalAlignment" Value="Center" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+	</Style>
+
+</ResourceDictionary>

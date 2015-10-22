@@ -55,6 +55,11 @@ namespace RestForge.Projects
 
 		[JsonProperty("primitive")]
 		public TypePrimitive Primitive { get { return TypePrimitive.Int64; } }
+
+		public override string ToString()
+		{
+			return Name;
+		}
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
@@ -94,6 +99,11 @@ namespace RestForge.Projects
 		{
 			Name = name;
 			Parent = parent;
+		}
+
+		public override string ToString()
+		{
+			return Name;
 		}
 	}
 }

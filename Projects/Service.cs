@@ -43,6 +43,11 @@ namespace RestForge.Projects
 
 		[JsonIgnore]
 		TypePrimitive IType.Primitive { get { return TypePrimitive.None; } }
+
+		public override string ToString()
+		{
+			return Name;
+		}
 	}
 
 	public interface IServiceMethod
@@ -73,6 +78,11 @@ namespace RestForge.Projects
 
 		[JsonIgnore]
 		List<ServiceMethodParameterBase> IServiceMethod.IParameters { get { return ((List<ServiceMethodParameterBase>)Parameters.AsEnumerable()).ToList(); } }
+
+		public override string ToString()
+		{
+			return Name;
+		}
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
@@ -89,5 +99,10 @@ namespace RestForge.Projects
 
 		[JsonProperty("default")]
 		public string Default { get; set; }
+
+		public override string ToString()
+		{
+			return Name;
+		}
 	}
 }
