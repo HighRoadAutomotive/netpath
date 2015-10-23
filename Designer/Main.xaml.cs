@@ -31,7 +31,7 @@ namespace RestForge.Designer
 		}
 	}
 
-	public sealed class GeneratorMessageXaml : DependencyObject
+	public class GeneratorMessageXaml : DependencyObject
 	{
 		public GeneratorMessageSeverity Severity { get { return (GeneratorMessageSeverity)GetValue(SeverityProperty); } protected set { SetValue(SeverityPropertyKey, value); } }
 		private static readonly DependencyPropertyKey SeverityPropertyKey = DependencyProperty.RegisterReadOnly("Severity", typeof(GeneratorMessageSeverity), typeof(GeneratorMessageXaml), new PropertyMetadata(GeneratorMessageSeverity.Info));
@@ -60,6 +60,28 @@ namespace RestForge.Designer
 			Description = message.Description;
 			Owner = message.Owner;
 			ErrorObject = message.ErrorObject;
+		}
+	}
+
+	public class MessageSeverityStyleConverter : IValueConverter
+	{
+		public Style ErrorStyle { get; set; }
+
+		public Style WarningStyle { get; set; }
+
+		public Style InfoStyle { get; set; }
+
+		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+		{
+			var t = (GeneratorMessageSeverity) value;
+			if (t == GeneratorMessageSeverity.Error) return ErrorStyle;
+			if (t == GeneratorMessageSeverity.Warn) return WarningStyle;
+			return InfoStyle;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

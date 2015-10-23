@@ -9,6 +9,7 @@
 		MinHeight="1040" MinWidth="1920" DataContext="{Binding RelativeSource={RelativeSource Self}}" Style="{StaticResource MainWindowStyle}"
 		Title="RestForge">
 	<Window.Resources>
+		<local:MessageSeverityStyleConverter x:Key="MessageSeverityStyleConverter" ErrorStyle="{StaticResource MessageSeverityError}" WarningStyle="{StaticResource MessageSeverityWarn}" InfoStyle="{StaticResource MessageSeverityInfo}" />
 		<ebext:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
 	</Window.Resources>
 	<Grid>
@@ -18,8 +19,8 @@
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="30" />
 			</Grid.RowDefinitions>
-			<GridSplitter ResizeDirection="Rows" Grid.Column="0" Grid.Row="1" Width="5" Height="Auto" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0" Background="Transparent" />
-			<Grid x:Name="OutputGrid" Background="#FF222222" Grid.Row="1" IsHitTestVisible="True" Visibility="{Binding ElementName=ShowOutput, Path=IsChecked, Converter={StaticResource BoolVisibilityConverter}}" >
+			<GridSplitter ResizeDirection="Rows" Grid.Column="0" Grid.Row="1" Width="Auto" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0" Background="Transparent" />
+			<Grid x:Name="OutputGrid" VerticalAlignment="Stretch" Background="#FF222222" Grid.Row="1" Margin="0,5,0,0" IsHitTestVisible="True" Visibility="{Binding ElementName=ShowOutput, Path=IsChecked, Converter={StaticResource BoolVisibilityConverter}}" >
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="*" />
@@ -27,7 +28,7 @@
 				<TextBlock Text="OUTPUT" Foreground="{StaticResource DefaultFontColor}" FontSize="18pt" Margin="10,5" Grid.Row="0" />
 				<RichTextBox Name="OutputBox" BorderThickness="0" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Grid.Row="1" Background="Transparent" FontSize="10pt" FontFamily="Courier New" Foreground="{StaticResource DefaultFontColor}" />
 			</Grid>
-			<Grid x:Name="ErrorGrid" Background="#FF222222" Grid.Row="1" IsHitTestVisible="True" Visibility="{Binding ElementName=ShowErrors, Path=IsChecked, Converter={StaticResource BoolVisibilityConverter}}" >
+			<Grid x:Name="ErrorGrid" VerticalAlignment="Stretch" Background="#FF222222" Grid.Row="1" Margin="0,5,0,0" IsHitTestVisible="True" Visibility="{Binding ElementName=ShowErrors, Path=IsChecked, Converter={StaticResource BoolVisibilityConverter}}" >
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
@@ -73,7 +74,7 @@
 									<Grid.RowDefinitions>
 										<RowDefinition Height="20" />
 									</Grid.RowDefinitions>
-									<Path Style="{Binding Path=Severity, Converter={StaticResource CompileMessageSeverityImageConverter}}" Grid.Column="0" />
+									<Path Style="{Binding Path=Severity, Converter={StaticResource MessageSeverityStyleConverter}}" Grid.Column="0" />
 									<TextBlock Text="{Binding Path=Code}" Grid.Column="1" Padding="3,1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Foreground="Black" />
 									<TextBlock Text="{Binding Path=Description}" Grid.Column="2" Padding="3,1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Foreground="Black" />
 									<TextBlock Text="{Binding Path=ErrorObject}" Grid.Column="3" Padding="3,1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Foreground="Black" />

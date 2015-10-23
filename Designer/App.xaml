@@ -7,6 +7,7 @@
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="pack://application:,,,/RestForge.Styles;component/Dark/Theme.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/rfdevenv;component/Icons/General.xaml" />
 				<!--<ResourceDictionary Source="pack://application:,,,/EllipticBit.Controls.WPF.Themes.Dark;component/Dialogs.xaml" />-->
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
