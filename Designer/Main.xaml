@@ -5,8 +5,8 @@
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:local="clr-namespace:RestForge.Designer"
 		xmlns:ebext="clr-namespace:EllipticBit.Controls.WPF.Extensions;assembly=EllipticBit.Controls.WPF"
-		mc:Ignorable="d" d:DesignHeight="1040" d:DesignWidth="1920"
-		MinHeight="1040" MinWidth="1920" DataContext="{Binding RelativeSource={RelativeSource Self}}" Style="{StaticResource MainWindowStyle}"
+		mc:Ignorable="d" d:DesignHeight="1040" d:DesignWidth="1880"
+		MinHeight="1040" MinWidth="1880" DataContext="{Binding RelativeSource={RelativeSource Self}}" Style="{StaticResource MainWindowStyle}"
 		Title="RestForge">
 	<Window.Resources>
 		<local:MessageSeverityStyleConverter x:Key="MessageSeverityStyleConverter" ErrorStyle="{StaticResource MessageSeverityError}" WarningStyle="{StaticResource MessageSeverityWarn}" InfoStyle="{StaticResource MessageSeverityInfo}" />
