@@ -18,7 +18,11 @@ namespace RestForge.Projects
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
-	public abstract class ProjectBase<N> where N : NamespaceBase<ProjectBase<N>, N>
+	public abstract class ProjectBase<P, N, E, EE, D, DE, S, SM, SMP>
+		where P : ProjectBase<P, N, E, EE, D, DE, S, SM, SMP> where N : NamespaceBase<P, N, E, EE, D, DE, S, SM, SMP>
+		where E : EnumBase<P, N, E, EE, D, DE, S, SM, SMP> where EE : EnumElementBase<P, N, E, EE, D, DE, S, SM, SMP>
+		where D : DataBase<P, N, E, EE, D, DE, S, SM, SMP> where DE : DataElementBase<P, N, E, EE, D, DE, S, SM, SMP>
+		where S : ServiceBase<P, N, E, EE, D, DE, S, SM, SMP> where SM : ServiceMethodBase<P, N, E, EE, D, DE, S, SM, SMP> where SMP : ServiceMethodParameterBase
 	{
 		[JsonProperty("id")]
 		public Guid ID { get; private set; }
@@ -49,10 +53,17 @@ namespace RestForge.Projects
 	{
 		string Name { get; }
 		List<INamespace> IChildren { get; }
+		List<IEnum> IEnums { get; }
+		List<IData> IData { get; }
+		List<IService> IService { get; }
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
-	public abstract class NamespaceBase<P, N> : INamespace where P : ProjectBase<N> where N : NamespaceBase<ProjectBase<N>, N>
+	public abstract class NamespaceBase<P, N, E, EE, D, DE, S, SM, SMP> : INamespace
+		where P : ProjectBase<P, N, E, EE, D, DE, S, SM, SMP> where N : NamespaceBase<P, N, E, EE, D, DE, S, SM, SMP>
+		where E : EnumBase<P, N, E, EE, D, DE, S, SM, SMP> where EE : EnumElementBase<P, N, E, EE, D, DE, S, SM, SMP>
+		where D : DataBase<P, N, E, EE, D, DE, S, SM, SMP> where DE : DataElementBase<P, N, E, EE, D, DE, S, SM, SMP>
+		where S : ServiceBase<P, N, E, EE, D, DE, S, SM, SMP> where SM : ServiceMethodBase<P, N, E, EE, D, DE, S, SM, SMP> where SMP : ServiceMethodParameterBase
 	{
 		[JsonProperty("name")]
 		public string Name { get; set; }
@@ -69,9 +80,26 @@ namespace RestForge.Projects
 		[JsonProperty("children")]
 		public List<N> Children { get; private set; }
 
+		[JsonProperty("enums")]
+		public List<E> Enumerations { get; private set; }
+
+		[JsonProperty("data")]
+		public List<D> Data { get; private set; }
+
+		[JsonProperty("services")]
+		public List<S> Services { get; private set; }
+
 		[JsonIgnore]
 		List<INamespace> INamespace.IChildren { get { return ((List<INamespace>)Children.AsEnumerable()).ToList(); } }
 
+		[JsonIgnore]
+		List<IEnum> INamespace.IEnums { get { return ((List<IEnum>)Children.AsEnumerable()).ToList(); } }
+
+		[JsonIgnore]
+		List<IData> INamespace.IData { get { return ((List<IData>)Data.AsEnumerable()).ToList(); } }
+
+		[JsonIgnore]
+		List<IService> INamespace.IService { get { return ((List<IService>)Services.AsEnumerable()).ToList(); } }
 
 		[JsonIgnore]
 		public string FullNamespace { get { return GetFullNamespace(); } }
@@ -84,5 +112,6 @@ namespace RestForge.Projects
 		}
 
 		protected abstract string GetFullNamespace();
+
 	}
 }

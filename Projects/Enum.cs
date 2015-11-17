@@ -27,7 +27,11 @@ namespace RestForge.Projects
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
-	public abstract class EnumBase<P, N, E, EE> : IEnum where P : ProjectBase<N> where N : NamespaceBase<ProjectBase<N>, N> where E : EnumBase<P, N, E, EE> where EE : EnumElementBase<P, N, E, EE>
+	public abstract class EnumBase<P, N, E, EE, D, DE, S, SM, SMP> : IEnum
+		where P : ProjectBase<P, N, E, EE, D, DE, S, SM, SMP> where N : NamespaceBase<P, N, E, EE, D, DE, S, SM, SMP>
+		where E : EnumBase<P, N, E, EE, D, DE, S, SM, SMP> where EE : EnumElementBase<P, N, E, EE, D, DE, S, SM, SMP>
+		where D : DataBase<P, N, E, EE, D, DE, S, SM, SMP> where DE : DataElementBase<P, N, E, EE, D, DE, S, SM, SMP>
+		where S : ServiceBase<P, N, E, EE, D, DE, S, SM, SMP> where SM : ServiceMethodBase<P, N, E, EE, D, DE, S, SM, SMP> where SMP : ServiceMethodParameterBase
 	{
 		[JsonProperty("name")]
 		public string Name { get; set; }
@@ -63,7 +67,11 @@ namespace RestForge.Projects
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
-	public abstract class EnumElementBase<P, N, E, EE> : IEnumElement where E : EnumBase<P, N, E, EE> where P : ProjectBase<N> where N : NamespaceBase<ProjectBase<N>, N> where EE : EnumElementBase<P, N, E, EE>
+	public abstract class EnumElementBase<P, N, E, EE, D, DE, S, SM, SMP> : IEnumElement
+		where P : ProjectBase<P, N, E, EE, D, DE, S, SM, SMP> where N : NamespaceBase<P, N, E, EE, D, DE, S, SM, SMP>
+		where E : EnumBase<P, N, E, EE, D, DE, S, SM, SMP> where EE : EnumElementBase<P, N, E, EE, D, DE, S, SM, SMP>
+		where D : DataBase<P, N, E, EE, D, DE, S, SM, SMP> where DE : DataElementBase<P, N, E, EE, D, DE, S, SM, SMP>
+		where S : ServiceBase<P, N, E, EE, D, DE, S, SM, SMP> where SM : ServiceMethodBase<P, N, E, EE, D, DE, S, SM, SMP> where SMP : ServiceMethodParameterBase
 	{
 		[JsonProperty("name")]
 		public string Name { get; set; }
@@ -90,7 +98,7 @@ namespace RestForge.Projects
 		public long? ClientValue { get; set; }
 
 		[JsonProperty("aggregates", ItemIsReference = true)]
-		public List<EnumElementBase<P, N, E, EE>> AggregateValues { get; private set; }
+		public List<EnumElementBase<P, N, E, EE, D, DE, S, SM, SMP>> AggregateValues { get; private set; }
 
 		[JsonIgnore]
 		List<IEnumElement> IEnumElement.IAggregateValues { get { return ((List<IEnumElement>)AggregateValues.AsEnumerable()).ToList(); } }

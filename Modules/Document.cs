@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace RestForge.Modules
 {
@@ -15,6 +16,10 @@ namespace RestForge.Modules
 		public string Title { get { return (string)GetValue(TitleProperty); } protected set { SetValue(TitlePropertyKey, value); } }
 		private static readonly DependencyPropertyKey TitlePropertyKey = DependencyProperty.RegisterReadOnly("Title", typeof(string), typeof(Document), new PropertyMetadata(""));
 		public static readonly DependencyProperty TitleProperty = TitlePropertyKey.DependencyProperty;
+
+		public PathGeometry Icon { get { return (PathGeometry)GetValue(IconProperty); } protected set { SetValue(IconPropertyKey, value); } }
+		private static readonly DependencyPropertyKey IconPropertyKey = DependencyProperty.RegisterReadOnly("Icon", typeof(PathGeometry), typeof(Document), new PropertyMetadata(null));
+		public static readonly DependencyProperty IconProperty = IconPropertyKey.DependencyProperty;
 
 		public bool CanClose { get { return (bool)GetValue(CanCloseProperty); } protected set { SetValue(CanClosePropertyKey, value); } }
 		private static readonly DependencyPropertyKey CanClosePropertyKey = DependencyProperty.RegisterReadOnly("CanClose", typeof(bool), typeof(Document), new PropertyMetadata(true));

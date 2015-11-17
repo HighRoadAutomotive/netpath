@@ -14,7 +14,11 @@ namespace RestForge.Projects
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
-	public abstract class DataBase<P, N, D, DE> : IData where P : ProjectBase<N> where N : NamespaceBase<ProjectBase<N>, N> where D : DataBase<P, N, D, DE> where DE : DataElementBase<P, N, D, DE>
+	public abstract class DataBase<P, N, E, EE, D, DE, S, SM, SMP> : IData
+		where P : ProjectBase<P, N, E, EE, D, DE, S, SM, SMP> where N : NamespaceBase<P, N, E, EE, D, DE, S, SM, SMP>
+		where E : EnumBase<P, N, E, EE, D, DE, S, SM, SMP> where EE : EnumElementBase<P, N, E, EE, D, DE, S, SM, SMP>
+		where D : DataBase<P, N, E, EE, D, DE, S, SM, SMP> where DE : DataElementBase<P, N, E, EE, D, DE, S, SM, SMP>
+		where S : ServiceBase<P, N, E, EE, D, DE, S, SM, SMP> where SM : ServiceMethodBase<P, N, E, EE, D, DE, S, SM, SMP> where SMP : ServiceMethodParameterBase
 	{
 		[JsonProperty("name")]
 		public string Name { get; set; }
@@ -58,7 +62,11 @@ namespace RestForge.Projects
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
-	public abstract class DataElementBase<P, N, D, DE> : IDataElement where P : ProjectBase<N> where N : NamespaceBase<ProjectBase<N>, N> where D : DataBase<P, N, D, DE> where DE : DataElementBase<P, N, D, DE>
+	public abstract class DataElementBase<P, N, E, EE, D, DE, S, SM, SMP> : IDataElement
+		where P : ProjectBase<P, N, E, EE, D, DE, S, SM, SMP> where N : NamespaceBase<P, N, E, EE, D, DE, S, SM, SMP>
+		where E : EnumBase<P, N, E, EE, D, DE, S, SM, SMP> where EE : EnumElementBase<P, N, E, EE, D, DE, S, SM, SMP>
+		where D : DataBase<P, N, E, EE, D, DE, S, SM, SMP> where DE : DataElementBase<P, N, E, EE, D, DE, S, SM, SMP>
+		where S : ServiceBase<P, N, E, EE, D, DE, S, SM, SMP> where SM : ServiceMethodBase<P, N, E, EE, D, DE, S, SM, SMP> where SMP : ServiceMethodParameterBase
 	{
 		[JsonProperty("name")]
 		public string Name { get; set; }

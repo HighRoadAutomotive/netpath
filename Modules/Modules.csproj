@@ -48,6 +48,16 @@
     <Compile Include="Module.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Projects\Projects.csproj">
+      <Project>{9e1b9bc5-0c2d-46db-973f-2ceaf1709fd3}</Project>
+      <Name>Projects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Solutions\Solutions.csproj">
+      <Project>{8ed2f712-5776-4059-8fb2-0753de2ee98f}</Project>
+      <Name>Solutions</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
