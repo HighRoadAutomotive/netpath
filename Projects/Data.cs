@@ -10,6 +10,9 @@ namespace RestForge.Projects
 	public interface IData : IType
 	{
 		string Name { get; }
+		bool Collapsed { get; }
+		IProject IProject { get; }
+		INamespace IParent { get; }
 		List<IDataElement> IElements { get; }
 	}
 
@@ -37,6 +40,12 @@ namespace RestForge.Projects
 
 		[JsonIgnore]
 		List<IDataElement> IData.IElements { get { return ((List<IDataElement>)Elements.AsEnumerable()).ToList(); } }
+		[JsonIgnore]
+		IProject IData.IProject { get { return Project; } }
+
+		[JsonIgnore]
+		INamespace IData.IParent { get { return Parent; } }
+
 
 		[JsonIgnore]
 		TypeMode IType.Mode { get { return TypeMode.Object; } }
@@ -59,6 +68,7 @@ namespace RestForge.Projects
 		bool IsReadOnly { get; }
 		bool EnableUpdates { get; }
 		bool IsUpdateLookup { get; }
+		IData IParent { get; }
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
@@ -91,6 +101,9 @@ namespace RestForge.Projects
 
 		[JsonProperty("updatelookup")]
 		public bool IsUpdateLookup { get; set; }
+
+		[JsonIgnore]
+		IData IDataElement.IParent { get { return Parent; } }
 
 		public override string ToString()
 		{

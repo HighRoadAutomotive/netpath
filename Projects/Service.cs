@@ -11,7 +11,11 @@ namespace RestForge.Projects
 	public interface IService : IType
 	{
 		string Name { get; }
+		bool Collapsed { get; }
+		string Path { get; }
 		List<IDataElement> IElements { get; }
+		IProject IProject { get; }
+		INamespace IParent { get; }
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
@@ -48,6 +52,12 @@ namespace RestForge.Projects
 		[JsonIgnore]
 		TypePrimitive IType.Primitive { get { return TypePrimitive.None; } }
 
+		[JsonIgnore]
+		IProject IService.IProject { get { return Project; } }
+
+		[JsonIgnore]
+		INamespace IService.IParent { get { return Parent; } }
+
 		public override string ToString()
 		{
 			return Name;
@@ -59,6 +69,7 @@ namespace RestForge.Projects
 		string Name { get; }
 		TypeBase ReturnType { get; }
 		bool IsHidden { get; }
+		IService IParent { get; }
 		List<ServiceMethodParameterBase> IParameters { get; }
 	}
 
@@ -80,6 +91,9 @@ namespace RestForge.Projects
 
 		[JsonProperty("parent", IsReference = true)]
 		public S Parent { get; private set; }
+
+		[JsonIgnore]
+		IService IServiceMethod.IParent { get { return Parent; } }
 
 		[JsonProperty("parameters", IsReference = true)]
 		List<SMP> Parameters { get; }

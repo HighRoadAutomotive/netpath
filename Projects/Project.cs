@@ -15,10 +15,14 @@ namespace RestForge.Projects
 		string Name { get; }
 		string SolutionPath { get; }
 		List<Guid> Dependencies { get; }
+		INamespace IRoot { get; }
+
+		Task Build();
+		Task Save();
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
-	public abstract class ProjectBase<P, N, E, EE, D, DE, S, SM, SMP>
+	public abstract class ProjectBase<P, N, E, EE, D, DE, S, SM, SMP> : IProject
 		where P : ProjectBase<P, N, E, EE, D, DE, S, SM, SMP> where N : NamespaceBase<P, N, E, EE, D, DE, S, SM, SMP>
 		where E : EnumBase<P, N, E, EE, D, DE, S, SM, SMP> where EE : EnumElementBase<P, N, E, EE, D, DE, S, SM, SMP>
 		where D : DataBase<P, N, E, EE, D, DE, S, SM, SMP> where DE : DataElementBase<P, N, E, EE, D, DE, S, SM, SMP>
@@ -39,6 +43,9 @@ namespace RestForge.Projects
 		[JsonProperty("root")]
 		public N Root { get; private set; }
 
+		[JsonIgnore]
+		INamespace IProject.IRoot { get { return Root; } }
+
 		protected ProjectBase()
 		{
 			ID = Guid.NewGuid();
@@ -52,10 +59,13 @@ namespace RestForge.Projects
 	public interface INamespace
 	{
 		string Name { get; }
+		bool Collapsed { get; }
 		List<INamespace> IChildren { get; }
 		List<IEnum> IEnums { get; }
 		List<IData> IData { get; }
 		List<IService> IService { get; }
+		IProject IProject { get; }
+		INamespace IParent { get; }
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
@@ -100,6 +110,12 @@ namespace RestForge.Projects
 
 		[JsonIgnore]
 		List<IService> INamespace.IService { get { return ((List<IService>)Services.AsEnumerable()).ToList(); } }
+
+		[JsonIgnore]
+		IProject INamespace.IProject { get { return Project; } }
+
+		[JsonIgnore]
+		INamespace INamespace.IParent { get { return Parent; } }
 
 		[JsonIgnore]
 		public string FullNamespace { get { return GetFullNamespace(); } }

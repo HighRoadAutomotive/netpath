@@ -10,20 +10,11 @@ namespace RestForge.Projects
 	public interface IEnum : IType
 	{
 		string Name { get; }
+		bool Collapsed { get; }
 		bool IsPacked { get; }
+		IProject IProject { get; }
+		INamespace IParent { get; }
 		List<IEnumElement> IElements { get; }
-	}
-
-	public interface IEnumElement
-	{
-		string Name { get; }
-		bool IsHidden { get; }
-		bool IsAuto { get; }
-		bool IsCustom { get; }
-		bool IsAggregate { get; }
-		long ServerValue { get; }
-		long? ClientValue { get; }
-		List<IEnumElement> IAggregateValues { get; }
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
@@ -57,6 +48,12 @@ namespace RestForge.Projects
 		[JsonIgnore]
 		TypeMode IType.Mode { get { return TypeMode.Enum; } }
 
+		[JsonIgnore]
+		IProject IEnum.IProject { get { return Project; } }
+
+		[JsonIgnore]
+		INamespace IEnum.IParent { get { return Parent; } }
+
 		[JsonProperty("primitive")]
 		public TypePrimitive Primitive { get { return TypePrimitive.Int64; } }
 
@@ -64,6 +61,19 @@ namespace RestForge.Projects
 		{
 			return Name;
 		}
+	}
+
+	public interface IEnumElement
+	{
+		string Name { get; }
+		IEnum IParent { get; }
+		bool IsHidden { get; }
+		bool IsAuto { get; }
+		bool IsCustom { get; }
+		bool IsAggregate { get; }
+		long ServerValue { get; }
+		long? ClientValue { get; }
+		List<IEnumElement> IAggregateValues { get; }
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
@@ -99,6 +109,9 @@ namespace RestForge.Projects
 
 		[JsonProperty("aggregates", ItemIsReference = true)]
 		public List<EnumElementBase<P, N, E, EE, D, DE, S, SM, SMP>> AggregateValues { get; private set; }
+
+		[JsonIgnore]
+		IEnum IEnumElement.IParent { get { return Parent;} }
 
 		[JsonIgnore]
 		List<IEnumElement> IEnumElement.IAggregateValues { get { return ((List<IEnumElement>)AggregateValues.AsEnumerable()).ToList(); } }
