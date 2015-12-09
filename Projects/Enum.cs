@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace RestForge.Projects
 		bool IsPacked { get; }
 		IProject IProject { get; }
 		INamespace IParent { get; }
-		List<IEnumElement> IElements { get; }
+		ObservableCollection<IEnumElement> IElements { get; }
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
@@ -40,10 +41,10 @@ namespace RestForge.Projects
 		public N Parent { get; private set; }
 
 		[JsonProperty("values")]
-		public List<E> Elements { get; private set; }
+		public ObservableCollection<E> Elements { get; private set; }
 
 		[JsonIgnore]
-		List<IEnumElement> IEnum.IElements { get { return ((List<IEnumElement>)Elements.AsEnumerable()).ToList(); } }
+		ObservableCollection<IEnumElement> IEnum.IElements { get { return ((ObservableCollection<IEnumElement>)Elements.AsEnumerable()); } }
 
 		[JsonIgnore]
 		TypeMode IType.Mode { get { return TypeMode.Enum; } }
@@ -73,7 +74,7 @@ namespace RestForge.Projects
 		bool IsAggregate { get; }
 		long ServerValue { get; }
 		long? ClientValue { get; }
-		List<IEnumElement> IAggregateValues { get; }
+		ObservableCollection<IEnumElement> IAggregateValues { get; }
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
@@ -108,13 +109,13 @@ namespace RestForge.Projects
 		public long? ClientValue { get; set; }
 
 		[JsonProperty("aggregates", ItemIsReference = true)]
-		public List<EnumElementBase<P, N, E, EE, D, DE, S, SM, SMP>> AggregateValues { get; private set; }
+		public ObservableCollection<EnumElementBase<P, N, E, EE, D, DE, S, SM, SMP>> AggregateValues { get; private set; }
 
 		[JsonIgnore]
 		IEnum IEnumElement.IParent { get { return Parent;} }
 
 		[JsonIgnore]
-		List<IEnumElement> IEnumElement.IAggregateValues { get { return ((List<IEnumElement>)AggregateValues.AsEnumerable()).ToList(); } }
+		ObservableCollection<IEnumElement> IEnumElement.IAggregateValues { get { return ((ObservableCollection<IEnumElement>)AggregateValues.AsEnumerable()); } }
 
 		public EnumElementBase(E parent, string name)
 		{

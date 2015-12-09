@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace RestForge.Projects
 		bool Collapsed { get; }
 		IProject IProject { get; }
 		INamespace IParent { get; }
-		List<IDataElement> IElements { get; }
+		ObservableCollection<IDataElement> IElements { get; }
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
@@ -36,10 +37,10 @@ namespace RestForge.Projects
 		public N Parent { get; private set; }
 
 		[JsonProperty("members")]
-		public List<DE> Elements { get; private set; }
+		public ObservableCollection<DE> Elements { get; private set; }
 
 		[JsonIgnore]
-		List<IDataElement> IData.IElements { get { return ((List<IDataElement>)Elements.AsEnumerable()).ToList(); } }
+		ObservableCollection<IDataElement> IData.IElements { get { return ((ObservableCollection<IDataElement>)Elements.AsEnumerable()); } }
 		[JsonIgnore]
 		IProject IData.IProject { get { return Project; } }
 

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -60,12 +61,21 @@ namespace RestForge.Projects
 	{
 		string Name { get; }
 		bool Collapsed { get; }
-		List<INamespace> IChildren { get; }
-		List<IEnum> IEnums { get; }
-		List<IData> IData { get; }
-		List<IService> IService { get; }
+		ObservableCollection<INamespace> IChildren { get; }
+		ObservableCollection<IEnum> IEnums { get; }
+		ObservableCollection<IData> IData { get; }
+		ObservableCollection<IService> IService { get; }
 		IProject IProject { get; }
 		INamespace IParent { get; }
+
+		void AddNamespace();
+		void AddEnum();
+		void AddData();
+		void AddService();
+		void RemoveNamespace(INamespace remove);
+		void RemoveEnum(IEnum remove);
+		void RemoveData(IData remove);
+		void RemoveService(IService remove);
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
@@ -88,28 +98,28 @@ namespace RestForge.Projects
 		public N Parent { get; private set; }
 
 		[JsonProperty("children")]
-		public List<N> Children { get; private set; }
+		public ObservableCollection<N> Children { get; private set; }
 
 		[JsonProperty("enums")]
-		public List<E> Enumerations { get; private set; }
+		public ObservableCollection<E> Enumerations { get; private set; }
 
 		[JsonProperty("data")]
-		public List<D> Data { get; private set; }
+		public ObservableCollection<D> Data { get; private set; }
 
 		[JsonProperty("services")]
-		public List<S> Services { get; private set; }
+		public ObservableCollection<S> Services { get; private set; }
 
 		[JsonIgnore]
-		List<INamespace> INamespace.IChildren { get { return ((List<INamespace>)Children.AsEnumerable()).ToList(); } }
+		ObservableCollection<INamespace> INamespace.IChildren { get { return ((ObservableCollection<INamespace>)Children.AsEnumerable()); } }
 
 		[JsonIgnore]
-		List<IEnum> INamespace.IEnums { get { return ((List<IEnum>)Children.AsEnumerable()).ToList(); } }
+		ObservableCollection<IEnum> INamespace.IEnums { get { return ((ObservableCollection<IEnum>)Children.AsEnumerable()); } }
 
 		[JsonIgnore]
-		List<IData> INamespace.IData { get { return ((List<IData>)Data.AsEnumerable()).ToList(); } }
+		ObservableCollection<IData> INamespace.IData { get { return ((ObservableCollection<IData>)Data.AsEnumerable()); } }
 
 		[JsonIgnore]
-		List<IService> INamespace.IService { get { return ((List<IService>)Services.AsEnumerable()).ToList(); } }
+		ObservableCollection<IService> INamespace.IService { get { return ((ObservableCollection<IService>)Services.AsEnumerable()); } }
 
 		[JsonIgnore]
 		IProject INamespace.IProject { get { return Project; } }
@@ -122,12 +132,20 @@ namespace RestForge.Projects
 
 		protected NamespaceBase(P project, N parent)
 		{
-			Children = new List<N>();
+			Children = new ObservableCollection<N>();
 			Project = project;
 			Parent = parent;
 		}
 
 		protected abstract string GetFullNamespace();
 
+		public abstract void AddNamespace();
+		public abstract void AddEnum();
+		public abstract void AddData();
+		public abstract void AddService();
+		public abstract void RemoveNamespace(INamespace remove);
+		public abstract void RemoveEnum(IEnum remove);
+		public abstract void RemoveData(IData remove);
+		public abstract void RemoveService(IService remove);
 	}
 }

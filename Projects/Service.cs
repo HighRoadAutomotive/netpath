@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Remoting.Lifetime;
 using System.Text;
@@ -13,7 +14,7 @@ namespace RestForge.Projects
 		string Name { get; }
 		bool Collapsed { get; }
 		string Path { get; }
-		List<IDataElement> IElements { get; }
+		ObservableCollection<IDataElement> IElements { get; }
 		IProject IProject { get; }
 		INamespace IParent { get; }
 	}
@@ -41,10 +42,10 @@ namespace RestForge.Projects
 		public string Path { get; set; }
 
 		[JsonProperty("methods")]
-		public List<SM> Elements { get; private set; }
+		public ObservableCollection<SM> Elements { get; private set; }
 
 		[JsonIgnore]
-		List<IDataElement> IService.IElements { get { return ((List<IDataElement>)Elements.AsEnumerable()).ToList(); } }
+		ObservableCollection<IDataElement> IService.IElements { get { return ((ObservableCollection<IDataElement>)Elements.AsEnumerable()); } }
 
 		[JsonIgnore]
 		TypeMode IType.Mode { get { return TypeMode.Object; } }
@@ -70,7 +71,7 @@ namespace RestForge.Projects
 		TypeBase ReturnType { get; }
 		bool IsHidden { get; }
 		IService IParent { get; }
-		List<ServiceMethodParameterBase> IParameters { get; }
+		ObservableCollection<ServiceMethodParameterBase> IParameters { get; }
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
@@ -96,10 +97,10 @@ namespace RestForge.Projects
 		IService IServiceMethod.IParent { get { return Parent; } }
 
 		[JsonProperty("parameters", IsReference = true)]
-		List<SMP> Parameters { get; }
+		ObservableCollection<SMP> Parameters { get; }
 
 		[JsonIgnore]
-		List<ServiceMethodParameterBase> IServiceMethod.IParameters { get { return ((List<ServiceMethodParameterBase>)Parameters.AsEnumerable()).ToList(); } }
+		ObservableCollection<ServiceMethodParameterBase> IServiceMethod.IParameters { get { return ((ObservableCollection<ServiceMethodParameterBase>)Parameters.AsEnumerable()); } }
 
 		public override string ToString()
 		{
