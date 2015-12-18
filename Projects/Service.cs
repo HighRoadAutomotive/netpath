@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.Remoting.Lifetime;
 using System.Text;
@@ -14,7 +15,7 @@ namespace RestForge.Projects
 		string Name { get; }
 		bool Collapsed { get; }
 		string Path { get; }
-		ObservableCollection<IDataElement> IElements { get; }
+		ObservableCollection<IServiceMethod> IMethods { get; }
 		IProject IProject { get; }
 		INamespace IParent { get; }
 	}
@@ -26,6 +27,8 @@ namespace RestForge.Projects
 		where D : DataBase<P, N, E, EE, D, DE, S, SM, SMP> where DE : DataElementBase<P, N, E, EE, D, DE, S, SM, SMP>
 		where S : ServiceBase<P, N, E, EE, D, DE, S, SM, SMP> where SM : ServiceMethodBase<P, N, E, EE, D, DE, S, SM, SMP> where SMP : ServiceMethodParameterBase
 	{
+		private readonly ObservableCollection<IServiceMethod> _methods;
+
 		[JsonProperty("name")]
 		public string Name { get; set; }
 
@@ -42,10 +45,10 @@ namespace RestForge.Projects
 		public string Path { get; set; }
 
 		[JsonProperty("methods")]
-		public ObservableCollection<SM> Elements { get; private set; }
+		public ObservableCollection<SM> Methods { get; private set; }
 
 		[JsonIgnore]
-		ObservableCollection<IDataElement> IService.IElements { get { return ((ObservableCollection<IDataElement>)Elements.AsEnumerable()); } }
+		ObservableCollection<IServiceMethod> IService.IMethods { get { return _methods; } }
 
 		[JsonIgnore]
 		TypeMode IType.Mode { get { return TypeMode.Object; } }
@@ -58,6 +61,49 @@ namespace RestForge.Projects
 
 		[JsonIgnore]
 		INamespace IService.IParent { get { return Parent; } }
+
+		public ServiceBase()
+		{
+			_methods = new ObservableCollection<IServiceMethod>();
+			Methods = new ObservableCollection<SM>();
+
+			Methods.CollectionChanged += Methods_CollectionChanged;
+		}
+
+		private void Methods_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (e.Action == NotifyCollectionChangedAction.Reset)
+				_methods.Clear();
+
+			if (e.Action == NotifyCollectionChangedAction.Add)
+				foreach (SM t in e.NewItems)
+					_methods.Add(t);
+
+			if (e.Action == NotifyCollectionChangedAction.Remove)
+				foreach (SM t in e.OldItems)
+					_methods.Remove(t);
+
+			if (e.Action == NotifyCollectionChangedAction.Replace)
+			{
+				int c = 0;
+				foreach (SM t in e.NewItems)
+				{
+					_methods[e.OldStartingIndex + c] = t;
+					c++;
+				}
+			}
+
+			if (e.Action == NotifyCollectionChangedAction.Move)
+			{
+				int c = 0;
+				foreach (SM t in e.NewItems)
+				{
+					_methods.RemoveAt(e.OldStartingIndex + c);
+					_methods.Insert(e.NewStartingIndex + c, t);
+					c++;
+				}
+			}
+		}
 
 		public override string ToString()
 		{
@@ -81,6 +127,8 @@ namespace RestForge.Projects
 		where D : DataBase<P, N, E, EE, D, DE, S, SM, SMP> where DE : DataElementBase<P, N, E, EE, D, DE, S, SM, SMP>
 		where S : ServiceBase<P, N, E, EE, D, DE, S, SM, SMP> where SM : ServiceMethodBase<P, N, E, EE, D, DE, S, SM, SMP> where SMP : ServiceMethodParameterBase
 	{
+		private readonly ObservableCollection<ServiceMethodParameterBase> _parameters;
+
 		[JsonProperty("name")]
 		public string Name { get; set; }
 
@@ -100,7 +148,50 @@ namespace RestForge.Projects
 		ObservableCollection<SMP> Parameters { get; }
 
 		[JsonIgnore]
-		ObservableCollection<ServiceMethodParameterBase> IServiceMethod.IParameters { get { return ((ObservableCollection<ServiceMethodParameterBase>)Parameters.AsEnumerable()); } }
+		ObservableCollection<ServiceMethodParameterBase> IServiceMethod.IParameters { get { return _parameters; } }
+
+		public ServiceMethodBase()
+		{
+			_parameters = new ObservableCollection<ServiceMethodParameterBase>();
+			Parameters = new ObservableCollection<SMP>();
+
+			Parameters.CollectionChanged += Parameters_CollectionChanged;
+		}
+
+		private void Parameters_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			if (e.Action == NotifyCollectionChangedAction.Reset)
+				_parameters.Clear();
+
+			if (e.Action == NotifyCollectionChangedAction.Add)
+				foreach (SMP t in e.NewItems)
+					_parameters.Add(t);
+
+			if (e.Action == NotifyCollectionChangedAction.Remove)
+				foreach (SMP t in e.OldItems)
+					_parameters.Remove(t);
+
+			if (e.Action == NotifyCollectionChangedAction.Replace)
+			{
+				int c = 0;
+				foreach (SMP t in e.NewItems)
+				{
+					_parameters[e.OldStartingIndex + c] = t;
+					c++;
+				}
+			}
+
+			if (e.Action == NotifyCollectionChangedAction.Move)
+			{
+				int c = 0;
+				foreach (SMP t in e.NewItems)
+				{
+					_parameters.RemoveAt(e.OldStartingIndex + c);
+					_parameters.Insert(e.NewStartingIndex + c, t);
+					c++;
+				}
+			}
+		}
 
 		public override string ToString()
 		{

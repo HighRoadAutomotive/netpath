@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,8 @@ namespace RestForge.Projects
 		where D : DataBase<P, N, E, EE, D, DE, S, SM, SMP> where DE : DataElementBase<P, N, E, EE, D, DE, S, SM, SMP>
 		where S : ServiceBase<P, N, E, EE, D, DE, S, SM, SMP> where SM : ServiceMethodBase<P, N, E, EE, D, DE, S, SM, SMP> where SMP : ServiceMethodParameterBase
 	{
+		private readonly ObservableCollection<IEnumElement> _elements;
+
 		[JsonProperty("name")]
 		public string Name { get; set; }
 
@@ -41,10 +44,10 @@ namespace RestForge.Projects
 		public N Parent { get; private set; }
 
 		[JsonProperty("values")]
-		public ObservableCollection<E> Elements { get; private set; }
+		public ObservableCollection<EE> Elements { get; private set; }
 
 		[JsonIgnore]
-		ObservableCollection<IEnumElement> IEnum.IElements { get { return ((ObservableCollection<IEnumElement>)Elements.AsEnumerable()); } }
+		ObservableCollection<IEnumElement> IEnum.IElements { get { return _elements; } }
 
 		[JsonIgnore]
 		TypeMode IType.Mode { get { return TypeMode.Enum; } }
@@ -57,6 +60,49 @@ namespace RestForge.Projects
 
 		[JsonProperty("primitive")]
 		public TypePrimitive Primitive { get { return TypePrimitive.Int64; } }
+
+		public EnumBase()
+		{
+			_elements = new ObservableCollection<IEnumElement>();
+			Elements = new ObservableCollection<EE>();
+
+			Elements.CollectionChanged += Elements_CollectionChanged;
+		}
+
+		private void Elements_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			if (e.Action == NotifyCollectionChangedAction.Reset)
+				Elements.Clear();
+
+			if (e.Action == NotifyCollectionChangedAction.Add)
+				foreach (EE t in e.NewItems)
+					Elements.Add(t);
+
+			if (e.Action == NotifyCollectionChangedAction.Remove)
+				foreach (EE t in e.OldItems)
+					Elements.Remove(t);
+
+			if (e.Action == NotifyCollectionChangedAction.Replace)
+			{
+				int c = 0;
+				foreach (EE t in e.NewItems)
+				{
+					Elements[e.OldStartingIndex + c] = t;
+					c++;
+				}
+			}
+
+			if (e.Action == NotifyCollectionChangedAction.Move)
+			{
+				int c = 0;
+				foreach (EE t in e.NewItems)
+				{
+					Elements.RemoveAt(e.OldStartingIndex + c);
+					Elements.Insert(e.NewStartingIndex + c, t);
+					c++;
+				}
+			}
+		}
 
 		public override string ToString()
 		{

@@ -149,9 +149,117 @@ namespace RestForge.Projects
 			Services = new ObservableCollection<S>();
 
 			Children.CollectionChanged += Children_CollectionChanged;
+			Enumerations.CollectionChanged += Enumerations_CollectionChanged;
+			Data.CollectionChanged += Data_CollectionChanged;
+			Services.CollectionChanged += Services_CollectionChanged;
 
 			Project = project;
 			Parent = parent;
+		}
+
+		private void Services_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (e.Action == NotifyCollectionChangedAction.Reset)
+				_services.Clear();
+
+			if (e.Action == NotifyCollectionChangedAction.Add)
+				foreach (S t in e.NewItems)
+					_services.Add(t);
+
+			if (e.Action == NotifyCollectionChangedAction.Remove)
+				foreach (S t in e.OldItems)
+					_services.Remove(t);
+
+			if (e.Action == NotifyCollectionChangedAction.Replace)
+			{
+				int c = 0;
+				foreach (S t in e.NewItems)
+				{
+					_services[e.OldStartingIndex + c] = t;
+					c++;
+				}
+			}
+
+			if (e.Action == NotifyCollectionChangedAction.Move)
+			{
+				int c = 0;
+				foreach (S t in e.NewItems)
+				{
+					_services.RemoveAt(e.OldStartingIndex + c);
+					_services.Insert(e.NewStartingIndex + c, t);
+					c++;
+				}
+			}
+		}
+
+		private void Data_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (e.Action == NotifyCollectionChangedAction.Reset)
+				_data.Clear();
+
+			if (e.Action == NotifyCollectionChangedAction.Add)
+				foreach (D t in e.NewItems)
+					_data.Add(t);
+
+			if (e.Action == NotifyCollectionChangedAction.Remove)
+				foreach (D t in e.OldItems)
+					_data.Remove(t);
+
+			if (e.Action == NotifyCollectionChangedAction.Replace)
+			{
+				int c = 0;
+				foreach (D t in e.NewItems)
+				{
+					_data[e.OldStartingIndex + c] = t;
+					c++;
+				}
+			}
+
+			if (e.Action == NotifyCollectionChangedAction.Move)
+			{
+				int c = 0;
+				foreach (D t in e.NewItems)
+				{
+					_data.RemoveAt(e.OldStartingIndex + c);
+					_data.Insert(e.NewStartingIndex + c, t);
+					c++;
+				}
+			}
+		}
+
+		private void Enumerations_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (e.Action == NotifyCollectionChangedAction.Reset)
+				_enums.Clear();
+
+			if (e.Action == NotifyCollectionChangedAction.Add)
+				foreach (E t in e.NewItems)
+					_enums.Add(t);
+
+			if (e.Action == NotifyCollectionChangedAction.Remove)
+				foreach (E t in e.OldItems)
+					_enums.Remove(t);
+
+			if (e.Action == NotifyCollectionChangedAction.Replace)
+			{
+				int c = 0;
+				foreach (E t in e.NewItems)
+				{
+					_enums[e.OldStartingIndex + c] = t;
+					c++;
+				}
+			}
+
+			if (e.Action == NotifyCollectionChangedAction.Move)
+			{
+				int c = 0;
+				foreach (E t in e.NewItems)
+				{
+					_enums.RemoveAt(e.OldStartingIndex + c);
+					_enums.Insert(e.NewStartingIndex + c, t);
+					c++;
+				}
+			}
 		}
 
 		private void Children_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -166,6 +274,27 @@ namespace RestForge.Projects
 			if(e.Action == NotifyCollectionChangedAction.Remove)
 				foreach (N t in e.OldItems)
 					_namespaces.Remove(t);
+
+			if (e.Action == NotifyCollectionChangedAction.Replace)
+			{
+				int c = 0;
+				foreach (N t in e.NewItems)
+				{
+					_namespaces[e.OldStartingIndex + c] = t;
+					c++;
+				}
+			}
+
+			if (e.Action == NotifyCollectionChangedAction.Move)
+			{
+				int c = 0;
+				foreach (N t in e.NewItems)
+				{
+					_namespaces.RemoveAt(e.OldStartingIndex + c);
+					_namespaces.Insert(e.NewStartingIndex + c, t);
+					c++;
+				}
+			}
 		}
 
 		protected abstract string GetFullNamespace();
