@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Designer", "Designer-OLD\Designer.csproj", "{26437A88-CCC9-4006-BE4E-2EB3EAC8D78D}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -31,14 +31,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Designer", "Designer\Design
 	ProjectSection(ProjectDependencies) = postProject
 		{6594CD45-2F17-4353-8CFC-8C314092821E} = {6594CD45-2F17-4353-8CFC-8C314092821E}
 		{555EF39E-2351-4A51-9EE2-2899891A93BF} = {555EF39E-2351-4A51-9EE2-2899891A93BF}
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B} = {F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Styles", "Styles\Styles.csproj", "{4DCA7DD0-214A-48FA-BF41-298CA406594E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules", "Modules\Modules.csproj", "{555EF39E-2351-4A51-9EE2-2899891A93BF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Generators", "Generators\Generators.csproj", "{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -256,30 +253,6 @@ Global
 		{555EF39E-2351-4A51-9EE2-2899891A93BF}.Release|x64.Build.0 = Release|Any CPU
 		{555EF39E-2351-4A51-9EE2-2899891A93BF}.Release|x86.ActiveCfg = Release|Any CPU
 		{555EF39E-2351-4A51-9EE2-2899891A93BF}.Release|x86.Build.0 = Release|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Debug|ARM.Build.0 = Debug|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Debug|Win32.Build.0 = Debug|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Debug|x64.Build.0 = Debug|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Debug|x86.Build.0 = Debug|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Release|ARM.ActiveCfg = Release|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Release|ARM.Build.0 = Release|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Release|Win32.ActiveCfg = Release|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Release|Win32.Build.0 = Release|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Release|x64.ActiveCfg = Release|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Release|x64.Build.0 = Release|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Release|x86.ActiveCfg = Release|Any CPU
-		{F12B11AF-6804-43B3-8CC8-BEA0CF0ACC8B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

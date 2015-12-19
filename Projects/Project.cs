@@ -19,7 +19,9 @@ namespace RestForge.Projects
 		List<Guid> Dependencies { get; }
 		INamespace IRoot { get; }
 
-		Task Build();
+		ObservableCollection<BuildMessage> BuildMessages { get; }
+
+		Task<bool> Build();
 		Task Save(string path);
 	}
 
@@ -48,13 +50,23 @@ namespace RestForge.Projects
 		[JsonIgnore]
 		INamespace IProject.IRoot { get { return Root; } }
 
+		[JsonIgnore]
+		public ObservableCollection<BuildMessage> BuildMessages { get; private set; }
+
 		protected ProjectBase()
 		{
 			ID = Guid.NewGuid();
 			Dependencies = new List<Guid>();
+			BuildMessages = new ObservableCollection<BuildMessage>();
 		}
 
-		public abstract Task Build();
+		public async Task<bool> Build()
+		{
+			BuildMessages.Clear();
+			return await InternalBuild();
+		}
+
+		public abstract Task<bool> InternalBuild();
 		public abstract Task Save(string path);
 	}
 

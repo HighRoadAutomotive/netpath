@@ -1,4 +1,4 @@
-﻿using RestForge.Generators;
+﻿using RestForge.Projects;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,46 +14,45 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using RestForge.Projects;
 
 namespace RestForge.Designer
 {
 	public partial class Main : Window
 	{
-		public ObservableCollection<GeneratorMessageXaml> GeneratorMessages { get { return (ObservableCollection<GeneratorMessageXaml>)GetValue(GeneratorMessagesProperty); } set { SetValue(GeneratorMessagesProperty, value); } }
-		public static readonly DependencyProperty GeneratorMessagesProperty = DependencyProperty.Register("GeneratorMessages", typeof(ObservableCollection<GeneratorMessageXaml>), typeof(Main));
+		public ObservableCollection<BuildMessageXaml> GeneratorMessages { get { return (ObservableCollection<BuildMessageXaml>)GetValue(GeneratorMessagesProperty); } set { SetValue(GeneratorMessagesProperty, value); } }
+		public static readonly DependencyProperty GeneratorMessagesProperty = DependencyProperty.Register("GeneratorMessages", typeof(ObservableCollection<BuildMessageXaml>), typeof(Main));
 
 
 		public Main()
 		{
-			GeneratorMessages = new ObservableCollection<GeneratorMessageXaml>();
+			GeneratorMessages = new ObservableCollection<BuildMessageXaml>();
 			InitializeComponent();
 		}
 	}
 
-	public class GeneratorMessageXaml : DependencyObject
+	public class BuildMessageXaml : DependencyObject
 	{
-		public GeneratorMessageSeverity Severity { get { return (GeneratorMessageSeverity)GetValue(SeverityProperty); } protected set { SetValue(SeverityPropertyKey, value); } }
-		private static readonly DependencyPropertyKey SeverityPropertyKey = DependencyProperty.RegisterReadOnly("Severity", typeof(GeneratorMessageSeverity), typeof(GeneratorMessageXaml), new PropertyMetadata(GeneratorMessageSeverity.Info));
+		public BuildMessageSeverity Severity { get { return (BuildMessageSeverity)GetValue(SeverityProperty); } protected set { SetValue(SeverityPropertyKey, value); } }
+		private static readonly DependencyPropertyKey SeverityPropertyKey = DependencyProperty.RegisterReadOnly("Severity", typeof(BuildMessageSeverity), typeof(BuildMessageXaml), new PropertyMetadata(BuildMessageSeverity.Info));
 		public static readonly DependencyProperty SeverityProperty = SeverityPropertyKey.DependencyProperty;
 
 		public string Code { get { return (string)GetValue(CodeProperty); } protected set { SetValue(CodePropertyKey, value); } }
-		private static readonly DependencyPropertyKey CodePropertyKey = DependencyProperty.RegisterReadOnly("Code", typeof(string), typeof(GeneratorMessageXaml), new PropertyMetadata(""));
+		private static readonly DependencyPropertyKey CodePropertyKey = DependencyProperty.RegisterReadOnly("Code", typeof(string), typeof(BuildMessageXaml), new PropertyMetadata(""));
 		public static readonly DependencyProperty CodeProperty = CodePropertyKey.DependencyProperty;
 
 		public string Description { get { return (string)GetValue(DescriptionProperty); } protected set { SetValue(DescriptionPropertyKey, value); } }
-		private static readonly DependencyPropertyKey DescriptionPropertyKey = DependencyProperty.RegisterReadOnly("Description", typeof(string), typeof(GeneratorMessageXaml), new PropertyMetadata(""));
+		private static readonly DependencyPropertyKey DescriptionPropertyKey = DependencyProperty.RegisterReadOnly("Description", typeof(string), typeof(BuildMessageXaml), new PropertyMetadata(""));
 		public static readonly DependencyProperty DescriptionProperty = DescriptionPropertyKey.DependencyProperty;
 
 		public IProject Owner { get { return (IProject)GetValue(OwnerProperty); } protected set { SetValue(OwnerPropertyKey, value); } }
-		private static readonly DependencyPropertyKey OwnerPropertyKey = DependencyProperty.RegisterReadOnly("Owner", typeof(IProject), typeof(GeneratorMessageXaml), new PropertyMetadata(null));
+		private static readonly DependencyPropertyKey OwnerPropertyKey = DependencyProperty.RegisterReadOnly("Owner", typeof(IProject), typeof(BuildMessageXaml), new PropertyMetadata(null));
 		public static readonly DependencyProperty OwnerProperty = OwnerPropertyKey.DependencyProperty;
 
 		public string ErrorObject { get { return (string)GetValue(ErrorObjectProperty); } protected set { SetValue(ErrorObjectPropertyKey, value); } }
-		private static readonly DependencyPropertyKey ErrorObjectPropertyKey = DependencyProperty.RegisterReadOnly("ErrorObject", typeof(string), typeof(GeneratorMessageXaml), new PropertyMetadata(""));
+		private static readonly DependencyPropertyKey ErrorObjectPropertyKey = DependencyProperty.RegisterReadOnly("ErrorObject", typeof(string), typeof(BuildMessageXaml), new PropertyMetadata(""));
 		public static readonly DependencyProperty ErrorObjectProperty = ErrorObjectPropertyKey.DependencyProperty;
 
-		public GeneratorMessageXaml(GeneratorMessage message)
+		public BuildMessageXaml(BuildMessage message)
 		{
 			Severity = message.Severity;
 			Code = message.Code;
@@ -73,9 +72,9 @@ namespace RestForge.Designer
 
 		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
-			var t = (GeneratorMessageSeverity) value;
-			if (t == GeneratorMessageSeverity.Error) return ErrorStyle;
-			if (t == GeneratorMessageSeverity.Warn) return WarningStyle;
+			var t = (BuildMessageSeverity) value;
+			if (t == BuildMessageSeverity.Error) return ErrorStyle;
+			if (t == BuildMessageSeverity.Warn) return WarningStyle;
 			return InfoStyle;
 		}
 

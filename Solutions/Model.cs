@@ -62,7 +62,7 @@ namespace RestForge.Solutions
 		public Guid ID { get; private set; }
 
 		[JsonProperty("handler")]
-		public string ProjectHandler { get; set; }
+		public Guid ModuleHandler { get; set; }
 
 		[JsonProperty("path")]
 		public string Path { get; set; }
