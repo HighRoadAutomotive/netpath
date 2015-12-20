@@ -5,6 +5,7 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace RestForge.Solutions
 {
@@ -16,6 +17,7 @@ namespace RestForge.Solutions
 			using (var sr = new StreamReader(fs))
 			{
 				var json = await sr.ReadToEndAsync();
+				IsSolutionMinimumVersion(json);
 				return await Task.Run(() => JsonConvert.DeserializeObject<Solution>(json));
 			}
 		}
@@ -30,6 +32,23 @@ namespace RestForge.Solutions
 				await sw.FlushAsync();
 				sw.Close();
 			}
+		}
+
+		private static void IsSolutionMinimumVersion(string json)
+		{
+			var j = JObject.Parse(json);
+			var sv = j.GetValue("solutionVersion").Value<int>();
+			var mv = j.GetValue("minimumVersion").Value<int>();
+			if (mv < Solution.MinimumVersion || sv < Solution.MinimumVersion)
+				throw new SolutionMinimumVersionException();
+		}
+	}
+
+	public class SolutionMinimumVersionException : Exception
+	{
+		public SolutionMinimumVersionException()
+			: base($"Unable to load the solution. This solution version is no longer supported by RestForge. The minimum solution version is {Solution.MinimumVersion}.")
+		{
 		}
 	}
 }

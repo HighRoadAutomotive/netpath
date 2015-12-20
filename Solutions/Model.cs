@@ -10,14 +10,17 @@ namespace RestForge.Solutions
 	[JsonObject(MemberSerialization.OptIn)]
 	public sealed class Solution
 	{
+		public const int SolutionVersion = 1;
+		public const int MinimumVersion = 1;
+
 		[JsonProperty("name")]
 		public string Name { get; set; }
 
 		[JsonProperty("solutionVersion")]
-		public string SolutionVersion { get; internal set; }
+		public int Version { get; private set; }
 
 		[JsonProperty("minimumVersion")]
-		public string MinimumVersion { get; internal set; }
+		public int MinVersion { get; private set; }
 
 		[JsonProperty("subfolders")]
 		public List<SolutionFolder> Folders { get; private set; }
@@ -25,8 +28,18 @@ namespace RestForge.Solutions
 		[JsonProperty("projects")]
 		public List<Project> Projects { get; private set; }
 
+		[JsonConstructor]
 		public Solution()
 		{
+			Folders = new List<SolutionFolder>();
+			Projects = new List<Project>();
+		}
+
+		public Solution(string name)
+		{
+			Name = name;
+			Version = SolutionVersion;
+			MinVersion = MinimumVersion;
 			Folders = new List<SolutionFolder>();
 			Projects = new List<Project>();
 		}
@@ -47,8 +60,10 @@ namespace RestForge.Solutions
 		[JsonProperty("projects")]
 		public List<Project> Projects { get; private set; }
 
-		public SolutionFolder()
+		[JsonConstructor]
+		public SolutionFolder(string name)
 		{
+			Name = name;
 			Collapsed = false;
 			Folders = new List<SolutionFolder>();
 			Projects = new List<Project>();
@@ -67,9 +82,12 @@ namespace RestForge.Solutions
 		[JsonProperty("path")]
 		public string Path { get; set; }
 
-		public Project(Guid ProjectID)
+		[JsonConstructor]
+		public Project(Guid id, Guid handler, string path)
 		{
-			ID = ProjectID;
+			ID = id;
+			ModuleHandler = handler;
+			Path = path;
 		}
 	}
 }

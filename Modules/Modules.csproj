@@ -46,7 +46,7 @@
   <ItemGroup>
     <Compile Include="Document.cs" />
     <Compile Include="Loader.cs" />
-    <Compile Include="Module.cs" />
+    <Compile Include="ModuleBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
