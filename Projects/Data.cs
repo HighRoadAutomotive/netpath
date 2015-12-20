@@ -11,6 +11,7 @@ namespace RestForge.Projects
 {
 	public interface IData : IType
 	{
+		Guid ID { get; }
 		string Name { get; }
 		bool Collapsed { get; }
 		IProject IProject { get; }
@@ -19,13 +20,15 @@ namespace RestForge.Projects
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
-	public abstract class DataBase<P, N, E, EE, D, DE, S, SM, SMP> : IData
+	public abstract class DataBase<P, N, E, EE, D, DE, S, SM, SMP> : TypeObject, IData
 		where P : ProjectBase<P, N, E, EE, D, DE, S, SM, SMP> where N : NamespaceBase<P, N, E, EE, D, DE, S, SM, SMP>
 		where E : EnumBase<P, N, E, EE, D, DE, S, SM, SMP> where EE : EnumElementBase<P, N, E, EE, D, DE, S, SM, SMP>
 		where D : DataBase<P, N, E, EE, D, DE, S, SM, SMP> where DE : DataElementBase<P, N, E, EE, D, DE, S, SM, SMP>
 		where S : ServiceBase<P, N, E, EE, D, DE, S, SM, SMP> where SM : ServiceMethodBase<P, N, E, EE, D, DE, S, SM, SMP> where SMP : ServiceMethodParameterBase
 	{
 		private readonly ObservableCollection<IDataElement> _elements;
+
+		public sealed override Guid ID { get; set; }
 
 		[JsonProperty("name")]
 		public string Name { get; set; }
@@ -51,15 +54,22 @@ namespace RestForge.Projects
 		[JsonIgnore]
 		INamespace IData.IParent { get { return Parent; } }
 
-
-		[JsonIgnore]
-		TypeMode IType.Mode { get { return TypeMode.Object; } }
-
-		[JsonIgnore]
-		TypePrimitive IType.Primitive { get { return TypePrimitive.None; } }
-
-		public DataBase()
+		[JsonConstructor]
+		protected DataBase()
 		{
+			_elements = new ObservableCollection<IDataElement>();
+			Elements = new ObservableCollection<DE>();
+
+			Elements.CollectionChanged += Elements_CollectionChanged;
+		}
+
+		protected DataBase(string name, N parent, P project)
+		{
+			ID = Guid.NewGuid();
+			Name = name;
+			Project = project;
+			Parent = parent;
+
 			_elements = new ObservableCollection<IDataElement>();
 			Elements = new ObservableCollection<DE>();
 
@@ -132,6 +142,9 @@ namespace RestForge.Projects
 		[JsonProperty("transport")]
 		public string TransportName { get; set; }
 
+		[JsonProperty("scope")]
+		public TypeScope Scope { get; set; }
+
 		[JsonProperty("type")]
 		public TypeBase DataType { get; set; }
 
@@ -152,6 +165,15 @@ namespace RestForge.Projects
 
 		[JsonIgnore]
 		IData IDataElement.IParent { get { return Parent; } }
+
+		[JsonConstructor]
+		protected DataElementBase() { }
+
+		protected DataElementBase(D parent, string name)
+		{
+			Name = name;
+			Parent = parent;
+		}
 
 		public override string ToString()
 		{

@@ -12,6 +12,7 @@ namespace RestForge.Projects
 {
 	public interface IService : IType
 	{
+		Guid ID { get; }
 		string Name { get; }
 		bool Collapsed { get; }
 		string Path { get; }
@@ -28,6 +29,9 @@ namespace RestForge.Projects
 		where S : ServiceBase<P, N, E, EE, D, DE, S, SM, SMP> where SM : ServiceMethodBase<P, N, E, EE, D, DE, S, SM, SMP> where SMP : ServiceMethodParameterBase
 	{
 		private readonly ObservableCollection<IServiceMethod> _methods;
+
+		[JsonProperty("id")]
+		public Guid ID { get; private set; }
 
 		[JsonProperty("name")]
 		public string Name { get; set; }
@@ -62,8 +66,22 @@ namespace RestForge.Projects
 		[JsonIgnore]
 		INamespace IService.IParent { get { return Parent; } }
 
-		public ServiceBase()
+		[JsonConstructor]
+		protected ServiceBase()
 		{
+			_methods = new ObservableCollection<IServiceMethod>();
+			Methods = new ObservableCollection<SM>();
+
+			Methods.CollectionChanged += Methods_CollectionChanged;
+		}
+
+		protected ServiceBase(string name, N parent, P project)
+		{
+			ID = Guid.NewGuid();
+			Name = name;
+			Project = project;
+			Parent = parent;
+
 			_methods = new ObservableCollection<IServiceMethod>();
 			Methods = new ObservableCollection<SM>();
 
@@ -150,8 +168,20 @@ namespace RestForge.Projects
 		[JsonIgnore]
 		ObservableCollection<ServiceMethodParameterBase> IServiceMethod.IParameters { get { return _parameters; } }
 
-		public ServiceMethodBase()
+		[JsonConstructor]
+		protected ServiceMethodBase()
 		{
+			_parameters = new ObservableCollection<ServiceMethodParameterBase>();
+			Parameters = new ObservableCollection<SMP>();
+
+			Parameters.CollectionChanged += Parameters_CollectionChanged;
+		}
+
+		protected ServiceMethodBase(string name, S parent)
+		{
+			Name = name;
+			Parent = parent;
+
 			_parameters = new ObservableCollection<ServiceMethodParameterBase>();
 			Parameters = new ObservableCollection<SMP>();
 
@@ -213,6 +243,15 @@ namespace RestForge.Projects
 
 		[JsonProperty("default")]
 		public string Default { get; set; }
+
+		[JsonConstructor]
+		protected ServiceMethodParameterBase() { }
+
+		protected ServiceMethodParameterBase(string name, TypeBase type)
+		{
+			Name = name;
+			DataType = type;
+		}
 
 		public override string ToString()
 		{

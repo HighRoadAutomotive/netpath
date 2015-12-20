@@ -8,6 +8,12 @@ using System.Threading.Tasks;
 
 namespace RestForge.Projects
 {
+	public enum TypeScope
+	{
+		Public,
+		Private,
+	}
+
 	public enum TypeMode
 	{
 		Void,
@@ -53,11 +59,41 @@ namespace RestForge.Projects
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
+	public class TypeEnum : TypeBase
+	{
+		[JsonProperty("mode")]
+		public override TypeMode Mode { get { return TypeMode.Enum; } }
+		[JsonProperty("primitive")]
+		public override TypePrimitive Primitive { get { return TypePrimitive.Int64; } }
+
+		[JsonProperty("scope")]
+		public TypeScope Scope { get; set; }
+
+		[JsonProperty("id")]
+		public virtual Guid ID { get; set; }
+	}
+
+	[JsonObject(MemberSerialization.OptIn)]
+	public class TypeObject : TypeBase
+	{
+		[JsonProperty("mode")]
+		public override TypeMode Mode { get { return TypeMode.Object; } }
+		[JsonIgnore]
+		public override TypePrimitive Primitive { get { return TypePrimitive.None; } }
+
+		[JsonProperty("scope")]
+		public TypeScope Scope { get; set; }
+
+		[JsonProperty("id")]
+		public virtual Guid ID { get; set; }
+	}
+
+	[JsonObject(MemberSerialization.OptIn)]
 	public class TypeVoid : TypeBase
 	{
 		[JsonProperty("mode")]
 		public override TypeMode Mode { get { return TypeMode.Void; } }
-		[JsonProperty("primitive")]
+		[JsonIgnore]
 		public override TypePrimitive Primitive { get { return TypePrimitive.None; } }
 	}
 
@@ -66,7 +102,7 @@ namespace RestForge.Projects
 	{
 		[JsonProperty("mode")]
 		public override TypeMode Mode { get { return TypeMode.Array; } }
-		[JsonProperty("primitive")]
+		[JsonIgnore]
 		public override TypePrimitive Primitive { get { return TypePrimitive.None; } }
 		[JsonProperty("arraytype")]
 		public TypeBase ArrayType { get; private set; }
@@ -82,7 +118,7 @@ namespace RestForge.Projects
 	{
 		[JsonProperty("mode")]
 		public override TypeMode Mode { get { return TypeMode.ByteArray; } }
-		[JsonProperty("primitive")]
+		[JsonIgnore]
 		public override TypePrimitive Primitive { get { return TypePrimitive.None; } }
 	}
 

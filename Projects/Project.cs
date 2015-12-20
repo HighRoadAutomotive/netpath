@@ -53,9 +53,18 @@ namespace RestForge.Projects
 		[JsonIgnore]
 		public ObservableCollection<BuildMessage> BuildMessages { get; private set; }
 
+		[JsonConstructor]
 		protected ProjectBase()
 		{
+			Dependencies = new List<Guid>();
+			BuildMessages = new ObservableCollection<BuildMessage>();
+		}
+
+		protected ProjectBase(string name)
+		{
 			ID = Guid.NewGuid();
+			Name = name;
+
 			Dependencies = new List<Guid>();
 			BuildMessages = new ObservableCollection<BuildMessage>();
 		}
@@ -72,6 +81,7 @@ namespace RestForge.Projects
 
 	public interface INamespace
 	{
+		Guid ID { get; }
 		string Name { get; }
 		bool Collapsed { get; }
 		ObservableCollection<INamespace> IChildren { get; }
@@ -102,6 +112,9 @@ namespace RestForge.Projects
 		private readonly ObservableCollection<IEnum> _enums;
 		private readonly ObservableCollection<IData> _data;
 		private readonly ObservableCollection<IService> _services;
+
+		[JsonProperty("id")]
+		public Guid ID { get; private set; }
 
 		[JsonProperty("name")]
 		public string Name { get; set; }
@@ -148,7 +161,8 @@ namespace RestForge.Projects
 		[JsonIgnore]
 		public string FullNamespace { get { return GetFullNamespace(); } }
 
-		protected NamespaceBase(P project, N parent)
+		[JsonConstructor]
+		protected NamespaceBase()
 		{
 			_namespaces = new ObservableCollection<INamespace>();
 			_enums = new ObservableCollection<IEnum>();
@@ -164,9 +178,29 @@ namespace RestForge.Projects
 			Enumerations.CollectionChanged += Enumerations_CollectionChanged;
 			Data.CollectionChanged += Data_CollectionChanged;
 			Services.CollectionChanged += Services_CollectionChanged;
+		}
 
+		protected NamespaceBase(string name, N parent, P project)
+		{
+			ID = Guid.NewGuid();
+			Name = name;
 			Project = project;
 			Parent = parent;
+
+			_namespaces = new ObservableCollection<INamespace>();
+			_enums = new ObservableCollection<IEnum>();
+			_data = new ObservableCollection<IData>();
+			_services = new ObservableCollection<IService>();
+
+			Children = new ObservableCollection<N>();
+			Enumerations = new ObservableCollection<E>();
+			Data = new ObservableCollection<D>();
+			Services = new ObservableCollection<S>();
+
+			Children.CollectionChanged += Children_CollectionChanged;
+			Enumerations.CollectionChanged += Enumerations_CollectionChanged;
+			Data.CollectionChanged += Data_CollectionChanged;
+			Services.CollectionChanged += Services_CollectionChanged;
 		}
 
 		private void Services_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

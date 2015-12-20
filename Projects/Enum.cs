@@ -11,6 +11,7 @@ namespace RestForge.Projects
 {
 	public interface IEnum : IType
 	{
+		Guid ID { get; }
 		string Name { get; }
 		bool Collapsed { get; }
 		bool IsPacked { get; }
@@ -20,13 +21,15 @@ namespace RestForge.Projects
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
-	public abstract class EnumBase<P, N, E, EE, D, DE, S, SM, SMP> : IEnum
+	public abstract class EnumBase<P, N, E, EE, D, DE, S, SM, SMP> : TypeEnum, IEnum
 		where P : ProjectBase<P, N, E, EE, D, DE, S, SM, SMP> where N : NamespaceBase<P, N, E, EE, D, DE, S, SM, SMP>
 		where E : EnumBase<P, N, E, EE, D, DE, S, SM, SMP> where EE : EnumElementBase<P, N, E, EE, D, DE, S, SM, SMP>
 		where D : DataBase<P, N, E, EE, D, DE, S, SM, SMP> where DE : DataElementBase<P, N, E, EE, D, DE, S, SM, SMP>
 		where S : ServiceBase<P, N, E, EE, D, DE, S, SM, SMP> where SM : ServiceMethodBase<P, N, E, EE, D, DE, S, SM, SMP> where SMP : ServiceMethodParameterBase
 	{
 		private readonly ObservableCollection<IEnumElement> _elements;
+
+		public sealed override Guid ID { get; set; }
 
 		[JsonProperty("name")]
 		public string Name { get; set; }
@@ -58,11 +61,22 @@ namespace RestForge.Projects
 		[JsonIgnore]
 		INamespace IEnum.IParent { get { return Parent; } }
 
-		[JsonProperty("primitive")]
-		public TypePrimitive Primitive { get { return TypePrimitive.Int64; } }
-
-		public EnumBase()
+		[JsonConstructor]
+		protected EnumBase()
 		{
+			_elements = new ObservableCollection<IEnumElement>();
+			Elements = new ObservableCollection<EE>();
+
+			Elements.CollectionChanged += Elements_CollectionChanged;
+		}
+
+		protected EnumBase(string name, N parent, P project)
+		{
+			ID = Guid.NewGuid();
+			Name = name;
+			Project = project;
+			Parent = parent;
+
 			_elements = new ObservableCollection<IEnumElement>();
 			Elements = new ObservableCollection<EE>();
 
@@ -154,7 +168,7 @@ namespace RestForge.Projects
 		[JsonProperty("clientvalue")]
 		public long? ClientValue { get; set; }
 
-		[JsonProperty("aggregates", ItemIsReference = true)]
+		[JsonProperty("aggregates")]
 		public ObservableCollection<EnumElementBase<P, N, E, EE, D, DE, S, SM, SMP>> AggregateValues { get; private set; }
 
 		[JsonIgnore]
@@ -163,7 +177,10 @@ namespace RestForge.Projects
 		[JsonIgnore]
 		ObservableCollection<IEnumElement> IEnumElement.IAggregateValues { get { return ((ObservableCollection<IEnumElement>)AggregateValues.AsEnumerable()); } }
 
-		public EnumElementBase(E parent, string name)
+		[JsonConstructor]
+		protected EnumElementBase() { }
+
+		protected EnumElementBase(E parent, string name)
 		{
 			Name = name;
 			Parent = parent;
