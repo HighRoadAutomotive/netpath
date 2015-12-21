@@ -13,7 +13,6 @@ namespace RestForge.Projects
 	{
 		Guid ID { get; }
 		string Name { get; }
-		bool Collapsed { get; }
 		IProject IProject { get; }
 		INamespace IParent { get; }
 		ObservableCollection<IDataElement> IElements { get; }
@@ -32,9 +31,6 @@ namespace RestForge.Projects
 
 		[JsonProperty("name")]
 		public string Name { get; set; }
-
-		[JsonProperty("collapsed")]
-		public bool Collapsed { get; set; }
 
 		[JsonProperty("project", IsReference = true)]
 		public P Project { get; private set; }

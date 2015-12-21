@@ -13,7 +13,6 @@ namespace RestForge.Projects
 	{
 		Guid ID { get; }
 		string Name { get; }
-		bool Collapsed { get; }
 		bool IsPacked { get; }
 		IProject IProject { get; }
 		INamespace IParent { get; }
@@ -33,9 +32,6 @@ namespace RestForge.Projects
 
 		[JsonProperty("name")]
 		public string Name { get; set; }
-
-		[JsonProperty("collapsed")]
-		public bool Collapsed { get; set; }
 
 		[JsonProperty("packed")]
 		public bool IsPacked { get; set; }

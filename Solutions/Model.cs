@@ -28,6 +28,9 @@ namespace RestForge.Solutions
 		[JsonProperty("projects")]
 		public List<Project> Projects { get; private set; }
 
+		[JsonIgnore]
+		public UserProfile Profile { get; set; }
+
 		[JsonConstructor]
 		public Solution()
 		{
@@ -40,6 +43,7 @@ namespace RestForge.Solutions
 			Name = name;
 			Version = SolutionVersion;
 			MinVersion = MinimumVersion;
+			Profile = new UserProfile();
 			Folders = new List<SolutionFolder>();
 			Projects = new List<Project>();
 		}
@@ -48,11 +52,11 @@ namespace RestForge.Solutions
 	[JsonObject(MemberSerialization.OptIn)]
 	public sealed class SolutionFolder
 	{
+		[JsonProperty("id")]
+		public Guid ID { get; private set; }
+
 		[JsonProperty("name")]
 		public string Name { get; set; }
-
-		[JsonProperty("collapsed")]
-		public bool Collapsed { get; set; }
 
 		[JsonProperty("subfolders")]
 		public List<SolutionFolder> Folders { get; private set; }
@@ -64,7 +68,6 @@ namespace RestForge.Solutions
 		public SolutionFolder(string name)
 		{
 			Name = name;
-			Collapsed = false;
 			Folders = new List<SolutionFolder>();
 			Projects = new List<Project>();
 		}

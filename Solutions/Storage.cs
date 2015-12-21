@@ -18,14 +18,44 @@ namespace RestForge.Solutions
 			{
 				var json = await sr.ReadToEndAsync();
 				IsSolutionMinimumVersion(json);
-				return await Task.Run(() => JsonConvert.DeserializeObject<Solution>(json));
+				var sol = JsonConvert.DeserializeObject<Solution>(json);
+				sol.Profile = await LoadUserProfile(path);
+				return sol;
 			}
 		}
 
 		public static async Task Save(string path, Solution solution)
 		{
-			var json = await Task.Run(() => JsonConvert.SerializeObject(solution));
+			await SaveUserProfile(path, solution.Profile);
+			var json = JsonConvert.SerializeObject(solution);
 			using (var fs = File.Open(path, FileMode.OpenOrCreate))
+			using (var sw = new StreamWriter(fs))
+			{
+				await sw.WriteAsync(json);
+				await sw.FlushAsync();
+				sw.Close();
+			}
+		}
+
+		private static async Task<UserProfile> LoadUserProfile(string path)
+		{
+			path = path + ".user";
+			if (!File.Exists(path))
+				return new UserProfile();
+
+			using (var fs = File.OpenRead(path))
+			using (var sr = new StreamReader(fs))
+			{
+				var json = await sr.ReadToEndAsync();
+				IsSolutionMinimumVersion(json);
+				return JsonConvert.DeserializeObject<UserProfile>(json);
+			}
+		}
+
+		private static async Task SaveUserProfile(string path, UserProfile profile)
+		{
+			var json = JsonConvert.SerializeObject(profile);
+			using (var fs = File.Open(path + ".user", FileMode.OpenOrCreate))
 			using (var sw = new StreamWriter(fs))
 			{
 				await sw.WriteAsync(json);
