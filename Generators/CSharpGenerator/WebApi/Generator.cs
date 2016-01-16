@@ -8,6 +8,7 @@ using System.Windows.Threading;
 using NETPath.Generators.Interfaces;
 using NETPath.Projects;
 using NETPath.Projects.Helpers;
+using NETPath.Projects.Wcf;
 using NETPath.Projects.WebApi;
 
 namespace NETPath.Generators.CS.WebApi
@@ -149,7 +150,7 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine(string.Format("#pragma warning disable 0649{0}", !Data.EnableDocumentationWarnings ? ", 1591" : ""));
 
 			//Generate globally required code
-			if (Data.Namespace.HasServices() && Server)
+			if (Data.Namespace.HasServices() && Server && Data.ServerGenerationTargets.Any(a => a.TargetTypes.Any(b => b.GetType() == typeof(WebApiService) || b.GetType() == typeof(WcfService))))
 			{
 				code.AppendLine(string.Format("namespace {0}", Data.Namespace.FullName));
 				code.AppendLine("{");
