@@ -336,7 +336,7 @@ namespace NETPath.Generators.CS.WebApi
 					code.AppendLine(string.Format("\t\t\t_{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.DataType)), de.HasXAMLType ? de.XamlName : de.HasClientType ? de.ClientName : de.DataName));
 				else if (de.DataType.TypeMode == DataTypeMode.Array)
 					code.AppendLine(string.Format("\t\t\t_{1} = new {0}[0];", DataTypeGenerator.GenerateType(GetPreferredDTOType(de.DataType.CollectionGenericType)), de.HasXAMLType ? de.XamlName : de.HasClientType ? de.ClientName : de.DataName));
-			if (o.HasXAMLType) code.AppendLine(string.Format("\t\t\tApplication.Current.Dispatcher.Invoke(() => {{ BaseXAMLObject = new {0}(this); }}, System.Windows.Threading.DispatcherPriority.Normal);", o.XAMLType.Name));
+			//if (o.HasXAMLType) code.AppendLine(string.Format("\t\t\tApplication.Current.Dispatcher.Invoke(() => {{ BaseXAMLObject = new {0}(this); }}, System.Windows.Threading.DispatcherPriority.Normal);", o.XAMLType.Name));
 			code.AppendLine("\t\t}");
 			if (o.HasXAMLType)
 			{
@@ -614,7 +614,7 @@ namespace NETPath.Generators.CS.WebApi
 			if (!o.IsReadOnly && o.EnableUpdates && o.DataType.TypeMode == DataTypeMode.Primitive && o.DataType.Primitive != PrimitiveTypes.Void && o.DataType.Primitive != PrimitiveTypes.None)
 				code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty {1}Property = DependencyProperty.Register(\"{1}\", typeof({0}), typeof({2}), new PropertyMetadata({3}));", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.DataType)), o.XamlName, o.Owner.XAMLType.Name, GenerateDataUpdateDelegate(o)));
 			else
-				code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty{4} {1}Property{4} = DependencyProperty.Register{3}(\"{1}\", typeof({0}), typeof({2}));", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.DataType)), o.XamlName, o.Owner.XAMLType.Name, o.IsReadOnly ? "ReadOnly" : "", o.IsReadOnly ? "Key" : ""));
+				code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty{4} {1}Property{4} = DependencyProperty.Register{3}(\"{1}\", typeof({0}), typeof({2}){5});", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.DataType)), o.XamlName, o.Owner.XAMLType.Name, o.IsReadOnly ? "ReadOnly" : "", o.IsReadOnly ? "Key" : "", o.IsReadOnly ? ", new PropertyMetadata()" : ""));
 			if (o.IsReadOnly) code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty {0}Property = {0}PropertyKey.DependencyProperty;", o.XamlName));
 
 			return code.ToString();

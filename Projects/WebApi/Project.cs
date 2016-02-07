@@ -20,6 +20,9 @@ namespace NETPath.Projects.WebApi
 		public bool UseDefaultWebApiConfig { get { return (bool)GetValue(UseDefaultWebApiConfigProperty); } set { SetValue(UseDefaultWebApiConfigProperty, value); } }
 		public static readonly DependencyProperty UseDefaultWebApiConfigProperty = DependencyProperty.Register("UseDefaultWebApiConfig", typeof(bool), typeof(WebApiProject), new PropertyMetadata(true));
 
+		public bool EnableEntityFramework7 { get { return (bool)GetValue(EnableEntityFramework7Property); } set { SetValue(EnableEntityFramework7Property, value); } }
+		public static readonly DependencyProperty EnableEntityFramework7Property = DependencyProperty.Register("EnableEntityFramework7", typeof(bool), typeof(WebApiProject), new PropertyMetadata(true));
+
 		public WebApiProject()
 		{
 		}

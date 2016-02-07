@@ -58,6 +58,7 @@
 		<Label Content="Entity Framework:" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" />
 		<ToggleButton Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Margin="5" Content="Enable EntityFramework 6" IsChecked="{Binding Path=Settings.EnableEntityFramework}" />
 		<pc:TextBox Text="{Binding Path=Settings.EnitityDatabaseType, UpdateSourceTrigger=PropertyChanged}" x:Name="EntityName" Grid.Row="2" Grid.Column="2" Margin="5,5,5,5" IsEnabled="{Binding Path=Settings.EnableEntityFramework}" LabelText="Entity Database Context Type" />
+		<ToggleButton Grid.Column="3" Grid.Row="2" VerticalAlignment="Center" Margin="5" Content="Enable EntityFramework 7 (Experimental)" IsChecked="{Binding Path=Settings.EnableEntityFramework7}" />
 
 		<Label Content="Hosting:" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" VerticalAlignment="Center" />
 		<ToggleButton Content="Use Default Web App Config" IsChecked="{Binding Path=Settings.UseDefaultWebApiConfig}" Margin="5" VerticalAlignment="Center" Grid.Column="1" Grid.Row="3" />

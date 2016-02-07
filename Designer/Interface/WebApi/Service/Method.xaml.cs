@@ -311,10 +311,10 @@ namespace NETPath.Interface.WebApi.Service
 		private void DeleteRouteParameter_Click(object sender, RoutedEventArgs e)
 		{
 			var lbi = Globals.GetVisualParent<ListBoxItem>(sender);
-			var OP = lbi.Content as WebApiMethodParameter;
+			var OP = lbi.Content as WebApiRouteParameter;
 			if (OP == null) return;
 
-			DialogService.ShowMessageDialog("NETPath", "Delete Route Parameter?", "Are you sure you want to delete the '" + OP.Type + " " + OP.Name + "' method parameter?", new DialogAction("Yes", () => MethodData.RouteParameters.Remove(OP), true), new DialogAction("No", false, true));
+			DialogService.ShowMessageDialog("NETPath", "Delete Route Parameter?", "Are you sure you want to delete the '" + OP.Name + "' method parameter?", new DialogAction("Yes", () => MethodData.RouteParameters.Remove(OP), true), new DialogAction("No", false, true));
 		}
 
 		#endregion
