@@ -113,6 +113,9 @@ namespace NETPath.Projects.WebApi
 		public string Name { get { return (string)GetValue(NameProperty); } set { SetValue(NameProperty, Helpers.RegExs.ReplaceSpaces.Replace(value ?? "", @"")); } }
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(WebApiMethod));
 
+		public bool UriIncludesName { get { return (bool)GetValue(UriIncludesNameProperty); } set { SetValue(UriIncludesNameProperty, value); } }
+		public static readonly DependencyProperty UriIncludesNameProperty = DependencyProperty.Register("UriIncludesName", typeof(bool), typeof(WebApiMethod), new PropertyMetadata(false));
+
 		public bool IsHidden { get { return (bool)GetValue(IsHiddenProperty); } set { SetValue(IsHiddenProperty, value); } }
 		public static readonly DependencyProperty IsHiddenProperty = DependencyProperty.Register("IsHidden", typeof(bool), typeof(WebApiMethod), new PropertyMetadata(false));
 

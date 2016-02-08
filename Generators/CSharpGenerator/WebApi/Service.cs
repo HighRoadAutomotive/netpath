@@ -187,7 +187,8 @@ namespace NETPath.Generators.CS.WebApi
 			foreach (var pp in o.RouteParameters.Where(a => !(a is WebApiMethodParameter)))
 				uriBuilder.AppendFormat("/{0}", pp.RouteName.ToLowerInvariant());
 
-			uriBuilder.AppendFormat("/{0}", o.Name.ToLowerInvariant());
+			if (o.UriIncludesName)
+				uriBuilder.AppendFormat("/{0}", o.Name.ToLowerInvariant());
 
 			foreach (var pp in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => string.IsNullOrEmpty(a.DefaultValue)))
 				uriBuilder.AppendFormat("/{{{0}}}", pp.RouteName.ToLowerInvariant());
@@ -303,7 +304,8 @@ namespace NETPath.Generators.CS.WebApi
 				if (op.GetType() == typeof (WebApiRouteParameter))
 					code.Append(string.Format("/{0}", op.RouteName.ToLowerInvariant()));
 			}
-			code.Append(string.Format("/{0}", o.Name.ToLowerInvariant()));
+			if (o.UriIncludesName)
+				code.Append(string.Format("/{0}", o.Name.ToLowerInvariant()));
 			code.AppendLine("\");");
 			foreach (var op in o.RouteParameters)
 			{
@@ -412,7 +414,8 @@ namespace NETPath.Generators.CS.WebApi
 				if (op.GetType() == typeof(WebApiRouteParameter))
 					code.Append(string.Format("/{0}", op.RouteName.ToLowerInvariant()));
 			}
-			code.Append(string.Format("/{0}", o.Name.ToLowerInvariant()));
+			if (o.UriIncludesName)
+				code.Append(string.Format("/{0}", o.Name.ToLowerInvariant()));
 			code.AppendLine("\");");
 			foreach (var op in o.RouteParameters)
 			{

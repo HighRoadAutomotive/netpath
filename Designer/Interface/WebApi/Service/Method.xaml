@@ -167,7 +167,8 @@
 	<Label Grid.Column="0" Grid.Row="1" Content="Return Type:" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="100" />
 	<Data:TypeSelector OpenType="{Binding Path=MethodData.ReturnType, Mode=TwoWay}" Project="{Binding Path=ServiceProject}" AllowVoid="True" Grid.Column="0" Grid.Row="1" Margin="90,5,5,5" />
 	<Label Content="Name:" Grid.Column="1" Grid.Row="1" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="50" />
-	<pc:TextBox Text="{Binding Path=MethodData.Name}" Grid.Column="1" Grid.Row="1" Height="23" Margin="65,5,5,5" ToolTip="{Binding Path=MethodData.ServerName}" />
+	<pc:TextBox Text="{Binding Path=MethodData.Name}" Grid.Column="1" Grid.Row="1" Height="23" Margin="65,5,100,5" ToolTip="{Binding Path=MethodData.ServerName}" />
+	<ToggleButton IsChecked="{Binding Path=MethodData.UriIncludesName}" Content="In URI" HorizontalAlignment="Right" VerticalContentAlignment="Center" Margin="5" Width="85" Grid.Column="1" Grid.Row="1" />
 	<Label Content="HTTP Verb:" HorizontalAlignment="Left" Margin="0,5" VerticalContentAlignment="Center" VerticalAlignment="Top" Grid.Row="2" Grid.Column="0" />
 	<ComboBox Height="23" Margin="90,5,5,5" SelectedIndex="{Binding Path=MethodData.Method, Converter={StaticResource WebApiMethodVerbsConverter}}" VerticalContentAlignment="Center" VerticalAlignment="Top" Grid.Row="2" Grid.Column="0" >
 		<ComboBoxItem Content="GET" />
