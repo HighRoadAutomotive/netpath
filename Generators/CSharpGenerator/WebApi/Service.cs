@@ -85,10 +85,11 @@ namespace NETPath.Generators.CS.WebApi
 		public static string GenerateServerCode(WebApiService o)
 		{
 			var code = new StringBuilder();
+			var p = o.Parent.Owner as WebApiProject;
 
 			//Generate the service proxy
 			if (o.ServiceDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.ServiceDocumentation));
-			code.AppendLine(string.Format("\t{0} abstract class {1}Base : ApiController", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
+			code.AppendLine(string.Format("\t{0} abstract class {1}Base : {2}Controller", DataTypeGenerator.GenerateScope(o.Scope), o.Name, p.EnableEntityFramework7 ? "" : "Api"));
 			code.AppendLine("\t{");
 
 			code.AppendLine();
@@ -203,6 +204,8 @@ namespace NETPath.Generators.CS.WebApi
 
 		public static string GenerateServerProxyMethod(WebApiMethod o)
 		{
+			var p = o.Owner.Parent.Owner as WebApiProject;
+			if (p == null) return "";
 			if (o.IsHidden) return "";
 			var code = new StringBuilder();
 
@@ -218,15 +221,15 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine(string.Format("\t\t[{0}]", !string.IsNullOrWhiteSpace(o.AuthenticationFilter) ? o.AuthenticationFilter : o.Owner.AuthenticationFilter));
 			if (!string.IsNullOrWhiteSpace(o.AuthorizationFilter) || !string.IsNullOrWhiteSpace(o.Owner.AuthorizationFilter))
 				code.AppendLine(string.Format("\t\t[{0}]", !string.IsNullOrWhiteSpace(o.AuthorizationFilter) ? o.AuthorizationFilter : o.Owner.AuthorizationFilter));
-			code.AppendLine(string.Format("\t\t[System.Web.Http.Route(\"{0}\")]", BuildUriTemplate(o)));
+			code.AppendLine(string.Format("\t\t[Route(\"{0}\")]", BuildUriTemplate(o)));
 			if (o.Method != WebApiMethodVerbs.Custom)
-				code.AppendLine(string.Format("\t\t[System.Web.Http.Http{0}]", o.Method));
+				code.AppendLine(string.Format("\t\t[Http{0}]", o.Method));
 			else
-				code.AppendLine(string.Format("\t\t[System.Web.Http.AcceptVerbs(\"{0}\")]", o.Method));
+				code.AppendLine(string.Format("\t\t[AcceptVerbs(\"{0}\")]", o.CustomMethod));
 
 			if (o.HasContent && o.ContentType.TypeMode == DataTypeMode.Primitive && o.ContentType.Primitive == PrimitiveTypes.String)
 			{
-				code.AppendFormat("\t\tpublic async {0} {1}Base(", o.ServerAsync ? o.ReturnType.IsVoid ? "Task" : string.Format("Task<{0}>", DataTypeGenerator.GenerateType(o.ReturnType)) : DataTypeGenerator.GenerateType(o.ReturnType), o.Name);
+				code.AppendFormat("\t\tpublic async {0} {1}Base(", p.EnableEntityFramework7 ? "Task<IActionResult>" : o.ServerAsync ? o.ReturnType.IsVoid ? "Task" : string.Format("Task<{0}>", DataTypeGenerator.GenerateType(o.ReturnType)) : DataTypeGenerator.GenerateType(o.ReturnType), o.Name);
 				foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => string.IsNullOrEmpty(a.DefaultValue)))
 					code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
 				foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => !string.IsNullOrEmpty(a.DefaultValue)))
@@ -243,11 +246,11 @@ namespace NETPath.Generators.CS.WebApi
 					code.AppendFormat("{0}, ", op.Name);
 				foreach (var op in o.QueryParameters)
 					code.AppendFormat("{0}, ", op.Name);
-				code.AppendLine("await Request.Content.ReadAsStringAsync());");
+				code.AppendLine(p.EnableEntityFramework7 ? "await (new StreamReader(Request.Body)).ReadToEndAsync());" : "await Request.Content.ReadAsStringAsync());");
 				code.AppendLine("\t\t}");
 			}
 
-			code.AppendFormat("\t\tpublic abstract {0} {1}(", o.ServerAsync ? o.ReturnType.IsVoid ? "Task" : string.Format("Task<{0}>", DataTypeGenerator.GenerateType(o.ReturnType)) : DataTypeGenerator.GenerateType(o.ReturnType), o.Name);
+			code.AppendFormat("\t\tpublic abstract {0} {1}(", p.EnableEntityFramework7 ? "Task<IActionResult>" : o.ServerAsync ? o.ReturnType.IsVoid ? "Task" : string.Format("Task<{0}>", DataTypeGenerator.GenerateType(o.ReturnType)) : DataTypeGenerator.GenerateType(o.ReturnType), o.Name);
 			foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => string.IsNullOrEmpty(a.DefaultValue)))
 				code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
 			foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => !string.IsNullOrEmpty(a.DefaultValue)))
@@ -512,6 +515,8 @@ namespace NETPath.Generators.CS.WebApi
 
 		public static void GenerateServerUpdateService(StringBuilder code, WebApiProject o)
 		{
+			if (o.EnableEntityFramework7)
+				return;
 			if (!o.ClientGenerationTargets.Any(c => c.TargetTypes.OfType<WebApiData>().Any(a => a.Elements.Any(b => b.EnableUpdates))))
 				return;
 
@@ -547,7 +552,7 @@ namespace NETPath.Generators.CS.WebApi
 			}
 
 			code.AppendLine("\t[RoutePrefix(\"__dus__\")]");
-			code.AppendLine("\tpublic sealed class DataUpdateServiceController : ApiController");
+			code.AppendLine(string.Format("\tpublic sealed class DataUpdateServiceController : {0}Controller", o.EnableEntityFramework7 ? "" : "Api"));
 			code.AppendLine("\t{");
 			foreach(var t in o.ClientGenerationTargets)
 			{
@@ -559,11 +564,11 @@ namespace NETPath.Generators.CS.WebApi
 							code.AppendLine(string.Format("\t\t[{0}]", e.UpdateAuthenticationFilter));
 						if (!string.IsNullOrWhiteSpace(e.UpdateAuthorizationFilter))
 							code.AppendLine(string.Format("\t\t[{0}]", e.UpdateAuthorizationFilter));
-						code.Append(string.Format("\t\t[System.Web.Http.Route(\"{0}/{1}", d.Name.ToLowerInvariant(), e.DataName.ToLowerInvariant()));
+						code.Append(string.Format("\t\t[Route(\"{0}/{1}", d.Name.ToLowerInvariant(), e.DataName.ToLowerInvariant()));
 						foreach (var l in d.Elements.Where(a => a.IsUpdateLookup))
 							code.AppendFormat("/{{{0}}}", l.DataName);
 						code.AppendLine("\")]");
-						code.AppendLine("\t\t[System.Web.Http.AcceptVerbs(\"PUT\")]");
+						code.AppendLine("\t\t[AcceptVerbs(\"PUT\")]");
 						code.AppendFormat("\t\tpublic async Task Update{0}{1}(", d.Name, e.DataName);
 						foreach (var l in d.Elements.Where(a => a.IsUpdateLookup))
 							code.AppendFormat("{0} {1}, ", l.DataType, l.DataName);

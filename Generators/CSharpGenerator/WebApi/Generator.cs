@@ -180,13 +180,16 @@ namespace NETPath.Generators.CS.WebApi
 						code.AppendLine();
 					}
 				}
-				code.AppendLine("\tpublic class InheritedDirectRouteProvider : DefaultDirectRouteProvider");
-				code.AppendLine("\t{");
-				code.AppendLine("\t\tprotected override IReadOnlyList<IDirectRouteFactory> GetActionRouteFactories(HttpActionDescriptor actionDescriptor)");
-				code.AppendLine("\t\t{");
-				code.AppendLine("\t\t\treturn actionDescriptor.GetCustomAttributes<IDirectRouteFactory>(inherit: true);");
-				code.AppendLine("\t\t}");
-				code.AppendLine("\t}");
+				if (!Data.EnableEntityFramework7)
+				{
+					code.AppendLine("\tpublic class InheritedDirectRouteProvider : DefaultDirectRouteProvider");
+					code.AppendLine("\t{");
+					code.AppendLine("\t\tprotected override IReadOnlyList<IDirectRouteFactory> GetActionRouteFactories(HttpActionDescriptor actionDescriptor)");
+					code.AppendLine("\t\t{");
+					code.AppendLine("\t\t\treturn actionDescriptor.GetCustomAttributes<IDirectRouteFactory>(inherit: true);");
+					code.AppendLine("\t\t}");
+					code.AppendLine("\t}");
+				}
 				if (Data.UseDefaultWebApiConfig)
 				{
 					code.AppendLine();
