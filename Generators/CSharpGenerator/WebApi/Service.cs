@@ -551,7 +551,7 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t**************************************************************************/");
 			}
 
-			code.AppendLine("\t[RoutePrefix(\"__dus__\")]");
+			code.AppendLine(string.Format("\t[Route{0}(\"__dus\")]", o.EnableEntityFramework7 ? "" : "Prefix"));
 			code.AppendLine(string.Format("\tpublic sealed class DataUpdateServiceController : {0}Controller", o.EnableEntityFramework7 ? "" : "Api"));
 			code.AppendLine("\t{");
 			foreach(var t in o.ClientGenerationTargets)
@@ -568,8 +568,8 @@ namespace NETPath.Generators.CS.WebApi
 						foreach (var l in d.Elements.Where(a => a.IsUpdateLookup))
 							code.AppendFormat("/{{{0}}}", l.DataName);
 						code.AppendLine("\")]");
-						code.AppendLine("\t\t[AcceptVerbs(\"PUT\")]");
-						code.AppendFormat("\t\tpublic async Task Update{0}{1}(", d.Name, e.DataName);
+						code.AppendLine("\t\t[HttpPut]");
+						code.AppendFormat("\t\tpublic async Task{2} Update{0}{1}(", d.Name, e.DataName, o.EnableEntityFramework7 ? "<IActionResult>" : "");
 						foreach (var l in d.Elements.Where(a => a.IsUpdateLookup))
 							code.AppendFormat("{0} {1}, ", l.DataType, l.DataName);
 						code.Remove(code.Length - 2, 2);
@@ -577,11 +577,17 @@ namespace NETPath.Generators.CS.WebApi
 						code.AppendLine("\t\t{");
 						if (e.DataType.Primitive == PrimitiveTypes.ByteArray)
 						{
-							code.AppendLine("\t\t\tvar value = await Request.Content.ReadAsByteArrayAsync();");
+							if (o.EnableEntityFramework7)
+							{
+								code.AppendLine("\t\t\tvar value = new byte[Convert.ToInt32(Request.ContentLength.Value)];");
+								code.AppendLine("\t\t\tawait Request.Body.ReadAsync(value, 0, Convert.ToInt32(Request.ContentLength.Value));");
+							}
+							else
+								code.AppendLine("\t\t\tvar value = await Request.Content.ReadAsByteArrayAsync();");
 						}
 						else
 						{
-							code.AppendLine(string.Format("\t\t\tvar {0} = await Request.Content.ReadAsStringAsync();", e.DataType.Primitive == PrimitiveTypes.String ? "value" : "payload"));
+							code.AppendLine(string.Format("\t\t\tvar {0} = await {1};", e.DataType.Primitive == PrimitiveTypes.String ? "value" : "payload", o.EnableEntityFramework7 ? "(new StreamReader(Request.Body)).ReadToEndAsync()" : "Request.Content.ReadAsStringAsync()"));
 							switch (e.DataType.Primitive)
 							{
 								case PrimitiveTypes.Bool:
@@ -653,9 +659,14 @@ namespace NETPath.Generators.CS.WebApi
 								code.AppendFormat("a.{0} == {1} && ", l.EntityName, l.DataName);
 							code.Remove(code.Length - 4, 4);
 							code.AppendLine(").FirstOrDefaultAsync();");
-							code.AppendLine("\t\t\t\tif (item == null) throw new HttpResponseException(HttpStatusCode.NotFound);");
+							if (o.EnableEntityFramework7)
+								code.AppendLine("\t\t\t\tif (item == null) return new HttpNotFoundResult();");
+							else
+								code.AppendLine("\t\t\t\tif (item == null) throw new HttpResponseException(HttpStatusCode.NotFound);");
 							code.AppendLine(string.Format("\t\t\t\titem.{0} = value;", e.EntityName));
 							code.AppendLine("\t\t\t\tawait db.SaveChangesAsync();");
+							if (o.EnableEntityFramework7)
+								code.AppendLine("\t\t\t\treturn new HttpOkResult();");
 							code.AppendLine("\t\t\t}");
 						}
 
@@ -726,7 +737,7 @@ namespace NETPath.Generators.CS.WebApi
 						code.AppendLine(string.Format("{0} {1})", e.DataType, e.DataName));
 						code.AppendLine("\t\t{");
 						code.AppendLine("\t\t\tvar uri = new StringBuilder(_baseUri, 256);");
-						code.AppendLine(string.Format("\t\t\turi.Append(\"__dus__/{0}/{1}\");", d.Name.ToLowerInvariant(), e.DataName.ToLowerInvariant()));
+						code.AppendLine(string.Format("\t\t\turi.Append(\"__dus/{0}/{1}\");", d.Name.ToLowerInvariant(), e.DataName.ToLowerInvariant()));
 						foreach (var l in d.Elements.Where(a => a.IsUpdateLookup))
 							code.AppendLine(string.Format("\t\t\turi.AppendFormat(\"/{{0}}\", {0});", l.DataName));
 
