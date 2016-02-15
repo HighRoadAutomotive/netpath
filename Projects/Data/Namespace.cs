@@ -21,7 +21,7 @@ namespace NETPath.Projects.Data
 			Parent = null;
 			Children = new ObservableCollection<DataNamespace>();
 			Data = new ObservableCollection<DataData>();
-			URI = "";
+			Uri = "";
 		}
 
 		public DataNamespace(string Name, DataNamespace Parent, DataProject Owner)
@@ -31,24 +31,24 @@ namespace NETPath.Projects.Data
 			this.Name = Name;
 			this.Parent = Parent;
 			this.Owner = Owner;
-			URI = GetFullURI(this);
+			Uri = GetFullUri(this);
 		}
 
-		protected override sealed string GetFullURI(Namespace ns)
+		protected override sealed string GetFullUri(Namespace ns)
 		{
 			var o = ns as DataNamespace;
 			if (o == null) return "";
-			if (o.Parent == null) return o.URI + o.Name.Replace(".", "/") + "/";
-			string uri = GetFullURI(o.Parent as DataNamespace);
+			if (o.Parent == null) return o.Uri + o.Name.Replace(".", "/") + "/";
+			string uri = GetFullUri(o.Parent as DataNamespace);
 			return uri + o.Name.Replace(".", "/") + "/";
 		}
 
-		public override void UpdateURI()
+		public override void UpdateUri()
 		{
 			foreach (DataNamespace ns in Children)
-				ns.UpdateURI();
+				ns.UpdateUri();
 			if (Parent != null)
-				URI = GetFullURI(this);
+				Uri = GetFullUri(this);
 		}
 
 		public override void UpdateFullNamespace()
@@ -127,7 +127,7 @@ namespace NETPath.Projects.Data
 			base.OnPropertyChanged(e);
 
 			if (e.Property == NameProperty)
-				UpdateURI();
+				UpdateUri();
 		}
 
 		public IEnumerable<DataType> SearchTypes(string Search)

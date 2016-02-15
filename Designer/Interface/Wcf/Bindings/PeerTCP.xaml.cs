@@ -43,7 +43,7 @@ namespace NETPath.Interface.Wcf.Bindings
 
 		private void Namespace_Validate(object sender, ValidateEventArgs e)
 		{
-			e.IsValid = RegExs.MatchHTTPURI.IsMatch(Namespace.Text);
+			e.IsValid = RegExs.MatchHttpUri.IsMatch(Namespace.Text);
 		}
 
 		private void ListenIPAddress_TextChanged(object sender, TextChangedEventArgs e)

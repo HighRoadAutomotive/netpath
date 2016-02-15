@@ -61,7 +61,7 @@ namespace NETPath.Interface.Wcf.Host
 
 		private void Namespace_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
-			e.IsValid = RegExs.MatchHTTPURI.IsMatch(Namespace.Text);
+			e.IsValid = RegExs.MatchHttpUri.IsMatch(Namespace.Text);
 		}
 
 		#region - Endpoints -

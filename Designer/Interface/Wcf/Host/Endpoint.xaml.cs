@@ -95,7 +95,7 @@ namespace NETPath.Interface.Wcf.Host
 
 		private bool IsAddressHeaderValid()
 		{
-			if (!RegExs.MatchHTTPURI.IsMatch(AddressHeader.Text)) return false;
+			if (!RegExs.MatchHttpUri.IsMatch(AddressHeader.Text)) return false;
 			if (AddressHeader.Text == "") return false;
 			if (AddressHeaderName.Text == "") return false;
 			return true;

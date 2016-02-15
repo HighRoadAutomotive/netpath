@@ -36,8 +36,8 @@
 	<TextBox Height="23" Margin="100,5,5,5" Text="{Binding Path=Settings.Name}" VerticalContentAlignment="Center" Grid.Row="0" Grid.ColumnSpan="2" />
 	<Label Grid.Row="1" Margin="5" Padding="2" Content="Namespace:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="90" />
 	<TextBox Height="23" Margin="100,5,5,5" VerticalContentAlignment="Center" Text="{Binding Path=Settings.Namespace.Name, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.ColumnSpan="2" />
-	<Label Grid.Row="2" Margin="5" Padding="2" Content="Base URI:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="90" />
-	<TextBox Height="23" Margin="100,5,5,5" VerticalContentAlignment="Center" Text="{Binding Path=Settings.Namespace.URI, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.ColumnSpan="2" TextChanged="ProjectNamespaceURI_TextChanged" />
+	<Label Grid.Row="2" Margin="5" Padding="2" Content="Base Uri:" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Width="90" />
+	<TextBox Height="23" Margin="100,5,5,5" VerticalContentAlignment="Center" Text="{Binding Path=Settings.Namespace.Uri, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.ColumnSpan="2" TextChanged="ProjectNamespaceURI_TextChanged" />
 	<Grid Grid.Row="3" Grid.ColumnSpan="2">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />

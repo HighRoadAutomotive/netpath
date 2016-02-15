@@ -13,11 +13,11 @@ namespace NETPath.Generators.CS.Wcf
 	{
 		public static void VerifyCode(WcfNamespace o, Action<CompileMessage> AddMessage)
 		{
-			if (string.IsNullOrEmpty(o.URI))
-				AddMessage(new CompileMessage("GS1000", "The '" + o.Name + "' namespace in the '" + o.Owner.Name + "' project does not have a URI. Namespaces MUST have a URI.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType()));
+			if (string.IsNullOrEmpty(o.Uri))
+				AddMessage(new CompileMessage("GS1000", "The '" + o.Name + "' namespace in the '" + o.Owner.Name + "' project does not have a Uri. Namespaces MUST have a Uri.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType()));
 			else
-				if (RegExs.MatchHTTPURI.IsMatch(o.URI) == false)
-				AddMessage(new CompileMessage("GS1001", "The URI '" + o.URI + "' for the '" + o.Name + "' namespace in the '" + o.Owner.Name + "' project is not a valid URI. Any associated services and data may not function properly.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType()));
+				if (RegExs.MatchHttpUri.IsMatch(o.Uri) == false)
+				AddMessage(new CompileMessage("GS1001", "The Uri '" + o.Uri + "' for the '" + o.Name + "' namespace in the '" + o.Owner.Name + "' project is not a valid Uri. Any associated services and data may not function properly.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType()));
 
 			foreach (Projects.Enum ee in o.Enums)
 				EnumGenerator.VerifyCode(ee, AddMessage);

@@ -43,7 +43,7 @@ namespace NETPath.Interface.Wcf.Bindings
 
 		private void Namespace_Validate(object sender, ValidateEventArgs e)
 		{
-			e.IsValid = RegExs.MatchHTTPURI.IsMatch(Namespace.Text);
+			e.IsValid = RegExs.MatchHttpUri.IsMatch(Namespace.Text);
 		}
 
 		private void CustomDeadLetterQueue_TextChanged(object sender, TextChangedEventArgs e)
@@ -54,7 +54,7 @@ namespace NETPath.Interface.Wcf.Bindings
 
 		private void CustomDeadLetterQueue_Validate(object sender, ValidateEventArgs e)
 		{
-			e.IsValid = RegExs.MatchMSMQURI.IsMatch(CustomDeadLetterQueue.Text);
+			e.IsValid = RegExs.MatchMsmqUri.IsMatch(CustomDeadLetterQueue.Text);
 		}
 
 		private void MaxBufferPoolSize_Validate(object sender, ValidateEventArgs e)

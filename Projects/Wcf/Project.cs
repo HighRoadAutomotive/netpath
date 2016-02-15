@@ -64,7 +64,7 @@ namespace NETPath.Projects.Wcf
 				new DataType("DeltaQueue", DataTypeMode.Queue, SupportedFrameworks.NET45 | SupportedFrameworks.WINRT),
 			});
 
-			Namespace = new WcfNamespace(Helpers.RegExs.ReplaceSpaces.Replace(Name, "."), null, this) { URI = "http://tempuri.org/" };
+			Namespace = new WcfNamespace(Helpers.RegExs.ReplaceSpaces.Replace(Name, "."), null, this) { Uri = "http://tempuri.org/" };
 
 			//Default Using Namespaces
 			UsingNamespaces.AddRange(new []

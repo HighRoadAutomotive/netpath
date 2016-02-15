@@ -34,7 +34,7 @@ namespace NETPath.Projects.Wcf
 			Services = new ObservableCollection<WcfService>();
 			Bindings = new ObservableCollection<WcfBinding>();
 			Hosts = new ObservableCollection<WcfHost>();
-			URI = "";
+			Uri = "";
 		}
 
 		public WcfNamespace(string Name, WcfNamespace Parent, WcfProject Owner)
@@ -47,7 +47,7 @@ namespace NETPath.Projects.Wcf
 			this.Name = Name;
 			this.Parent = Parent;
 			this.Owner = Owner;
-			URI = GetFullURI(this);
+			Uri = GetFullUri(this);
 		}
 
 		public List<WcfBinding> GetBindings()
@@ -88,21 +88,21 @@ namespace NETPath.Projects.Wcf
 			return Children.Select(n => n.GetServiceHost(s)).FirstOrDefault(t => t != null);
 		}
 
-		protected override sealed string GetFullURI(Namespace ns)
+		protected override sealed string GetFullUri(Namespace ns)
 		{
 			var o = ns as WcfNamespace;
 			if (o == null) return "";
-			if (o.Parent == null) return o.URI + o.Name.Replace(".", "/") + "/";
-			string uri = GetFullURI(o.Parent as WcfNamespace);
+			if (o.Parent == null) return o.Uri + o.Name.Replace(".", "/") + "/";
+			string uri = GetFullUri(o.Parent as WcfNamespace);
 			return uri + o.Name.Replace(".", "/") + "/";
 		}
 
-		public override void UpdateURI()
+		public override void UpdateUri()
 		{
 			foreach (WcfNamespace ns in Children)
-				ns.UpdateURI();
+				ns.UpdateUri();
 			if (Parent != null)
-				URI = GetFullURI(this);
+				Uri = GetFullUri(this);
 		}
 
 		public override void UpdateFullNamespace()
@@ -200,7 +200,7 @@ namespace NETPath.Projects.Wcf
 			base.OnPropertyChanged(e);
 
 			if (e.Property == NameProperty)
-				UpdateURI();
+				UpdateUri();
 		}
 
 		public IEnumerable<DataType> SearchTypes(string Search)

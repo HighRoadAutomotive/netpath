@@ -46,7 +46,7 @@ namespace NETPath.Interface.Wcf.Bindings
 
 		private void Namespace_Validate(object sender, ValidateEventArgs e)
 		{
-			e.IsValid = RegExs.MatchHTTPURI.IsMatch(Namespace.Text);
+			e.IsValid = RegExs.MatchHttpUri.IsMatch(Namespace.Text);
 		}
 
 		private void ProxyAddress_TextChanged(object sender, TextChangedEventArgs e)
@@ -57,7 +57,7 @@ namespace NETPath.Interface.Wcf.Bindings
 
 		private void ProxyAddress_Validate(object sender, ValidateEventArgs e)
 		{
-			e.IsValid = RegExs.MatchHTTPURI.IsMatch(ProxyAddress.Text);
+			e.IsValid = RegExs.MatchHttpUri.IsMatch(ProxyAddress.Text);
 		}
 
 		private void MaxBufferPoolSize_Validate(object sender, ValidateEventArgs e)

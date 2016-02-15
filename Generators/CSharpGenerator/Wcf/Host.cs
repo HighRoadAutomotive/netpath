@@ -20,17 +20,17 @@ namespace NETPath.Generators.CS.Wcf
 				AddMessage(new CompileMessage("GS5001", "The host '" + o.Name + "' in the '" + o.Parent.Name + "' project contains invalid characters in the Code Name.", CompileMessageSeverity.ERROR, o.Parent, o, o.GetType()));
 			if (string.IsNullOrEmpty(o.Namespace)) { }
 			else
-				if (RegExs.MatchHTTPURI.IsMatch(o.Namespace) == false)
-				AddMessage(new CompileMessage("GS5002", "The Namespace URI '" + o.Namespace + "' for the '" + o.Name + "' host in the '" + o.Parent.Name + "' project is not a valid URI.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType()));
+				if (RegExs.MatchHttpUri.IsMatch(o.Namespace) == false)
+				AddMessage(new CompileMessage("GS5002", "The Namespace Uri '" + o.Namespace + "' for the '" + o.Name + "' host in the '" + o.Parent.Name + "' project is not a valid Uri.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType()));
 
 			if (o.Service == null)
 				AddMessage(new CompileMessage("GS5003", "The host '" + o.Name + "' in the '" + o.Parent.Name + "' project has no Service associated with it and will not be generated. A Service must be associated with this Host for it be generated.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType()));
 
 			foreach (string ba in o.BaseAddresses)
 			{
-				bool baValid = RegExs.MatchHTTPURI.IsMatch(ba) || RegExs.MatchTCPURI.IsMatch(ba) || RegExs.MatchP2PURI.IsMatch(ba) || RegExs.MatchPipeURI.IsMatch(ba) || RegExs.MatchMSMQURI.IsMatch(ba);
+				bool baValid = RegExs.MatchHttpUri.IsMatch(ba) || RegExs.MatchTcpUri.IsMatch(ba) || RegExs.MatchP2PUri.IsMatch(ba) || RegExs.MatchPipeUri.IsMatch(ba) || RegExs.MatchMsmqUri.IsMatch(ba);
 				if (baValid)
-					AddMessage(new CompileMessage("GS5003", "The URI '" + ba + "' for the '" + o.Name + "' host in the '" + o.Parent.Name + "' project is not a valid URI. Any associated services and data may not function properly.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType()));
+					AddMessage(new CompileMessage("GS5003", "The Uri '" + ba + "' for the '" + o.Name + "' host in the '" + o.Parent.Name + "' project is not a valid Uri. Any associated services and data may not function properly.", CompileMessageSeverity.WARN, o.Parent, o, o.GetType()));
 			}
 
 			foreach (WcfHostEndpoint he in o.Endpoints)
@@ -60,10 +60,10 @@ namespace NETPath.Generators.CS.Wcf
 				{
 					var b = hb as WcfHostDebugBehavior;
 					if (b == null) continue;
-					if (b.HttpHelpPageEnabled && RegExs.MatchHTTPURI.IsMatch(b.HttpHelpPageUrl) == false)
-						AddMessage(new CompileMessage("GS5007", "The HTTP Help Page URL '" + b.HttpHelpPageUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType()));
-					if (b.HttpsHelpPageEnabled && RegExs.MatchHTTPURI.IsMatch(b.HttpsHelpPageUrl) == false)
-						AddMessage(new CompileMessage("GS5008", "The HTTPS Help Page URL '" + b.HttpsHelpPageUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType()));
+					if (b.HttpHelpPageEnabled && RegExs.MatchHttpUri.IsMatch(b.HttpHelpPageUrl) == false)
+						AddMessage(new CompileMessage("GS5007", "The HTTP Help Page URL '" + b.HttpHelpPageUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid Uri. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType()));
+					if (b.HttpsHelpPageEnabled && RegExs.MatchHttpUri.IsMatch(b.HttpsHelpPageUrl) == false)
+						AddMessage(new CompileMessage("GS5008", "The HTTPS Help Page URL '" + b.HttpsHelpPageUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid Uri. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType()));
 					if (b.HttpHelpPageEnabled && b.HttpHelpPageBinding == null)
 						AddMessage(new CompileMessage("GS5011", "The HTTP Help Page Binding for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project cannot be empty. Please select a binding.", CompileMessageSeverity.ERROR, b.Parent, b, b.GetType()));
 					if (b.HttpsHelpPageEnabled && b.HttpsHelpPageBinding == null)
@@ -73,13 +73,13 @@ namespace NETPath.Generators.CS.Wcf
 				{
 					var b = hb as WcfHostMetadataBehavior;
 					if (b == null) continue;
-					if (b.HttpGetEnabled && RegExs.MatchHTTPURI.IsMatch(b.HttpGetUrl) == false)
-						AddMessage(new CompileMessage("GS5009", "The HTTP Get URL '" + b.HttpGetUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType()));
-					if (b.HttpsGetEnabled && RegExs.MatchHTTPURI.IsMatch(b.HttpsGetUrl) == false)
-						AddMessage(new CompileMessage("GS5010", "The HTTPS Get URL '" + b.HttpsGetUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid URI. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType()));
+					if (b.HttpGetEnabled && RegExs.MatchHttpUri.IsMatch(b.HttpGetUrl) == false)
+						AddMessage(new CompileMessage("GS5009", "The HTTP Get URL '" + b.HttpGetUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid Uri. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType()));
+					if (b.HttpsGetEnabled && RegExs.MatchHttpUri.IsMatch(b.HttpsGetUrl) == false)
+						AddMessage(new CompileMessage("GS5010", "The HTTPS Get URL '" + b.HttpsGetUrl + "' for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project is not a valid Uri. The software may not be able to access the specified page.", CompileMessageSeverity.WARN, b.Parent, b, b.GetType()));
 					if (b.HttpGetEnabled && b.HttpGetBinding == null)
 						AddMessage(new CompileMessage("GS5013", "The HTTP Get Binding for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project cannot be empty. Please select a binding.", CompileMessageSeverity.ERROR, b.Parent, b, b.GetType()));
-					if (b.HttpsGetEnabled && RegExs.MatchHTTPURI.IsMatch(b.HttpsGetUrl) == false)
+					if (b.HttpsGetEnabled && RegExs.MatchHttpUri.IsMatch(b.HttpsGetUrl) == false)
 						AddMessage(new CompileMessage("GS5014", "The HTTPS Get Binding for the '" + b.Parent.Name + "' host in the '" + b.Parent.Parent.Name + "' project cannot be empty. Please select a binding.", CompileMessageSeverity.ERROR, b.Parent, b, b.GetType()));
 				}
 			}
@@ -103,7 +103,7 @@ namespace NETPath.Generators.CS.Wcf
 			}
 
 			foreach (WcfHostEndpoint he in o.Endpoints)
-				code.AppendFormat("\t\tpublic static Uri {0}URI {{ get {{ return new Uri(\"{1}\"); }} }}{2}", he.Name, GenerateServerEndpointURI(he), Environment.NewLine);
+				code.AppendFormat("\t\tpublic static Uri {0}Uri {{ get {{ return new Uri(\"{1}\"); }} }}{2}", he.Name, GenerateServerEndpointURI(he), Environment.NewLine);
 
 			foreach (WcfHostBehavior hb in o.Behaviors)
 			{
@@ -333,7 +333,7 @@ namespace NETPath.Generators.CS.Wcf
 			var code = new StringBuilder();
 
 			foreach (WcfHostEndpoint he in o.Endpoints)
-				code.AppendFormat("\t\tpublic static Uri {0}URI {{ get {{ return new Uri({1}); }} }}{2}", he.Name, GenerateClientEndpointURI(he, false, false), Environment.NewLine);
+				code.AppendFormat("\t\tpublic static Uri {0}Uri {{ get {{ return new Uri({1}); }} }}{2}", he.Name, GenerateClientEndpointURI(he, false, false), Environment.NewLine);
 
 			foreach (WcfHostEndpoint he in o.Endpoints)
 				code.AppendLine(GenerateEndpointClientCode(he, IsDCMEnabled));
@@ -344,7 +344,7 @@ namespace NETPath.Generators.CS.Wcf
 		public static string GenerateEndpointServerCode(WcfHostEndpoint o)
 		{
 			var code = new StringBuilder();
-			code.AppendLine(string.Format("\t\t\tvar {3}Endpoint = this.AddServiceEndpoint(typeof({0}.I{1}), new {2}(), {3}URI);", o.Parent.Service.Parent.FullName, o.Parent.Service.Name, DataTypeGenerator.GenerateType(o.Binding), o.Name));
+			code.AppendLine(string.Format("\t\t\tvar {3}Endpoint = this.AddServiceEndpoint(typeof({0}.I{1}), new {2}(), {3}Uri);", o.Parent.Service.Parent.FullName, o.Parent.Service.Name, DataTypeGenerator.GenerateType(o.Binding), o.Name));
 			return code.ToString();
 		}
 
@@ -792,7 +792,7 @@ namespace NETPath.Generators.CS.Wcf
 			return code.ToString();
 		}
 
-		#region - Generate Server Endpoint URI -
+		#region - Generate Server Endpoint Uri -
 		public static string GenerateServerEndpointURI(WcfHostEndpoint o)
 		{
 			string uri = string.Format("http://localhost{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
@@ -904,7 +904,7 @@ namespace NETPath.Generators.CS.Wcf
 		}
 		#endregion
 
-		#region - Generate Client Endpoint URI -
+		#region - Generate Client Endpoint Uri -
 		public static string GenerateClientEndpointURI(WcfHostEndpoint o, bool IgnoreAddress, bool IgnorePort)
 		{
 			string uri = "";

@@ -175,7 +175,7 @@
 											<ColumnDefinition Width="*" />
 										</Grid.ColumnDefinitions>
 										<Image Name="ItemImage" Source="pack://application:,,,/NETPath;component/Icons/X16/Namespace.png" HorizontalAlignment="Right" VerticalAlignment="Center" UseLayoutRounding="True" Height="16" Width="16" Margin="0,1" Stretch="Uniform" Visibility="Visible" Grid.Column="0"/>
-										<TextBlock Name="ItemTitle" Grid.Column="1" Text="{Binding Path=Name}" ToolTip="{Binding Path=URI}" Padding="3,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" />
+										<TextBlock Name="ItemTitle" Grid.Column="1" Text="{Binding Path=Name}" ToolTip="{Binding Path=Uri}" Padding="3,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Foreground="{StaticResource DefaultFontColor}" FontFamily="{StaticResource DefaultFontFamily}" />
 									</Grid>
 									<HierarchicalDataTemplate.Triggers>
 										<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TreeViewItem}},Path=IsExpanded}" Value="True">

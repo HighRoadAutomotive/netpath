@@ -27,8 +27,8 @@
 		<pc:TextBox Height="23" Margin="115,7,5,0" Name="CodeName" Text="{Binding Path=Data.Name}" VerticalAlignment="Top" TextChanged="CodeName_TextChanged" Validate="CodeName_Validate" />
 		<Label Content="Full Namespace:" Height="Auto" HorizontalAlignment="Left" Margin="5,35,0,0" VerticalAlignment="Top" />
 		<pc:TextBox Height="23" Margin="115,36,5,0" Name="FullName" Text="{Binding Path=Data.FullName}" IsReadOnly="True" VerticalAlignment="Top" />
-		<Label Content="Namespace URI:" Height="Auto" HorizontalAlignment="Left" Margin="5,64,0,0" VerticalAlignment="Top" />
-		<pc:TextBox Height="23" Name="NamespaceURI" Margin="115,65,5,0" Text="{Binding Path=Data.URI}" IsReadOnly="True" VerticalAlignment="Top" TextChanged="NamespaceURI_TextChanged" Validate="NamespaceURI_Validate" />
+		<Label Content="Namespace Uri:" Height="Auto" HorizontalAlignment="Left" Margin="5,64,0,0" VerticalAlignment="Top" />
+		<pc:TextBox Height="23" Name="NamespaceURI" Margin="115,65,5,0" Text="{Binding Path=Data.Uri}" IsReadOnly="True" VerticalAlignment="Top" TextChanged="NamespaceURI_TextChanged" Validate="NamespaceURI_Validate" />
 	</Grid>
 	<GroupBox Header="Namespaces" Margin="5" Grid.Column="0" Grid.Row="1">
 		<Grid>

@@ -42,7 +42,7 @@ namespace NETPath.Interface.Wcf
 		private void ProjectNamespaceURI_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			foreach (var ns in Settings.Namespace.Children)
-				ns.UpdateURI();
+				ns.UpdateUri();
 		}
 
 		private void UsingNamespace_KeyUp(object sender, KeyEventArgs e)

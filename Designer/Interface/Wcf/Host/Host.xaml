@@ -195,7 +195,7 @@
 	<Data:TargetSelector Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" OpenType="{Binding Path=Data}" IsServerType="True" Visibility="Visible" />
 	<Label Content="Service Contract:" HorizontalAlignment="Left"  Margin="5" Padding="0,2" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" />
 	<ComboBox x:Name="Service" Margin="5" Grid.Row="3" Grid.Column="1" DisplayMemberPath="TypeName" SelectionChanged="Service_SelectionChanged" />
-	<Label Content="Namespace URI:" Height="Auto" Margin="5" Padding="0,2" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Grid.Row="4" Grid.Column="0" />
+	<Label Content="Namespace Uri:" Height="Auto" Margin="5" Padding="0,2" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Grid.Row="4" Grid.Column="0" />
 	<pc:TextBox Text="{Binding Path=Data.Namespace}" Name="Namespace" Height="23" Margin="5" VerticalAlignment="Top" Grid.Row="4" Grid.Column="1" TextChanged="Namespace_TextChanged" Validate="Namespace_Validate" ToolTip="{Binding Path=Data.Namespace}" />
 	<Label Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Content="Options" FontSize="12pt" Margin="0,5,0,0" />
 	<Grid Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" >

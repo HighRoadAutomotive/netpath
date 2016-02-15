@@ -25,7 +25,7 @@ namespace NETPath.Projects.WebApi
 			Children = new ObservableCollection<WebApiNamespace>();
 			Data = new ObservableCollection<WebApiData>();
 			Services = new ObservableCollection<WebApiService>();
-			URI = "";
+			Uri = "";
 		}
 
 		public WebApiNamespace(string Name, WebApiNamespace Parent, WebApiProject Owner)
@@ -36,7 +36,7 @@ namespace NETPath.Projects.WebApi
 			this.Name = Name;
 			this.Parent = Parent;
 			this.Owner = Owner;
-			URI = GetFullURI(this);
+			Uri = GetFullUri(this);
 		}
 
 		public List<WebApiService> GetServices()
@@ -60,21 +60,19 @@ namespace NETPath.Projects.WebApi
 			return hn;
 		}
 
-		protected override sealed string GetFullURI(Namespace ns)
+		protected sealed override string GetFullUri(Namespace ns)
 		{
 			var o = ns as WebApiNamespace;
-			if (o == null) return "";
-			if (o.Parent == null) return o.URI + o.Name.Replace(".", "/") + "/";
-			string uri = GetFullURI(o.Parent as WebApiNamespace);
-			return uri + o.Name.Replace(".", "/") + "/";
+			var p = o?.Owner as WebApiProject;
+			return p?.Namespace.Uri ?? "";
 		}
 
-		public override void UpdateURI()
+		public override void UpdateUri()
 		{
 			foreach (WebApiNamespace ns in Children)
-				ns.UpdateURI();
+				ns.UpdateUri();
 			if (Parent != null)
-				URI = GetFullURI(this);
+				Uri = GetFullUri(this);
 		}
 
 		public override void UpdateFullNamespace()
@@ -159,7 +157,7 @@ namespace NETPath.Projects.WebApi
 			base.OnPropertyChanged(e);
 
 			if (e.Property == NameProperty)
-				UpdateURI();
+				UpdateUri();
 		}
 
 		public IEnumerable<DataType> SearchTypes(string Search)

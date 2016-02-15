@@ -39,10 +39,10 @@ namespace NETPath.Interface.WebApi
 
 		#region - Project -
 
-		private void ProjectNamespaceURI_TextChanged(object sender, TextChangedEventArgs e)
+		private void ProjectNamespaceUri_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			foreach (var ns in Settings.Namespace.Children)
-				ns.UpdateURI();
+			if (Settings.BaseUri.EndsWith("/"))
+				Settings.BaseUri = Settings.BaseUri.Remove(Settings.BaseUri.Length - 1, 1);
 		}
 
 		private void UsingNamespace_KeyUp(object sender, KeyEventArgs e)

@@ -60,7 +60,7 @@ namespace NETPath.Interface.Wcf.Host
 
 		private void HttpGetUrl_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
-			e.IsValid = RegExs.MatchHTTPURI.IsMatch(HttpGetUrl.Text);
+			e.IsValid = RegExs.MatchHttpUri.IsMatch(HttpGetUrl.Text);
 		}
 
 		private void HttpsGetUrl_TextChanged(object sender, TextChangedEventArgs e)
@@ -71,7 +71,7 @@ namespace NETPath.Interface.Wcf.Host
 
 		private void HttpsGetUrl_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
-			e.IsValid = RegExs.MatchHTTPURI.IsMatch(HttpsGetUrl.Text);
+			e.IsValid = RegExs.MatchHttpUri.IsMatch(HttpsGetUrl.Text);
 		}
 	}
 }

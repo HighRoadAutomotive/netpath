@@ -38,6 +38,7 @@ namespace NETPath.Projects.WebApi
 		public Documentation ClientDocumentation { get { return (Documentation)GetValue(ClientDocumentationProperty); } set { SetValue(ClientDocumentationProperty, value); } }
 		public static readonly DependencyProperty ClientDocumentationProperty = DependencyProperty.Register("ClientDocumentation", typeof(Documentation), typeof(WebApiService));
 
+
 		//Security
 		public string AuthenticationFilter { get { return (string)GetValue(AuthenticationFilterProperty); } set { SetValue(AuthenticationFilterProperty, value); } }
 		public static readonly DependencyProperty AuthenticationFilterProperty = DependencyProperty.Register("AuthenticationFilter", typeof(string), typeof(WebApiService), new PropertyMetadata(""));

@@ -89,6 +89,7 @@ namespace NETPath.Generators.CS.WebApi
 
 			//Generate the service proxy
 			if (o.ServiceDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.ServiceDocumentation));
+			code.AppendLine(string.Format("\t[Route{0}(\"{1}\")]", p.EnableEntityFramework7 ? "" : "Prefix", o.Name.ToLowerInvariant()));
 			code.AppendLine(string.Format("\t{0} abstract class {1}Base : {2}Controller", DataTypeGenerator.GenerateScope(o.Scope), o.Name, p.EnableEntityFramework7 ? "" : "Api"));
 			code.AppendLine("\t{");
 
@@ -118,11 +119,13 @@ namespace NETPath.Generators.CS.WebApi
 		public static string GenerateClientCode45(WebApiService o)
 		{
 			var code = new StringBuilder();
+			var p = o.Parent.Owner as WebApiProject;
+			if (p == null) return "";
 
 			//Generate the Proxy Class
 			if (o.ClientDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.ClientDocumentation));
 			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCode(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t{0} {2}partial class {1}{3}", DataTypeGenerator.GenerateScope(o.Scope), o.Name, o.Abstract ? "abstract " : "", o.Abstract ? "Base" : ""));
+			code.AppendLine(string.Format("\t{0} static partial class {1}", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
 			code.AppendLine("\t{");
 			code.AppendLine();
 			if (o.Parent.Owner.GenerateRegions)
@@ -130,36 +133,17 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t\t#region Request Configuration");
 				code.AppendLine();
 			}
-			code.AppendLine("\t\tprivate readonly string _baseUri;");
-			code.AppendLine("\t\tpublic string BaseUri { get { return _baseUri; } }");
-			code.AppendLine("\t\tprivate readonly System.Net.Http.HttpClient _HttpClient;");
-			code.AppendLine("\t\tprotected System.Net.Http.HttpClient HttpClient { get { return _HttpClient; } }");
+			code.AppendLine(string.Format("\t\tprivate static readonly string _baseUri = {0};", RegExs.MatchHttpUri.IsMatch(p.BaseUri) ? $"\"{p.BaseUri}/{o.Name.ToLowerInvariant()}\"" : p.BaseUri));
 			code.AppendLine();
-			code.AppendLine("\t\tpartial void SetCommonHeaders(System.Net.Http.Headers.HttpRequestHeaders headers);");
+			code.AppendLine("\t\tstatic partial void SetCommonHeaders(System.Net.Http.Headers.HttpRequestHeaders headers);");
+			code.AppendLine("\t\tstatic partial void SetDefaultHandler(ref System.Net.Http.HttpMessageHandler handler);");
 			code.AppendLine();
+			if (o.Parent.Owner.GenerateRegions)
+			{
+				code.AppendLine("\t\t#endregion");
+				code.AppendLine();
+			}
 
-			if (o.Parent.Owner.GenerateRegions)
-			{
-				code.AppendLine("\t\t#endregion");
-				code.AppendLine();
-			}
-			if (o.Parent.Owner.GenerateRegions)
-			{
-				code.AppendLine("\t\t#region Constructors");
-				code.AppendLine();
-			}
-			code.AppendLine(string.Format("\t\t{1} {0}{2}(System.Net.Http.HttpClient client, string BaseURI = \"{3}\")", o.Name, o.Abstract ? "protected" : "public", o.Abstract ? "Base" : "", (o.Parent.Owner as WebApiProject)?.Namespace.URI));
-			code.AppendLine("\t\t{");
-			code.AppendLine("\t\t\t_baseUri = BaseURI;");
-			code.AppendLine("\t\t\tif (_baseUri.EndsWith(\"/\")) _baseUri = _baseUri.Remove(_baseUri.Length - 1, 1);");
-			code.AppendLine("\t\t\t_HttpClient = client;");
-			code.AppendLine("\t\t}");
-			code.AppendLine();
-			if (o.Parent.Owner.GenerateRegions)
-			{
-				code.AppendLine("\t\t#endregion");
-				code.AppendLine();
-			}
 			if (o.Parent.Owner.GenerateRegions)
 			{
 				code.AppendLine("\t\t#region Methods");
@@ -285,7 +269,7 @@ namespace NETPath.Generators.CS.WebApi
 			}
 
 			//Construct method declaration
-			code.AppendFormat("\t\tpublic virtual async void {0}(", o.Name);
+			code.AppendFormat("\t\tpublic static {1} {0}(", o.Name, o.ReturnResponseData ? "System.Net.Http.HttpResponseMessage" : DataTypeGenerator.GenerateType(o.ReturnType));
 			foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => string.IsNullOrEmpty(a.DefaultValue)))
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 			foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => !string.IsNullOrEmpty(a.DefaultValue)))
@@ -299,7 +283,7 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\t{");
 			GenerateMethodPreamble(code, o.ClientPreambleCode, 3);
 
-			//Construct the URI
+			//Construct the Uri
 			code.AppendLine("\t\t\tvar uri = new StringBuilder(_baseUri, 2048);");
 			code.Append("\t\t\turi.Append(\"");
 			foreach (var op in o.RouteParameters)
@@ -326,7 +310,7 @@ namespace NETPath.Generators.CS.WebApi
 			//Create the HttpRequestMessage
 			code.AppendLine(string.Format("\t\t\tvar rm = new HttpRequestMessage(HttpMethod.{0}, new Uri(uri.ToString(), UriKind.RelativeOrAbsolute));", o.Method));
 			if (conf.UseHTTP10)
-				code.AppendLine("\t\t\trm.Version = new Version(1, 0););");
+				code.AppendLine("\t\t\trm.Version = new Version(1, 0);");
 			code.AppendLine("\t\t\tSetCommonHeaders(rm.Headers);");
 			code.AppendLine(string.Format("\t\t\tSet{0}Headers(rm.Headers);", o.Name));
 			code.AppendLine("\t\t\trm.Headers.Accept.Clear();");
@@ -340,32 +324,27 @@ namespace NETPath.Generators.CS.WebApi
 					code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.StringContent({0});", o.ContentParameterName));
 				else
 					code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.ObjectContent<{0}>({1}, new {2}());", DataTypeGenerator.GenerateType(pt), o.ContentParameterName, conf.RequestFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.RequestFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
-				//code.AppendLine(string.Format("\t\t\tforeach (var x in _contentHeaders) rm.Content.Headers.Add(x.Key, x.Value);"));
 			}
 
-			code.AppendLine(string.Format("\t\t\tvar rr = await _HttpClient.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);"));
-			if (o.EnsureSuccessStatusCode) code.AppendLine("\t\t\trr.EnsureSuccessStatusCode();");
-			if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent)
-			{
-				code.AppendLine(string.Format("\t\t\t{0}Result({1});", o.Name, o.ReturnResponseData ? "rr" : ""));
-			}
-			else
-			{
-				code.AppendLine(string.Format("\t\t\tvar rs = await rr.Content.ReadAsAsync<{0}>(new MediaTypeFormatter[] {{ new {1}() }});", DataTypeGenerator.GenerateType(o.ReturnType), conf.ResponseFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.ResponseFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
-				code.AppendLine(string.Format("\t\t\t{0}Result(rs{1});", o.Name, o.ReturnResponseData ? ", rr" : ""));
-			}
-			code.AppendLine("\t\t}");
+			code.AppendLine("\t\t\tSystem.Net.Http.HttpMessageHandler mr = new System.Net.Http.HttpClientHandler();");
+			code.AppendLine("\t\t\tSetDefaultHandler(ref mr);");
+			code.AppendLine(string.Format("\t\t\tSet{0}Handler(ref mr);", o.Name));
+			code.AppendLine("\t\t\tusing(var client = new HttpClient(mr))");
+			code.AppendLine("\t\t\t{");
+			code.AppendLine("\t\t\t\tvar rr = client.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead).Result;");
+			if (o.EnsureSuccessStatusCode) code.AppendLine("\t\t\t\trr.EnsureSuccessStatusCode();");
 			if (o.ReturnResponseData)
 			{
-				if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine(string.Format("\t\tpublic abstract void {0}Result(System.Net.Http.HttpResponseMessage Response);", o.Name));
-				else code.AppendLine(string.Format("\t\tpublic abstract void {0}Result({1} Value, System.Net.Http.HttpResponseMessage Response);", o.Name, DataTypeGenerator.GenerateType(o.ReturnType)));
+				code.AppendLine("\t\t\t\treturn rr;");
 			}
-			else
+			else if (!(o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) && o.DeserializeContent)
 			{
-				if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendLine(string.Format("\t\tpublic abstract void {0}Result();", o.Name));
-				else code.AppendLine(string.Format("\t\tpublic abstract void {0}Result({1} Value);", o.Name, DataTypeGenerator.GenerateType(o.ReturnType)));
+				code.AppendLine(string.Format("\t\t\t\treturn rr.Content.ReadAsAsync<{0}>(new MediaTypeFormatter[] {{ new {1}() }}).Result;", DataTypeGenerator.GenerateType(o.ReturnType), conf.ResponseFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.ResponseFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
 			}
-			code.AppendLine(string.Format("\t\tpartial void Set{0}Headers(System.Net.Http.Headers.HttpRequestHeaders headers);", o.Name));
+			code.AppendLine("\t\t\t}");
+			code.AppendLine("\t\t}");
+			code.AppendLine(string.Format("\t\tstatic partial void Set{0}Handler(ref System.Net.Http.HttpMessageHandler handler);", o.Name));
+			code.AppendLine(string.Format("\t\tstatic partial void Set{0}Headers(System.Net.Http.Headers.HttpRequestHeaders headers);", o.Name));
 			return code.ToString();
 		}
 
@@ -386,16 +365,7 @@ namespace NETPath.Generators.CS.WebApi
 			}
 
 			//Construct method declaration
-			if (o.ReturnResponseData)
-			{
-				if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendFormat("\t\tpublic virtual async System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> {0}Async(", o.Name);
-				else code.AppendFormat("\t\tpublic virtual async System.Threading.Tasks.Task<Tuple<{0}, System.Net.Http.HttpResponseMessage>> {1}Async(", DataTypeGenerator.GenerateType(o.ReturnType), o.Name);
-			}
-			else
-			{
-				if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) || !o.DeserializeContent) code.AppendFormat("\t\tpublic virtual async System.Threading.Tasks.Task {0}Async(", o.Name);
-				else code.AppendFormat("\t\tpublic virtual async System.Threading.Tasks.Task<{0}> {1}Async(", DataTypeGenerator.GenerateType(o.ReturnType), o.Name);
-			}
+			code.AppendFormat("\t\tpublic static async System.Threading.Tasks.Task{0} {1}Async(", o.ReturnType.Primitive == PrimitiveTypes.Void ? "" : o.ReturnResponseData ? "<System.Net.Http.HttpResponseMessage>" : $"<{DataTypeGenerator.GenerateType(o.ReturnType)}>", o.Name);
 			foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => string.IsNullOrEmpty(a.DefaultValue)))
 				code.AppendFormat("{0}, ", GenerateMethodParameterClientCode(op));
 			foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => !string.IsNullOrEmpty(a.DefaultValue)))
@@ -409,7 +379,7 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\t{");
 			GenerateMethodPreamble(code, o.ClientPreambleCode, 3);
 
-			//Construct the URI
+			//Construct the Uri
 			code.AppendLine("\t\t\tvar uri = new StringBuilder(_baseUri, 2048);");
 			code.Append("\t\t\turi.Append(\"");
 			foreach (var op in o.RouteParameters)
@@ -436,7 +406,7 @@ namespace NETPath.Generators.CS.WebApi
 			//Create the HttpRequestMessage
 			code.AppendLine(string.Format("\t\t\tvar rm = new HttpRequestMessage(HttpMethod.{0}, new Uri(uri.ToString(), UriKind.RelativeOrAbsolute));", o.Method));
 			if (conf.UseHTTP10)
-				code.AppendLine("\t\t\trm.Version = new Version(1, 0););");
+				code.AppendLine("\t\t\trm.Version = new Version(1, 0);");
 			code.AppendLine("\t\t\tSetCommonHeaders(rm.Headers);");
 			code.AppendLine(string.Format("\t\t\tSet{0}Headers(rm.Headers);", o.Name));
 			code.AppendLine("\t\t\trm.Headers.Accept.Clear();");
@@ -450,23 +420,27 @@ namespace NETPath.Generators.CS.WebApi
 					code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.StringContent({0});", o.ContentParameterName));
 				else
 					code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.ObjectContent<{0}>({1}, new {2}());", DataTypeGenerator.GenerateType(pt), o.ContentParameterName, conf.RequestFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.RequestFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
-				//code.AppendLine("\t\t\tforeach (var x in _contentHeaders) rm.Content.Headers.Add(x.Key, x.Value);");
 			}
 
-			code.AppendLine("\t\t\tvar rr = await _HttpClient.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);");
-			if (o.EnsureSuccessStatusCode) code.AppendLine("\t\t\trr.EnsureSuccessStatusCode();");
-			if (o.ReturnType.Primitive != PrimitiveTypes.Void || !o.DeserializeContent)
+			code.AppendLine("\t\t\tSystem.Net.Http.HttpMessageHandler mr = new System.Net.Http.HttpClientHandler();");
+			code.AppendLine("\t\t\tSetDefaultHandler(ref mr);");
+			code.AppendLine(string.Format("\t\t\tSet{0}Handler(ref mr);", o.Name));
+			code.AppendLine("\t\t\tusing(var client = new HttpClient(mr))");
+			code.AppendLine("\t\t\t{");
+			code.AppendLine("\t\t\t\tvar rr = await client.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);");
+			if (o.EnsureSuccessStatusCode) code.AppendLine("\t\t\t\trr.EnsureSuccessStatusCode();");
+			if (o.ReturnResponseData)
 			{
-				if (o.ReturnResponseData)
-				{
-					code.AppendLine(string.Format("\t\t\tvar rs = await rr.Content.ReadAsAsync<{0}>(new MediaTypeFormatter[] {{ new {1}() }});", DataTypeGenerator.GenerateType(o.ReturnType), conf.ResponseFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.ResponseFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
-					code.AppendLine(string.Format("\t\t\treturn new Tuple<{0}, System.Net.Http.HttpResponseMessage>(rs, rr);", DataTypeGenerator.GenerateType(o.ReturnType)));
-				}
-				else
-					code.AppendLine(string.Format("\t\t\treturn await rr.Content.ReadAsAsync<{0}>(new MediaTypeFormatter[] {{ new {1}() }});", DataTypeGenerator.GenerateType(o.ReturnType), conf.ResponseFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.ResponseFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
+				code.AppendLine("\t\t\t\treturn rr;");
 			}
+			else if (!(o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) && o.DeserializeContent)
+			{
+				code.AppendLine(string.Format("\t\t\t\treturn await rr.Content.ReadAsAsync<{0}>(new MediaTypeFormatter[] {{ new {1}() }});", DataTypeGenerator.GenerateType(o.ReturnType), conf.ResponseFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.ResponseFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
+			}
+			code.AppendLine("\t\t\t}");
 			code.AppendLine("\t\t}");
-			code.AppendLine(string.Format("\t\tpartial void Set{0}Headers(System.Net.Http.Headers.HttpRequestHeaders headers);", o.Name));
+			code.AppendLine(string.Format("\t\tstatic partial void Set{0}Handler(ref System.Net.Http.HttpMessageHandler handler);", o.Name));
+			code.AppendLine(string.Format("\t\tstatic partial void Set{0}Headers(System.Net.Http.Headers.HttpRequestHeaders headers);", o.Name));
 
 			return code.ToString();
 		}
@@ -719,7 +693,7 @@ namespace NETPath.Generators.CS.WebApi
 
 			code.AppendLine("\tpublic static partial class DataUpdateService");
 			code.AppendLine("\t{");
-			code.AppendLine(string.Format("\t\tprivate static readonly string _baseUri = \"{0}\";", o.Namespace.URI));
+			code.AppendLine(string.Format("\t\tprivate static readonly string _baseUri = \"{0}\";", o.Namespace.Uri));
 			code.AppendLine("\t\tprivate static readonly System.Net.Http.HttpClient _httpClient = new HttpClient(new HttpClientHandler() { AllowAutoRedirect = false, AutomaticDecompression = DecompressionMethods.None });");
 			code.AppendLine();
 			code.AppendLine("\t\tstatic partial void SetCommonUpdateHeaders(System.Net.Http.Headers.HttpRequestHeaders headers);");

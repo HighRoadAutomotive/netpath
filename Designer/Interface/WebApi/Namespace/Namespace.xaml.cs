@@ -50,12 +50,12 @@ namespace NETPath.Interface.WebApi.Namespace
 		private void NamespaceURI_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			if (IsLoaded == false) return;
-			Data.URI = RegExs.ReplaceSpaces.Replace(NamespaceURI.Text, "");
+			Data.Uri = RegExs.ReplaceSpaces.Replace(NamespaceURI.Text, "");
 		}
 
 		private void NamespaceURI_Validate(object sender, EllipticBit.Controls.WPF.ValidateEventArgs e)
 		{
-			e.IsValid = RegExs.MatchHTTPURI.IsMatch(NamespaceURI.Text);
+			e.IsValid = RegExs.MatchHttpUri.IsMatch(NamespaceURI.Text);
 		}
 
 		private void NamespaceList_MouseDoubleClick(object sender, MouseButtonEventArgs e)

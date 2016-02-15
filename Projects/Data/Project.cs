@@ -20,7 +20,7 @@ namespace NETPath.Projects.Data
 
 		public DataProject(string Name, string Path) : base(Name, Path)
 		{
-			Namespace = new DataNamespace(Helpers.RegExs.ReplaceSpaces.Replace(Name, "."), null, this) { URI = "http://tempuri.org/" };
+			Namespace = new DataNamespace(Helpers.RegExs.ReplaceSpaces.Replace(Name, "."), null, this) { Uri = "http://tempuri.org/" };
 
 			//Default Using Namespaces
 			UsingNamespaces.AddRange(new []

@@ -14,8 +14,8 @@ namespace NETPath.Projects
 		public string FullName { get { return GetNamespaceString(); } set { SetValue(FullNameProperty, value); } }
 		public static readonly DependencyProperty FullNameProperty = DependencyProperty.Register("FullName", typeof(string), typeof(Namespace));
 
-		public string URI { get { return (string)GetValue(URIProperty); } set { SetValue(URIProperty, value); } }
-		public static readonly DependencyProperty URIProperty = DependencyProperty.Register("URI", typeof(string), typeof(Namespace));
+		public string Uri { get { return (string)GetValue(UriProperty); } set { SetValue(UriProperty, value); } }
+		public static readonly DependencyProperty UriProperty = DependencyProperty.Register("Uri", typeof(string), typeof(Namespace));
 
 		public bool Collapsed { get { return (bool)GetValue(CollapsedProperty); } set { SetValue(CollapsedProperty, value); } }
 		public static readonly DependencyProperty CollapsedProperty = DependencyProperty.Register("Collapsed", typeof(bool), typeof(Namespace), new UIPropertyMetadata(false));
@@ -26,7 +26,7 @@ namespace NETPath.Projects
 		public ObservableCollection<Enum> Enums { get { return (ObservableCollection<Enum>)GetValue(EnumsProperty); } set { SetValue(EnumsProperty, value); } }
 		public static readonly DependencyProperty EnumsProperty = DependencyProperty.Register("Enums", typeof(ObservableCollection<Enum>), typeof(Namespace));
 
-		[IgnoreDataMember] public string FullURI { get { return GetFullURI(this); } }
+		[IgnoreDataMember] public string FullURI { get { return GetFullUri(this); } }
 
 		protected Namespace() : base(DataTypeMode.Namespace)
 		{
@@ -34,8 +34,8 @@ namespace NETPath.Projects
 		}
 
 		protected abstract string GetNamespaceString();
-		protected abstract string GetFullURI(Namespace ns);
-		public abstract void UpdateURI();
+		protected abstract string GetFullUri(Namespace ns);
+		public abstract void UpdateUri();
 		public abstract void UpdateFullNamespace();
 
 		public abstract OpenableDocument GetLastSelectedItem();

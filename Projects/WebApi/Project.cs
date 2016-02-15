@@ -23,13 +23,16 @@ namespace NETPath.Projects.WebApi
 		public bool EnableEntityFramework7 { get { return (bool)GetValue(EnableEntityFramework7Property); } set { SetValue(EnableEntityFramework7Property, value); } }
 		public static readonly DependencyProperty EnableEntityFramework7Property = DependencyProperty.Register("EnableEntityFramework7", typeof(bool), typeof(WebApiProject), new PropertyMetadata(true));
 
+		public string BaseUri { get { return (string)GetValue(BaseUriProperty); } set { SetValue(BaseUriProperty, value); } }
+		public static readonly DependencyProperty BaseUriProperty = DependencyProperty.Register("BaseUri", typeof(string), typeof(WebApiProject), new PropertyMetadata("http://tempuri.org"));
+
 		public WebApiProject()
 		{
 		}
 
 		public WebApiProject(string Name, string Path) : base(Name, Path)
 		{
-			Namespace = new WebApiNamespace(Helpers.RegExs.ReplaceSpaces.Replace(Name, "."), null, this) { URI = "http://tempuri.org/" };
+			Namespace = new WebApiNamespace(Helpers.RegExs.ReplaceSpaces.Replace(Name, "."), null, this) { Uri = "http://tempuri.org" };
 
 			//Default Using Namespaces
 			UsingNamespaces.AddRange(new []

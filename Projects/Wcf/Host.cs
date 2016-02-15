@@ -76,7 +76,7 @@ namespace NETPath.Projects.Wcf
 			this.Name = r.Replace(Name, @"");
 			this.Parent = Parent;
 			var p = Parent.Owner as WcfProject;
-			if (p != null) Namespace = p.Namespace.URI;
+			if (p != null) Namespace = p.Namespace.Uri;
 			Credentials = new WcfHostCredentials(this);
 			Documentation = new Documentation { IsClass = true };
 		}
