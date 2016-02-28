@@ -135,13 +135,6 @@ namespace NETPath.Projects.WebApi
 		public Documentation Documentation { get { return (Documentation)GetValue(DocumentationProperty); } set { SetValue(DocumentationProperty, value); } }
 		public static readonly DependencyProperty DocumentationProperty = DependencyProperty.Register("Documentation", typeof(Documentation), typeof(WebApiMethod));
 
-		//Preamble Code Injection
-		public string ServerPreambleCode { get { return (string)GetValue(ServerPreambleCodeProperty); } set { SetValue(ServerPreambleCodeProperty, value); } }
-		public static readonly DependencyProperty ServerPreambleCodeProperty = DependencyProperty.Register("ServerPreambleCode", typeof(string), typeof(WebApiMethod));
-
-		public string ClientPreambleCode { get { return (string)GetValue(ClientPreambleCodeProperty); } set { SetValue(ClientPreambleCodeProperty, value); } }
-		public static readonly DependencyProperty ClientPreambleCodeProperty = DependencyProperty.Register("ClientPreambleCode", typeof(string), typeof(WebApiMethod));
-
 		//Rest
 		public WebApiMethodVerbs Method { get { return (WebApiMethodVerbs)GetValue(MethodProperty); } set { SetValue(MethodProperty, value); } }
 		public static readonly DependencyProperty MethodProperty = DependencyProperty.Register("Method", typeof(WebApiMethodVerbs), typeof(WebApiMethod), new PropertyMetadata(WebApiMethodVerbs.Get));

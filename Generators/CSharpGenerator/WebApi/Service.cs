@@ -135,8 +135,10 @@ namespace NETPath.Generators.CS.WebApi
 			}
 			code.AppendLine(string.Format("\t\tprivate static readonly string _baseUri = {0};", RegExs.MatchHttpUri.IsMatch(p.BaseUri) ? $"\"{p.BaseUri}/{o.Name.ToLowerInvariant()}\"" : p.BaseUri));
 			code.AppendLine();
-			code.AppendLine("\t\tstatic partial void SetCommonHeaders(System.Net.Http.Headers.HttpRequestHeaders headers);");
-			code.AppendLine("\t\tstatic partial void SetDefaultHandler(ref System.Net.Http.HttpMessageHandler handler);");
+			code.AppendLine("\t\tstatic partial void CommonPreExecute(HttpRequestMessage headers);");
+			code.AppendLine("\t\tstatic partial void CommonPostExecute(HttpResponseMessage headers);");
+			code.AppendLine("\t\tstatic partial void SetCommonHeaders(HttpRequestHeaders headers);");
+			code.AppendLine("\t\tstatic partial void SetDefaultHandler(ref HttpMessageHandler handler);");
 			code.AppendLine();
 			if (o.Parent.Owner.GenerateRegions)
 			{
@@ -281,7 +283,6 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendFormat("{0} {1}", DataTypeGenerator.GenerateType(o.ContentType), o.ContentParameterName);
 			code.AppendLine(")");
 			code.AppendLine("\t\t{");
-			GenerateMethodPreamble(code, o.ClientPreambleCode, 3);
 
 			//Construct the Uri
 			code.AppendLine("\t\t\tvar uri = new StringBuilder(_baseUri, 2048);");
@@ -312,6 +313,8 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine(string.Format("\t\t\tvar rm = new HttpRequestMessage(HttpMethod.{0}, new Uri(uri.ToString(), UriKind.RelativeOrAbsolute));", o.Method));
 			if (conf.UseHTTP10)
 				code.AppendLine("\t\t\trm.Version = new Version(1, 0);");
+			code.AppendLine("\t\t\tCommonPreExecute(rm);");
+			code.AppendLine(string.Format("\t\t\t{0}PreExecute(rm);", o.Name));
 			code.AppendLine("\t\t\tSetCommonHeaders(rm.Headers);");
 			code.AppendLine(string.Format("\t\t\tSet{0}Headers(rm.Headers);", o.Name));
 			code.AppendLine("\t\t\trm.Headers.Accept.Clear();");
@@ -338,6 +341,8 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t\t\t\tif(!rr.IsSuccessStatusCode())");
 				code.AppendLine("\t\t\t\t\tthrow new SimpleHttpRequestException(rr.StatusCode, await rr.Content.ReadAsStringAsync().Result, rr.ReasonPhrase);");
 			}
+			code.AppendLine("\t\t\tCommonPostExecute(rr);");
+			code.AppendLine(string.Format("\t\t\t{0}PostExecute(rr);", o.Name));
 			if (o.ReturnResponseData)
 			{
 				code.AppendLine("\t\t\t\treturn rr;");
@@ -354,6 +359,8 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\t}");
 			code.AppendLine(string.Format("\t\tstatic partial void Set{0}Handler(ref System.Net.Http.HttpMessageHandler handler);", o.Name));
 			code.AppendLine(string.Format("\t\tstatic partial void Set{0}Headers(System.Net.Http.Headers.HttpRequestHeaders headers);", o.Name));
+			code.AppendLine(string.Format("\t\tstatic partial void {0}PreExecute(HttpRequestMessage request);", o.Name));
+			code.AppendLine(string.Format("\t\tstatic partial void {0}PostExecute(HttpResponseMessage response);", o.Name));
 			return code.ToString();
 		}
 
@@ -386,7 +393,6 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendFormat("{0} {1}", DataTypeGenerator.GenerateType(o.ContentType), o.ContentParameterName);
 			code.AppendLine(")");
 			code.AppendLine("\t\t{");
-			GenerateMethodPreamble(code, o.ClientPreambleCode, 3);
 
 			//Construct the Uri
 			code.AppendLine("\t\t\tvar uri = new StringBuilder(_baseUri, 2048);");
@@ -417,6 +423,8 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine(string.Format("\t\t\tvar rm = new HttpRequestMessage(HttpMethod.{0}, new Uri(uri.ToString(), UriKind.RelativeOrAbsolute));", o.Method));
 			if (conf.UseHTTP10)
 				code.AppendLine("\t\t\trm.Version = new Version(1, 0);");
+			code.AppendLine("\t\t\tCommonPreExecute(rm);");
+			code.AppendLine(string.Format("\t\t\t{0}PreExecute(rm);", o.Name));
 			code.AppendLine("\t\t\tSetCommonHeaders(rm.Headers);");
 			code.AppendLine(string.Format("\t\t\tSet{0}Headers(rm.Headers);", o.Name));
 			code.AppendLine("\t\t\trm.Headers.Accept.Clear();");
@@ -443,6 +451,8 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t\t\t\tif(!rr.IsSuccessStatusCode)");
 				code.AppendLine("\t\t\t\t\tthrow new SimpleHttpRequestException(rr.StatusCode, await rr.Content.ReadAsStringAsync(), rr.ReasonPhrase);");
 			}
+			code.AppendLine("\t\t\tCommonPostExecute(rr);");
+			code.AppendLine(string.Format("\t\t\t{0}PostExecute(rr);", o.Name));
 			if (o.ReturnResponseData)
 			{
 				code.AppendLine("\t\t\t\treturn rr;");
@@ -459,6 +469,8 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\t}");
 			code.AppendLine(string.Format("\t\tstatic partial void Set{0}Handler(ref System.Net.Http.HttpMessageHandler handler);", o.Name));
 			code.AppendLine(string.Format("\t\tstatic partial void Set{0}Headers(System.Net.Http.Headers.HttpRequestHeaders headers);", o.Name));
+			code.AppendLine(string.Format("\t\tstatic partial void {0}PreExecute(HttpRequestMessage request);", o.Name));
+			code.AppendLine(string.Format("\t\tstatic partial void {0}PostExecute(HttpResponseMessage response);", o.Name));
 
 			return code.ToString();
 		}

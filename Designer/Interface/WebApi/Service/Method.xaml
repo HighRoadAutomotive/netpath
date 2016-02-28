@@ -267,12 +267,6 @@
 				<ListBox Grid.Row="3" Name="QueryList" AllowDrop="True" BorderThickness="0" Background="Transparent" Margin="0" SelectionMode="Single" Padding="-1,0" ItemTemplate="{StaticResource QueryMethodParameterTemplate}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.IsVirtualizing="False" ItemContainerStyle="{StaticResource StretchedContainerStyle}" PreviewMouseLeftButtonDown="QueryList_PreviewMouseLeftButtonDown" PreviewMouseMove="QueryList_PreviewMouseMove" QueryContinueDrag="QueryList_QueryContinueDrag" DragLeave="QueryList_DragLeave" PreviewDragOver="QueryList_PreviewDragOver" PreviewDrop="QueryList_Drop" />
 			</Grid>
 		</TabItem>
-		<TabItem Padding="10,5" IsSelected="True">
-			<TabItem.Header>
-				<TextBlock Text="Preamble Code" FontSize="12pt"/>
-			</TabItem.Header>
-			<TextBox Margin="10" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" Text="{Binding Path=MethodData.ClientPreambleCode}" />
-		</TabItem>
 		<TabItem Padding="10,5">
 			<TabItem.Header>
 				<TextBlock Text="Options" FontSize="12pt"/>
