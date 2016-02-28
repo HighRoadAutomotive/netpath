@@ -58,7 +58,7 @@ namespace NETPath.Generators.CS.WebApi
 					if (string.IsNullOrEmpty(mp.Name))
 						AddMessage(new CompileMessage("GS2008", "The method parameter '" + m.Name + "' in the '" + o.Name + "' service has a blank parameter name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
 					if (string.IsNullOrEmpty(mp.Name))
-						AddMessage(new CompileMessage("GS20018", "The method parameter '" + m.Name + "' in the '" + o.Name + "' service has a blank route name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
+						AddMessage(new CompileMessage("GS2018", "The method parameter '" + m.Name + "' in the '" + o.Name + "' service has a blank route name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
 					if (mp.Name == "__callback")
 						AddMessage(new CompileMessage("GS2016", "The name of the method parameter '" + mp.Name + "' in the '" + m.Name + "' method is invalid. Please rename it.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
 				}
@@ -71,7 +71,7 @@ namespace NETPath.Generators.CS.WebApi
 					if (string.IsNullOrEmpty(mp.Name))
 						AddMessage(new CompileMessage("GS2008", "The method parameter '" + m.Name + "' in the '" + o.Name + "' service has a blank parameter name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
 					if (string.IsNullOrEmpty(mp.Name))
-						AddMessage(new CompileMessage("GS20018", "The method parameter '" + m.Name + "' in the '" + o.Name + "' service has a blank route name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
+						AddMessage(new CompileMessage("GS2018", "The method parameter '" + m.Name + "' in the '" + o.Name + "' service has a blank route name. A Parameter Name MUST be specified.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
 					//if (string.IsNullOrEmpty(mp.DefaultValue))
 					//	AddMessage(new CompileMessage("GS2009", "The method  parameter '" + m.Name + "' in the '" + o.Name + "' method does not have a default value. Please specify a default value for this parameter.", CompileMessageSeverity.ERROR, o, m, m.GetType()));
 					if (mp.Name == "__callback")
@@ -286,6 +286,7 @@ namespace NETPath.Generators.CS.WebApi
 			//Construct the Uri
 			code.AppendLine("\t\t\tvar uri = new StringBuilder(_baseUri, 2048);");
 			code.Append("\t\t\turi.Append(\"");
+			code.Append(string.Format("/{0}", o.Owner.Name.ToLowerInvariant()));
 			foreach (var op in o.RouteParameters)
 			{
 				if (op.GetType() == typeof (WebApiRouteParameter))
@@ -314,7 +315,7 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\t\tSetCommonHeaders(rm.Headers);");
 			code.AppendLine(string.Format("\t\t\tSet{0}Headers(rm.Headers);", o.Name));
 			code.AppendLine("\t\t\trm.Headers.Accept.Clear();");
-			code.AppendLine(string.Format("\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"application/{0}\"));", conf.ResponseFormat == RestSerialization.Json ? "json" : conf.ResponseFormat == RestSerialization.Bson ? "bson" : "xml"));
+			code.AppendLine(string.Format("\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"{0}\"));", (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.String) ? "text/plain" : conf.ResponseFormat == RestSerialization.Json ? "application/json" : conf.ResponseFormat == RestSerialization.Bson ? "application/bson" : "application/xml"));
 
 			//Serialize any parameters
 			if (o.HasContent)
@@ -332,10 +333,18 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\t\tusing(var client = new HttpClient(mr))");
 			code.AppendLine("\t\t\t{");
 			code.AppendLine("\t\t\t\tvar rr = client.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead).Result;");
-			if (o.EnsureSuccessStatusCode) code.AppendLine("\t\t\t\trr.EnsureSuccessStatusCode();");
+			if (o.EnsureSuccessStatusCode)
+			{
+				code.AppendLine("\t\t\t\tif(!rr.IsSuccessStatusCode())");
+				code.AppendLine("\t\t\t\t\tthrow new SimpleHttpRequestException(rr.StatusCode, await rr.Content.ReadAsStringAsync().Result, rr.ReasonPhrase);");
+			}
 			if (o.ReturnResponseData)
 			{
 				code.AppendLine("\t\t\t\treturn rr;");
+			}
+			else if (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.String)
+			{
+				code.AppendLine("\t\t\t\treturn await rr.Content.ReadAsStringAsync().Result;");
 			}
 			else if (!(o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) && o.DeserializeContent)
 			{
@@ -382,6 +391,7 @@ namespace NETPath.Generators.CS.WebApi
 			//Construct the Uri
 			code.AppendLine("\t\t\tvar uri = new StringBuilder(_baseUri, 2048);");
 			code.Append("\t\t\turi.Append(\"");
+			code.Append(string.Format("/{0}", o.Owner.Name.ToLowerInvariant()));
 			foreach (var op in o.RouteParameters)
 			{
 				if (op.GetType() == typeof(WebApiRouteParameter))
@@ -410,7 +420,7 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\t\tSetCommonHeaders(rm.Headers);");
 			code.AppendLine(string.Format("\t\t\tSet{0}Headers(rm.Headers);", o.Name));
 			code.AppendLine("\t\t\trm.Headers.Accept.Clear();");
-			code.AppendLine(string.Format("\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"application/{0}\"));", conf.ResponseFormat == RestSerialization.Json ? "json" : conf.ResponseFormat == RestSerialization.Bson ? "bson" : "xml"));
+			code.AppendLine(string.Format("\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"{0}\"));", (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.String) ? "text/plain" : conf.ResponseFormat == RestSerialization.Json ? "application/json" : conf.ResponseFormat == RestSerialization.Bson ? "application/bson" : "application/xml"));
 
 			//Serialize any parameters
 			if (o.HasContent)
@@ -428,10 +438,18 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\t\tusing(var client = new HttpClient(mr))");
 			code.AppendLine("\t\t\t{");
 			code.AppendLine("\t\t\t\tvar rr = await client.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);");
-			if (o.EnsureSuccessStatusCode) code.AppendLine("\t\t\t\trr.EnsureSuccessStatusCode();");
+			if (o.EnsureSuccessStatusCode)
+			{
+				code.AppendLine("\t\t\t\tif(!rr.IsSuccessStatusCode)");
+				code.AppendLine("\t\t\t\t\tthrow new SimpleHttpRequestException(rr.StatusCode, await rr.Content.ReadAsStringAsync(), rr.ReasonPhrase);");
+			}
 			if (o.ReturnResponseData)
 			{
 				code.AppendLine("\t\t\t\treturn rr;");
+			}
+			else if (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.String)
+			{
+				code.AppendLine("\t\t\t\treturn await rr.Content.ReadAsStringAsync();");
 			}
 			else if (!(o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) && o.DeserializeContent)
 			{

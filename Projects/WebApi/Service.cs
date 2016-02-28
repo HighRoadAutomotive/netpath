@@ -156,7 +156,7 @@ namespace NETPath.Projects.WebApi
 		public static readonly DependencyProperty ReturnResponseDataProperty = DependencyProperty.Register("ReturnResponseData", typeof(bool), typeof(WebApiMethod), new PropertyMetadata(false));
 
 		public bool EnsureSuccessStatusCode { get { return (bool)GetValue(EnsureSuccessStatusCodeProperty); } set { SetValue(EnsureSuccessStatusCodeProperty, value); } }
-		public static readonly DependencyProperty EnsureSuccessStatusCodeProperty = DependencyProperty.Register("EnsureSuccessStatusCode", typeof(bool), typeof(WebApiMethod), new PropertyMetadata(false));
+		public static readonly DependencyProperty EnsureSuccessStatusCodeProperty = DependencyProperty.Register("EnsureSuccessStatusCode", typeof(bool), typeof(WebApiMethod), new PropertyMetadata(true));
 
 		public string AuthenticationFilter { get { return (string)GetValue(AuthenticationFilterProperty); } set { SetValue(AuthenticationFilterProperty, value); } }
 		public static readonly DependencyProperty AuthenticationFilterProperty = DependencyProperty.Register("AuthenticationFilter", typeof(string), typeof(WebApiMethod), new PropertyMetadata(""));

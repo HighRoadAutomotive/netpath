@@ -610,7 +610,7 @@ namespace NETPath.Generators.CS.WebApi
 			var code = new StringBuilder();
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 
-			code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return ({0})GetValue({1}Property); }} {2}set {{ SetValue({1}Property, value); }} }}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.DataType)), o.XamlName, o.IsReadOnly ? "protected " : ""));
+			code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return ({0})GetValue({1}Property); }} {2}set {{ SetValue({1}Property{3}, value); }} }}", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.DataType)), o.XamlName, o.IsReadOnly ? "protected " : "", o.IsReadOnly ? "Key" : ""));
 			if (!o.IsReadOnly && o.EnableUpdates && o.DataType.TypeMode == DataTypeMode.Primitive && o.DataType.Primitive != PrimitiveTypes.Void && o.DataType.Primitive != PrimitiveTypes.None)
 				code.AppendLine(string.Format("\t\tpublic static readonly DependencyProperty {1}Property = DependencyProperty.Register(\"{1}\", typeof({0}), typeof({2}), new PropertyMetadata({3}));", DataTypeGenerator.GenerateType(GetPreferredXAMLType(o.DataType)), o.XamlName, o.Owner.XAMLType.Name, GenerateDataUpdateDelegate(o)));
 			else

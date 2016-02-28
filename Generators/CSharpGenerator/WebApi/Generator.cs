@@ -275,6 +275,22 @@ namespace NETPath.Generators.CS.WebApi
 			}
 			else
 			{
+				code.AppendLine(string.Format("namespace {0}", Data.Namespace.FullName));
+				code.AppendLine("{");
+				code.AppendLine("\tpublic class SimpleHttpRequestException : HttpRequestException");
+				code.AppendLine("\t{");
+				code.AppendLine("\t\tpublic HttpStatusCode StatusCode { get; private set; }");
+				code.AppendLine("\t\tpublic string Content { get; private set; }");
+				code.AppendLine("\t\tpublic string ReasonPhrase { get; private set; }");
+				code.AppendLine("\t\tpublic SimpleHttpRequestException(HttpStatusCode status, string content, string reason)");
+				code.AppendLine("\t\t{");
+				code.AppendLine("\t\t\tStatusCode = status;");
+				code.AppendLine("\t\t\tContent = content;");
+				code.AppendLine("\t\t\tReasonPhrase = reason;");
+				code.AppendLine("\t\t}");
+				code.AppendLine("\t}");
+				code.AppendLine("}");
+
 				if (Target.Framework == ProjectGenerationFramework.NET45) code.Append(NamespaceGenerator.GenerateClientCode45(Data.Namespace, Target));
 				if (Target.Framework == ProjectGenerationFramework.WINRT) code.Append(NamespaceGenerator.GenerateClientCodeRT8(Data.Namespace, Target));
 				ServiceGenerator.GenerateClientUpdateService(code, Data);
