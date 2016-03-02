@@ -183,7 +183,8 @@ namespace NETPath.Generators.CS.WebApi
 			foreach (var pp in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => !string.IsNullOrEmpty(a.DefaultValue)))
 				uriBuilder.AppendFormat("/{{{0}?}}", pp.RouteName.ToLowerInvariant());
 
-			uriBuilder.Remove(0, 1); //Remove the beginning slant from the Route
+			if (uriBuilder.Length > 0)
+				uriBuilder.Remove(0, 1); //Remove the beginning slant from the Route
 
 			return uriBuilder.ToString();
 		}

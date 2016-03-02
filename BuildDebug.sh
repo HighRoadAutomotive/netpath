@@ -1,17 +1,16 @@
-#Update NETPath
-git pull origin master
-
 #Update Submodules
 git submodule init
 git submodule update
-cd System.Utilities
-git pull origin master
+
+#Build EllipticBit.Controls
+cd EllipticBit.Controls
+"/C/Program Files (x86)/MSBuild/14.0/Bin/MSBuild.exe" EllipticBit.Controls.sln -nologo -p:Configuration=Debug -p:Platform="Any CPU" -t:Clean\;Build -p:TrackFileAccess=false
+cd ..
 
 #Build System.Utilities
-/C/Windows/Microsoft.NET/Framework/v4.0.30319/MSBuild.exe ./WinRT8/WinRT8.csproj -nologo -p:Configuration=Debug -p:Platform=AnyCPU -t:Build
-/C/Windows/Microsoft.NET/Framework/v4.0.30319/MSBuild.exe ./NET45/NET45.csproj -nologo -p:Configuration=Debug -p:Platform=AnyCPU -t:Build
-
+cd System.Utilities
+"/C/Program Files (x86)/MSBuild/14.0/Bin/MSBuild.exe" ./NET45/NET45.csproj -nologo -p:Configuration=Debug -p:Platform=AnyCPU -t:Clean\;Build -p:TrackFileAccess=false
 cd ..
 
 #Build NETPath
-/C/Windows/Microsoft.NET/Framework/v4.0.30319/MSBuild.exe ./NETPath.sln -nologo -t:Build
+"/C/Program Files (x86)/MSBuild/14.0/Bin/MSBuild.exe" ./NETPath.sln -nologo -p:Configuration=Debug -p:Platform="Any CPU" -t:Clean\;Build -p:TrackFileAccess=false
