@@ -183,8 +183,8 @@
 	</ComboBox>
 	<Label Content="Method:" Grid.Column="1" Grid.Row="2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="60" Visibility="{Binding Path=MethodData.Method, Converter={StaticResource MethodVerbsVisibilityConverter}}" />
 	<pc:TextBox Text="{Binding Path=MethodData.CustomMethod}" Grid.Column="1" Grid.Row="2" Height="23" Margin="65,5,5,5" Visibility="{Binding Path=MethodData.Method, Converter={StaticResource MethodVerbsVisibilityConverter}}" />
-	<pc:TextBox Grid.Column="0" Grid.Row="3" Margin="5" MinHeight="24" Text="{Binding Path=MethodData.AuthenticationFilter, UpdateSourceTrigger=PropertyChanged}" LabelText="Authentication Filter" VerticalContentAlignment="Center" Validate="AddContentParameterName_Validate" />
-	<pc:TextBox Grid.Column="1" Grid.Row="3" Margin="5" MinHeight="24" Text="{Binding Path=MethodData.AuthorizationFilter, UpdateSourceTrigger=PropertyChanged}" LabelText="Authorization Filter" VerticalContentAlignment="Center" Validate="AddContentParameterName_Validate" />
+	<pc:TextBox Grid.Column="0" Grid.Row="3" Margin="5" MinHeight="24" Text="{Binding Path=MethodData.AuthenticationFilter, UpdateSourceTrigger=PropertyChanged}" LabelText="Authentication Filter" VerticalContentAlignment="Center" />
+	<pc:TextBox Grid.Column="1" Grid.Row="3" Margin="5" MinHeight="24" Text="{Binding Path=MethodData.AuthorizationFilter, UpdateSourceTrigger=PropertyChanged}" LabelText="Authorization Filter" VerticalContentAlignment="Center" />
 	<TabControl Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,10,0,0">
 		<TabItem Padding="10,5" IsSelected="True">
 			<TabItem.Header>

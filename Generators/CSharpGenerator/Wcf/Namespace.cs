@@ -46,7 +46,7 @@ namespace NETPath.Generators.CS.Wcf
 
 			var code = new StringBuilder();
 
-			code.AppendLine(string.Format("[assembly: System.Runtime.Serialization.ContractNamespaceAttribute(\"{0}\", ClrNamespace=\"{1}\")]", o.FullURI, o.FullName));
+			code.AppendLine($"[assembly: System.Runtime.Serialization.ContractNamespaceAttribute(\"{o.FullURI}\", ClrNamespace=\"{o.FullName}\")]");
 
 			foreach (WcfNamespace tn in o.Children)
 				code.Append(GenerateContractNamespaceAttributes(tn, target));
@@ -77,7 +77,7 @@ namespace NETPath.Generators.CS.Wcf
 					foreach (ProjectUsingNamespace pun in o.Owner.UsingNamespaces)
 					{
 						if ((pun.Server))
-							code.AppendLine(string.Format("\tusing {0};", pun.Namespace));
+							code.AppendLine($"\tusing {pun.Namespace};");
 					}
 					if (o.Owner.EnableEntityFramework) code.AppendLine("\tusing System.Data.Entity.Core.Objects;");
 					code.AppendLine();
@@ -200,7 +200,7 @@ namespace NETPath.Generators.CS.Wcf
 					foreach (ProjectUsingNamespace pun in o.Owner.UsingNamespaces)
 					{
 						if (pun.Client && pun.NET)
-							code.AppendLine(string.Format("\tusing {0};", pun.Namespace));
+							code.AppendLine($"\tusing {pun.Namespace};");
 					}
 					code.AppendLine();
 					if (o.Owner.GenerateRegions)
@@ -309,7 +309,7 @@ namespace NETPath.Generators.CS.Wcf
 					foreach (ProjectUsingNamespace pun in o.Owner.UsingNamespaces)
 					{
 						if (pun.Client && pun.RT)
-							code.AppendLine(string.Format("\tusing {0};", pun.Namespace));
+							code.AppendLine($"\tusing {pun.Namespace};");
 					}
 					code.AppendLine();
 					if (o.Owner.GenerateRegions)

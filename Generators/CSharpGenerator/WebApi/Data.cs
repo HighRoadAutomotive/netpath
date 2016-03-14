@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.ServiceModel.Security.Tokens;
 using System.Text;
 using System.Threading.Tasks;
@@ -69,16 +70,16 @@ namespace NETPath.Generators.CS.WebApi
 			var code = new StringBuilder();
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 			foreach (DataType dt in o.KnownTypes)
-				code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
-			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCode(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.Uri));
-			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o, false, false, false, false, false, o.HasEntity, o.Parent.Owner.EnitityDatabaseType)));
+				code.AppendLine($"\t[KnownType(typeof({dt}))]");
+			code.AppendLine($"\t[System.CodeDom.Compiler.GeneratedCode(\"{Globals.ApplicationTitle}\", \"{Globals.ApplicationVersion}\")]");
+			code.AppendLine($"\t[DataContract({(o.IsReference ? "IsReference = true, " : "")}Name = \"{(o.HasClientType ? o.ClientType.Name : o.Name)}\", Namespace = \"{o.Parent.Uri}\")]");
+			code.AppendLine($"\t{DataTypeGenerator.GenerateTypeDeclaration(o, false, false, false, false, false, o.HasEntity, o.Parent.Owner.EnitityDatabaseType)}");
 			code.AppendLine("\t{");
 
 			if (o.Parent.Owner.GenerateRegions) code.AppendLine("\t\t#region Constructor");
 			else code.AppendLine("\t\t//Constuctors");
 			code.AppendLine();
-			code.AppendLine(string.Format("\t\tpublic {0}()", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine($"\t\tpublic {(o.HasClientType ? o.ClientType.Name : o.Name)}()");
 			code.AppendLine("\t\t{");
 			foreach (var de in o.Elements)
 				if (de.DataType.TypeMode == DataTypeMode.Collection || de.DataType.TypeMode == DataTypeMode.Dictionary)
@@ -103,10 +104,10 @@ namespace NETPath.Generators.CS.WebApi
 
 			if (o.HasEntity)
 			{
-				code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} DBType)", o.Name, o.EntityType));
+				code.AppendLine($"\t\tpublic static implicit operator {o.Name}({o.EntityType} DBType)");
 				code.AppendLine("\t\t{");
 				code.AppendLine("\t\t\tif (DBType == null) return null;");
-				code.AppendLine(string.Format("\t\t\tvar t = new {0}()", o.Name));
+				code.AppendLine($"\t\t\tvar t = new {o.Name}()");
 				code.AppendLine("\t\t\t{");
 				foreach (var efe in o.Elements.Where(a => a.HasEntity && !(a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
 					code.AppendLine(string.Format("\t\t\t\t{0} = {2}DBType.{1},", efe.DataName, efe.EntityName, efe.DataType.TypeMode == DataTypeMode.Enum ? $"({efe.DataType})" : ""));
@@ -116,24 +117,27 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t\t\tFinishCastToNetwork(ref t, DBType);");
 				code.AppendLine("\t\t\treturn t;");
 				code.AppendLine("\t\t}");
-				code.AppendLine(string.Format("\t\tstatic partial void FinishCastToNetwork(ref {0} NetworkType, {1} DBType);", o.Name, o.EntityType));
+				code.AppendLine($"\t\tstatic partial void FinishCastToNetwork(ref {o.Name} NetworkType, {o.EntityType} DBType);");
 				code.AppendLine();
 
-				code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} NetworkType)", o.EntityType, o.Name));
-				code.AppendLine("\t\t{");
-				code.AppendLine("\t\t\tif (NetworkType == null) return null;");
-				code.AppendLine(string.Format("\t\t\tvar t = new {0}()", o.EntityType));
-				code.AppendLine("\t\t\t{");
-				foreach (var efe in o.Elements.Where(a => a.HasEntity && !a.IsReadOnly && !(a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
-					code.AppendLine(string.Format("\t\t\t\t{0} = {2}NetworkType.{1},", efe.EntityName, efe.DataName, efe.DataType.TypeMode == DataTypeMode.Enum ? ((Projects.Enum)efe.DataType).IsFlags ? "(long)" : "(short)" : ""));
-				code.AppendLine("\t\t\t};");
-				foreach (var efe in o.Elements.Where(a => a.HasEntity && !a.IsReadOnly && a.DataType.TypeMode == DataTypeMode.Collection))
-					code.AppendLine(string.Format("\t\t\tif (NetworkType.{0} != null) foreach(var x in NetworkType.{0}) t.{1}.Add(x);", efe.DataName, efe.EntityName));
-				code.AppendLine("\t\t\tFinishCastToDatabase(ref t, NetworkType);");
-				code.AppendLine("\t\t\treturn t;");
-				code.AppendLine("\t\t}");
-				code.AppendLine(string.Format("\t\tstatic partial void FinishCastToDatabase(ref {0} DBType, {1} NetworkType);", o.EntityType, o.Name));
-				code.AppendLine();
+				if (o.Elements.Any(a => a.HasEntity && !a.IsReadOnly))
+				{
+					code.AppendLine($"\t\tpublic static implicit operator {o.EntityType}({o.Name} NetworkType)");
+					code.AppendLine("\t\t{");
+					code.AppendLine("\t\t\tif (NetworkType == null) return null;");
+					code.AppendLine($"\t\t\tvar t = new {o.EntityType}()");
+					code.AppendLine("\t\t\t{");
+					foreach (var efe in o.Elements.Where(a => a.HasEntity && !a.IsReadOnly && !(a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
+						code.AppendLine(string.Format("\t\t\t\t{0} = {2}NetworkType.{1},", efe.EntityName, efe.DataName, efe.DataType.TypeMode == DataTypeMode.Enum ? ((Projects.Enum) efe.DataType).IsFlags ? "(long)" : "(short)" : ""));
+					code.AppendLine("\t\t\t};");
+					foreach (var efe in o.Elements.Where(a => a.HasEntity && !a.IsReadOnly && a.DataType.TypeMode == DataTypeMode.Collection))
+						code.AppendLine(string.Format("\t\t\tif (NetworkType.{0} != null) foreach(var x in NetworkType.{0}) t.{1}.Add(x);", efe.DataName, efe.EntityName));
+					code.AppendLine("\t\t\tFinishCastToDatabase(ref t, NetworkType);");
+					code.AppendLine("\t\t\treturn t;");
+					code.AppendLine("\t\t}");
+					code.AppendLine($"\t\tstatic partial void FinishCastToDatabase(ref {o.EntityType} DBType, {o.Name} NetworkType);");
+					code.AppendLine();
+				}
 			}
 			if (o.Parent.Owner.GenerateRegions && o.HasEntity)
 			{
@@ -161,10 +165,10 @@ namespace NETPath.Generators.CS.WebApi
 		private static string GenerateElementServerCode45(WebApiDataElement o)
 		{
 			var code = new StringBuilder();
-			code.AppendLine(string.Format("\t\t[DataMember(Name = \"{0}\"{1}{2}{3})]", o.HasClientType ? o.ClientName : o.HasContractName ? o.ContractName : o.DataName, o.IsRequired ? ", IsRequired = true" : ", IsRequired = false", o.EmitDefaultValue ? ", EmitDefaultValue = false" : "", o.Order >= 0 ? string.Format(", Order = {0}{1}", o.Order, o.HasContractName ? ", " : "") : ""));
+			code.AppendLine($"\t\t[DataMember(Name = \"{(o.HasClientType ? o.ClientName : o.HasContractName ? o.ContractName : o.DataName)}\"{(o.IsRequired ? ", IsRequired = true" : ", IsRequired = false")}{(o.EmitDefaultValue ? ", EmitDefaultValue = false" : "")}{(o.Order >= 0 ? $", Order = {o.Order}{(o.HasContractName ? ", " : "")}" : "")})]");
 			code.AppendLine(string.Format("\t\tprivate {2}{0} _{1};", DataTypeGenerator.GenerateType(o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly && ((o.Owner.HasClientType && o.Owner.ClientType.Sealed) || (!o.Owner.HasClientType && o.Owner.Sealed)) ? "readonly " : ""));
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return _{1}; }} {2}}}", DataTypeGenerator.GenerateType(o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly && ((o.Owner.HasClientType && o.Owner.ClientType.Sealed) || (!o.Owner.HasClientType && o.Owner.Sealed)) ? "" : string.Format("{0}set {{ _{1} = value;}} ", o.IsReadOnly && ((o.Owner.HasClientType && !o.Owner.ClientType.Sealed) || (!o.Owner.HasClientType && !o.Owner.Sealed)) ? "protected " : "", o.HasClientType ? o.ClientName : o.DataName)));
+			code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return _{1}; }} {2}}}", DataTypeGenerator.GenerateType(o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly && ((o.Owner.HasClientType && o.Owner.ClientType.Sealed) || (!o.Owner.HasClientType && o.Owner.Sealed)) ? "" : $"{(o.IsReadOnly && ((o.Owner.HasClientType && !o.Owner.ClientType.Sealed) || (!o.Owner.HasClientType && !o.Owner.Sealed)) ? "protected " : "")}set {{ _{(o.HasClientType ? o.ClientName : o.DataName)} = value;}} "));
 			return code.ToString();
 		}
 
@@ -176,7 +180,7 @@ namespace NETPath.Generators.CS.WebApi
 
 			//Generate SQL Command
 			var sql = new StringBuilder();
-			code.Append(string.Format("\t\t\tstring cmdstr = \"MERGE INTO {0}{1} AS tgt USING (SELECT ", string.IsNullOrWhiteSpace(o.SchemaName) ? "" : string.Format("[{0}].", o.SchemaName), o.TableName));
+			code.Append($"\t\t\tstring cmdstr = \"MERGE INTO {(string.IsNullOrWhiteSpace(o.SchemaName) ? "" : $"[{o.SchemaName}].")}{o.TableName} AS tgt USING (SELECT ");
 			foreach (var de in o.Elements.Where(a => a.HasSql && !a.IsSqlPrimaryKeyIdentity && !a.IsSqlComputed))
 				code.Append(string.Format("[{0}] = @{0}, ", de.SqlName));
 			code.Remove(code.Length - 2, 2);
@@ -186,11 +190,11 @@ namespace NETPath.Generators.CS.WebApi
 			code.Remove(code.Length - 4, 4);
 			code.Append("WHEN NOT MATCHED BY TARGET THEN INSERT (");
 			foreach (var de in o.Elements.Where(a => a.HasSql && !a.IsSqlPrimaryKeyIdentity && !a.IsSqlComputed))
-				code.Append(string.Format("[{0}], ", de.SqlName));
+				code.Append($"[{de.SqlName}], ");
 			code.Remove(code.Length - 2, 2);
 			code.Append(") VALUES (");
 			foreach (var de in o.Elements.Where(a => a.HasSql && !a.IsSqlPrimaryKeyIdentity && !a.IsSqlComputed))
-				code.Append(string.Format("src.[{0}], ", de.SqlName));
+				code.Append($"src.[{de.SqlName}], ");
 			code.Remove(code.Length - 2, 2);
 			code.Append(") WHEN MATCHED THEN UPDATE SET ");
 			foreach (var de in o.Elements.Where(a => a.HasSql && !a.IsSqlPrimaryKeyIdentity && !a.IsSqlComputed))
@@ -200,7 +204,7 @@ namespace NETPath.Generators.CS.WebApi
 			{
 				code.Append(" OUTPUT ");
 				foreach (var de in o.Elements.Where(a => a.IsSqlPrimaryKeyIdentity || a.IsSqlComputed))
-					code.Append(string.Format("INSERTED.[{0}], ", de.SqlName));
+					code.Append($"INSERTED.[{de.SqlName}], ");
 				code.Remove(code.Length - 2, 2);
 			}
 			code.AppendLine("\";");
@@ -209,11 +213,11 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\tpublic void Merge()");
 			code.AppendLine("\t\t{");
 			code.Append(sql.ToString());
-			code.AppendLine(string.Format("\t\t\tusing(var con = {0}.ServiceController.CreateAndOpen())", prj?.Namespace.FullName ?? ""));
+			code.AppendLine($"\t\t\tusing(var con = {prj?.Namespace.FullName ?? ""}.ServiceController.CreateAndOpen())");
 			code.AppendLine("\t\t\tusing(var cmd = con.CreateCommand())");
 			code.AppendLine("\t\t\t{");
 			code.AppendLine("\t\t\t\tcmd.Connection = con;");
-			code.AppendLine(string.Format("\t\t\t\tcmd.Transaction = con.BeginTransaction({0}{1});", o.MergeTransactionLevel != null ? string.Format("IsolationLevel.{0}, ", o.MergeTransactionLevel) : "", o.MergeTransactionName, !string.IsNullOrWhiteSpace(o.MergeTransactionName) ? string.Format("{0}\"{1}\"", o.MergeTransactionLevel != null ? ", " : "", o.MergeTransactionName) : ""));
+			code.AppendLine(string.Format("\t\t\t\tcmd.Transaction = con.BeginTransaction({0}{1});", o.MergeTransactionLevel != null ? $"IsolationLevel.{o.MergeTransactionLevel}, " : "", o.MergeTransactionName, !string.IsNullOrWhiteSpace(o.MergeTransactionName) ? $"{(o.MergeTransactionLevel != null ? ", " : "")}\"{o.MergeTransactionName}\"" : ""));
 			code.AppendLine("\t\t\t\tcmd.CommandText = cmdstr;");
 			code.AppendLine("\t\t\t\tcmd.CommandType = CommandType.Text;");
 			foreach (var de in o.Elements.Where(a => a.HasSql && !a.IsSqlPrimaryKeyIdentity && !a.IsSqlComputed))
@@ -227,7 +231,7 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t\t\t\t\t{");
 				int cc = 0;
 				foreach (var de in o.Elements.Where(a => a.HasSql && (a.IsSqlPrimaryKeyIdentity || a.IsSqlComputed)))
-					code.AppendLine(de.DataType.IsNullable ? string.Format("\t\t\t\t\t\tif (res.IsDBNull({2})) {{ {0} = null; }} else {{ {0} = res.Get{1}({2}); }}", de.DataName, de.DataType.GetSqlAdoName(), cc++) : string.Format("\t\t\t\t\t\t{0} = res.Get{1}({2});", de.DataName, de.DataType.GetSqlAdoName(), cc++));
+					code.AppendLine(de.DataType.IsNullable ? string.Format("\t\t\t\t\t\tif (res.IsDBNull({2})) {{ {0} = null; }} else {{ {0} = res.Get{1}({2}); }}", de.DataName, de.DataType.GetSqlAdoName(), cc++) : $"\t\t\t\t\t\t{de.DataName} = res.Get{de.DataType.GetSqlAdoName()}({cc++});");
 				code.AppendLine("\t\t\t\t\t}");
 			}
 			else
@@ -248,11 +252,11 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\tpublic async Task MergeAsync()");
 			code.AppendLine("\t\t{");
 			code.Append(sql.ToString());
-			code.AppendLine(string.Format("\t\t\tusing(var con = await {0}.ServiceController.CreateAndOpenAsync())", prj?.Namespace.FullName ?? ""));
+			code.AppendLine($"\t\t\tusing(var con = await {prj?.Namespace.FullName ?? ""}.ServiceController.CreateAndOpenAsync())");
 			code.AppendLine("\t\t\tusing(var cmd = con.CreateCommand())");
 			code.AppendLine("\t\t\t{");
 			code.AppendLine("\t\t\t\tcmd.Connection = con;");
-			code.AppendLine(string.Format("\t\t\t\tcmd.Transaction = con.BeginTransaction({0}{1});", o.MergeTransactionLevel != null ? string.Format("IsolationLevel.{0}, ", o.MergeTransactionLevel) : "", o.MergeTransactionName, !string.IsNullOrWhiteSpace(o.MergeTransactionName) ? string.Format("{0}\"{1}\"", o.MergeTransactionLevel != null ? ", " : "", o.MergeTransactionName) : ""));
+			code.AppendLine(string.Format("\t\t\t\tcmd.Transaction = con.BeginTransaction({0}{1});", o.MergeTransactionLevel != null ? $"IsolationLevel.{o.MergeTransactionLevel}, " : "", o.MergeTransactionName, !string.IsNullOrWhiteSpace(o.MergeTransactionName) ? $"{(o.MergeTransactionLevel != null ? ", " : "")}\"{o.MergeTransactionName}\"" : ""));
 			code.AppendLine("\t\t\t\tcmd.CommandText = cmdstr;");
 			code.AppendLine("\t\t\t\tcmd.CommandType = CommandType.Text;");
 			foreach (var de in o.Elements.Where(a => a.HasSql && !a.IsSqlPrimaryKeyIdentity && !a.IsSqlComputed))
@@ -266,7 +270,7 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t\t\t\t\t{");
 				int cc = 0;
 				foreach (var de in o.Elements.Where(a => a.HasSql && (a.IsSqlPrimaryKeyIdentity || a.IsSqlComputed)))
-					code.AppendLine(de.DataType.IsNullable ? string.Format("\t\t\t\t\t\tif (res.IsDBNull({2})) {{ {0} = null; }} else {{ {0} = res.Get{1}({2}); }}", de.DataName, de.DataType.GetSqlAdoName(), cc++) : string.Format("\t\t\t\t\t\t{0} = res.Get{1}({2});", de.DataName, de.DataType.GetSqlAdoName(), cc++));
+					code.AppendLine(de.DataType.IsNullable ? string.Format("\t\t\t\t\t\tif (res.IsDBNull({2})) {{ {0} = null; }} else {{ {0} = res.Get{1}({2}); }}", de.DataName, de.DataType.GetSqlAdoName(), cc++) : $"\t\t\t\t\t\t{de.DataName} = res.Get{de.DataType.GetSqlAdoName()}({cc++});");
 				code.AppendLine("\t\t\t\t\t}");
 			}
 			else
@@ -295,11 +299,11 @@ namespace NETPath.Generators.CS.WebApi
 			var code = new StringBuilder();
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 			foreach (DataType dt in o.ClientType != null ? o.ClientType.KnownTypes : o.KnownTypes)
-				code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
+				code.AppendLine($"\t[KnownType(typeof({dt}))]");
 			code.AppendLine("\t[System.Diagnostics.DebuggerStepThrough]");
-			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCode(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.Uri));
-			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, false, o.HasWinFormsBindings)));
+			code.AppendLine($"\t[System.CodeDom.Compiler.GeneratedCode(\"{Globals.ApplicationTitle}\", \"{Globals.ApplicationVersion}\")]");
+			code.AppendLine($"\t[DataContract({(o.IsReference ? "IsReference = true, " : "")}Name = \"{(o.HasClientType ? o.ClientType.Name : o.Name)}\", Namespace = \"{o.Parent.Uri}\")]");
+			code.AppendLine($"\t{DataTypeGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, false, o.HasWinFormsBindings)}");
 			code.AppendLine("\t{");
 			code.AppendLine();
 
@@ -318,10 +322,10 @@ namespace NETPath.Generators.CS.WebApi
 			if (o.HasXAMLType)
 			{
 				code.AppendLine("\t\t//Implicit Conversion from XAML Type");
-				code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
+				code.AppendLine($"\t\tpublic static implicit operator {(o.HasClientType ? o.ClientType.Name : o.Name)}({o.XAMLType.Name} Data)");
 				code.AppendLine("\t\t{");
 				code.AppendLine("\t\t\tif (Data == null) return null;");
-				code.AppendLine(string.Format("\t\t\treturn new {0}(Data);", o.ClientType?.Name ?? o.Name));
+				code.AppendLine($"\t\t\treturn new {o.ClientType?.Name ?? o.Name}(Data);");
 				code.AppendLine("\t\t}");
 				code.AppendLine();
 			}
@@ -329,7 +333,7 @@ namespace NETPath.Generators.CS.WebApi
 			if (o.Parent.Owner.GenerateRegions) code.AppendLine("\t\t#region Constructors");
 			else code.AppendLine("\t\t//Constuctors");
 			code.AppendLine();
-			code.AppendLine(string.Format("\t\tpublic {0}()", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine($"\t\tpublic {(o.HasClientType ? o.ClientType.Name : o.Name)}()");
 			code.AppendLine("\t\t{");
 			foreach (var de in o.Elements)
 				if (de.DataType.TypeMode == DataTypeMode.Collection || de.DataType.TypeMode == DataTypeMode.Dictionary || de.DataType.TypeMode == DataTypeMode.Queue || de.DataType.TypeMode == DataTypeMode.Stack)
@@ -340,7 +344,7 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\t}");
 			if (o.HasXAMLType)
 			{
-				code.AppendLine(string.Format("\t\tpublic {0}({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
+				code.AppendLine($"\t\tpublic {(o.HasClientType ? o.ClientType.Name : o.Name)}({o.XAMLType.Name} Data)");
 				code.AppendLine("\t\t{");
 				foreach (var de in o.Elements)
 					code.Append(GenerateElementProxyConstructorCode45(de, o));
@@ -374,11 +378,11 @@ namespace NETPath.Generators.CS.WebApi
 			var code = new StringBuilder();
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 			foreach (DataType dt in o.ClientType != null ? o.ClientType.KnownTypes : o.KnownTypes)
-				code.AppendLine(string.Format("\t[KnownType(typeof({0}))]", dt));
+				code.AppendLine($"\t[KnownType(typeof({dt}))]");
 			code.AppendLine("\t[System.Diagnostics.DebuggerStepThrough]");
-			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCode(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t[DataContract({0}Name = \"{1}\", Namespace = \"{2}\")]", o.IsReference ? "IsReference = true, " : "", o.HasClientType ? o.ClientType.Name : o.Name, o.Parent.Uri));
-			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, false, o.HasWinFormsBindings)));
+			code.AppendLine($"\t[System.CodeDom.Compiler.GeneratedCode(\"{Globals.ApplicationTitle}\", \"{Globals.ApplicationVersion}\")]");
+			code.AppendLine($"\t[DataContract({(o.IsReference ? "IsReference = true, " : "")}Name = \"{(o.HasClientType ? o.ClientType.Name : o.Name)}\", Namespace = \"{o.Parent.Uri}\")]");
+			code.AppendLine($"\t{DataTypeGenerator.GenerateTypeDeclaration(o.HasClientType ? o.ClientType : o, false, o.HasWinFormsBindings)}");
 			code.AppendLine("\t{");
 			code.AppendLine();
 
@@ -397,10 +401,10 @@ namespace NETPath.Generators.CS.WebApi
 			if (o.HasXAMLType)
 			{
 				code.AppendLine("\t\t//Implicit Conversion from XAML Type");
-				code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
+				code.AppendLine($"\t\tpublic static implicit operator {(o.HasClientType ? o.ClientType.Name : o.Name)}({o.XAMLType.Name} Data)");
 				code.AppendLine("\t\t{");
 				code.AppendLine("\t\t\tif (Data == null) return null;");
-				code.AppendLine(string.Format("\t\t\treturn new {0}(Data);", o.ClientType?.Name ?? o.Name));
+				code.AppendLine($"\t\t\treturn new {o.ClientType?.Name ?? o.Name}(Data);");
 				code.AppendLine("\t\t}");
 				code.AppendLine();
 			}
@@ -408,7 +412,7 @@ namespace NETPath.Generators.CS.WebApi
 			if (o.Parent.Owner.GenerateRegions) code.AppendLine("\t\t#region Constructors");
 			else code.AppendLine("\t\t//Constuctors");
 			code.AppendLine();
-			code.AppendLine(string.Format("\t\tpublic {0}()", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine($"\t\tpublic {(o.HasClientType ? o.ClientType.Name : o.Name)}()");
 			code.AppendLine("\t\t{");
 			foreach (var de in o.Elements)
 				if (de.DataType.TypeMode == DataTypeMode.Collection || de.DataType.TypeMode == DataTypeMode.Dictionary || de.DataType.TypeMode == DataTypeMode.Queue || de.DataType.TypeMode == DataTypeMode.Stack)
@@ -419,7 +423,7 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\t}");
 			if (o.HasXAMLType)
 			{
-				code.AppendLine(string.Format("\t\tpublic {0}({1} Data)", o.HasClientType ? o.ClientType.Name : o.Name, o.XAMLType.Name));
+				code.AppendLine($"\t\tpublic {(o.HasClientType ? o.ClientType.Name : o.Name)}({o.XAMLType.Name} Data)");
 				code.AppendLine("\t\t{");
 				foreach (var de in o.Elements)
 					code.Append(GenerateElementProxyConstructorCode45(de, o));
@@ -451,10 +455,10 @@ namespace NETPath.Generators.CS.WebApi
 		private static string GenerateElementProxyCode(WebApiDataElement o)
 		{
 			var code = new StringBuilder();
-			code.AppendLine(string.Format("\t\t[DataMember(Name = \"{0}\"{1}{2}{3})]", o.HasClientType ? o.ClientName : o.HasContractName ? o.ContractName : o.DataName, o.IsRequired ? ", IsRequired = true" : ", IsRequired = false", o.EmitDefaultValue ? ", EmitDefaultValue = false" : "", o.Order >= 0 ? string.Format(", Order = {0}{1}", o.Order, o.HasContractName ? ", " : "") : ""));
+			code.AppendLine($"\t\t[DataMember(Name = \"{(o.HasClientType ? o.ClientName : o.HasContractName ? o.ContractName : o.DataName)}\"{(o.IsRequired ? ", IsRequired = true" : ", IsRequired = false")}{(o.EmitDefaultValue ? ", EmitDefaultValue = false" : "")}{(o.Order >= 0 ? $", Order = {o.Order}{(o.HasContractName ? ", " : "")}" : "")})]");
 			code.AppendLine(string.Format("\t\tprivate {2}{0} _{1};", DataTypeGenerator.GenerateType(o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly && ((o.Owner.HasClientType && o.Owner.ClientType.Sealed) || (!o.Owner.HasClientType && o.Owner.Sealed)) ? "readonly " : ""));
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return _{1}; }} {2}}}", DataTypeGenerator.GenerateType(o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly && ((o.Owner.HasClientType && o.Owner.ClientType.Sealed) || (!o.Owner.HasClientType && o.Owner.Sealed)) ? "" : string.Format("{0}set {{ _{1} = value; {2}}} ", o.IsReadOnly && ((o.Owner.HasClientType && !o.Owner.ClientType.Sealed) || (!o.Owner.HasClientType && !o.Owner.Sealed)) ? "protected " : "", o.HasClientType ? o.ClientName : o.DataName, o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : "")));
+			code.AppendLine(string.Format("\t\tpublic {0} {1} {{ get {{ return _{1}; }} {2}}}", DataTypeGenerator.GenerateType(o.DataType), o.HasClientType ? o.ClientName : o.DataName, o.IsReadOnly && ((o.Owner.HasClientType && o.Owner.ClientType.Sealed) || (!o.Owner.HasClientType && o.Owner.Sealed)) ? "" : $"{(o.IsReadOnly && ((o.Owner.HasClientType && !o.Owner.ClientType.Sealed) || (!o.Owner.HasClientType && !o.Owner.Sealed)) ? "protected " : "")}set {{ _{(o.HasClientType ? o.ClientName : o.DataName)} = value; {(o.GenerateWinFormsSupport ? "NotifyPropertyChanged(); " : "")}}} "));
 			return code.ToString();
 		}
 
@@ -558,34 +562,53 @@ namespace NETPath.Generators.CS.WebApi
 			if (string.IsNullOrEmpty(o.XAMLType.Name)) o.XAMLType.Name = o.Name + "XAML";
 
 			var code = new StringBuilder();
-			code.AppendLine(string.Format("\t//XAML Integration Object for the {0} DTO", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine($"\t//XAML Integration Object for the {(o.HasClientType ? o.ClientType.Name : o.Name)} DTO");
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCode(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.XAMLType, false, false, true)));
+			code.AppendLine($"\t[System.CodeDom.Compiler.GeneratedCode(\"{Globals.ApplicationTitle}\", \"{Globals.ApplicationVersion}\")]");
+			code.AppendLine($"\t{DataTypeGenerator.GenerateTypeDeclaration(o.XAMLType, false, false, true)}");
 			code.AppendLine("\t{");
 			code.AppendLine();
 
 			code.AppendLine("\t\t//Implicit Conversion from DTO Type");
-			code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} Data)", o.XAMLType.Name, o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine($"\t\tpublic static implicit operator {o.XAMLType.Name}({(o.HasClientType ? o.ClientType.Name : o.Name)} Data)");
 			code.AppendLine("\t\t{");
 			code.AppendLine("\t\t\tif (Data == null) return null;");
-			code.AppendLine(string.Format("\t\t\treturn new {0}(Data);", o.XAMLType.Name));
+			code.AppendLine($"\t\t\treturn new {o.XAMLType.Name}(Data);");
+			code.AppendLine("\t\t}");
+			code.AppendLine();
+
+			code.AppendLine("\t\t//Changed Values");
+			code.AppendLine($"\t\tprivate readonly {(o.HasClientType ? o.ClientType.Name : o.Name)} _network;");
+			code.AppendLine("\t\tpublic Dictionary<string, string> GetChanges()");
+			code.AppendLine("\t\t{");
+			code.AppendLine("\t\t\tvar cd = new Dictionary<string, string>();");
+			foreach (var de in o.Elements.Where(a => a.IsDataMember && !a.IsReadOnly && (a.DataType.TypeMode == DataTypeMode.Primitive || a.DataType.TypeMode == DataTypeMode.Enum)))
+			{
+				if (de.DataType.TypeMode == DataTypeMode.Primitive && de.DataType.Primitive == PrimitiveTypes.String)
+					code.AppendLine($"\t\t\tif(!string.Equals({de.XamlName}, _network.{(de.HasClientType ? de.ClientName : de.DataName)}, StringComparison.Ordinal)) cd[\"{(de.HasContractName ? de.ContractName : de.DataName)}\"] = {(de.HasClientType ? de.ClientName : de.DataName)};");
+				else if (de.DataType.TypeMode == DataTypeMode.Primitive && de.DataType.Primitive == PrimitiveTypes.ByteArray)
+					code.AppendLine($"\t\t\tif(!{de.XamlName}.SequenceEquals(_network.{(de.HasClientType ? de.ClientName : de.DataName)})) cd[\"{(de.HasContractName ? de.ContractName : de.DataName)}\"] = Convert.ToBase64String({(de.HasClientType ? de.ClientName : de.DataName)});");
+				else
+					code.AppendLine($"\t\t\tif({de.XamlName} != _network.{(de.HasClientType ? de.ClientName : de.DataName)}) cd[\"{(de.HasContractName ? de.ContractName : de.DataName)}\"] = {(de.HasClientType ? de.ClientName : de.DataName)}.ToString();");
+			}
+			code.AppendLine("\t\t\treturn cd;");
 			code.AppendLine("\t\t}");
 			code.AppendLine();
 
 			code.AppendLine("\t\t//Constructors");
-			code.AppendLine(string.Format("\t\tpublic {0}()", o.XAMLType.Name));
+			code.AppendLine($"\t\tpublic {o.XAMLType.Name}()");
 			code.AppendLine("\t\t{");
-			foreach (var de in o.Elements)
+			foreach (var de in o.Elements.Where(a => a.IsDataMember))
 				if (de.DataType.TypeMode == DataTypeMode.Collection || de.DataType.TypeMode == DataTypeMode.Dictionary || de.DataType.TypeMode == DataTypeMode.Queue || de.DataType.TypeMode == DataTypeMode.Stack)
 					code.AppendLine(string.Format("\t\t\t{1} = new {0}();", DataTypeGenerator.GenerateType(GetPreferredXAMLType(de.DataType)), de.XamlName));
 				else if (de.DataType.TypeMode == DataTypeMode.Array)
 					code.AppendLine(string.Format("\t\t\t{1} = new {0}[0];", DataTypeGenerator.GenerateType(GetPreferredXAMLType(de.DataType.CollectionGenericType)), de.XamlName));
 			code.AppendLine("\t\t}");
 			code.AppendLine();
-			code.AppendLine(string.Format("\t\tpublic {0}({1} Data)", o.XAMLType.Name, o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine($"\t\tpublic {o.XAMLType.Name}({(o.HasClientType ? o.ClientType.Name : o.Name)} Data)");
 			code.AppendLine("\t\t{");
-			foreach (var de in o.Elements)
+			code.AppendLine($"\t\t\t_network = Data;");
+			foreach (var de in o.Elements.Where(a => a.IsDataMember))
 				code.Append(GenerateElementXAMLConstructorCode45(de, o));
 			code.AppendLine("\t\t}");
 			code.AppendLine();
@@ -629,23 +652,23 @@ namespace NETPath.Generators.CS.WebApi
 			if (string.IsNullOrEmpty(o.XAMLType.Name)) o.XAMLType.Name = o.Name + "XAML";
 
 			var code = new StringBuilder();
-			code.AppendLine(string.Format("\t//XAML Integration Object for the {0} DTO", o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine($"\t//XAML Integration Object for the {(o.HasClientType ? o.ClientType.Name : o.Name)} DTO");
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCode(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t{0}", DataTypeGenerator.GenerateTypeDeclaration(o.XAMLType, false, false, true)));
+			code.AppendLine($"\t[System.CodeDom.Compiler.GeneratedCode(\"{Globals.ApplicationTitle}\", \"{Globals.ApplicationVersion}\")]");
+			code.AppendLine($"\t{DataTypeGenerator.GenerateTypeDeclaration(o.XAMLType, false, false, true)}");
 			code.AppendLine("\t{");
 			code.AppendLine();
 
 			code.AppendLine("\t\t//Implicit Conversion from DTO Type");
-			code.AppendLine(string.Format("\t\tpublic static implicit operator {0}({1} Data)", o.XAMLType.Name, o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine($"\t\tpublic static implicit operator {o.XAMLType.Name}({(o.HasClientType ? o.ClientType.Name : o.Name)} Data)");
 			code.AppendLine("\t\t{");
 			code.AppendLine("\t\t\tif (Data == null) return null;");
-			code.AppendLine(string.Format("\t\t\treturn new {0}(Data);", o.XAMLType.Name));
+			code.AppendLine($"\t\t\treturn new {o.XAMLType.Name}(Data);");
 			code.AppendLine("\t\t}");
 			code.AppendLine();
 
 			code.AppendLine("\t\t//Constructors");
-			code.AppendLine(string.Format("\t\tpublic {0}()", o.XAMLType.Name));
+			code.AppendLine($"\t\tpublic {o.XAMLType.Name}()");
 			code.AppendLine("\t\t{");
 			foreach (var de in o.Elements)
 				if (de.DataType.TypeMode == DataTypeMode.Collection || de.DataType.TypeMode == DataTypeMode.Dictionary || de.DataType.TypeMode == DataTypeMode.Queue || de.DataType.TypeMode == DataTypeMode.Stack)
@@ -654,7 +677,7 @@ namespace NETPath.Generators.CS.WebApi
 					code.AppendLine(string.Format("\t\t\t{1} = new {0}[0];", DataTypeGenerator.GenerateType(GetPreferredXAMLType(de.DataType.CollectionGenericType)), de.XamlName));
 			code.AppendLine("\t\t}");
 			code.AppendLine();
-			code.AppendLine(string.Format("\t\tprivate {0}({1} Data)", o.XAMLType.Name, o.HasClientType ? o.ClientType.Name : o.Name));
+			code.AppendLine($"\t\tprivate {o.XAMLType.Name}({(o.HasClientType ? o.ClientType.Name : o.Name)} Data)");
 			code.AppendLine("\t\t{");
 			foreach (var de in o.Elements)
 				code.Append(GenerateElementXAMLConstructorCode45(de, o));

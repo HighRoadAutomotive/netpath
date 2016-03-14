@@ -89,8 +89,8 @@ namespace NETPath.Generators.CS.WebApi
 
 			//Generate the service proxy
 			if (o.ServiceDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.ServiceDocumentation));
-			code.AppendLine(string.Format("\t[Route{0}(\"{1}\")]", p.EnableEntityFramework7 ? "" : "Prefix", o.Name.ToLowerInvariant()));
-			code.AppendLine(string.Format("\t{0} abstract class {1}Base : {2}Controller", DataTypeGenerator.GenerateScope(o.Scope), o.Name, p.EnableEntityFramework7 ? "" : "Api"));
+			code.AppendLine($"\t[Route{(p.EnableEntityFramework7 ? "" : "Prefix")}(\"{o.Name.ToLowerInvariant()}\")]");
+			code.AppendLine($"\t{DataTypeGenerator.GenerateScope(o.Scope)} abstract class {o.Name}Base : {(p.EnableEntityFramework7 ? "" : "Api")}Controller");
 			code.AppendLine("\t{");
 
 			code.AppendLine();
@@ -124,8 +124,8 @@ namespace NETPath.Generators.CS.WebApi
 
 			//Generate the Proxy Class
 			if (o.ClientDocumentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.ClientDocumentation));
-			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCode(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t{0} static partial class {1}", DataTypeGenerator.GenerateScope(o.Scope), o.Name));
+			code.AppendLine($"\t[System.CodeDom.Compiler.GeneratedCode(\"{Globals.ApplicationTitle}\", \"{Globals.ApplicationVersion}\")]");
+			code.AppendLine($"\t{DataTypeGenerator.GenerateScope(o.Scope)} static partial class {o.Name}");
 			code.AppendLine("\t{");
 			code.AppendLine();
 			if (o.Parent.Owner.GenerateRegions)
@@ -133,7 +133,7 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t\t#region Request Configuration");
 				code.AppendLine();
 			}
-			code.AppendLine(string.Format("\t\tprivate static readonly string _baseUri = {0};", RegExs.MatchHttpUri.IsMatch(p.BaseUri) ? $"\"{p.BaseUri}/{o.Name.ToLowerInvariant()}\"" : p.BaseUri));
+			code.AppendLine($"\t\tprivate static readonly string _baseUri = {(RegExs.MatchHttpUri.IsMatch(p.BaseUri) ? $"\"{p.BaseUri}/{o.Name.ToLowerInvariant()}\"" : p.BaseUri)};");
 			code.AppendLine();
 			code.AppendLine("\t\tstatic partial void CommonPreExecute(HttpRequestMessage headers);");
 			code.AppendLine("\t\tstatic partial void CommonPostExecute(HttpResponseMessage headers);");
@@ -200,23 +200,23 @@ namespace NETPath.Generators.CS.WebApi
 			{
 				code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 				foreach (var mp in o.RouteParameters.OfType<WebApiMethodParameter>().Where(mp => mp.Documentation != null))
-					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
+					code.AppendLine($"\t\t///<param name='{mp.Name}'>{mp.Documentation.Summary}</param>");
 				foreach (var mp in o.QueryParameters.Where(mp => mp.Documentation != null))
-					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
+					code.AppendLine($"\t\t///<param name='{mp.Name}'>{mp.Documentation.Summary}</param>");
 			}
 			if (!string.IsNullOrWhiteSpace(o.AuthenticationFilter) || !string.IsNullOrWhiteSpace(o.Owner.AuthenticationFilter))
-				code.AppendLine(string.Format("\t\t[{0}]", !string.IsNullOrWhiteSpace(o.AuthenticationFilter) ? o.AuthenticationFilter : o.Owner.AuthenticationFilter));
+				code.AppendLine($"\t\t[{(!string.IsNullOrWhiteSpace(o.AuthenticationFilter) ? o.AuthenticationFilter : o.Owner.AuthenticationFilter)}]");
 			if (!string.IsNullOrWhiteSpace(o.AuthorizationFilter) || !string.IsNullOrWhiteSpace(o.Owner.AuthorizationFilter))
-				code.AppendLine(string.Format("\t\t[{0}]", !string.IsNullOrWhiteSpace(o.AuthorizationFilter) ? o.AuthorizationFilter : o.Owner.AuthorizationFilter));
-			code.AppendLine(string.Format("\t\t[Route(\"{0}\")]", BuildUriTemplate(o)));
+				code.AppendLine($"\t\t[{(!string.IsNullOrWhiteSpace(o.AuthorizationFilter) ? o.AuthorizationFilter : o.Owner.AuthorizationFilter)}]");
+			code.AppendLine($"\t\t[Route(\"{BuildUriTemplate(o)}\")]");
 			if (o.Method != WebApiMethodVerbs.Custom)
-				code.AppendLine(string.Format("\t\t[Http{0}]", o.Method));
+				code.AppendLine($"\t\t[Http{o.Method}]");
 			else
-				code.AppendLine(string.Format("\t\t[AcceptVerbs(\"{0}\")]", o.CustomMethod));
+				code.AppendLine($"\t\t[AcceptVerbs(\"{o.CustomMethod}\")]");
 
 			if (o.HasContent && o.ContentType.TypeMode == DataTypeMode.Primitive && o.ContentType.Primitive == PrimitiveTypes.String)
 			{
-				code.AppendFormat("\t\tpublic async {0} {1}Base(", p.EnableEntityFramework7 ? "Task<IActionResult>" : o.ServerAsync ? o.ReturnType.IsVoid ? "Task" : string.Format("Task<{0}>", DataTypeGenerator.GenerateType(o.ReturnType)) : DataTypeGenerator.GenerateType(o.ReturnType), o.Name);
+				code.AppendFormat("\t\tpublic async {0} {1}Base(", p.EnableEntityFramework7 ? "Task<IActionResult>" : o.ServerAsync ? o.ReturnType.IsVoid ? "Task" : $"Task<{DataTypeGenerator.GenerateType(o.ReturnType)}>" : DataTypeGenerator.GenerateType(o.ReturnType), o.Name);
 				foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => string.IsNullOrEmpty(a.DefaultValue)))
 					code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
 				foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => !string.IsNullOrEmpty(a.DefaultValue)))
@@ -237,7 +237,31 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t\t}");
 			}
 
-			code.AppendFormat("\t\tpublic abstract {0} {1}(", p.EnableEntityFramework7 ? "Task<IActionResult>" : o.ServerAsync ? o.ReturnType.IsVoid ? "Task" : string.Format("Task<{0}>", DataTypeGenerator.GenerateType(o.ReturnType)) : DataTypeGenerator.GenerateType(o.ReturnType), o.Name);
+			if (p.EnableEntityFramework7 && o.HasContent && o.ContentType.TypeMode == DataTypeMode.Dictionary)
+			{
+				code.AppendFormat("\t\tpublic async Task<IActionResult> {0}Base(", o.Name);
+				foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => string.IsNullOrEmpty(a.DefaultValue)))
+					code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
+				foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => !string.IsNullOrEmpty(a.DefaultValue)))
+					code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
+				foreach (var op in o.QueryParameters)
+					code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
+				if (o.RouteParameters.OfType<WebApiMethodParameter>().Any() || o.QueryParameters.Any()) code.Remove(code.Length - 2, 2);
+				code.AppendLine(")");
+				code.AppendLine("\t\t{");
+				code.AppendLine("\t\t\tusing (var sr = new StreamReader(Request.Body))");
+				code.AppendFormat("\t\t\t\treturn await {0}(", o.Name);
+				foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => string.IsNullOrEmpty(a.DefaultValue)))
+					code.AppendFormat("{0}, ", op.Name);
+				foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => !string.IsNullOrEmpty(a.DefaultValue)))
+					code.AppendFormat("{0}, ", op.Name);
+				foreach (var op in o.QueryParameters)
+					code.AppendFormat("{0}, ", op.Name);
+				code.AppendLine("Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(await sr.ReadToEndAsync()));");
+				code.AppendLine("\t\t}");
+			}
+
+			code.AppendFormat("\t\tpublic abstract {0} {1}(", p.EnableEntityFramework7 ? "Task<IActionResult>" : o.ServerAsync ? o.ReturnType.IsVoid ? "Task" : $"Task<{DataTypeGenerator.GenerateType(o.ReturnType)}>" : DataTypeGenerator.GenerateType(o.ReturnType), o.Name);
 			foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => string.IsNullOrEmpty(a.DefaultValue)))
 				code.AppendFormat("{0}, ", GenerateMethodParameterServerCode(op));
 			foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => !string.IsNullOrEmpty(a.DefaultValue)))
@@ -266,9 +290,9 @@ namespace NETPath.Generators.CS.WebApi
 			{
 				code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 				foreach (var mp in o.RouteParameters.OfType<WebApiMethodParameter>().Where(mp => mp.Documentation != null))
-					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
+					code.AppendLine($"\t\t///<param name='{mp.Name}'>{mp.Documentation.Summary}</param>");
 				foreach (var mp in o.QueryParameters.Where(mp => mp.Documentation != null))
-					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
+					code.AppendLine($"\t\t///<param name='{mp.Name}'>{mp.Documentation.Summary}</param>");
 			}
 
 			//Construct method declaration
@@ -288,20 +312,20 @@ namespace NETPath.Generators.CS.WebApi
 			//Construct the Uri
 			code.AppendLine("\t\t\tvar uri = new StringBuilder(_baseUri, 2048);");
 			code.Append("\t\t\turi.Append(\"");
-			code.Append(string.Format("/{0}", o.Owner.Name.ToLowerInvariant()));
+			code.Append($"/{o.Owner.Name.ToLowerInvariant()}");
 			foreach (var op in o.RouteParameters)
 			{
 				if (op.GetType() == typeof (WebApiRouteParameter))
-					code.Append(string.Format("/{0}", op.RouteName.ToLowerInvariant()));
+					code.Append($"/{op.RouteName.ToLowerInvariant()}");
 			}
 			if (o.UriIncludesName)
-				code.Append(string.Format("/{0}", o.Name.ToLowerInvariant()));
+				code.Append($"/{o.Name.ToLowerInvariant()}");
 			code.AppendLine("\");");
 			foreach (var op in o.RouteParameters)
 			{
 
 				if (op.GetType() == typeof (WebApiMethodParameter))
-					code.AppendLine(string.Format("\t\t\turi.AppendFormat(\"/{{0}}\", {0});", op.Name));
+					code.AppendLine($"\t\t\turi.AppendFormat(\"/{{0}}\", {op.Name});");
 			}
 			if (o.QueryParameters.Any())
 				code.AppendLine("\t\t\turi.Append(\"?\");");
@@ -311,29 +335,29 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t\t\turi.Replace(\"?&\", \"?\");");
 
 			//Create the HttpRequestMessage
-			code.AppendLine(string.Format("\t\t\tvar rm = new HttpRequestMessage(HttpMethod.{0}, new Uri(uri.ToString(), UriKind.RelativeOrAbsolute));", o.Method));
+			code.AppendLine($"\t\t\tvar rm = new HttpRequestMessage(HttpMethod.{o.Method}, new Uri(uri.ToString(), UriKind.RelativeOrAbsolute));");
 			if (conf.UseHTTP10)
 				code.AppendLine("\t\t\trm.Version = new Version(1, 0);");
 			code.AppendLine("\t\t\tCommonPreExecute(rm);");
-			code.AppendLine(string.Format("\t\t\t{0}PreExecute(rm);", o.Name));
+			code.AppendLine($"\t\t\t{o.Name}PreExecute(rm);");
 			code.AppendLine("\t\t\tSetCommonHeaders(rm.Headers);");
-			code.AppendLine(string.Format("\t\t\tSet{0}Headers(rm.Headers);", o.Name));
+			code.AppendLine($"\t\t\tSet{o.Name}Headers(rm.Headers);");
 			code.AppendLine("\t\t\trm.Headers.Accept.Clear();");
-			code.AppendLine(string.Format("\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"{0}\"));", (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.String) ? "text/plain" : conf.ResponseFormat == RestSerialization.Json ? "application/json" : conf.ResponseFormat == RestSerialization.Bson ? "application/bson" : "application/xml"));
+			code.AppendLine($"\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"{((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.String) ? "text/plain" : conf.ResponseFormat == RestSerialization.Json ? "application/json" : conf.ResponseFormat == RestSerialization.Bson ? "application/bson" : "application/xml")}\"));");
 
 			//Serialize any parameters
 			if (o.HasContent)
 			{
 				var pt = o.ContentType;
 				if(pt.TypeMode == DataTypeMode.Primitive && pt.Primitive == PrimitiveTypes.String)
-					code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.StringContent({0});", o.ContentParameterName));
+					code.AppendLine($"\t\t\trm.Content = new System.Net.Http.StringContent({o.ContentParameterName});");
 				else
-					code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.ObjectContent<{0}>({1}, new {2}());", DataTypeGenerator.GenerateType(pt), o.ContentParameterName, conf.RequestFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.RequestFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
+					code.AppendLine($"\t\t\trm.Content = new System.Net.Http.ObjectContent<{DataTypeGenerator.GenerateType(pt)}>({o.ContentParameterName}, new {(conf.RequestFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.RequestFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter")}());");
 			}
 
 			code.AppendLine("\t\t\tSystem.Net.Http.HttpMessageHandler mr = new System.Net.Http.HttpClientHandler();");
 			code.AppendLine("\t\t\tSetDefaultHandler(ref mr);");
-			code.AppendLine(string.Format("\t\t\tSet{0}Handler(ref mr);", o.Name));
+			code.AppendLine($"\t\t\tSet{o.Name}Handler(ref mr);");
 			code.AppendLine("\t\t\tusing(var client = new HttpClient(mr))");
 			code.AppendLine("\t\t\t{");
 			code.AppendLine("\t\t\t\tvar rr = client.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead).Result;");
@@ -342,8 +366,8 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t\t\t\tif(!rr.IsSuccessStatusCode())");
 				code.AppendLine("\t\t\t\t\tthrow new SimpleHttpRequestException(rr.StatusCode, await rr.Content.ReadAsStringAsync().Result, rr.ReasonPhrase);");
 			}
-			code.AppendLine("\t\t\tCommonPostExecute(rr);");
-			code.AppendLine(string.Format("\t\t\t{0}PostExecute(rr);", o.Name));
+			code.AppendLine("\t\t\t\tCommonPostExecute(rr);");
+			code.AppendLine($"\t\t\t\t{o.Name}PostExecute(rr);");
 			if (o.ReturnResponseData)
 			{
 				code.AppendLine("\t\t\t\treturn rr;");
@@ -354,14 +378,14 @@ namespace NETPath.Generators.CS.WebApi
 			}
 			else if (!(o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) && o.DeserializeContent)
 			{
-				code.AppendLine(string.Format("\t\t\t\treturn rr.Content.ReadAsAsync<{0}>(new MediaTypeFormatter[] {{ new {1}() }}).Result;", DataTypeGenerator.GenerateType(o.ReturnType), conf.ResponseFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.ResponseFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
+				code.AppendLine($"\t\t\t\treturn rr.Content.ReadAsAsync<{DataTypeGenerator.GenerateType(o.ReturnType)}>(new MediaTypeFormatter[] {{ new {(conf.ResponseFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.ResponseFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter")}() }}).Result;");
 			}
 			code.AppendLine("\t\t\t}");
 			code.AppendLine("\t\t}");
-			code.AppendLine(string.Format("\t\tstatic partial void Set{0}Handler(ref System.Net.Http.HttpMessageHandler handler);", o.Name));
-			code.AppendLine(string.Format("\t\tstatic partial void Set{0}Headers(System.Net.Http.Headers.HttpRequestHeaders headers);", o.Name));
-			code.AppendLine(string.Format("\t\tstatic partial void {0}PreExecute(HttpRequestMessage request);", o.Name));
-			code.AppendLine(string.Format("\t\tstatic partial void {0}PostExecute(HttpResponseMessage response);", o.Name));
+			code.AppendLine($"\t\tstatic partial void Set{o.Name}Handler(ref System.Net.Http.HttpMessageHandler handler);");
+			code.AppendLine($"\t\tstatic partial void Set{o.Name}Headers(System.Net.Http.Headers.HttpRequestHeaders headers);");
+			code.AppendLine($"\t\tstatic partial void {o.Name}PreExecute(HttpRequestMessage request);");
+			code.AppendLine($"\t\tstatic partial void {o.Name}PostExecute(HttpResponseMessage response);");
 			return code.ToString();
 		}
 
@@ -376,9 +400,9 @@ namespace NETPath.Generators.CS.WebApi
 			{
 				code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
 				foreach (var mp in o.RouteParameters.OfType<WebApiMethodParameter>().Where(mp => mp.Documentation != null))
-					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
+					code.AppendLine($"\t\t///<param name='{mp.Name}'>{mp.Documentation.Summary}</param>");
 				foreach (var mp in o.QueryParameters.Where(mp => mp.Documentation != null))
-					code.AppendLine(string.Format("\t\t///<param name='{0}'>{1}</param>", mp.Name, mp.Documentation.Summary));
+					code.AppendLine($"\t\t///<param name='{mp.Name}'>{mp.Documentation.Summary}</param>");
 			}
 
 			//Construct method declaration
@@ -398,20 +422,20 @@ namespace NETPath.Generators.CS.WebApi
 			//Construct the Uri
 			code.AppendLine("\t\t\tvar uri = new StringBuilder(_baseUri, 2048);");
 			code.Append("\t\t\turi.Append(\"");
-			code.Append(string.Format("/{0}", o.Owner.Name.ToLowerInvariant()));
+			code.Append($"/{o.Owner.Name.ToLowerInvariant()}");
 			foreach (var op in o.RouteParameters)
 			{
 				if (op.GetType() == typeof(WebApiRouteParameter))
-					code.Append(string.Format("/{0}", op.RouteName.ToLowerInvariant()));
+					code.Append($"/{op.RouteName.ToLowerInvariant()}");
 			}
 			if (o.UriIncludesName)
-				code.Append(string.Format("/{0}", o.Name.ToLowerInvariant()));
+				code.Append($"/{o.Name.ToLowerInvariant()}");
 			code.AppendLine("\");");
 			foreach (var op in o.RouteParameters)
 			{
 
 				if (op.GetType() == typeof(WebApiMethodParameter))
-					code.AppendLine(string.Format("\t\t\turi.AppendFormat(\"/{{0}}\", {0});", op.Name));
+					code.AppendLine($"\t\t\turi.AppendFormat(\"/{{0}}\", {op.Name});");
 			}
 			if (o.QueryParameters.Any())
 				code.AppendLine("\t\t\turi.Append(\"?\");");
@@ -421,29 +445,29 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t\t\turi.Replace(\"?&\", \"?\");");
 
 			//Create the HttpRequestMessage
-			code.AppendLine(string.Format("\t\t\tvar rm = new HttpRequestMessage(HttpMethod.{0}, new Uri(uri.ToString(), UriKind.RelativeOrAbsolute));", o.Method));
+			code.AppendLine($"\t\t\tvar rm = new HttpRequestMessage(HttpMethod.{o.Method}, new Uri(uri.ToString(), UriKind.RelativeOrAbsolute));");
 			if (conf.UseHTTP10)
 				code.AppendLine("\t\t\trm.Version = new Version(1, 0);");
 			code.AppendLine("\t\t\tCommonPreExecute(rm);");
-			code.AppendLine(string.Format("\t\t\t{0}PreExecute(rm);", o.Name));
+			code.AppendLine($"\t\t\t{o.Name}PreExecute(rm);");
 			code.AppendLine("\t\t\tSetCommonHeaders(rm.Headers);");
-			code.AppendLine(string.Format("\t\t\tSet{0}Headers(rm.Headers);", o.Name));
+			code.AppendLine($"\t\t\tSet{o.Name}Headers(rm.Headers);");
 			code.AppendLine("\t\t\trm.Headers.Accept.Clear();");
-			code.AppendLine(string.Format("\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"{0}\"));", (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.String) ? "text/plain" : conf.ResponseFormat == RestSerialization.Json ? "application/json" : conf.ResponseFormat == RestSerialization.Bson ? "application/bson" : "application/xml"));
+			code.AppendLine($"\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"{((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.String) ? "text/plain" : conf.ResponseFormat == RestSerialization.Json ? "application/json" : conf.ResponseFormat == RestSerialization.Bson ? "application/bson" : "application/xml")}\"));");
 
 			//Serialize any parameters
 			if (o.HasContent)
 			{
 				var pt = o.ContentType;
 				if (pt.TypeMode == DataTypeMode.Primitive && pt.Primitive == PrimitiveTypes.String)
-					code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.StringContent({0});", o.ContentParameterName));
+					code.AppendLine($"\t\t\trm.Content = new System.Net.Http.StringContent({o.ContentParameterName});");
 				else
-					code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.ObjectContent<{0}>({1}, new {2}());", DataTypeGenerator.GenerateType(pt), o.ContentParameterName, conf.RequestFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.RequestFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
+					code.AppendLine($"\t\t\trm.Content = new System.Net.Http.ObjectContent<{DataTypeGenerator.GenerateType(pt)}>({o.ContentParameterName}, new {(conf.RequestFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.RequestFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter")}());");
 			}
 
 			code.AppendLine("\t\t\tSystem.Net.Http.HttpMessageHandler mr = new System.Net.Http.HttpClientHandler();");
 			code.AppendLine("\t\t\tSetDefaultHandler(ref mr);");
-			code.AppendLine(string.Format("\t\t\tSet{0}Handler(ref mr);", o.Name));
+			code.AppendLine($"\t\t\tSet{o.Name}Handler(ref mr);");
 			code.AppendLine("\t\t\tusing(var client = new HttpClient(mr))");
 			code.AppendLine("\t\t\t{");
 			code.AppendLine("\t\t\t\tvar rr = await client.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);");
@@ -452,8 +476,8 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t\t\t\tif(!rr.IsSuccessStatusCode)");
 				code.AppendLine("\t\t\t\t\tthrow new SimpleHttpRequestException(rr.StatusCode, await rr.Content.ReadAsStringAsync(), rr.ReasonPhrase);");
 			}
-			code.AppendLine("\t\t\tCommonPostExecute(rr);");
-			code.AppendLine(string.Format("\t\t\t{0}PostExecute(rr);", o.Name));
+			code.AppendLine("\t\t\t\tCommonPostExecute(rr);");
+			code.AppendLine($"\t\t\t\t{o.Name}PostExecute(rr);");
 			if (o.ReturnResponseData)
 			{
 				code.AppendLine("\t\t\t\treturn rr;");
@@ -464,14 +488,14 @@ namespace NETPath.Generators.CS.WebApi
 			}
 			else if (!(o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) && o.DeserializeContent)
 			{
-				code.AppendLine(string.Format("\t\t\t\treturn await rr.Content.ReadAsAsync<{0}>(new MediaTypeFormatter[] {{ new {1}() }});", DataTypeGenerator.GenerateType(o.ReturnType), conf.ResponseFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.ResponseFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter"));
+				code.AppendLine($"\t\t\t\treturn await rr.Content.ReadAsAsync<{DataTypeGenerator.GenerateType(o.ReturnType)}>(new MediaTypeFormatter[] {{ new {(conf.ResponseFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.ResponseFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter")}() }});");
 			}
 			code.AppendLine("\t\t\t}");
 			code.AppendLine("\t\t}");
-			code.AppendLine(string.Format("\t\tstatic partial void Set{0}Handler(ref System.Net.Http.HttpMessageHandler handler);", o.Name));
-			code.AppendLine(string.Format("\t\tstatic partial void Set{0}Headers(System.Net.Http.Headers.HttpRequestHeaders headers);", o.Name));
-			code.AppendLine(string.Format("\t\tstatic partial void {0}PreExecute(HttpRequestMessage request);", o.Name));
-			code.AppendLine(string.Format("\t\tstatic partial void {0}PostExecute(HttpResponseMessage response);", o.Name));
+			code.AppendLine($"\t\tstatic partial void Set{o.Name}Handler(ref System.Net.Http.HttpMessageHandler handler);");
+			code.AppendLine($"\t\tstatic partial void Set{o.Name}Headers(System.Net.Http.Headers.HttpRequestHeaders headers);");
+			code.AppendLine($"\t\tstatic partial void {o.Name}PreExecute(HttpRequestMessage request);");
+			code.AppendLine($"\t\tstatic partial void {o.Name}PostExecute(HttpResponseMessage response);");
 
 			return code.ToString();
 		}
@@ -489,7 +513,7 @@ namespace NETPath.Generators.CS.WebApi
 
 			var ll = new List<string>(preamble.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
 			foreach (var l in ll)
-				code.AppendLine(string.Format("{0}{1}", tabs, l));
+				code.AppendLine($"{tabs}{l}");
 		}
 
 		#endregion
@@ -498,7 +522,7 @@ namespace NETPath.Generators.CS.WebApi
 
 		public static string GenerateMethodParameterServerCode(WebApiMethodParameter o)
 		{
-			return o.IsHidden ? "" : string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(o.Type), o.Name, string.IsNullOrEmpty(o.DefaultValue) ? "" : $" = {o.DefaultValue}");
+			return o.IsHidden ? "" : $"{DataTypeGenerator.GenerateType(o.Type)} {o.Name}{(string.IsNullOrEmpty(o.DefaultValue) ? "" : $" = {o.DefaultValue}")}";
 		}
 
 		public static string GenerateMethodParameterClientCode(WebApiMethodParameter o)
@@ -508,10 +532,10 @@ namespace NETPath.Generators.CS.WebApi
 			if (o.Type.TypeMode == DataTypeMode.Class || o.Type.TypeMode == DataTypeMode.Struct || o.Type.TypeMode == DataTypeMode.Enum)
 			{
 				var ptype = o.Type as WebApiData;
-				return string.Format("{0} {1}{2}", ptype != null && ptype.HasClientType ? DataTypeGenerator.GenerateType(ptype.ClientType) : DataTypeGenerator.GenerateType(o.Type), o.Name, string.IsNullOrWhiteSpace(o.DefaultValue) ? "" : string.Format(" = {0}", o.DefaultValue));
+				return $"{(ptype != null && ptype.HasClientType ? DataTypeGenerator.GenerateType(ptype.ClientType) : DataTypeGenerator.GenerateType(o.Type))} {o.Name}{(string.IsNullOrWhiteSpace(o.DefaultValue) ? "" : $" = {o.DefaultValue}")}";
 			}
 
-			return string.Format("{0} {1}{2}", DataTypeGenerator.GenerateType(o.Type), o.Name, string.IsNullOrWhiteSpace(o.DefaultValue) ? "" : string.Format(" = {0}", o.DefaultValue));
+			return $"{DataTypeGenerator.GenerateType(o.Type)} {o.Name}{(string.IsNullOrWhiteSpace(o.DefaultValue) ? "" : $" = {o.DefaultValue}")}";
 		}
 
 		#endregion
@@ -525,7 +549,7 @@ namespace NETPath.Generators.CS.WebApi
 			if (!o.ClientGenerationTargets.Any(c => c.TargetTypes.OfType<WebApiData>().Any(a => a.Elements.Any(b => b.EnableUpdates))))
 				return;
 
-			code.AppendLine(string.Format("namespace {0}", o.Namespace.FullName));
+			code.AppendLine($"namespace {o.Namespace.FullName}");
 			code.AppendLine("{");
 
 			if (o.UsingInsideNamespace)
@@ -539,7 +563,7 @@ namespace NETPath.Generators.CS.WebApi
 				foreach (ProjectUsingNamespace pun in o.UsingNamespaces)
 				{
 					if (pun.Client && pun.NET)
-						code.AppendLine(string.Format("\tusing {0};", pun.Namespace));
+						code.AppendLine($"\tusing {pun.Namespace};");
 				}
 				code.AppendLine();
 				if (o.GenerateRegions)
@@ -556,8 +580,8 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t**************************************************************************/");
 			}
 
-			code.AppendLine(string.Format("\t[Route{0}(\"__dus\")]", o.EnableEntityFramework7 ? "" : "Prefix"));
-			code.AppendLine(string.Format("\tpublic sealed class DataUpdateServiceController : {0}Controller", o.EnableEntityFramework7 ? "" : "Api"));
+			code.AppendLine($"\t[Route{(o.EnableEntityFramework7 ? "" : "Prefix")}(\"__dus\")]");
+			code.AppendLine($"\tpublic sealed class DataUpdateServiceController : {(o.EnableEntityFramework7 ? "" : "Api")}Controller");
 			code.AppendLine("\t{");
 			foreach(var t in o.ClientGenerationTargets)
 			{
@@ -566,10 +590,10 @@ namespace NETPath.Generators.CS.WebApi
 					foreach (var e in d.Elements.Where(a => a.EnableUpdates && a.DataType.TypeMode == DataTypeMode.Primitive && a.DataType.Primitive != PrimitiveTypes.Object))
 					{
 						if (!string.IsNullOrWhiteSpace(e.UpdateAuthenticationFilter))
-							code.AppendLine(string.Format("\t\t[{0}]", e.UpdateAuthenticationFilter));
+							code.AppendLine($"\t\t[{e.UpdateAuthenticationFilter}]");
 						if (!string.IsNullOrWhiteSpace(e.UpdateAuthorizationFilter))
-							code.AppendLine(string.Format("\t\t[{0}]", e.UpdateAuthorizationFilter));
-						code.Append(string.Format("\t\t[Route(\"{0}/{1}", d.Name.ToLowerInvariant(), e.DataName.ToLowerInvariant()));
+							code.AppendLine($"\t\t[{e.UpdateAuthorizationFilter}]");
+						code.Append($"\t\t[Route(\"{d.Name.ToLowerInvariant()}/{e.DataName.ToLowerInvariant()}");
 						foreach (var l in d.Elements.Where(a => a.IsUpdateLookup))
 							code.AppendFormat("/{{{0}}}", l.DataName);
 						code.AppendLine("\")]");
@@ -592,7 +616,7 @@ namespace NETPath.Generators.CS.WebApi
 						}
 						else
 						{
-							code.AppendLine(string.Format("\t\t\tvar {0} = await {1};", e.DataType.Primitive == PrimitiveTypes.String ? "value" : "payload", o.EnableEntityFramework7 ? "(new StreamReader(Request.Body)).ReadToEndAsync()" : "Request.Content.ReadAsStringAsync()"));
+							code.AppendLine($"\t\t\tvar {(e.DataType.Primitive == PrimitiveTypes.String ? "value" : "payload")} = await {(o.EnableEntityFramework7 ? "(new StreamReader(Request.Body)).ReadToEndAsync()" : "Request.Content.ReadAsStringAsync()")};");
 							switch (e.DataType.Primitive)
 							{
 								case PrimitiveTypes.Bool:
@@ -657,7 +681,7 @@ namespace NETPath.Generators.CS.WebApi
 
 						if (d.HasEntity)
 						{
-							code.AppendLine(string.Format("\t\t\tusing (var db = new {0}())", o.EnitityDatabaseType));
+							code.AppendLine($"\t\t\tusing (var db = new {o.EnitityDatabaseType}())");
 							code.AppendLine("\t\t\t{");
 							code.AppendFormat("\t\t\t\tvar item = await db.{0}.Where(a => ", d.EntityContext);
 							foreach (var l in d.Elements.Where(a => a.IsUpdateLookup))
@@ -668,7 +692,7 @@ namespace NETPath.Generators.CS.WebApi
 								code.AppendLine("\t\t\t\tif (item == null) return new HttpNotFoundResult();");
 							else
 								code.AppendLine("\t\t\t\tif (item == null) throw new HttpResponseException(HttpStatusCode.NotFound);");
-							code.AppendLine(string.Format("\t\t\t\titem.{0} = value;", e.EntityName));
+							code.AppendLine($"\t\t\t\titem.{e.EntityName} = value;");
 							code.AppendLine("\t\t\t\tawait db.SaveChangesAsync();");
 							if (o.EnableEntityFramework7)
 								code.AppendLine("\t\t\t\treturn new HttpOkResult();");
@@ -691,7 +715,7 @@ namespace NETPath.Generators.CS.WebApi
 			if (!o.ClientGenerationTargets.Any(c => c.TargetTypes.OfType<WebApiData>().Any(a => a.Elements.Any(b => b.EnableUpdates))))
 				return;
 
-			code.AppendLine(string.Format("namespace {0}", o.Namespace.FullName));
+			code.AppendLine($"namespace {o.Namespace.FullName}");
 			code.AppendLine("{");
 
 			if (o.UsingInsideNamespace)
@@ -705,7 +729,7 @@ namespace NETPath.Generators.CS.WebApi
 				foreach (ProjectUsingNamespace pun in o.UsingNamespaces)
 				{
 					if (pun.Client && pun.NET)
-						code.AppendLine(string.Format("\tusing {0};", pun.Namespace));
+						code.AppendLine($"\tusing {pun.Namespace};");
 				}
 				code.AppendLine();
 				if (o.GenerateRegions)
@@ -724,7 +748,7 @@ namespace NETPath.Generators.CS.WebApi
 
 			code.AppendLine("\tpublic static partial class DataUpdateService");
 			code.AppendLine("\t{");
-			code.AppendLine(string.Format("\t\tprivate static readonly string _baseUri = \"{0}\";", o.Namespace.Uri));
+			code.AppendLine($"\t\tprivate static readonly string _baseUri = \"{o.Namespace.Uri}\";");
 			code.AppendLine("\t\tprivate static readonly System.Net.Http.HttpClient _httpClient = new HttpClient(new HttpClientHandler() { AllowAutoRedirect = false, AutomaticDecompression = DecompressionMethods.None });");
 			code.AppendLine();
 			code.AppendLine("\t\tstatic partial void SetCommonUpdateHeaders(System.Net.Http.Headers.HttpRequestHeaders headers);");
@@ -739,40 +763,40 @@ namespace NETPath.Generators.CS.WebApi
 						code.AppendFormat("\t\tpublic static async Task Update{0}{1}(", d.Name, e.DataName);
 						foreach (var l in d.Elements.Where(a => a.IsUpdateLookup))
 							code.AppendFormat("{0} {1}, ", l.DataType, l.DataName);
-						code.AppendLine(string.Format("{0} {1})", e.DataType, e.DataName));
+						code.AppendLine($"{e.DataType} {e.DataName})");
 						code.AppendLine("\t\t{");
 						code.AppendLine("\t\t\tvar uri = new StringBuilder(_baseUri, 256);");
-						code.AppendLine(string.Format("\t\t\turi.Append(\"__dus/{0}/{1}\");", d.Name.ToLowerInvariant(), e.DataName.ToLowerInvariant()));
+						code.AppendLine($"\t\t\turi.Append(\"__dus/{d.Name.ToLowerInvariant()}/{e.DataName.ToLowerInvariant()}\");");
 						foreach (var l in d.Elements.Where(a => a.IsUpdateLookup))
-							code.AppendLine(string.Format("\t\t\turi.AppendFormat(\"/{{0}}\", {0});", l.DataName));
+							code.AppendLine($"\t\t\turi.AppendFormat(\"/{{0}}\", {l.DataName});");
 
 						code.AppendLine("\t\t\tvar rm = new HttpRequestMessage(HttpMethod.Put, new Uri(uri.ToString(), UriKind.RelativeOrAbsolute));");
 						code.AppendLine("\t\t\tSetCommonUpdateHeaders(rm.Headers);");
-						code.AppendLine(string.Format("\t\t\tSetUpdate{0}{1}Headers(rm.Headers);", d.Name, e.DataName));
+						code.AppendLine($"\t\t\tSetUpdate{d.Name}{e.DataName}Headers(rm.Headers);");
 
 						if (e.DataType.Primitive == PrimitiveTypes.ByteArray)
 						{
-							code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.ByteArrayContent({0});", e.DataName));
+							code.AppendLine($"\t\t\trm.Content = new System.Net.Http.ByteArrayContent({e.DataName});");
 						}
 						else
 						{
 							switch (e.DataType.Primitive)
 							{
 								case PrimitiveTypes.Byte:
-									code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.StringContent(Convert.ToBase64String(new byte[] {{ {0} }}));", e.DataName));
+									code.AppendLine($"\t\t\trm.Content = new System.Net.Http.StringContent(Convert.ToBase64String(new byte[] {{ {e.DataName} }}));");
 									break;
 								case PrimitiveTypes.SByte:
-									code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.StringContent(Convert.ToBase64String(new byte[] {{ Convert.ToSByte({0}) }}));", e.DataName));
+									code.AppendLine($"\t\t\trm.Content = new System.Net.Http.StringContent(Convert.ToBase64String(new byte[] {{ Convert.ToSByte({e.DataName}) }}));");
 									break;
 								case PrimitiveTypes.DateTime:
 								case PrimitiveTypes.DateTimeOffset:
-									code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.StringContent({0}.ToString(\"O\", System.Globalization.CultureInfoCultureInfo.InvariantCulture));", e.DataName));
+									code.AppendLine($"\t\t\trm.Content = new System.Net.Http.StringContent({e.DataName}.ToString(\"O\", System.Globalization.CultureInfoCultureInfo.InvariantCulture));");
 									break;
 								case PrimitiveTypes.TimeSpan:
-									code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.StringContent({0}.Ticks);", e.DataName));
+									code.AppendLine($"\t\t\trm.Content = new System.Net.Http.StringContent({e.DataName}.Ticks);");
 									break;
 								default:
-									code.AppendLine(string.Format("\t\t\trm.Content = new System.Net.Http.StringContent({0}.ToString(System.Globalization.CultureInfo.InvariantCulture));", e.DataName));
+									code.AppendLine($"\t\t\trm.Content = new System.Net.Http.StringContent({e.DataName}.ToString(System.Globalization.CultureInfo.InvariantCulture));");
 									break;
 							}
 						}
@@ -780,7 +804,7 @@ namespace NETPath.Generators.CS.WebApi
 						code.AppendLine("\t\t\tawait _httpClient.SendAsync(rm, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);");
 
 						code.AppendLine("\t\t}");
-						code.AppendLine(string.Format("\t\tstatic partial void SetUpdate{0}{1}Headers(System.Net.Http.Headers.HttpRequestHeaders headers);", d.Name, e.DataName));
+						code.AppendLine($"\t\tstatic partial void SetUpdate{d.Name}{e.DataName}Headers(System.Net.Http.Headers.HttpRequestHeaders headers);");
 						code.AppendLine();
 					}
 				}

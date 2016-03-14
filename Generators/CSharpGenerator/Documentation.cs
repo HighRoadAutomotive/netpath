@@ -15,33 +15,33 @@ namespace NETPath.Generators.CS
 			var code = new StringBuilder();
 			if(!string.IsNullOrEmpty(o.Summary))
 			{
-				code.AppendLine(string.Format("{0}///<summary>", tabs));
-				code.AppendLine(string.Format("{0}///{1}", tabs, o.Summary.Replace(Environment.NewLine, Environment.NewLine + "\t///")));
-				code.AppendLine(string.Format("{0}///</summary>", tabs));
+				code.AppendLine($"{tabs}///<summary>");
+				code.AppendLine($"{tabs}///{o.Summary.Replace(Environment.NewLine, Environment.NewLine + "\t///")}");
+				code.AppendLine($"{tabs}///</summary>");
 			}
 			if (!string.IsNullOrEmpty(o.Remarks))
 			{
-				code.AppendLine(string.Format("{0}///<remarks>", tabs));
-				code.AppendLine(string.Format("{0}///{1}", tabs, o.Remarks.Replace(Environment.NewLine, Environment.NewLine + "\t///")));
-				code.AppendLine(string.Format("{0}///</remarks>", tabs));
+				code.AppendLine($"{tabs}///<remarks>");
+				code.AppendLine($"{tabs}///{o.Remarks.Replace(Environment.NewLine, Environment.NewLine + "\t///")}");
+				code.AppendLine($"{tabs}///</remarks>");
 			}
 			if (o.IsMethod && !string.IsNullOrEmpty(o.Returns) && !NoReturns)
 			{
-				code.AppendLine(string.Format("{0}///<returns>", tabs));
-				code.AppendLine(string.Format("{0}///{1}", tabs, o.Returns.Replace(Environment.NewLine, Environment.NewLine + "\t///")));
-				code.AppendLine(string.Format("{0}///</returns>", tabs));
+				code.AppendLine($"{tabs}///<returns>");
+				code.AppendLine($"{tabs}///{o.Returns.Replace(Environment.NewLine, Environment.NewLine + "\t///")}");
+				code.AppendLine($"{tabs}///</returns>");
 			}
 			if (!string.IsNullOrEmpty(o.Example))
 			{
-				code.AppendLine(string.Format("{0}///<example>", tabs));
-				code.AppendLine(string.Format("{0}///{1}", tabs, o.Example.Replace(Environment.NewLine, Environment.NewLine + "\t///")));
-				code.AppendLine(string.Format("{0}///</example>", tabs));
+				code.AppendLine($"{tabs}///<example>");
+				code.AppendLine($"{tabs}///{o.Example.Replace(Environment.NewLine, Environment.NewLine + "\t///")}");
+				code.AppendLine($"{tabs}///</example>");
 			}
 			if (o.IsProperty && !string.IsNullOrEmpty(o.Value))
 			{
-				code.AppendLine(string.Format("{0}///<value>", tabs));
-				code.AppendLine(string.Format("{0}///{1}", tabs, o.Value.Replace(Environment.NewLine, Environment.NewLine + "\t///")));
-				code.AppendLine(string.Format("{0}///</value>", tabs));
+				code.AppendLine($"{tabs}///<value>");
+				code.AppendLine($"{tabs}///{o.Value.Replace(Environment.NewLine, Environment.NewLine + "\t///")}");
+				code.AppendLine($"{tabs}///</value>");
 			}
 			return code.ToString();
 		}

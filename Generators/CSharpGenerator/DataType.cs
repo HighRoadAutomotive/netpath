@@ -28,7 +28,7 @@ namespace NETPath.Generators.CS
 			{
 				sb.AppendFormat("{0} {2}{3}{1}class {4}", GenerateScope(o.Scope), o.Partial ? "partial " : "", o.Abstract ? "abstract " : "", o.Sealed ? "sealed " : "", o.Name);
 				if (IsDeltaObject && !IsDREObject) sb.Append(" : CMDObject");
-				if (IsDeltaObject && IsDREObject) sb.Append(string.Format(" : {1}DREObject<{0}{2}>", o.Name, IsEFDREObject ? "EF" : "", IsEFDREObject ? string.Format(", {0}", EFDBContext) : ""));
+				if (IsDeltaObject && IsDREObject) sb.Append(string.Format(" : {1}DREObject<{0}{2}>", o.Name, IsEFDREObject ? "EF" : "", IsEFDREObject ? $", {EFDBContext}" : ""));
 				if (o.InheritedTypes.Any() || ImpliedExtensionData || HasWinFormsDatabinding)
 				{
 					if (!IsDeltaObject) sb.Append(" : ");
@@ -60,7 +60,7 @@ namespace NETPath.Generators.CS
 				}
 			}
 			else if (o.TypeMode == DataTypeMode.Enum)
-				return string.Format("{0} enum {1}", GenerateScope(o.Scope), o.Name);
+				return $"{GenerateScope(o.Scope)} enum {o.Name}";
 			else
 				return "";
 			return sb.ToString();
@@ -70,7 +70,7 @@ namespace NETPath.Generators.CS
 		{
 			if (o.TypeMode == DataTypeMode.Collection || o.TypeMode == DataTypeMode.Array)
 				return GenerateType(o.CollectionGenericType);
-			return o.TypeMode == DataTypeMode.Dictionary ? string.Format("{0}, {1}", GenerateType(o.DictionaryKeyGenericType), GenerateType(o.DictionaryValueGenericType)) : "";
+			return o.TypeMode == DataTypeMode.Dictionary ? $"{GenerateType(o.DictionaryKeyGenericType)}, {GenerateType(o.DictionaryValueGenericType)}" : "";
 		}
 	}
 
@@ -112,13 +112,13 @@ namespace NETPath.Generators.CS
 				if (o.Primitive == PrimitiveTypes.ByteArray) return "Byte()";
 			}
 			else if (o.TypeMode == DataTypeMode.Class || o.TypeMode == DataTypeMode.Struct || o.TypeMode == DataTypeMode.Enum)
-				return string.Format("{0}.{1}", o.Parent.FullName, o.Name);
+				return $"{o.Parent.FullName}.{o.Name}";
 			else if (o.TypeMode == DataTypeMode.Array)
-				return string.Format("{0}()", GenerateType(o.CollectionGenericType));
+				return $"{GenerateType(o.CollectionGenericType)}()";
 			else if (o.TypeMode == DataTypeMode.Collection)
-				return string.Format("{0}.{1}(Of {2})", o.Parent.FullName, o.Name, GenerateType(o.CollectionGenericType));
+				return $"{o.Parent.FullName}.{o.Name}(Of {GenerateType(o.CollectionGenericType)})";
 			else if (o.TypeMode == DataTypeMode.Dictionary)
-				return string.Format("{0}.{1}(Of {2}, {3})", o.Parent.FullName, o.Name, GenerateType(o.DictionaryKeyGenericType), GenerateType(o.DictionaryValueGenericType));
+				return $"{o.Parent.FullName}.{o.Name}(Of {GenerateType(o.DictionaryKeyGenericType)}, {GenerateType(o.DictionaryValueGenericType)})";
 			else if (o.IsExternalType)
 				return o.Name;
 			return o.Name;
@@ -157,7 +157,7 @@ namespace NETPath.Generators.CS
 			}
 			else if (o.TypeMode == DataTypeMode.Enum)
 			{
-				return string.Format("{0} Enum {1}", GenerateScope(o.Scope), o.Name);
+				return $"{GenerateScope(o.Scope)} Enum {o.Name}";
 			}
 			else
 				return "";
@@ -191,15 +191,15 @@ namespace NETPath.Generators.CS
 				if (o.Primitive == PrimitiveTypes.ByteArray) return "() As Byte";
 			}
 			else if (o.TypeMode == DataTypeMode.Class || o.TypeMode == DataTypeMode.Struct || o.TypeMode == DataTypeMode.Enum)
-				return string.Format(" As {0}.{1}", o.Parent.FullName, o.Name);
+				return $" As {o.Parent.FullName}.{o.Name}";
 			else if (o.TypeMode == DataTypeMode.Array)
-				return string.Format("() As {0}.{1}", o.Parent.FullName, o.Name);
+				return $"() As {o.Parent.FullName}.{o.Name}";
 			else if (o.TypeMode == DataTypeMode.Collection)
-				return string.Format(" As {0}(Of {1})", o.Name, GenerateType(o.CollectionGenericType));
+				return $" As {o.Name}(Of {GenerateType(o.CollectionGenericType)})";
 			else if (o.TypeMode == DataTypeMode.Collection)
-				return string.Format(" As {0}(Of {1}, {2})", o.Name, GenerateType(o.DictionaryKeyGenericType), GenerateType(o.DictionaryValueGenericType));
+				return $" As {o.Name}(Of {GenerateType(o.DictionaryKeyGenericType)}, {GenerateType(o.DictionaryValueGenericType)})";
 			else if (o.IsExternalType)
-				return string.Format(" As {0}", o.Name);
+				return $" As {o.Name}";
 			return o.Name;
 		}
 		

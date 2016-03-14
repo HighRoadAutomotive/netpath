@@ -92,8 +92,8 @@ namespace NETPath.Generators.CS.Wcf
 			var code = new StringBuilder();
 			if (o.Parent.Owner.EnableDocumentationWarnings) code.AppendLine("#pragma warning disable 1591");
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCode(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
-			code.AppendLine(string.Format("\t{0} : ServiceHost", DataTypeGenerator.GenerateTypeDeclaration(o)));
+			code.AppendLine($"\t[System.CodeDom.Compiler.GeneratedCode(\"{Globals.ApplicationTitle}\", \"{Globals.ApplicationVersion}\")]");
+			code.AppendLine($"\t{DataTypeGenerator.GenerateTypeDeclaration(o)} : ServiceHost");
 			code.AppendLine("\t{");
 			string baVars = "";
 			for (int i = 0; i < o.BaseAddresses.Count; i++)
@@ -795,7 +795,7 @@ namespace NETPath.Generators.CS.Wcf
 		#region - Generate Server Endpoint Uri -
 		public static string GenerateServerEndpointURI(WcfHostEndpoint o)
 		{
-			string uri = string.Format("http://localhost{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
+			string uri = $"http://localhost{(o.ServerPort > 0 ? $":{o.ServerPort}" : "")}/{o.Name}";
 
 			if (string.IsNullOrEmpty(o.ServerAddress))
 			{
@@ -803,32 +803,32 @@ namespace NETPath.Generators.CS.Wcf
 				{
 					if (o.ServerUseHTTPS == false)
 					{
-						uri = string.Format("http://\" + Environment.MachineName + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
+						uri = $"http://\" + Environment.MachineName + \"{(o.ServerPort > 0 ? $":{o.ServerPort}" : "")}/{o.Name}";
 					}
 					else
 					{
-						uri = string.Format("https://\" + Environment.MachineName + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
+						uri = $"https://\" + Environment.MachineName + \"{(o.ServerPort > 0 ? $":{o.ServerPort}" : "")}/{o.Name}";
 					}
 				}
 				else if (o.Binding.GetType() == typeof(WcfBindingBasicHTTPS) || o.Binding.GetType() == typeof(WcfBindingNetHTTPS))
 				{
-					uri = string.Format("https://\" + Environment.MachineName + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
+					uri = $"https://\" + Environment.MachineName + \"{(o.ServerPort > 0 ? $":{o.ServerPort}" : "")}/{o.Name}";
 				}
 				else if (o.Binding.GetType() == typeof(WcfBindingTCP))
 				{
-					uri = string.Format("net.tcp://\" + Environment.MachineName + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
+					uri = $"net.tcp://\" + Environment.MachineName + \"{(o.ServerPort > 0 ? $":{o.ServerPort}" : "")}/{o.Name}";
 				}
 				else if (o.Binding.GetType() == typeof(WcfBindingPeerTCP))
 				{
-					uri = string.Format("net.p2p://\" + Environment.MachineName + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
+					uri = $"net.p2p://\" + Environment.MachineName + \"{(o.ServerPort > 0 ? $":{o.ServerPort}" : "")}/{o.Name}";
 				}
 				else if (o.Binding.GetType() == typeof(WcfBindingMSMQ) || o.Binding.GetType() == typeof(WcfBindingMSMQIntegration))
 				{
-					uri = string.Format("net.msmq://\" + Environment.MachineName + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
+					uri = $"net.msmq://\" + Environment.MachineName + \"{(o.ServerPort > 0 ? $":{o.ServerPort}" : "")}/{o.Name}";
 				}
 				else if (o.Binding.GetType() == typeof(WcfBindingNamedPipe))
 				{
-					uri = string.Format("net.pipe://\" + Environment.MachineName + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
+					uri = $"net.pipe://\" + Environment.MachineName + \"{(o.ServerPort > 0 ? $":{o.ServerPort}" : "")}/{o.Name}";
 				}
 			}
 			else if (o.ServerAddressIsVariable)
@@ -837,32 +837,32 @@ namespace NETPath.Generators.CS.Wcf
 				{
 					if (o.ServerUseHTTPS == false)
 					{
-						uri = string.Format("http://\" + {2} + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name, o.ServerAddress);
+						uri = string.Format("http://\" + {2} + \"{0}/{1}", o.ServerPort > 0 ? $":{o.ServerPort}" : "", o.Name, o.ServerAddress);
 					}
 					else
 					{
-						uri = string.Format("https://\" + {2} + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name, o.ServerAddress);
+						uri = string.Format("https://\" + {2} + \"{0}/{1}", o.ServerPort > 0 ? $":{o.ServerPort}" : "", o.Name, o.ServerAddress);
 					}
 				}
 				else if (o.Binding.GetType() == typeof(WcfBindingBasicHTTPS) || o.Binding.GetType() == typeof(WcfBindingNetHTTPS))
 				{
-					uri = string.Format("https://\" + {2} + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name, o.ServerAddress);
+					uri = string.Format("https://\" + {2} + \"{0}/{1}", o.ServerPort > 0 ? $":{o.ServerPort}" : "", o.Name, o.ServerAddress);
 				}
 				else if (o.Binding.GetType() == typeof(WcfBindingTCP))
 				{
-					uri = string.Format("net.tcp://\" + {2} + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name, o.ServerAddress);
+					uri = string.Format("net.tcp://\" + {2} + \"{0}/{1}", o.ServerPort > 0 ? $":{o.ServerPort}" : "", o.Name, o.ServerAddress);
 				}
 				else if (o.Binding.GetType() == typeof(WcfBindingPeerTCP))
 				{
-					uri = string.Format("net.p2p://\" + {2} + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name, o.ServerAddress);
+					uri = string.Format("net.p2p://\" + {2} + \"{0}/{1}", o.ServerPort > 0 ? $":{o.ServerPort}" : "", o.Name, o.ServerAddress);
 				}
 				else if (o.Binding.GetType() == typeof(WcfBindingMSMQ) || o.Binding.GetType() == typeof(WcfBindingMSMQIntegration))
 				{
-					uri = string.Format("net.msmq://\" + {2} + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name, o.ServerAddress);
+					uri = string.Format("net.msmq://\" + {2} + \"{0}/{1}", o.ServerPort > 0 ? $":{o.ServerPort}" : "", o.Name, o.ServerAddress);
 				}
 				else if (o.Binding.GetType() == typeof(WcfBindingNamedPipe))
 				{
-					uri = string.Format("net.pipe://\" + {2} + \"{0}/{1}", o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name, o.ServerAddress);
+					uri = string.Format("net.pipe://\" + {2} + \"{0}/{1}", o.ServerPort > 0 ? $":{o.ServerPort}" : "", o.Name, o.ServerAddress);
 				}
 			}
 			else
@@ -871,32 +871,32 @@ namespace NETPath.Generators.CS.Wcf
 				{
 					if (o.ServerUseHTTPS == false)
 					{
-						uri = string.Format("http://{0}{1}/{2}", o.ServerAddress, o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
+						uri = $"http://{o.ServerAddress}{(o.ServerPort > 0 ? $":{o.ServerPort}" : "")}/{o.Name}";
 					}
 					else
 					{
-						uri = string.Format("https://{0}{1}/{2}", o.ServerAddress, o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
+						uri = $"https://{o.ServerAddress}{(o.ServerPort > 0 ? $":{o.ServerPort}" : "")}/{o.Name}";
 					}
 				}
 				else if (o.Binding.GetType() == typeof(WcfBindingBasicHTTPS) || o.Binding.GetType() == typeof(WcfBindingNetHTTPS))
 				{
-					uri = string.Format("https://{0}{1}/{2}", o.ServerAddress, o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
+					uri = $"https://{o.ServerAddress}{(o.ServerPort > 0 ? $":{o.ServerPort}" : "")}/{o.Name}";
 				}
 				else if (o.Binding.GetType() == typeof(WcfBindingTCP))
 				{
-					uri = string.Format("net.tcp://{0}{1}/{2}", o.ServerAddress, o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
+					uri = $"net.tcp://{o.ServerAddress}{(o.ServerPort > 0 ? $":{o.ServerPort}" : "")}/{o.Name}";
 				}
 				else if (o.Binding.GetType() == typeof(WcfBindingPeerTCP))
 				{
-					uri = string.Format("net.p2p://{0}{1}/{2}", o.ServerAddress, o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
+					uri = $"net.p2p://{o.ServerAddress}{(o.ServerPort > 0 ? $":{o.ServerPort}" : "")}/{o.Name}";
 				}
 				else if (o.Binding.GetType() == typeof(WcfBindingMSMQ) || o.Binding.GetType() == typeof(WcfBindingMSMQIntegration))
 				{
-					uri = string.Format("net.msmq://{0}{1}/{2}", o.ServerAddress, o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
+					uri = $"net.msmq://{o.ServerAddress}{(o.ServerPort > 0 ? $":{o.ServerPort}" : "")}/{o.Name}";
 				}
 				else if (o.Binding.GetType() == typeof(WcfBindingNamedPipe))
 				{
-					uri = string.Format("net.pipe://{0}{1}/{2}", o.ServerAddress, o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "", o.Name);
+					uri = $"net.pipe://{o.ServerAddress}{(o.ServerPort > 0 ? $":{o.ServerPort}" : "")}/{o.Name}";
 				}
 			}
 
@@ -920,28 +920,28 @@ namespace NETPath.Generators.CS.Wcf
 					{
 						if (o.ServerUseHTTPS == false)
 						{
-							uri = "\"http://" + tca + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\"";
+							uri = "\"http://" + tca + (o.ServerPort > 0 ? $":{o.ServerPort}" : "") + "/" + o.Name + "\"";
 						}
 						else
 						{
-							uri = "\"https://" + tca + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\"";
+							uri = "\"https://" + tca + (o.ServerPort > 0 ? $":{o.ServerPort}" : "") + "/" + o.Name + "\"";
 						}
 					}
 					else if (o.Binding.GetType() == typeof(WcfBindingBasicHTTPS) || o.Binding.GetType() == typeof(WcfBindingNetHTTPS))
 					{
-						uri = "\"https://" + tca + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\"";
+						uri = "\"https://" + tca + (o.ServerPort > 0 ? $":{o.ServerPort}" : "") + "/" + o.Name + "\"";
 					}
 					else if (o.Binding.GetType() == typeof(WcfBindingTCP))
 					{
-						uri = "\"net.tcp://" + tca + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\"";
+						uri = "\"net.tcp://" + tca + (o.ServerPort > 0 ? $":{o.ServerPort}" : "") + "/" + o.Name + "\"";
 					}
 					else if (o.Binding.GetType() == typeof(WcfBindingPeerTCP))
 					{
-						uri = "\"net.p2p://" + tca + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\"";
+						uri = "\"net.p2p://" + tca + (o.ServerPort > 0 ? $":{o.ServerPort}" : "") + "/" + o.Name + "\"";
 					}
 					else if (o.Binding.GetType() == typeof(WcfBindingMSMQ) || o.Binding.GetType() == typeof(WcfBindingMSMQIntegration))
 					{
-						uri = "\"net.msmq://" + tca + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\"";
+						uri = "\"net.msmq://" + tca + (o.ServerPort > 0 ? $":{o.ServerPort}" : "") + "/" + o.Name + "\"";
 					}
 					else if (o.Binding.GetType() == typeof(WcfBindingNamedPipe))
 					{
@@ -954,28 +954,28 @@ namespace NETPath.Generators.CS.Wcf
 					{
 						if (o.ServerUseHTTPS == false)
 						{
-							uri = "string.Format(\"http://{0}" + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\", Address)";
+							uri = "string.Format(\"http://{0}" + (o.ServerPort > 0 ? $":{o.ServerPort}" : "") + "/" + o.Name + "\", Address)";
 						}
 						else
 						{
-							uri = "string.Format(\"https://{0}" + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\", Address)";
+							uri = "string.Format(\"https://{0}" + (o.ServerPort > 0 ? $":{o.ServerPort}" : "") + "/" + o.Name + "\", Address)";
 						}
 					}
 					else if (o.Binding.GetType() == typeof(WcfBindingBasicHTTPS) || o.Binding.GetType() == typeof(WcfBindingNetHTTPS))
 					{
-						uri = "string.Format(\"https://{0}" + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\", Address)";
+						uri = "string.Format(\"https://{0}" + (o.ServerPort > 0 ? $":{o.ServerPort}" : "") + "/" + o.Name + "\", Address)";
 					}
 					else if (o.Binding.GetType() == typeof(WcfBindingTCP))
 					{
-						uri = "string.Format(\"net.tcp://{0}" + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\", Address)";
+						uri = "string.Format(\"net.tcp://{0}" + (o.ServerPort > 0 ? $":{o.ServerPort}" : "") + "/" + o.Name + "\", Address)";
 					}
 					else if (o.Binding.GetType() == typeof(WcfBindingPeerTCP))
 					{
-						uri = "string.Format(\"net.p2p://{0}" + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\", Address)";
+						uri = "string.Format(\"net.p2p://{0}" + (o.ServerPort > 0 ? $":{o.ServerPort}" : "") + "/" + o.Name + "\", Address)";
 					}
 					else if (o.Binding.GetType() == typeof(WcfBindingMSMQ) || o.Binding.GetType() == typeof(WcfBindingMSMQIntegration))
 					{
-						uri = "string.Format(\"net.msmq://{0}" + (o.ServerPort > 0 ? string.Format(":{0}", o.ServerPort) : "") + "/" + o.Name + "\", Address)";
+						uri = "string.Format(\"net.msmq://{0}" + (o.ServerPort > 0 ? $":{o.ServerPort}" : "") + "/" + o.Name + "\", Address)";
 					}
 					else if (o.Binding.GetType() == typeof(WcfBindingNamedPipe))
 					{
@@ -1119,51 +1119,51 @@ namespace NETPath.Generators.CS.Wcf
 			{
 				var b = o as WcfHostDebugBehavior;
 				if (b == null) return "";
-				code.AppendLine(string.Format("\t\t\tthis.{0} = new ServiceDebugBehavior();", b.Name));
+				code.AppendLine($"\t\t\tthis.{b.Name} = new ServiceDebugBehavior();");
 				if (b.HttpHelpPageEnabled)
 				{
-					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpHelpPageEnabled = {1};", b.Name, b.HttpHelpPageEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpHelpPageBinding = new {1}();", b.Name, DataTypeGenerator.GenerateType(b.HttpHelpPageBinding)));
-					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpHelpPageUrl = new Uri(\"{1}\");", b.Name, b.HttpHelpPageUrl));
+					code.AppendLine($"\t\t\tthis.{b.Name}.HttpHelpPageEnabled = {(b.HttpHelpPageEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower())};");
+					code.AppendLine($"\t\t\tthis.{b.Name}.HttpHelpPageBinding = new {DataTypeGenerator.GenerateType(b.HttpHelpPageBinding)}();");
+					code.AppendLine($"\t\t\tthis.{b.Name}.HttpHelpPageUrl = new Uri(\"{b.HttpHelpPageUrl}\");");
 				}
 				if (b.HttpsHelpPageEnabled)
 				{
-					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsHelpPageBinding = new {1}();", b.Name, DataTypeGenerator.GenerateType(b.HttpsHelpPageBinding)));
-					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsHelpPageEnabled = {1};", b.Name, b.HttpsHelpPageEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsHelpPageUrl = new Uri(\"{1}\");", b.Name, b.HttpsHelpPageUrl));
+					code.AppendLine($"\t\t\tthis.{b.Name}.HttpsHelpPageBinding = new {DataTypeGenerator.GenerateType(b.HttpsHelpPageBinding)}();");
+					code.AppendLine($"\t\t\tthis.{b.Name}.HttpsHelpPageEnabled = {(b.HttpsHelpPageEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower())};");
+					code.AppendLine($"\t\t\tthis.{b.Name}.HttpsHelpPageUrl = new Uri(\"{b.HttpsHelpPageUrl}\");");
 				}
-				code.AppendLine(string.Format("\t\t\tthis.{0}.IncludeExceptionDetailInFaults = {1};", b.Name, b.IncludeExceptionDetailInFaults ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-				if (b.IsDefaultBehavior) code.AppendLine(string.Format("\t\t\tthis.Description.Behaviors.Add({0});", b.Name));
+				code.AppendLine($"\t\t\tthis.{b.Name}.IncludeExceptionDetailInFaults = {(b.IncludeExceptionDetailInFaults ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower())};");
+				if (b.IsDefaultBehavior) code.AppendLine($"\t\t\tthis.Description.Behaviors.Add({b.Name});");
 			}
 			if (t == typeof(WcfHostMetadataBehavior))
 			{
 				var b = o as WcfHostMetadataBehavior;
 				if (b == null) return "";
-				code.AppendLine(string.Format("\t\t\tthis.{0} = new ServiceMetadataBehavior();", b.Name));
-				code.AppendLine(string.Format("\t\t\tthis.{0}.ExternalMetadataLocation = new Uri(\"{1}\");", b.Name, b.ExternalMetadataLocation));
+				code.AppendLine($"\t\t\tthis.{b.Name} = new ServiceMetadataBehavior();");
+				code.AppendLine($"\t\t\tthis.{b.Name}.ExternalMetadataLocation = new Uri(\"{b.ExternalMetadataLocation}\");");
 				if (b.HttpGetEnabled)
 				{
-					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpGetBinding = new {1}();", b.Name, DataTypeGenerator.GenerateType(b.HttpGetBinding)));
-					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpGetEnabled = {1};", b.Name, b.HttpGetEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpGetUrl = new Uri(\"{1}\");", b.Name, b.HttpGetUrl));
+					code.AppendLine($"\t\t\tthis.{b.Name}.HttpGetBinding = new {DataTypeGenerator.GenerateType(b.HttpGetBinding)}();");
+					code.AppendLine($"\t\t\tthis.{b.Name}.HttpGetEnabled = {(b.HttpGetEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower())};");
+					code.AppendLine($"\t\t\tthis.{b.Name}.HttpGetUrl = new Uri(\"{b.HttpGetUrl}\");");
 				}
 				if (b.HttpsGetEnabled)
 				{
-					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsGetBinding = new {1}();", b.Name, DataTypeGenerator.GenerateType(b.HttpsGetBinding)));
-					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsGetEnabled = {1};", b.Name, b.HttpsGetEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower()));
-					code.AppendLine(string.Format("\t\t\tthis.{0}.HttpsGetUrl = new Uri(\"{1}\");", b.Name, b.HttpsGetUrl));
+					code.AppendLine($"\t\t\tthis.{b.Name}.HttpsGetBinding = new {DataTypeGenerator.GenerateType(b.HttpsGetBinding)}();");
+					code.AppendLine($"\t\t\tthis.{b.Name}.HttpsGetEnabled = {(b.HttpsGetEnabled ? Boolean.TrueString.ToLower() : Boolean.FalseString.ToLower())};");
+					code.AppendLine($"\t\t\tthis.{b.Name}.HttpsGetUrl = new Uri(\"{b.HttpsGetUrl}\");");
 				}
-				if (b.IsDefaultBehavior) code.AppendLine(string.Format("\t\t\tthis.Description.Behaviors.Add({0});", b.Name));
+				if (b.IsDefaultBehavior) code.AppendLine($"\t\t\tthis.Description.Behaviors.Add({b.Name});");
 			}
 			if (t == typeof(WcfHostThrottlingBehavior))
 			{
 				var b = o as WcfHostThrottlingBehavior;
 				if (b == null) return "";
-				code.AppendLine(string.Format("\t\t\tthis.{0} = new ServiceThrottlingBehavior();", b.Name));
-				code.AppendLine(string.Format("\t\t\tthis.{0}.MaxConcurrentCalls = {1};", b.Name, b.MaxConcurrentCalls));
-				code.AppendLine(string.Format("\t\t\tthis.{0}.MaxConcurrentInstances = {1};", b.Name, b.MaxConcurrentInstances));
-				code.AppendLine(string.Format("\t\t\tthis.{0}.MaxConcurrentSessions = {1};", b.Name, b.MaxConcurrentSessions));
-				if (b.IsDefaultBehavior) code.AppendLine(string.Format("\t\t\tthis.Description.Behaviors.Add({0});", b.Name));
+				code.AppendLine($"\t\t\tthis.{b.Name} = new ServiceThrottlingBehavior();");
+				code.AppendLine($"\t\t\tthis.{b.Name}.MaxConcurrentCalls = {b.MaxConcurrentCalls};");
+				code.AppendLine($"\t\t\tthis.{b.Name}.MaxConcurrentInstances = {b.MaxConcurrentInstances};");
+				code.AppendLine($"\t\t\tthis.{b.Name}.MaxConcurrentSessions = {b.MaxConcurrentSessions};");
+				if (b.IsDefaultBehavior) code.AppendLine($"\t\t\tthis.Description.Behaviors.Add({b.Name});");
 			}
 			return code.ToString();
 		}

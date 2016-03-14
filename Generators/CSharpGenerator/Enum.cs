@@ -37,13 +37,13 @@ namespace NETPath.Generators.CS
 		{
 			var code = new StringBuilder();
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCode(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
+			code.AppendLine($"\t[System.CodeDom.Compiler.GeneratedCode(\"{Globals.ApplicationTitle}\", \"{Globals.ApplicationVersion}\")]");
 			code.Append("\t[DataContract(");
 			if (o.HasClientType) code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
 			code.AppendFormat("Namespace = \"{0}\"", o.Parent.FullURI);
 			code.AppendLine(")]");
 			if (o.IsFlags) code.AppendLine("\t[Flags]");
-			code.AppendLine(string.Format("\t{0} enum {1} : {2}", DataTypeGenerator.GenerateScope(o.Scope), o.Name, o.IsFlags ? "long" : "short"));
+			code.AppendLine($"\t{DataTypeGenerator.GenerateScope(o.Scope)} enum {o.Name} : {(o.IsFlags ? "long" : "short")}");
 			code.AppendLine("\t{");
 			int fv = 0;
 			foreach (EnumElement ee in o.Elements.Where(ee => !ee.IsHidden))
@@ -55,7 +55,7 @@ namespace NETPath.Generators.CS
 		private static string GenerateElementServerCode(EnumElement o)
 		{
 			var code = new StringBuilder();
-			if (!string.IsNullOrEmpty(o.Documentation)) code.AppendLine(string.Format("\t\t<summary>{0}</summary>", o.Documentation));
+			if (!string.IsNullOrEmpty(o.Documentation)) code.AppendLine($"\t\t<summary>{o.Documentation}</summary>");
 			code.Append("\t\t[EnumMember(");
 			if (o.ClientValue != null)
 				code.AppendFormat("Value = \"{0}\"", o.ClientValue);
@@ -78,7 +78,7 @@ namespace NETPath.Generators.CS
 			if (ElementIndex > 61) return "";
 
 			var code = new StringBuilder();
-			if (!string.IsNullOrEmpty(o.Documentation)) code.AppendLine(string.Format("\t\t<summary>{0}</summary>", o.Documentation));
+			if (!string.IsNullOrEmpty(o.Documentation)) code.AppendLine($"\t\t<summary>{o.Documentation}</summary>");
 			if (o.IsExcluded == false) code.Append("\t\t[EnumMember()] ");
 			code.Append(o.Name);
 			if (o.IsAutoValue)
@@ -104,13 +104,13 @@ namespace NETPath.Generators.CS
 		{
 			var code = new StringBuilder();
 			if (o.Documentation != null) code.Append(DocumentationGenerator.GenerateDocumentation(o.Documentation));
-			code.AppendLine(string.Format("\t[System.CodeDom.Compiler.GeneratedCode(\"{0}\", \"{1}\")]", Globals.ApplicationTitle, Globals.ApplicationVersion));
+			code.AppendLine($"\t[System.CodeDom.Compiler.GeneratedCode(\"{Globals.ApplicationTitle}\", \"{Globals.ApplicationVersion}\")]");
 			code.Append("\t[DataContract(");
 			if (o.HasClientType) code.AppendFormat("Name = \"{0}\", ", o.ClientType.Name);
 			code.AppendFormat("Namespace = \"{0}\"", o.Parent.FullURI);
 			code.AppendLine(")]");
 			if (o.IsFlags) code.AppendLine("\t[Flags]");
-			code.AppendLine(string.Format("\t{0} enum {1} : {2}", DataTypeGenerator.GenerateScope(o.Scope), o.HasClientType ? o.ClientType.Name : o.Name, o.IsFlags ? "long" : "short"));
+			code.AppendLine($"\t{DataTypeGenerator.GenerateScope(o.Scope)} enum {(o.HasClientType ? o.ClientType.Name : o.Name)} : {(o.IsFlags ? "long" : "short")}");
 			code.AppendLine("\t{");
 			int fv = 0;
 			foreach (EnumElement ee in o.Elements.Where(ee => !ee.IsHidden))
@@ -123,7 +123,7 @@ namespace NETPath.Generators.CS
 		{
 			if (o.IsExcluded) return "";
 			var code = new StringBuilder();
-			if (!string.IsNullOrEmpty(o.Documentation)) code.AppendLine(string.Format("\t\t<summary>{0}</summary>", o.Documentation));
+			if (!string.IsNullOrEmpty(o.Documentation)) code.AppendLine($"\t\t<summary>{o.Documentation}</summary>");
 			code.AppendFormat("\t\t[EnumMember()] {0}", o.Name);
 			if (o.IsCustomValue)
 				code.AppendFormat(" = {0}", o.ClientValue ?? o.ServerValue);
@@ -144,7 +144,7 @@ namespace NETPath.Generators.CS
 			if (ElementIndex > 61) return "";
 
 			var code = new StringBuilder();
-			if (!string.IsNullOrEmpty(o.Documentation)) code.AppendLine(string.Format("\t\t<summary>{0}</summary>", o.Documentation));
+			if (!string.IsNullOrEmpty(o.Documentation)) code.AppendLine($"\t\t<summary>{o.Documentation}</summary>");
 			code.AppendFormat("\t\t[EnumMember()] {0}", o.Name);
 			if (o.IsAutoValue)
 			{
