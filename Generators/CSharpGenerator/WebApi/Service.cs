@@ -343,7 +343,7 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\t\tSetCommonHeaders(rm.Headers);");
 			code.AppendLine($"\t\t\tSet{o.Name}Headers(rm.Headers);");
 			code.AppendLine("\t\t\trm.Headers.Accept.Clear();");
-			code.AppendLine($"\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"{((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.String) ? "text/plain" : conf.ResponseFormat == RestSerialization.Json ? "application/json" : conf.ResponseFormat == RestSerialization.Bson ? "application/bson" : "application/xml")}\"));");
+			code.AppendLine($"\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"{((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.ByteArray) ? "application/octet-stream" : (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.String) ? "text/plain" : conf.ResponseFormat == RestSerialization.Json ? "application/json" : conf.ResponseFormat == RestSerialization.Bson ? "application/bson" : "application/xml")}\"));");
 
 			//Serialize any parameters
 			if (o.HasContent)
@@ -351,6 +351,8 @@ namespace NETPath.Generators.CS.WebApi
 				var pt = o.ContentType;
 				if(pt.TypeMode == DataTypeMode.Primitive && pt.Primitive == PrimitiveTypes.String)
 					code.AppendLine($"\t\t\trm.Content = new System.Net.Http.StringContent({o.ContentParameterName});");
+				else if (pt.TypeMode == DataTypeMode.Primitive && pt.Primitive == PrimitiveTypes.ByteArray)
+					code.AppendLine($"\t\t\trm.Content = new System.Net.Http.ByteArrayContent({o.ContentParameterName});");
 				else
 					code.AppendLine($"\t\t\trm.Content = new System.Net.Http.ObjectContent<{DataTypeGenerator.GenerateType(pt)}>({o.ContentParameterName}, new {(conf.RequestFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.RequestFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter")}());");
 			}
@@ -375,6 +377,10 @@ namespace NETPath.Generators.CS.WebApi
 			else if (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.String)
 			{
 				code.AppendLine("\t\t\t\treturn await rr.Content.ReadAsStringAsync().Result;");
+			}
+			else if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.ByteArray) && o.DeserializeContent)
+			{
+				code.AppendLine("\t\t\t\treturn rr.Content.ReadAsByteArrayAsync().Result;");
 			}
 			else if (!(o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) && o.DeserializeContent)
 			{
@@ -453,7 +459,7 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\t\tSetCommonHeaders(rm.Headers);");
 			code.AppendLine($"\t\t\tSet{o.Name}Headers(rm.Headers);");
 			code.AppendLine("\t\t\trm.Headers.Accept.Clear();");
-			code.AppendLine($"\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"{((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.String) ? "text/plain" : conf.ResponseFormat == RestSerialization.Json ? "application/json" : conf.ResponseFormat == RestSerialization.Bson ? "application/bson" : "application/xml")}\"));");
+			code.AppendLine($"\t\t\trm.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(\"{((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.ByteArray) ? "application/octet-stream" : (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.String) ? "text/plain" : conf.ResponseFormat == RestSerialization.Json ? "application/json" : conf.ResponseFormat == RestSerialization.Bson ? "application/bson" : "application/xml")}\"));");
 
 			//Serialize any parameters
 			if (o.HasContent)
@@ -461,6 +467,8 @@ namespace NETPath.Generators.CS.WebApi
 				var pt = o.ContentType;
 				if (pt.TypeMode == DataTypeMode.Primitive && pt.Primitive == PrimitiveTypes.String)
 					code.AppendLine($"\t\t\trm.Content = new System.Net.Http.StringContent({o.ContentParameterName});");
+				else if (pt.TypeMode == DataTypeMode.Primitive && pt.Primitive == PrimitiveTypes.ByteArray)
+					code.AppendLine($"\t\t\trm.Content = new System.Net.Http.ByteArrayContent({o.ContentParameterName});");
 				else
 					code.AppendLine($"\t\t\trm.Content = new System.Net.Http.ObjectContent<{DataTypeGenerator.GenerateType(pt)}>({o.ContentParameterName}, new {(conf.RequestFormat == RestSerialization.Json ? "JsonMediaTypeFormatter" : conf.RequestFormat == RestSerialization.Bson ? "BsonMediaTypeFormatter" : "XmlMediaTypeFormatter")}());");
 			}
@@ -485,6 +493,10 @@ namespace NETPath.Generators.CS.WebApi
 			else if (o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.String)
 			{
 				code.AppendLine("\t\t\t\treturn await rr.Content.ReadAsStringAsync();");
+			}
+			else if ((o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.ByteArray) && o.DeserializeContent)
+			{
+				code.AppendLine("\t\t\t\treturn await rr.Content.ReadAsByteArrayAsync();");
 			}
 			else if (!(o.ReturnType.TypeMode == DataTypeMode.Primitive && o.ReturnType.Primitive == PrimitiveTypes.Void) && o.DeserializeContent)
 			{
