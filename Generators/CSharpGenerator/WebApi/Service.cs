@@ -226,7 +226,7 @@ namespace NETPath.Generators.CS.WebApi
 				if (o.RouteParameters.OfType<WebApiMethodParameter>().Any() || o.QueryParameters.Any()) code.Remove(code.Length - 2, 2);
 				code.AppendLine(")");
 				code.AppendLine("\t\t{");
-				code.AppendFormat("\t\t\t{0}await {1}(", !o.ReturnType.IsVoid ? "return " : "", o.Name);
+				code.AppendFormat("\t\t\t{0}await {1}(", !o.ReturnType.IsVoid || p.EnableEntityFramework7 ? "return " : "", o.Name);
 				foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => string.IsNullOrEmpty(a.DefaultValue)))
 					code.AppendFormat("{0}, ", op.Name);
 				foreach (var op in o.RouteParameters.OfType<WebApiMethodParameter>().Where(a => !string.IsNullOrEmpty(a.DefaultValue)))
