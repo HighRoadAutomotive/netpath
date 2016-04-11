@@ -109,10 +109,10 @@ namespace NETPath.Generators.CS.WebApi
 				code.AppendLine("\t\t\tif (DBType == null) return null;");
 				code.AppendLine($"\t\t\tvar t = new {o.Name}()");
 				code.AppendLine("\t\t\t{");
-				foreach (var efe in o.Elements.Where(a => a.HasEntity && !(a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
+				foreach (var efe in o.Elements.Where(a => a.HasEntity && !a.IsHidden && !(a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
 					code.AppendLine(string.Format("\t\t\t\t{0} = {2}DBType.{1},", efe.DataName, efe.EntityName, efe.DataType.TypeMode == DataTypeMode.Enum ? $"({efe.DataType})" : ""));
 				code.AppendLine("\t\t\t};");
-				foreach (var efe in o.Elements.Where(a => a.HasEntity && a.DataType.TypeMode == DataTypeMode.Collection))
+				foreach (var efe in o.Elements.Where(a => a.HasEntity && !a.IsHidden && a.DataType.TypeMode == DataTypeMode.Collection))
 					code.AppendLine(string.Format("\t\t\tif (DBType.{0} != null) foreach(var x in DBType.{0}) t.{1}.Add(x);", efe.EntityName, efe.DataName));
 				code.AppendLine("\t\t\tFinishCastToNetwork(ref t, DBType);");
 				code.AppendLine("\t\t\treturn t;");
@@ -127,10 +127,10 @@ namespace NETPath.Generators.CS.WebApi
 					code.AppendLine("\t\t\tif (NetworkType == null) return null;");
 					code.AppendLine($"\t\t\tvar t = new {o.EntityType}()");
 					code.AppendLine("\t\t\t{");
-					foreach (var efe in o.Elements.Where(a => a.HasEntity && !a.IsReadOnly && !(a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
+					foreach (var efe in o.Elements.Where(a => a.HasEntity && !a.IsReadOnly && !a.IsHidden && !(a.DataType.TypeMode == DataTypeMode.Collection || a.DataType.TypeMode == DataTypeMode.Dictionary)))
 						code.AppendLine(string.Format("\t\t\t\t{0} = {2}NetworkType.{1},", efe.EntityName, efe.DataName, efe.DataType.TypeMode == DataTypeMode.Enum ? ((Projects.Enum) efe.DataType).IsFlags ? "(long)" : "(short)" : ""));
 					code.AppendLine("\t\t\t};");
-					foreach (var efe in o.Elements.Where(a => a.HasEntity && !a.IsReadOnly && a.DataType.TypeMode == DataTypeMode.Collection))
+					foreach (var efe in o.Elements.Where(a => a.HasEntity && !a.IsReadOnly && !a.IsHidden && a.DataType.TypeMode == DataTypeMode.Collection))
 						code.AppendLine(string.Format("\t\t\tif (NetworkType.{0} != null) foreach(var x in NetworkType.{0}) t.{1}.Add(x);", efe.DataName, efe.EntityName));
 					code.AppendLine("\t\t\tFinishCastToDatabase(ref t, NetworkType);");
 					code.AppendLine("\t\t\treturn t;");
@@ -582,7 +582,7 @@ namespace NETPath.Generators.CS.WebApi
 			code.AppendLine("\t\tpublic Dictionary<string, string> GetChanges()");
 			code.AppendLine("\t\t{");
 			code.AppendLine("\t\t\tvar cd = new Dictionary<string, string>();");
-			foreach (var de in o.Elements.Where(a => a.IsDataMember && !a.IsReadOnly && (a.DataType.TypeMode == DataTypeMode.Primitive || a.DataType.TypeMode == DataTypeMode.Enum)))
+			foreach (var de in o.Elements.Where(a => a.IsDataMember && !a.IsReadOnly && !a.IsHidden && (a.DataType.TypeMode == DataTypeMode.Primitive || a.DataType.TypeMode == DataTypeMode.Enum)))
 			{
 				if (de.DataType.TypeMode == DataTypeMode.Primitive && de.DataType.Primitive == PrimitiveTypes.String)
 					code.AppendLine($"\t\t\tif(!string.Equals({de.XamlName}, _network.{(de.HasClientType ? de.ClientName : de.DataName)}, StringComparison.Ordinal)) cd[\"{(de.HasContractName ? de.ContractName : de.DataName)}\"] = {(de.HasClientType ? de.ClientName : de.DataName)};");
